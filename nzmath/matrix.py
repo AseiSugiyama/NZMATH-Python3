@@ -8,12 +8,6 @@ class Matrix:
 			for j in range(self.n):
 				self.compo[(i,j)] = 0
 
-	def display(self):
-		for i in range(self.m):
-			for j in range(self.n):
-				print self.compo[(i,j)],
-			print
-
 	def __add__(self, other):
 		if (self.m != other.m) or (self.n != other.n): 
 			raise "Matrix size error"
@@ -44,16 +38,28 @@ class Matrix:
 			for j in range(self.n):
 				self.compo[(i,j)] = list[self.n * i + j]
 
+	def __str__(self):
+		result = ""
+		for i in range(self.m):
+			for j in range(self.n):
+				result += str(self.compo[(i,j)]) + " "
+			result = result[:-1] + "\n"
+		return result
+
+	def __getitem__(self, ij):
+		return self.compo[ij]
+
 if __name__ == "__main__":
 	a = Matrix(2,2)
 	b = Matrix(2,2)
 	a.set([1,2,3,4])
 	b.set([-3,2,0,1])
+	print a
+	print b
 	c = a+b
-	a.display()
-	print
-	b.display()
-	print
-	c.display()
+	print c
 	d = a*b
-	d.display()
+	# below is the same with "print d"
+	print d[0,0], d[0,1]
+	print d[1,0], d[1,1]
+
