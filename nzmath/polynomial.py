@@ -1280,7 +1280,7 @@ class MultiVariableSparsePolynomial:
                 return self_adjust.arrange_variable(sum_variable) //  other_adjust.arrange_variable(sum_variable)
             else:
                 typical_term_of_other = other.search_typical_term()
-                div_test_flag = self.compare_two_polynomial(typical_term_of_other)
+                div_test_flag = self.calc_quotioent_by_monomial(typical_term_of_other)
                 if rational.isIntegerObject(div_test_flag) or isinstance(other,rational.Rational):
                     return div_test_flag // typical_term_of_other.coefficient.values()[0]
                 else:
@@ -1288,7 +1288,7 @@ class MultiVariableSparsePolynomial:
                     remainder_coefficient = self.coefficient.copy()
                     remainder_variable = self.variable[:]
                     remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
-                    quotient_term = remainder_polynomial.compare_two_polynomial(typical_term_of_other).search_typical_term() // typical_term_of_other.coefficient.values()[0]
+                    quotient_term = remainder_polynomial.calc_quotioent_by_monomial(typical_term_of_other).search_typical_term() // typical_term_of_other.coefficient.values()[0]
                     return_polynomial += quotient_term
                     remainder_polynomial -= quotient_term * other
                     if isinstance(quotient_term,MultiVariableSparsePolynomial):
@@ -1323,7 +1323,7 @@ class MultiVariableSparsePolynomial:
         return_polynomial = MultiVariableSparsePolynomial({typical_coefficient:typical_term_value},self.variable)
         return return_polynomial
 
-    def compare_two_polynomial(self,other):
+    def calc_quotioent_by_monomial(self,other):
         if isinstance(other, MultiVariableSparsePolynomial):
             if self.variable == other.variable:
                 if len(other.coefficient.keys()) == 1:
@@ -1346,7 +1346,7 @@ class MultiVariableSparsePolynomial:
                         return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
                         return return_polynomial
                 else:
-                    raise ValueError, "You must input a polynomial that have one term for other."
+                    raise ValueError, "You must input a monomial for other."
             else:
                 raise ValueError, "You must input two Polynomial that have common kind of variable."
         else:
