@@ -1,4 +1,5 @@
-#prime.py
+from __future__ import generators
+# This future import is needed for Python 2.2.x
 
 import math
 import gcd
@@ -14,15 +15,15 @@ def trialDivision(n, bound = 0):
 
     """
 
-    i = 3
     if bound:
-        m = min((bound, long(math.sqrt(n))))
+        m = min((bound, sqrt(n)))
     else:
-        m = long(math.sqrt(n))
-    while i <= m:
-        if n % i == 0:
+        m = sqrt(n)
+    for p in generator():
+        if p > m:
+            break
+        if n % p == 0:
             return 0
-        i += 2
     return 1
 
 def spsp(n, base, s=None, t=None):
@@ -37,7 +38,7 @@ def spsp(n, base, s=None, t=None):
     z = pow(base,t,n)
     if z != 1 and z !=  n-1:
         j = 0
-        while j < s+1:
+        while j < s:
             j += 1
             z = pow(z,2,n)
             if z == n-1:
@@ -74,90 +75,42 @@ def primeqTemplate(testFunction, z):
 
 bigprimeq = lambda n: primeqTemplate(millerRabin, n)
 
-#boundary_p = 4000000000000
-
-def _primeq(z):
-    """primeq tells whether the given integer is prime or not:
-    - it returns 1 if the integer is a prime number,
-    - it returns 0 otherwise.
-    """
-##     if z >= boundary_p:
-##         return bigprimeq(z)
-##         return isprimeq(z)
-##     else:
-    primes = open("primes.txt","r")
-##         line=primes.readlines()
-    line=primes.readline()
-##         for i in line:
-##             if z % long(i) == 0:
-##                 return 0
-##             elif long(i)**2 > z:
-##                 return 1
-    while line:
-        if z % long(line) == 0:
-            return 0
-        elif long(line)**2 > z:
-            return 1
-        line=primes.readline()
-    primes.close()
-    produce(long(math.sqrt(2*z)))
-    return _primeq(z)
-
-def produce(n):
-    """produce produces prime numbers to the integer which you input."""
-    if n != long(n):
-        raise ValueError, "non-integer for produce()"
-    primes = open("primes.txt","r")
-    line=primes.readline()
-#    line = primes.readlines()
-#    max = long(line[-1:][0])
-    while line:
-        max = long(line)
-        line=primes.readline()
-    primes.close()
-    p = max + 2
-    while p <= n:
-        while primeq(p) == 0:
-            p += 2
-        primes = open("primes.txt","r")
-        plist = primes.readlines()
-        plist.append(str(p))
-        plist.append("\n")
-        primes.close()
-        primes = open("primes.txt","w")
-        primes.writelines(plist)
-        primes.close()
-        p += 2
-
 def prime(s):
-    """Return the prime number in the number which you input."""
+    """prime(n) returns the n-th prime number."""
     if s != long(s):
         raise ValueError, "non-integer for prime()"
     elif s <= 0:
         raise ValueError, "non-positive-integer for prime()"
-    primes = open("primes.txt","r")
-#    line = primes.readlines()
-    line = primes.readline()
-#    l = len(line)
-#    if l < s:
-#        produce(s*(long(math.log(s)/math.log(2))))
-#        return prime(s)
-    i=0
-    t=0
-    while i+1 != s:
+    i = 1
+    for p in generator():
+        if i == s:
+            return p
         i += 1
-        line = primes.readline()
-        if not line:
-            t = 1
-            break
-    primes.close()
-#    return long(line[s-1:s][0])
+    # The following line should not be reached:
+    raise ValueError, "Too big number %d for prime(i)." % s
 
-    if t == 1:
-        produce(s*(long(math.log(s)/math.log(2))))
-        return prime(s)
+def generator(condition=None):
+    if not condition or condition(2):
+        yield 2
+    if not condition or condition(3):
+        yield 3
+    if not condition or condition(5):
+        yield 5
+    coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
+    times30 = 0
+    if not condition:
+        while 1:
+            for i in coprimeTo30:
+                if primeq(i + times30):
+                    yield i + times30
+            times30 += 30
     else:
-        return long(line[:-1])
+        while 1:
+            for i in coprimeTo30:
+                p = i + times30
+                if condition(p) and primeq(p):
+                    yield p
+            times30 += 30
 
 def smallSpsp(n):
     """
@@ -179,7 +132,7 @@ def primeq(n):
     return apr(n)
 
 # defs for APR algorithm
-from trialdivision import trial as factor
+from factor import trialDivision as factor
 import operator
 
 def sqrt(a):
