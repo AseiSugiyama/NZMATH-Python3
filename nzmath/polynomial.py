@@ -171,7 +171,7 @@ class Polynomial:
         elif isinstance(other, int) or isinstance(other, long):
             return_value = 0
             for i in range(len(self.coefficient)):
-                return_value += self.coefficient[i] * (other ** i)
+                return_value = return_value * other + self.coefficient[-1-i]
             return return_value
         else:
             raise ValueError, "You must input Polynomial and [variable or integer]."
