@@ -124,7 +124,9 @@ class OneVariableDensePolynomial:
                 for l in range(len(self.coefficient)):
                     for r in range(len(other.coefficient)):
                         product[l + r] += self.coefficient[l] * other.coefficient[r]
-                commonRing = self.ring.getCommonSuperring(other.getRing())
+                commonRing = self.getRing().getCommonSuperring(other.getRing())
+                if not commonRing and self.getCoefficientRing():
+                    return self.__class__(product, self.variable, self.getCoefficientRing())
                 return OneVariableDensePolynomial(product, self.variable, commonRing.getCoefficientRing()).adjust()
             else:
                 return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()\
@@ -177,90 +179,51 @@ class OneVariableDensePolynomial:
             return power_product.adjust()
 
     def __divmod__(self, other):
-
-        """
-        About this division , we can treat only a map of
-                     Q[x] --> Q[x]
-        and only one variable polynomial.
-        """
         if other == 0:
             raise ZeroDivisionError, "division or modulo by zero."
-        elif isinstance(other, OneVariableDensePolynomial):
-            if other.degree() < 1:
-                coeff=other.coefficient[0]
-                new_coeff=[]
-                for i in self.coefficient:
-                    new=rational.Rational(i,coeff)
-                    new_coeff.append(new)
-                return OneVariableDensePolynomial(new_coeff,self.variable),0
-            if self.variable != other.variable or self.degree() < other.degree():
-                return 0,self
+        if isinstance(other, OneVariableDensePolynomial):
+            if other.degree() < 0:
+                raise ZeroDivisionError, "division or modulo by zero."
+            if other.degree() == 0:
+                other = other[0]
+                if isinstance(self.getCoefficientRing(), ring.Field) or isinstance(other, ring.FieldElement):
+                    div_coeff = [c / other for c in self.coefficient]
+                    return self.__class__(div_coeff, self.variable, self.getCoefficientRing()), self.__class__([], self.variable, self.getCoefficientRing())
+                else:
+                    div_coeff = [c // other for c in self.coefficient]
+                    mod_coeff = [c %  other for c in self.coefficient]
+                    return OneVariableDensePolynomial(div_coeff, self.variable, self.getCoefficientRing()), OneVariableDensePolynomial(mod_coeff, self.variable, self.getCoefficientRing())
+            elif self.variable != other.variable or self.degree() < other.degree():
+                return  self.__class__([], self.variable, self.getCoefficientRing()), self.adjust()
+            elif isinstance(self.getCoefficientRing(), ring.Field):
+                div_poly = OneVariableDensePolynomial([], self.variable, self.getCoefficientRing())
+                mod_poly = self
+                deg, o_deg = mod_poly.degree(), other.degree()
+                o_lc = other[o_deg]
+                while deg >= o_deg:
+                    div_poly[deg - o_deg] = mod_poly[deg] / o_lc
+                    mod_poly = mod_poly - self.__class__([0] * (deg - o_deg) + ((mod_poly[deg] / o_lc) * other).coefficient, self.variable, self.getCoefficientRing())
+                    deg = mod_poly.degree()
+                return div_poly.adjust(), mod_poly
             else:
-                self_coeff=self.coefficient[:]
-                other_coeff=other.coefficient[:]
-                max_term_coeff_of_other=other_coeff[-1]
-                new_coeff=[]
-                i=self.degree()
-                k=other.degree()
-                while i >= k:
-                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
-                    m=1
-                    for j in other_coeff:
-                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
-                        m=m-1
-                    new_coeff.append(q)
-                    self_coeff.pop()
-                    i=i-1
-                new_coeff.reverse()
-                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
+                div_poly = OneVariableDensePolynomial([], self.variable, self.getCoefficientRing())
+                mod_poly = self
+                deg, o_deg = mod_poly.degree(), other.degree()
+                o_lc = other[o_deg]
+                x = OneVariableDensePolynomial([0, 1], self.variable, self.getCoefficientRing())
+                while deg >= o_deg:
+                    div_poly[deg - o_deg] = mod_poly[deg] // o_lc
+                    mod_poly = mod_poly - (mod_poly[deg] // o_lc) * other * x**(deg - o_deg)
+                    deg -= 1
+                    while deg >= 0 and not mod_poly[deg]:
+                        deg -= 1
+                return div_poly.adjust(), mod_poly
         elif isinstance(other, OneVariableSparsePolynomial):
-            if other.degree() < 1:
-                coeff=other.coefficient[0,]
-                new_coeff=[]
-                for i in self.coefficient:
-                    new=rational.Rational(i,coeff)
-                    new_coeff.append(new)
-                return OneVariableDensePolynomial(new_coeff,self.variable),0
-            elif self.variable != other.variable[0] or self.degree() < other.degree():
-                return 0 ,self
-            else :
-                Dense_other=other.toOneVariableDensePolynomial()
-                self_coeff=self.coefficient[:]
-                other_coeff=Dense_other.coefficient[:]
-                max_term_coeff_of_other=other_coeff[-1]
-                new_coeff=[]
-                i=self.degree()
-                k=Dense_other.degree()
-                while i >= k:
-                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
-                    m=1
-                    for j in other_coeff:
-                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
-                        m=m-1
-                    new_coeff.append(q)
-                    self_coeff.pop()
-                    i=i-1
-                new_coeff.reverse() 
-                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
-        
-        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
-            new_coeff=[]
-            for j in self.coefficient: 
-                new_coeff.append(rational.Rational(j,1)//other)
-            return OneVariableDensePolynomial(new_coeff,self.variable),0
-
-        elif other in self.getCoefficientRing():
-            return 0,self
-
-        else:     #???
-            if isinstance(other, (int,long)):
-                other = rational.Integer(other)
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
-            return commonSuperring.createElement(self) // commonSuperring.createElement(other)
-
-    def __rdivmod__(self, other):
-        self,other=other,self
-        return self.__divmood__(other)
+            return divmod(self, other.toOneVariableDensePolynomial())
+        elif isinstance(other, (int,long)):
+            other = rational.Integer(other)
+        commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+        return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
 
     def __floordiv__(self,other):
         return self.__divmod__(other)[0]
@@ -277,7 +240,7 @@ class OneVariableDensePolynomial:
             return self//other
 
     def __truediv__(self,other):
-        if self%other==0:
+        if not self%other:
             return self//other
         elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
             return self//other
@@ -292,6 +255,8 @@ class OneVariableDensePolynomial:
     __rmod__=__mod__
        
     def __eq__(self, other):
+        if not self and not other:
+            True
         if isinstance(other, OneVariableDensePolynomial):
             if self.variable == other.variable and self.degree() == other.degree():
                 degree = self.degree()
@@ -2078,7 +2043,7 @@ class PolynomialRing (ring.CommutativeRing):
         if self.coefficientRing.isfield():
             A = self.createElement(a)
             B = self.createElement(b)
-            while B != 0:
+            while B:
                 A, B = B, A % B
             if A in self.coefficientRing:
                 return 1
@@ -2254,38 +2219,85 @@ def subResultantGCD(A, B):
         else:
             h = h ** (delta - 1) * g ** delta
 
-if __name__ == '__main__':
-    a = OneVariableDensePolynomial([1,1],"x")
+class RationalOneVariableDensePolynomial (OneVariableDensePolynomial):
+    def __divmod__(self, other):
 
-    b = OneVariableDensePolynomial([1,-2,3,-4],"x")
+        """
+        About this division , we can treat only a map of
+                     Q[x] --> Q[x]
+        and only one variable polynomial.
+        """
+        if other == 0:
+            raise ZeroDivisionError, "division or modulo by zero."
+        elif isinstance(other, OneVariableDensePolynomial):
+            if other.degree() < 1:
+                coeff=other.coefficient[0]
+                new_coeff=[]
+                for i in self.coefficient:
+                    new=rational.Rational(i,coeff)
+                    new_coeff.append(new)
+                return OneVariableDensePolynomial(new_coeff,self.variable),0
+            if self.variable != other.variable or self.degree() < other.degree():
+                return 0,self
+            else:
+                self_coeff=self.coefficient[:]
+                other_coeff=other.coefficient[:]
+                max_term_coeff_of_other=other_coeff[-1]
+                new_coeff=[]
+                i=self.degree()
+                k=other.degree()
+                while i >= k:
+                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
+                    m=1
+                    for j in other_coeff:
+                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
+                        m=m-1
+                    new_coeff.append(q)
+                    self_coeff.pop()
+                    i=i-1
+                new_coeff.reverse()
+                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
+        elif isinstance(other, OneVariableSparsePolynomial):
+            if other.degree() < 1:
+                coeff=other.coefficient[0,]
+                new_coeff=[]
+                for i in self.coefficient:
+                    new=rational.Rational(i,coeff)
+                    new_coeff.append(new)
+                return OneVariableDensePolynomial(new_coeff,self.variable),0
+            elif self.variable != other.variable[0] or self.degree() < other.degree():
+                return 0 ,self
+            else :
+                Dense_other=other.toOneVariableDensePolynomial()
+                self_coeff=self.coefficient[:]
+                other_coeff=Dense_other.coefficient[:]
+                max_term_coeff_of_other=other_coeff[-1]
+                new_coeff=[]
+                i=self.degree()
+                k=Dense_other.degree()
+                while i >= k:
+                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
+                    m=1
+                    for j in other_coeff:
+                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
+                        m=m-1
+                    new_coeff.append(q)
+                    self_coeff.pop()
+                    i=i-1
+                new_coeff.reverse() 
+                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
+        
+        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
+            new_coeff=[]
+            for j in self.coefficient: 
+                new_coeff.append(rational.Rational(j,1)//other)
+            return OneVariableDensePolynomial(new_coeff,self.variable),0
 
-    c = OneVariableDensePolynomial([1,-1,-2],"y")
+        elif other in self.getCoefficientRing():
+            return 0,self
 
-    d = OneVariableDensePolynomial([1,1,2],"y")
-
-    e = OneVariableDensePolynomial([0,1,2,3,4],"z")
-
-    f = MultiVariableSparsePolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},["x","z"])
-
-    g = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},["y","z","x"])
-
-    h = OneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)],"x")
-
-    i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)],"x")
-
-    j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")
-
-    k = OneVariableSparsePolynomial({(1,):1},["x"])
-
-    l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)],"y")
-
-    p = OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])
-    pp = OneVariableDensePolynomial([-1,0,0,0,0,0,0,1],"x")
-    pr =  OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])*rational.Rational(2,3)
-
-    q = OneVariableDensePolynomial([1,1,1,1,1,1,1],"x")
-    qq = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])
-    qr = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])*rational.Rational(3,5)
-    r = OneVariableSparsePolynomial({(0,):-1,(1,):1},["x"])
-
-    s = OneVariableDensePolynomial([-1,1],"x")
+        else:     #???
+            if isinstance(other, (int,long)):
+                other = rational.Integer(other)
+            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
