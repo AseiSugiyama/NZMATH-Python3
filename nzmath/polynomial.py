@@ -1,11 +1,11 @@
-#polynomial.py 
+#integerpolynomial.py 
 import string
 import rational
 
-class Polynomial:
+class IntegerPolynomial:
 
     def __init__(self, coefficient, variable):
-        "Polynomial(coefficient, variable)"
+        "IntegerPolynomial(coefficient, variable)"
         if isinstance(variable, str) and isinstance(coefficient, list):
             self.coefficient = coefficient
             self.variable = variable
@@ -14,13 +14,13 @@ class Polynomial:
 
     def __add__(self, other):
         if rational.isIntegerObject(other):
-            sum = Polynomial(self.coefficient[:],self.variable)
+            sum = IntegerPolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
-            return Polynomial.adjust(sum) 
-        elif isinstance(other, FlatPolynomial):
+            return IntegerPolynomial.adjust(sum) 
+        elif isinstance(other, FlatIntegerPolynomial):
             return other + self
         elif self.variable == other.variable:
-            sum = Polynomial([0]*max(len(self.coefficient),len(other.coefficient)),self.variable)
+            sum = IntegerPolynomial([0]*max(len(self.coefficient),len(other.coefficient)),self.variable)
             if len(self.coefficient) < len(other.coefficient):
                 for i in range(len(other.coefficient)):
                     sum.coefficient[i] = other.coefficient[i]
@@ -30,9 +30,9 @@ class Polynomial:
             for i in range(min(len(self.coefficient),len(other.coefficient))):
                 sum.coefficient[i] = 0
                 sum.coefficient[i] = self.coefficient[i] + other.coefficient[i]
-            return Polynomial.adjust(sum) 
+            return IntegerPolynomial.adjust(sum) 
         else:
-            return Polynomial.toFlatPolynomial(self) + Polynomial.toFlatPolynomial(other)
+            return IntegerPolynomial.toFlatIntegerPolynomial(self) + IntegerPolynomial.toFlatIntegerPolynomial(other)
 
     __radd__=__add__
 
@@ -43,27 +43,27 @@ class Polynomial:
         return other + (-self)
 
     def __neg__(self):
-        reciprocal = Polynomial([0]*len(self.coefficient),self.variable)
+        reciprocal = IntegerPolynomial([0]*len(self.coefficient),self.variable)
         for i in range(len(self.coefficient)):
             reciprocal.coefficient[i] -= self.coefficient[i]
         return reciprocal
 
     def __mul__(self, other):
         if rational.isIntegerObject(other):
-            product = Polynomial([0]*len(self.coefficient),self.variable)
+            product = IntegerPolynomial([0]*len(self.coefficient),self.variable)
             for i in range(len(self.coefficient)):
                 product.coefficient[i] = self.coefficient[i] * other
-            return Polynomial.adjust(product)
-        elif isinstance(other, FlatPolynomial):
+            return IntegerPolynomial.adjust(product)
+        elif isinstance(other, FlatIntegerPolynomial):
             return other * self
         elif self.variable == other.variable:
-            product = Polynomial([0]*(len(self.coefficient) + len(other.coefficient)),self.variable)
+            product = IntegerPolynomial([0]*(len(self.coefficient) + len(other.coefficient)),self.variable)
             for l in range(len(self.coefficient)):
                 for r in range(len(other.coefficient)):
                     product.coefficient[l + r] += self.coefficient[l] * other.coefficient[r]
-            return Polynomial.adjust(product)
+            return IntegerPolynomial.adjust(product)
         else:
-            return Polynomial.toFlatPolynomial(self) * Polynomial.toFlatPolynomial(other)
+            return IntegerPolynomial.toFlatIntegerPolynomial(self) * IntegerPolynomial.toFlatIntegerPolynomial(other)
 
     __rmul__ = __mul__
 
@@ -72,14 +72,14 @@ class Polynomial:
             if other == 0:
                 return 1
             elif other > 0:
-                power_product = Polynomial([1],self.variable)
+                power_product = IntegerPolynomial([1],self.variable)
                 for i in range(other):
-                    power_product = Polynomial.__mul__(self, power_product)
-                return Polynomial.adjust(power_product)
+                    power_product = IntegerPolynomial.__mul__(self, power_product)
+                return IntegerPolynomial.adjust(power_product)
         raise ValueError, "You must input positive integer for index."
 
     def __rpow__(self, other):
-        raise ValueError, "You must input [Polynomial**index.]" 
+        raise ValueError, "You must input [IntegerPolynomial**index.]" 
 
     def __floordiv__(self, other):
         if rational.isIntegerObject(other):
@@ -91,11 +91,11 @@ class Polynomial:
 #                floordiv_coefficient += [(self.coefficient[i] - (self.coefficient[i] % other)) / other]
 #    MATHEMATICA
                 floordiv_coefficient += [self.coefficient[i] / other]
-            floordiv_polynomial = Polynomial(floordiv_coefficient, self.variable)
+            floordiv_polynomial = IntegerPolynomial(floordiv_coefficient, self.variable)
             return floordiv_polynomial.adjust()
-        elif isinstance(other, FlatPolynomial):
-            return Polynomial.toFlatPolynomial(self) // other
-        elif isinstance(other, Polynomial):
+        elif isinstance(other, FlatIntegerPolynomial):
+            return IntegerPolynomial.toFlatIntegerPolynomial(self) // other
+        elif isinstance(other, IntegerPolynomial):
             other_adjust = other.adjust()
             if isinstance(other_adjust,int) or isinstance(other_adjust,long):
                 return self // other_adjust
@@ -105,7 +105,7 @@ class Polynomial:
                     return 0
                 else:
                     floordiv_polynomial = 0
-                    while isinstance(self_adjust, Polynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
+                    while isinstance(self_adjust, IntegerPolynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
                         old_length = len(self_adjust.coefficient)
                         quotient_position = len(self_adjust.coefficient) - len(other_adjust.coefficient)
                         quotient_value = self_adjust.coefficient[-1] // other_adjust.coefficient[-1]
@@ -116,7 +116,7 @@ class Polynomial:
 #                            quotient_value =  self_adjust.coefficient[-1]*1.0 / other_adjust.coefficient[-1]
 #                            quotient_value = int(quotient_value + 0.5 * abs(quotient_value) / quotient_value)
 #    MATHEMATICA
-                        quotient_polynomial = Polynomial([0]*(quotient_position+1), self.variable)
+                        quotient_polynomial = IntegerPolynomial([0]*(quotient_position+1), self.variable)
                         quotient_polynomial.coefficient[quotient_position] = quotient_value
                         floordiv_polynomial += quotient_polynomial
                         self_adjust -= other_adjust * quotient_polynomial
@@ -125,10 +125,10 @@ class Polynomial:
                         elif len(self_adjust.coefficient) == old_length:
                             new_coefficient = self_adjust.coefficient[:]
                             del(new_coefficient[-1])
-                            self_adjust = Polynomial(new_coefficient,self.variable).adjust()
+                            self_adjust = IntegerPolynomial(new_coefficient,self.variable).adjust()
                     return floordiv_polynomial
         else:
-            raise ValueError, "You must input Polynomial or integer."
+            raise ValueError, "You must input IntegerPolynomial or integer."
 
     def __rfloordiv__(self, other):
         self_adjust = self.adjust()
@@ -136,8 +136,8 @@ class Polynomial:
             return other // self_adjust
         elif rational.isIntegerObject(other):
             return 0
-        elif isinstance(other,FlatPolynomial):
-            return other // self_adjust.toFlatPolynomial()
+        elif isinstance(other,FlatIntegerPolynomial):
+            return other // self_adjust.toFlatIntegerPolynomial()
         else:
             raise ValueError, "Not Defined."
 
@@ -166,30 +166,30 @@ class Polynomial:
     def __call__(self,other):
         if isinstance(other,str):
             result_coefficient = self.coefficient[:]
-            return Polynomial(result_coefficient, other).adjust()
+            return IntegerPolynomial(result_coefficient, other).adjust()
         elif isinstance(other, int) or isinstance(other, long):
             return_value = 0
             for i in range(len(self.coefficient)):
                 return_value = return_value * other + self.coefficient[-1-i]
             return return_value
         else:
-            raise ValueError, "You must input Polynomial and [variable or integer]."
+            raise ValueError, "You must input IntegerPolynomial and [variable or integer]."
 
     def __repr__(self):
-        self = Polynomial.adjust(self)
+        self = IntegerPolynomial.adjust(self)
         if rational.isIntegerObject(self):
             return repr(self)
-        return_str = 'Polynomial(' + repr(self.coefficient) + ', "'
+        return_str = 'IntegerPolynomial(' + repr(self.coefficient) + ', "'
         return_str += self.variable + '")'
         return return_str
 
     def __str__(self):
-        self = Polynomial.adjust(self)
+        self = IntegerPolynomial.adjust(self)
         if rational.isIntegerObject(self):
             return str(self)
         for i in self.coefficient:
-            if isinstance(i,Polynomial):
-                return self.toFlatPolynomial().__str__()
+            if isinstance(i,IntegerPolynomial):
+                return self.toFlatIntegerPolynomial().__str__()
         return_str = ""
         first = 0
         while self.coefficient[first] == 0:
@@ -240,21 +240,21 @@ class Polynomial:
             length -= 1
         if length == 1:
             return self.coefficient[0]
-        result = Polynomial(self.coefficient[:length],self.variable)
+        result = IntegerPolynomial(self.coefficient[:length],self.variable)
         return result
 
     def differentiate(self, other):
         if isinstance(other, str):
             for i in self.coefficient:
-                if isinstance(i,Polynomial):
-                    return self.toFlatPolynomial().differentiate(other)
+                if isinstance(i,IntegerPolynomial):
+                    return self.toFlatIntegerPolynomial().differentiate(other)
             if self.variable == other:
                 if len(self.coefficient) == 1:
                     return 0
-                diff = Polynomial([0]*(len(self.coefficient)-1),self.variable)
+                diff = IntegerPolynomial([0]*(len(self.coefficient)-1),self.variable)
                 for i in range(len(diff.coefficient)):
                     diff.coefficient[i] = (self.coefficient[i+1]) * (i+1)
-                return Polynomial.adjust(diff)
+                return IntegerPolynomial.adjust(diff)
             else:
                 return 0
         else:
@@ -262,30 +262,30 @@ class Polynomial:
 
     def change_variable(self, other):
         if isinstance(other, str):
-            result_polynomial = Polynomial(self.coefficient, other)
-            return Polynomial.adjust(result_polynomial)
+            result_polynomial = IntegerPolynomial(self.coefficient, other)
+            return IntegerPolynomial.adjust(result_polynomial)
         else:
             raise ValueError, "You must input string for variable."
 
 #    def rearrange(self, other):
 #        if (type(other) == list):
-#            result_polynomial = Polynomial.toFlatPolynomial(self)
+#            result_polynomial = IntegerPolynomial.toFlatIntegerPolynomial(self)
 
-    def toFlatPolynomial(self):
-        self = Polynomial.adjust(self)
+    def toFlatIntegerPolynomial(self):
+        self = IntegerPolynomial.adjust(self)
         if rational.isIntegerObject(self):
             return self
         else:
             for i in self.coefficient:
-                if isinstance(i,Polynomial):
-                    result_polynomial = FlatPolynomial({}, [self.variable])
-                    x = Polynomial([0,1],self.variable)
+                if isinstance(i,IntegerPolynomial):
+                    result_polynomial = FlatIntegerPolynomial({}, [self.variable])
+                    x = IntegerPolynomial([0,1],self.variable)
                     for i in range(len(self.coefficient)):
                         coeff = self.coefficient[i]
                         if rational.isIntegerObject(coeff):
                             result_polynomial += coeff * x**i
                         else:
-                            result_polynomial += coeff.toFlatPolynomial() * x**i
+                            result_polynomial += coeff.toFlatIntegerPolynomial() * x**i
                     return result_polynomial.adjust()
             else:
                 for coeff in self.coefficient:
@@ -294,14 +294,14 @@ class Polynomial:
                 result_coefficients = {}
                 for i in range(len(self.coefficient)):
                     result_coefficients[(i,)] = self.coefficient[i]
-                result_polynomial = FlatPolynomial(result_coefficients, [self.variable])
+                result_polynomial = FlatIntegerPolynomial(result_coefficients, [self.variable])
                 return result_polynomial.adjust()
 
 
-class FlatPolynomial:
+class FlatIntegerPolynomial:
 
     def __init__(self, coefficients, variables):   
-        "FlatPolynomial(coefficients, variables)"
+        "FlatIntegerPolynomial(coefficients, variables)"
         if isinstance(variables, list) and isinstance(coefficients, dict):
             self.coefficients = coefficients
             self.variables = variables
@@ -310,11 +310,11 @@ class FlatPolynomial:
 
     def __add__(self, other):
         if rational.isIntegerObject(other):
-            self_adjust = FlatPolynomial.adjust(self)
+            self_adjust = FlatIntegerPolynomial.adjust(self)
             if rational.isIntegerObject(self_adjust):
                 return self_adjust + other
             else:
-                sum = FlatPolynomial({}, self_adjust.variables)
+                sum = FlatIntegerPolynomial({}, self_adjust.variables)
                 for key, value in self_adjust.coefficients.iteritems():
                     sum.coefficients[key] = value
                 if sum.coefficients.has_key((0,)*len(sum.variables)):
@@ -322,21 +322,21 @@ class FlatPolynomial:
                 else:
                     sum.coefficients[(0,)*len(sum.variables)] = other
                 return sum.adjust()
-        elif isinstance(other, Polynomial):
-            return self + other.toFlatPolynomial()
+        elif isinstance(other, IntegerPolynomial):
+            return self + other.toFlatIntegerPolynomial()
         elif self.variables == other.variables:
-            sum = FlatPolynomial({}, self.variables)
-            for key, value in self.coefficients.iteritems():
+            sum = FlatIntegerPolynomial({}, self.variables)
+            for keys, value in self.coefficients.iteritems():
                 sum.coefficients[keys] = value
             for i in other.coefficients:
                 if sum.coefficients.has_key(i):
                     sum.coefficients[i] += other.coefficients[i]
                 else:
                     sum.coefficients[i] = other.coefficients[i]
-            return FlatPolynomial.adjust(sum)
+            return FlatIntegerPolynomial.adjust(sum)
         else:
-            self_adjust = FlatPolynomial.adjust(self)
-            other_adjust = FlatPolynomial.adjust(other)
+            self_adjust = FlatIntegerPolynomial.adjust(self)
+            other_adjust = FlatIntegerPolynomial.adjust(other)
             if rational.isIntegerObject(self_adjust):
                 return other_adjust + self_adjust
             elif rational.isIntegerObject(other_adjust):
@@ -348,7 +348,7 @@ class FlatPolynomial:
                 if i not in sum_variables:
                     sum_variables.append(i)
             sum_variables.sort()
-            return FlatPolynomial.arrange_variables(self_adjust, sum_variables) + FlatPolynomial.arrange_variables(other_adjust, sum_variables)
+            return FlatIntegerPolynomial.arrange_variables(self_adjust, sum_variables) + FlatIntegerPolynomial.arrange_variables(other_adjust, sum_variables)
 
     __radd__=__add__
 
@@ -359,7 +359,7 @@ class FlatPolynomial:
         return other + (-self)
 
     def __neg__(self):
-        result_polynomial = FlatPolynomial.adjust(self)
+        result_polynomial = FlatIntegerPolynomial.adjust(self)
         if rational.isIntegerObject(result_polynomial):
             return (-result_polynomial)
         for i in result_polynomial.coefficients.keys():
@@ -371,9 +371,9 @@ class FlatPolynomial:
             result_polynomial = {}
             for i in self.coefficients:
                 result_polynomial[i] = other * self.coefficients[i]
-            return FlatPolynomial(result_polynomial, self.variables).adjust()
-        elif isinstance(other, Polynomial):
-            return self * Polynomial.toFlatPolynomial(other)
+            return FlatIntegerPolynomial(result_polynomial, self.variables).adjust()
+        elif isinstance(other, IntegerPolynomial):
+            return self * IntegerPolynomial.toFlatIntegerPolynomial(other)
         elif self.variables == other.variables:
             result_coefficients = {}
             result_variables = self.variables[:]
@@ -391,7 +391,7 @@ class FlatPolynomial:
                         result_coefficients[index_list] += mul_value
                     else:
                         result_coefficients[index_list] = mul_value
-            result_polynomial = FlatPolynomial(result_coefficients, result_variables)
+            result_polynomial = FlatIntegerPolynomial(result_coefficients, result_variables)
             return result_polynomial.adjust()
         else:
             self_adjust = self.adjust()
@@ -407,7 +407,7 @@ class FlatPolynomial:
                 if i not in sum_variables:
                     sum_variables.append(i)
             sum_variables.sort()
-            return FlatPolynomial.arrange_variables(self_adjust, sum_variables) * FlatPolynomial.arrange_variables(other_adjust, sum_variables)
+            return FlatIntegerPolynomial.arrange_variables(self_adjust, sum_variables) * FlatIntegerPolynomial.arrange_variables(other_adjust, sum_variables)
 
     __rmul__=__mul__
 
@@ -420,10 +420,10 @@ class FlatPolynomial:
                 result_coefficients = {}
                 one_key = (0,)*len(self.variables)
                 result_coefficients[one_key] = 1
-                result_polynomial = FlatPolynomial(result_coefficients, result_variables)
+                result_polynomial = FlatIntegerPolynomial(result_coefficients, result_variables)
                 for i in range(other):
                     result_polynomial = result_polynomial * self
-                return FlatPolynomial.adjust(result_polynomial)
+                return FlatIntegerPolynomial.adjust(result_polynomial)
             else:
                 raise ValueError, "You must input positive integer for index."
         else:
@@ -495,10 +495,10 @@ class FlatPolynomial:
         return result_polynomial
 
     def __repr__(self):
-        self = self..adjust()
+        self = self.adjust()
         if rational.isIntegerObject(self):
             return repr(self)
-        return_str = "FlatPolynomial(" + repr(self.coefficients) + ", "
+        return_str = "FlatIntegerPolynomial(" + repr(self.coefficients) + ", "
         return_str += repr(self.variables) + ")"
         return return_str
 
@@ -514,13 +514,13 @@ class FlatPolynomial:
             return_coefficients = [0]*(max_index + 1)
             for i in disp_polynomial.coefficients:
                 return_coefficients[i[0]] += disp_polynomial.coefficients[i]
-            return str(Polynomial(return_coefficients, disp_polynomial.variables[0]))
+            return str(IntegerPolynomial(return_coefficients, disp_polynomial.variables[0]))
         else:
             old_variables = disp_polynomial.variables[:]
             reverse_coefficients = disp_polynomial.coefficients.copy()
             reverse_variables = old_variables[:]
             reverse_variables.reverse()
-            reverse_polynomial = FlatPolynomial(reverse_coefficients, reverse_variables)
+            reverse_polynomial = FlatIntegerPolynomial(reverse_coefficients, reverse_variables)
             reverse_polynomial = reverse_polynomial.sort_variables()
             result_coefficients = reverse_polynomial.coefficients.keys()
             result_coefficients.sort()
@@ -558,7 +558,7 @@ class FlatPolynomial:
         if not isinstance(other, list):
             raise ValueError, "You must input list for other."
         else:
-            result_polynomial = FlatPolynomial({},other)
+            result_polynomial = FlatIntegerPolynomial({},other)
             index_list = self.coefficients.keys()
             values_list = self.coefficients.values()
             position_infomation = []
@@ -595,7 +595,7 @@ class FlatPolynomial:
             else:
                 positions[self.variables[i]] = (i,)
         result_variables = self.variables[:]
-        result_polynomial = FlatPolynomial({},result_variables)
+        result_polynomial = FlatIntegerPolynomial({},result_variables)
         result_polynomial.variables.sort()
         for i in self.coefficients.keys():
             new_index_list = []
@@ -631,7 +631,7 @@ class FlatPolynomial:
                 if old_variables_list[j] == merge_variables[i]:
                     position_list += [j]
             variables_position[merge_variables[i]] = position_list
-        result_polynomial = FlatPolynomial({},merge_variables)
+        result_polynomial = FlatIntegerPolynomial({},merge_variables)
         old_coefficients_keys = self.coefficients.keys()
         old_coefficients_values = self.coefficients.values()
         for i in range(len(old_coefficients_keys)):
@@ -652,7 +652,7 @@ class FlatPolynomial:
         for i in self.coefficients:
             if self.coefficients[i] != 0:
                 result_coefficient[i] = self.coefficients[i]
-        result_polynomial = FlatPolynomial(result_coefficient, self.variables)
+        result_polynomial = FlatIntegerPolynomial(result_coefficient, self.variables)
         return result_polynomial
 
     def delete_zero_variable(self):
@@ -672,7 +672,7 @@ class FlatPolynomial:
             for j in exist_position_list:
                 new_coefficients_key += [old_coefficients_keys[i][j]]
             new_coefficients[tuple(new_coefficients_key)] = old_coefficients_values[i]
-        result_polynomial = FlatPolynomial(new_coefficients, new_variables)
+        result_polynomial = FlatIntegerPolynomial(new_coefficients, new_variables)
         return result_polynomial
 
     def differentiate(self, other):
@@ -690,14 +690,14 @@ class FlatPolynomial:
                         new_coefficients_key[variable_position] = new_index
                         new_coefficients_key = tuple(new_coefficients_key)
                         result_coefficients[new_coefficients_key] = new_coefficients_value
-                result_polynomial = FlatPolynomial(result_coefficients, result_variables)
+                result_polynomial = FlatIntegerPolynomial(result_coefficients, result_variables)
                 return result_polynomial.adjust()
             else:
                 return 0
         else:
-            raise ValueError, "You input [FlatPolynomial, string]."
+            raise ValueError, "You input [FlatIntegerPolynomial, string]."
 
-    def toPolynomial(self):
+    def toIntegerPolynomial(self):
         origin_polynomial = self.adjust()
         if rational.isIntegerObject(origin_polynomial):
             return origin_polynomial
@@ -709,13 +709,13 @@ class FlatPolynomial:
             return_polynomial = [0]*(max_index + 1)
             for i in origin_polynomial.coefficients:
                 return_polynomial[i[0]] += origin_polynomial.coefficients[i]
-            return Polynomial(return_polynomial, origin_polynomial.variables[0]).adjust()
+            return IntegerPolynomial(return_polynomial, origin_polynomial.variables[0]).adjust()
         else:
             max_index = 0
             for i in origin_polynomial.coefficients:
                 if i[-1] > max_index:
                     max_index = i[-1]            
-            return_polynomial = Polynomial([0]*(max_index+1),origin_polynomial.variables[-1])
+            return_polynomial = IntegerPolynomial([0]*(max_index+1),origin_polynomial.variables[-1])
             sum_polynomial_list = [0]*(max_index + 1)
             for i in origin_polynomial.coefficients:
                 for j in range(max_index+1):
@@ -726,11 +726,11 @@ class FlatPolynomial:
                         new_value = origin_polynomial.coefficients[i]
                         new_coefficients = {}
                         new_coefficients[new_key] = new_value
-                        new_polynomial = FlatPolynomial(new_coefficients, origin_polynomial.variables[:-1])
+                        new_polynomial = FlatIntegerPolynomial(new_coefficients, origin_polynomial.variables[:-1])
                         sum_polynomial_list[j] += new_polynomial
             for i in range(max_index+1):
-                if isinstance(sum_polynomial_list[i],FlatPolynomial):
-                    return_polynomial.coefficient[i] = sum_polynomial_list[i].toPolynomial()
+                if isinstance(sum_polynomial_list[i],FlatIntegerPolynomial):
+                    return_polynomial.coefficient[i] = sum_polynomial_list[i].toIntegerPolynomial()
                 else:
                     return_polynomial.coefficient[i] = sum_polynomial_list[i]
             return return_polynomial
