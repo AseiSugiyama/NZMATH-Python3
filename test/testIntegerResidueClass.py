@@ -46,7 +46,8 @@ class IntegerResidueClassTest(unittest.TestCase):
     def testAdd(self):
         residue1 = IntegerResidueClass(8, 15)
         residue2 = IntegerResidueClass(7, 15)
-        assert residue1 + residue2
+        assert (residue1 + residue2).__class__
+        assert not residue1 + residue2
         assert (residue1 + residue2).getResidue() == 0
         assert (residue1 + residue2).getModulus() == 15
         residue3 = IntegerResidueClass(13, 60)
