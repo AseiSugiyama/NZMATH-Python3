@@ -14,14 +14,14 @@ class Rational (ring.QuotientFieldElement):
 
     def __init__(self, numerator, denominator=1):
         if denominator < 0:
-            self.numerator = -numerator
-            self.denominator = -denominator
+            self.numerator = Integer(-numerator)
+            self.denominator = Integer(-denominator)
         elif denominator == 1 and isinstance(numerator, Rational):
             self.numerator = numerator.numerator
             self.denominator = numerator.denominator
         else :
-            self.numerator = numerator
-            self.denominator = denominator    
+            self.numerator = Integer(numerator)
+            self.denominator = Integer(denominator)
 
     def __add__(self,other):
         if isinstance(other, Rational):
