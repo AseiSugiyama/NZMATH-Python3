@@ -10,31 +10,29 @@ def binarygcd(a, b):
         b =tmp
     if b == 0:
         return a
-    else:
-        r = a % b
-        a = b
-        b = r
-        if b == 0:
-            return a
+    r = a % b
+    a = b
+    b = r
+    if b == 0:
+        return a
+    k = 0
+    while not a & 1 and not b & 1:
+        k = k + 1
+        a = a / 2
+        b = b / 2
+    while not a & 1:
+        a = a / 2
+    while not b & 1:
+        b = b / 2
+    t = (a - b) / 2
+    while t != 0:
+        while not t & 1:
+            t = t / 2
+        if t > 0:
+            a = t
         else:
-            k = 0
-            while not a & 1 and not b & 1:
-                k = k + 1
-                a = a / 2
-                b = b / 2
-            while not a & 1:
-                a = a / 2
-            while not b & 1:
-                b = b / 2
-            t = (a - b) / 2
-            while t != 0:
-                while not t & 1:
-                    t = t / 2
-                if t > 0:
-                    a = t
-                else:
-                    b = -t
-                t = (a - b)/2
+            b = -t
+        t = (a - b)/2
             return (2**k)*a
 
 def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
