@@ -100,6 +100,9 @@ class IntegerResidueClass:
     def __pos__(self):
         return self.__class__(+self.n, self.m)
 
+    def __nonzero__(self):
+        return bool(self.n)
+
     def __eq__(self, other):
         if other == 0 and self.n == 0:
             return True
