@@ -3,6 +3,7 @@ import arith1
 import cmath
 import factor
 import finitefield
+import gcd
 #import imaginary
 import integerResidueClass
 import math
@@ -10,13 +11,20 @@ import polynomial
 import prime
 import random
 import rational
+import sets
+
+def lcm(a,b):
+    p=gcd.gcd(a,b)
+    a=a//p
+    b=b//p
+    return p*a*b
 
 def Element_p(a,p):
     """
     a is (rational,int,long) number
     this returns a in F_p
     """
-    return int(finitefield.FinitePrimeFieldElement(a,p).n)#.createElement(a).n
+    return int(finitefield.FinitePrimeFieldElement(a,p).n)#.createElement(a).n ###
 
 def PolyMod(f,g):
     """
@@ -91,6 +99,83 @@ def PolyMulRed(list,poly):
         i=i+1
     return POLY
 
+def heart(q):
+    """
+    this is for schoof
+    """
+    l=[]
+    i=3
+    j=1
+    while j<=4*int(math.sqrt(q)): ###
+        if prime.primeq(i):
+            l.append(i)
+            j=j*i
+        i=i+2
+    return l
+
+def change(poly,i,e,p):
+    """
+    poly is multi
+    this is for divPoly
+    """
+    if p==0:
+        x=polynomial.OneVariableSparsePolynomial({1:1},['x'])
+        y=polynomial.OneVariableSparsePolynomial({1:1},['y'])
+    else:
+        x=polynomial.OneVariableSparsePolynomial({1:1},['x'],finitefield.FinitePrimeField(p))
+        y=polynomial.OneVariableSparsePolynomial({1:1},['y'],finitefield.FinitePrimeField(p))
+    L=poly.coefficient.items()
+    if i%2==0:
+        t=0
+        if p==0:
+            poly=0
+        else:
+            poly=finitefield.FinitePrimeFieldElement(0,p)
+        while t<len(L): # y^2->e
+            k=L[t][0][1]
+            if k%2==0:
+                k=k//2
+                poly=poly+e**k*L[t][1]*x**L[t][0][0]
+            else:
+                k=(k-1)//2
+                poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
+            t=t+1
+        L=poly.coefficient.items()
+        t=0
+        dict={}
+        while t<len(L):
+            dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]
+            t=t+1
+        poly.coefficient=dict
+    else: #y^2->e
+        t=0
+        if p==0:
+            poly=0
+        else:
+            poly=finitefield.FinitePrimeFieldElement(0,p)
+        while t<len(L):
+            k=L[t][0][1]//2
+            poly=poly+e**k*L[t][1]*x**L[t][0][0]
+            t=t+1
+    return poly.toOneVariableSparsePolynomial()
+
+def powOrd(x,y,z):
+    """
+    x=-#E(F_p)+p+1
+    y=self.index >1
+    z=self.ch
+    """
+    C={}
+    C[1]=x
+    i=2
+    C[-1]=x
+    C[-2]=2
+    while i<=y:
+        C[0]=C[1]*C[-1]-z*C[-2]
+        C[-1],C[-2]=C[0],C[-1]
+        i=i+1
+    return C[0]
+
 # t=imaginary.Complex(a,b)
 #
 #def q(t):
@@ -143,7 +228,7 @@ def PolyMulRed(list,poly):
 #       b=a(k)+b #### miss ,if k==i !
 #       i=i+1
 #    return qq*(1+b)
-        
+    
 class EC:
     """
     Elliptic curves over Q and Fp.
@@ -419,7 +504,7 @@ class EC:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch) 
-                    t=s**3+self.a4*s+self.a6
+                    t=(s**3+self.a4*s+self.a6).n
                 return [s,arith1.sqroot(t,self.ch)]
             elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
@@ -529,10 +614,8 @@ class EC:
                                 s=(3*P[0]**2+2*self.a2*P[0]+self.a4-self.a1*P[1])/(2*P[1]+self.a1*P[0]+self.a3)
                                 t=(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/(2*P[1]+self.a1*P[0]+self.a3)
                         else:
-                            P0=finitefield.FinitePrimeFieldElement(P[0],self.ch).inverse()
-                            P1=finitefield.FinitePrimeFieldElement(P[1],self.ch).inverse()
-                            s=(Q[1]-P[1])/(Q[0]-P[0])
-                            t=(P[1]*Q[0]-Q[1]*P[0])/(Q[0]-P[0])
+                            s=(Q[1]-P[1]*finitefield.FinitePrimeFieldElement(1,self.ch))/(Q[0]-P[0])
+                            t=(P[1]*Q[0]-Q[1]*P[0]*finitefield.FinitePrimeFieldElement(1,self.ch))/(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
                         y3=-(s+self.a1)*x3-t-self.a3
                         R=[x3.n,y3.n]
@@ -614,55 +697,7 @@ class EC:
         else:
             x=polynomial.OneVariableSparsePolynomial({1:1},['x'],finitefield.FinitePrimeField(self.ch))
             y=polynomial.OneVariableSparsePolynomial({1:1},['y'],finitefield.FinitePrimeField(self.ch))
-        def change(poly,i,e,p):
-            """
-            poly is multi
-            """
-            L=poly.coefficient.items()
-            if i%2==0:
-                t=0
-                if self.ch==0:
-                    poly=0
-                else:
-                    poly=finitefield.FinitePrimeFieldElement(0,p)
-                while t<len(L): # y^2->e
-                    k=L[t][0][1]
-                    if k%2==0:
-                        k=k//2
-                        poly=poly+e**k*L[t][1]*x**L[t][0][0]
-                    else:
-                        k=(k-1)//2
-                        poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
-                    t=t+1
-                L=poly.coefficient.items()
-                t=0
-                dict={}
-                while t<len(L):
-                    dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]
-                    t=t+1
-                poly.coefficient=dict
-            else: #y^2->e
-                t=0
-                if self.ch==0:
-                    poly=0
-                else:
-                    poly=finitefield.FinitePrimeFieldElement(0,p)
-                while t<len(L):
-                    k=L[t][0][1]//2
-                    poly=poly+e**k*L[t][1]*x**L[t][0][0]
-                    t=t+1
-            return poly.toOneVariableSparsePolynomial()
         if not Number:
-            def heart(q):
-                l=[]
-                i=3
-                j=1
-                while j<=4*int(math.sqrt(q)):
-                    if prime.primeq(i):
-                        l.append(i)
-                        j=j*i
-                    i=i+2
-                return l
             if self.ch==0 and self.ch==3:
                 raise ValueError,"You must imput (Nunber)"
             elif self.ch==2: 
@@ -885,272 +920,299 @@ class EC:
                     else:
                         return change(f[Number],Number,e,self.ch)
 
-    def order(self,default=0): 
+    def schoof(self,default=0):
         """
-        this returns #E(Fp)
+        this return t=q+1-#E(F_q)
         """
+        if self.ch>3:
+            if len(self)!=2:
+                other=self.simple()
+            else:
+                other=self 
+            E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],finitefield.FinitePrimeField(other.ch))
+            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch)) 
+            T=[]
+            D=other.divPoly(default)
+            L=D[1]
+            D=D[0]
+            i=0
+            M=1
+            while i<len(L):
+                j=L[i]
+                M=M*j
+                u=PolyPow(x,other.ch,D[j]) #u=x^q
+                v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
+                g0=PolyPow(E,int((other.ch-1)/2),D[j])#y^(q-1) ###
+                k=other.ch%j
+                f0=PolyMulRed([D[k-1],D[k+1]],D[j])
+                f3=PolyMulRed([D[k],D[k]],D[j])
+                if k%2==0:
+                    f=v-x
+                    P=GCD(PolyMulRed([f,E,f3],D[j])+f0,D[j])
+                else:
+                    f=v-x
+                    P=GCD(PolyMulRed([f,f3],D[j])+PolyMulRed([f0,E],D[j]),D[j])
+                if P!=1:
+                    if arith1.legendre(other.ch,j)==-1:
+                        T.append((0,j))
+                        print T,"$"
+                    else:
+                        w=arith1.sqroot(k,j)
+                        if w%2==0:
+                            P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
+                        else:
+                            P=GCD(PolyMulRed([u-x,D[w],D[w]],D[j])+PolyMulRed([D[w-1],D[w+1],E],D[j]),D[j])
+                        if P!=1:
+                            if w%2==0:
+                                P=GCD(PolyMulRed([4,PolyMulRed([g0,E],D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
+                            else: 
+                                P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
+                            if P!=1:
+                                T.append((2*w,j))
+                                print T,"$$"
+                            else:
+                                T.append((-2*w,j))
+                                print T,"$$$"
+                        else:
+                            T.append((0,j))
+                            print T,"$$$$"
+                else:
+                    X=v+u+x
+                    Y=x-v
+                    Z=-2*v-x
+                    f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
+                    f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
+                    g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1) ###
+                    if k%2==0:
+                        g2=PolyMulRed([g1,E,E],D[j])
+                        f=f1-f2-4*PolyMulRed([g2,f3,D[k]],D[j])
+                        g=(PolyMulRed([Y,E,f3],D[j])-f0)*4
+                        h0=PolyMulRed([g,g],D[j])
+                        h1=PolyMulRed([f,f],D[j])
+                        X_d=PolyMulRed([E,f3,h0],D[j])
+                        X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([f0,h0],D[j])-h1
+                    else:
+                        f=f1-f2-4*PolyMulRed([g1,f3,D[k]],D[j])
+                        g=(PolyMulRed([Y,f3],D[j])-PolyMulRed([E,f0],D[j]))*4
+                        h0=PolyMulRed([g,g],D[j])
+                        h1=PolyMulRed([f,f],D[j])
+                        X_d=PolyMulRed([f3,h0],D[j])
+                        X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([E,f0,h0],D[j])-PolyMulRed([E,h1],D[j])
+                    t=1
+                    while t<=(j-1)/2:
+                        if t%2==0:
+                            Z_d_x=PolyPow(PolyMulRed([E,D[t],D[t]],D[j]),other.ch,D[j])
+                            Z_n_x=PolyPow(PolyMulRed([D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                        else:
+                            Z_d_x=PolyPow(PolyMulRed([D[t],D[t]],D[j]),other.ch,D[j])
+                            Z_n_x=PolyPow(PolyMulRed([E,D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                        P=PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j])
+                        if P==0:
+                            if k%2==0:
+                                Y_d=PolyMulRed([E,D[k],g,X_d],D[j])
+                                y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([f0,h0],D[j])+h1
+                                Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                                if t%2==0:
+                                    Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                    Z_n_y=PolyMulRed([g0,z0],D[j])
+                                else:
+                                    Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                    Z_n_y=PolyMulRed([g0,z0],D[j])
+                            else:
+                                Y_d=PolyMulRed([D[k],g,X_d],D[j])
+                                y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([E,f0,h0],D[j])+PolyMulRed([E,h1],D[j])
+                                Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                                if t%2==0:
+                                    Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                    Z_n_y=PolyMulRed([g0,z0],D[j])
+                                else:
+                                    Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                    Z_n_y=PolyMulRed([g0,z0],D[j])
+                            Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
+                            if Q==0:
+                                T.append((t,j))
+                                print T,"@"
+                                break
+                            else:
+                                T.append((j-t,j))
+                                print T,"@@"
+                                break
+                        t=t+1
+                        if t>(j-1)/2:
+                            T.append((0,j))
+                            print T,"@@@"
+                i=i+1
+            tau=arith1.CRT(T)
+            if tau>M/2:
+                tau=tau-M
+            return tau
+        elif self.ch==2:
+            raise NotImplementedError, "Now making (>_<)"
+        else:
+            raise NotImplementedError, "Now making (>_<)"
+
+    def BSGS(self,P,W):
         """
-        a=3
-        b=1043498151013573141076033119958062900890
-        p=2**130+169
-        #E=1361129467683753853808807784495688874237
-        polynomial can use p<2*10**9
+        this use only for Shanks_Mestre,
         """
-        def schoof(self,default=0):
-            if self.ch>3:
+        L=[]
+        A=[]
+        B=[]
+        i=0
+        Q=self.mul(self.ch+1,P)
+        while i<W:
+            A.append(Q[0])
+            Q=self.add(Q,P)
+            i=i+1
+        L.append(A)
+        j=0
+        Q=[0]
+        R=self.mul(W,P)
+        while j<=W:
+            B.append(Q[0])
+            Q=self.add(Q,R)
+            j=j+1
+        L.append(B)
+        L.append(sets.Set(A).intersection(sets.Set(B)))
+        return L
+            
+    def Shanks_Mestre(self):
+        import sets
+        """
+        This program is using
+        Algorithm 7.5.3(Shanks-Mestre assessment of curve order)
+        Crandall & Pomerance ,PRIME NUMBERS
+        self.ch<=10**5+o(1)
+        This return t=self.ch+1-#E(F_p)
+        """
+        if self.ch>3:
+            if self.ch<=229:
                 if len(self)!=2:
                     other=self.simple()
                 else:
-                    other=self 
-                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],finitefield.FinitePrimeField(other.ch))
-                x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch)) 
-                T=[]
-                D=other.divPoly(default)
-                L=D[1]
-                D=D[0]
+                    other=self
+                k=0
+                for i in range(0,other.ch):
+                    k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
+                return -k
+            else: #E.ch>229
+                if len(self)!=2:
+                    other=self.simple()
+                else:
+                    other=self
+                g=0
+                while arith1.legendre(g,other.ch)!=-1:
+                    g=random.randint(2,other.ch-1)
+                W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1 ###
+                c,d=g**2*other.a,g**3*other.b
+                f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",finitefield.FinitePrimeField(other.ch))
+                BOX=[]
                 i=0
-                M=1
-                while i<len(L):
-                    j=L[i]
-                    M=M*j
-                    u=PolyPow(x,other.ch,D[j]) #u=x^q
-                    v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
-                    g0=PolyPow(E,int((other.ch-1)/2),D[j])#y^(q-1)
-                    k=other.ch%j
-                    f0=PolyMulRed([D[k-1],D[k+1]],D[j])
-                    f3=PolyMulRed([D[k],D[k]],D[j])
-                    if k%2==0:
-                        f=v-x
-                        P=GCD(PolyMulRed([f,E,f3],D[j])+f0,D[j])
-                    else:
-                        f=v-x
-                        P=GCD(PolyMulRed([f,f3],D[j])+PolyMulRed([f0,E],D[j]),D[j])
-                    if P!=1:
-                        if arith1.legendre(other.ch,j)==-1:
-                            T.append((0,j))
-                            print T,"$"
-                        else:
-                            w=arith1.sqroot(k,j)
-                            if w%2==0:
-                                P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
-                            else:
-                                P=GCD(PolyMulRed([u-x,D[w],D[w]],D[j])+PolyMulRed([D[w-1],D[w+1],E],D[j]),D[j])
-                            if P!=1:
-                                if w%2==0:
-                                    P=GCD(PolyMulRed([4,PolyMulRed([g0,E],D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
-                                else: 
-                                    P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
-                                if P!=1:
-                                    T.append((2*w,j))
-                                    print T,"$$"
-                                else:
-                                    T.append((-2*w,j))
-                                    print T,"$$$"
-                            else:
-                                T.append((0,j))
-                                print T,"$$$$"
-                    else:
-                        X=v+u+x
-                        Y=x-v
-                        Z=-2*v-x
-                        f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
-                        f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
-                        g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1)
-                        if k%2==0:
-                            g2=PolyMulRed([g1,E,E],D[j])
-                            f=f1-f2-4*PolyMulRed([g2,f3,D[k]],D[j])
-                            g=(PolyMulRed([Y,E,f3],D[j])-f0)*4
-                            h0=PolyMulRed([g,g],D[j])
-                            h1=PolyMulRed([f,f],D[j])
-                            X_d=PolyMulRed([E,f3,h0],D[j])
-                            X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([f0,h0],D[j])-h1
-                        else:
-                            f=f1-f2-4*PolyMulRed([g1,f3,D[k]],D[j])
-                            g=(PolyMulRed([Y,f3],D[j])-PolyMulRed([E,f0],D[j]))*4
-                            h0=PolyMulRed([g,g],D[j])
-                            h1=PolyMulRed([f,f],D[j])
-                            X_d=PolyMulRed([f3,h0],D[j])
-                            X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([E,f0,h0],D[j])-PolyMulRed([E,h1],D[j])
-                        t=1
-                        while t<=(j-1)/2:
-                            if t%2==0:
-                                Z_d_x=PolyPow(PolyMulRed([E,D[t],D[t]],D[j]),other.ch,D[j])
-                                Z_n_x=PolyPow(PolyMulRed([D[t-1],D[t+1]],D[j]),other.ch,D[j])
-                            else:
-                                Z_d_x=PolyPow(PolyMulRed([D[t],D[t]],D[j]),other.ch,D[j])
-                                Z_n_x=PolyPow(PolyMulRed([E,D[t-1],D[t+1]],D[j]),other.ch,D[j])
-                            P=PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j])
-                            if P==0:
-                                if k%2==0:
-                                    Y_d=PolyMulRed([E,D[k],g,X_d],D[j])
-                                    y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([f0,h0],D[j])+h1
-                                    Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
-                                    if t%2==0:
-                                        Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                        z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                        Z_n_y=PolyMulRed([g0,z0],D[j])
-                                    else:
-                                        Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                        z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                        Z_n_y=PolyMulRed([g0,z0],D[j])
-                                else:
-                                    Y_d=PolyMulRed([D[k],g,X_d],D[j])
-                                    y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([E,f0,h0],D[j])+PolyMulRed([E,h1],D[j])
-                                    Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
-                                    if t%2==0:
-                                        Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                        z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                        Z_n_y=PolyMulRed([g0,z0],D[j])
-                                    else:
-                                        Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                        z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                        Z_n_y=PolyMulRed([g0,z0],D[j])
-                                Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
-                                if Q==0:
-                                    T.append((t,j))
-                                    print T,"@"
-                                    break
-                                else:
-                                    T.append((j-t,j))
-                                    print T,"@@"
-                                    break
-                            t=t+1
-                            if t>(j-1)/2:
-                                T.append((0,j))
-                                print T,"@@@"
+                while i<other.ch:
+                    BOX.append(1)
                     i=i+1
-                tau=arith1.CRT(T)
-                if tau>M/2:
-                    tau=tau-M
-                return other.ch+1-tau
-            else:
-                raise NotImplementedError, "Now making (>_<)"
-        
-        def Shanks_Mestre(self):
-            import sets
-            """
-            This program is using
-            Algorithm 7.5.3(Shanks-Mestre assessment of curve order)
-            Crandall & Pomerance ,PRIME NUMBERS
-            self.ch<=10**5+o(1)
-            """
-            if self.ch>3:
-                if self.ch<=229:
-                    if len(self)!=2:
-                        other=self.simple()
-                    else:
-                        other=self
-                    k=0
-                    for i in range(0,other.ch):
-                        k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
-                    return other.ch+1+k
-                else: #E.ch>229
-                    def BSGS(E,P,W):
-                        L=[]
-                        A=[]
-                        B=[]
-                        i=0
-                        Q=E.mul(E.ch+1,P)
-                        while i<W:
-                            A.append(Q[0])
-                            Q=E.add(Q,P)
-                            i=i+1
-                        L.append(A)
-                        j=0
-                        Q=[0]
-                        R=E.mul(W,P)
-                        while j<=W:
-                            B.append(Q[0])
-                            Q=E.add(Q,R)
-                            j=j+1
-                        L.append(B)
-                        L.append(sets.Set(A).intersection(sets.Set(B)))
-                        return L
-                    
-                    if len(self)!=2:
-                        other=self.simple()
-                    else:
-                        other=self
-                    g=0
-                    while arith1.legendre(g,other.ch)!=-1:
-                        g=random.randint(2,other.ch-1)
-                    W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
-                    c,d=g**2*other.a,g**3*other.b
-                    f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X")
-                    BOX=[]
-                    i=0
-                    while i<other.ch:
-                        BOX.append(1)
-                        i=i+1
-                    k=0
-                    while k==0:
-                        x=random.randint(0,other.ch-1)
-                        while BOX[x]==0 or arith1.legendre(f(x),other.ch)==0:
-                            BOX[x]=0
-                            x=random.randint(0,other.ch-1)
+                k=0
+                while k==0:
+                    x=random.randint(0,other.ch-1)
+                    while BOX[x]==0 or arith1.legendre(f(x).n,other.ch)==0:
                         BOX[x]=0
-                        if arith1.legendre(f(x),other.ch)==1:
-                            E=other
-                            cg=1
-                        else: #arith1.legendre(f(cg),other.ch)==-1
-                            E=EC([c,d],other.ch)
-                            cg=-1
-                            x=g*x%E.ch
-                        P=[x,E.coordinateX(x)]
-                        L=BSGS(E,P,W)
-                        A=L[0]
-                        B=L[1]
-                        S=L[2]
-                        if len(S)==1:
+                        x=random.randint(0,other.ch-1)
+                    BOX[x]=0
+                    if arith1.legendre(f(x).n,other.ch)==1:
+                        E=other
+                        cg=1
+                    else: #arith1.legendre(f(cg),other.ch)==-1
+                        E=EC([c.n,d.n],other.ch)
+                        cg=-1
+                        x=g*x%E.ch
+                    P=[x,E.coordinateX(x)]
+                    L=E.BSGS(P,W)
+                    A=L[0]
+                    B=L[1]
+                    S=L[2]
+                    if len(S)==1:
+                        s=S.pop()
+                        if B.count(s)<=2:
                             k=1
-                    s=S.pop()
-                    aa=A.index(s)
-                    bb=B.index(s)
-                    t=aa-bb*W
-                    if E.mul(E.ch+1+t,P)==[0]:
-                        return E.ch+1+cg*t
-                    else:
-                        t=aa+bb*W
-                        return E.ch+1+cg*t
-            else:
-                raise NotImplementedError,"Now making m(__)m"
+                aa=A.index(s)
+                bb=B.index(s)
+                t=aa-bb*W
+                if E.mul(E.ch+1+t,P)==[0]:
+                    return -cg*t
+                else:
+                    t=aa+bb*W
+                    return -cg*t
+        else:
+            raise NotImplementedError,"Now making m(__)m"
 
-        def powOrd(x,y,z):
-            """
-            x=-#E(F_p)+p+1
-            y=self.index >1
-            z=self.ch
-            """
-            C={}
-            C[1]=x
-            i=2
-            C[-1]=x
-            C[-2]=2
-            while i<=y:
-                C[0]=C[1]*C[-1]-z*C[-2]
-                C[-1],C[-2]=C[0],C[-1]
-                i=i+1
-            return C[0]
-        
+    def order(self,default=0):
+        """
+        this returns #E(Fp)
+        """
         if self.ch<=3:
             if self.index!=1:
                 raise NotImplementedError,"Now making m(__)m"
             else:
                 raise NotImplementedError,"Now making m(__)m"
-        elif self.ch<10**6:
+        elif self.ch<10**10:
             if self.index!=1:
-                return pow(self.ch,self.index)+1-powOrd(-Shanks_Mestre(self)+self.ch+1,self.index,self.ch)
+                return pow(self.ch,self.index)+1-powOrd(self.Shanks_Mestre(),self.index,self.ch)
             else:
-                return Shanks_Mestre(self)
-        else: # self.ch>=10**6
+                return self.ch+1-self.Shanks_Mestre()
+        else: # self.ch>=10**10
             if self.index!=1:
                 if default==0:
-                    raise  self.ch**self.index+1-powOrd(-schoof(self)+self.ch+1,self.index,self.ch)
+                    raise  self.ch**self.index+1-powOrd(self.schoof(),self.index,self.ch)
                 else:
-                    return schoof(self,default)
+                    return self.ch+1-self.schoof(default)
             else:
-                return schoof(self)
+                return self.ch+1-self.schoof()
 
+    def stracture(self):
+        N=self.order()
+        if prime.primeq(N):
+            return (1,N)
+        N0=gcd.gcd(self.ch-1,N)
+        if N0==N:
+            return (1,N)
+        N1,N2=N0,N//N0
+        print N1,N2 #####
+        P1=0
+        P2=0
+        while P1==P2:
+            P1,P2=self.point(),self.point()
+        print P1,P2 #####
+        P1,P2=self.mul(N2,P1),self.mul(N2,P2)
+        print P1,P2 #####
+        if P1==P2==[0]:
+            ord1=1
+            ord2=1
+        elif P1==[0] and P2!=[0]:
+            ord1=1
+            F=factor.rhomethod(N1)
+            P3=P2
+            #while P3!=[0]:
+            #    P3=self.mul(,P3)
+            print F,"F1" #####
+            ord2=2 ##
+        elif P1!=[0] and P2==[0]:
+            F=factor.rhomethod(N1)
+            print F,"F2" #####
+            ord1=2 ##
+            ord2=1
+        else:
+            F=factor.rhomethod(N1)
+            print F,"F3" #####
+            ord1=2 ##
+            ord2=2 ##
+        r=lcm(ord1,ord2)
+        print ord1,ord2,r #####
+        return "*"
+        
     # Cremona's book p.66
     def tatesAlgorithm(self):
         """
