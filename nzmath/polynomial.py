@@ -1370,8 +1370,7 @@ class MultiVariableSparsePolynomial:
                 return_coefficient[i] = self.coefficient[i] / other
             return_polynomial = MultiVariableSparsePolynomial(return_coefficient,return_variable)
             return return_polynomial
-        elif:
-        isinstance(other,(OneVariableDensePolynomial,OneVariableSparsePolynomial,MultiVariableDensePolynomial,MultiVariableSparsePolynomial)) and (self % other == 0):
+        elif isinstance(other,(OneVariableDensePolynomial,OneVariableSparsePolynomial,MultiVariableDensePolynomial,MultiVariableSparsePolynomial)) and (self % other == 0):
             return self // other
         else:
             raise NotImplementedError
