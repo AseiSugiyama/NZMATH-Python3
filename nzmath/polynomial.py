@@ -226,7 +226,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             sum.setList(self.coefficient.getAsList())
             sum[0] = sum[0] + other
             return OneVariableDensePolynomial(sum.getAsList(), self.getVariable(), self.getCoefficientRing())
-        elif other == 0:
+        elif not other:
             return +self
         else:
             if isinstance(other, (int,long)):
@@ -301,49 +301,79 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
     def __divmod__(self, other):
         if not other:
             raise ZeroDivisionError, "division or modulo by zero."
+        coeffring = self.getCoefficientRing()
         if isinstance(other, OneVariableDensePolynomial):
             if other.degree() < 0:
                 raise ZeroDivisionError, "division or modulo by zero."
             if other.degree() == 0:
                 other = other[0]
-                if self.getCoefficientRing().isfield() or isinstance(other, ring.FieldElement):
+                if coeffring.isfield() or isinstance(other, ring.FieldElement):
                     div_coeff = [c / other for c in self.coefficient.getAsList()]
-                    return OneVariableDensePolynomial(div_coeff, self.getVariable(), self.getCoefficientRing()), OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
+                    return (OneVariableDensePolynomial(div_coeff,
+                                                       self.getVariable(),
+                                                       coeffring),
+                            OneVariableDensePolynomial([],
+                                                       self.getVariable(),
+                                                       coeffring))
                 else:
                     div_coeff = [c // other for c in self.coefficient]
                     mod_coeff = [c %  other for c in self.coefficient]
-                    return OneVariableDensePolynomial(div_coeff, self.getVariable(), self.getCoefficientRing()), OneVariableDensePolynomial(mod_coeff, self.getVariable(), self.getCoefficientRing())
+                    return (OneVariableDensePolynomial(div_coeff,
+                                                       self.getVariable(),
+                                                       coeffring),
+                            OneVariableDensePolynomial(mod_coeff,
+                                                       self.getVariable(),
+                                                       coeffring))
             elif self.getVariable() != other.getVariable() or self.degree() < other.degree():
-                return  OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()), self.copy()
-            elif self.getCoefficientRing().isfield():
-                div_poly = OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
-                mod_poly = self
+                return  (OneVariableDensePolynomial([],
+                                                   self.getVariable(),
+                                                   coeffring),
+                         self.copy())
+            elif coeffring.isfield():
+                div_poly = OneVariableDensePolynomial([],
+                                                      self.getVariable(),
+                                                      coeffring)
+                mod_poly = self.coefficient.copy()
                 deg, o_deg = mod_poly.degree(), other.degree()
                 o_lc = other[o_deg]
                 if o_deg > 0:
                     while deg >= o_deg:
-                        div_poly[deg - o_deg] = mod_poly[deg] / o_lc
-                        mod_poly = mod_poly - OneVariableDensePolynomial([0] * (deg - o_deg) + ((mod_poly[deg] / o_lc) * other).coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
+                        deg_diff = deg - o_deg
+                        div_poly[deg_diff] = coeffring.createElement(mod_poly[deg] / o_lc)
+                        canceler = (div_poly[deg_diff] * other).coefficient
+                        for i in range(deg_diff, deg):
+                            mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
+                        mod_poly[deg] = 0
                         deg = mod_poly.degree()
                 else:
                     while deg >= 0:
-                        div_poly[deg] = mod_poly[deg] / o_lc
-                        mod_poly = mod_poly - OneVariableDensePolynomial([0] * (deg) + [mod_poly[deg]], self.getVariable(), self.getCoefficientRing())
+                        div_poly[deg] = coeffring.createElement(mod_poly[deg] / o_lc)
+                        mod_poly[deg] = 0
                         deg = mod_poly.degree()
+                mod_poly = OneVariableDensePolynomial(mod_poly.getAsList(),
+                                                      self.getVariable(),
+                                                      coeffring)
                 return div_poly, mod_poly
             else:
-                div_poly = OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
-                mod_poly = self
+                div_poly = OneVariableDensePolynomial([],
+                                                      self.getVariable(),
+                                                      coeffring)
+                mod_poly = self.coefficient.copy()
                 deg, o_deg = mod_poly.degree(), other.degree()
                 o_lc = other[o_deg]
-                x = OneVariableDensePolynomial([0, 1], self.getVariable(), self.getCoefficientRing())
                 while deg >= o_deg:
-                    div_poly[deg - o_deg] = mod_poly[deg] // o_lc
-                    mod_poly = mod_poly - (mod_poly[deg] // o_lc) * other * x**(deg - o_deg)
+                    deg_diff = deg - o_deg
+                    div_poly[deg_diff] = coeffring.createElement(mod_poly[deg] // o_lc)
+                    canceler = (div_poly[deg_diff] * other).coefficient
+                    for i in range(deg_diff, deg+1):
+                            mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
                     deg -= 1
                     while deg >= 0 and not mod_poly[deg]:
                         deg -= 1
-                return div_poly.copy(), mod_poly
+                return (div_poly.copy(),
+                        OneVariableDensePolynomial(mod_poly.getAsList(),
+                                                   self.getVariable(),
+                                                   coeffring))
         elif isinstance(other, OneVariableSparsePolynomial):
             return divmod(self, other.toOneVariableDensePolynomial())
         elif isinstance(other, (int,long)):
@@ -2305,3 +2335,7 @@ class OneVariablePolynomialCoefficients:
     def __repr__(self):
         return "%s(%s)" % (self.__class__.__name__, self.getAsList())
 
+    def copy(self):
+        retval = OneVariablePolynomialCoefficients()
+        retval.setDict(self.getAsDict())
+        return retval
