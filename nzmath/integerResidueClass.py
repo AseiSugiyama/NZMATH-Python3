@@ -165,7 +165,7 @@ class IntegerResidueClassRing (CommutativeRing):
     def __str__(self):
         return "Z/%dZ" % self.m
 
-    def getInstance(self, modulus):
+    def getInstance(cls, modulus):
         """
 
         getInstance returns an instance of the class of specified
@@ -173,11 +173,10 @@ class IntegerResidueClassRing (CommutativeRing):
 
         """
 
-        if modulus not in self._instances:
+        if modulus not in cls._instances:
             anInstance = IntegerResidueClassRing(modulus)
-            self._instances[modulus] = anInstance
-        return self._instances[modulus]
-
+            cls._instances[modulus] = anInstance
+        return cls._instances[modulus]
     getInstance = classmethod(getInstance)
 
     def createElement(self, seed):
