@@ -29,7 +29,7 @@ class IntegerResidueClass:
             else:
                 raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
         try:
-            return IntegerResidueClass(self.n * other, self.m)
+            return self.__class__(self.n * other, self.m)
         except:
             return NotImplemented
 
@@ -58,7 +58,7 @@ class IntegerResidueClass:
             else:
                 raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
         try:
-            return IntegerResidueClass(self.n + other, self.m)
+            return self.__class__(self.n + other, self.m)
         except:
             return NotImplemented
 
@@ -75,7 +75,7 @@ class IntegerResidueClass:
             else:
                 raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
         try:
-            return IntegerResidueClass(self.n - other, self.m)
+            return self.__class__(self.n - other, self.m)
         except:
             return NotImplemented
 
