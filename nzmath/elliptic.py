@@ -73,11 +73,53 @@ def Div(poly,d):
     else:
         raise ValueError,"*/x^"
 
-def Evalu(poly,t):
-    return 0
+def Evaluate(poly,t):
+    """
+    use Horner's rule
+    """
+    if poly.degree()<1:
+        return poly
+    poly=poly.toOneVariableSparsePolynomial()
+    d=poly.degree()
+    P=poly.coefficient
+    v=P[d]*t+P[d-1]
+    i=d-2
+    while i>=0:
+        v=v*t+P[i]
+        i=i-1
+    return v
 
 def Mul(f,g):
-    return 0
+    if isinstance(f,(int,long)) or isinstance(g,(int,long)):
+        return f*g
+    elif f.degree()<1 or g.degree()<1:
+        return f*g
+    else:
+        pass
+    F=f.toOneVariableDensePolynomial()
+    G=g.toOneVariableDensePolynomial()
+    if len(F.coefficient.getAsDict())<f.degree()+1 or len(G.coefficient.getAsDict())<g.degree()+1:
+        return f*g
+    f=f.toOneVariableSparsePolynomial()
+    g=g.toOneVariableSparsePolynomial()
+    F=f.degree()
+    G=g.degree()
+    v=max(F+1,G+1)*max(f.coefficient)*max(g.coefficient)
+    i=2
+    while i<=v:
+        i=i*2
+    X=Evaluate(f,i)
+    Y=Evaluate(g,i)
+    u=X*Y
+    L=[]
+    j=0
+    k=1
+    while j<F+G+1:
+        print j,F+G+1
+        L.append(int(u/k)%i)
+        k=k*i
+        j=j+1
+    return polynomial.OneVariableDensePolynomial(L,"x").toOneVariableSparsePolynomial()
 
 def Inver_p(poly,d,p):
     """
@@ -98,8 +140,8 @@ def Inver_p(poly,d,p):
         if n>d+1:
             n=d+1
         g=Mod(poly,n)%p
-        g=Mod(f*g%p,n)%p ## make this more fast
-        f=Mod(f*(2-g)%p,n)%p ## make this more fast
+        g=Mod(Mul(f,g)%p,n)%p #
+        f=Mod(Mul(f,2-g)%p,n)%p # 
         print n,d+1
     if L[0]==1:
         return f%p
@@ -154,9 +196,9 @@ def PolyMod_p(f,g,p):
     else:
         F=rev(f,f.degree())
         G=rev(g,g.degree())
-        q=Inver_p(G,d,p)# time wastes because of multiple
-        q=Mod(q*F%p,d+1)
-        r=(F-q*G)%p
+        q=Inver_p(G,d,p)# time wastes 
+        q=Mod(Mul(q,F)%p,d+1)
+        r=(F-Mul(q,G))%p
         i=ind(r,d+1)
         r=Div(r,i)
         return rev(r,f.degree()-i)
@@ -215,7 +257,7 @@ def PolyMulRed(list,poly,p):
     POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'])
     i=0
     while i<len(list):
-        POLY=POLY*list[i]
+        POLY=Mul(POLY,list[i])
         if isinstance(POLY,(int,long)):
             pass
         else:
