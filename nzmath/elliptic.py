@@ -63,71 +63,67 @@ class EC:
                 raise ValueError, "characteristic must be 0 or prime (-_-;)"
             else:
                 for i in range(0,len(self)):
-                    if isinstance(coefficient[i],int):
-                        if self.ch==2 or self.ch==3 or prime.millerRabin(self.ch)==1:
-                            if len(self)==5:
-                                self.a1=coefficient[0]%self.ch
-                                self.a2=coefficient[1]%self.ch
-                                self.a3=coefficient[2]%self.ch
-                                self.a4=coefficient[3]%self.ch
-                                self.a6=coefficient[4]%self.ch
-                                self.b2=(self.a1**2+4*self.a2)%self.ch
-                                self.b4=(self.a1*self.a3+2*self.a4)%self.ch
-                                self.b6=(self.a3**2+4*self.a6)%self.ch
-                                self.b8=(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2)%self.ch
-                                self.c4=(self.b2**2-24*self.b4)%self.ch
-                                self.c6=(-self.b2**3+36*self.b2*self.b4-216*self.b6)%self.ch
-                                self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
-                                if self.disc==0:
-                                    raise ValueError, "singuler curve (@_@)"
-                                j=rational.Rational(self.c4**3,self.disc)*1
-                                if isinstance(j,rational.Rational):
-                                    jd=j.denominator
-                                    jn=j.numerator
-                                else:
-                                    jd=1
-                                    jn=j
-                                self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
-                            elif len(self)==2:
-                                self.a=coefficient[0]%self.ch
-                                self.b=coefficient[1]%self.ch
-                                self.a1=0
-                                self.a2=0
-                                self.a3=0
-                                self.a4=coefficient[0]%self.ch
-                                self.a6=coefficient[1]%self.ch
-                                self.b2=0
-                                self.b4=(2*self.a)%self.ch
-                                self.b6=(4*self.b)%self.ch
-                                self.b8=(-self.a**2)%self.ch
-                                self.c4=(-48*self.a)%self.ch
-                                self.c6=(-864*self.b)%self.ch
-                                self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
-                                if self.disc==0:
-                                    raise ValueError, "singuler curve (@_@)"
-                                j=rational.Rational(self.c4**3,self.disc)*1
-                                if isinstance(j,rational.Rational):
-                                    jd=j.denominator
-                                    jn=j.numerator
-                                else:
-                                    jd=1
-                                    jn=j
-                                self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
-                            else:
-                                raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
+                    if not isinstance(coefficient[i],(int,long)):
+                        raise ValueError, "you must input integer coefficients. m(__)m"
+                if self.ch==2 or self.ch==3 or prime.millerRabin(self.ch)==1:
+                    if len(self)==5:
+                        self.a1=coefficient[0]%self.ch
+                        self.a2=coefficient[1]%self.ch
+                        self.a3=coefficient[2]%self.ch
+                        self.a4=coefficient[3]%self.ch
+                        self.a6=coefficient[4]%self.ch
+                        self.b2=(self.a1**2+4*self.a2)%self.ch
+                        self.b4=(self.a1*self.a3+2*self.a4)%self.ch
+                        self.b6=(self.a3**2+4*self.a6)%self.ch
+                        self.b8=(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2)%self.ch
+                        self.c4=(self.b2**2-24*self.b4)%self.ch
+                        self.c6=(-self.b2**3+36*self.b2*self.b4-216*self.b6)%self.ch
+                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
+                        if self.disc==0:
+                            raise ValueError, "singuler curve (@_@)"
+                        j=rational.Rational(self.c4**3,self.disc)*1
+                        if isinstance(j,rational.Rational):
+                            jd=j.denominator
+                            jn=j.numerator
                         else:
-                            raise ValueError "characteristic must be 0 or prime (-_-;)"
+                            jd=1
+                            jn=j
+                        self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
+                    elif len(self)==2:
+                        self.a=coefficient[0]%self.ch
+                        self.b=coefficient[1]%self.ch
+                        self.a1=0
+                        self.a2=0
+                        self.a3=0
+                        self.a4=coefficient[0]%self.ch
+                        self.a6=coefficient[1]%self.ch
+                        self.b2=0
+                        self.b4=(2*self.a)%self.ch
+                        self.b6=(4*self.b)%self.ch
+                        self.b8=(-self.a**2)%self.ch
+                        self.c4=(-48*self.a)%self.ch
+                        self.c6=(-864*self.b)%self.ch
+                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
+                        if self.disc==0:
+                            raise ValueError, "singuler curve (@_@)"
+                        j=rational.Rational(self.c4**3,self.disc)*1
+                        if isinstance(j,rational.Rational):
+                            jd=j.denominator
+                            jn=j.numerator
+                        else:
+                            jd=1
+                            jn=j
+                        self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
                     else:
-                        raise ValueError, "you must input (coefficient,int) m(__)m"
+                        raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
+                else:
+                    raise ValueError "characteristic must be 0 or prime (-_-;)"
         else:
             raise ValueError, "you must input (coefficient,list) m(__)m"
            
     def __len__(self):
         return len(self.coefficient)
 
-    #def __call__
-    #def __getitem__
-   
     def __repr__(self):
         if len(self)==2 or self.a1==self.a2==self.a3==0:
             return "EC(["+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")"
@@ -137,9 +133,7 @@ class EC:
     def __str__(self):
         return str(polynomial.MultiVariableSparsePolynomial({(0,2):1,(1,1):self.a1,(0,1):self.a3,(3,0):-1,(2,0):-self.a2,(1,0):-self.a4,(0,0):-self.a6},["x","y"]))
 
-#class Pt:
-
-def simple(E): # over Fp
+def simple(E):
 
     """
     this transforms E:y^2+a1*x*y+a3*y=x^3+a2*x^2+a4*x+a6 to E':Y^2=X^3+(-27*c4)*X+(-54*c6),
@@ -177,31 +171,30 @@ def changeCurve(E,V):
                           rational.Rational(E.a6+V[1]*E.a4+V[1]**2*E.a2+V[1]**3-V[3]*E.a3-V[3]**2-V[1]*V[3]*E.a1,V[0]**6)*1],0) 
                     return F
                 else: #E.ch!=0
-                    for i in range(0,4):
-                        if isinstance(V[i],int):
-                            A=[rational.Rational(E.a1+2*V[2],V[0])*1,
-                               rational.Rational(E.a2-V[2]*E.a1+3*V[1]-V[2]**2,V[0]**2)*1,
-                               rational.Rational(E.a3+V[1]*E.a1+2*V[3],V[0]**3)*1,
-                               rational.Rational(E.a4-V[2]*E.a3+2*V[1]*E.a2-(V[3]+V[1]*V[2])*E.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4)*1,
-                               rational.Rational(E.a6+V[1]*E.a4+V[1]**2*E.a2+V[1]**3-V[3]*E.a3-V[3]**2-V[1]*V[3]*E.a1,V[0]**6)*1]
-                            B=[]
-                            for i in range(0,5):
-                                if isinstanse(A[i],rational.Rational):
-                                    ad=A[i].denominator
-                                    an=A[i].numerator
-                                    B.append((arith1.inverse(ad,E.ch),an))
-                                else:
-                                    ad=1
-                                    an=A[i]
-                                    B.append((arith1.inverse(ad,E.ch),an))
-                            F=EC([(B[0][0]*B[0][1])%E.ch,
-                                  (B[1][0]*B[1][1])%E.ch,
-                                  (B[2][0]*B[2][1])%E.ch,
-                                  (B[3][0]*B[3][1])%E.ch,
-                                  (B[4][0]*B[4][1])%E.ch],E.ch)
-                            return F
+                    for v in V:
+                        if not isinstance(v,(int,long)):
+                            raise ValueError, "you must input integer m(__)m"
+                    A=[rational.Rational(E.a1+2*V[2],V[0])*1,
+                       rational.Rational(E.a2-V[2]*E.a1+3*V[1]-V[2]**2,V[0]**2)*1,
+                       rational.Rational(E.a3+V[1]*E.a1+2*V[3],V[0]**3)*1,
+                       rational.Rational(E.a4-V[2]*E.a3+2*V[1]*E.a2-(V[3]+V[1]*V[2])*E.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4)*1,
+                       rational.Rational(E.a6+V[1]*E.a4+V[1]**2*E.a2+V[1]**3-V[3]*E.a3-V[3]**2-V[1]*V[3]*E.a1,V[0]**6)*1]
+                    B=[]
+                    for i in range(0,5):
+                        if isinstanse(A[i],rational.Rational):
+                            ad=A[i].denominator
+                            an=A[i].numerator
+                            B.append((arith1.inverse(ad,E.ch),an))
                         else:
-                            raise ValueError, "you must input (,int) m(__)m"
+                            ad=1
+                            an=A[i]
+                            B.append((arith1.inverse(ad,E.ch),an))
+                    F=EC([(B[0][0]*B[0][1])%E.ch,
+                          (B[1][0]*B[1][1])%E.ch,
+                          (B[2][0]*B[2][1])%E.ch,
+                          (B[3][0]*B[3][1])%E.ch,
+                          (B[4][0]*B[4][1])%E.ch],E.ch)
+                    return F
             else: # u==0
                 raise ValueError, "you must input nonzero u (-_-;)"
         else:        
