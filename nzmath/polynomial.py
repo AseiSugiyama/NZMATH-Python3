@@ -1291,11 +1291,12 @@ class MultiVariableSparsePolynomial:
                     quotient_term = remainder_polynomial.compare_two_polynomial(typical_term_of_other).search_typical_term() // typical_term_of_other.coefficient.values()[0]
                     return_polynomial += quotient_term
                     remainder_polynomial -= quotient_term * other
-                    typical_coefficient = quotient_term.coefficient.keys()[0]
-                    if isinstance(remainder_polynomial,MultiVariableSparsePolynomial) and typical_coefficient in remainder_polynomial.coefficient:
-                        remainder_coefficient = remainder_polynomial.coefficient.copy()
-                        del(remainder_coefficient[typical_coefficient])
-                        remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
+                    if isinstance(quotient_term,MultiVariableSparsePolynomial):
+                        typical_coefficient = quotient_term.coefficient.keys()[0]
+                        if isinstance(remainder_polynomial,MultiVariableSparsePolynomial) and typical_coefficient in remainder_polynomial.coefficient:
+                            remainder_coefficient = remainder_polynomial.coefficient.copy()
+                            del(remainder_coefficient[typical_coefficient])
+                            remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
                     return_polynomial += remainder_polynomial // other
                     return return_polynomial                
         else:
