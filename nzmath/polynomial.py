@@ -123,6 +123,62 @@ class OneVariablePolynomial:
 
     __radd__=__add__
 
+    def __sub__(self, other):
+        return self + (-other)
+
+    def __rsub__(self, other):
+        return other + (-self)
+
+    def __mul__(self, other):
+        if isinstance(other, OneVariablePolynomial):
+            if self.getVariable() == other.getVariable():
+                product = OneVariablePolynomialCoefficients()
+                for i,c in self.coefficient.iteritems():
+                    for j,d in other.coefficient.iteritems():
+                        product[i + j] = product[i + j] + c * d
+                commonRing = self.getRing().getCommonSuperring(other.getRing())
+                if not commonRing and self.getCoefficientRing():
+                    return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+                return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
+            else:
+                return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableDensePolynomial):
+            return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            return self.toMultiVariableSparsePolynomial() * other
+        elif other in self.ring.getCoefficientRing():
+            product = {}
+            for i,c in self.coefficient.iteritems():
+                product[i] = c * other
+            return OneVariableSparsePolynomial(product, self.getVariableList(), self.getCoefficientRing())
+        elif isinstance(other, (int,long)):
+            return rational.Integer(other).actAdditive(self)
+        else:
+            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            return commonSuperring.createElement(self) * commonSuperring.createElement(other)
+
+    __rmul__=__mul__
+
+    def __mod__(self, other):
+        return self - (self // other) * other
+
+    def __rmod__(self, other):
+        return other - (other // self) * self
+
+    def __divmod__(self, other):
+        quotient = self // other
+        return (quotient, self - quotient * other)
+
+    def __rdivmod__(self, other):
+        quotient = other // self
+        return (quotient, other - quotient * self)
+
+    def __nonzero__(self):
+        if self.degree() >= 0:
+            return True
+        else:
+            return False
+
     def degree(self):
         return self.coefficient.degree()
 
@@ -144,32 +200,6 @@ class OneVariablePolynomial:
             elif not cring.issubring(myRing):
                 myRing = myRing * cring
         return myRing, PolynomialRing(myRing, self.getVariable())
-
-    def __sub__(self, other):
-        return self + (-other)
-
-    def __rsub__(self, other):
-        return other + (-self)
-
-    def __mod__(self, other):
-        return self - (self // other) * other
-
-    def __rmod__(self, other):
-        return other - (other // self) * self
-
-    def __divmod__(self, other):
-        quotient = self // other
-        return (quotient, self - quotient * other)
-
-    def __rdivmod__(self, other):
-        quotient = other // self
-        return (quotient, other - quotient * self)
-
-    def __nonzero__(self):
-        if self.degree() >= 0:
-            return True
-        else:
-            return False
 
     def toOneVariableDensePolynomial(self):
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
@@ -252,35 +282,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
-
-    def __mul__(self, other):
-        if isinstance(other, OneVariablePolynomial):
-            if self.getVariable() == other.getVariable():
-                product = OneVariablePolynomialCoefficients()
-                for i,c in self.coefficient.iteritems():
-                    for j,d in other.coefficient.iteritems():
-                        product[i + j] = product[i + j] + c * d
-                commonRing = self.getRing().getCommonSuperring(other.getRing())
-                if not commonRing and self.getCoefficientRing():
-                    return OneVariableDensePolynomial(product.getAsList(), self.getVariable(), self.getCoefficientRing())
-                return OneVariableDensePolynomial(product.getAsList(), self.getVariable(), commonRing.getCoefficientRing())
-            else:
-                return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self.toMultiVariableDensePolynomial() * other
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return self.toMultiVariableSparsePolynomial() * other
-        elif other in self.getCoefficientRing():
-            product = [c * other for c in self.coefficient]
-            commonRing = self.getCoefficientRing()
-            return OneVariableDensePolynomial(product, self.getVariable(), commonRing)
-        elif isinstance(other, (int,long)):
-            return rational.Integer(other).actAdditive(self)
-        else:
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
-            return commonSuperring.createElement(self) * commonSuperring.createElement(other)
-
-    __rmul__ = __mul__
 
     def __pow__(self, other, mod = None):
         if not isinstance(other, (int,long)):
@@ -559,45 +560,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
-
-    def __mul__(self, other):
-        if isinstance(other, OneVariableDensePolynomial):
-            return self * other.toOneVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return self.toMultiVariableSparsePolynomial() * other
-        elif isinstance(other, OneVariableSparsePolynomial):
-            if self.getVariable() != other.getVariable():
-                return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
-            else:
-                product = OneVariablePolynomialCoefficients()
-                for i,c in self.coefficient.iteritems():
-                    for j,d in other.coefficient.iteritems():
-                        product[i + j] = product[i + j] + c * d
-                commonRing = self.getRing().getCommonSuperring(other.getRing())
-                if not commonRing and self.getCoefficientRing():
-                    return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-                return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
-        elif other in self.ring.getCoefficientRing():
-            product = {}
-            for i,c in self.coefficient.iteritems():
-                product[i] = c * other
-            if isinstance(other, (int,long)):
-                other_ring = rational.theIntegerRing
-            else:
-                other_ring = other.getRing()
-            commonRing = self.getRing().getCommonSuperring(other_ring)
-            if not commonRing and self.getCoefficientRing():
-                return OneVariableSparsePolynomial(product, self.getVariableList(), self.getCoefficientRing())
-            return OneVariableSparsePolynomial(product, self.getVariableList(), commonRing.getCoefficientRing())
-        else:
-            if isinstance(other, (int,long)):
-                other = rational.Integer(other)
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
-            return commonSuperring.createElement(self) * commonSuperring.createElement(other)
-
-    __rmul__=__mul__
 
     def __pow__(self, index, mod = None):
         if isinstance(index, (int,long)):
