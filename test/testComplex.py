@@ -28,6 +28,21 @@ class ComplexTest (unittest.TestCase):
         assert a_mul_b == a * b
         assert a_mul_b == b * a
 
+    def testExp(self):
+        exp1 = complex.exp(1)
+        expf1 = complex.exp(real.Float(1,0))
+        expc1 = complex.exp(complex.Complex(1,0))
+        assert exp1 == expf1
+        assert exp1 == expc1
+
+    def testComparison(self):
+        a = complex.Complex(1, 2)
+        b = complex.Complex(2, 1)
+        self.assertRaises(TypeError, a.__lt__, b)
+        self.assertRaises(TypeError, a.__le__, b)
+        self.assertRaises(TypeError, a.__gt__, b)
+        self.assertRaises(TypeError, a.__ge__, b)
+
 def suite():
     suite = unittest.makeSuite(ComplexTest, 'test')
     return suite
