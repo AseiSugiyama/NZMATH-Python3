@@ -619,10 +619,9 @@ class EC:
                             A=L[0]
                             B=L[1]
                             S=L[2]
-                            print S,x
                             if len(S)==1:
                                 k=1
-                    s=S[1]
+                    s=S[0]
                     aa=A.index(s)
                     bb=B.index(s)+1
                     t=aa+bb*W
