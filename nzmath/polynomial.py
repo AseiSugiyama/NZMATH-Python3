@@ -618,7 +618,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                             return_polynomial *= power_of_2
                         power_of_2 = power_of_2 * power_of_2
                         index_2 = index_2 // 2
-                    return return_polynomial.adjust()
+                    return return_polynomial
             else:
                 if index == 0:
                     return 1 % mod
@@ -632,7 +632,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                             return_polynomial %= mod
                         power_of_2 = (power_of_2 * power_of_2) % mod
                         index = index // 2
-                    return return_polynomial.adjust()
+                    return return_polynomial
         raise ValueError, "You must input non-negative integer for index."
 
     def __floordiv__(self, other):
@@ -654,7 +654,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             return_coefficient = {}
             for i in self.coefficient.iterdegrees():
                 return_coefficient[i] = self.coefficient[i] // other
-            return OneVariableSparsePolynomial(return_coefficient, self.getVariableList(), self.getCoefficientRing()).adjust()
+            return OneVariableSparsePolynomial(return_coefficient, self.getVariableList(), self.getCoefficientRing())
         else:
             if isinstance(other, (int,long)):
                 other = rational.Integer(other)
@@ -709,9 +709,8 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
     def __call__(self, other):
         if isinstance(other, str):
-            return_coefficient = self.coefficient[:]
-            return OneVariableSparsePolynomial(return_coefficient, [other]).adjust()
-        elif isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial, MultiVariableSparsePolynomial)):
+            return OneVariableSparsePolynomial(self.coefficient.getAsDict(), [other], self.getCoefficientRing())
+        elif isinstance(other, (OneVariablePolynomial, MultiVariableDensePolynomial, MultiVariableSparsePolynomial)):
             return_polynomial = 0
             for i in self.coefficient:
                 return_polynomial += self.coefficient[i] * (other**i[0])
