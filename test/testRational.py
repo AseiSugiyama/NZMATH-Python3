@@ -138,6 +138,9 @@ class RationalTest (unittest.TestCase):
         assert Rational(13,21) == Rational(34,55).trim(33)
         assert Rational(21,34) == Rational(34,55).trim(34)
 
+    def testExpand(self):
+        assert Rational(-33,100) == Rational(-1, 3).expand(10,100)
+
 class IntegerTest(unittest.TestCase):
     def setUp(self):
         self.three = Integer(3)
