@@ -1,4 +1,5 @@
 import unittest
+import math
 import real
 
 class FloatTest (unittest.TestCase):
@@ -97,6 +98,7 @@ class FloatTest (unittest.TestCase):
     def testAtan2(self):
         assert real.pi / 2 == real.atan2(1,0)
         assert 0 == real.atan2(0, 1)
+        assert math.atan2(0, 1) == real.atan2(0, 1)
 
     def testHyperbolic(self):
         assert real.sinh(1)
