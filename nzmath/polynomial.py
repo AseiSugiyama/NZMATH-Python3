@@ -850,37 +850,24 @@ class MultiVariableDensePolynomial:
             raise ValueError, "You must input (list, string)."
 
     def __add__(self, other):
-        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
+        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial)):
+            return_polynomial = self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            return_polynomial = self.toMultiVariableSparsePolynomial() + other
+        elif other in self.getRing().getCoefficientRing(self.variable):
             return_coefficient = self.coefficient[:]
             return_coefficient[0] += other
             return_variable = self.variable
-            return MultiVariableDensePolynomial(return_coefficient, return_variable).adjust()
-        elif isinstance(other, OneVariableDensePolynomial):
-            return_polynomial = self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
-        elif isinstance(other, OneVariableSparsePolynomial):
-            return_polynomial = self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return_polynomial = self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return_polynomial = self.toMultiVariableSparsePolynomial() + other
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
+            return_polynomial = MultiVariableDensePolynomial(return_coefficient, return_variable)
         else:
-            raise ValueError, "Not Defined."
+            if rational.isIntegerObject(other):
+                other = rational.Integer(other)
+            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            return_polynomial = commonSuperring.createElement(self) + commonSuperring.createElement(other)
+        if isinstance(return_polynomial, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableSparsePolynomial)):
+            return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     __radd__=__add__
 
@@ -891,58 +878,35 @@ class MultiVariableDensePolynomial:
         return other + (-self)
 
     def __neg__(self):
-        adjust_polynomial = self.adjust()
-        if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
-            return - adjust_polynomial
-        else:
-            return_coefficient = adjust_polynomial.coefficient[:]
-            return_variable = adjust_polynomial.variable
-            for i in range(len(return_coefficient)):
-                return_coefficient[i] = - return_coefficient[i]
-            return MultiVariableDensePolynomial(return_coefficient, return_variable)
+        reciprocal = [-c for c in self.coefficient]
+        return MultiVariableDensePolynomial(reciprocal, self.variable)
 
     def __mul__(self, other):
-        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
-            return_coefficient = self.coefficient[:]
-            return_variable = self.variable
-            for i in range(len(return_coefficient)):
-                return_coefficient[i] *= other
-            return MultiVariableDensePolynomial(return_coefficient, return_variable).adjust()
-        elif isinstance(other, OneVariableDensePolynomial):
+        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial)):
             return_polynomial =  self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
-            if isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
-        elif isinstance(other, OneVariableSparsePolynomial):
-            return_polynomial =  self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return_polynomial =  self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
         elif isinstance(other, MultiVariableSparsePolynomial):
             return_polynomial =  self.toMultiVariableSparsePolynomial() * other
-            if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-                return return_polynomial
-            else:
-                return return_polynomial.toMultiVariableDensePolynomial()
+        elif other in self.getRing().getCoefficientRing(self.variable):
+            return_coefficient = [c * other for c in self.coefficient]
+            return_polynomial = MultiVariableDensePolynomial(return_coefficient, self.variable).adjust()
         else:
-            raise ValueError, "Not Defined."
+            if rational.isIntegerObject(other):
+                other = rational.Integer(other)
+            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            return_polynomial = commonSuperring.createElement(self) * commonSuperring.createElement(other)
+        if isinstance(return_polynomial, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableSparsePolynomial)):
+            return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     __rmul__=__mul__
 
     def __pow__(self, other, mod = None):
+        if other == 0:
+            return 1
         if rational.isIntegerObject(other):
             if mod == None:
-                if other == 0:
-                    return 1
-                elif other > 0:
+                if other > 0:
                     index = other
                     power_product = MultiVariableDensePolynomial([1],self.variable)
                     power_of_2 = MultiVariableDensePolynomial(self.coefficient[:],self.variable)
@@ -953,9 +917,7 @@ class MultiVariableDensePolynomial:
                         index = index // 2
                     return power_product.adjust()
             else:
-                if other == 0:
-                    return 1
-                elif other > 0:
+                if other > 0:
                     index = other
                     power_product = MultiVariableDensePolynomial([1],self.variable)
                     power_of_2 = MultiVariableDensePolynomial(self.coefficient[:],self.variable)
@@ -982,14 +944,14 @@ class MultiVariableDensePolynomial:
         else:
             return return_polynomial.toMultiVariableDensePolynomial()
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         return_polynomial = self.toMultiVariableSparsePolynomial() / other
         if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
             return return_polynomial
         else:
             return return_polynomial.toMultiVariableDensePolynomial()
 
-#    def __truediv__(self, other):
+    __div__ = __truediv__
 
     def __mod__(self, other):
         return self - (self // other) * other
@@ -1005,24 +967,24 @@ class MultiVariableDensePolynomial:
 
     def __eq__(self, other):
         sub_polynomial = self - other
-        if (rational.isIntegerObject(sub_polynomial) or isinstance(sub_polynomial, rational.Rational)) and sub_polynomial == 0:
-            return 1
+        if not isinstance(sub_polynomial, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial)) and sub_polynomial == 0:
+            return True
         else:
-            return 0
+            return False
 
     def __call__(self, **other):
         return_polynomial = self.toMultiVariableSparsePolynomial().__call__(**other)
-        if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-            return return_polynomial
-        else:
+        if isinstance(return_polynomial, (OneVariableSparsePolynomial, OneVariableDensePolynomial, MultiVariableSparsePolynomial)):
             return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     def __pos__(self):
         return self.adjust()
 
     def __repr__(self):
         self_adjust = self.adjust()
-        if rational.isIntegerObject(self_adjust) or isinstance(self_adjust ,rational.Rational):
+        if not isinstance(self_adjust, MultiVariableDensePolynomial):
             return repr(self_adjust)
         return_str = 'MultiVariableDensePolynomial(' + repr(self.coefficient) + ', "'
         return_str += self.variable + '")'
@@ -1030,86 +992,76 @@ class MultiVariableDensePolynomial:
 
     def __str__(self):
         self_adjust = self.adjust()
-        if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
+        if not isinstance(self_adjust, MultiVariableDensePolynomial):
             return str(self)
         else:
-            return self.toMultiVariableSparsePolynomial().__str__()
+            return str(self.toMultiVariableSparsePolynomial())
 
     def adjust(self):
         return_polynomial = self.toMultiVariableSparsePolynomial().adjust()
-        if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-            return return_polynomial
-        else:
+        if isinstance(return_polynomial, MultiVariableSparsePolynomial):
             return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     def differentiate(self, other):
         return_polynomial = self.toMultiVariableSparsePolynomial().differentiate(other)
-        if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-            return return_polynomial
-        else:
+        if isinstance(return_polynomial, MultiVariableSparsePolynomial):
             return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     def integrate(self, other = None, min = None, max = None):
         return_polynomial = self.toMultiVariableSparsePolynomial().integrate(other, min, max)
-        if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-            return return_polynomial
-        else:
+        if isinstance(return_polynomial, MultiVariableSparsePolynomial):
             return return_polynomial.toMultiVariableDensePolynomial()
+        else:
+            return return_polynomial
 
     def toOneVariableDensePolynomial(self):
         adjust_polynomial = self.adjust()
-        if rational.isIntegerObject(adjust_polynomial):
+        if not isinstance(adjust_polynomial, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
             return adjust_polynomial
         else:
             for i in adjust_polynomial.coefficient:
-                if isinstance(i, MultiVariableDensePolynomial):
-                    raise ValueError, "You must input OneVariablePolynomial."
+                if isinstance(i, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
+                    raise ValueError, "You must input one variable polynomial."
             return_coefficient = adjust_polynomial.coefficient[:]
-            return_variable = adjust_variable
+            return_variable = adjust_polynomial.variable
             return OneVariableDensePolynomial(return_coefficient, return_variable)
 
     def toOneVariableSparsePolynomial(self):
-        adjust_polynomial = self.adjust()
-        if rational.isIntegerObject(adjust_polynomial):
-            return adjust_polynomial
-        else:
-            for i in adjust_polynomial.coefficient:
-                if isinstance(i, MultiVariableDensePolynomial):
-                    raise ValueError, "You must input OneVariablePolynomial."
-            return_coefficient = adjust_polynomial.coefficient[:]
-            return_variable = adjust_variable
-            return OneVariableDensePolynomial(return_coefficient, return_variable).toOneVariableSparsePolynomial()
+        return self.toOneVariableDensePolynomial().toOneVariableSparsePolynomial()
 
     def toMultiVariableSparsePolynomial(self):
         length = len(self.coefficient)
+        if length == 0:
+            return 0
         while (length != 1) and (self.coefficient[length-1] == 0):
             length -= 1
         if length == 1:
             return self.coefficient[0]
-        self_adjust = MultiVariableDensePolynomial(self.coefficient[:length],self.variable)
-        if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
-            return self_adjust
-        else:
-            for i in self_adjust.coefficient:
-                if isinstance(i,MultiVariableDensePolynomial) or isinstance(i, OneVariableDensePolynomial):
-                    result_polynomial = MultiVariableSparsePolynomial({}, [self_adjust.variable])
-                    x = OneVariableDensePolynomial([0,1],self_adjust.variable)
-                    for i in range(len(self_adjust.coefficient)):
-                        coeff = self_adjust.coefficient[i]
-                        if rational.isIntegerObject(coeff) or isinstance(coeff, rational.Rational):
-                            result_polynomial += coeff * x**i
-                        else:
-                            result_polynomial += coeff.toMultiVariableSparsePolynomial() * x**i
-                    return result_polynomial.adjust()
-            else:
-                for coeff in self_adjust.coefficient:
-                    if not (rational.isIntegerObject(coeff) or isinstance(coeff,rational.Rational)):
-                        raise ValueError, "You must input MultiVariableDensePolynomial for self."
-                result_coefficient = {}
-                for i in range(len(self_adjust.coefficient)):
-                    result_coefficient[(i,)] = self_adjust.coefficient[i]
-                result_polynomial = MultiVariableSparsePolynomial(result_coefficient, [self_adjust.variable])
+        self_adjust = self.coefficient[:length]
+        for c in self_adjust:
+            if isinstance(c, (MultiVariableDensePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
+                result_polynomial = MultiVariableSparsePolynomial({}, [self.variable])
+                for i, coeff in enumerate(self_adjust):
+                    if coeff != 0:
+                        try:
+                            result_polynomial += coeff.toMultiVariableSparsePolynomial() * OneVariableSparsePolynomial({(i,):1}, [self.variable])
+                        except AttributeError:
+                            result_polynomial += OneVariableSparsePolynomial({(i,):coeff}, [self.variable])
                 return result_polynomial.adjust()
+        else:
+            baseCoefficientRing = self.getRing().getCoefficientRing(self.getRing().getVars())
+            for coeff in self_adjust:
+                if coeff not in baseCoefficientRing:
+                    raise ValueError, "You must input rightly nested MultiVariableDensePolynomial."
+            result_coefficient = {}
+            for i in range(len(self_adjust)):
+                result_coefficient[(i,)] = self_adjust[i]
+            result_polynomial = MultiVariableSparsePolynomial(result_coefficient, [self.variable])
+            return result_polynomial.adjust()
 
     def getRing(self):
         ring = None

@@ -138,6 +138,10 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert 2 == (2*self.a).content()
         assert 1 == self.k.content()
 
+    def testToOneVariableDensePolynomial(self):
+        f = MultiVariableDensePolynomial([1,OneVariableDensePolynomial([1,2],"y")],"z")
+        self.assertRaises(ValueError, f.toOneVariableDensePolynomial)
+
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
