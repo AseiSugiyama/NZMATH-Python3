@@ -1,0 +1,5 @@
+Version 0.0.0 to 0.0.1
+----------------------
+* add __long__ and __int__ methods to Rational in rational.py.
+* add gcd method to PolynomialRing in polynomial.py.
+* fix bugs in matrix.py, polynomial.py.

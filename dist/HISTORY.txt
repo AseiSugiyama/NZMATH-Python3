@@ -1,0 +1,7 @@
+2003-12-02
+----------
+The version 0.0.1 has been released.
+
+2003-11-28
+----------
+The first release version 0.0.0 has been released.
