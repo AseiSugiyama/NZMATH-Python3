@@ -432,6 +432,10 @@ class EC:
             return self.sub([0],Q)
 
     def divPoly(self,m):
+        E=self.simple()
+        x=polynomial.OneVariableSparsePolynomial({(1,):1},["x"])
+        y=polynomial.OneVariableSparsePolynomial({(1,):1},["y"])
+        e=x**3+E.a*x+E.b
         f=[]
         f.append(0)
         if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
@@ -439,64 +443,81 @@ class EC:
                 if i==1:
                     f.append(1)
                 elif i==2:
-                    f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
+                    f.append(2*y)
                 elif i==3:
-                    g=polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"])
-                    G=g.coefficient
-                    L=G.items()
+                    g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
+                    L=g.coefficient.items()
                     j=0
                     dict={}
                     while j<len(L):
-                        dict[L[j][0]]=L[j][1]%self.ch
+                        dict[L[j][0]]=L[j][1]%E.ch
                         j=j+1
                     g.coefficient=dict
                     f.append(g)
                 elif i==4:
-                    g=4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"])
-                    G=g.coefficient
-                    L=G.items()
+                    g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
+                    L=g.coefficient.items()
                     j=0
                     dict={}
                     while j<len(L):
-                        dict[L[j][0]]=L[j][1]%self.ch
+                        dict[L[j][0]]=L[j][1]%E.ch
                         j=j+1
                     g.coefficient=dict
                     f.append(g)
                 else:
-                    if i%2!=0:
+                    if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        G=g.coefficient
-                        L=G.items()
+                        L=g.coefficient.items()
+                        j=0
+                        h=0
+                        while j<len(L):
+                            if L[j][0][1]%2==0:
+                                k=L[j][0][1]//2
+                                h=h+e**k*(L[j][1]%E.ch)*x**L[j][0][0]
+                            else:
+                                k=(L[j][0][1]-1)//2
+                                h=h+y*e**k*(L[j][1]%E.ch)*x**L[j][0][0]
+                            j=j+1
+                        L=h.coefficient.items()
                         j=0
                         dict={}
                         while j<len(L):
-                            dict[L[j][0]]=L[j][1]%self.ch
+                            dict[L[j][0]]=L[j][1]%E.ch
                             j=j+1
-                        g.coefficient=dict
-                        f.append(g)
-                    else:
+                        h.coefficient=dict
+                        f.append(h)
+                    else: #div y
                         j=i//2
-                        g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] #div 2y??
-                        G=g.coefficient
-                        L=G.items()
+                        g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] 
+                        L=g.coefficient.items()
                         j=0
-                        dict={}
+                        h=0
                         while j<len(L):
-                            dict[L[j][0]]=L[j][1]%self.ch
+                            if L[j][0][1]%2==0:
+                                k=L[j][0][1]//2
+                                h=h+e**k*(L[j][1]%E.ch)*x**L[j][0][0]
+                            else:
+                                k=(L[j][0][1]-1)//2
+                                h=h+y*e**k*(L[j][1]%E.ch)*x**L[j][0][0]
                             j=j+1
-                        g.coefficient=dict
-                        f.append(g)
-                        #h=f[m]#->f'
+                        L=h.coefficient.items()
+                        dict={}
+                        j=0
+                        while j<len(L):
+                            dict[L[j][0]]=(L[j][1]%E.ch)//2
+                            j=j+1
+                        h.coefficient=dict
+                        f.append(h)
             return f[m] #->f'
         else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
             for i in range(1,m+1):
                 if i==1:
                     f.append(1)
                 elif i==2:
-                    f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["x"]))
+                    f.append(x)
                 elif i==3:
-                    g=polynomial.OneVariableSparsePolynomial({(0,):self.a6,(3,):1,(4,):1},["x"])
+                    g=x**4+x**3+self.a6
                     G=g.coefficient
                     L=G.items()
                     j=0
@@ -507,7 +528,7 @@ class EC:
                     g.coefficient=dict
                     f.append(g)
                 elif i==4:
-                    g=polynomial.OneVariableSparsePolynomial({(2,):self.a6,(6,):1},["x"])
+                    g=x**6+self.a6*x**2
                     G=g.coefficient
                     L=G.items()
                     j=0
@@ -532,7 +553,7 @@ class EC:
                         f.append(g)
                     else:
                         j=i//2
-                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(polynomial.OneVariableSparsePolynomial({(1,):1},["x"]))
+                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/x
                         G=g.coefficient
                         L=G.items()
                         j=0
@@ -542,7 +563,6 @@ class EC:
                             j=j+1
                         g.coefficient=dict
                         f.append(g)
-                        #h=f[m]
             return f[m]
 
     def order(self): # =#E(Fp)
