@@ -1566,7 +1566,11 @@ class FlatRationalPolynomial:
                     new_coefficients_key = tuple(new_coefficients_key)
                     integrate_coefficients[new_coefficients_key] = new_coefficients_value
                 integrate_polynomial = FlatRationalPolynomial(integrate_coefficients, integrate_variables)
-#                return (integrate_polynomial.__call__(integrate_variables[variable_position] = max) - integrate_polynomial.__call__(integrate_variables[variable_position] = min)).adjust()
+                integrate_dict_max = {}
+                integrate_dict_min = {}
+                integrate_dict_max[integrate_variables[variable_position]] = max
+                integrate_dict_min[integrate_variables[variable_position]] = min
+                return (integrate_polynomial.__call__(**integrate_dict_max) - integrate_polynomial.__call__(**integrate_dict_min)).adjust()
                 return 0
             else:
                 return self * (RationalPolynomial([0,1],other).__call__(max) - RationalPolynomial([0,1],other).__call__(min))
