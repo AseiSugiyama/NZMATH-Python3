@@ -10,9 +10,16 @@ class Complex:
     numbers; real and imaginary part of the number.
 
     """
-    def __init__(self, re, im):
-        self.real = re
-        self.imag = im
+    def __init__(self, re, im=None):
+        if im:
+            self.real = re
+            self.imag = im
+        elif isinstance(re, complex):
+            self.real = re.real
+            self.imag = re.imag
+        else:
+            self.real = re
+            self.imag = 0
 
     def __add__(self, other):
         try:
@@ -479,7 +486,6 @@ def expi(x, err=defaultError):
     and x must be a real number.
 
     """
-    # err shoud be converted somehow
     if isinstance(err, RelativeError):
         _err = real.RelativeError(0, err.relativeerrorrange, 2)
     elif isinstance(err, AbsoluteError):
@@ -487,3 +493,24 @@ def expi(x, err=defaultError):
     re = real.cos_new(x, _err)
     im = real.sin_new(x, _err)
     return Complex(re, im)
+
+def log_new(x, err=defaultError):
+    """
+
+    log(x [,err]) returns the natural logarithm of x. There is one
+    branch cut, from 0 along the negative real axis to -infinity,
+    continuous from above.
+
+    """
+    if isinstance(err, RelativeError):
+        _err = real.RelativeError(0, err.relativeerrorrange, 2)
+    elif isinstance(err, AbsoluteError):
+        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
+    if x in real.theRealField:
+        x = +x
+        if x > 0:
+            return real.log_new(x, _err)
+        elif x < 0:
+            return Complex(real.log_new(abs(x), _err), real.piGaussLegendre_new(_err))
+    return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
+
