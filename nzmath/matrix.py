@@ -40,6 +40,8 @@ class Matrix:
         else:
             raise TypeError, self.__setitem__.__doc__
 
+           return 0
+
     def __eq__(self, other):
         if isinstance(other, Matrix):
             if (self.row != other.row) or (self.column != other.column):
@@ -131,11 +133,11 @@ class Matrix:
         width = [1] * self.column      # width of each column
         for j in range(self.column):
             for i in range(self.row):
-                if len(`self.compo[i][j]`) > width[j]:
-                    width[j] = len(`self.compo[i][j]`)
+                if len(str(self.compo[i][j])) > width[j]:
+                    width[j] = len(str(self.compo[i][j]))
         for i in range(self.row):
             for j in range(self.column):
-                return_str += "%*s " % (width[j], `self.compo[i][j]`)
+                return_str += "%*s " % (width[j], str(self.compo[i][j]))
             return_str += "\n"
         return return_str[:-1]
 
@@ -220,14 +222,14 @@ class Matrix:
     def insert_column(self, j, arg):
         """insert_column(j, arg) : new_column can be a list or a Matrix"""
         if isinstance(arg, list):
-            new_column = arg
+            for k in range(self.row):
+                self.compo[k].insert(j-1, list[k])
         elif isinstance(arg, Matrix):
-            new_column = arg[1]
+            for k in range(self.row):
+                self.compo[k].insert(j-1, arg.compo[k][0])
         else:
             raise TypeError
         self.column += 1
-        for k in range(self.row):
-            self.compo[k].insert(j-1, new_column[k])
 
     def delete_row(self, i):
         self.row -= 1
@@ -435,7 +437,6 @@ class Matrix:
             if t != s:
                 B.set_column(t, B[s])
             B.set_column(s, copy[s])
-            print B
             pause()
             for j in range(s+1, copy.column+1):
                 tmp = copy[s,j]
@@ -512,6 +513,14 @@ def unit_matrix(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
 
+def sum_of_subspaces(L, M):             # using Cohen's Algorithm 2.3.8
+    if L.row != M.row:
+        raise MatrixSizeError
+    N = L.copy()
+    for j in range(1, M.column+1):
+        N.insert_column(L.column+j, M[j])
+    return N.image()
+
 def intersection_of_subspaces(M, M_):    # using Cohen's Algorithm 2.3.9
     if M.row != M_.row:
         raise MatrixSizeError
@@ -561,4 +570,7 @@ if __name__ == '__main__':
     import testMatrix
     runner = testMatrix.unittest.TextTestRunner()
     runner.run(testMatrix.suite())
+    print e
+    print f
+    print sum_of_subspaces(e,f)
 
