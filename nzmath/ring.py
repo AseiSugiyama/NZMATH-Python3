@@ -47,4 +47,55 @@ class RingElement:
         to which the element belongs."""
         raise NotImplementedError
 
+class CommutativeRingElement (RingElement):
+    pass
+
+class FieldElement (CommutativeRingElement):
+    pass
+
+class QuotientFieldElement (FieldElement):
+    """
+
+    QuotientFieldElement class is an abstract class to be used as a
+    super class of concrete quotient field element classes.
+
+    """
+    def __init__(self, numerator, denominator):
+        self.numerator = numerator
+        if denominator == 0:
+            raise ZeroDivisionError
+        self.denominator = denominator
+
+    def __add__(self, other):
+        numerator = self.numerator*other.denominator + self.denominator*other.numerator
+        denominator = self.denominator*other.denominator
+        return self.__class__(numerator,denominator) 
+
+    def __sub__(self, other):
+        numerator = self.numerator*other.denominator - self.denominator*other.numerator
+        denominator = self.denominator*other.denominator
+        return self.__class__(numerator,denominator) 
+
+    def __neg__(self):
+        return self.__class__(-self.numerator, self.denominator)
+
+    def __mul__(self, other):
+        numerator = self.numerator * other.numerator
+        denominator = self.denominator * other.denominator
+        return self.__class__(numerator, denominator)
+
+    def __pow__(self, index):
+        return self.__class__(self.numerator ** index, self.denominator ** index)
+
+    def __div__(self, other):
+        numerator = self.numerator * other.denominator
+        denominator = self.denominator * other.numerator
+        return self.__class__(numerator, denominator)
+
+    def inverse(self):
+        return self.__class__(self.denominator, self.numerator)
+
+    def __eq__(self,other):
+        return self.numerator*other.denominator == self.denominator*other.numerator
+
 from rational import theIntegerRing, theRationalField
