@@ -470,7 +470,17 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         p = OneVariableDensePolynomial([1,2,3,0,0,3,2,1],
                                        x,
                                        finitefield.FinitePrimeField(5))
-        assert len(p.factor()) == 3
+        factored = p.factor()
+        assert isinstance(factored, list)
+        assert 3 == len(factored)
+        for i in range(3):
+            assert isinstance(factored[i], tuple)
+            assert 2 == len(factored[i])
+            assert isinstance(factored[i][1], (int,long))
+        product = p.getCoefficientRing().createElement(1)
+        for i in range(3):
+            product = product * factored[i][0] ** factored[i][1]
+        assert p == product
 
 def suite():
     suite=unittest.TestSuite()

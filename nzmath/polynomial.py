@@ -1696,17 +1696,19 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
         """
         result =[]
+        if self[self.degree()] != self.getCoefficientRing().createElement(1):
+            lc = self[self.degree()]
+            self /= lc
+            result.append((lc,1))
         squareFreeFactors = self.squareFreeDecomposition()
         for m,f in squareFreeFactors.iteritems():
             distinctDegreeFactors = f.distinctDegreeFactorization()
             for d,g in distinctDegreeFactors.iteritems():
                 if d == g.degree():
-                    for i in range(m):
-                        result.append(g)
+                    result.append((g,m))
                 else:
                     for irred in g.splitSameDegrees(d):
-                        for i in range(m):
-                            result.append(irred)
+                        result.append((irred,m))
         return result
 
     def isIrreducible(self):
