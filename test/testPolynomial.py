@@ -80,6 +80,14 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert OneVariableSparsePolynomial({(1,):1},["x"]) == OneVariableDensePolynomial([0,1],"x")
         assert OneVariableDensePolynomial([0,1],"x") == OneVariableSparsePolynomial({(1,):1},["x"])
 
+    def testGetitem(self):
+        assert 1 == a[0]
+
+    def testSetitem(self):
+        a[0] = 2
+        assert 2 == a[0]
+        a[0] = 1
+
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
