@@ -904,7 +904,7 @@ class RealField:
 
     def __contains__(self, element):
         reduced = +element
-        if reduced in rational.RationalField:
+        if reduced in rational.theRationalField:
             return 1
         if isinstance(reduced, float) or isinstance(reduced, Float):
             return 1
