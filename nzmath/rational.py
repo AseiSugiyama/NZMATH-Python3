@@ -1,8 +1,9 @@
 #rationalnumber add,sub,mul,div,comp
 
 from gcd import gcd
+import ring
 
-class Rational:
+class Rational (ring.QuotientFieldElement):
     """
 
     Rational is the class of rational numbers.
@@ -154,13 +155,16 @@ class Rational:
     def getRing(self):
         return theRationalField
 
-class RationalField:
+class RationalField (ring.QuotientField):
     """
 
     RationalField is a class of field of rationals.
     The class has the single instance 'theRationalField'.
 
     """
+
+    def __init__(self):
+        self.basedomain = theIntegerRing
 
     def __contains__(self, element):
         reduced = +element
@@ -220,9 +224,7 @@ class RationalField:
             return True
         return other.issubring(self)
 
-theRationalField = RationalField()
-
-class Integer(long):
+class Integer(long, ring.CommutativeRingElement):
     """
 
     Integer is a class of integer.  Since 'int' and 'long' do not
@@ -318,13 +320,16 @@ class Integer(long):
     def getRing(self):
         return theIntegerRing
 
-class IntegerRing:
+class IntegerRing (ring.CommutativeRing):
     """
 
     IntegerRing is a class of ring of rational integers.
     The class has the single instance 'theIntegerRing'.
 
     """
+
+    def __init__(self):
+        pass
 
     def __contains__(self, element):
         """
@@ -378,7 +383,14 @@ class IntegerRing:
             return True
         return other.issubring(self)
 
+    def iseuclidean(self):
+        return True
+
+    def isfield(self):
+        return False
+
 theIntegerRing = IntegerRing()
+theRationalField = RationalField()
 
 def isIntegerObject(anObject):
     return isinstance(anObject, (int, long))

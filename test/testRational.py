@@ -125,6 +125,13 @@ class IntegerRingTest(unittest.TestCase):
         assert not theIntegerRing.issuperring(theRationalField)
         assert theIntegerRing.issuperring(theIntegerRing)
 
+    def testProperties(self):
+        assert theIntegerRing.isdomain()
+        assert theIntegerRing.isnoetherian()
+        assert theIntegerRing.iseuclidean()
+        assert theIntegerRing.isufd()
+        assert not theIntegerRing.isfield()
+
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
         assert 1 in theRationalField
