@@ -133,6 +133,13 @@ class IntegerRingTest(unittest.TestCase):
         assert theIntegerRing.ispid()
         assert not theIntegerRing.isfield()
 
+    def testGcd(self):
+        assert theIntegerRing.gcd(1, 2) == 1
+        assert theIntegerRing.gcd(2, 4) == 2
+        assert theIntegerRing.gcd(0, 10) == 10
+        assert theIntegerRing.gcd(10, 0) == 10
+        assert theIntegerRing.gcd(13, 21) == 1
+
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
         assert 1 in theRationalField

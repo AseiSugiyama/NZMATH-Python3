@@ -1,6 +1,8 @@
-#rationalnumber add,sub,mul,div,comp
+"""
 
-from gcd import gcd
+rational module provides Rational, Integer, RationalField, and IntegerRing.
+
+"""
 import ring
 
 class Rational (ring.QuotientFieldElement):
@@ -127,7 +129,7 @@ class Rational (ring.QuotientFieldElement):
         return self.compare(other) >= 0
 
     def __pos__(self):
-        commonDivisor = gcd(self.numerator,self.denominator)
+        commonDivisor = theIntegerRing.gcd(self.numerator,self.denominator)
         if commonDivisor != 1:
             self.numerator //= commonDivisor
             self.denominator //= commonDivisor
@@ -388,6 +390,12 @@ class IntegerRing (ring.CommutativeRing):
 
     def isfield(self):
         return False
+
+    def gcd(self, n, m):
+        a, b = abs(n), abs(m)
+        while b:
+            a, b = b, a%b
+        return Integer(a)
 
 theIntegerRing = IntegerRing()
 theRationalField = RationalField()
