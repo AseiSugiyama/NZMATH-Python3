@@ -9,6 +9,7 @@
 from rational import Rational
 
 MATRIX_SIZE_ERROR = "MatrixSizeError"
+NO_INVERSE = "NoInverse"
 
 class Matrix:
 
@@ -68,6 +69,10 @@ class Matrix:
                 for j in range(self.column):
                     product.compo[i][j] = self.compo[i][j] * other
             return product
+
+    def __div__(self, other):
+        if isinstance(other, int) or isinstance(other, long) or isinstance(other, Rational):   
+            return self * (1/other)
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -129,7 +134,7 @@ class Matrix:
         trans = Matrix(self.column, self.row)
         for i in range(trans.row):
             for j in range(trans.column):
-                tr.compo[i][j] = self.compo[j][i]
+                trans.compo[i][j] = self.compo[j][i]
         return trans
 
     def triangulate(self):
@@ -146,6 +151,8 @@ class Matrix:
                 for k in range(i+1, triangle.row):
                     if triangle.compo[k][i] != Rational(0, 1):
                         triangle.swap_row(i+1, k+1)
+                        for l in range(triangle.column):     # for calculation of determinant
+                            triangle.compo[i+1][l] *= -1
                         break        # break the second loop
                 else:
                     continue         # the below components are all 0. Back to the first loop
@@ -170,8 +177,41 @@ class Matrix:
         for i in range(self.row):
             det *= triangle.compo[i][i]
         return det
-            
-        
+
+    def delete_row(self, i):
+        deleted = Matrix(self.row-1, self.column)
+        isover_i = 0
+        for k in range(1, deleted.row+1):
+            if k == i:
+                isover_i = 1
+            deleted.set_row(k, self.get_row(k+isover_i))
+        return deleted
+
+    def delete_column(self, j):
+        deleted = Matrix(self.row, self.column-1)
+        isover_j = 0
+        for l in range(1, deleted.column+1):
+            if l == j:
+                isover_j = 1
+            deleted.set_column(l, self.get_column(l+isover_j))
+        return deleted
+
+    def small_matrix(self, i, j):
+        return (self.delete_row(i)).delete_column(j)
+
+    def yoinshi(self):
+        yoinshi = Matrix(self.row, self.column)
+        for i in range(yoinshi.row):
+            for j in range(yoinshi.column):
+                yoinshi.compo[j][i] = (-1)**(i+j) * (self.small_matrix(i+1, j+1)).determinant()
+        return yoinshi
+
+    def inverse(self):
+        if self.determinant == 0:
+            raise NO_INVERSE
+        else:
+            return self.yoinshi() / self.determinant()
+
 # data for debugging
 
 a = Matrix(2,2)
@@ -179,7 +219,7 @@ a.set([1,2,3,4])
 b = Matrix(2,2)
 b.set([0,-1,1,-2])
 c = Matrix(3,3)
-c.set([0,-2,9]+[5,0,1]+[0,2,3])
+c.set([1,2,3]+[0,5,-2]+[7,1,9])
 
 def matrix_test():
 
@@ -195,6 +235,20 @@ def matrix_test():
     print "triangulate(c)"
     print c.triangulate()
     
+    print "c.small_matrix(1,1)"
+    print c.small_matrix(1,1)
+    print "c.small_matrix(1,2)"
+    print c.small_matrix(1,2)
+    print "c.small_matrix(3 ,2)"
+    print c.small_matrix(3,2)
+    print "c.yoinshi"
+    print c.yoinshi()
+    
+    print "c.determinant()"
+    print c.determinant()
+
+    print "c.inverse * c"
+    print c.inverse() * c
 if __name__ == "__main__":
     print "Matrix test ==============================\n"
     matrix_test()
