@@ -218,6 +218,8 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
 
     def __add__(self, other):
+        if not other:
+            return self.copy()
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
                 sum = OneVariablePolynomialCoefficients()
@@ -236,8 +238,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             sum.setList(self.coefficient.getAsList())
             sum[0] = sum[0] + other
             return OneVariableDensePolynomial(sum.getAsList(), self.getVariable(), self.getCoefficientRing())
-        elif not other:
-            return +self
         else:
             if isinstance(other, (int,long)):
                 other = rational.Integer(other)
@@ -537,7 +537,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         return result
 
 class OneVariableSparsePolynomial (OneVariablePolynomial):
-
     def __init__(self, coefficient, variable, coeffring=None):
         "OneVariableSparsePolynomial(coefficient, variable)"
         self.coefficient = OneVariablePolynomialCoefficients()
@@ -559,28 +558,26 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                 self.coefficient[i] = coeffring.createElement(c)
 
     def __add__(self, other):
+        if not other:
+            return self.copy()
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
-                return_coefficient = OneVariablePolynomialCoefficients()
-                for i,c in self.coefficient.iteritems():
-                    return_coefficient[i] = c
+                sum = OneVariablePolynomialCoefficients()
+                sum.setDict(self.coefficient.getAsDict())
                 for i,c in other.coefficient.iteritems():
-                    return_coefficient[i] = return_coefficient[i] + c
-                return OneVariableSparsePolynomial(return_coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+                    sum[i] = sum[i] + c
+                return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
             else:
                 return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableDensePolynomial):
             return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
-        elif other:
-            #in self.getCoefficientRing():
-            return_coefficient = OneVariablePolynomialCoefficients()
-            return_variable = self.getVariableList()
-            for i,c in self.coefficient.iteritems():
-                return_coefficient[i] = c
-            return_coefficient[0] = return_coefficient[0] + other
-            return OneVariableSparsePolynomial(return_coefficient.getAsDict(), return_variable, self.getCoefficientRing())
+        elif other in self.getCoefficientRing():
+            sum = OneVariablePolynomialCoefficients()
+            sum.setDict(self.coefficient.getAsDict())
+            sum[0] = sum[0] + other
+            return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
         else:
             if isinstance(other, (int,long)):
                 other = rational.Integer(other)
@@ -2172,7 +2169,7 @@ class RationalOneVariableDensePolynomial (OneVariableDensePolynomial):
                 new_coeff.reverse() 
                 return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
         
-        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
+        elif isinstance(other, (rational.Rational, rational.Integer)):
             new_coeff=[]
             for j in self.coefficient: 
                 new_coeff.append(rational.Rational(j,1)//other)
