@@ -10,6 +10,22 @@ class Ring:
         """createElement returns an element of the ring with seed."""
         raise NotImplementedError
 
+    def issubring(self, other):
+        """
+
+        Report whether another ring contains the ring as a subring.
+
+        """
+        raise NotImplementedError
+
+    def issuperring(self, other):
+        """
+
+        Report whether the ring is a superring of another ring.
+
+        """
+        raise NotImplementedError
+
 class CommutativeRing (Ring):
     """CommutativeRing is an abstract subclass of Ring
     whose multiplication is commutative."""
