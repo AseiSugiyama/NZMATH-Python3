@@ -1160,7 +1160,7 @@ class MultiVariableSparsePolynomial:
         return_polynomial = self.adjust()
         if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
             return ( - return_polynomial)
-        for i in return_polynomial:
+        for i in range(len(return_polynomial.coefficient)):
             return_polynomial.coefficient[i] = - return_polynomial.coefficient[i]
         return return_polynomial
 
