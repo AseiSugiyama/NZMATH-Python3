@@ -7,7 +7,7 @@ def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
     x,y = abs(x),abs(y)
     a,b,g,u,v,w = 1,0,x,0,1,y
     while w > 0:
-        q = g / w
+        q = g // w
         a,b,g,u,v,w = u,v,w,a-q*u,b-q*v,g-q*w
 
     return (a,b,g)

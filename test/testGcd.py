@@ -15,10 +15,13 @@ class GcdTest (unittest.TestCase):
         assert gcd.lcm(10, 0) == 0
         assert gcd.lcm(13, 21) == 273
 
+    def testExtgcd(self):
+        assert (-4,3,1) == gcd.extgcd(8, 11)
+        import rational
+        assert (-4,3,1) == gcd.extgcd(rational.Integer(8),11)
+
 def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(GcdTest("testGcd"))
-    suite.addTest(GcdTest("testLcm"))
+    suite = unittest.makeSuite(GcdTest, "test")
     return suite
 
 if __name__ == '__main__':
