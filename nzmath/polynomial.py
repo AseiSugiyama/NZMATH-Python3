@@ -534,9 +534,9 @@ class OneVariableSparsePolynomial:
     def __setitem__(self, index, value):
         """
 
-        aOneVariableDensePolynomial[n] = val
+        aOneVariableSparsePolynomial[n] = val
         sets val to the coefficient at degree n.  val must be in the
-        coefficient ring of aOneVariableDensePolynomial.
+        coefficient ring of aOneVariableSparsePolynomial.
 
         TypeError will be raised if n is not an integer, or if val is
         not in the coefficient ring.
