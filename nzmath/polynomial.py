@@ -861,7 +861,7 @@ class RationalPolynomial:
                 return self // other_adjust
             else:
                 self_adjust = self.adjust()
-                if isinstance(self_adjust,int) or isinstance(self_adjust,long) or self_adjust.variable != other_adjust.variable:
+                if isinstance(self_adjust,int) or isinstance(self_adjust,long) or isinstance(self_adjust,rational.Rational) or self_adjust.variable != other_adjust.variable :
                     return 0
                 else:
                     floordiv_polynomial = 0
