@@ -13,12 +13,16 @@ class RationalPolynomial:
             raise ValueError, "You must input (list,string)."
 
     def __add__(self, other):
-        if rational.isIntegerObject(other):
+        if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
             sum = RationalPolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
-            return RationalPolynomial.adjust(sum) 
+            return RationalPolynomial.adjust(sum)
+        elif isinstance(other, IntegerPolynomial):
+            return self + other.toRationalPolynomial()
         elif isinstance(other, FlatRationalPolynomial):
             return other + self
+        elif isinstance(other, FlatIntegerPolynomial):
+            return other.toFlatRationalPolynomial() + self
         elif self.variable == other.variable:
             sum = RationalPolynomial([0]*max(len(self.coefficient),len(other.coefficient)),self.variable)
             if len(self.coefficient) < len(other.coefficient):
@@ -49,13 +53,15 @@ class RationalPolynomial:
         return reciprocal
 
     def __mul__(self, other):
-        if rational.isIntegerObject(other):
+        if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
             product = RationalPolynomial([0]*len(self.coefficient),self.variable)
             for i in range(len(self.coefficient)):
                 product.coefficient[i] = self.coefficient[i] * other
             return RationalPolynomial.adjust(product)
         elif isinstance(other, FlatRationalPolynomial):
             return other * self
+        elif isinstance(other, FlatIntegerPolynomial):
+            return other.toFlatRationalPolynomial() * self
         elif self.variable == other.variable:
             product = RationalPolynomial([0]*(len(self.coefficient) + len(other.coefficient)),self.variable)
             for l in range(len(self.coefficient)):
@@ -82,14 +88,11 @@ class RationalPolynomial:
         raise ValueError, "You must input [RationalPolynomial**index.]" 
 
     def __floordiv__(self, other):
-        if rational.isIntegerObject(other):
+        if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
             if other == 0:
                 raise ZeroDivisionError, "integer division or modulo by zero."
             floordiv_coefficient = []
             for i in range(len(self.coefficient)):
-#    MATHEMATICA
-#                floordiv_coefficient += [(self.coefficient[i] - (self.coefficient[i] % other)) / other]
-#    MATHEMATICA
                 floordiv_coefficient += [self.coefficient[i] / other]
             floordiv_polynomial = RationalPolynomial(floordiv_coefficient, self.variable)
             return floordiv_polynomial.adjust()
@@ -109,13 +112,6 @@ class RationalPolynomial:
                         old_length = len(self_adjust.coefficient)
                         quotient_position = len(self_adjust.coefficient) - len(other_adjust.coefficient)
                         quotient_value = self_adjust.coefficient[-1] / other_adjust.coefficient[-1]
-#    MATHEMATICA
-#                        if abs((self_adjust.coefficient[-1] % other_adjust.coefficient[-1]) * 2) == abs(other_adjust.coefficient[-1]):
-#                            quotient_value = (self_adjust.coefficient[-1] - abs(other_adjust.coefficient[-1] / 2)) / other_adjust.coefficient[-1]
-#                        else:
-#                            quotient_value =  self_adjust.coefficient[-1]*1.0 / other_adjust.coefficient[-1]
-#                            quotient_value = int(quotient_value + 0.5 * abs(quotient_value) / quotient_value)
-#    MATHEMATICA
                         quotient_polynomial = RationalPolynomial([0]*(quotient_position+1), self.variable)
                         quotient_polynomial.coefficient[quotient_position] = quotient_value
                         floordiv_polynomial += quotient_polynomial
@@ -128,20 +124,22 @@ class RationalPolynomial:
                             self_adjust = RationalPolynomial(new_coefficient,self.variable).adjust()
                     return floordiv_polynomial
         else:
-            raise ValueError, "You must input RationalPolynomial or integer."
+            raise ValueError, "You must input Polynomial or integer or rational."
 
     def __rfloordiv__(self, other):
         self_adjust = self.adjust()
         if rational.isIntegerObject(self_adjust):
             return other // self_adjust
-        elif rational.isIntegerObject(other):
+        elif rational.isIntegerObject(other) or isinstance(other, rational.Rational):
             return 0
         elif isinstance(other,FlatRationalPolynomial):
             return other // self_adjust.toFlatRationalPolynomial()
+        elif isinstance(other,FlatIntegerPolynomial):
+            return other.toFlatRationalPolynomial() // self_adjust.toFlatRationalPolynomial()
         else:
             raise ValueError, "Not Defined."
 
-#    def __div__(self, other):
+    __div__=__floordiv__
 
 #    __truediv__=__div__
 
@@ -309,9 +307,9 @@ class FlatRationalPolynomial:
             raise ValueError, "You must input (dict,list)."
 
     def __add__(self, other):
-        if rational.isIntegerObject(other):
+        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
             self_adjust = FlatRationalPolynomial.adjust(self)
-            if rational.isIntegerObject(self_adjust):
+            if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
                 return self_adjust + other
             else:
                 sum = FlatRationalPolynomial({}, self_adjust.variables)
@@ -323,6 +321,10 @@ class FlatRationalPolynomial:
                     sum.coefficients[(0,)*len(sum.variables)] = other
                 return sum.adjust()
         elif isinstance(other, RationalPolynomial):
+            return self + other.toFlatRationalPolynomial()
+        elif isinstance(other, IntegerPolynomial):
+            return self + other.toRationalPolynomial().toFlatRationalPolynomial()
+        elif isinstance(other, FlatIntegerPolynomial):
             return self + other.toFlatRationalPolynomial()
         elif self.variables == other.variables:
             sum = FlatRationalPolynomial({}, self.variables)
@@ -367,13 +369,17 @@ class FlatRationalPolynomial:
         return result_polynomial
 
     def __mul__(self, other):
-        if rational.isIntegerObject(other):
+        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
             result_polynomial = {}
             for i in self.coefficients:
                 result_polynomial[i] = other * self.coefficients[i]
             return FlatRationalPolynomial(result_polynomial, self.variables).adjust()
         elif isinstance(other, RationalPolynomial):
             return self * RationalPolynomial.toFlatRationalPolynomial(other)
+        elif isinstance(other, IntegerPolynomial):
+            return self * other.toRationalPolynomial().toFlatRationalPolynomial()
+        elif isinstance(other, FlatIntegerPolynomial):
+            return self * other.toFlatRationalPolynomial()
         elif self.variables == other.variables:
             result_coefficients = {}
             result_variables = self.variables[:]
@@ -396,9 +402,9 @@ class FlatRationalPolynomial:
         else:
             self_adjust = self.adjust()
             other_adjust = other.adjust()
-            if rational.isIntegerObject(self_adjust):
+            if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
                 return other_adjust * self_adjust
-            elif rational.isIntegerObject(other_adjust):
+            elif rational.isIntegerObject(other_adjust) or isinstance(other_adjust, rational.Rational):
                 return self_adjust * other_adjust
             if self_adjust.variables == other_adjust.variables:
                 return self_adjust * other_adjust
@@ -464,7 +470,7 @@ class FlatRationalPolynomial:
 
     def __call__(self, **other):
         adjust_polynomial = self.adjust()
-        if rational.isIntegerObject(adjust_polynomial):
+        if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
             return adjust_polynomial
         substitutions = other
         for i in adjust_polynomial.variables:  
