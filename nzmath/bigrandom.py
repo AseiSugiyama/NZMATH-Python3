@@ -7,10 +7,10 @@ def randrange(start,stop = 0,step = 1):
         start = v
     if step <= 0:
         return -1
+    elif (stop - start) % step > 0:
+        return long(random.random()*(long(stop - start)+1) / step)*step + start
     else:
-        v = long(random.random() * (stop - start) / step)
-        return v * step + start
-
+        return long(random.random() * (stop - start) / step)*step + start
 def random():
     import random
     return random.random()
