@@ -80,7 +80,7 @@ class IntegerPolynomial:
                     while index > 0:
                         if index % 2 == 1:
                             power_product *= power_of_2
-                        power_of_2 = power_of_2 ** 2
+                        power_of_2 = power_of_2 * power_of_2
                         index = index // 2
                     return power_product.adjust()
             else:
@@ -94,7 +94,7 @@ class IntegerPolynomial:
                         if index % 2 == 1:
                             power_product *= power_of_2
                             power_product %= mod
-                        power_of_2 = power_of_2 ** 2 % mod
+                        power_of_2 = (power_of_2 * power_of_2) % mod
                         index = index // 2
                     return power_product.adjust()
         raise ValueError, "You must input positive integer for index."
@@ -863,7 +863,7 @@ class RationalPolynomial:
                     while index > 0:
                         if index % 2 == 1:
                             power_product *= power_of_2
-                        power_of_2 = power_of_2 ** 2
+                        power_of_2 = power_of_2 * power_of_2
                         index = index // 2
                     return power_product.adjust()
             else:
@@ -877,7 +877,7 @@ class RationalPolynomial:
                         if index % 2 == 1:
                             power_product *= power_of_2
                             power_product %= mod
-                        power_of_2 = power_of_2 ** 2 % mod
+                        power_of_2 = (power_of_2 * power_of_2) % mod
                         index = index // 2
                     return power_product.adjust()
         raise ValueError, "You must input positive integer for index."
