@@ -1087,51 +1087,39 @@ class MultiVariableSparsePolynomial:
             raise ValueError, "You must input MultiVariableSparsePolynomial(dict,list)."
 
     def __add__(self, other):
-        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
-            self_adjust = self.adjust()
-            if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
-                return self_adjust + other
-            else:
-                return_coefficient = {}
-                return_variable = self_adjust.variable[:]
-                return_coefficient.update(self_adjust.coefficient)
-                zero_key = (0,) * len(return_variable)
-                if zero_key in return_coefficient:
-                    return_coefficient[zero_key] += other
-                else:
-                    return_coefficient[zero_key] = other
+        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial)):
+            return self + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            if self.variable == other.variable:
+                return_coefficient = self.coefficient.copy()
+                return_variable = self.variable[:]
+                for i in other.coefficient:
+                    if i in return_coefficient:
+                        return_coefficient[i] += other.coefficient[i]
+                    else:
+                        return_coefficient[i] = other.coefficient[i]
                 return MultiVariableSparsePolynomial(return_coefficient, return_variable).adjust()
-        elif isinstance(other, OneVariableDensePolynomial):
-            return self + other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, OneVariableSparsePolynomial):
-            return self + other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self + other.toMultiVariableSparsePolynomial()
-        elif self.variable == other.variable:
-            return_coefficient = {}
+            else:
+                self_adjust = self.adjust()
+                if not isinstance(self_adjust, MultiVariableSparsePolynomial):
+                    return self_adjust + other
+                other_adjust = other.adjust()
+                if not isinstance(other_adjust, MultiVariableSparsePolynomial):
+                    return self_adjust + other_adjust
+                if self_adjust.variable == other_adjust.variable:
+                    return self_adjust + other_adjust
+                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable.sort()
+                return self_adjust.arrange_variable(sum_variable) + other_adjust.arrange_variable(sum_variable)
+        elif other in self.getRing():
+            return_coefficient = self.coefficient.copy()
             return_variable = self.variable[:]
-            return_coefficient.update(self.coefficient)
-            for i in other.coefficient:
-                if i in return_coefficient:
-                    return_coefficient[i] += other.coefficient[i]
-                else:
-                    return_coefficient[i] = other.coefficient[i]
+            zero_key = (0,) * len(return_variable)
+            if zero_key in return_coefficient:
+                return_coefficient[zero_key] += other
+            else:
+                return_coefficient[zero_key] = other
             return MultiVariableSparsePolynomial(return_coefficient, return_variable).adjust()
-        else:
-            self_adjust = self.adjust()
-            other_adjust = other.adjust()
-            if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
-                return other_adjust + self_adjust
-            elif rational.isIntegerObject(other_adjust):
-                return self_adjust + other_adjust
-            if self_adjust.variable == other_adjust.variable:
-                return self_adjust + other_adjust
-            sum_variable = self_adjust.variable[:]
-            for i in other_adjust.variable:
-                if i not in sum_variable:
-                    sum_variable.append(i)
-            sum_variable.sort()
-            return self_adjust.arrange_variable(sum_variable) + other_adjust.arrange_variable(sum_variable)
 
     __radd__=__add__
 
@@ -1142,57 +1130,50 @@ class MultiVariableSparsePolynomial:
         return other + (-self)
 
     def __neg__(self):
-        return_polynomial = self.adjust()
-        if rational.isIntegerObject(return_polynomial) or isinstance(return_polynomial, rational.Rational):
-            return ( - return_polynomial)
-        for i in return_polynomial.coefficient:
-            return_polynomial.coefficient[i] = - return_polynomial.coefficient[i]
-        return return_polynomial
+        return_coefficient = {}
+        for i, c in self.coefficient.iteritems():
+            if c != 0:
+                return_coefficient[i] = -c
+        return MultiVariableSparsePolynomial(return_coefficient, self.variable[:])
 
     def __mul__(self, other):
-        if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
+        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial)):
+            return self * other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            if self.variable == other.variable:
+                result_coefficient = {}
+                result_variable = self.variable[:]
+                for skey, sval in self.coefficient.iteritems():
+                    for okey, oval in other.coefficient.iteritems():
+                        index_list = []
+                        for k in range(len(self.variable)):
+                            index_list.append(skey[k] + okey[k])
+                        mul_value = sval * oval
+                        index_list = tuple(index_list)
+                        if index_list in result_coefficient:
+                            result_coefficient[index_list] += mul_value
+                        else:
+                            result_coefficient[index_list] = mul_value
+                result_polynomial = MultiVariableSparsePolynomial(result_coefficient, result_variable)
+                return result_polynomial.adjust()
+            else:
+                self_adjust = self.adjust()
+                if not isinstance(self_adjust, MultiVariableSparsePolynomial):
+                    return self_adjust * other
+                other_adjust = other.adjust()
+                if not isinstance(other_adjust, MultiVariableSparsePolynomial):
+                    return self_adjust * other_adjust
+                if self_adjust.variable == other_adjust.variable:
+                    return self_adjust * other_adjust
+                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable.sort()
+                return self_adjust.arrange_variable(sum_variable) * other_adjust.arrange_variable(sum_variable)
+        elif other in self.getRing():
             return_coefficient = {}
             return_variable = self.variable[:]
             for i in self.coefficient:
                 return_coefficient[i] = other * self.coefficient[i]
             return MultiVariableSparsePolynomial(return_coefficient, return_variable).adjust()
-        elif isinstance(other, OneVariableDensePolynomial):
-            return self * other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, OneVariableSparsePolynomial):
-            return self * other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self * other.toMultiVariableSparsePolynomial()
-        elif self.variable == other.variable:
-            result_coefficient = {}
-            result_variable = self.variable[:]
-            for skey, sval in self.coefficient.iteritems():
-                for okey, oval in other.coefficient.iteritems():
-                    index_list = []
-                    for k in range(len(self.variable)):
-                        index_list.append(skey[k] + okey[k])
-                    mul_value = sval * oval
-                    index_list = tuple(index_list)
-                    if index_list in result_coefficient:
-                        result_coefficient[index_list] += mul_value
-                    else:
-                        result_coefficient[index_list] = mul_value
-            result_polynomial = MultiVariableSparsePolynomial(result_coefficient, result_variable)
-            return result_polynomial.adjust()
-        else:
-            self_adjust = self.adjust()
-            other_adjust = other.adjust()
-            if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
-                return other_adjust * self_adjust
-            elif rational.isIntegerObject(other_adjust):
-                return self_adjust * other_adjust
-            if self_adjust.variable == other_adjust.variable:
-                return self_adjust * other_adjust
-            sum_variable = self_adjust.variable[:]
-            for i in other_adjust.variable:
-                if i not in sum_variable:
-                    sum_variable.append(i)
-            sum_variable.sort()
-            return self_adjust.arrange_variable(sum_variable) * other_adjust.arrange_variable(sum_variable)
 
     __rmul__=__mul__
 
@@ -1228,25 +1209,21 @@ class MultiVariableSparsePolynomial:
         raise ValueError, "You must input positive integer for index."
 
     def __rpow__(self, other):
-        raise ValueError, "Not Defined."
+        raise NotImplementedError
 
     def __floordiv__(self, other):
-# Not Perfect
-        raise ValueError, "Not Defined."
+        raise NotImplementedError
 
-    def __div__(self, other):
-# Not Perfect
-        raise ValueError, "Not Defined."
+    def __truediv__(self, other):
+        raise NotImplementedError
 
-    __truediv__=__div__
+    __div__=__truediv__
 
     def __rfloordiv__(self, other):
-# Not Perfect
-        raise ValueError, "Not Defined."
+        raise NotImplementedError
 
     def __rdiv__(self, other):
-# Not Perfect
-        raise ValueError, "Not Defined."
+        raise NotImplementedError
 
     def __mod__(self, other):
         return self - (self // other) * other
@@ -1262,17 +1239,18 @@ class MultiVariableSparsePolynomial:
 
     def __eq__(self, other):
         sub_polynomial = self - other
-        if(rational.isIntegerObject(sub_polynomial) or isinstance(sub_polynomial, rational.Rational)) and sub_polynomial == 0:
-            return 1
-        return 0
+        if not isinstance(sub_polynomial, (MultiVariableSparsePolynomial, MultiVariableDensePolynomial)) and sub_polynomial == 0:
+            return True
+        return False
 
     def __call__(self, **other):
         adjust_polynomial = self.adjust()
-        if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
-            return adjust_polynomial
+        if not isinstance(adjust_polynomial, MultiVariableSparsePolynomial):
+            return adjust_polynomial(**other)
         substitutions = other
+        basecoefficientring = self.getRing().getCoefficientRing(self.getRing().getVars())
         for i in adjust_polynomial.variable:
-            if i in substitutions and (rational.isIntegerObject(substitutions[i]) or isinstance(substitutions[i], rational.Rational)):
+            if i in substitutions and not isinstance(substitutions[i], str) and substitutions[i] in basecoefficientring:
                 variable_position = adjust_polynomial.variable.index(i)
                 new_coefficient = {}
                 for j in adjust_polynomial.coefficient:
@@ -1287,7 +1265,7 @@ class MultiVariableSparsePolynomial:
                         new_coefficient[new_key] = new_value
                 adjust_polynomial.coefficient = new_coefficient
         adjust_polynomial = adjust_polynomial.adjust()
-        if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
+        if adjust_polynomial in basecoefficientring:
             return adjust_polynomial
         variable_to_variable_back_dict = {}
         variable_to_polynomial_back_dict = {}
@@ -1301,7 +1279,7 @@ class MultiVariableSparsePolynomial:
                 variable_to_variable_back_dict[key] = substitutions[i]
                 new_variable[variable_position] = key
                 new_variable_parameter += 1
-            elif i in substitutions and (isinstance(substitutions[i],OneVariableDensePolynomial) or isinstance(substitutions[i],OneVariableSparsePolynomial) or isinstance(substitutions[i],MultiVariableDensePolynomial) or isinstance(substitutions[i],MultiVariableSparsePolynomial)):
+            elif i in substitutions and isinstance(substitutions[i], (OneVariableDensePolynomial, OneVariableSparsePolynomial, MultiVariableDensePolynomial ,MultiVariableSparsePolynomial)):
                 key = '__new_polynomial__' + str(new_variable_parameter_of_polynomial)
                 variable_to_polynomial_back_dict[key] = substitutions[i]
                 new_variable[variable_position] = key
@@ -1348,7 +1326,7 @@ class MultiVariableSparsePolynomial:
 
     def __repr__(self):
         self_adjust = self.adjust()
-        if rational.isIntegerObject(self) or isinstance(self, rational.Rational):
+        if not isinstance(self_adjust, MultiVariableSparsePolynomial):
             return repr(self)
         return_str = "MultiVariableSparsePolynomial(" + repr(self.coefficient) + ", "
         return_str += repr(self.variable) + ")"
@@ -1356,7 +1334,7 @@ class MultiVariableSparsePolynomial:
 
     def __str__(self):
         disp_polynomial = self.adjust()
-        if rational.isIntegerObject(disp_polynomial) or isinstance(disp_polynomial,rational.Rational):
+        if not isinstance(disp_polynomial, MultiVariableSparsePolynomial):
             return str(disp_polynomial)
         elif len(disp_polynomial.variable) == 1:
             max_index = 0
@@ -1594,7 +1572,7 @@ class MultiVariableSparsePolynomial:
 
     def toOneVariableDensePolynomial(self):
         origin_polynomial = self.adjust()
-        if rational.isIntegerObject(origin_polynomial) or isinstance(origin_polynomial, rational.Rational):
+        if not isinstance(origin_polynomial, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
             return origin_polynomial
         elif len(origin_polynomial.variable) == 1:
             max_index = 0
@@ -1610,7 +1588,7 @@ class MultiVariableSparsePolynomial:
 
     def toOneVariableSparsePolynomial(self):
         origin_polynomial = self.adjust()
-        if rational.isINtegerObject(origin_polynomial) or isinstance(origin_polynomial, rational.Rational):
+        if not isinstance(origin_polynomial, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
             return origin_polynomial
         elif len(origin_polynomial.variable) == 1:
             return_coefficient = {}
@@ -1622,7 +1600,7 @@ class MultiVariableSparsePolynomial:
 
     def toMultiVariableDensePolynomial(self):
         origin_polynomial = self.adjust()
-        if rational.isIntegerObject(origin_polynomial) or isinstance(origin_polynomial, rational.Rational):
+        if not isinstance(origin_polynomial, (MultiVariableDensePolynomial, MultiVariableSparsePolynomial, OneVariableDensePolynomial, OneVariableSparsePolynomial)):
             return origin_polynomial
         elif len(origin_polynomial.variable) == 1:
             max_index = 0
@@ -1669,6 +1647,8 @@ class MultiVariableSparsePolynomial:
                 ring = cring
             elif not cring.issubring(ring):
                 ring = ring * cring
+        if not ring:
+            return rational.theIntegerRing
         return PolynomialRing(ring, self.variable)
 
 
