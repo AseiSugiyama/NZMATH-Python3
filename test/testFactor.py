@@ -13,6 +13,10 @@ class FactorTest (unittest.TestCase):
         # 6133 = prime.prime(800) > sqrt(B) & 800 == 0 mod 20
         p = 4 * 6133 + 1
         assert [(p,1), (154858631,1)] == factor.pmom(p*154858631)
+    def testMPQS(self):
+        p = 4 * 6133 + 1
+        result = factor.mpqs(p*154858631)
+        assert [(p,1), (154858631,1)] == result
 
 def suite():
     suite = unittest.makeSuite(FactorTest, 'test');

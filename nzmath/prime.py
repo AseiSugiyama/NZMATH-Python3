@@ -166,7 +166,14 @@ from factor import trialDivision as factor
 import operator
 
 def sqrt(a):
-    return long(math.sqrt(a))
+    try:
+        return long(math.sqrt(a))
+    except OverflowError:
+        b_old = a
+        b = pow(10,(len(str(long(a)))+1)//2)
+        while b_old>b:
+            b_old, b = b, (b+a//b)//2
+        return b_old
 
 def _isprime(n):
     if gcd.gcd(n, 510510) > 1:

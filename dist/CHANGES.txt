@@ -1,5 +1,6 @@
 Version 0.0.1 to
 ----------------------
+* add mpqs function (multi-polynomial quadratic sieve) in factor.py.
 * add IntegerIfIntOrLong function in rational.py.
 * add LUDecomposition method to Matrix in matrix.py.
 * now you can factor a very big but very smooth integer by trial division.
