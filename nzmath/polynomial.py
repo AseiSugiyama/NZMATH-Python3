@@ -1325,9 +1325,6 @@ class MultiVariableSparsePolynomial:
                     return power_product.adjust()
         raise ValueError, "You must input positive integer for index."
 
-    def __rpow__(self, other):
-        raise NotImplementedError
-
     def __floordiv__(self, other):
         if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
             return_coefficient = {}
@@ -1440,7 +1437,7 @@ class MultiVariableSparsePolynomial:
         elif isinstance(other,(OneVariableDensePolynomial,OneVariableSparsePolynomial,MultiVariableDensePolynomial,MultiVariableSparsePolynomial)) and (self % other == 0):
             return self // other
         else:
-            raise NotImplementedError
+            return self.getRing().getQuotientField().createElement(self, other)
 
     __div__=__truediv__
 
