@@ -65,3 +65,14 @@ def e3Fp(x,p): # p is prime
         equ.append(x)
         i=i+1
     return equ
+
+import prime 
+def e(p,n):
+    if prime.primeq(p):
+        i=0
+        while i<p:
+            #print i
+            if pow(i,3,p)==n:
+                return i
+            i=i+1
+    return 0

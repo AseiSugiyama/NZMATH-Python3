@@ -71,7 +71,7 @@ class EllipticTest(unittest.TestCase):
         assert f.whetherOn(f.point())
 
     def testChangeCurve(self):
-        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '10x + 3x**2 - x**3 + 8y + 6xy + y**2'
+        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '10/1x + 3/1x**2 - x**3 + 8/1y + 6/1xy + y**2'
 
     def testPoint(self):
         assert elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
