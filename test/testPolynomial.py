@@ -68,6 +68,7 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert 0 == self.a // 2
         assert 0 == self.k // 2
         assert 1 == self.a // self.k
+        assert c == (c*d) // d
 
     def testMod(self):
         assert self.a == self.a % 2
