@@ -1655,3 +1655,138 @@ def EulerTransform(iterator):
         yield b * stock[0]
         b /= 2
         l += 1
+
+class Constant:
+    """
+
+    Constant provides constant-like behavior for Float calculation
+    context.  It caches the constant value and re-computes for more
+    precision by request.
+
+    example:
+    >>> pi = Constant(piGaussLegendre)
+    >>> print pi
+    3.14159265358979
+    >>> pi + 1
+    4.14159265358979
+    >>> pi(100) # for 100 bit precision
+    3.1415926535897932384626433832795
+
+    """
+    def __init__(self, getValue, err=defaultError):
+        """
+
+        The first argument must be a function which computes the
+        constant with an argument specifies error.
+        The second argument can be used to set the default error.
+
+        """
+        self.getValue = getValue
+        self.err = err
+        self.cache = self.getValue(self.err)
+
+    def __call__(self, err):
+        """
+
+        Return the value at least as accurate as the given error.
+
+        """
+        if self.err < err:
+            self.cache = self.getValue(err)
+            self.err = err
+        return self.cache
+
+    # delegations
+    def __add__(self, other):
+        return self.cache.__add__(other)
+
+    def __radd__(self, other):
+        return self.cache.__radd__(other)
+
+    def __sub__(self, other):
+        return self.cache.__sub__(other)
+
+    def __rsub__(self, other):
+        return self.cache.__rsub__(other)
+
+    def __mul__(self, other):
+        return self.cache.__mul__.other
+
+    def __rmul__(self, other):
+        return self.cache.__rmul__(other)
+
+    def __div__(self, other):
+        return self.cache.__div__(other)
+
+    def __rdiv__(self, other):
+        return self.cache.__rdiv__(other)
+
+    def __truediv__(self, other):
+        return self.cache.__truediv__(other)
+
+    def __rtruediv__(self, other):
+        return self.cache.__rtruediv__(other)
+
+    def __divmod__(self, other):
+        return self.cache.__divmod__(other)
+
+    def __rdivmod__(self, other):
+        return self.cache.__rdivmod__(other)
+
+    def __mod__(self, other):
+        return self.cache.__mod__(other)
+
+    def __rmod__(self, other):
+        return self.cache.__rmod__(other)
+
+    def __pos__(self):
+        return self.cache.__pos__()
+
+    def __neg__(self):
+        return self.cache.__neg__()
+
+    def __abs__(self):
+        return self.cache.__neg__()
+
+    def toRational(self):
+        return +self.cache
+
+    def inverse(self):
+        return self.cache.__rdiv__(rational.Integer(1))
+
+    def __pow__(self, other, dummy=None):
+        return self.cache.__pow__(other)
+
+    def __gt__(self, other):
+        return self.cache.__gt__(other)
+
+    def __ge__(self, other):
+        return self.cache.__ge__(other)
+
+    def __eq__(self, other):
+        return self.cache.__eq__(other)
+
+    def __ne__(self, other):
+        return self.cache.__ne__(other)
+
+    def __le__(self, other):
+        return self.cache.__le__(other)
+
+    def __lt__(self, other):
+        return self.cache.__lt__(other)
+
+    def __repr__(self):
+        return repr(self.cache)
+
+    def __str__(self):
+        return str(self.cache)
+
+    def __getattr__(self, name):
+        try:
+            return getattr(self.cache, name)
+        except:
+            raise
+
+pi_new = Constant(piGaussLegendre_new)
+e_new = Constant(lambda err: exp_new(1, err))
+Log2_new = Constant(lambda err: _log2_new(err))

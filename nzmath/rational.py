@@ -20,7 +20,8 @@ class Rational (ring.QuotientFieldElement):
           * integers,
           * float, or
           * Rational.
-        Other objects cannot be converted and raise TypeError.
+        Other objects can be converted if they have toRational
+        methods.  Otherwise raise TypeError.
 
         """
         if denominator == 0:
@@ -37,6 +38,10 @@ class Rational (ring.QuotientFieldElement):
         elif isinstance(numerator, (int, long)):
             self.numerator = Integer(numerator)
             self.denominator = Integer(1)
+        elif hasattr(numerator, "toRational"):
+            rationalized = numerator.toRational()
+            self.numerator = rationalized.numerator
+            self.denominator = rationalized.denominator
         else:
             raise TypeError, "Rational cannot be created with %s." % numerator
         # denominator
@@ -51,6 +56,10 @@ class Rational (ring.QuotientFieldElement):
         elif isinstance(denominator, (int, long)):
             if denominator != 1:
                 self.denominator *= denominator
+        elif hasattr(denominator, "toRational"):
+            rationalized = denominator.toRational()
+            self.numerator *= rationalized.denominator
+            self.denominator *= rationalized.numerator
         else:
             raise TypeError, "Rational cannot be created with %s." % denominator
         self._reduce()

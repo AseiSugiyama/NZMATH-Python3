@@ -176,7 +176,7 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(real.log_new(real.exp_new(1).trim(2**53)) - 1) < 2 * self.absolute
 
     def testPiGaussLegendre(self):
-        pi = real.piGaussLegendre_new()
+        pi = real.pi_new
         assert rational.Rational(355,113) == pi.trim(365)
         assert abs(pi - real.piGaussLegendre_new(self.err)) < self.absolute
 
@@ -202,7 +202,7 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.sin_new(0)
         assert 1 == real.cos_new(0)
         assert 0 == real.tan_new(0)
-        pi = real.piGaussLegendre_new()
+        pi = real.pi_new
         assert abs(real.sin_new(pi)) < self.absolute
         assert -1 <= (real.cos_new(pi)) < -1 + self.absolute
         assert abs(real.tan_new(pi)) < self.absolute
@@ -214,12 +214,15 @@ class NewFunctionTest (unittest.TestCase):
 
     def testInverseTrigonometric(self):
         assert 0 == real.asin_new(0)
-        pi = real.piGaussLegendre_new()
-        assert abs(pi / 2 - real.acos_new(0)) < self.absolute
+        assert abs(real.pi_new / 2 - real.acos_new(0)) < self.absolute
         assert 0 == real.atan_new(0)
 
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
+
+class ConstantTest (unittest.TestCase):
+    def testToRational(self):
+        assert isinstance(real.pi_new.toRational(), rational.Rational)
 
 def suite():
     suite = unittest.TestSuite()
@@ -227,6 +230,7 @@ def suite():
     suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
     suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
     suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
+    suite.addTest(unittest.makeSuite(ConstantTest, 'test'))
     return suite
 
 if __name__ == '__main__':
