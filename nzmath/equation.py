@@ -31,7 +31,6 @@ def e2_Fp(x,p):
     a=x[0]%p    
     b=x[1]%p
     c=x[2]%p
-#    print b**2-4*a*c
     sqrtd = arith1.sqroot(b**2-4*a*c,p)
     a=arith1.inverse(2*a,p)
     return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
