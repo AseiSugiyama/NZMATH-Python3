@@ -11,6 +11,7 @@ import prime
 import random
 import rational
 import sets
+import time
 
 def divi(n):
     """
@@ -257,7 +258,7 @@ class EC:
                         self.b8=self.a4**2
                         self.c4=finitefield.FinitePrimeFieldElement(0,2)
                         self.c6=finitefield.FinitePrimeFieldElement(0,2)
-                        self.disc=self.a3**4%2
+                        self.disc=self.a3**4
                         self.j=finitefield.FinitePrimeFieldElement(0,2)
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -1147,12 +1148,12 @@ class EC:
 
     def WeilPairing(self,m,P,Q):
         i=1
-        while i:
+        while i<math.log(self.ch,2):
             T=[0]
             U=[0]
             A=[0]
             B=[0]
-            while T==U or T==[0] or U==[0] or A==[0] or B==[0]:
+            while T==[0] or U==[0] or A==[0] or B==[0]: 
                 T,U=self.point(),self.point()
                 A=self.add(P,T) 
                 B=self.add(Q,U)
@@ -1165,6 +1166,8 @@ class EC:
                         H=self.Miller(P,m,U)
                         if H!=False and H!=0:
                             return g*G/h*H
+            i=i+1
+        return False
 
     def BSGS(self,n,P,Q):
         """
@@ -1197,7 +1200,31 @@ class EC:
                 return n
             else:
                 return False
-        
+
+    def allPoint(self,O):
+        if self.ch>3 and self.index==1:
+            p=self.ch
+            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(p))
+            other=self.simple()
+            Y=x**3+other.a*x+other.b
+            L=[]
+            i=0
+            while i<p:
+                y=Y(i).n
+                if arith1.legendre(y,p)==1:
+                    Q=[i,arith1.sqroot(y,p)]
+                    R=[i,p-Q[1]]
+                    q=other.BSGS(O,Q,[0])
+                    r=other.BSGS(O,R,[0])
+                    if q==O or r==O:
+                        return (O,1)
+                    else:
+                        L.append(q)
+                        L.append(r)
+                i=i+1
+            L=max(L)
+            return (L,O//L)
+    
     def structure(self):
         if self.ch>3:
             if self.index==1:
@@ -1214,7 +1241,7 @@ class EC:
                 P1=[0]
                 P2=[0]
                 k=1
-                while k:
+                while k<=10:
                     while P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
@@ -1232,18 +1259,23 @@ class EC:
                         ord2=other.BSGS(N,P2,[0])
                     r=gcd.lcm(ord1,ord2)
                     e=other.WeilPairing(r,P1,P2)
-                    s=1
-                    if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                        D=divi(self.ch-1)
-                        j=e
-                        i=0
-                        while j!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                    if e==False:
+                        pass
+                    else:
+                        s=1
+                        if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                            D=divi(self.ch-1)
                             j=e
-                            i=i+1
-                            j=pow(j,D[i])
-                        s=D[i]
-                    if r*s==N1: 
-                        return (r*N2,s)
+                            i=0
+                            while j!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                                j=e
+                                i=i+1
+                                j=pow(j,D[i])
+                            s=D[i]
+                        if r*s==N1: 
+                            return (r*N2,s)
+                    k=k+1
+                return self.allPoint(N)
             else:
                 raise NotImplementedError,"Now making m(__)m"
         else:
