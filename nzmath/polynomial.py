@@ -288,6 +288,15 @@ class OneVariablePolynomial:
         else:
             return False
 
+    def __call__(self, other):
+        if isinstance(other, str):
+            return OneVariableSparsePolynomial(self.coefficient.getAsDict(), [other], self.getCoefficientRing())
+        else:
+            return_value = 0
+            for i, c in self.coefficient.iteritems():
+                return_value += (other ** i) * c
+            return return_value
+
     def degree(self):
         return self.coefficient.degree()
 
@@ -392,23 +401,8 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
 
-    def __call__(self,other):
-        if isinstance(other,str):
-            result_coefficient = self.coefficient.getAsList()
-            return OneVariableDensePolynomial(result_coefficient, other)
-        elif isinstance(other, (OneVariablePolynomial, MultiVariableDensePolynomial, MultiVariableSparsePolynomial)):
-            return_polynomial = 0
-            for i in range(len(self.coefficient)):
-                return_polynomial += self.coefficient[i] * (other**i)
-            return return_polynomial.copy()
-        else:
-            return_value = 0
-            for i in range(self.degree() + 1):
-                return_value = return_value * other + self.coefficient[self.degree()-i]
-            return return_value
-
     def copy(self):
-        "Use this method in case of leading term of coefficient = 0"
+        "Copy the structure"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
     def differentiate(self, other):
@@ -529,21 +523,8 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
 
-    def __call__(self, other):
-        if isinstance(other, str):
-            return OneVariableSparsePolynomial(self.coefficient.getAsDict(), [other], self.getCoefficientRing())
-        elif isinstance(other, (OneVariablePolynomial, MultiVariableDensePolynomial, MultiVariableSparsePolynomial)):
-            return_polynomial = 0
-            for i in self.coefficient:
-                return_polynomial += self.coefficient[i] * (other**i[0])
-            return return_polynomial
-        else:
-            return_value = 0
-            for i in self.coefficient:
-                return_value += (other**i[0]) * self.coefficient[i]
-            return return_value
-
     def copy(self):
+        "Copy the structure"
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
 
     def differentiate(self, var):
