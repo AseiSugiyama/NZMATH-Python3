@@ -26,7 +26,8 @@ class IntegerPolynomial:
                     return_coefficient[0] = origin_polynomial
                     return_polynomial = IntegerPolynomial(return_coefficient, return_variable)
                     return return_polynomial.adjust()
-                else raise ValueError, "You must input non-negative integer for index."
+                else:
+                    raise ValueError, "You must input non-negative integer for index."
             elif len(origin_polynomial.coefficient - 1) >= index and index >= 0:
                 return_coefficient = origin_polynomial.coefficient[:]
                 return_variable = origin_polynomial.variable[:]
@@ -38,10 +39,12 @@ class IntegerPolynomial:
                 add_variable = origin_polynomial.variable[:]
                 add_polynomial = IntegerPolynomial(add_coefficient, add_variable)
                 return (origin_polynomial + add_polynomial).adjust()
-            else raise ValueError, "You must input non-negative integer for index."
+            else:
+                raise ValueError, "You must input non-negative integer for index."
         elif rational.isIntegerObject(index) and isinstance(value, rational.Rational):
             return self.toRationalPolynomial().__setitem__(index, value)
-        else raise ValueError, "You must input polynomial[index, value]."
+        else:
+            raise ValueError, "You must input polynomial[index, value]."
 
     def __getitem__(self, index):
         if rational.isIntegerObject(index):
@@ -49,7 +52,8 @@ class IntegerPolynomial:
                 return self.coefficient[index]
             elif len(self.coefficient - 1) < index
                 return 0
-        else raise ValueError, "You must input non-negative integer for index."
+        else:
+            raise ValueError, "You must input non-negative integer for index."
 
     def __add__(self, other):
         if rational.isIntegerObject(other):
@@ -376,7 +380,8 @@ class IntegerPolynomial:
         adjust_polynomial = self.adjust()
         if rational.isINtegerObject(adjust_polynomial):
             return 0
-        else return len(self.coefficient) - 1
+        else:
+            return len(self.coefficient) - 1
 
 class FlatIntegerPolynomial:
 
@@ -856,7 +861,8 @@ class RationalPolynomial:
                     return_coefficient[0] = origin_polynomial
                     return_polynomial = IntegerPolynomial(return_coefficient, return_variable)
                     return return_polynomial.adjust()
-                else raise ValueError, "You must input non-negative integer for index."
+                else:
+                    raise ValueError, "You must input non-negative integer for index."
             elif len(origin_polynomial.coefficient - 1) >= index and index >= 0:
                 return_coefficient = origin_polynomial.coefficient[:]
                 return_variable = origin_polynomial.variable[:]
@@ -868,8 +874,10 @@ class RationalPolynomial:
                 add_variable = origin_polynomial.variable[:]
                 add_polynomial = IntegerPolynomial(add_coefficient, add_variable)
                 return (origin_polynomial + add_polynomial).adjust()
-            else raise ValueError, "You must input non-negative integer for index."
-        else raise ValueError, "You must input polynomial[index, value]."
+            else:
+                raise ValueError, "You must input non-negative integer for index."
+        else:
+            raise ValueError, "You must input polynomial[index, value]."
 
     def __getitem__(self, index):
         if rational.isIntegerObject(index):
@@ -877,7 +885,8 @@ class RationalPolynomial:
                 return self.coefficient[index]
             elif len(self.coefficient - 1) < index
                 return 0
-        else raise ValueError, "You must input non-negative integer for index."
+        else:
+            raise ValueError, "You must input non-negative integer for index."
 
     def __add__(self, other):
         if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
@@ -1211,7 +1220,8 @@ class RationalPolynomial:
         adjust_polynomial = self.adjust()
         if rational.isINtegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
             return 0
-        else return len(self.coefficient) - 1
+        else:
+            return len(self.coefficient) - 1
 
 class FlatRationalPolynomial:
 
