@@ -444,7 +444,7 @@ def mpqs(n,s=0,f=0):
     N=M.number/M.multiplier
     V=Elimination(M.smooth)
     A=V.gaussian()
-    print len(A),"liner dependent relarions"
+    print len(A),"liner dependent relations"
     answerX_Y = []
     N_factors = []
     for i in A:
