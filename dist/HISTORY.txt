@@ -1,3 +1,7 @@
+2004-12-02
+----------
+The version 0.2.1 has been released.
+
 2004-11-30
 ----------
 The version 0.2.0 has been released.

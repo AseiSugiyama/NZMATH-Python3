@@ -1,3 +1,7 @@
+version 0.2.0 to 0.2.1
+----------------------
+* include some missing files in 0.2.0.
+
 Version 0.1.1 to 0.2.0
 ----------------------
 * add a new module factor.mpqs, which provides multi-polynomial
