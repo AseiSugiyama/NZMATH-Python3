@@ -629,6 +629,9 @@ class IntegerRing (ring.CommutativeRing):
     def __str__(self):
         return "Z"
 
+    def __repr__(self):
+        return "IntegerRing"
+
     def issubring(self, other):
         """
 
