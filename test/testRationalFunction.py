@@ -5,8 +5,17 @@ from rational import theIntegerRing as Z
 import polynomial
 
 class RationalFunctionTest (unittest.TestCase):
+    def setUp(self):
+        self.f = RationalFunction(polynomial.construct("x**3 + 1"), polynomial.construct("x**2 - 2"))
+        self.f2 = RationalFunction(polynomial.construct("x**3 + 1"), polynomial.construct("x**2 - 2"))
+        self.f3 = RationalFunction(polynomial.construct("x**4 + x"), polynomial.construct("x**3 - 2 * x"))
+    
     def testInit(self):
-        RationalFunction(1)
+        assert self.f
+
+    def testEquals(self):
+        assert self.f == self.f2
+        assert self.f == self.f3
 
 class RationalFunctionFieldTest (unittest.TestCase):
     def setUp(self):
