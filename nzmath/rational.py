@@ -424,4 +424,24 @@ theIntegerRing = IntegerRing()
 theRationalField = RationalField()
 
 def isIntegerObject(anObject):
+    """
+
+    True if the given object is instance of int or long,
+    False otherwise.
+
+    """
     return isinstance(anObject, (int, long))
+
+def IntegerIfIntOrLong(anObject):
+    """
+
+    Cast int or long objects to Integer.
+    The objects in list or tuple can be casted also.
+
+    """
+    objectClass = anObject.__class__
+    if objectClass == int or objectClass == long:
+        return Integer(anObject)
+    elif isinstance(anObject, (list,tuple)):
+        return objectClass([IntegerIfIntOrLong(i) for i in anObject])
+    return anObject

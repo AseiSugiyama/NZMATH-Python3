@@ -1,5 +1,6 @@
 import unittest
-from rational import Rational, Integer, theIntegerRing, theRationalField
+from rational import *
+# Rational, Integer, theIntegerRing, theRationalField
 
 class RationalTest (unittest.TestCase):
     def testInit(self):
@@ -182,12 +183,42 @@ class RationalFieldTest(unittest.TestCase):
         assert theRationalField.isfield()
         assert theRationalField.isdomain()
 
+class IntegerIfIntOrLongTest (unittest.TestCase):
+    def testInt(self):
+        b = IntegerIfIntOrLong(1)
+        assert isinstance(b, Integer)
+    def testLong(self):
+        b = IntegerIfIntOrLong(1L)
+        assert isinstance(b, Integer)
+    def testRational(self):
+        b = IntegerIfIntOrLong(Rational(1,2))
+        assert not isinstance(b, Integer)
+        assert isinstance(b, Rational)
+    def testTuple(self):
+        s = IntegerIfIntOrLong((1,1L))
+        assert isinstance(s, tuple)
+        for i in s:
+            assert isinstance(i, Integer)
+    def testList(self):
+        s = IntegerIfIntOrLong([1,1L])
+        assert isinstance(s, list)
+        for i in s:
+            assert isinstance(i, Integer)
+    def testListOfTuple(self):
+        ss = IntegerIfIntOrLong([(1,1L),(2L,2)])
+        assert isinstance(ss, list)
+        for s in ss:
+            assert isinstance(s, tuple)
+            for i in s:
+                assert isinstance(i, Integer)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RationalTest, 'test'))
     suite.addTest(unittest.makeSuite(IntegerTest, 'test'))
     suite.addTest(unittest.makeSuite(IntegerRingTest, 'test'))
     suite.addTest(unittest.makeSuite(RationalFieldTest, 'test'))
+    suite.addTest(unittest.makeSuite(IntegerIfIntOrLongTest, 'test'))
     return suite
 
 if __name__ == '__main__':
