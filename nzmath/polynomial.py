@@ -108,13 +108,15 @@ class OneVariableDensePolynomial:
     def __mul__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
             if self.variable == other.variable:
-                product = map(self.getRing().getCoefficientRing(self.variable).createElement, [0]*(len(self.coefficient) + len(other.coefficient)))
+                product = map(self.getRing().getCoefficientRing(self.variable).createElement,\
+                              [0]*(len(self.coefficient) + len(other.coefficient)))
                 for l in range(len(self.coefficient)):
                     for r in range(len(other.coefficient)):
                         product[l + r] += self.coefficient[l] * other.coefficient[r]
                 return OneVariableDensePolynomial(product, self.variable).adjust()
             else:
-                return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
+                return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()\
+                        ).toMultiVariableDensePolynomial()
         elif isinstance(other, OneVariableSparsePolynomial):
             return self * other.toOneVariableDensePolynomial()
         elif isinstance(other, MultiVariableDensePolynomial):
@@ -161,47 +163,95 @@ class OneVariableDensePolynomial:
                 index = index // 2
             return power_product.adjust()
 
-    def __floordiv__(self, other):
+    def __divmod__(self, other):
+
+        """
+        About this division , we can treat only a map of
+                     Q[x] --> Q[x]
+        and only one variable polynomial.
+        """
         if other == 0:
             raise ZeroDivisionError, "division or modulo by zero."
-        elif isinstance(other, OneVariableSparsePolynomial):
-            if other.degree() < 1:
-                return self // other.coefficient[0]
-            if self.variable != other.variable[0] or self.degree() < other.degree():
-                return 0
-            return self // other.toOneVariableDensePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return (self.toMultiVariableSparsePolynomial() // other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
         elif isinstance(other, OneVariableDensePolynomial):
             if other.degree() < 1:
-                return self // other.coefficient[0]
+                coeff=other.coefficient[0]
+                new_coeff=[]
+                for i in self.coefficient:
+                    new=rational.Rational(i,coeff)
+                    new_coeff.append(new)
+                return OneVariableDensePolynomial(new_coeff,self.variable),0
             if self.variable != other.variable or self.degree() < other.degree():
-                return 0
+                return 0,self
             else:
-                self_adjust = self.adjust().coefficient[:]
-                other_adjust = other.adjust().coefficient[:]
-                len_other_adjust = len(other_adjust)
-                floordiv_polynomial = OneVariableDensePolynomial([self.getRing().getCoefficientRing().createElement(0)], self.variable)
-                while len(self_adjust) >= len_other_adjust:
-                    quotient_degree = len(self_adjust) - len_other_adjust
-                    quotient_value = self_adjust[-1] // other_adjust[-1]
-                    floordiv_polynomial[quotient_degree] += quotient_value
-                    for k,c in enumerate(other_adjust):
-                        self_adjust[quotient_degree + k] -= c * quotient_value
-                    self_adjust = self_adjust[:-1]
-                    while self_adjust and self_adjust[-1] == 0:
-                        self_adjust = self_adjust[:-1]
-                return floordiv_polynomial.adjust()
+                self_coeff=self.coefficient[:]
+                other_coeff=other.coefficient[:]
+                max_term_coeff_of_other=other_coeff[-1]
+                new_coeff=[]
+                i=self.degree()
+                k=other.degree()
+                while i >= k:
+                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
+                    m=1
+                    for j in other_coeff:
+                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
+                        m=m-1
+                    new_coeff.append(q)
+                    self_coeff.pop()
+                    i=i-1
+                new_coeff.reverse()
+                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
+        elif isinstance(other, OneVariableSparsePolynomial):
+            if other.degree() < 1:
+                coeff=other.coefficient[0,]
+                new_coeff=[]
+                for i in self.coefficient:
+                    new=rational.Rational(i,coeff)
+                    new_coeff.append(new)
+                return OneVariableDensePolynomial(new_coeff,self.variable),0
+            elif self.variable != other.variable[0] or self.degree() < other.degree():
+                return 0 ,self
+            else :
+                Dense_other=other.toOneVariableDensePolynomial()
+                self_coeff=self.coefficient[:]
+                other_coeff=Dense_other.coefficient[:]
+                max_term_coeff_of_other=other_coeff[-1]
+                new_coeff=[]
+                i=self.degree()
+                k=Dense_other.degree()
+                while i >= k:
+                    q=rational.Rational(self_coeff[-1],1)/max_term_coeff_of_other
+                    m=1
+                    for j in other_coeff:
+                        self_coeff[-(k+m)]=self_coeff[-(k+m)]-j*q
+                        m=m-1
+                    new_coeff.append(q)
+                    self_coeff.pop()
+                    i=i-1
+                new_coeff.reverse() 
+                return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
+        
+        elif isinstance(other,rational.Rational):
+            new_coeff=[]
+            for j in self.coefficient: 
+                new_coeff.append(rational.Rational(j,1)//other)
+            return OneVariableDensePolynomial(new_coeff,self.variable),0
+
         elif other in self.getRing().getCoefficientRing():
-            floordiv_coefficient = [c // other for c in self.coefficient]
-            floordiv_polynomial = OneVariableDensePolynomial(floordiv_coefficient, self.variable)
-            return floordiv_polynomial.adjust()
-        else:
+            return 0,self
+
+        else:     #???
             if rational.isIntegerObject(other):
                 other = rational.Integer(other)
             commonSuperring = self.getRing().getCommonSuperring(other.getRing())
             return commonSuperring.createElement(self) // commonSuperring.createElement(other)
 
+    def __rdivmod__(self, other):
+        self,other=other,self
+        return self.__divmood__(other)
+
+    def __floordiv__(self,other):
+        return self.__divmod__(other)[0]
+    
     def __rfloordiv__(self, other):
         if isinstance(other, MultiVariableDensePolynomial):
             return other.toMultiVariableSparsePolynomial() // self.toMultiVariableSparsePolynomial()
@@ -209,31 +259,21 @@ class OneVariableDensePolynomial:
             return other // self.toMultiVariableSparsePolynomial()
         elif other in self.getRing().getCoefficientRing() or other.degree() < self.degree():
             return 0
-        elif self.degree() < 1:
-            return other // self.coefficient[0]
+        else:
+            self,other = other,self
+            return self//other
+        
+    def __truerdiv__(self,other):
+        if self%other==0:
+            return self//other
         else:
             raise NotImplementedError
-
-    def __truediv__(self, other):
-        if self % other == 0:
-            return self // other
-        else:
-            raise NotImplementedError
-
-    __div__=__truediv__
 
     def __mod__(self, other):
-        return self - (self // other) * other
+        return self.__divmod__(other)[1]
 
-    def __rmod__(self, other):
-        return other - (other // self) * self
-
-    def __divmod__(self, other):
-        return (self // other, self % other)
-
-    def __rdivmod__(self, other):
-        return (other // self, other % self)
-
+    __rmod__=__mod__
+       
     def __eq__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
             if self.variable == other.variable and self.degree() == other.degree():
@@ -333,7 +373,7 @@ class OneVariableDensePolynomial:
                     return_str += str(i)
         return return_str
 
-    def adjust(self):
+    def adjust(self):#Use this method in case of leading term of coefffidcient = 0 
         length = len(self.coefficient)
         while (length != 1) and (self.coefficient[length-1] == 0):
             length -= 1
@@ -1139,11 +1179,12 @@ class MultiVariableSparsePolynomial:
             return self + other.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableSparsePolynomial):
             if self.variable == other.variable:
-                return_coefficient = self.coefficient.copy()
+                temp = self.coefficient.copy()
+                return_coefficient = temp
                 return_variable = self.variable[:]
                 for i in other.coefficient:
                     if i in return_coefficient:
-                        return_coefficient[i] += other.coefficient[i]
+                        return_coefficient[i] = return_coefficient[i]+other.coefficient[i]
                     else:
                         return_coefficient[i] = other.coefficient[i]
                 return MultiVariableSparsePolynomial(return_coefficient, return_variable).adjust()
@@ -1552,8 +1593,8 @@ class MultiVariableSparsePolynomial:
             raise ValueError, "You must input list for other."
         else:
             result_polynomial = MultiVariableSparsePolynomial({},other)
-            index_list = self.coefficient.keys()
-            values_list = self.coefficient.values()
+            index_list = self.coefficient.keys()[:]
+            values_list = self.coefficient.values()[:]
             position_infomation = []
             for i in range(len(other)):
                 if other[i] in self.variable:
@@ -2194,3 +2235,39 @@ def subResultantGCD(A, B):
             h = h ** (1 - delta) * g ** delta
         else:
             h = h ** (delta - 1) * g ** delta
+
+
+a = OneVariableDensePolynomial([1,1],"x")
+
+b = OneVariableDensePolynomial([1,-2,3,-4],"x")
+
+c = OneVariableDensePolynomial([1,-1,-2],"y")
+
+d = OneVariableDensePolynomial([1,1,2],"y")
+
+e = OneVariableDensePolynomial([0,1,2,3,4],"z")
+
+f = MultiVariableSparsePolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},["x","z"])
+
+g = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},["y","z","x"])
+
+h = OneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)],"x")
+
+i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)],"x")
+
+j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")
+
+k = OneVariableSparsePolynomial({(1,):1},["x"])
+
+l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)],"y")
+
+p = OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])
+pp = OneVariableDensePolynomial([-1,0,0,0,0,0,0,1],"x")
+pr =  OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])*rational.Rational(2,3)
+
+q = OneVariableDensePolynomial([1,1,1,1,1,1,1],"x")
+qq = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])
+qr = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])*rational.Rational(3,5)
+r = OneVariableSparsePolynomial({(0,):-1,(1,):1},["x"])
+
+s = OneVariableDensePolynomial([-1,1],"x")
