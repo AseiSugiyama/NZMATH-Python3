@@ -1,5 +1,3 @@
-from matrix import Matrix
-
 class Vector:
 
     def __init__(self, compo):
