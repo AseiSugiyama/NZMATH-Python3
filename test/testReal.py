@@ -1,0 +1,53 @@
+import unittest
+import real
+
+class FloatTest (unittest.TestCase):
+    def testAdd(self):
+        sum1 = real.Float(-3,0,None) + real.Float(125,2,None)
+        assert sum1.mantissa == 497
+        assert sum1.exponent == 0
+        assert sum1.precision == None
+        sum2 = real.Float(1001,0,40) + real.Float(-125,3,None)
+        assert sum2.mantissa == 1
+        assert sum2.exponent == 0
+        assert sum2.precision == 31
+        sum3 = real.Float(-1001,0,40) + 1000
+        assert sum3.mantissa == -1
+        assert sum3.exponent == 0
+        assert sum3.precision == 31
+        sum4 = 1000 + real.Float(-1001,0,40)
+        assert sum4.mantissa == -1
+        assert sum4.exponent == 0
+        assert sum4.precision == 31
+
+    def testMul(self):
+        prod1 = real.Float(3,0,None) * real.Float(125,2,None)
+        assert prod1.mantissa == 375
+        assert prod1.exponent == 2
+        assert prod1.precision == None
+
+    def testSub(self):
+        dif1 = real.Float(-3,0,None) - real.Float(125,2,None)
+        assert dif1.mantissa == -503
+        assert dif1.exponent == 0
+        assert dif1.precision == None
+        dif2 = real.Float(1001,0,40) - real.Float(125,3,None)
+        assert dif2.mantissa == 1
+        assert dif2.exponent == 0
+        assert dif2.precision == 31
+        dif3 = real.Float(1001,0,40) - 1000
+        assert dif3.mantissa == 1
+        assert dif3.exponent == 0
+        assert dif3.precision == 31
+        dif4 = 1000 - real.Float(1001,0,40)
+        assert dif4.mantissa == -1
+        assert dif4.exponent == 0
+        assert dif4.precision == 31
+
+def suite():
+    suite = unittest.makeSuite(FloatTest, 'test')
+    return suite
+
+if __name__ == '__main__':
+    runner = unittest.TextTestRunner()
+    runner.run(suite())
