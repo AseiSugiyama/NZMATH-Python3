@@ -2105,6 +2105,8 @@ class OneVariablePolynomialIdeal (ring.Ideal):
 
         """
         assert self.__class__ == other.__class__
+        if self is other:
+            return True
         for i in self.generators:
             if i not in other:
                 return False
