@@ -1,7 +1,10 @@
 __all__ = [
     "arith1",
     "bigrandom",
+    "combinatorial",
+    "elliptic",
     "factor",
+    "finitefield",
     "gcd",
     "imaginary",
     "integerResidueClass",
