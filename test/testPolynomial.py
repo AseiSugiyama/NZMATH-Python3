@@ -165,7 +165,6 @@ class RationalPolynomialTest(unittest.TestCase):
         assert h + i == sum_1
         assert h + j == sum_2
         assert a + rational.Rational(1,2) == sum_3
-
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([rational.Rational(-1,2),rational.Rational(7,8),rational.Rational(-11,26),rational.Rational(-5,2)],"x")
         sub_2 = MultiVariableSparsePolynomial({(0,0):-1,(1,0):rational.Rational(7,8),(0,1):rational.Rational(-9,4),(2,0):rational.Rational(1,13)},['x', 'y'])
@@ -179,13 +178,13 @@ class RationalPolynomialTest(unittest.TestCase):
         assert h * j == mul_2
 
     def testFloordiv(self):
-        assert 2 == j // l
+        assert 2 == j//l 
         assert rational.Rational(73, 104) == OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], "x") // OneVariableDensePolynomial([rational.Rational(1,1), rational.Rational(1,1)], "x")
 
     def testMod(self):
-        assert rational.Rational(-3,2) == j % l
-        assert rational.Rational(-21, 104) == OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], "x") % a
-
+        assert rational.Rational(-3,2) == (j % l).coefficient[0]
+        assert rational.Rational(-21, 104) == (OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], "x") % a).coefficient[0]
+                                               
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, "x")
         Qy = PolynomialRing(rational.theRationalField, "y")
