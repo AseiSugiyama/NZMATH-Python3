@@ -128,6 +128,11 @@ class NewFunctionTest (unittest.TestCase):
     def testHypot(self):
         assert abs(real.hypot(3,4) - 5) < self.absolute
 
+    def testPow(self):
+        assert 32 == real.pow(2,5)
+        assert rational.Rational(1,32) == real.pow(2,-5)
+        assert real.defaultError.nearlyEqual(real.sqrt(2), real.pow(2, rational.Rational(1,2)))
+
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
         assert isinstance(real.pi.toRational(), rational.Rational)

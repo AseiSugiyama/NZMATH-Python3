@@ -264,7 +264,7 @@ def sqrt(x, err=defaultError):
     if reduced.numerator == 0:
         return rational.Integer(0)
     if err <= defaultError:
-        rt = rational.Rational(prime.sqrt(reduced.numerator)+1, prime.sqrt(reduced.denominator))
+        rt = rational.Rational(prime.sqrt(reduced.denominator * reduced.numerator)+1, reduced.denominator)
         newrt = (rt + reduced / rt) / 2
         while not err.nearlyEqual(rt, newrt):
             rt = newrt
@@ -677,6 +677,16 @@ def hypot(x, y, err=defaultError):
 
     """
     return sqrt(x**2 + y**2, err)
+
+def pow(x, y, err=defaultError):
+    """
+
+    x ** y
+
+    """
+    if isinstance(y, (int, long)):
+        return rational.Rational(x) ** y
+    return exp(y * log(x, err), err)
 
 def EulerTransform(iterator):
     """
