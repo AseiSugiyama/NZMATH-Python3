@@ -302,12 +302,20 @@ class Integer(long):
         return Integer(other-long(self))
 
     def __mul__(self, other):
+        if isinstance(other, list) or isinstance(other, tuple):
+            return long(self) * other
         try:
             return Integer(long(self)*other)
         except:
             return NotImplemented
 
-    __rmul__ = __mul__
+    def __rmul__(self, other):
+        if isinstance(other, list) or isinstance(other, tuple):
+            return other * long(self)
+        try:
+            return Integer(other*long(self))
+        except:
+            return NotImplemented
 
     def __pow__(self, other, modulo=None):
         return Integer(pow(long(self), other, modulo))

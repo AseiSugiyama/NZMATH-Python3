@@ -1,5 +1,5 @@
 import unittest
-from rational import Rational
+from rational import Rational, Integer
 
 class RationalTest (unittest.TestCase):
     def testInit(self):
@@ -84,8 +84,30 @@ class RationalTest (unittest.TestCase):
         assert Rational(-11,12) >= -1L
         assert 1 <= Rational(134,133)
 
+class IntegerTest(unittest.TestCase):
+    def testMul(self):
+        assert 24 == Integer(3) * 8
+        assert [0,0,0] == Integer(3) * [0]
+        assert (0,0,0) == Integer(3) * (0,)
+
+    def testRmul(self):
+        assert 24 == 8 * Integer(3)
+        assert [0,0,0] == [0] * Integer(3)
+        assert (0,0,0) == (0,) * Integer(3)
+
+    def testRmod(self):
+        assert 1 == 4 % Integer(3)
+        assert "3" == "%d" % Integer(3)
+
+    def testTruediv(self):
+        assert Rational(1,3) == 1 / Integer(3)
+
 def suite():
     suite = unittest.makeSuite(RationalTest, 'test')
+    suite.addTest(IntegerTest("testMul"))
+    suite.addTest(IntegerTest("testRmul"))
+    suite.addTest(IntegerTest("testRmod"))
+    suite.addTest(IntegerTest("testTruediv"))
     return suite
 
 if __name__ == '__main__':
