@@ -2,6 +2,7 @@ from __future__ import division, generators
 # standard modules
 import operator
 import itertools
+import cmath
 # NZMATH modules
 import real
 import rational
@@ -227,6 +228,26 @@ class RelativeError:
         """
         return self.absoluteerror(x).nearlyEqual(x, y)
 
+    def __eq__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange == other.relativeerrorrange :
+            return True
+        return False
+
+    def __lt__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange < other.relativeerrorrange :
+            return True
+        return False
+
+    def __le__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange <= other.relativeerrorrange :
+            return True
+        return False
 
 class AbsoluteError:
     def __init__(self, numeric):
@@ -265,18 +286,21 @@ def exp(x, err=defaultError):
         return real.exp(x, _err)
     except TypeError:
         pass
-    # divide real part and imaginary part
-    if isinstance(err, RelativeError):
-        _err = real.RelativeError(0, err.relativeerrorrange, 2)
-    elif isinstance(err, AbsoluteError):
-        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-    radius = real.exp(x.real, _err)
-    if isinstance(err, RelativeError):
-        _err = RelativeError(err.relativeerrorrange, 2)
-    elif isinstance(err, AbsoluteError):
-        _err = AbsoluteError(err.absoluteerrorrange, 2)
-    arg = expi(x.imag, _err)
-    return radius * arg
+    if err <= defaultError:
+        # divide real part and imaginary part
+        if isinstance(err, RelativeError):
+            _err = real.RelativeError(0, err.relativeerrorrange, 2)
+        elif isinstance(err, AbsoluteError):
+            _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
+        radius = real.exp(x.real, _err)
+        if isinstance(err, RelativeError):
+            _err = RelativeError(err.relativeerrorrange, 2)
+        elif isinstance(err, AbsoluteError):
+            _err = AbsoluteError(err.absoluteerrorrange, 2)
+        arg = expi(x.imag, _err)
+        return radius * arg
+    else:
+        return Complex(cmath.exp(x))
 
 def expi(x, err=defaultError):
     """
@@ -303,17 +327,20 @@ def log(x, err=defaultError):
     continuous from above.
 
     """
-    if isinstance(err, RelativeError):
-        _err = real.RelativeError(0, err.relativeerrorrange, 2)
-    elif isinstance(err, AbsoluteError):
-        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-    if x in real.theRealField:
-        x = +x
-        if x > 0:
-            return real.log(x, _err)
-        elif x < 0:
-            return Complex(real.log(abs(x), _err), real.pi(_err))
-    return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
+    if err <= defaultError:
+        if isinstance(err, RelativeError):
+            _err = real.RelativeError(0, err.relativeerrorrange, 2)
+        elif isinstance(err, AbsoluteError):
+            _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
+            if x in real.theRealField:
+                x = +x
+                if x > 0:
+                    return real.log(x, _err)
+                elif x < 0:
+                    return Complex(real.log(abs(x), _err), real.pi(_err))
+        return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
+    else:
+        return Complex(cmath.log(x))
 
 class ExponentialPowerSeries:
     """
@@ -366,12 +393,18 @@ class ExponentialPowerSeries:
             oldvalue = +value
 
 def sin(z, err=defaultError):
-    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
-    return series(z, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+        return series(z, err)
+    else:
+        return Complex(cmath.sin(z))
 
 def cos(z, err=defaultError):
-    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
-    return series(z, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+        return series(z, err)
+    else:
+        return Complex(cmath.cos(z))
 
 def tan(z, err=defaultError):
     return sin(z, err) / cos(z,err)
@@ -379,14 +412,20 @@ def tan(z, err=defaultError):
 def sinh(z, err=defaultError):
     if z == 0:
         return rational.Integer(0)
-    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
-    return series(z, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
+        return series(z, err)
+    else:
+        return Complex(cmath.sinh(z))
 
 def cosh(z, err=defaultError):
     if z == 0:
         return rational.Integer(1)
-    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
-    return series(z, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
+        return series(z, err)
+    else:
+        return Complex(cmath.cosh(z))
 
 def tanh(z, err=defaultError):
     return sinh(z, err) / cosh(z, err)
