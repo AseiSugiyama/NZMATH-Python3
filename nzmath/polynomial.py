@@ -332,6 +332,8 @@ class OneVariablePolynomial:
     def __call__(self, other):
         if isinstance(other, str):
             return OneVariableSparsePolynomial(self.coefficient.getAsDict(), [other], self.getCoefficientRing())
+        elif not other:
+            return self.coefficient[0]
         else:
             return_value = 0
             for i, c in self.coefficient.iteritems():
