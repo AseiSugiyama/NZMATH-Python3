@@ -68,6 +68,8 @@ class Rational:
         else:
             return NotImplemented
 
+    __truediv__ = __div__
+
     def __radd__(self,other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator + self.denominator*other.numerator
@@ -115,6 +117,8 @@ class Rational:
             return +Rational(numerator,denominator)
         else:
             return NotImplemented
+
+    __rtruediv__ = __rdiv__
 
     def __lt__(self,other):
         return self.compare(other) < 0
