@@ -357,6 +357,36 @@ class OneVariablePolynomial:
                 myRing = myRing * cring
         return myRing, PolynomialRing(myRing, self.getVariable())
 
+    def content(self):
+        """
+
+        Return content of the polynomial.
+
+        """
+        coefring = self.getCoefficientRing()
+        if coefring.isfield():
+            if isinstance(coefring, ring.QuotientField):
+                num, den = 0, 1
+                for c in self.coefficient.itercoeffs():
+                    num = c.numerator.getRing().gcd(num, c.numerator)
+                    den = c.denominator.getRing().lcm(den, c.denominator)
+                return coefring.createElement(num,den)
+            else:
+                raise NotImplementedError
+        else:
+            cont = 0
+            for c in self.coefficient.itercoeffs():
+                cont = coefring.gcd(cont, c)
+            return cont
+
+    def primitivePart(self):
+        """
+
+        Return the primitive part of the polynomial.
+
+        """
+        return self / self.content()
+
     def toOneVariableDensePolynomial(self):
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
@@ -443,36 +473,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         "Copy the structure"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
-    def content(self):
-        """
-
-        Return content of the polynomial.
-
-        """
-        coefring = self.getCoefficientRing()
-        if coefring.isfield():
-            if isinstance(coefring, ring.QuotientField):
-                num, den = 0, 1
-                for c in self.coefficient:
-                    num = c.numerator.getRing().gcd(num, c.numerator)
-                    den = c.denominator.getRing().lcm(den, c.denominator)
-                return coefring.createElement(num,den)
-            else:
-                raise NotImplementedError
-        else:
-            cont = 0
-            for c in self.coefficient:
-                cont = coefring.gcd(cont, c)
-            return cont
-
-    def primitivePart(self):
-        """
-
-        Return the primitive part of the polynomial.
-
-        """
-        return self / self.content()
-
     def squareFreeDecomposition(self):
         """
 
@@ -528,36 +528,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
     def copy(self):
         "Copy the structure"
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-
-    def content(self):
-        """
-
-        Return content of the polynomial.
-
-        """
-        coefring = self.getRing().getCoefficientRing()
-        if coefring.isfield():
-            if isinstance(coefring, ring.QuotientField):
-                num, den = 0, 1
-                for c in self.coefficient.values():
-                    num = c.numerator.getRing().gcd(num, c.numerator)
-                    den = c.denominator.getRing().lcm(den, c.denominator)
-                return coefring.createElement(num,den)
-            else:
-                raise NotImplementedError
-        else:
-            cont = 0
-            for c in self.coefficient.itercoeffs():
-                cont = coefring.gcd(cont, c)
-            return cont
-
-    def primitivePart(self):
-        """
-
-        Return the primitive part of the polynomial.
-
-        """
-        return self / self.content()
 
 class MultiVariableDensePolynomial:
 
