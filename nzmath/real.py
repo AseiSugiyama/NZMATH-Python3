@@ -665,43 +665,64 @@ class Constant:
         return self.cache.__add__(other)
 
     def __radd__(self, other):
-        return self.cache.__radd__(other)
+        if isinstance(other, self.cache.__class__):
+            return other + self.cache
+        else:
+            return self.cache.__radd__(other)
 
     def __sub__(self, other):
         return self.cache.__sub__(other)
 
     def __rsub__(self, other):
-        return self.cache.__rsub__(other)
+        if isinstance(other, self.cache.__class__):
+            return other - self.cache
+        else:
+            return self.cache.__rsub__(other)
 
     def __mul__(self, other):
         return self.cache.__mul__.other
 
     def __rmul__(self, other):
-        return self.cache.__rmul__(other)
+        if isinstance(other, self.cache.__class__):
+            return other * self.cache
+        else:
+            return self.cache.__rmul__(other)
 
     def __div__(self, other):
         return self.cache.__div__(other)
 
     def __rdiv__(self, other):
-        return self.cache.__rdiv__(other)
+        if isinstance(other, self.cache.__class__):
+            return other / self.cache
+        else:
+            return self.cache.__rdiv__(other)
 
     def __truediv__(self, other):
         return self.cache.__truediv__(other)
 
     def __rtruediv__(self, other):
-        return self.cache.__rtruediv__(other)
+        if isinstance(other, self.cache.__class__):
+            return other / self.cache
+        else:
+            return self.cache.__rtruediv__(other)
 
     def __divmod__(self, other):
         return self.cache.__divmod__(other)
 
     def __rdivmod__(self, other):
-        return self.cache.__rdivmod__(other)
+        if isinstance(other, self.cache.__class__):
+            return divmod(other, self.cache)
+        else:
+            return self.cache.__rdivmod__(other)
 
     def __mod__(self, other):
         return self.cache.__mod__(other)
 
     def __rmod__(self, other):
-        return self.cache.__rmod__(other)
+        if isinstance(other, self.cache.__class__):
+            return other % self.cache
+        else:
+            return self.cache.__rmod__(other)
 
     def __pos__(self):
         return self.cache.__pos__()
