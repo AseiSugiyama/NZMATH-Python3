@@ -504,58 +504,7 @@ class Matrix:
             k = k-1
         return M 
 
-    def hermite_normal_form(self):  # using Cohen's Algorithm 2.4.4
-        """Return a Matrix in Hermite Normal Form."""
-        A = self.copy()
-        # step 1 [Initialize]
-        i = self.row; k = self.column
-        if self.row <= self.column:
-            l = 1
-        else:
-            l = self.row - self.column + 1
-        while 1:
-            while 1:
-                # step 2 [Row finished?]
-                for j in range(1, k):
-                    if A[i,j] != 0:
-                        break
-                else:       # i.e. all the A[i,j] with j<k are zero
-                    if A[i,k] < 0:
-                        A[k] = -A[k]
-                    break   # go to step 5
-                # step 3 [Choose non-zero entry]
-                j0 = 1
-                for j in range(2, k+1): # Pick among the non-zero A[i,j] for j <= k one with the smallest absolute value
-                    if  0 < abs(A[i,j]) < abs(A[i,j0]):
-                        j0 = j 
-                if j0 < k:
-                    A.swap_column(k,j0)
-                if A[i,k] < 0:
-                    A[k] = -A[k]
-                b = A[i,k]
-                # step 4 [Reduce]
-                for j in range(1, k):
-                    q = A[i,j] // b
-                    A[j] = A[j] - q * A[k]
-            # step5 [Final reductions]
-            b = A[i,k]
-            if b == 0:
-                k += 1
-            else:
-                for j in range(k+1, self.column+1):
-                    q = A[i,j] // b
-                    A[j] = A[j] - q * A[k]
-            # step 6 [Finished?]
-            if i == l:
-                W = Matrix(self.row, self.column-k+1)
-                for j in range(1, self.column-k+2):
-                    W[j] = A[j+k-1]
-                return W
-            else:
-                i -= 1; k -= 1
-                # go to step 2
-
-
+    
 # the belows are not class methods -----------------------------------
 def unit_matrix(size):
     """unit_matrix(n) : Return unit matrix whose size is n * n"""
