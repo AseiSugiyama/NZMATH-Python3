@@ -10,6 +10,80 @@ import prime
 import random
 import rational
 
+def boo(f,a,b):
+    i=a
+    while i<b:
+        print i
+        print (f%i).coefficient
+        i=i+1
+    return 0
+"""
+>>> g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,(  4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5}, ['x'])
+#i=>94
+#raise error
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "<stdin>", line 5, in boo
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 668, in __mod__
+    return self - (self // other) * other
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 643, in __floordiv__
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
+    self.ring = self.initRing()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
+    return PolynomialRing(ring, self.getVariable())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
+    if self.coefficientRing.isfield() and len(self.vars) == 1:
+AttributeError: 'NoneType' object has no attribute 'isfield'
+
+f=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
+>>> f+f
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 528, in __add__
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
+    self.ring = self.initRing()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
+    return PolynomialRing(ring, self.getVariable())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
+    if self.coefficientRing.isfield() and len(self.vars) == 1:
+AttributeError: 'NoneType' object has no attribute 'isfield'
+>>> f*2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 584, in __mul__
+    return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
+    self.ring = self.initRing()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
+    return PolynomialRing(ring, self.getVariable())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
+    if self.coefficientRing.isfield() and len(self.vars) == 1:
+AttributeError: 'NoneType' object has no attribute 'isfield'
+>>> f**2
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 605, in __pow__
+    power_of_2 = power_of_2 * power_of_2
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 578, in __mul__
+    return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
+    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
+    self.ring = self.initRing()
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
+    return PolynomialRing(ring, self.getVariable())
+  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
+    if self.coefficientRing.isfield() and len(self.vars) == 1:
+AttributeError: 'NoneType' object has no attribute 'isfield'
+"""
 def Element_p(a,p):
     """
     a is (rational,int,long) number
@@ -742,7 +816,7 @@ class EC:
         f=[]
         M=[]
         f.append(0)
-        M.append(polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x']))
+        M.append(0)#polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x'])
         H=heart(self.ch)
         if self.ch!=2 and self.ch!=3: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
@@ -754,7 +828,7 @@ class EC:
                     M.append(polynomial.OneVariableSparsePolynomial({(0,): 1}, ['x']))
                 elif i==2:
                     f.append(2*y)
-                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))#
+                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
                     g=g%E.ch
@@ -862,9 +936,13 @@ class EC:
                 f=polynomial.OneVariableSparsePolynomial({(1,):-1,(other.ch**2,):1},['x'])
                 i=0
                 while i<len(L):
+#                    print i,"@"
                     j=L[i]
                     k=self.ch%j
                     if k%2==0:
+#                        print PolyMulRed([f,E,D[k],D[k]],D[j],j),"@"
+#                        print PolyMulRed([D[k-1],D[k+1]],D[j],j),"@@"
+#                        print D[j].coefficient,j,"@@@"
                         P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
                         if P==1:
                             F=0 
