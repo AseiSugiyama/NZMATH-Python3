@@ -1885,7 +1885,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         d,g = distinctDegreeFactors.popitem()
         if d != g.degree():
              return False
-         return True
+        return True
 
 class OneVariablePolynomialCoefficients:
     """
