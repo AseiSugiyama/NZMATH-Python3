@@ -47,6 +47,12 @@ class IntegerResidueClass:
 
     __floordiv__ = __truediv__ = __div__
 
+    def __rdiv__(self, other):
+        if not other:
+            return self.__class__(0, self.m)
+        else:
+            return NotImplemented
+
     def __add__(self, other):
         if isinstance(other, IntegerResidueClass):
             if self.m == other.m:
