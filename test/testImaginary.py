@@ -44,11 +44,16 @@ class ImaginaryTest (unittest.TestCase):
         self.assertRaises(TypeError, a.__gt__, b)
         self.assertRaises(TypeError, a.__ge__, b)
 
+    def testNonzero(self):
+        a = imaginary.Complex(8.4, 5)
+        assert a
+
     def testExp(self):
         exp1 = imaginary.exp(1)
         expc1 = imaginary.exp(imaginary.Complex(1, 0))
         rexp1 = real.exp(rational.Integer(1))
         assert -1 < imaginary.exp(imaginary.Complex(0, 1)).imag < 1
+        assert isinstance(imaginary.exp(imaginary.j), imaginary.Complex)
 
     def testSin(self):
         sin1 = imaginary.sin(1)
@@ -93,15 +98,10 @@ class ErrorTest (unittest.TestCase):
     def testAbsoluteError(self):
         assert imaginary.AbsoluteError(rational.Rational(1,2))
 
-class NewFunctionTest (unittest.TestCase):
-    def testExp(self):
-        assert isinstance(imaginary.exp(imaginary.j), imaginary.Complex)
-
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ImaginaryTest, 'test'))
     suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
-    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':
