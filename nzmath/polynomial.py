@@ -179,7 +179,7 @@ class OneVariableDensePolynomial:
                 self_adjust = self.adjust().coefficient[:]
                 other_adjust = other.adjust().coefficient[:]
                 len_other_adjust = len(other_adjust)
-                floordiv_polynomial = OneVariableDensePolynomial([0], self.variable)
+                floordiv_polynomial = OneVariableDensePolynomial([self.getRing().getCoefficientRing().createElement(0)], self.variable)
                 while len(self_adjust) >= len_other_adjust:
                     quotient_degree = len(self_adjust) - len_other_adjust
                     quotient_value = self_adjust[-1] // other_adjust[-1]
@@ -189,7 +189,7 @@ class OneVariableDensePolynomial:
                     self_adjust = self_adjust[:-1]
                     while self_adjust and self_adjust[-1] == 0:
                         self_adjust = self_adjust[:-1]
-                return floordiv_polynomial
+                return floordiv_polynomial.adjust()
         elif other in self.getRing().getCoefficientRing():
             floordiv_coefficient = [c // other for c in self.coefficient]
             floordiv_polynomial = OneVariableDensePolynomial(floordiv_coefficient, self.variable)
@@ -1840,6 +1840,8 @@ class PolynomialRing (ring.CommutativeRing):
                 return PolynomialRing(oCoef, sVars | oVars)
 
     def createElement(self, seed):
+        if seed.getRing() == self:
+            return +seed
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
             if seed in self.coefficientRing:
@@ -1865,6 +1867,21 @@ class PolynomialRing (ring.CommutativeRing):
                 return MultiVariableSparsePolynomial(new_coef, listvars)
         # seed cannot be a multi-variable polynomial now
         raise NotImplementedError
+
+    def gcd(self, a, b):
+        if self.coefficientRing.isfield():
+            A = self.createElement(a)
+            B = self.createElement(b)
+            while B != 0:
+                A, B = B, A % B
+            if A in self.coefficientRing:
+                return 1
+            else:
+                return A / A[A.degree()]
+        elif self.coefficientRing.isufd():
+            return subResultantGCD(a,b)
+        else:
+            raise NotImplementedError
 
 import re
 

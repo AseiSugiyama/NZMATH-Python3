@@ -165,9 +165,11 @@ class RationalPolynomialTest(unittest.TestCase):
 
     def testFloordiv(self):
         assert 2 == j // l
+        assert rational.Rational(73, 104) == OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], "x") // OneVariableDensePolynomial([rational.Rational(1,1), rational.Rational(1,1)], "x")
 
     def testMod(self):
         assert rational.Rational(-3,2) == j % l
+        assert rational.Rational(-21, 104) == OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], "x") % a
 
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, "x")
@@ -252,6 +254,10 @@ class PolynomialRingTest(unittest.TestCase):
 
     def testGetCommonSuperring(self):
         assert self.Qxz == self.Qx.getCommonSuperring(self.Zxz), self.Qx.getCommonSuperring(self.Zxz)
+
+    def testGcd(self):
+        assert 1 == self.Qx.gcd(h,a)
+        assert 1 == self.Zx.gcd(a,b)
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
