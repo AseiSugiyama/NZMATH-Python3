@@ -2,6 +2,7 @@
 import math
 import sets
 import rational
+from rationalFunction import RationalFunctionField
 
 class IntegerPolynomial:
     def __init__(self, coefficient, variable):
@@ -1835,28 +1836,3 @@ class PolynomialRing:
             else:
                 return False
         return False
-
-class RationalFunctionField:
-    def __init__(self, field, vars):
-        self.coefficientField = field
-        if isinstance(vars, str):
-            self.vars = sets.Set((vars,))
-        else:
-            self.vars = sets.Set(vars)
-
-    def __str__(self):
-        retval = str(self.coefficientField)
-        retval += "("
-        for v in self.vars:
-            retval += str(v) + ", "
-        retval = retval[:-2] + ")"
-        return retval
-
-    def getQuotientField(self):
-        return self
-
-    def issubring(self, other):
-        raise NotImplementedError
-
-    def issuperring(self, other):
-        raise NotImplementedError
