@@ -41,7 +41,7 @@ class IntegerResidueClass:
         except AttributeError:
             pass
         try:
-            return self * IntegerResidueClass(other, self.m).inverse()
+            return self * self.__class__(other, self.m).inverse()
         except ValueError:
             return NotImplemented
 
