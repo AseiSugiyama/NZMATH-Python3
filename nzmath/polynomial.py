@@ -415,6 +415,12 @@ class OneVariablePolynomial:
         """
         return self / self.content()
 
+    def leadingCoefficient(self):
+        """
+        Return the leading coefficient of the polynomial.
+        """
+        return self[self.degree()]
+
     def toOneVariableDensePolynomial(self):
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
@@ -509,11 +515,16 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
     if not coeffring:
         _coefficient.setList(list(coefficient))
         _coefficientRing = initCoefficientRing(_coefficient)
-        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
     else:
         _coefficientRing = coeffring
         _coefficient.setList([coeffring.createElement(c) for c in coefficient])
-        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+    try:
+        if _coefficientRing.getCharacteristic() > 0:
+            return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
+    except AttributeError, e:
+        print e
+        pass
+    return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
 def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     "OneVariableSparsePolynomial(coefficient, variable)"
@@ -1476,7 +1487,7 @@ def pseudoDivision(A, B):
 
     # step 1
     R = copy.deepcopy(A)
-    Q = OneVariableDensePolynomial([0], A.getVariable(), A.getCoefficientRing())
+    Q = OneVariableDensePolynomial([], A.getVariable(), A.getCoefficientRing())
     e = m-n+1
     while 1:
         # step 2
@@ -1600,7 +1611,7 @@ class OneVariablePolynomialChar0 (OneVariablePolynomial):
         """
         result = {}
         if self.degree() == 1:
-            return {1: OneVariableDensePolynomial(self.coefficient, self.getVariable(), self.getCoefficientRing())}
+            return {1: self.copy()}
         rx = self.getRing()
         b = rx.gcd(self, self.differentiate(self.getVariable()))
         a = self / b
@@ -1687,6 +1698,79 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
         else:
             commonSuperring = self.getRing().getCommonSuperring(other.getRing())
             return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
+
+class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
+    """
+
+    OneVariablePolynomialChar0 is a class for one variable polynomial
+    whose coefficient ring is a field of characteristic p > 0.
+
+    """
+    def __init__(self, coefficient, variable, coeffring):
+        if isinstance(coefficient, OneVariablePolynomialCoefficients):
+            OneVariablePolynomial.__init__(self,
+                                           coefficient,
+                                           variable,
+                                           coeffring)
+        elif isinstance(coefficient, list):
+            coeff = OneVariablePolynomialCoefficients()
+            coeff.setList(coefficient)
+            OneVariablePolynomial.__init__(self,
+                                           coeff,
+                                           variable,
+                                           coeffring)
+        self.ch = self.getCoefficientRing().getCharacteristic()
+
+    def squareFreeDecomposition(self):
+        """
+
+        Return the square free decomposition of the polynomial.  The
+        return value is a dict whose keys are integers and values are
+        corresponding powered factors.  For example, if
+        A = A1 * A2**2,
+        the result is {1: A1, 2: A2}.
+
+        """
+        f = self.copy()
+        df = self.differentiate(self.getVariable())
+        rx = self.getRing()
+        result = {}
+        if df:
+            if f.degree() == 1:
+                result = {1: f}
+                f = self.__class__([1], self.getVariable(), self.getCoefficientRing())
+            else:
+                b = rx.gcd(f, df)
+                a = f / b
+                i = 1
+                while a.degree() > 0:
+                    c = rx.gcd(a, b)
+                    b /= c
+                    if a != c:
+                        r = a / c
+                        if r.degree() > 0:
+                            result[i] = r
+                        a = c
+                    i += 1
+                f = b
+        if f.degree() > 0:
+            f = f.pthroot(self.ch)
+            subresult = f.squareFreeDecomposition()
+            for i,g in subresult.iteritems():
+                result[i*self.ch] = g
+        return result
+
+    def pthroot(self, ch=None):
+        """
+        If the polynomial is a characteristic ch-th power polynomial,
+        then return its ch-th root.
+        """
+        if not ch:
+            ch = self.getCoefficientRing().getCharacteristic()
+        rootcoeff = OneVariablePolynomialCoefficients()
+        for i in self.coefficient.iterdegrees():
+            rootcoeff[i/ch] = self[i]
+        return self.__class__(rootcoeff, self.getVariable(), self.getCoefficientRing())
 
 class OneVariablePolynomialCoefficients:
     """
