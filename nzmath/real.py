@@ -688,6 +688,22 @@ def pow(x, y, err=defaultError):
         return rational.Rational(x) ** y
     return exp(y * log(x, err), err)
 
+def degrees(rad, err=defaultError):
+    """
+
+    converts angle rad from radians to degrees.
+
+    """
+    return rad * 180 / pi(err)
+
+def radians(deg, err=defaultError):
+    """
+
+    converts angle deg from degrees to radians.
+
+    """
+    return deg * pi(err) / 180
+
 def EulerTransform(iterator):
     """
 

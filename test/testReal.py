@@ -133,6 +133,12 @@ class NewFunctionTest (unittest.TestCase):
         assert rational.Rational(1,32) == real.pow(2,-5)
         assert real.defaultError.nearlyEqual(real.sqrt(2), real.pow(2, rational.Rational(1,2)))
 
+    def testDegrees(self):
+        assert real.defaultError.nearlyEqual(real.degrees(real.pi / 2), 90)
+
+    def testRadians(self):
+        assert real.defaultError.nearlyEqual(real.radians(90), real.pi / 2)
+
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
         assert isinstance(real.pi.toRational(), rational.Rational)
