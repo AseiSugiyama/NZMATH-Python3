@@ -16,13 +16,13 @@ class Complex:
     """
     def __init__(self, re, im=None):
         if im:
-            self.real = re
-            self.imag = im
+            self.real = rational.Rational(re)
+            self.imag = rational.Rational(im)
         elif isinstance(re, complex) or isinstance(re, Complex):
-            self.real = re.real
-            self.imag = re.imag
+            self.real = rational.Rational(re.real)
+            self.imag = rational.Rational(re.imag)
         else:
-            self.real = re
+            self.real = rational.Rational(re)
             self.imag = 0
 
     def __add__(self, other):
@@ -300,7 +300,7 @@ def exp(x, err=defaultError):
         arg = expi(x.imag, _err)
         return radius * arg
     else:
-        return Complex(cmath.exp(x))
+        return Complex(cmath.exp(complex(x.real,x.imag)))
 
 def expi(x, err=defaultError):
     """
@@ -340,7 +340,7 @@ def log(x, err=defaultError):
                     return Complex(real.log(abs(x), _err), real.pi(_err))
         return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
     else:
-        return Complex(cmath.log(x))
+        return Complex(cmath.log(complex(x.real,x.imag)))
 
 class ExponentialPowerSeries:
     """
@@ -397,14 +397,14 @@ def sin(z, err=defaultError):
         series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
         return series(z, err)
     else:
-        return Complex(cmath.sin(z))
+        return Complex(cmath.sin(complex(z.real,z.imag)))
 
 def cos(z, err=defaultError):
     if err <= defaultError:
         series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
         return series(z, err)
     else:
-        return Complex(cmath.cos(z))
+        return Complex(cmath.cos(complex(z.real,z.imag)))
 
 def tan(z, err=defaultError):
     return sin(z, err) / cos(z,err)
@@ -416,7 +416,7 @@ def sinh(z, err=defaultError):
         series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
         return series(z, err)
     else:
-        return Complex(cmath.sinh(z))
+        return Complex(cmath.sinh(complex(z.real,z.imag)))
 
 def cosh(z, err=defaultError):
     if z == 0:
@@ -425,7 +425,7 @@ def cosh(z, err=defaultError):
         series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
         return series(z, err)
     else:
-        return Complex(cmath.cosh(z))
+        return Complex(cmath.cosh(complex(z.real,z.imag)))
 
 def tanh(z, err=defaultError):
     return sinh(z, err) / cosh(z, err)
