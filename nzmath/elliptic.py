@@ -1,12 +1,14 @@
 from __future__ import division
 import arith1
+import cmath
 import factor
 import imaginary
 import math
 import polynomial 
 import prime
 import random
-import rational 
+import rational
+import whrandom
         
 class EC:
     """
@@ -59,11 +61,67 @@ class EC:
                 self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
             elif self.ch==1:
                 raise ValueError, "characteristic must be 0 or prime (-_-;)"
+            elif self.ch==2: # y^2+x*y=x^3+a2*x^2+a6 or y^2+a3*y=x^3+a4*x+a6
+                for i in range(0,len(self)):
+                    if not isinstance(coefficient[i],(int,long)):
+                        raise ValueError, "you must input integer coefficients. m(__)m"
+                if len(self)==5:
+                    if coefficient[0]%2==1 and coefficient[2]==coefficient[3]==0:
+                        self.a1=1
+                        self.a2=coefficient[1]%2
+                        self.a3=0
+                        self.a4=0
+                        self.a6=coefficient[4]%2
+                        self.disc=self.a6
+                        if self.disc!=0:
+                            self.j=arith1.inverse(self.a6,2)%2
+                    elif coefficient[0]==coefficient[1]==0:
+                        self.a1=0
+                        self.a2=0
+                        self.a3=coefficient[2]%2
+                        self.a4=coefficient[3]%2
+                        self.a6=coefficient[4]%2
+                        self.disc=self.a3**4%2
+                        self.j=0
+                    else:
+                        raise ValueError, "can't defined EC (-_-;)"
+                    if self.disc==0:
+                        raise ValueError, "singular curve (@_@)"
+                else:
+                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
+            elif self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
+                for i in range(0,len(self)):
+                    if not isinstance(coefficient[i],(int,long)):
+                        raise ValueError, "you must input integer coefficients. m(__)m"
+                if len(self)==5:
+                    if coefficient[0]==coefficient[2]==coefficient[3]==0:
+                        self.a1=0
+                        self.a2=coefficient[1]%3
+                        self.a3=0
+                        self.a4=0
+                        self.a6=coefficient[4]%3
+                        self.disc=(-self.a2**3*self.a6)%3
+                        if self.disc!=0:
+                            self.j=-self.a2**3*arith1.inverse(self.a6,3)%3
+                    elif coefficient[0]==coefficient[1]==coefficient[2]==0:
+                        self.a1=0
+                        self.a2=0
+                        self.a3=0
+                        self.a4=coefficient[3]%3
+                        self.a6=coefficient[4]%3
+                        self.disc=(-self.a4**3)%3
+                        self.j=0
+                    else:
+                        raise ValueError, "can't defined EC (-_-;)"
+                    if self.disc==0:
+                        raise ValueError, "singular curve (@_@)"
+                else:
+                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
             else:
                 for i in range(0,len(self)):
                     if not isinstance(coefficient[i],(int,long)):
                         raise ValueError, "you must input integer coefficients. m(__)m"
-                if self.ch==2 or self.ch==3 or prime.millerRabin(self.ch)==1:
+                if prime.millerRabin(self.ch)==1:
                     if len(self)==5:
                         self.a1=coefficient[0]%self.ch
                         self.a2=coefficient[1]%self.ch
@@ -142,10 +200,8 @@ class EC:
             if self.ch==0:
                 other=EC([-27*self.c4,-54*self.c6],self.ch)
                 return other   
-            elif self.ch==3:
-                raise NotImplementedError, "Now making (>_<)"
-            elif self.ch==2:
-                raise NotImplementedError, "Now making (>_<)"
+            elif self.ch==2 or self.ch==3:
+                return self
             else:
                 other=EC([(-27*self.c4)%self.ch,(-54*self.c6)%self.ch],self.ch)
                 return other
@@ -237,14 +293,14 @@ class EC:
             if len(self)==2 or (self.a1==self.a2==self.a3==0):    
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch) #random??
+                    s=random.randrange(0,self.ch) 
                     t=s**3+self.a4*s+self.a6
                 return [s,arith1.sqroot(t,self.ch)]
-            elif self.ch!=2 or self.ch!=3:#len==5
+            elif self.ch!=2 and self.ch!=3:#len==5
                 other=self.simple()
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch) #random??
+                    s=random.randrange(0,self.ch) 
                     t=s**3+other.a*s+other.b
                 x=rational.Rational(s-3*self.b2,36)*1
                 if isinstance(x,rational.Rational):
@@ -261,10 +317,21 @@ class EC:
                     yd=1
                     yn=y
                 return [(xn*arith1.inverse(xd,self.ch))%self.ch,(yn*arith1.inverse(yd,self.ch))%self.ch]
-            else: #self.ch==2 or 3
-                raise NotImplementedError, "Now making (>_<)"
+            elif self.ch==3:
+                t=0
+                while arith1.legendre(t,self.ch)!=1:
+                    s=random.randrange(0,self.ch) 
+                    t=s**3+self.a2*s**2+self.a4*s+self.a6
+                return [s,arith1.sqroot(t,self.ch)]
+            else: #self.ch==2
+                s=0
+                while self.coordinateX(s) is ValueError:
+                    s=random.randrange(0,self.ch)
+                return [s,self.coordinateX(s)]
         else: #self.ch==0
-            raise NotImplementedError, "I don't know (?_?)"
+            w=int(whrandom.random()*10**3)
+            s=random.randrange(1,w)
+            return [s,self.coordinateX(s)]
 
     def coordinateX(self,x):
         """ 
@@ -272,7 +339,7 @@ class EC:
         """
         y1=self.a1*x+self.a3
         y2=x**3+self.a2*x**2+self.a4*x+self.a6
-        if self.ch!=0:
+        if self.ch!=0 and self.ch!=2:
             if len(self)==2 or (self.a1==self.a2==self.a3==0):
                 if arith1.legendre(y2,self.ch)>=0:
                     return arith1.sqroot(y2,self.ch)
@@ -284,12 +351,14 @@ class EC:
                     return (-y1-d)*arith1.inverse(2,self.ch)%self.ch
                 else:
                     raise ValueError, "(-_-;)" 
+        elif self.ch==2:
+            pass
         else: #self.ch==0
             if y1**2+4*y2>=0:
-                return rational.Rational((-1)*y1+math.sqrt(y1**2-4*y2),2)*1
+                return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)*1
             else:
                 raise ValueError, "(-_-;)"
-    def whetherOn(self,P): # E(ch>3):y^2=x^3+a*x+b
+    def whetherOn(self,P):
 
         """
         Determine whether P is on curve or not.
@@ -431,6 +500,8 @@ class EC:
                     Q=self.add(Q,P)
             return self.sub([0],Q)
 
+    #def lattice(self):
+        
     def divPoly(self):
         x=polynomial.OneVariableSparsePolynomial({(1,):1},['x'])
         y=polynomial.OneVariableSparsePolynomial({(1,):1},['y'])
@@ -489,7 +560,7 @@ class EC:
         f.append(0)
         M.append(0)
         H=heart(self.ch)
-        if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
+        if self.ch!=2 and self.ch!=3: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
             e=x**3+E.a*x+E.b
             i=1
@@ -529,7 +600,7 @@ class EC:
                         g.coefficient=dict
                         f.append(g)
                         M.append(change(g,i,e,E.ch)) # y^2->e and div y
-        else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
+        elif self.ch==2:#E(ch=2):y^2+x*y=x^3+a2*x^2+a6
             for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
@@ -585,6 +656,8 @@ class EC:
                         g.coefficient=dict
                         f.append(g)
                         M.append(g)
+        else: #self.ch==3 
+            raise NotImplementedError, "Now making (>_<)"
         return M,H
 
     def order(self): # =#E(Fp)
@@ -592,13 +665,41 @@ class EC:
         this returns #E(Fp)
         """
         def schoof(self):
-            D=self.divPoly()
-            L=D[1]
-            i=0
-            while i<0:
-                return 0
-                
-            
+            T=[]
+            if self.ch!=0:
+                D=self.divPoly()
+                L=D[1]
+                D=D[0] # D in divPoly  
+                i=0
+                while i<len(L):
+                    return 0 ###
+                    j=L[i]
+                    k=self.ch%j
+                    if k%2==0:
+                        P=gcd # P is poly,gcd is now making
+                        if gcd==1:
+                            F=0 # F is flag
+                        else:
+                            F=1
+                            P=solve(P) # P is X(point),solve is now making
+                    else:
+                        P=gcd #
+                        if gcd==1: #
+                            F=0
+                        else:
+                            F=1
+                            P=solve(P) #
+                    if F==1:
+                        if arith1.legendre(k,j)==-1:
+                            T.append((0,j))
+                        else:
+                            pass
+                    else: # F==0
+                        return 0 ###
+                    i=i+1
+            return L
+        
+        #return schoof(self) ###    
         def Shanks_Mestre(self):
             import sets
             """
@@ -607,7 +708,7 @@ class EC:
             Crandall & Pomerance ,PRIME NUMBERS
             self.ch<=10**5+o(1)
             """
-            if self.ch!=0:
+            if self.ch>3:
                 if self.ch<=229:
                     if len(self)!=2:
                         other=self.simple()
@@ -686,7 +787,7 @@ class EC:
                         t=aa+bb*W
                         return E.ch+1+cg*t
             else:
-                raise "now making m(__)m"
+                raise NotImplementedError,"Now making m(__)m"
 
         #def SEA(self):
             
@@ -879,6 +980,7 @@ class EC:
                 else:
                     self.changeCurve(0, 0, 0, p)
                     self.tatesAlgorithm()
+
 # t=imaginary.Complex(a,b)
 
 def q(t):
@@ -887,7 +989,7 @@ def q(t):
     this returns exp(2*pi*j*t)
     t is complex and h.imag>0
     """
-    return imaginary.exp(2*imaginary.pi*imaginary.j*t)
+    return cmath.exp(2*cmath.pi*1j*t)
 
 def delta(t,x):
 
@@ -901,7 +1003,7 @@ def delta(t,x):
             return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
     i=1
     b=0
-    while abs(a(i+1))>x:
+    while abs(a(i+1))>x: #
        b=a(i)+b
        print i
        i=i+1
@@ -924,7 +1026,7 @@ def nu(t,x):
     """
     """
     qt=q(t)
-    qq=imaginary.exp(imaginary.pi*imaginary.j/12)
+    qq=cmath.exp(cmath.pi*1j/12)
     def a(i):
         if i%2==0:
             return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
@@ -937,25 +1039,6 @@ def nu(t,x):
        i=i+1
     return qq*(1+b)
 
-
-def intersectionOfTwoLists(list1,list2):
-    list1.sort()
-    list2.sort()
-    L=[]
-    i,j=0,0
-    while i<len(list1) and j<len(list2):
-        if list1[i]<=list2[j]:
-            if list1[i]==list2[j]:
-                L.append(list1[i])
-            i=i+1
-            while i<len(list1) and list1[i]==list1[i-1]:
-                i=i+1
-        else:
-            j=j+1
-            while j<len(list2) and list2[j]==list2[j-1]:
-                j=j+1
-    return L
-                
 # necessary for tatesAlgorithm ---------------------------------------
 
 def quadroots(a, b, c, p):
