@@ -65,7 +65,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         return self.coefficient[index]
 
     def __add__(self, other):
-        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial)):
+        if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
                 sum = OneVariablePolynomialCoefficients()
                 for i in range(max(self.degree(), other.degree()) + 1):
@@ -100,10 +100,10 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __neg__(self):
         reciprocal = [-c for c in self.coefficient]
-        return OneVariableSparsePolynomial(reciprocal, self.getVariable(), self.getCoefficientRing())
+        return OneVariableDensePolynomial(reciprocal, self.getVariable(), self.getCoefficientRing())
 
     def __mul__(self, other):
-        if isinstance(other, (OneVariablePolynomial)):
+        if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
                 product = OneVariablePolynomialCoefficients()
                 for l in range(len(self.coefficient)):
@@ -486,7 +486,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.variable = variable
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
-            for i,c in zip(range(len(coefficient)), coefficient):
+            for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
 
     def __setitem__(self, index, value):
@@ -587,18 +587,17 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                         return_coefficient[i + j] = return_coefficient[i + j] + c * d
                 return OneVariableSparsePolynomial(return_coefficient.getAsDict(), return_variable)
         elif other in self.ring.getCoefficientRing():
-            return_coefficient = {}
-            return_variable = self.getVariableList()
+            product = {}
             for i,c in self.coefficient.iteritems():
-                return_coefficient[i] = c * other
+                product[i] = c * other
             if isinstance(other, (int,long)):
                 other_ring = rational.theIntegerRing
             else:
                 other_ring = other.getRing()
             commonRing = self.getRing().getCommonSuperring(other_ring)
             if not commonRing and self.getCoefficientRing():
-                return OneVariableSparsePolynomial(product.getAsList(), self.getVariable(), self.getCoefficientRing())
-            return OneVariableSparsePolynomial(return_coefficient, return_variable, commonRing.getCoefficientRing())
+                return OneVariableSparsePolynomial(product, self.getVariableList(), self.getCoefficientRing())
+            return OneVariableSparsePolynomial(product, self.getVariableList(), commonRing.getCoefficientRing())
         else:
             if isinstance(other, (int,long)):
                 other = rational.Integer(other)
