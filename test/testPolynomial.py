@@ -1,6 +1,7 @@
 import unittest
 from polynomial import *
 import integerResidueClass
+import ring
 
 x, y, z = "xyz"
 Z = rational.theIntegerRing
@@ -316,7 +317,9 @@ class PolynomialRingTest(unittest.TestCase):
         assert self.QwithXandY.isufd() == self.QwithXwithY.isufd()
         assert not self.QwithXwithY.ispid()
         assert self.QwithXandY.ispid() == self.QwithXwithY.ispid()
-        class Domain:
+        class Domain (ring.Ring):
+            def __init__(self):
+                pass
             def isdomain(self):
                 return True
             def __getattr__(self, attr):
