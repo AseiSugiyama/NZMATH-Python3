@@ -88,27 +88,50 @@ def prime(s):
     raise ValueError, "Too big number %d for prime(i)." % s
 
 def generator(condition=None):
-    if not condition or condition(2):
+    """
+
+    generates primes. If optional argument condition is given, the
+    only primes satisfying condition are generated.
+
+    """
+    def _generator():
+        """
+
+        The inner generator function _generator generates all primes.
+
+        """
         yield 2
-    if not condition or condition(3):
         yield 3
-    if not condition or condition(5):
         yield 5
-    coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
-    times30 = 0
-    if not condition:
+        coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
+        times30 = 0
         while 1:
             for i in coprimeTo30:
                 if primeq(i + times30):
                     yield i + times30
             times30 += 30
+    if condition:
+        for p in _generator():
+            if condition(p):
+                yield p
     else:
-        while 1:
-            for i in coprimeTo30:
-                p = i + times30
-                if condition(p) and primeq(p):
-                    yield p
-            times30 += 30
+        for p in _generator():
+            yield p
+
+def nextPrime(n):
+    """
+
+    returns the smallest prime bigger than the given integer.
+
+    """
+    if n <= 1:
+        return 2
+    if n == 2:
+        return 3
+    n += (1 + (n & 1))
+    while not primeq(n):
+        n += 2
+    return n
 
 def smallSpsp(n):
     """
