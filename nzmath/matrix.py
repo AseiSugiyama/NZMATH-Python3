@@ -148,29 +148,29 @@ class Matrix:
         self.compo[m-1][n-1] = value
 
     def get_compo(self, m, n):
-        """get_compo(m, n) : returns (m,n)-component"""
+        """get_compo(m, n) : Return (m,n)-component"""
         return self.compo[m-1][n-1]
 
     def get_row(self, m):
-        """get_row(m) : returns m-th row in form of list"""
+        """get_row(m) : Return m-th row in form of list"""
         return self.compo[m-1]
 
     def get_column(self, n):
-        """get_column(n) : returns n-th column in form of list"""
+        """get_column(n) : Return n-th column in form of list"""
         column_n = []
         for j in range( self.row):
             column_n += [self.compo[j][n-1]]
         return column_n
 
     def get_row_vector(self, m):
-        """get_row_vector(m) : returns m-th row in form of a Matrix"""
+        """get_row_vector(m) : Return m-th row in form of a Matrix"""
         row_m = Matrix(1, self.column)
         for i in range(self.column):
             row_m.compo[0][i] = self.compo[m-1][i]
         return row_m
 
     def get_column_vector(self, n):
-        """get_column_vector(n) : returns n-th column in form of a Matrix"""
+        """get_column_vector(n) : Return n-th column in form of a Matrix"""
         column_n = Matrix(self.row, 1)
         for j in range(self.row):
             column_n.compo[j][0] = self.compo[j][n-1]
@@ -187,7 +187,7 @@ class Matrix:
         self.set_column(n2, tmp)
 
     def transpose(self):
-        """returns transposed matrix of self"""
+        """Return transposed matrix of self"""
         trans = Matrix(self.column, self.row)
         for i in range(trans.row):
             for j in range(trans.column):
@@ -195,7 +195,7 @@ class Matrix:
         return trans
 
     def triangulate(self):
-        """returns triangulated matrix of self"""
+        """Return triangulated matrix of self."""
         triangle = self.copy()
         print triangle
         for i in range(triangle.row):
@@ -216,14 +216,14 @@ class Matrix:
         return triangle
 
     def trace(self):
-        """returns trace of self"""
+        """Return trace of self."""
         trace = 0
         for i in range(self.row):
             trace += self.compo[i][i]
         return trace
 
     def determinant(self):
-        """returns determinant of self"""
+        """Return determinant of self."""
         det = 1
         if self.row != self.column:
             raise MatrixSizeError
@@ -273,7 +273,7 @@ class Matrix:
         return deleted
 
     def submatrix(self, i, j):
-        """returns submatrix which deleted i-th row and j-th column from self"""
+        """Return submatrix which deleted i-th row and j-th column from self."""
         return (self.delete_row(i)).delete_column(j)
 
     def cofactors(self):
@@ -284,7 +284,7 @@ class Matrix:
         return cofactors
 
     def inverse(self):
-        """returns inverse matrix of self"""
+        """Return inverse matrix of self."""
         if self.determinant == 0:
             raise NoInverse
         else:
@@ -333,7 +333,7 @@ class Matrix:
         return [M,c,d]
 
     def kernel(self):       # using Cohen's Algorithm 2.3.1
-        """returns a Matrix which column vectors are one basis of self's Kernel"""
+        """Return a Matrix which column vectors are one basis of self's Kernel."""
         tmp = self.cohens_simplify()
         M = tmp[0]
         c = tmp[1]
@@ -357,7 +357,7 @@ class Matrix:
         return output
 
     def image(self):        # using Cohen's Algorithm 2.3.2
-        """returns a Matrix which column vectors are one basis of self's Image"""
+        """Return a Matrix which column vectors are one basis of self's Image."""
         tmp = self.cohens_simplify()
         M = tmp[0]
         c = tmp[1]
@@ -375,7 +375,7 @@ class Matrix:
 
     def inverse_image(self, arg):      # using Cohen's Algorithm 2.3.4
         """inverse_image(arg) : argument can be a list or a column vector(Matrix)
-        It's return value is a vector contained in arg's inverse image"""
+        Return a vector contained in arg's inverse image."""
         if isinstance(arg, list):
             B = arg[:]
         elif isinstance(arg, Matrix):
@@ -423,7 +423,7 @@ class Matrix:
 
     # does not work well ???
     def supplement_basis(self):     # using Cohen's Algorithm 2.3.6
-        """returns a basis of full space, which including self's column vectors"""
+        """Return a basis of full space, which including self's column vectors."""
         if self.row < self.column:
             raise MatrixSizeError
 
@@ -484,7 +484,7 @@ class Matrix:
 
 # the belows are not class methods
 def unit_matrix(size):
-    """unit_matrix(n) : returns unit matrix whose size is n * n"""
+    """unit_matrix(n) : Return unit matrix whose size is n * n"""
     unit_matrix = Matrix(size, size)
     for i in range(size):
         unit_matrix.compo[i][i] = 1
