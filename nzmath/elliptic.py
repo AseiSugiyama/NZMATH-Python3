@@ -480,10 +480,17 @@ class EC:
                 while self.coordinateY(s) is ValueError:
                     s=random.randrange(0,self.ch)
                 return [s,self.coordinateY(s)]
-        else: 
-            w=int(random.random()*10**3)
-            s=random.randrange(1,w)
-            return [s,self.coordinateY(s)]
+        else:
+            i=0
+            while i<100:
+                w=int(random.random()*10**3)
+                s=random.randrange(1,w)
+                t=random.randrange(1,w)
+                y=self.coordinateY(rational.Rational(s,t))
+                if y!=False:
+                    return [s,self.coordinateY(s)]
+                i=i+1
+            raise ValueError,"I can't find m(__)m"
 
     def coordinateY(self,x):
         """ 
@@ -509,12 +516,26 @@ class EC:
                     return False
         elif self.ch==2:
             raise NotImplementedError, "Now making (>_<)"
-        else:
-            raise NotImplementedError, "Now making (>_<)"
-            #if y1**2+4*y2>=0:
-            #    return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)
-            #else:
-            #    return False
+        else: 
+            Y=y1**2+4*y2
+            if Y>=0:
+                if isinstance(Y,rational.Rational):
+                    yn=Y.numerator
+                    yn=math.sqrt(yn)
+                    yd=Y.denominator
+                    yd=math.sqrt(yd)
+                    if int(yn)==yn and int(yd)==yd:
+                        return rational.Rational((-1)*y1+rational.Rational(yn,yd),2)
+                    else:
+                        return False
+                else: 
+                    Z=math.sqrt(Y)
+                    if int(Z)==Z:
+                        return rational.Rational((-1)*y1+int(Z),2)
+                    else:
+                        return False
+            else:
+                return False
 
     def whetherOn(self,P):
         """
@@ -987,7 +1008,7 @@ class EC:
         else:
             raise NotImplementError,"Now making m(__)m"
 
-    def order(self,flag=0):
+    def order(self,flag=None):
         """
         this returns #E(Fp)
         if flag==0: #E/F_p
@@ -995,18 +1016,18 @@ class EC:
         """
         if self.ch<=3:
             raise NotImplementedError,"Now making m(__)m"
-        elif self.ch<10**5:
-            if flag==0:
+        elif self.ch<10**4:
+            if not flag:
                 return self.ch+1-self.naive()
             else:
                 return pow(self.ch,flag)+1-powOrd(self.naive(),flag,self.ch)
         elif self.ch<10**30:
-            if flag==0:
+            if not flag:
                 return self.ch+1-self.Shanks_Mestre()
             else:
                 return pow(self.ch,flag)+1-powOrd(self.Shanks_Mestre(),flag,self.ch)
         else: # self.ch>=10**30
-            if flag==0:
+            if not flag:
                 return self.ch+1-self.Schoof()
             else:
                 return pow(self.ch,flag)+1-powOrd(self.Schoof(),flag,self.ch)
@@ -1148,6 +1169,7 @@ class EC:
     def BSGS(self,n,P,Q):
         """
         retruns k such that Q=kP
+        P,Q is the elements of the same group
         """
         B=[]
         m=int(math.sqrt(n))+1
@@ -1171,7 +1193,10 @@ class EC:
                 if R in B:
                     return i*m+B.index(R)
                 i=i+1
-            return n
+            if self.mul(n,P)==Q:
+                return n
+            else:
+                return False
         
     def structure(self):
         if self.ch>3:
@@ -1217,7 +1242,6 @@ class EC:
                             i=i+1
                             j=pow(j,D[i])
                         s=D[i]
-                    #print r*s,N1
                     if r*s==N1: 
                         return (r*N2,s)
             else:
