@@ -111,7 +111,7 @@ class Matrix:
         return product
 
     def __pow__(self, other):
-        if other in theIntegerRing and other >= 0:
+        if other in ring.theIntegerRing and other >= 0:
             power = unit_matrix(self.row)
             for i in range(other):
                 power *= self
@@ -206,7 +206,7 @@ class Matrix:
         M[i] <==> M.get_column_vector(i)"""
         if isinstance(key[0], tuple):
             return self.compo[ key[0][0]-1 ][ key[0][1]-1 ]
-        elif key[0] in theIntegerRing: 
+        elif key[0] in ring.theIntegerRing: 
             return self.get_column_vector(key[0])
         else:
             raise TypeError, self.__getitem__.__doc__
