@@ -300,9 +300,9 @@ class OneVariablePolynomial:
 
     def __pow__(self, index, mod = None):
         if not isinstance(index, (int,long)):
-            raise TypeError, "You must input an integer for index."
+            raise TypeError, "index must be an integer."
         if index < 0:
-            raise ValueError, "You must input a non-negative integer for index."
+            raise ValueError, "index must be a non-negative integer."
         if mod == None:
             power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
             power_of_2 = self.copy()
@@ -1719,6 +1719,49 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
                                            variable,
                                            coeffring)
         self.ch = self.getCoefficientRing().getCharacteristic()
+
+    def __pow__(self, index, mod = None):
+        if not isinstance(index, (int,long)):
+            raise TypeError, "index must be an integer."
+        if index < 0:
+            raise ValueError, "index must be a non-negative integer."
+        if index > 0:
+            q = 1
+            while index % self.ch == 0:
+                q *= self.ch
+                index //= self.ch
+            if q > 1:
+                poweredCoeff = OneVariablePolynomialCoefficients()
+                for i,c in self.coefficient.iteritems():
+                    poweredCoeff[i*q] = c
+                powered = self.__class__(
+                    poweredCoeff,
+                    self.getVariable(),
+                    self.getCoefficientRing())
+            else:
+                powered = self.copy()
+        power_product = OneVariableDensePolynomial(
+            [1],
+            self.getVariable(),
+            self.getCoefficientRing())
+        if mod == None:
+            if index > 0:
+                power_of_2 = powered.copy()
+                while index > 0:
+                    if index % 2 == 1:
+                        power_product *= power_of_2
+                    power_of_2 = power_of_2 * power_of_2
+                    index = index // 2
+        else:
+            if index > 0:
+                power_of_2 = powered % mod
+                while index > 0:
+                    if index % 2 == 1:
+                        power_product *= power_of_2
+                        power_product %= mod
+                    power_of_2 = (power_of_2 * power_of_2) % mod
+                    index = index // 2
+        return power_product
 
     def squareFreeDecomposition(self):
         """
