@@ -30,7 +30,6 @@ class OneVariablePolynomial:
 
     def __setitem__(self, index, value):
         """
-
         aOneVariablePolynomial[n] = val
         sets val to the coefficient at degree n.  val must be in the
         coefficient ring of aOneVariablePolynomial.
@@ -65,7 +64,7 @@ class OneVariablePolynomial:
 
     def __eq__(self, other):
         if not self and not other:
-            True
+            return True
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable() and self.degree() == other.degree():
                 for i in range(self.degree() + 1):
@@ -345,19 +344,6 @@ class OneVariablePolynomial:
     def getCoefficientRing(self):
         return self.coefficientRing
 
-    def initRing(self):
-        myRing = None
-        for c in self.coefficient.itercoeffs():
-            if isinstance(c, (int,long)):
-                cring = rational.theIntegerRing
-            else:
-                cring = c.getRing()
-            if not myRing or myRing != cring and myRing.issubring(cring):
-                myRing = cring
-            elif not cring.issubring(myRing):
-                myRing = myRing * cring
-        return myRing, PolynomialRing(myRing, self.getVariable())
-
     def content(self):
         """
 
@@ -459,49 +445,60 @@ class OneVariablePolynomial:
                                                self.getVariableList(),
                                                self.getCoefficientRing())
 
-class OneVariableDensePolynomial (OneVariablePolynomial):
-
-    def __init__(self, coefficient, variable, coeffring=None):
-        """
-
-        OneVariableDensePolynomial(coefficient, variable [,coeffring])
-
-        coefficient must be a sequence of coefficients.
-        variable must be a character string.
-        coeffring must be, if specified, an object inheriting ring.Ring.
-
-        """
-        self.coefficient = OneVariablePolynomialCoefficients()
-        self.variable = variable
-        if not coeffring:
-            self.coefficient.setList(list(coefficient))
-            self.coefficientRing, self.ring = self.initRing()
+def initCoefficientRing(coefficient):
+    myRing = None
+    for c in coefficient.itercoeffs():
+        if isinstance(c, (int,long)):
+            cring = rational.theIntegerRing
         else:
-            self.coefficientRing = coeffring
-            self.ring = PolynomialRing(coeffring, self.variable)
-            self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
+            cring = c.getRing()
+        if not myRing or myRing != cring and myRing.issubring(cring):
+            myRing = cring
+        elif not cring.issubring(myRing):
+            myRing = myRing * cring
+    return myRing
 
-class OneVariableSparsePolynomial (OneVariablePolynomial):
+def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
+    """
 
-    def __init__(self, coefficient, variable, coeffring=None):
-        "OneVariableSparsePolynomial(coefficient, variable)"
-        self.coefficient = OneVariablePolynomialCoefficients()
-        if not coeffring:
-            for i,c in coefficient.iteritems():
-                if c:
-                    if isinstance(i, tuple):
-                        key = i[0]
-                    else:
-                        key = i
-                    self.coefficient[key] = c
-            self.variable = variable
-            self.coefficientRing, self.ring = self.initRing()
-        else:
-            self.variable = variable
-            self.coefficientRing = coeffring
-            self.ring = PolynomialRing(coeffring, self.variable)
-            for i,c in coefficient.iteritems():
-                self.coefficient[i] = coeffring.createElement(c)
+    OneVariableDensePolynomial(coefficient, variable [,coeffring])
+
+    coefficient must be a sequence of coefficients.
+    variable must be a character string.
+    coeffring must be, if specified, an object inheriting ring.Ring.
+
+    """
+    _coefficient = OneVariablePolynomialCoefficients()
+    _variable = variable
+    if not coeffring:
+        _coefficient.setList(list(coefficient))
+        _coefficientRing = initCoefficientRing(_coefficient)
+        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+    else:
+        _coefficientRing = coeffring
+        _coefficient.setList([coeffring.createElement(c) for c in coefficient])
+        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+
+def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
+    "OneVariableSparsePolynomial(coefficient, variable)"
+    _coefficient = OneVariablePolynomialCoefficients()
+    if not coeffring:
+        for i,c in coefficient.iteritems():
+            if c:
+                if isinstance(i, tuple):
+                    key = i[0]
+                else:
+                    key = i
+                _coefficient[key] = c
+        _variable = variable
+        _coefficientRing = initCoefficientRing(_coefficient)
+        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+    else:
+        _variable = variable
+        _coefficientRing = coeffring
+        for i,c in coefficient.iteritems():
+            _coefficient[i] = coeffring.createElement(c)
+        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
 class MultiVariableDensePolynomial:
 
@@ -1409,7 +1406,7 @@ class MultiVariableSparsePolynomial:
                         new_polynomial = MultiVariableSparsePolynomial(new_coefficient, origin_polynomial.variable[:-1])
                         sum_polynomial_list[j] += new_polynomial
             for i in range(max_index+1):
-                if isinstance(sum_polynomial_list[i], MultiVariableSparsePolynomial) or isinstance(sum_polynomial_list[i], OneVariableSparsePolynomial):
+                if isinstance(sum_polynomial_list[i], (MultiVariableSparsePolynomial, OneVariablePolynomial)):
                     return_polynomial.coefficient[i] = sum_polynomial_list[i].toMultiVariableDensePolynomial()
                 else:
                     return_polynomial.coefficient[i] = sum_polynomial_list[i]
