@@ -7,7 +7,7 @@ rational functions and fields of rational functions
 import sets
 import rational
 import ring
-
+ 
 class RationalFunctionField (ring.QuotientField):
     """
 
