@@ -91,6 +91,7 @@ def bigprimeq(n):
 return 1 if the integer belongs prime numbers.
 return 0 in the case of others."""
     import bigrandom
+    times_of_test = 20
     if n != long(n):
         raise ValueError, "non-integer for bigprimeq()"
     elif n < 0:
@@ -107,7 +108,7 @@ return 0 in the case of others."""
         while t % 2 == 0:
             t = t / 2
             s=s+1
-        for i in range(10):
+        for i in range(times_of_test):
             b = bigrandom.randrange(1,n-1)
             if pow(b,t,n) != 1 and pow(b,t,n) !=  n-1:
                 j = 0
