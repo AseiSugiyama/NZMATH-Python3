@@ -332,7 +332,7 @@ class EC:
                                 t=rational.IntegerIfIntOrLong(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
                         else: # P!=Q
                             s=rational.IntegerIfIntOrLong(Q[1]-P[1])/rational.IntegerIfIntOrLong(Q[0]-P[0])
-                            t=rational.IntegreIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
+                            t=rational.IntegerIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
                         y3=-(s+self.a1)*x3-t-self.a3
                         R=[x3,y3]
@@ -385,7 +385,7 @@ class EC:
         
         """
         if isinstance(P,list) and isinstance(Q,list):
-            if self.whetheron(P) and self.whetheron(Q):
+            if self.whetherOn(P) and self.whetherOn(Q):
                 if len(P)==len(Q)==2:
                     x=Q[0]
                     y=-Q[1]-self.a1*Q[0]-self.a3
@@ -544,7 +544,8 @@ class EC:
                         k=k+arith1.legendre(i*(i**2+other.a)+other.b,other.ch)
                     return other.ch+1+k
                 else: #E.ch>229
-                    def BSGS(E,P,W):
+                    #def BSGS(E,P,W):
+                    pass
             else:
                 raise "now making m(__)m"
 
