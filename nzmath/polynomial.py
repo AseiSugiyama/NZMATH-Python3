@@ -276,7 +276,6 @@ class OneVariableDensePolynomial:
             self,other = other,self
             return self//other
 
-    
     def __truediv__(self,other):
         if self%other==0:
             return self//other
@@ -445,19 +444,16 @@ class OneVariableDensePolynomial:
         else:
             raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
 
+    def toOneVariableDensePolynomial(self):
+        return +self
+
     def toOneVariableSparsePolynomial(self):
-        if self.degree() < 1:
-            return self[0]
-        else:
-            adjust_polynomial = self.adjust()
-            return_coefficient = {}
-            for i in range(len(adjust_polynomial.coefficient)):
-                if adjust_polynomial.coefficient[i] != 0:
-                    key = (i,)
-                    value = adjust_polynomial.coefficient[i]
-                    return_coefficient[key] = value
-            return_variable = [adjust_polynomial.variable]
-            return OneVariableSparsePolynomial(return_coefficient, return_variable)
+        return_coefficient = {}
+        for i in range(len(self.coefficient)):
+            if self.coefficient[i]:
+                return_coefficient[(i,)] = self.coefficient[i]
+        return_variable = [self.variable]
+        return OneVariableSparsePolynomial(return_coefficient, return_variable)
 
     def toMultiVariableDensePolynomial(self):
         return MultiVariableDensePolynomial(self.coefficient, self.variable).adjust()
@@ -866,19 +862,14 @@ class OneVariableSparsePolynomial:
             raise ValueError, "You must input integrate(polynomial, variable (, min, max))."
 
     def toOneVariableDensePolynomial(self):
-        if self.degree() < 1:
-            return self[0]
-        else:
-            origin_polynomial = self.adjust()
-            return_variable = origin_polynomial.variable[0]
-            max_index = 0
-            for i in origin_polynomial.coefficient:
-                if i[0] > max_index:
-                    max_index = i[0]
-            return_coefficient = [0]*(max_index + 1)
-            for i in origin_polynomial.coefficient:
-                return_coefficient[i[0]] += origin_polynomial.coefficient[i]
-            return OneVariableDensePolynomial(return_coefficient, return_variable)
+        retval = OneVariableDensePolynomial([], self.variable[0], self.getRing().getCoefficientRing())
+        for i,c in self.coefficient.iteritems():
+            if c:
+                retval[i[0]] = c
+        return retval
+
+    def toOneVariableSparsePolynomial(self):
+        return +self
 
     def toMultiVariableDensePolynomial(self):
         if self.degree() < 1:
@@ -1008,7 +999,7 @@ class MultiVariableDensePolynomial:
             return_coefficient = [c * other for c in self.coefficient]
             return_polynomial = MultiVariableDensePolynomial(return_coefficient, self.variable).adjust()
         else:
-            if rational.isIntegerObject(other):
+            if isinstance(other, (int,long)):
                 other = rational.Integer(other)
             commonSuperring = self.getRing().getCommonSuperring(other.getRing())
             return_polynomial = commonSuperring.createElement(self) * commonSuperring.createElement(other)
