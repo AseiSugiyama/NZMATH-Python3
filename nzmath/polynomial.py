@@ -65,7 +65,7 @@ class OneVariableDensePolynomial:
             sum.coefficient[0] += other
             return sum.adjust()
         elif isinstance(other, OneVariableSparsePolynomial):
-            self + other.toOneVariableDensePolynomial()
+            return self + other.toOneVariableDensePolynomial()
         elif isinstance(other, MultiVariableDensePolynomial):
             return self.toMultiVariableDensePolynomial() + other
         elif isinstance(other, MultiVariableSparsePolynomial):
