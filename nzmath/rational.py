@@ -4,7 +4,7 @@ import ring
 from gcd import gcd
 
 def toRational(value):
-    if isinstance(value, int):
+    if isinstance(value, int) or isinstance(value, long):
         return Rational(value, 1)
     elif isinstance(value, Rational):
         return value

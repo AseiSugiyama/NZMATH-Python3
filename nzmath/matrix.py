@@ -3,16 +3,11 @@
 from rational import * 
 import ring
 
-MatrixSizeError = "MatrixSizeError"
-NoInverse = "NoInverse"
-NoSolution = "NoSolution"
-VectorsNotIndependent = "VectorsNotIndependent"
-
 class Matrix:
 
     def __init__(self, row, column):
         "Matrix(row, column)"
-        if isinstance(row, int) and isinstance(column, int) and row > 0 and column > 0:
+        if (row in ring.theIntegerRing) and (column in ring.theIntegerRing) and row > 0 and column > 0:
             self.row = row
             self.column = column
             self.compo = []
@@ -38,21 +33,22 @@ class Matrix:
 
     def __eq__(self, other):
         if isinstance(other, int):
-            if other == 0:          # Is self zero vector/matrix ?
+            if other == 0:
                 for i in range(self.row):
                     for j in range(self.column):
                         if self.compo[i][j] != 0:
                             return 0
                 return 1 
-
-        if (self.row != other.row) or (self.column != other.column):
-            return 0
-
-        for i in range( self.row):
-            for j in range( self.column):
-                if self.compo[i][j] != other.compo[i][j]:
-                    return 0
-        return 1
+        elif isinstance(other, Matrix):
+            if (self.row != other.row) or (self.column != other.column):
+                return 0
+            for i in range(self.row):
+                for j in range( self.column):
+                    if self.compo[i][j] != other.compo[i][j]:
+                        return 0
+            return 1
+        else:
+            raise TypeError
 
     def __neg__(self):
         return (-1) * self
@@ -94,10 +90,9 @@ class Matrix:
                 for j in range(other.column):
                     for k in range(self.column):
                         product.compo[i][j] += self.compo[i][k] * other.compo[k][j]
-            return product
-
+            return product 
         # product with a scalar
-        elif isinstance(other, int) or isinstance(other, long) or isinstance(other, Rational):
+        else:
             product = Matrix(self.row, self.column)
             for i in range(self.row):
                 for j in range(self.column):
@@ -106,24 +101,17 @@ class Matrix:
 
     def __div__(self, other):
         """division by a scalar"""
-        if other in ring.theIntegerRing:
-            return self * Rational(1, other)
-        elif other in ring.theRationalField:    
-            return self * (1/other)
+        return self * (1 / toRational(other)) 
 
     def __rmul__(self, other):
-        if isinstance(other, Matrix):
-            return self.__mul__(other) 
-        
-        elif isinstance(other, int) or isinstance(other, long) or isinstance(other, Rational):
-            product = Matrix(self.row, self.column)
-            for i in range(self.row):
-                for j in range(self.column):
-                    product.compo[i][j] = self.compo[i][j] * other
-            return product
+        product = Matrix(self.row, self.column)
+        for i in range(self.row):
+            for j in range(self.column):
+                product.compo[i][j] = self.compo[i][j] * other
+        return product
 
     def __pow__(self, other):
-        if isinstance(other, int) and other >= 0:
+        if other in theIntegerRing and other >= 0:
             power = unit_matrix(self.row)
             for i in range(other):
                 power *= self
@@ -216,11 +204,9 @@ class Matrix:
     def __getitem__(self, *key):
         """M[i,j] <==> M.get_compo(i,j)
         M[i] <==> M.get_column_vector(i)"""
-        print "len=",len(key)
-        print key
         if isinstance(key[0], tuple):
-            return self.get_compo(key[0][0],key[0][1])
-        elif isinstance(key[0], int):
+            return self.compo[ key[0][0]-1 ][ key[0][1]-1 ]
+        elif key[0] in theIntegerRing: 
             return self.get_column_vector(key[0])
         else:
             raise TypeError, self.__getitem__.__doc__
@@ -258,7 +244,6 @@ class Matrix:
     def triangulate(self):
         """Return triangulated matrix of self."""
         triangle = self.copy()
-        print triangle
         for i in range(triangle.row):
             if triangle.compo[i][i] == 0:
                 for k in range(i+1, triangle.row):
@@ -403,6 +388,8 @@ class Matrix:
                 else:
                     vector[i] = 0
             basis.append(vector[1:])
+        if len(basis) == 0:
+            return None
         output = Matrix(self.column, len(basis))
         for j in range(1, output.column + 1):
             output.set_column(j, basis[j-1])
@@ -445,25 +432,6 @@ class Matrix:
         inverse_image.set_column(1, x)
         return inverse_image
         
-    
-#    def solution(self, vector):
-#        if self.row != len(vector):
-#            raise MatrixSizeError
-#        M = self.insert_column(self.column+1, vector)
-#        M = M.cohens_simplify()[0]
-#        print M
-#        x = [0]*self.column
-#        rows = range(self.row)
-#        rows.reverse()
-#        for i in rows:
-#            for j in range(self.column):
-#                if M.compo[i][j] != 0:
-#                    x[j] = (-1) * M.compo[i][M.column-1]
-#                    for k in range(j+1, M.column-1):
-#                        x[j] -= M.compo[i][k] * x[k]
-#        return x
-# 
-
     # does not work well ???
     def supplement_basis(self):     # using Cohen's Algorithm 2.3.6
         """Return a basis of full space, which including self's column vectors."""
@@ -553,7 +521,24 @@ class Matrix:
             k = k-1
         return M 
 
-# the belows are not class methods
+# define exceptions --------------------------------------------------
+class MatrixSizeError:
+    def __init__(self):
+        pass
+
+class NoInverse:
+    def __init__(self):
+        pass
+
+class NoSolution:
+    def __init__(self):
+        pass
+
+class VectorsNotIndependent:
+    def __init__(self):
+        pass
+    
+# the belows are not class methods -----------------------------------
 def unit_matrix(size):
     """unit_matrix(n) : Return unit matrix whose size is n * n"""
     unit_matrix = Matrix(size, size)
@@ -600,4 +585,5 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
-    pass
+    print e
+    print  e / 3
