@@ -44,6 +44,16 @@ class FloatTest (unittest.TestCase):
         assert dif4.exponent == 0
         assert dif4.precision == 31
 
+    def testDiv(self):
+        divisee = real.Float(-3,0,None)
+        quot1 = divisee / real.Float(125,2,None)
+        assert quot1.precision == 53
+        assert quot1.mantissa == -6917529027641081, quot1.mantissa
+        assert quot1.exponent == -60, quot1.exponent
+        divisee.setDefaultPrecision(1000)
+        quot2 = divisee / real.Float(125,2,None)
+        assert quot2.precision == 1000
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite
