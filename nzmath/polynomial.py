@@ -1846,6 +1846,47 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
             result = subresult
         return result
 
+    def factor(self):
+        """
+
+        Factor the polynomial.
+
+        """
+        result =[]
+        squareFreeFactors = self.squareFreeDecomposition()
+        for m,f in squareFreeFactors.iteritems():
+            distinctDegreeFactors = f.distinctDegreeFactorization()
+            for d,g in distinctDegreeFactors.iteritems():
+                if d == g.degree():
+                    for i in range(m):
+                        result.append(g)
+                else:
+                    for irred in g.splitSameDegrees():
+                        for i in range(m):
+                            result.append(irred)
+        return result
+
+    def isIrreducible(self):
+        """
+
+        Factor the polynomial.
+
+        """
+        result =[]
+        squareFreeFactors = self.squareFreeDecomposition()
+        if len(squareFreeFactors) != 1:
+            return False
+        m, f = squareFreeFactors.popitem()
+        if m != 1:
+            return False
+        distinctDegreeFactors = f.distinctDegreeFactorization()
+        if len(distinctDegreeFactors) != 1:
+            return False
+        d,g = distinctDegreeFactors.popitem()
+        if d != g.degree():
+             return False
+         return True
+
 class OneVariablePolynomialCoefficients:
     """
 
