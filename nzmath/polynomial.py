@@ -1296,7 +1296,7 @@ class MultiVariableSparsePolynomial:
                         if isinstance(remainder_polynomial,MultiVariableSparsePolynomial) and typical_coefficient in remainder_polynomial.coefficient:
                             remainder_coefficient = remainder_polynomial.coefficient.copy()
                             del(remainder_coefficient[typical_coefficient])
-                            remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
+                            remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_polynomial.variable).adjust()
                     return_polynomial += remainder_polynomial // other
                     return return_polynomial                
         else:
@@ -2000,12 +2000,12 @@ class PolynomialRing (ring.CommutativeRing):
             raise TypeError, "larger ring element cannot be a seed."
         else:
             if seed in self.coefficientRing:
-                return MultiVariableSparsePolynomial({tuple([0]*len(self.vars)): self.coefficientRing.createElement(seed)}, [v for v in self.vars])
-            listvars = [v for v in self.vars]
+                return MultiVariableSparsePolynomial({tuple([0]*len(self.vars)): self.coefficientRing.createElement(seed)}, list(self.vars))
+            listvars = list(self.vars)
             if isinstance(seed, OneVariableSparsePolynomial):
                 seed = seed.toOneVariableDensePolynomial()
             if isinstance(seed, OneVariableDensePolynomial):
-                position = vars.index(seed.variable)
+                position = listvars.index(seed.variable)
                 new_coef = {}
                 for i,c in enumerate(seed.coefficient):
                     index = [0]*len(listvars)
