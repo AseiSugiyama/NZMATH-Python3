@@ -87,6 +87,12 @@ class OneVariablePolynomial:
             retval = 0
         return retval
 
+    def __neg__(self):
+        reciprocal = {}
+        for i, c in self.coefficient.iteritems():
+            reciprocal[i] = -c
+        return OneVariableSparsePolynomial(reciprocal, self.getVariableList(), self.getCoefficientRing())
+
     def __add__(self, other):
         if not other:
             return self.copy()
@@ -246,10 +252,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
-
-    def __neg__(self):
-        reciprocal = [-c for c in self.coefficient.getAsList()]
-        return OneVariableDensePolynomial(reciprocal, self.getVariable(), self.getCoefficientRing())
 
     def __mul__(self, other):
         if isinstance(other, OneVariablePolynomial):
@@ -557,12 +559,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
-
-    def __neg__(self):
-        reciprocal = {}
-        for i, c in self.coefficient.iteritems():
-            reciprocal[i] = -c
-        return OneVariableSparsePolynomial(reciprocal, self.getVariableList(), self.getCoefficientRing())
 
     def __mul__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
