@@ -1232,8 +1232,9 @@ class MultiVariableSparsePolynomial:
                     return 1
                 elif other > 0:
                     index = other
-                    power_product = MultiVariableSparsePolynomial([1],self.variable)
-                    power_of_2 = MultiVariableSparsePolynomial(self.coefficient[:],self.variable)
+                    zero_tuple = (0,) * len(self.variable)
+                    power_product = MultiVariableSparsePolynomial({zero_tuple:1},self.variable)
+                    power_of_2 = MultiVariableSparsePolynomial(self.coefficient,self.variable)
                     while index > 0:
                         if index % 2 == 1:
                             power_product *= power_of_2
@@ -1245,8 +1246,9 @@ class MultiVariableSparsePolynomial:
                     return 1
                 elif other > 0:
                     index = other
-                    power_product = MultiVariableSparsePolynomial([1],self.variable)
-                    power_of_2 = MultiVariableSparsePolynomial(self.coefficient[:],self.variable)
+                    zero_tuple = (0,) * len(self.variable)
+                    power_product = MultiVariableSparsePolynomial({zero_tuple:1},self.variable)
+                    power_of_2 = MultiVariableSparsePolynomial(self.coefficient,self.variable)
                     while index > 0:
                         if index % 2 == 1:
                             power_product *= power_of_2
@@ -1260,7 +1262,92 @@ class MultiVariableSparsePolynomial:
         raise NotImplementedError
 
     def __floordiv__(self, other):
-        raise NotImplementedError
+        if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
+            return_coefficient = {}
+            return_variable = self.variable[:]
+            for i in self.coefficient:
+                return_coefficient[i] = self.coefficient[i] // other
+            return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
+            return return_polynomial.adjust()
+        elif isinstance(other,(OneVariableDensePolynomial,OneVariableSparsePolynomial,MultiVariableDensePolynomial)):
+            return self // other.toMultiVariableSparsePolynomial()
+        elif isinstance(other,MultiVariableSparsePolynomial):
+            if self.variable != other.variable:
+                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable.sort()
+                return self_adjust.arrange_variable(sum_variable) //  other_adjust.arrange_variable(sum_variable)
+            else:
+                typical_term_of_other = other.search_typical_term()
+                div_test_flag = self.compare_two_polynomial(typical_term_of_other)
+                if rational.isIntegerObject(div_test_flag) or isinstance(other,rational.Rational):
+                    return div_test_flag // typical_term_of_other.coefficient.values()[0]
+                else:
+                    return_polynomial = 0
+                    remainder_coefficient = self.coefficient.copy()
+                    remainder_variable = self.variable[:]
+                    remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
+                    quotient_term = remainder_polynomial.compare_two_polynomial(typical_term_of_other).search_typical_term() // typical_term_of_other.coefficient.values()[0]
+                    return_polynomial += quotient_term
+                    remainder_polynomial -= quotient_term * other
+                    typical_coefficient = quotient_term.coefficient.keys()[0]
+                    if isinstance(remainder_polynomial,MultiVariableSparsePolynomial) and typical_coefficient in remainder_polynomial.coefficient:
+                        remainder_coefficient = remainder_polynomial.coefficient.copy()
+                        del(remainder_coefficient[typical_coefficient])
+                        remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
+                    return_polynomial += remainder_polynomial // other
+                    return return_polynomial                
+        else:
+            raise NotImplementedError
+
+    def search_typical_term(self):
+        typical_coefficient = (0,) * len(self.variable)
+        typical_coefficient_value = 0
+        for i in self.coefficient:
+            this_value = 0
+            for j in i:
+                this_value += j
+            if this_value > typical_coefficient_value:
+                typical_coefficient = i
+                typical_coefficient_value = this_value
+            elif this_value == typical_coefficient_value:
+                for k in range(len(typical_coefficient)):
+                    if i[k] < typical_coefficient[k]:
+                        break
+                    elif i[k] > typical_coefficient[k]:
+                        typical_coefficient = i
+                        typical_coefficient_value = this_value
+        typical_term_value = self.coefficient[typical_coefficient]
+        return_polynomial = MultiVariableSparsePolynomial({typical_coefficient:typical_term_value},self.variable)
+        return return_polynomial
+
+    def compare_two_polynomial(self,other):
+        if isinstance(other, MultiVariableSparsePolynomial):
+            if self.variable == other.variable:
+                if len(other.coefficient.keys()) == 1:
+                    return_coefficient = {}
+                    return_variable = self.variable[:]
+                    for i in self.coefficient:
+                        flag = 1
+                        addition_term = []
+                        for j in range(len(self.variable)):
+                            if i[j] < other.coefficient.keys()[0][j]:
+                                flag = 0
+                                break
+                            else:
+                                addition_term += [(i[j] - other.coefficient.keys()[0][j])]
+                        if flag == 1:
+                            return_coefficient[tuple(addition_term)] = self.coefficient[i]
+                    if len(return_coefficient.keys()) == 0:
+                        return 0
+                    else:
+                        return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
+                        return return_polynomial
+                else:
+                    raise ValueError, "You must input a polynomial that have one term for other."
+            else:
+                raise ValueError, "You must input two Polynomial that have common kind of variable."
+        else:
+            raise ValueError, "You must input two MultiVariableSparsePolynomial."
 
     def __truediv__(self, other):
         raise NotImplementedError
@@ -1268,7 +1355,12 @@ class MultiVariableSparsePolynomial:
     __div__=__truediv__
 
     def __rfloordiv__(self, other):
-        raise NotImplementedError
+        if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
+            return 0
+        elif isinstance(other,(OneVariableDensePolynomial,OneVariableSparsePolynomial,MultiVariableDensePolynomial)):
+            return other.toMultiVariableSparsePolynomial() // self
+        else:
+            raise NotImplementedError 
 
     def __rdiv__(self, other):
         raise NotImplementedError
