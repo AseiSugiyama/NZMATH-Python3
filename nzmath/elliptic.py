@@ -1011,9 +1011,6 @@ class EC:
             else:
                 return pow(self.ch,flag)+1-powOrd(self.Schoof(),flag,self.ch)
 
-    def BSGS(self,P,Q):
-        return 0
-    
     def line(self,P,Q=None):
         """
         this use to compute weil pairing
@@ -1130,11 +1127,11 @@ class EC:
     def WeilPairing(self,m,P,Q):
         i=1
         while i:
-            T=0
-            U=0
+            T=[0]
+            U=[0]
             A=[0]
             B=[0]
-            while T==U and A==[0] and B==[0]:
+            while T==U or T==[0] or U==[0] or A==[0] or B==[0]:
                 T,U=self.point(),self.point()
                 A=self.add(P,T) 
                 B=self.add(Q,U)
@@ -1148,6 +1145,34 @@ class EC:
                         if H!=False and H!=0:
                             return g*G/h*H
 
+    def BSGS(self,n,P,Q):
+        """
+        retruns k such that Q=kP
+        """
+        B=[]
+        m=int(math.sqrt(n))+1
+        R=Q
+        B.append(Q)
+        i=1
+        while i<=m:
+            R=self.sub(R,P)
+            if R==[0]:
+                return i
+            B.append(R)
+            i=i+1
+        R=self.mul(m,P)
+        P=R
+        if R in B:
+            return m+B.index(R)
+        else:
+            i=2
+            while i<=m:
+                R=self.add(R,P)
+                if R in B:
+                    return i*m+B.index(R)
+                i=i+1
+            return n
+        
     def structure(self):
         if self.ch>3:
             if self.index==1:
@@ -1161,11 +1186,11 @@ class EC:
                 N1,N2=N0,N//N0
                 N0=gcd.gcd(N1,N2)
                 N1,N2=N1*N0,N2//N0
-                P1=0
-                P2=0
+                P1=[0]
+                P2=[0]
                 k=1
-                while k: 
-                    while P1==P2:
+                while k:
+                    while P1==P2 or P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
                     if P1==P2==[0]:
@@ -1173,40 +1198,13 @@ class EC:
                         ord2=1
                     elif P1==[0] and P2!=[0]:
                         ord1=1
-                        D=divi(N1)
-                        P3=P2
-                        i=0
-                        while P3!=[0]:
-                            P3=P2
-                            i=i+1
-                            P3=other.mul(D[i],P3)
-                        ord2=D[i]
+                        ord2=other.BSGS(N,P2,[0])
                     elif P1!=[0] and P2==[0]:
-                        D=divi(N1)
-                        P3=P1
-                        i=0
-                        while P3!=[0]:
-                            P3=P1
-                            i=i+1
-                            P3=other.mul(D[i],P3)
-                        ord1=D[i]
+                        ord1=other.BSGS(N,P1,[0])
                         ord2=1
                     else:
-                        D=divi(N1)
-                        P3=P1
-                        i=0
-                        while P3!=[0]:
-                            P3=P1
-                            i=i+1
-                            P3=other.mul(D[i],P3)
-                        ord1=D[i]
-                        P3=P2
-                        i=0
-                        while P3!=[0]:
-                            P3=P2
-                            i=i+1
-                            P3=other.mul(D[i],P3)
-                        ord2=D[i]
+                        ord1=other.BSGS(N,P1,[0])
+                        ord2=other.BSGS(N,P2,[0])
                     r=gcd.lcm(ord1,ord2)
                     e=other.WeilPairing(r,P1,P2)
                     s=1
@@ -1219,6 +1217,7 @@ class EC:
                             i=i+1
                             j=pow(j,D[i])
                         s=D[i]
+                    #print r*s,N1
                     if r*s==N1: 
                         return (r*N2,s)
             else:
