@@ -272,6 +272,10 @@ class IntegerResidueClassPolynomialTest(unittest.TestCase):
     def testEquals(self):
         assert self.f1 == self.f1
 
+    def testCall(self):
+        f = MultiVariableSparsePolynomial({(1,0): integerResidueClass.IntegerResidueClass(1,101), (0,1): integerResidueClass.IntegerResidueClass(100,101)}, ["x","y"])
+        assert not f(x=1,y=1)
+
 class PolynomialRingTest(unittest.TestCase):
     def setUp(self):
         self.Qx = PolynomialRing(Q, x)

@@ -856,6 +856,8 @@ class MultiVariableSparsePolynomial:
         adjust_polynomial = adjust_polynomial.adjust()
         if adjust_polynomial in basecoefficientring:
             return adjust_polynomial
+        elif not adjust_polynomial:
+            return basecoefficientring.createElement(0)
         variable_to_variable_back_dict = {}
         variable_to_polynomial_back_dict = {}
         new_variable_parameter = 0
