@@ -1353,7 +1353,25 @@ class MultiVariableSparsePolynomial:
             raise ValueError, "You must input two MultiVariableSparsePolynomial."
 
     def __truediv__(self, other):
-        raise NotImplementedError
+        if rational.isIntegerObject(other):
+            return_coefficient = {}
+            return_variable = self.variable[:]
+            for i in self.coefficient:
+                if rational.isIntegerObject(self.coefficient[i]):
+                    return_coefficient[i] = rational.Rational(self.coefficient[i],other)
+                else:
+                    return_coefficient[i] = self.coefficient[i] / other
+            return_polynomial = MultiVariableSparsePolynomial(return_coefficient,return_variable)
+            return return_polynomial
+        elif isinstance(other,rational.Rational):
+            return_coefficient = {}
+            return_variable = self.variable[:]
+            for i in self.coefficient:
+                return_coefficient[i] = self.coefficient[i] / other
+            return_polynomial = MultiVariableSparsePolynomial(return_coefficient,return_variable)
+            return return_polynomial
+        else:
+            raise NotImplementedError
 
     __div__=__truediv__
 
