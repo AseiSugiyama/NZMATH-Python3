@@ -1,4 +1,8 @@
-#polynomial.py
+"""
+
+Class definitions of polynomials.
+
+"""
 import math
 import sets
 import rational
@@ -7,7 +11,7 @@ from rationalFunction import RationalFunctionField
 class OneVariableDensePolynomial:
 
     def __init__(self, coefficient, variable):
-        "IntegerPolynomial(coefficient, variable)"
+        "OneVariableDensePolynomial(coefficient, variable)"
         if isinstance(variable, str) and isinstance(coefficient, list):
             self.coefficient = coefficient
             self.variable = variable
@@ -427,7 +431,17 @@ class OneVariableDensePolynomial:
             return 1
 
     def getRing(self):
-        return PolynomialRing(rational.theRationalField, self.variable)
+        ring = None
+        for c in self.coefficient:
+            if rational.isIntegerObject(c):
+                cring = rational.theIntegerRing
+            else:
+                cring = c.getRing()
+            if not ring or ring != cring and ring.issubring(cring):
+                ring = cring
+            elif not cring.issubring(ring):
+                ring = ring * cring
+        return PolynomialRing(ring, self.variable)
 
     def degree(self):
         adjust_polynomial = self.adjust()
