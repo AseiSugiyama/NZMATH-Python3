@@ -378,17 +378,20 @@ class Rational (ring.QuotientFieldElement):
             self = Integer(1)
         return self
 
+    def __float__(self):
+        return float(self.decimalString(17))
+
     def decimalString(self,N):
-        n=self.numerator
-        d=self.denominator
-        L=[]
-        i=1
-        L.append(str(n/d))
+        n = self.numerator
+        d = self.denominator
+        L = []
+        i = 1
+        L.append(str(n//d))
         L.append('.')
-        while i<=N:
-            n=n%d*10
-            L.append(str(n/d))
-            i=i+1
+        while i <= N:
+            n = n%d*10
+            L.append(str(n//d))
+            i += 1
         return ''.join(L)
 
 class RationalField (ring.QuotientField):

@@ -149,6 +149,13 @@ class RationalTest (unittest.TestCase):
     def testExpand(self):
         assert Rational(-33,100) == Rational(-1, 3).expand(10,100)
 
+    def testFloat(self):
+        assert 0.25 == float(Rational(1,4))
+
+    def testDecimalString(self):
+        assert "0.25000" == Rational(1,4).decimalString(5)
+        assert "0.33333" == Rational(1,3).decimalString(5)
+
 class IntegerTest(unittest.TestCase):
     def setUp(self):
         self.three = Integer(3)
