@@ -29,8 +29,13 @@ class FinitePrimeFieldElement(integerResidueClass.IntegerResidueClass):
             if t[2] != 1:
                 raise ValueError, "No inverse of %s." % representative
             self.n = (representative.numerator * t[0]) % self.m
-        else:
+        elif isinstance(representative, (int, long)):
             self.n = representative % self.m
+        elif isinstance(representative, integerResidueClass.IntegerResidueClass):
+            assert representative.m == modulus
+            self.n = representative.n
+        else:
+            raise NotImplementedError, repr(representative)
 
     def __repr__(self):
         return "FinitePrimeFieldElement(%d, %d)" % (self.n, self.m)
@@ -94,3 +99,5 @@ class FinitePrimeField (FiniteField):
             return True
         return False
 
+    def createElement(self, seed):
+        return FinitePrimeFieldElement(seed, self.char)
