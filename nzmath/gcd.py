@@ -2,20 +2,15 @@ def gcd(a, b):
     while b:
         a, b = b, a%b
     return a
- 
-def extgcd(a, b):
-    from matrix import Matrix
-    tmp = Matrix(2,2)
-    tmp.set([1,0,0,1])
-    q = []
-    while b:
-        q += [a/b]
-        a,b = b, a%b
-    m = Matrix(2,2)
-    for i in range(len(q)):
-        m.set([0,1,1,-q[i]])
-        tmp = m * tmp
-    return [a, [tmp.compo[0][0], tmp.compo[0][1]]]
+
+def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
+    x,y = abs(x),abs(y)
+    a,b,g,u,v,w = 1,0,x,0,1,y
+    while w > 0:
+        q = g / w
+        a,b,g,u,v,w = u,v,w,a-q*u,b-q*v,g-q*w
+
+    return (a,b,g)
 
 def gcd_of_list(integers):
     the_gcd = 0
