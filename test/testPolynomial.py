@@ -1,6 +1,7 @@
 import unittest
 from polynomial import *
 import integerResidueClass
+from rational import Integer as Int
 
 # data for debugging
 
@@ -339,6 +340,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
         assert result == self.f + self.g
         assert self.f.getRing() == (self.f + self.g).getRing()
+        assert 0 == self.f + self.f
 
     def testSub(self):
         result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
@@ -349,12 +351,23 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         result = OneVariableDensePolynomial(self.mapF2([1,1,1,1]),"x")
         assert result == self.f * self.g
         assert self.f.getRing() == (self.f * self.g).getRing()
+        assert self.f == 1 * self.f
+        assert 0 == 0 * self.f
+
+    def testMod(self):
+        assert self.f == self.f % self.g
+
+    def testFloordiv(self):
+        assert 0 == self.f // self.g
 
     def testDifferentiate(self):
         import finitefield
         result = finitefield.FinitePrimeFieldElement(1,2)
         assert result == self.f.differentiate(self.f.variable)
         assert 0 == self.g.differentiate(self.g.variable)
+
+    def testGcd(self):
+        assert self.f == self.f.getRing().gcd(self.f, self.g)
 
 def suite():
     suite=unittest.TestSuite()

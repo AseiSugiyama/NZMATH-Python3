@@ -85,6 +85,8 @@ class OneVariableDensePolynomial:
             sum = OneVariableDensePolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
             return sum.adjust()
+        elif other == 0:
+            return +self
         else:
             if rational.isIntegerObject(other):
                 other = rational.Integer(other)
@@ -122,9 +124,9 @@ class OneVariableDensePolynomial:
         elif other in self.getRing().getCoefficientRing():
             product = [c * other for c in self.coefficient]
             return OneVariableDensePolynomial(product, self.variable).adjust()
+        elif rational.isIntegerObject(other):
+            return rational.Integer(other).actAdditive(self)
         else:
-            if rational.isIntegerObject(other):
-                other = rational.Integer(other)
             commonSuperring = self.getRing().getCommonSuperring(other.getRing())
             return commonSuperring.createElement(self) * commonSuperring.createElement(other)
 
