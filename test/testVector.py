@@ -35,7 +35,7 @@ class VectorTest(unittest.TestCase):
 
     def testIndexOfNoneZero(self):
         v = vector.Vector([0,2,0])
-        print v.indexOfNoneZero()
+##         print v.indexOfNoneZero()
         assert v.indexOfNoneZero() == 2
 
 def suite():
