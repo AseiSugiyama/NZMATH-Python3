@@ -20,6 +20,9 @@ class GcdTest (unittest.TestCase):
         import rational
         assert (-4,3,1) == gcd.extgcd(rational.Integer(8),11)
 
+    def testGcdOfList(self):
+        assert [1, [-4,3]] == gcd.gcd_of_list([8, 11])
+
 def suite():
     suite = unittest.makeSuite(GcdTest, "test")
     return suite

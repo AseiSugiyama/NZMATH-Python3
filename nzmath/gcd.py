@@ -4,8 +4,7 @@ def gcd(a, b):
     return a
 
 def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
-    x,y = abs(x),abs(y)
-    a,b,g,u,v,w = 1,0,x,0,1,y
+    a,b,g,u,v,w = 1,0,abs(x),0,1,abs(y)
     while w > 0:
         q = g // w
         a,b,g,u,v,w = u,v,w,a-q*u,b-q*v,g-q*w
@@ -17,10 +16,10 @@ def gcd_of_list(integers):
     coeff = []
     for next in integers:
         t = extgcd(the_gcd, next)
-        the_gcd = t[0]
         for i in range(len(coeff)):
-            coeff[i] *= t[1][0]
-        coeff += [t[1][1]]
+            coeff[i] *= t[0]
+        coeff.append(t[1])
+        the_gcd = t[2]
     return [the_gcd, coeff]
 
 def lcm(a, b):
