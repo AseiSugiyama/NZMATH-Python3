@@ -165,6 +165,13 @@ class IntegerResidueClassRing (CommutativeRing):
             raise ValueError, "%s can not be converted to an IntegerResidueClass object." % seed
 
     def isfield(self):
+        """
+
+        isfield returns True if the modulus is prime, False if not.
+        Since a finite domain is a field, other ring property tests
+        are merely aliases of isfield.
+
+        """
         if None == self.properties.isfield():
             if primeq(self.m):
                 self.properties.setIsfield(True)
@@ -175,14 +182,25 @@ class IntegerResidueClassRing (CommutativeRing):
         else:
             return self.properties.isfield()
 
-    def isdomain(self):
-        if None == self.properties.isdomain():
-            if primeq(self.m):
-                self.properties.setIsfield(True)
-                return True
-            else:
-                self.properties.setIsdomain(False)
-                return False
-        else:
-            return self.properties.isfield()
+    isdomain = isfield
+    isnoetherian = isfield
+    isufd = isfield
+    ispid = isfield
+    iseuclidean = isfield
 
+    def __eq__(self, other):
+        if isinstance(other, IntegerResidueClassRing) and self.m == other.m:
+            return True
+        return False
+
+    def issubring(self, other):
+        if self == other:
+            return True
+        else:
+            return False
+
+    def issuperring(self, other):
+        if self == other:
+            return True
+        else:
+            return False
