@@ -1,3 +1,14 @@
+Version 0.1.1 to 0.2.0
+----------------------
+* add a new module factor.mpqs, which provides multi-polynomial
+  quadratic sieve method.
+* add a method to culculate order of elliptic curve over finite fields.
+* rewrite polynomial.py for one variable polynomials.
+* rewrite real.py and imaginary.py.
+* fix bug in matrix.py (reported by Justin Walker).
+* many other bug fixes.
+* create a tutorial.txt document.
+
 Version 0.1.0 to 0.1.1
 ----------------------
 * BSD-licensed.

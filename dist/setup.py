@@ -2,9 +2,9 @@ from distutils.core import setup
 
 setup (
     name = "NZMATH",
-    version = "0.1.1",
+    version = "0.2.0",
     url = "http://tnt.math.metro-u.ac.jp/nzmath/",
     author = "NZMATH development group",
     author_email = "nzmath-user@tnt.math.metro-u.ac.jp",
 
-    packages = ["nzmath"] )
+    packages = ["nzmath", "nzmath.factor"] )
