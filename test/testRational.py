@@ -102,6 +102,7 @@ class IntegerTest(unittest.TestCase):
         assert 24 == self.three * 8
         assert [0,0,0] == self.three * [0]
         assert (0,0,0) == self.three * (0,)
+        assert Rational(6,5) == self.three * Rational(2,5)
 
     def testRmul(self):
         assert 24 == 8 * self.three

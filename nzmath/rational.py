@@ -301,7 +301,7 @@ class Integer(long, ring.CommutativeRingElement):
         return Integer(other-long(self))
 
     def __mul__(self, other):
-        if isinstance(other, list) or isinstance(other, tuple):
+        if isinstance(other, list) or isinstance(other, tuple) or isinstance(other, Rational):
             return long(self) * other
         try:
             return Integer(long(self)*other)
