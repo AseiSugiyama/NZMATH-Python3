@@ -255,6 +255,33 @@ class OneVariablePolynomial:
     def __mod__(self, other):
         return divmod(self, other)[1]
 
+    def __pow__(self, index, mod = None):
+        if not isinstance(index, (int,long)):
+            raise TypeError, "You must input an integer for index."
+        if index < 0:
+            raise ValueError, "You must input a non-negative integer for index."
+        if index == 0:
+            return 1
+        if mod == None:
+            power_product = self.getRing().createElement(1)
+            power_of_2 = self.copy()
+            while index > 0:
+                if index % 2 == 1:
+                    power_product *= power_of_2
+                power_of_2 = power_of_2 * power_of_2
+                index = index // 2
+            return power_product.copy()
+        else:
+            power_product = self.getRing().createElement(1)
+            power_of_2 = self.copy()
+            while index > 0:
+                if index % 2 == 1:
+                    power_product *= power_of_2
+                    power_product %= mod
+                power_of_2 = (power_of_2 * power_of_2) % mod
+                index = index // 2
+            return power_product.copy()
+
     def __nonzero__(self):
         if self.degree() >= 0:
             return True
@@ -364,35 +391,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
-
-    def __pow__(self, other, mod = None):
-        if not isinstance(other, (int,long)):
-            raise TypeError, "You must input an integer for index."
-        if other == 0:
-            return 1
-        if other < 0:
-            raise NotImplementedError
-        if mod == None:
-            index = other
-            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
-            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
-            while index > 0:
-                if index % 2 == 1:
-                    power_product *= power_of_2
-                power_of_2 = power_of_2 * power_of_2
-                index = index // 2
-            return power_product.copy()
-        else:
-            index = other
-            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
-            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
-            while index > 0:
-                if index % 2 == 1:
-                    power_product *= power_of_2
-                    power_product %= mod
-                power_of_2 = (power_of_2 * power_of_2) % mod
-                index = index // 2
-            return power_product.copy()
 
     def __call__(self,other):
         if isinstance(other,str):
@@ -530,37 +528,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
-
-    def __pow__(self, index, mod = None):
-        if isinstance(index, (int,long)):
-            if mod == None:
-                if index == 0:
-                    return 1
-                elif index > 0:
-                    index_2 = index
-                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.getVariableList())
-                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList())
-                    while index_2 > 0:
-                        if index_2 % 2 == 1:
-                            return_polynomial *= power_of_2
-                        power_of_2 = power_of_2 * power_of_2
-                        index_2 = index_2 // 2
-                    return return_polynomial
-            else:
-                if index == 0:
-                    return 1 % mod
-                elif index > 0:
-                    index_2 = index
-                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.getVariableList())
-                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList())
-                    while index_2 > 0:
-                        if index_2 % 2 == 1:
-                            return_polynomial *= power_of_2
-                            return_polynomial %= mod
-                        power_of_2 = (power_of_2 * power_of_2) % mod
-                        index = index // 2
-                    return return_polynomial
-        raise ValueError, "You must input non-negative integer for index."
 
     def __call__(self, other):
         if isinstance(other, str):
