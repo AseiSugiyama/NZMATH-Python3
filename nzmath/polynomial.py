@@ -104,6 +104,12 @@ class OneVariablePolynomial:
         quotient = other // self
         return (quotient, other - quotient * self)
 
+    def toOneVariableDensePolynomial(self):
+        return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
+
+    def toOneVariableSparsePolynomial(self):
+        return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -415,12 +421,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                  return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(max) - OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(min)
         else:
             raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
-
-    def toOneVariableDensePolynomial(self):
-        return self.adjust()
-
-    def toOneVariableSparsePolynomial(self):
-        return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
 
     def toMultiVariableDensePolynomial(self):
         return MultiVariableDensePolynomial(self.coefficient, self.getVariable()).adjust()
@@ -774,16 +774,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                 return self * (other_polynomial(max) - other_polynomial(min))
         else:
             raise ValueError, "You must input integrate(polynomial, variable (, min, max))."
-
-    def toOneVariableDensePolynomial(self):
-        retval = OneVariablePolynomialCoefficients()
-        for i,c in self.coefficient.iteritems():
-            if c:
-                retval[i] = c
-        return OneVariableDensePolynomial(retval.getAsList(), self.getVariable(), self.getRing().getCoefficientRing())
-
-    def toOneVariableSparsePolynomial(self):
-        return +self
 
     def toMultiVariableDensePolynomial(self):
         return_variable = self.getVariable()
