@@ -1,5 +1,5 @@
 from gcd import extgcd
-from ring import Integer
+from rational import Integer
 from rational import Rational
 
 class IntegerResidueClass:

@@ -1,6 +1,6 @@
 import unittest
 from integerResidueClass import *
-from ring import Integer
+from rational import Integer
 from rational import Rational
 
 class IntegerResidueClassTest(unittest.TestCase):

@@ -733,6 +733,7 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
+	pass
 #    import testMatrix
 #    runner = testMatrix.unittest.TextTestRunner()
 #    runner.run(testMatrix.suite())
