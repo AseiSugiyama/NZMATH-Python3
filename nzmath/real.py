@@ -40,7 +40,7 @@ class Float:
                 mantissa = (aRational.numerator * 2**(bits + precision)) // aRational.denominator
                 exponent = -(bits + precision)
         if isinstance(mantissa, float):
-            mantissa, exponent = long(math.flexp(mantissa)[0] * 2 ** doubleprecision), math.flexp(mantissa)[1] - doubleprecision
+            mantissa, exponent = long(math.frexp(mantissa)[0] * 2 ** doubleprecision), math.frexp(mantissa)[1] - doubleprecision
             if not precision:
                 precision = doubleprecision
         if isinstance(mantissa, Float):
@@ -290,6 +290,10 @@ class Float:
                     mantissa >>= (bits - precision)
                     exponent += (bits - precision)
             return self.__class__(mantissa, exponent, precision)
+        # power is not in Z
+        if self < 0:
+            raise ValueError, "negative number cannot be raised to a fractional power"
+        return exp(other * log(self))
 
     def __neg__(self):
         return self.__class__(-self.mantissa, self.exponent, self.precision)
@@ -666,15 +670,14 @@ def piGaussLegendre(precision):
 def exp(x, precision=doubleprecision):
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
-    if x < 0:
-        return exp(-x, precision).inverse()
     if x == 0:
         return Float(1, 0, None)
-    retval = Float(1, 0, precision)
+    if x < 0:
+        return exp(-x, precision).inverse()
     y = Float(x, 0, precision)
     eps = Float(1, -2*precision)
     f = i = 1
-    series = [y]
+    series = [1, y]
     while abs(series[-1]) > eps:
         i += 1
         f *= i
