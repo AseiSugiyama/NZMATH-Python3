@@ -120,6 +120,9 @@ class Rational:
 
     __rtruediv__ = __rdiv__
 
+    def __pow__(self, index):
+        return +Rational(self.numerator ** index, self.denominator ** index)
+
     def __lt__(self,other):
         return self.compare(other) < 0
 
