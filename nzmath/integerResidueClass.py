@@ -122,7 +122,7 @@ class IntegerResidueClass:
     def getRing(self):
         return IntegerResidueClassRing.getInstance(self.m)
 
-from ring import CommutativeRing
+from ring import CommutativeRing, CommutativeRingProperties
 from prime import primeq
 
 class IntegerResidueClassRing (CommutativeRing):
@@ -133,12 +133,7 @@ class IntegerResidueClassRing (CommutativeRing):
     def __init__(self, modulus):
         """The argument modulus m specifies an ideal mZ."""
         self.m = modulus
-        self._isfield = None
-        self._iseuclidean = None
-        self._ispid = None
-        self._isufd = None
-        self._isnoetherian = None
-        self._isdomain = None
+        self.properties = CommutativeRingProperties()
 
     def __repr__(self):
         return "IntegerResidueClassRing(%d)" % self.m
@@ -170,27 +165,24 @@ class IntegerResidueClassRing (CommutativeRing):
             raise ValueError, "%s can not be converted to an IntegerResidueClass object." % seed
 
     def isfield(self):
-        if isinstance(self._isfield, bool):
-            return self._isfield
-        elif isinstance(self._isdomain, bool):
-            self.isfield = self._isdomain
-            return self._isfield
-        elif primeq(self.m):
-            self._isfield = True
-            return True
+        if None == self.properties.isfield():
+            if primeq(self.m):
+                self.properties.setIsfield(True)
+                return True
+            else:
+                self.properties.setIsdomain(False)
+                return False
         else:
-            self._isfield = False
-            return False
+            return self.properties.isfield()
 
     def isdomain(self):
-        if isinstance(self._isdomain, bool):
-            return self._isdomain
-        elif isinstance(self._isfield, bool):
-            self._isdomain = self._isfield
-            return self._isdomain
-        if primeq(self.m):
-            self._isdomain = True
-            return True
+        if None == self.properties.isdomain():
+            if primeq(self.m):
+                self.properties.setIsfield(True)
+                return True
+            else:
+                self.properties.setIsdomain(False)
+                return False
         else:
-            self._isdomain = False
-            return False
+            return self.properties.isfield()
+

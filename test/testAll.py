@@ -11,6 +11,7 @@ import testPrime
 import testRational
 import testRationalFunction
 import testReal
+import testRing
 import testVector
 
 def suite():
@@ -27,6 +28,7 @@ def suite():
     suite.addTest(testRational.suite())
     suite.addTest(testRationalFunction.suite())
     suite.addTest(testReal.suite())
+    suite.addTest(testRing.suite())
     suite.addTest(testVector.suite())
     return suite
 

@@ -167,6 +167,8 @@ class RationalField (ring.QuotientField):
 
     def __init__(self):
         self.basedomain = theIntegerRing
+        self.properties = ring.CommutativeRingProperties()
+        self.properties.setIsfield(True)
 
     def __contains__(self, element):
         reduced = +element
@@ -331,7 +333,9 @@ class IntegerRing (ring.CommutativeRing):
     """
 
     def __init__(self):
-        pass
+        self.properties = ring.CommutativeRingProperties()
+        self.properties.setIseuclidean(True)
+        self.properties.setIsfield(False)
 
     def __contains__(self, element):
         """
@@ -384,13 +388,6 @@ class IntegerRing (ring.CommutativeRing):
         if other == self:
             return True
         return other.issubring(self)
-
-    def iseuclidean(self):
-        return True
-
-    def isfield(self):
-        """The integer ring is not a field."""
-        return False
 
     def gcd(self, n, m):
         """

@@ -15,7 +15,8 @@ class CommutativeRing (Ring):
     whose multiplication is commutative."""
 
     def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""  
+        """This class is abstract and cannot be instanciated."""
+        self.properties = CommutativeRingProperties()
         raise NotImplementedError
 
     def getQuotientField(self):
@@ -26,10 +27,7 @@ class CommutativeRing (Ring):
     def isdomain(self):
         """isdomain returns True if the ring is actually a domain,
         False if not, or None if uncertain."""
-        if self.isufd():
-            return True
-        else:
-            return None
+        return self.properties.isdomain()
 
     def isnoetherian(self):
         """
@@ -38,10 +36,7 @@ class CommutativeRing (Ring):
         domain, False if not, or None if uncertain.
 
         """
-        if self.ispid():
-            return True
-        else:
-            return None
+        return self.properties.isnoetherian()
 
     def isufd(self):
         """
@@ -50,10 +45,7 @@ class CommutativeRing (Ring):
         factorization domain, False if not, or None if uncertain.
 
         """
-        if self.ispid():
-            return True
-        else:
-            return None
+        return self.properties.isufd()
 
     def ispid(self):
         """
@@ -62,10 +54,7 @@ class CommutativeRing (Ring):
         ideal domain, False if not, or None if uncertain.
 
         """
-        if self.iseuclidean():
-            return True
-        else:
-            return None
+        return self.properties.ispid()
 
     def iseuclidean(self):
         """
@@ -74,15 +63,12 @@ class CommutativeRing (Ring):
         domain, False if not, or None if uncertain.
 
         """
-        if self.isfield():
-            return True
-        else:
-            return None
+        return self.properties.iseuclidean()
 
     def isfield(self):
         """isfield returns True if the ring is actually a field,
         False if not, or None if uncertain."""
-        return None
+        return self.properties.isfield()
 
 class Field (CommutativeRing):
     """Field is an abstract class which expresses that
@@ -90,6 +76,8 @@ class Field (CommutativeRing):
 
     def __init__(self, *args, **kwd):
         """This class is abstract and cannot be instanciated."""
+        self.properties = CommutativeRingProperties()
+        self.properties.setIsfield(True)
         raise NotImplementedError
 
     def createElement(self, *args):
@@ -169,3 +157,79 @@ class QuotientFieldElement (FieldElement):
 
     def __eq__(self,other):
         return self.numerator*other.denominator == self.denominator*other.numerator
+
+class CommutativeRingProperties:
+    """
+
+    boolean properties of ring.
+
+    Each property can have one of three values; True, False, or None.
+    Of cource True is true and False is false, and None means that the
+    property is not set neither directly nor indirectly.
+
+    """
+    def __init__(self):
+        self._isfield = None
+        self._iseuclidean = None
+        self._ispid = None
+        self._isufd = None
+        self._isnoetherian = None
+        self._isdomain = None
+
+    def isfield(self):
+        return self._isfield
+
+    def setIsfield(self, value):
+        self._isfield = bool(value)
+        if self._isfield:
+            self.setIseuclidean(True)
+
+    def iseuclidean(self):
+        return self._iseuclidean
+
+    def setIseuclidean(self, value):
+        self._iseuclidean = bool(value)
+        if self._iseuclidean:
+            self.setIspid(True)
+        else:
+            self.setIsfield(False)
+
+    def ispid(self):
+        return self._ispid
+
+    def setIspid(self, value):
+        self._ispid = bool(value)
+        if self._ispid:
+            self.setIsufd(True)
+            self.setIsnoetherian(True)
+        else:
+            self.setIseuclidean(False)
+
+    def isufd(self):
+        return self._isufd
+
+    def setIsufd(self, value):
+        self._isufd = bool(value)
+        if self._isufd:
+            self.setIsdomain(True)
+        else:
+            self.setIspid(False)
+
+    def isnoetherian(self):
+        return self._isnoetherian
+
+    def setIsnoetherian(self, value):
+        self._isnoetherian = bool(value)
+        if self._isnoetherian:
+            self.setIsdomain(True)
+        else:
+            self.setIspid(False)
+
+    def isdomain(self):
+        return self._isdomain
+
+    def setIsdomain(self, value):
+        self._isdomain = bool(value)
+        if not self._isdomain:
+            self.setIsufd(False)
+            self.setIsnoetherian(False)

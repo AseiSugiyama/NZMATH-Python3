@@ -1726,15 +1726,13 @@ class PolynomialRing (ring.CommutativeRing):
     The class of polynomial ring.
 
     """
-    def __init__(self, ring, vars):
-        self.coefficientRing = ring
+    def __init__(self, aRing, vars):
+        self.coefficientRing = aRing
         if isinstance(vars, str):
             self.vars = sets.Set((vars,))
         else:
             self.vars = sets.Set(vars)
-        self._isnoetherian = None
-        self._isufd = None
-        self._iseuclidean = None
+        self.properties = ring.CommutativeRingProperties()
 
     def getVars(self):
         return self.vars.copy()
@@ -1851,37 +1849,29 @@ class PolynomialRing (ring.CommutativeRing):
         return False
 
     def isnoetherian(self):
-        if isinstance(self._isnoetherian, bool):
-            return self._isnoetherian
-        elif self.ispid() or self.coefficientRing.isnoetherian():
-            self._isnoetherian = True
-            return True
-        else:
-            return None
+        if None == self.properties.isnoetherian():
+            if self.coefficientRing.isnoetherian():
+                self.properties.setIsnoetherian(True)
+                return True
+        return self.properties.isnoetherian()
 
     def isufd(self):
-        if isinstance(self._isufd, bool):
-            return self._isufd
-        if self.ispid() or self.coefficientRing.isufd():
-            self._isufd = True
-            return True
-        else:
-            return None
+        if None == self.properties.isufd():
+            if self.coefficientRing.isufd():
+                self.properties.setIsufd(True)
+                return True
+        return self.properties.isufd()
 
     def iseuclidean(self):
-        if isinstance(self._iseuclidean, bool):
-            return self._iseuclidean
-        elif isinstance(self._isnoetherian, bool) and not self._isnoetherian:
-            self._iseuclidean = False
-            return False
-        elif isinstance(self._isufd, bool) and not self._isufd:
-            self._iseuclidean = False
-            return False
-        if self.coefficientRing.isfield() and len(self.vars) == 1:
-            self._iseuclidean = True
-            return True
-        else:
-            return None
+        if None == self.properties.iseuclidean():
+            if self.coefficientRing.isfield() and len(self.vars) == 1:
+                self.properties.setIseuclidean(True)
+                return True
+        return self.properties.iseuclidean()
+
+    def ispid(self):
+        if None == self.properties.ispid():
+            return self.iseuclidean()
 
     def unnest(self):
         """
