@@ -13,6 +13,7 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         self.b = OneVariableDensePolynomial([1,-2,3,-4], x, Z)
         self.c = OneVariableDensePolynomial([1,-1,-2], y, Z)
         self.d = OneVariableDensePolynomial([1,1,2], y, Z)
+        self.zero = OneVariableDensePolynomial([], x, Z)
 
     def testAdd(self):
         sum_1 = OneVariableDensePolynomial([2,-1,3,-4], x)
@@ -20,6 +21,7 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert sum_1 == self.a + self.b
         assert sum_2 == self.c + self.d
         assert self.a == self.a + 0
+        assert self.a == self.a + self.zero
 
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([0,3,-3,4], x)
@@ -31,6 +33,8 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
     def testMul(self):
         mul_1 = OneVariableDensePolynomial([1,0,-1,-4,-4],y)
         assert mul_1 == self.c * self.d
+        assert self.zero == self.a * self.zero
+        assert self.zero == self.zero * self.a
 
     def testScalarMul(self):
         mul_1 = OneVariableDensePolynomial([2,2], x)
@@ -38,6 +42,8 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert mul_1 == self.a * 2 == 2 * self.a
         e = OneVariableDensePolynomial([0,1,2,3,4], z)
         assert mul_2 == e * 3
+        assert self.zero == self.zero * 3
+        assert self.zero == 3 * self.zero
 
     def testFloordiv(self):
         assert 0 == self.a // 2
