@@ -1,130 +1,55 @@
 from __future__ import division
 import arith1
-#import cmath
+import cmath
 import factor
 import finitefield
-#import imaginary
+import imaginary
 import math
 import polynomial 
 import prime
 import random
 import rational
 
-def Element(a,p):
+def Element_p(a,p):
     """
     a is (rational,int,long) number
     this returns a in F_p
     """
     return int(finitefield.FinitePrimeField(p).createElement(a).n)
 
-#def Simple(obj):
-#    print obj,"*"
-#    if isinstance(obj,list):
-#        while obj[-1]==0:
-#            if len(obj)!=1:
-#                obj.pop(-1)
-#            else:
-#                return [0]
-#        return obj
-#    if isinstance(obj,dict):
-#        obj=obj.items()
-#        F=1
-#        i=0
-#        while i<len(obj):
-#            if obj[i][1]==0:
-#                if len(obj)>1:
-#                    del obj[i]
-#                else:
-#                    F=0
-#                    break
-#            else:
-#                i=i+1
-#        D={}
-#        if F==0:
-#            D[(0,0)]=0
-#            return D
-#        else: 
-#            i=0
-#            while i<len(obj):
-#                D[obj[i][0]]=obj[i][1]
-#                i=i+1
-#            return D
-#    else:
-#        raise NotImplementedError,"you must input (obj,list)"
-    
-#def mod_p(poly,p): #Z[x]->(Z/p)[x] or Z[x,y]->(Z/p)[x,y]
-#    print poly.coefficient
-#    if isinstance(poly,polynomial.OneVariableDensePolynomial) and len(poly.coefficient)==1:
-#        poly=int(poly.coefficient[0])
-#    if isinstance(poly,(int,long)):
-#        return polynomial.OneVariableDensePolynomial([Element(poly,p)],"x")### 
-#    else:
-#        if isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
-#            poly=poly.toOneVariableDensePolynomial()### raise
-#            L=poly.coefficient
-#            i=0
-#            while i<len(L):
-#                L[i]=Element(L[i],p)
-#                i=i+1
-#            L=Simple(L)
-#            poly.coefficient=L
-#            if len(L)==1:
-#                return polynomial.OneVariableSparsePolynomial({(0,):L[0]},["x"])
-#            else:
-#                return poly.toOneVariableSparsePolynomial()
-#        else:
-#            if isinstance(poly,polynomial.MultiVariableDensePolynomial):
-#                poly=poly.toMultiVariableSparsePolynomial()
-#            P=poly.coefficient.items()
-#            i=0
-#            dict={}
-#            while i<len(P):
-#                dict[P[i][0]]=Element(P[i][1],p)
-#                i=i+1
-#            dict=Simple(dict)
-#            poly.coefficient=dict
-#            return poly 
-
 def Mod(poly,d):
     """
     this returns poly%(x^d)
     """
     if isinstance(poly,(int,long)):
-        return polynomial.OneVariableDensePolynomial([int(poly)],"x")
-    elif isinstance(poly,polynomial.OneVariableDensePolynomial):
-        if max(poly.coefficient)>=d:
-            P=poly.coefficient
-            L=[]
+        return polynomial.OneVariableSparsePolynomial({(0,):int(poly)},["x"])
+    elif isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
+        if poly.degree()>=d:
+            if isinstance(poly,polynomial.OneVariableDensePolynomial):
+                poly=poly.toOneVariableSparsePolynomial()
+            P=poly.coefficient.items()
+            dict={}
             i=0
-            while i<=d:
-                L.append(P[i])
+            while i<len(P):
+                if P[i][0][0]<d:
+                    dict[P[i][0]]=P[i][1]
                 i=i+1
-            poly.coefficient=L
-            return poly.toOneVariableSparsePolynomial()
+            if len(dict)!=0:
+                return polynomial.OneVariableSparsePolynomial(dict,["x"])
+            else:
+                return polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
         else:
             return poly.toOneVariableSparsePolynomial()
-    elif isinstance(poly,polynomial.OneVariableSparsePolynomial):
-        if max(poly.coefficient)[0]>=d:
-            poly=poly.toOneVariableDensePolynomial()
-            P=poly.coefficient
-            L=[]
-            i=0
-            while i<=d:
-                L.append(P[i])
-                i=i+1
-            poly.coefficient=L
-            return poly.toOneVariableSparsePolynomial()
-        else:
-            return poly
     else:
         raise ValueError,"you must imput (poly,OneVariable(Dense,Sparese)Polynomial)"
 
 def Div(poly,d):
     """
-    this returns poly/(x^d)
+    this returns poly//(x^d)
     """
-    if isinstance(poly,polynomial.OneVariableDensePolynomial):
-        poly=poly.toOneVariableSparsePolynomial()
+    if isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
+        if isinstance(poly,polynomial.OneVariableDensePolynomial):
+            poly=poly.toOneVariableSparsePolynomial()
         P=poly.coefficient
         if min(P)[0]>=d:
             P=P.items()
@@ -133,72 +58,51 @@ def Div(poly,d):
             while i<len(P):
                 dict[(P[i][0][0]-d,)]=P[i][1]
                 i=i+1
-            poly.coefficient=dict
-            return poly
-        else:
-            raise ValueError,"*/x^"
-    elif isinstance(poly,polynomial.OneVariableSparsePolynomial):
-        P=poly.coefficient
-        if min(P)[0]>=d:
-            P=P.items()
-            i=0
-            dict={}
-            while i<len(P):
-                dict[(P[i][0][0]-d,)]=P[i][1]
-                i=i+1
-            poly.coefficient=dict
-            return poly 
+            return polynomial.OneVariableSparsePolynomial(dict,["x"])
         else:
             raise ValueError,"*/x^"
     else:
         raise ValueError,""
 
-def Inv_p(poly,d,p): #poly \in Z[x]
+def Inver_p(poly,d,p): #poly \in Z[x]
     """
     this returns poly inversion mod x^d /F_p   
     """
-    poly=mod_p(poly,p)
+    poly=poly%p
     poly=poly.toOneVariableDensePolynomial()
-    L=poly.coefficient
-    if len(poly.coefficient)==1:
-        return polynomial.OneVariableSparsePolynomial({(0,):Element(rational.Rational(1,L[0]),p)},["x"]) ###
+    L=poly.coefficient.getAsList()
+    if len(L)==1:
+        return polynomial.OneVariableSparsePolynomial({(0,):Element_p(rational.Rational(1,L[0]),p)},["x"]) 
     if L[0]!=1:
-        poly=poly*rational.Rational(1,L[0])
-        poly=mod_p(poly,p)
+        poly=poly*Element_p(rational.Rational(1,L[0]),p)%p
     poly=poly.toOneVariableSparsePolynomial()
-    f=polynomial.OneVariableDensePolynomial([1],"x")
-#    k=0 
+    f=polynomial.OneVariableSparsePolynomial({(0,):1},["x"])
     n=1
     while n<d+1:
-#        k=k+1 
         n=2*n
         if n>d+1:
             n=d+1
-        g=mod_p(Mod(poly,n),p)
-        g=mod_p(Mod((mod_p(g*f,p)),n),p)
-        f=Mod(mod_p(f*(2-g),p),n)
-#        print k,n,d
+        g=Mod(poly,n)%p
+        g=Mod(g*f%p,n)%p
+        f=Mod(f*(2-g)%p,n)
     if L[0]==1:
-        return mod_p(f,p)
+        return f%p
     else:
-        return mod_p(f*rational.Rational(1,L[0]),p)
+        return f*Element_p(rational.Rational(1,L[0]),p)%p
 
 def PolyMod_p(f,g,p):
-    print f,"f"
-    print g,"g"
-    print p,"@"
     """
     return f (mod g)/F_p
     """
     def rev(poly,d):
         poly=poly.toOneVariableDensePolynomial()
-        L=poly.coefficient
-        if len(L)<d:
+        L=poly.coefficient.getAsList()
+        if len(L)<=d:
             i=0
             while len(L)<=d:
                 L.append(0)
                 i=i+1
-        f=0 #polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
+        f=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
         i=0
         while i<=d:
             f=f+polynomial.OneVariableSparsePolynomial({(i,):L[d-i]},["x"])
@@ -206,122 +110,152 @@ def PolyMod_p(f,g,p):
         return f
     def ind(poly,d):
         if isinstance(poly,(int,long)):
-            L=[poly]
-        else:    
+            return 0
+        else:
+            if poly.degree()<d:
+                return 0
             poly=poly.toOneVariableDensePolynomial()
-            L=poly.coefficient
-        i=len(L)-1
-        j=0
-        while i>=0:
-            if L[i]>=d:
-                j=i
-            i=i-1
-        return j
-    f=mod_p(f,p)
-    g=mod_p(g,p)
-    f=f.toOneVariableDensePolynomial()
-    g=g.toOneVariableDensePolynomial()
-    if g.coefficient[-1]!=1:
-        g=g*rational.Rational(1,g.coefficient[-1])
-        g=mod_p(g,p)
-        g=g.toOneVariableDensePolynomial()
-    degf=len(f.coefficient)-1
-    degg=len(g.coefficient)-1
-    d=degf-degg
-    if degg==0:
+            L=poly.coefficient.getAsList()
+            i=d
+            while i<len(L):
+                if L[i]!=0:
+                    break
+                i=i+1
+            return i        
+    f=f%p
+    g=g%p
+    f=f.toOneVariableSparsePolynomial()
+    g=g.toOneVariableSparsePolynomial()
+    a=g.coefficient[max(g.coefficient)]
+    if a!=1:
+        g=g*Element_p(rational.Rational(1,a),p)%p
+    d=f.degree()-g.degree()
+    if g.degree()==0:
         return 0
     elif d<0:
         return f
     else:
-        F=rev(f,degf)
-        G=rev(g,degg)
-        q=Inv_p(G,d,p) 
-        q=Mod(mod_p(q*F,p),d+1)
-        r=mod_p(F-q*G,p)
+        F=rev(f,f.degree())
+        G=rev(g,g.degree())
+        q=Inver_p(G,d,p) 
+        q=Mod(q*F%p,d+1)
+        r=(F-q*G)%p
         i=ind(r,d+1)
-        print r,i,"%" ###
         r=Div(r,i)
-    return rev(r,degf-i)
+        return rev(r,f.degree()-i)
 
 def GCD(f,g,p):
-    """
-    f=polynomial.OneVariableSparsePolynomial({(0,):2,(2,):1,(3,):4,(4,):2,(5,):4},["x"])
-    g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,(4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5},["x"])
-    """
-    f=mod_p(f,p)
-    if isinstance(f,polynomial.OneVariableSparsePolynomial):
-        f=f.toOneVariableDensePolynomial()
-    F=f.coefficient
-    g=mod_p(g,p)
-    g=g.toOneVariableDensePolynomial()
-    G=g.coefficient
-    if len(F)==1 or len(G)==1:
-        ## if int!=0:return int
-        return 1 #
+    f=f.toOneVariableSparsePolynomial()%p
+    g=g.toOneVariableSparsePolynomial()%p
+    if isinstance(f,(int,long)):
+        return 1
+    elif isinstance(g,(int,long)):
+        return 1
     else:
-        if len(F)>len(G):
-            f,g=f,g
-        elif len(F)<len(G):
-            f,g=g,f
-        else: #len(F)==len(G):
-            if F[-1]>=G[-1]:
+        if f.degree()<1 or g.degree()<1:
+            return 1
+        else:
+            if f.degree()>g.degree():
                 f,g=f,g
-            else:
+            elif f.degree()<g.degree():
                 f,g=g,f
-        while g:
-            f,g=g,PolyMod_p(f,g,p)
-            #if len(g.toOneVariableDensePolynomial().coefficient)==1:
-            #    return int
-        return f
-    
+            else: #f.deg==g.deg
+                F=f.coefficient
+                G=g.coefficient
+                if F[max(F)]>=G[max(G)]:
+                    f,g=f,g
+                else:
+                    f,g=g,f
+            while g:
+                f,g=g,PolyMod_p(f,g,p)
+                if isinstance(g,(int,long)):
+                    return 1
+                elif isinstance(g,polynomial.OneVariableDensePolynomial) and len(g.coefficient.getAsList())==1:
+                    return 1
+                elif isinstance(g,polynomial.OneVariableSparsePolynomial) and max(g.coefficient)[0]==0:
+                    return 1
+                else:
+                    pass
+            return f
+
 def PolyMulRed(list,poly,p):
-    poly=mod_p(poly,p)
+    """
+    list[*] is OneSparsePoly
+    poly is OneSparsePoly
+    """
+    poly=poly%p
     if max(poly.coefficient)[0]==0:
         return polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
     i=0
     while i<len(list):
-        if max(list[i].coefficient)[0]>=max(poly.coefficient)[0]:
+        if list[i].degree()>=poly.degree():
             list[i]=PolyMod_p(list[i],poly,p)
         i=i+1
     POLY=polynomial.OneVariableSparsePolynomial({(0,): 1},['x'])
     i=0
     while i<len(list):
         POLY=POLY*list[i]
-        if isinstance(POLY,int):
+        if isinstance(POLY,(int,long)):
             pass
         else:
-            if max(POLY.coefficient)[0]>=max(poly.coefficient)[0]:
+            if POLY.degree()>=poly.degree():
                 POLY=PolyMod_p(POLY,poly,p)
         i=i+1
     return POLY
 
-#def h(t,x):
-#    """
-#    """
-#    return delta(2*t,x)/delta(t,x)
-#
-#def j(t,x):
-#    """
-#    """
-#    return (256*h(t,x)+1)**3/h(t,x)
-#    
-#def nu(t,x):
-#    """
-#    """
-#    qt=q(t)
-#    qq=cmath.exp(cmath.pi*1j/12)
-#    def a(i):
-#        if i%2==0:
-#            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-#        else:
-#            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-#    i=1
-#    b=0
-#    while abs(a(i+1))>x: # one time we caluculate a(i+1),so waste more time??
-#       b=a(k)+b #### miss ,if k==i !
-#       i=i+1
-#    return qq*(1+b)
+# t=imaginary.Complex(a,b)
 
+def q(t):
+
+    """
+    this returns exp(2*pi*j*t)
+    t is complex and h.imag>0
+    """
+    return cmath.exp(2*cmath.pi*1j*t)
+
+def delta(t,x):
+    """
+    """
+    qt=q(t)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x: #syuusoku
+       b=a(i)+b
+       print i
+       i=i+1
+    return qt*(1+b)**24
+
+def h(t,x):
+    """
+    """
+    return delta(2*t,x)/delta(t,x)
+
+def j(t,x):
+    """
+    """
+    return (256*h(t,x)+1)**3/h(t,x)
+    
+def nu(t,x):
+    """
+    """
+    qt=q(t)
+    qq=cmath.exp(cmath.pi*1j/12)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x: # one time we caluculate a(i+1),so waste more time??
+       b=a(k)+b #### miss ,if k==i !
+       i=i+1
+    return qq*(1+b)
         
 class EC:
     """
@@ -391,10 +325,10 @@ class EC:
                     elif coefficient[0]==coefficient[1]==0:
                         self.a1=0
                         self.a2=0
-                        self.a3=Element(coefficient[2],2)
-                        self.a4=Element(coefficient[3],2)
-                        self.a6=Element(coefficient[4],2)
-                        self.disc=Element(self.a3**4,2)
+                        self.a3=Element_p(coefficient[2],2)
+                        self.a4=Element_p(coefficient[3],2)
+                        self.a6=Element_p(coefficient[4],2)
+                        self.disc=Element_p(self.a3**4,2)
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -409,11 +343,11 @@ class EC:
                 if len(self)==5:
                     if coefficient[0]==coefficient[2]==coefficient[3]==0:
                         self.a1=0
-                        self.a2=Element(coefficient[1],3)
+                        self.a2=Element_p(coefficient[1],3)
                         self.a3=0
                         self.a4=0
-                        self.a6=Element(coefficient[4],3)
-                        self.disc=Element(-self.a2**3*self.a6,3)
+                        self.a6=Element_p(coefficient[4],3)
+                        self.disc=Element_p(-self.a2**3*self.a6,3)
                         if self.disc!=0:
                             j=rational.Rational(-self.a2**3,self.a6)
                             self.j=Elemant(j,3)
@@ -421,9 +355,9 @@ class EC:
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=Element(coefficient[3],3)
-                        self.a6=Element(coefficient[4],3)
-                        self.disc=Element(-self.a4**3,3)
+                        self.a4=Element_p(coefficient[3],3)
+                        self.a6=Element_p(coefficient[4],3)
+                        self.disc=Element_p(-self.a4**3,3)
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -437,41 +371,41 @@ class EC:
                         raise ValueError, "you must input integer coefficients. m(__)m"
                 if prime.millerRabin(self.ch)==1:
                     if len(self)==5:
-                        self.a1=Element(coefficient[0],self.ch)
-                        self.a2=Element(coefficient[1],self.ch)
-                        self.a3=Element(coefficient[2],self.ch)
+                        self.a1=Element_p(coefficient[0],self.ch)
+                        self.a2=Element_p(coefficient[1],self.ch)
+                        self.a3=Element_p(coefficient[2],self.ch)
                         self.a4=(coefficient[3],self.ch)
-                        self.a6=Element(coefficient[4],self.ch)
-                        self.b2=Element(self.a1**2+4*self.a2,self.ch)
-                        self.b4=Element(self.a1*self.a3+2*self.a4,self.ch)
-                        self.b6=Element(self.a3**2+4*self.a6,self.ch)
-                        self.b8=Element(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2,self.ch)
-                        self.c4=Element(self.b2**2-24*self.b4,self.ch)
-                        self.c6=Element(-self.b2**3+36*self.b2*self.b4-216*self.b6,self.ch)
-                        self.disc=Element(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
+                        self.a6=Element_p(coefficient[4],self.ch)
+                        self.b2=Element_p(self.a1**2+4*self.a2,self.ch)
+                        self.b4=Element_p(self.a1*self.a3+2*self.a4,self.ch)
+                        self.b6=Element_p(self.a3**2+4*self.a6,self.ch)
+                        self.b8=Element_p(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2,self.ch)
+                        self.c4=Element_p(self.b2**2-24*self.b4,self.ch)
+                        self.c6=Element_p(-self.b2**3+36*self.b2*self.b4-216*self.b6,self.ch)
+                        self.disc=Element_p(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
                         j=rational.Rational(self.c4**3,self.disc)
-                        self.j=Element(j,self.ch)
+                        self.j=Element_p(j,self.ch)
                     elif len(self)==2:
-                        self.a=Element(coefficient[0],self.ch)
-                        self.b=Element(coefficient[1],self.ch)
+                        self.a=Element_p(coefficient[0],self.ch)
+                        self.b=Element_p(coefficient[1],self.ch)
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=Element(coefficient[0],self.ch)
-                        self.a6=Element(coefficient[1],self.ch)
+                        self.a4=Element_p(coefficient[0],self.ch)
+                        self.a6=Element_p(coefficient[1],self.ch)
                         self.b2=0
-                        self.b4=Element(2*self.a,self.ch)
-                        self.b6=Element(4*self.b,self.ch)
-                        self.b8=Element(-self.a**2,self.ch)
-                        self.c4=Element(-48*self.a,self.ch)
-                        self.c6=Element(-864*self.b,self.ch)
-                        self.disc=Element(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
+                        self.b4=Element_p(2*self.a,self.ch)
+                        self.b6=Element_p(4*self.b,self.ch)
+                        self.b8=Element_p(-self.a**2,self.ch)
+                        self.c4=Element_p(-48*self.a,self.ch)
+                        self.c6=Element_p(-864*self.b,self.ch)
+                        self.disc=Element_p(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
                         j=rational.Rational(self.c4**3,self.disc)
-                        self.j=Element(j,self.ch)
+                        self.j=Element_p(j,self.ch)
                     else:
                         raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                 else:
@@ -505,7 +439,7 @@ class EC:
             elif self.ch==2 or self.ch==3:
                 return self
             else:
-                other=EC([Element(-27*self.c4,self.ch),Element(-54*self.c6,self.ch)],self.ch)
+                other=EC([Element_p(-27*self.c4,self.ch),Element_p(-54*self.c6,self.ch)],self.ch)
                 return other
 
     def changeCurve(self,V):
@@ -531,11 +465,11 @@ class EC:
                            rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3),
                            rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4),
                            rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)]
-                        other=EC([Element(A[0],self.ch),
-                                  Element(A[1],self.ch),
-                                  Element(A[2],self.ch),
-                                  Element(A[3],self.ch),
-                                  Element(A[4],self.ch),],self.ch)
+                        other=EC([Element_p(A[0],self.ch),
+                                  Element_p(A[1],self.ch),
+                                  Element_p(A[2],self.ch),
+                                  Element_p(A[3],self.ch),
+                                  Element_p(A[4],self.ch),],self.ch)
                         return other
                 else: # u==0
                     raise ValueError, "you must input nonzero u (-_-;)"
@@ -556,9 +490,9 @@ class EC:
                 else:
 
                     qx=rational.Rational(P[0]-V[1],V[0]**2)
-                    Q0=Element(qx,self.ch)
+                    Q0=Element_p(qx,self.ch)
                     qy=rational.Rational(P[1]-V[2]*(P[0]-V[1])-V[3],V[0]**3)
-                    Q1=Element(qy,self.ch)
+                    Q1=Element_p(qy,self.ch)
                 Q=[Q0,Q1]
                 return Q
             else:
@@ -584,9 +518,9 @@ class EC:
                     s=random.randrange(0,self.ch) 
                     t=s**3+other.a*s+other.b
                 x=rational.Rational(s-3*self.b2,36)
-                x=Element(x,self.ch)
+                x=Element_p(x,self.ch)
                 y=rational.Rational(1,2)*(rational.Rational(arith1.sqroot(t,self.ch),108)-self.a1*x-self.a3)
-                y=Element(y,self.ch)
+                y=Element_p(y,self.ch)
                 return [x,y]
             elif self.ch==3:
                 t=0
@@ -687,9 +621,9 @@ class EC:
                             s=rational.Rational(Q[1]-P[1],Q[0]-P[0])
                             t=rational.Rational(P[1]*Q[0]-Q[1]*P[0],Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
-                        x3=Element(x3,self.ch)
+                        x3=Element_p(x3,self.ch)
                         y3=-(s+self.a1)*x3-t-self.a3
-                        y3=Element(y3,self.ch)
+                        y3=Element_p(y3,self.ch)
                         R=[x3,y3]
                         return R
                 elif (P==[0]) and (Q!=[0]):
@@ -755,7 +689,7 @@ class EC:
                     Q=self.add(Q,P)
             return self.sub([0],Q)
 
-    def lattice(self):###
+    def lattice(self):
         raise NotImplementedError,"Now making (>_<)"
 
     def divPoly(self):
@@ -788,7 +722,7 @@ class EC:
                         k=(k-1)//2
                         poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=poly%p #%@@@
+                poly=poly%p
                 L=poly.coefficient.items()
                 t=0
                 dict={}
@@ -803,12 +737,12 @@ class EC:
                     k=L[t][0][1]//2
                     poly=poly+e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=poly%p #%@@@
-            return poly
+                poly=poly%p 
+            return poly.toOneVariableSparsePolynomial()
         f=[]
         M=[]
         f.append(0)
-        M.append(polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x']))#
+        M.append(polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x']))
         H=heart(self.ch)
         if self.ch!=2 and self.ch!=3: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
@@ -817,25 +751,25 @@ class EC:
             for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
-                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 1}, ['x']))#
+                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 1}, ['x']))
                 elif i==2:
                     f.append(2*y)
                     M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))#
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    g=g%E.ch #%@@@
+                    g=g%E.ch
                     f.append(g)
                     M.append(g)
                 elif i==4:
                     g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    g=g%E.ch #%@@@
+                    g=g%E.ch
                     f.append(g)
                     M.append(change(g,i,e,E.ch))#div y
                 else:
                     if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        g=g%E.ch#%@@@
+                        g=g%E.ch
                         f.append(g)
                         M.append(change(g,i,e,E.ch)) # y^2->e
                     else: 
@@ -865,7 +799,7 @@ class EC:
                     t=0
                     dict={}
                     while t<len(L):
-                        dict[L[t][0]]=Element(L[t][1],2)#%
+                        dict[L[t][0]]=Element_p(L[t][1],2)
                         t=t+1
                     g.coefficient=dict
                     f.append(g)
@@ -876,7 +810,7 @@ class EC:
                     t=0
                     dict={}
                     while t<len(L):
-                        dict[L[t][0]]=Element(L[t][1],2)#%
+                        dict[L[t][0]]=Element_p(L[t][1],2)
                         t=t+1
                     g.coefficient=dict
                     f.append(g)
@@ -889,7 +823,7 @@ class EC:
                         t=0
                         dict={}
                         while t<len(L):
-                            dict[L[t][0]]=Element(L[t][1],2)#%
+                            dict[L[t][0]]=Element_p(L[t][1],2)
                             t=t+1
                         g.coefficient=dict
                         f.append(g)
@@ -901,7 +835,7 @@ class EC:
                         t=0
                         dict={}
                         while t<len(L): # div x
-                            dict[(L[t][0][0]-1,)]=Element(L[t][1],2)#%
+                            dict[(L[t][0][0]-1,)]=Element_p(L[t][1],2)
                             t=t+1
                         g.coefficient=dict
                         f.append(g)
@@ -925,13 +859,13 @@ class EC:
                 L=D[1]
                 D=D[0]
                 E=polynomial.OneVariableSparsePolynomial({(0,):other.b,(1,):other.a,(3,):1},['x'])
-                f=polynomial.OneVariableSparsePolynomial({(1,):-1,(other.ch**2,):1},['x'])###deg(f)is large ==ch**2
+                f=polynomial.OneVariableSparsePolynomial({(1,):-1,(other.ch**2,):1},['x'])
                 i=0
                 while i<len(L):
                     j=L[i]
                     k=self.ch%j
                     if k%2==0:
-                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)#%@@@
+                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
                         if P==1:
                             F=0 
                         else:
