@@ -1,12 +1,15 @@
 Version 0.0.1 to 0.1.0
 ----------------------
+* add new module finitefield for finite field.  It now only includes
+  finite prime field.
 * add new module combinatrial including binomial and factorial.
+* add issubring and issuperring to Ring in ring.py.
 * add mpqs function (multi-polynomial quadratic sieve) in factor.py.
 * add IntegerIfIntOrLong function in rational.py.
 * add LUDecomposition method to Matrix in matrix.py.
 * now you can factor a very big but very smooth integer by trial division.
 * speed up real.log, and it now accepts float.
-* fix bugs in rational.py.
+* fix bugs in rational.py, integerResidueClass.py, etc..
 
 Version 0.0.0 to 0.0.1
 ----------------------
