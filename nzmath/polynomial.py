@@ -63,12 +63,12 @@ class OneVariableDensePolynomial:
 
     def __add__(self, other):
         if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial)):
-            if self.variable == other.variable:
+            if self.getVariable() == other.getVariable():
                 sum = OneVariablePolynomialCoefficients()
                 for i in range(max(self.degree(), other.degree()) + 1):
                     sum[i] = self[i] + other[i]
                 commonRing = self.ring.getCommonSuperring(other.getRing())
-                return self.__class__(sum.getAsList(), self.variable, commonRing.getCoefficientRing())
+                return self.__class__(sum.getAsList(), self.getVariable(), commonRing.getCoefficientRing())
             else:
                 return (self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
         elif isinstance(other, MultiVariableDensePolynomial):
@@ -76,7 +76,7 @@ class OneVariableDensePolynomial:
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
         elif other in self.getCoefficientRing():
-            sum = self.__class__(self.coefficient.getAsList(), self.variable)
+            sum = self.__class__(self.coefficient.getAsList(), self.getVariable())
             sum.coefficient[0] += other
             return sum.adjust()
         elif other == 0:
@@ -97,11 +97,11 @@ class OneVariableDensePolynomial:
 
     def __neg__(self):
         reciprocal = [-c for c in self.coefficient]
-        return self.__class__(reciprocal, self.variable)
+        return self.__class__(reciprocal, self.getVariable())
 
     def __mul__(self, other):
         if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial)):
-            if self.variable == other.variable:
+            if self.getVariable() == other.getVariable():
                 product = OneVariablePolynomialCoefficients()
                 for l in range(len(self.coefficient)):
                     if self[l]:
@@ -109,8 +109,8 @@ class OneVariableDensePolynomial:
                             product[l + r] = product[l + r] + self[l] * other[r]
                 commonRing = self.getRing().getCommonSuperring(other.getRing())
                 if not commonRing and self.getCoefficientRing():
-                    return self.__class__(product.getAsList(), self.variable, self.getCoefficientRing())
-                return self.__class__(product.getAsList(), self.variable, commonRing.getCoefficientRing())
+                    return self.__class__(product.getAsList(), self.getVariable(), self.getCoefficientRing())
+                return self.__class__(product.getAsList(), self.getVariable(), commonRing.getCoefficientRing())
             else:
                 return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()\
                         ).toMultiVariableDensePolynomial()
@@ -121,7 +121,7 @@ class OneVariableDensePolynomial:
         elif other in self.getCoefficientRing():
             product = [c * other for c in self.coefficient]
             commonRing = self.getCoefficientRing()
-            return self.__class__(product, self.variable, commonRing).adjust()
+            return self.__class__(product, self.getVariable(), commonRing).adjust()
         elif isinstance(other, (int,long)):
             return rational.Integer(other).actAdditive(self)
         else:
@@ -139,8 +139,8 @@ class OneVariableDensePolynomial:
             raise NotImplementedError
         if mod == None:
             index = other
-            power_product = OneVariableDensePolynomial([1],self.variable, self.getCoefficientRing())
-            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.variable, self.getCoefficientRing())
+            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
+            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
             while index > 0:
                 if index % 2 == 1:
                     power_product *= power_of_2
@@ -149,8 +149,8 @@ class OneVariableDensePolynomial:
             return power_product.adjust()
         else:
             index = other
-            power_product = OneVariableDensePolynomial([1],self.variable, self.getCoefficientRing())
-            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.variable, self.getCoefficientRing())
+            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
+            power_of_2 = OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
             while index > 0:
                 if index % 2 == 1:
                     power_product *= power_of_2
@@ -169,29 +169,29 @@ class OneVariableDensePolynomial:
                 other = other[0]
                 if self.getCoefficientRing().isfield() or isinstance(other, ring.FieldElement):
                     div_coeff = [c / other for c in self.coefficient]
-                    return self.__class__(div_coeff, self.variable, self.getCoefficientRing()), self.__class__([], self.variable, self.getCoefficientRing())
+                    return self.__class__(div_coeff, self.getVariable(), self.getCoefficientRing()), self.__class__([], self.getVariable(), self.getCoefficientRing())
                 else:
                     div_coeff = [c // other for c in self.coefficient]
                     mod_coeff = [c %  other for c in self.coefficient]
-                    return self.__class__(div_coeff, self.variable, self.getCoefficientRing()), self.__class__(mod_coeff, self.variable, self.getCoefficientRing())
-            elif self.variable != other.variable or self.degree() < other.degree():
-                return  self.__class__([], self.variable, self.getCoefficientRing()), self.adjust()
+                    return self.__class__(div_coeff, self.getVariable(), self.getCoefficientRing()), self.__class__(mod_coeff, self.getVariable(), self.getCoefficientRing())
+            elif self.getVariable() != other.getVariable() or self.degree() < other.degree():
+                return  self.__class__([], self.getVariable(), self.getCoefficientRing()), self.adjust()
             elif isinstance(self.getCoefficientRing(), ring.Field):
-                div_poly = self.__class__([], self.variable, self.getCoefficientRing())
+                div_poly = self.__class__([], self.getVariable(), self.getCoefficientRing())
                 mod_poly = self
                 deg, o_deg = mod_poly.degree(), other.degree()
                 o_lc = other[o_deg]
                 while deg >= o_deg:
                     div_poly[deg - o_deg] = mod_poly[deg] / o_lc
-                    mod_poly = mod_poly - self.__class__([0] * (deg - o_deg) + ((mod_poly[deg] / o_lc) * other).coefficient.getAsList(), self.variable, self.getCoefficientRing())
+                    mod_poly = mod_poly - self.__class__([0] * (deg - o_deg) + ((mod_poly[deg] / o_lc) * other).coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
                     deg = mod_poly.degree()
                 return div_poly.adjust(), mod_poly
             else:
-                div_poly = self.__class__([], self.variable, self.getCoefficientRing())
+                div_poly = self.__class__([], self.getVariable(), self.getCoefficientRing())
                 mod_poly = self
                 deg, o_deg = mod_poly.degree(), other.degree()
                 o_lc = other[o_deg]
-                x = self.__class__([0, 1], self.variable, self.getCoefficientRing())
+                x = self.__class__([0, 1], self.getVariable(), self.getCoefficientRing())
                 while deg >= o_deg:
                     div_poly[deg - o_deg] = mod_poly[deg] // o_lc
                     mod_poly = mod_poly - (mod_poly[deg] // o_lc) * other * x**(deg - o_deg)
@@ -239,19 +239,9 @@ class OneVariableDensePolynomial:
     def __eq__(self, other):
         if not self and not other:
             True
-        if isinstance(other, OneVariableDensePolynomial):
-            if self.variable == other.variable and self.degree() == other.degree():
-                degree = self.degree()
-                for i in range(degree+1):
-                    if self[i] != other[i]:
-                        return False
-                return True
-            return False
-        elif isinstance(other, OneVariableSparsePolynomial):
-            if self.variable == other.variable[0] and self.degree() == other.degree():
-                i = 0
-                degree = self.degree()
-                for i in range(degree+1):
+        if isinstance(other, (OneVariableDensePolynomial, OneVariableSparsePolynomial)):
+            if self.getVariable() == other.getVariable() and self.degree() == other.degree():
+                for i in range(self.degree() + 1):
                     if self[i] != other[i]:
                         return False
                 return True
@@ -297,7 +287,7 @@ class OneVariableDensePolynomial:
         if not isinstance(self_adjust, OneVariableDensePolynomial):
             return repr(self_adjust)
         return_str = 'OneVariableDensePolynomial(' + repr(self.coefficient) + ', "'
-        return_str += repr(self.variable) + '", '
+        return_str += repr(self.getVariable()) + '", '
         return_str += repr(self.getCoefficientRing()) + ','
         return_str += ')'
         return return_str
@@ -309,7 +299,7 @@ class OneVariableDensePolynomial:
         termlist = []
         for i in range(self.degree() + 1):
             if self[i]:
-                termlist.append("%s * %s ** %d" % (str(self[i]),self.variable,i))
+                termlist.append("%s * %s ** %d" % (str(self[i]), self.getVariable(), i))
         return_str = " + ".join(termlist)
         w_sign = re.compile(r"+ -")
         return_str = w_sign.sub("- ", return_str)
@@ -319,17 +309,17 @@ class OneVariableDensePolynomial:
 
     def adjust(self):
         "Use this method in case of leading term of coefffidcient = 0"
-        return self.__class__(self.coefficient.getAsList(), self.variable, self.getCoefficientRing())
+        return self.__class__(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
     def differentiate(self, other):
         if isinstance(other, str):
-            if self.variable == other:
+            if self.getVariable() == other:
                 if len(self.coefficient) == 1:
                     return 0
                 diff = OneVariablePolynomialCoefficients()
                 for i in range(self.degree()):
                     diff[i] = (self.coefficient[i+1]) * (i+1)
-                return OneVariableDensePolynomial(diff.getAsList(), self.variable, self.getCoefficientRing())
+                return OneVariableDensePolynomial(diff.getAsList(), self.getVariable(), self.getCoefficientRing())
             else:
                 return 0
         else:
@@ -339,7 +329,7 @@ class OneVariableDensePolynomial:
         if min == None and max == None and other != None and isinstance(other, str):
              integrate_coefficient = [0] * ( len(self.coefficient) + 1)
              integrate_variable = other
-             if integrate_variable != self.variable:
+             if integrate_variable != self.getVariable():
                  return MultiVariableDensePolynomial([0,self],integrate_variable).adjust()
              else:
                  for i in range(len(self.coefficient)):
@@ -348,7 +338,7 @@ class OneVariableDensePolynomial:
         elif min != None and max != None and other != None and isinstance(other, str):
              integrate_coefficient = [0] *(  len(self.coefficient) + 1)
              integrate_variable = other
-             if integrate_variable != self.variable:
+             if integrate_variable != self.getVariable():
                  return self * (max - min)
              else:
                  for i in range(len(self.coefficient)):
@@ -364,10 +354,10 @@ class OneVariableDensePolynomial:
         return_coefficient = {}
         for i in self.coefficient.getAsDict():
             return_coefficient[(i,)] = self.coefficient[i]
-        return OneVariableSparsePolynomial(return_coefficient, [self.variable])
+        return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
     def toMultiVariableDensePolynomial(self):
-        return MultiVariableDensePolynomial(self.coefficient, self.variable).adjust()
+        return MultiVariableDensePolynomial(self.coefficient, self.getVariable()).adjust()
 
     def toMultiVariableSparsePolynomial(self):
         if self.degree() < 1:
@@ -377,8 +367,7 @@ class OneVariableDensePolynomial:
             for i in range(len(self.coefficient)):
                 if self.coefficient[i] != 0:
                     return_coefficient[(i,)] = self.coefficient[i]
-            return_variable = [self.variable]
-            return MultiVariableSparsePolynomial(return_coefficient, return_variable)
+            return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
     def getRing(self):
         return self.ring
@@ -397,7 +386,7 @@ class OneVariableDensePolynomial:
                 myRing = cring
             elif not cring.issubring(myRing):
                 myRing = myRing * cring
-        return myRing, PolynomialRing(myRing, self.variable)
+        return myRing, PolynomialRing(myRing, self.getVariable())
 
     def degree(self):
         for i in range(len(self.coefficient)-1, -1, -1):
@@ -447,9 +436,9 @@ class OneVariableDensePolynomial:
         """
         result = {}
         if self.degree() == 1:
-            return {1: self.__class__(self.coefficient, self.variable)}
+            return {1: self.__class__(self.coefficient, self.getVariable())}
         rx = self.getRing()
-        b = rx.gcd(self, self.differentiate(self.variable))
+        b = rx.gcd(self, self.differentiate(self.getVariable()))
         a = self / b
         i = 1
         while b.degree() > 0:
@@ -464,6 +453,12 @@ class OneVariableDensePolynomial:
         result[i] = a
         # except char > 0 case, result is the answer.
         return result
+
+    def getVariable(self):
+        return self.variable
+
+    def getVariableList(self):
+        return [self.variable]
 
 class OneVariableSparsePolynomial:
 
@@ -523,20 +518,19 @@ class OneVariableSparsePolynomial:
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
         elif isinstance(other, OneVariableSparsePolynomial):
-            if self.variable == other.variable:
+            if self.getVariable() == other.getVariable():
                 return_coefficient = self.coefficient.copy()
-                return_variable = self.variable[:]
                 for i in other.coefficient:
                     if i in return_coefficient:
                         return_coefficient[i] += other.coefficient[i]
                     else:
                         return_coefficient[i] = other.coefficient[i]
-                return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
+                return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
             else:
                 return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
         elif other in self.getRing().getCoefficientRing():
             return_coefficient = self.coefficient.copy()
-            return_variable = self.variable[:]
+            return_variable = self.getVariableList()
             if (0,) in return_coefficient:
                 return_coefficient[(0,)] += other
             else:
@@ -560,7 +554,7 @@ class OneVariableSparsePolynomial:
         reciprocal = {}
         for i, c in self.coefficient.iteritems():
             reciprocal[i] = -c
-        return OneVariableSparsePolynomial(reciprocal, self.variable[:])
+        return OneVariableSparsePolynomial(reciprocal, self.getVariableList())
 
     def __mul__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
@@ -570,11 +564,11 @@ class OneVariableSparsePolynomial:
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() * other
         elif isinstance(other, OneVariableSparsePolynomial):
-            if self.variable != other.variable:
+            if self.getVariable() != other.getVariable():
                 return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
             else:
                 return_coefficient = {}
-                return_variable = self.variable[:]
+                return_variable = self.getVariableList()
                 for i in self.coefficient:
                     for j in other.coefficient:
                         if (i[0] + j[0],) in return_coefficient:
@@ -584,7 +578,7 @@ class OneVariableSparsePolynomial:
                 return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
         elif other in self.ring.getCoefficientRing():
             return_coefficient = {}
-            return_variable = self.variable[:]
+            return_variable = self.getVariableList()
             for i in self.coefficient:
                 return_coefficient[i] = self.coefficient[i] * other
             return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
@@ -603,8 +597,8 @@ class OneVariableSparsePolynomial:
                     return 1
                 elif index > 0:
                     index_2 = index
-                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.variable)
-                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.copy(), self.variable)
+                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.getVariableList())
+                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.copy(), self.getVariableList())
                     while index_2 > 0:
                         if index_2 % 2 == 1:
                             return_polynomial *= power_of_2
@@ -616,8 +610,8 @@ class OneVariableSparsePolynomial:
                     return 1 % mod
                 elif index > 0:
                     index_2 = index
-                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.variable)
-                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.copy(), self.variable)
+                    return_polynomial = OneVariableSparsePolynomial({(0,):1}, self.getVariableList())
+                    power_of_2 = OneVariableSparsePolynomial(self.coefficient.copy(), self.getVariableList())
                     while index_2 > 0:
                         if index_2 % 2 == 1:
                             return_polynomial *= power_of_2
@@ -631,14 +625,14 @@ class OneVariableSparsePolynomial:
         if not other:
             raise ZeroDivisionError, "integer division or modulo by zero."
         elif isinstance(other, OneVariableDensePolynomial):
-            if self.variable[0] == other.variable:
+            if self.getVariable() == other.getVariable():
                 return self.toOneVariableDensePolynomial() // other
             else:
                 return self.toMultiVariableSparsePolynomial() // other.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableDensePolynomial):
             return self.toMultiVariableSparsePolynomial() // other.toMultiVariableSparsePolynomial()
         elif isinstance(other, OneVariableSparsePolynomial):
-            if self.variable == other.variable:
+            if self.getVariable() == other.getVariable():
                 return self.toOneVariableDensePolynomial() // other.toOneVariableDensePolynomial()
             else:
                 return self.toMultiVariableSparsePolynomial() // other.toMultiVariableSparsePolynomial()
@@ -646,7 +640,7 @@ class OneVariableSparsePolynomial:
             return_coefficient = {}
             for i in self.coefficient:
                 return_coefficient[i] = self.coefficient[i] // other
-            return OneVariableSparsePolynomial(return_coefficient, self.variable[:]).adjust()
+            return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
         else:
             if isinstance(other, (int,long)):
                 other = rational.Integer(other)
@@ -733,15 +727,15 @@ class OneVariableSparsePolynomial:
         zero_test = (0,)
         if (len(return_coefficient) == 1) and (zero_test in return_coefficient):
             return return_coefficient[zero_test]
-        return OneVariableSparsePolynomial(return_coefficient, self.variable[:])
+        return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
     def differentiate(self, var):
         if isinstance(var, str):
-            if self.degree() < 1 or var not in self.variable:
+            if self.degree() < 1 or var not in self.getVariableList():
                 return 0
             else:
                 origin_polynomial = self.adjust()
-                return_variable = origin_polynomial.variable[:]
+                return_variable = self.getVariableList()
                 return_coefficient = {}
                 for i in origin_polynomial.coefficient:
                     if i[0] != 0:
@@ -755,9 +749,9 @@ class OneVariableSparsePolynomial:
             if self.degree() < 1:
                 return OneVariableSparsePolynomial({(1,):self[0]}, [other])
             adjust_polynomial = self.adjust()
-            if adjust_polynomial.variable[0] == other:
+            if adjust_polynomial.getVariable() == other:
                 return_coefficient = {}
-                return_variable = adjust_polynomial.variable[:]
+                return_variable = adjust_polynomial.getVariableList()
                 for i in adjust_polynomial.coefficient:
                     return_coefficient[(i[0]+1,)] = adjust_polynomial.coefficient[i] * rational.Rational(1,i[0]+1)
                 return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
@@ -769,9 +763,9 @@ class OneVariableSparsePolynomial:
                 other_polynomial = OneVariableSparsePolynomial({(1,):self[0]}, [other])
                 return other_polynomial(max) - other_polynomial(min)
             adjust_polynomial = self.adjust()
-            if adjust_polynomial.variable[0] == other:
+            if adjust_polynomial.getVariable() == other:
                 return_coefficient = {}
-                return_variable = adjust_polynomial.variable[:]
+                return_variable = adjust_polynomial.getVariableList()
                 for i in adjust_polynomial.coefficient:
                     return_coefficient[(i[0]+1,)] = adjust_polynomial.coefficient[i] * rational.Rational(1, i[0]+1)
                 return_polynomial = OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
@@ -787,7 +781,7 @@ class OneVariableSparsePolynomial:
         for i,c in self.coefficient.iteritems():
             if c:
                 retval[i[0]] = c
-        return OneVariableDensePolynomial(retval.getAsList(), self.variable[0], self.getRing().getCoefficientRing())
+        return OneVariableDensePolynomial(retval.getAsList(), self.getVariable(), self.getRing().getCoefficientRing())
 
     def toOneVariableSparsePolynomial(self):
         return +self
@@ -797,7 +791,7 @@ class OneVariableSparsePolynomial:
             return self[0]
         else:
             origin_polynomial = self.adjust()
-            return_variable = origin_polynomial.variable[0]
+            return_variable = self.getVariable()
             max_index = 0
             for i in origin_polynomial.coefficient:
                 if i[0] > max_index:
@@ -812,7 +806,7 @@ class OneVariableSparsePolynomial:
             return self[0]
         else:
             return_coefficient = self.coefficient.copy()
-            return_variable = self.variable[:]
+            return_variable = self.getVariableList()
             return MultiVariableSparsePolynomial(return_coefficient, return_variable)
 
     def getRing(self):
@@ -829,7 +823,7 @@ class OneVariableSparsePolynomial:
                 ring = cring
             elif not cring.issubring(ring):
                 ring = ring * cring
-        return PolynomialRing(ring, self.variable[0])
+        return PolynomialRing(ring, self.getVariable())
 
     def content(self):
         """
@@ -868,6 +862,12 @@ class OneVariableSparsePolynomial:
             if self[d] != 0:
                 return d
         return -1
+
+    def getVariable(self):
+        return self.variable[0]
+
+    def getVariableList(self):
+        return self.variable[:]
 
 class MultiVariableDensePolynomial:
 
