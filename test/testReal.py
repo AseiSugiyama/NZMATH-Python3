@@ -1,6 +1,7 @@
 import unittest
 import math
 import real
+import rational
 
 class FloatTest (unittest.TestCase):
     def testAdd(self):
@@ -57,6 +58,11 @@ class FloatTest (unittest.TestCase):
         quot2 = divisee / real.Float(125,2,None)
         assert quot2.precision == 1000
 
+    def testNeg(self):
+        zero = real.Float(0,0,None)
+        assert zero == -zero
+
+class FunctionTest (unittest.TestCase):
     def testSqrt(self):
         zero = real.Float(0,0,None)
         sqrt0 = real.sqrt(zero)
@@ -65,10 +71,6 @@ class FloatTest (unittest.TestCase):
         sqrt2 = real.sqrt(two, 5)
         assert sqrt2.mantissa == 23, sqrt2.mantissa
         assert sqrt2.exponent == -4, sqrt2.exponent
-
-    def testNeg(self):
-        zero = real.Float(0,0,None)
-        assert zero == -zero
 
     def testExp(self):
         exp1 = real.exp(1)
@@ -111,7 +113,9 @@ class FloatTest (unittest.TestCase):
         assert real.tanh(1)
 
 def suite():
-    suite = unittest.makeSuite(FloatTest, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(FloatTest, 'test'))
+    suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':
