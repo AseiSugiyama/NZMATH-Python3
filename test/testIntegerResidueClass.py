@@ -126,6 +126,17 @@ class IntegerResidueClassRingTest(unittest.TestCase):
         assert isinstance(aRing.createElement(Rational(2, 3)), IntegerResidueClass)
         self.assertRaises(ValueError, aRing.createElement, Rational(2, 21))
 
+    def testProperties(self):
+        Zmod3 = IntegerResidueClassRing.getInstance(3)
+        assert Zmod3.isfield()
+        assert Zmod3.ispid()
+        assert Zmod3.isnoetherian()
+        assert Zmod3.isdomain()
+        Zmod4 = IntegerResidueClassRing.getInstance(4)
+        assert not Zmod4.isfield()
+        assert not Zmod4.isufd()
+        assert not Zmod4.isdomain()
+
 def suite():
     suite = unittest.TestSuite((
         unittest.makeSuite(IntegerResidueClassTest, 'test'),

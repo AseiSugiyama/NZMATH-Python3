@@ -14,6 +14,7 @@ class IntegerResidueClass:
             if t[2] != 1:
                 raise ValueError, "No inverse of %s." % representative
             self.n = (representative.numerator * t[0]) % self.m
+
         else:
             self.n = representative % self.m
 
@@ -121,7 +122,10 @@ class IntegerResidueClass:
     def getRing(self):
         return IntegerResidueClassRing.getInstance(self.m)
 
-class IntegerResidueClassRing:
+from ring import CommutativeRing
+from prime import primeq
+
+class IntegerResidueClassRing (CommutativeRing):
     """IntegerResidueClassRing is also known as Z/mZ."""
 
     _instances = {}
@@ -129,6 +133,12 @@ class IntegerResidueClassRing:
     def __init__(self, modulus):
         """The argument modulus m specifies an ideal mZ."""
         self.m = modulus
+        self._isfield = None
+        self._iseuclidean = None
+        self._ispid = None
+        self._isufd = None
+        self._isnoetherian = None
+        self._isdomain = None
 
     def __repr__(self):
         return "IntegerResidueClassRing(%d)" % self.m
@@ -158,3 +168,29 @@ class IntegerResidueClassRing:
             return IntegerResidueClass(seed, self.m)
         except:
             raise ValueError, "%s can not be converted to an IntegerResidueClass object." % seed
+
+    def isfield(self):
+        if isinstance(self._isfield, bool):
+            return self._isfield
+        elif isinstance(self._isdomain, bool):
+            self.isfield = self._isdomain
+            return self._isfield
+        elif primeq(self.m):
+            self._isfield = True
+            return True
+        else:
+            self._isfield = False
+            return False
+
+    def isdomain(self):
+        if isinstance(self._isdomain, bool):
+            return self._isdomain
+        elif isinstance(self._isfield, bool):
+            self._isdomain = self._isfield
+            return self._isdomain
+        if primeq(self.m):
+            self._isdomain = True
+            return True
+        else:
+            self._isdomain = False
+            return False
