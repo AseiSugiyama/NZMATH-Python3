@@ -186,7 +186,7 @@ class Complex:
     def __ge__(self, other):
         raise TypeError, "cannot compare complex numbers using <, <=, >, >="
 
-    def arg(self, err=defaultError):
+    def arg(self):
         x = self.real
         y = self.imag
         return real.atan2(y,x)
