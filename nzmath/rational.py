@@ -207,12 +207,24 @@ class Rational:
         else:
             return NotImplemented    
     def __lt__(self,other):
+        if isinstance(other, int):
+            if self.numerator / float(self.denominator) < other:
+                return 1
+            else:
+                return 0
+
         if self.numerator*other.denominator < self.denominator*other.numerator:
             return 1
         else:
             return 0
 
     def __le__(self,other):
+        if isinstance(other, int):
+            if self.numerator / float(self.denominator) <= other:
+                return 1
+            else:
+                return 0
+
         if self.numerator*other.denominator <= self.denominator*other.numerator:
             return 1 
         else:
@@ -220,7 +232,7 @@ class Rational:
 
     def __eq__(self,other):
         if isinstance(other, int):
-            if self.numerator == other and self.denominator == 1: 
+            if self.numerator == self.denominator*other:
                 return 1
             else:
                 return 0
@@ -231,9 +243,9 @@ class Rational:
     def __ne__(self,other):
         if isinstance(other, int):
             if self.__eq__(other):
-                return 1
-            else:
                 return 0
+            else:
+                return 1
         if self.numerator*other.denominator != self.denominator*other.numerator:
             return 1
         else:

@@ -1,10 +1,4 @@
 # matrix.py
-# written by Aoyama <aoyama-shotaro@c.comp.metro-u.ac.jp>
-
-# This file may be modified without notice.
-# Don't edit it for the present
-# and if you have advices, mail me please.
-# 06/18
 
 from rational import Rational
 
@@ -93,6 +87,12 @@ class Matrix:
             copy.set_row(i, self.get_row(i))
         return copy
 
+    def rational(self):
+        for i in range(self.row):
+            for j in range(self.column):
+                if isinstance(self.compo[i][j], int):
+                    self.compo[i][j] = Rational(self.compo[i][j], 1)
+                
     def set(self, list):
         for i in range( self.row):
             for j in range( self.column):
@@ -141,10 +141,7 @@ class Matrix:
         triangle = self.create_copy()
 
         # int -> Rational
-        # This causes errors when a component is already Rational
-        for i in range(triangle.row):
-            for j in range(triangle.column):
-                triangle.compo[i][j] = Rational(triangle.compo[i][j], 1)
+        triangle.rational()
 
         for i in range(triangle.row):
             if triangle.compo[i][i] == Rational(0, 1):
@@ -196,21 +193,92 @@ class Matrix:
             deleted.set_column(l, self.get_column(l+isover_j))
         return deleted
 
-    def small_matrix(self, i, j):
+    def submatrix(self, i, j):
         return (self.delete_row(i)).delete_column(j)
 
-    def yoinshi(self):
-        yoinshi = Matrix(self.row, self.column)
-        for i in range(yoinshi.row):
-            for j in range(yoinshi.column):
-                yoinshi.compo[j][i] = (-1)**(i+j) * (self.small_matrix(i+1, j+1)).determinant()
-        return yoinshi
+    def cofactors(self):
+        cofactors = Matrix(self.row, self.column)
+        for i in range(cofactors.row):
+            for j in range(cofactors.column):
+                cofactors.compo[j][i] = (-1)**(i+j) * (self.submatrix(i+1, j+1)).determinant()
+        return cofactors
 
     def inverse(self):
         if self.determinant == 0:
             raise NO_INVERSE
         else:
-            return self.yoinshi() / self.determinant()
+            return self.cofactors() / self.determinant()
+
+    def characteristic_polynomial(self):        # using Cohen's Algorithm 2.2.7
+        if self.row != self.column:
+            raise MATRIX_SIZE_ERROR
+        i = 0
+        C = identity(self.row)
+        coeff = [0] * (self.row+1)
+        coeff[0] = 1
+        for i in range(1, self.row+1):
+            C = self * C
+            coeff[i] = (-1) * C.trace() / Rational(i, 1)
+            C = C + coeff[i] * identity(self.row)
+        return coeff
+
+# This function does not work well.
+#
+#    def kernel(self):       # using Cohen's Algorithm 2.3.1
+#        copy = self.create_copy()
+#        copy.rational()
+#        r = 0
+#        c = [0] * copy.row
+#        d = [0] * copy.column
+#        for k in range(copy.column):
+#            j = 0
+#            while j < copy.row:
+#                if copy.compo[j][k] != 0 and c[j] == 0:
+#                    break
+#                j = j+1
+#            else:
+#                r = r+1
+#                d[k] = -1
+#                continue
+#            D = (-1) / copy.compo[j][k]
+#            copy.compo[j][k] = -1
+#            for s in range(k+1, copy.column):
+#                copy.compo[j][s] = D * copy.compo[j][s]
+#            for i in range(copy.row):
+#                if i == j:
+#                    continue
+#                D = copy.compo[i][k]
+#                copy.compo[i][k] = 0
+#                for s in range(k+1, copy.column):
+#                    copy.compo[i][s] = copy.compo[i][s] + D * copy.compo[j][s]
+#            c[j] = 1
+#            d[k] = j
+#            #print copy
+#
+#        # output
+#        besis = []
+#        vector = [0] * copy.column
+#        for k in range(copy.column):
+#            if d[k] != -1:
+#                continue
+#            for i in range(copy.column):
+#                if d[i] >= 0:
+#                    vector[i] = copy.compo[d[i]][k]
+#                elif i == k:
+#                    vector[i] = 1
+#                else:
+#                    vector[i] = 0
+#            besis.append(vector)
+#        return besis
+#
+
+# the belows are not methods
+def identity(size):
+    identity = Matrix(size, size)
+    for i in range(size):
+        identity.compo[i][i] = 1
+    return identity
+
 
 # data for debugging
 
@@ -220,7 +288,8 @@ b = Matrix(2,2)
 b.set([0,-1,1,-2])
 c = Matrix(3,3)
 c.set([1,2,3]+[0,5,-2]+[7,1,9])
-
+d = Matrix(6,6)
+d.set([4,2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
 def matrix_test():
 
     print "a=\n", a
@@ -235,20 +304,25 @@ def matrix_test():
     print "triangulate(c)"
     print c.triangulate()
     
-    print "c.small_matrix(1,1)"
-    print c.small_matrix(1,1)
-    print "c.small_matrix(1,2)"
-    print c.small_matrix(1,2)
-    print "c.small_matrix(3 ,2)"
-    print c.small_matrix(3,2)
-    print "c.yoinshi"
-    print c.yoinshi()
-    
-    print "c.determinant()"
     print c.determinant()
 
     print "c.inverse * c"
     print c.inverse() * c
+    print "d.determinant"
+    print d.determinant()
+    print "d.inverse * d"
+    print d.inverse() * d
+
+    print "d.characteristic_polynomial()"
+    print d.characteristic_polynomial()
+
+
+    e = Matrix(2,4)
+    e.set([24,6,4,1] + [-2,0,0,9])
+    print e
+    print "e.kernel()"
+    print e.kernel()
+
 if __name__ == "__main__":
     print "Matrix test ==============================\n"
     matrix_test()
