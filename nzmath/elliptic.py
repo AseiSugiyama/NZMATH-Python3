@@ -6,6 +6,7 @@ import polynomial
 import prime
 import random
 import rational 
+import factor
         
 class EC:
     """
@@ -174,7 +175,7 @@ class EC:
                            rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)*1]
                         B=[]
                         for i in range(0,5):
-                            if isinstanse(A[i],rational.Rational):
+                            if isinstance(A[i],rational.Rational):
                                 ad=A[i].denominator
                                 an=A[i].numerator
                                 B.append((arith1.inverse(ad,self.ch),an))
@@ -569,6 +570,8 @@ class EC:
         c4 = self.c4
         c6 = self.c6
         b2 = self.b2
+        b4 = self.b4
+        b6 = self.b6
         b8 = self.b8
         a1 = self.a1
         a2 = self.a2
