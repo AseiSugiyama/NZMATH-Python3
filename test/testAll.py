@@ -1,6 +1,7 @@
 import unittest
 import testArith1
 import testBigrandom
+import testCombinatorial
 import testFactor
 import testGcd
 import testImaginary
@@ -18,6 +19,7 @@ def suite():
     suite = unittest.TestSuite()
     suite.addTest(testArith1.suite())
     suite.addTest(testBigrandom.suite())
+    suite.addTest(testCombinatorial.suite())
     suite.addTest(testFactor.suite())
     suite.addTest(testGcd.suite())
     suite.addTest(testImaginary.suite())
