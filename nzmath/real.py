@@ -1101,6 +1101,56 @@ class RealField:
             return 1
         return 0  ## How to know a number is real ?
 
+class RelativeError:
+    def __init__(self, comparity, numerator, denominator=1):
+
+        self.comparity = comparity
+        self.relativeerrorrange = rational.Rational(numerator, denominator)
+        #if self.relativeerrorange <= 0:
+        #    raise
+
+    def absoluteerror(self, numerator, denominator=1):
+        return(rational.Rational(numerator,denominator)*self.relativeerrorrange)
+
+    def islarge(self):
+        if (self.comparity > 0) :
+            return True
+        elif (self.comparity < 0) :
+            return False
+        else:
+            return None
+
+    def issmall(self):
+        if (self.comparity < 0) :
+            return True
+        elif (self.comparity > 0) :
+            return False
+        else:
+            return None
+
+class AbsoluteError:
+    def __init__(self, comparity, numerator, denominator=1):
+
+        self.comparity = comparity
+        self.absoluteerrorrange = rational.Rational(numerator, denominator)
+        
+    def islarge(self):
+        if (self.comparity > 0) :
+            return True
+        elif (self.comparity < 0) :
+            return False
+        else:
+            return None
+
+    def issmall(self):
+        if (self.comparity < 0) :
+            return True
+        elif (self.comparity > 0) :
+            return False
+        else:
+            return None
+
+
 theRealField = RealField()
 
 pi = FloatConstant(piGaussLegendre)
