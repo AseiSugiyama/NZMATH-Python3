@@ -19,13 +19,16 @@ experiences.
 2.1. Before You Start
 =====================
 
+2.1.1 Installation of Python
+----------------------------
+
 NZMATH requires Python version 2.3 or newer.  If you do not have
 Python installed on your computer, please install it.
 
 The Python language is a very high level language.  It is downloadable
 from the website_.  There are also some documents there.
 
-_website: http://www.python.org/
+.. _website: http://www.python.org/
 
 
 2.1.2 Installation of NZMATH
@@ -45,13 +48,13 @@ where x, y, z are non-negative integers.
 
 Second, expand it.
 
- % tar zxf NZMATH-x.y.z.tar.gz
+    % tar zxf NZMATH-x.y.z.tar.gz
 
 Then, you have a child directory named NZMATH-x.y.z.
 
- % cd NZMATH-x.y.z
- % su
- # python setup.py install
+    % cd NZMATH-x.y.z
+    % su
+    # python setup.py install
 
 The last command install NZMATH into the python script path described
 above.
@@ -65,19 +68,19 @@ above.
 At the time of writing this tutorial, NZMATH is on an early stage of
 development and does not have own interpreter nor graphical interface.
 Users have to use with the raw Python interpreter.  Though the
-interpreter is designed well, but, of course, it is not specialized
-for mathematical computation.  Please be patient about it.
+interpreter is designed well, of course, it is not specialized for
+mathematical computation.  Please be patient about it.
 
 2.2.2 Sample Session
 --------------------
 
-Start your Python interpreter:
+Start your Python interpreter
 
- % python
-Python 2.3.4 (#1, May 31 2004, 23:11:48) 
-[GCC 2.95.3 20010315 (release)] on linux2
-Type "help", "copyright", "credits" or "license" for more information.
->>> 
+    % python
+    Python 2.3.4 (#1, May 31 2004, 23:11:48) 
+    [GCC 2.95.3 20010315 (release)] on linux2
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> 
 
 (we use '%' for a command prompt.  If you are on Windows, it may be
 'C:\>' or something.)
@@ -86,16 +89,16 @@ Here, '>>>' is a Python prompt.  You are in the Python interpreter
 until you will type EOF (Ctrl-D on unices and Ctrl-Z on Windows).
 Then, type:
 
->>> from nzmath import *
->>>
+    >>> from nzmath import *
+    >>>
 
 The whole NZMATH stuff is imported.
 
->>> r = rational.Rational(113, 355)
->>> print r
-113/355
->>> 
-....
+    >>> r = rational.Rational(113, 355)
+    >>> print r
+    113/355
+    >>> 
+    ....
 
 The session continues until you will stop.
 
@@ -116,7 +119,7 @@ types and functions.  NZMATH data types are explained below.
 
 To invoke your program (sample.py, say), simply:
 
- % python sample.py
+    % python sample.py
 
 Or, if you are using unices, make it executable as usual.
 
@@ -173,7 +176,7 @@ you supply, by email to nzmath-user@tnt.math.metro-u.ac.jp.
 5.2. Development Source Code
 ============================
 
-The snapshot source code will be available via web site.
+TBD.
 
 5.3. Join to the Team
 =====================
@@ -202,5 +205,10 @@ it to nzmath-user.
 7. License
 ----------
 
-NZMATH is distributed under the BSD license.  Please read LICENSE.txt
+NZMATH is distributed under the BSD license.  Please read LICENSE.txt_
 in the distribution tar ball for detail.
+
+.. _LICENSE.txt: LICENSE.txt
+
+
+Copyright (c) 2004, NZMATH development group, all right reserved.
