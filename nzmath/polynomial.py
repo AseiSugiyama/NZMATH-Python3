@@ -507,7 +507,6 @@ class OneVariableDensePolynomial:
                 cont = coefring.gcd(cont, c)
             return cont
 
-
 class OneVariableSparsePolynomial:
 
     def __init__(self, coefficient, variable):
@@ -2066,3 +2065,149 @@ def construct(polynomial, kwd={}):
             break
     r = eval(polynomial, kwd)
     return r
+
+import matrix
+
+def resultant(f, g):
+    """
+
+    returns the resultant of 2 polynomials.
+
+    """
+    m = f.degree()
+    n = g.degree()
+    M = matrix.Matrix(m+n, m+n)
+
+    # set upper half
+    for i in range(n):
+        for j in range(m+1):
+            M.compo[i][i+j] = f[j]
+    # set lower half
+    for i in range(m):
+        for j in range(n+1):
+            M.compo[n+i][i+j] = g[j]
+
+    return M.determinant()
+
+import copy
+
+# Cohen's Algorithm 3.1.2
+def pseudoDivision(A, B):
+    """
+
+    pseudoDivision(A, B) -> (Q, B)
+
+    Q, R are polynomials such that
+    d**(deg(A)-deg(B)+1) * A == B * Q + R,
+    here d is the leading coefficient of B.
+
+    """
+    if rational.isIntegerObject(A):
+        m = 0
+    else:
+        m = A.degree()
+    if rational.isIntegerObject(B):
+        n = 0
+        d = B
+    else:
+        n = B.degree()
+        d = B[n]
+
+    # step 1
+    R = copy.deepcopy(A)
+    Q = OneVariableDensePolynomial([0], A.variable)
+    e = m-n+1
+    while 1:
+        # step 2
+        if rational.isIntegerObject(R):
+            degR = 0
+        else:
+            degR = R.degree()
+        if rational.isIntegerObject(B):
+            degB = 0
+        else:
+            degB = B.degree()
+
+        if degR < degB:
+            q = d ** e
+            Q = q * Q
+            R = q * R
+            return (Q,R)
+        # step 3
+        if rational.isIntegerObject(R):
+            degR = 0
+        else:
+            degR = R.degree()
+
+        if rational.isIntegerObject(B):
+            degB = 0
+        else:
+            degB = B.degree()
+
+        tmp = [0] * (degR - degB)
+        tmp.append(1)
+        if rational.isIntegerObject(R):
+            lR = R
+        else:
+            lR = R[degR]
+
+        S = lR * OneVariableDensePolynomial(tmp, A.variable)
+        Q = d * Q + S
+        R = d * R - S * B
+        e -= 1
+#        print A
+#        print B
+#        print Q
+#        print R
+#        raw_input() 
+
+import gcd
+# Cohen's Algorithm 3.3.1
+def subResultantGCD(A, B):
+    """
+
+    returns a GCD of 2 polynomials whose coefficients are in a UFD.
+
+    """
+    # step 1
+    if B.degree() > A.degree():
+        A, B = B, A
+    if B == 0:
+        return A
+    a = A.content()
+    b = B.content()
+    d = gcd.gcd(a, b)
+    A = A * rational.Rational(1, a)
+    B = B * rational.Rational(1, b)
+    g = 1
+    h = 1
+
+    while 1:
+        # step 2
+        if rational.isIntegerObject(A):
+            degA = 0
+        else:
+            degA = A.degree()
+        if rational.isIntegerObject(B):
+            degB = 0
+        else:
+            degB = B.degree()
+        delta = degA - degB
+        Q, R = pseudoDivision(A, B)
+        if R == 0:
+            return d * B * rational.Rational(1, B.content())
+        if rational.isIntegerObject(R):
+            degR = 0
+        else:
+            degR = R.degree()
+        if degR == 0:
+            return d
+
+        # step 3
+        A = copy.deepcopy(B)
+        B = R * rational.Rational(1, g * h**delta)
+        g = A[A.degree()]
+        if 1 - delta >= 0:
+            h = h ** (1 - delta) * g ** delta
+        else:
+            h = rational.Rational(1, h ** (1 - delta)) * g ** delta

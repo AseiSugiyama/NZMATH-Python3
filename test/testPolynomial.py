@@ -252,6 +252,39 @@ class PolynomialCompilerTest(unittest.TestCase):
         assert self.x**2 + 1 == construct("1 + x**2")
         assert self.multi == construct("Q(3,4) + Q(21,16) * x + Q(9,8) * y", {"Q": rational.Rational})
 
+class PolynomialGCDTest(unittest.TestCase):
+    def setUp(self):
+        import matrix
+        self.f = OneVariableDensePolynomial([1,2,3,4,5], "x")
+        self.g = OneVariableDensePolynomial([7,8,9], "x")
+        self.correctResult = matrix.Matrix(6,6,
+                                                [1,2,3,4,5,0]
+                                            +   [0,1,2,3,4,5]
+                                            +   [7,8,9,0,0,0]
+                                            +   [0,7,8,9,0,0]
+                                            +   [0,0,7,8,9,0]
+                                            +   [0,0,0,7,8,9] ).determinant()
+        self.f2 = OneVariableDensePolynomial([-3,-2,2,2,1], "x")
+        self.g2 = OneVariableDensePolynomial([-6,-5,2,5,4], "x")
+                                            
+    def testResultant(self):
+        assert resultant(self.f, self.g) == self.correctResult
+
+    def testPseudoDivision(self): 
+        A = self.f
+        B = self.g
+
+        d = B[B.degree()]
+        Q, R = pseudoDivision(A, B)
+#        print "end"
+#        print "Q=", Q
+#        print "R=", R
+#        print pseudoDivision(f, g)
+        assert d**(A.degree()-B.degree()+1) * A == B * Q + R
+
+    def testSubResultantGCD(self):
+        assert subResultantGCD(self.f2, self.g2) == OneVariableDensePolynomial([-1,0,1], "x")
+
 def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
@@ -259,6 +292,7 @@ def suite():
     suite.addTest(unittest.makeSuite(IntegerResidueClassPolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialRingTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
+    suite.addTest(unittest.makeSuite(PolynomialGCDTest, "test"))
     return suite
 
 if __name__== '__main__':
