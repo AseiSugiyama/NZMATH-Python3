@@ -1,6 +1,6 @@
 __all__ = [
+    "arith1",
     "bigrandom",
-    "euler",
     "factor",
     "gcd",
     "imaginary",
