@@ -3,7 +3,7 @@ import arith1
 import cmath
 import factor
 import finitefield
-import imaginary
+#import imaginary
 import math
 import polynomial 
 import prime
@@ -16,6 +16,40 @@ def Element_p(a,p):
     this returns a in F_p
     """
     return int(finitefield.FinitePrimeField(p).createElement(a).n)
+
+def Evaluate_p(poly,t,p):
+    """
+    use Horner's rule
+    """
+    if isinstance(poly,(int,long)):
+        return poly%p
+    poly=poly.toOneVariableSparsePolynomial()%p
+    d=poly.degree()
+    if poly.degree()<1:
+        return poly%p
+    P=poly.coefficient
+    v=(P[d]*t+P[d-1])%p
+    i=d-2
+    while i>=0:
+        v=(v*t+P[i])%p
+        i=i-1
+    return v
+
+def Evaluate(poly,t):
+    """
+    use Horner's rule
+    """
+    if poly.degree()<1:
+        return poly
+    poly=poly.toOneVariableSparsePolynomial()
+    d=poly.degree()
+    P=poly.coefficient
+    v=P[d]*t+P[d-1]
+    i=d-2
+    while i>=0:
+        v=v*t+P[i]
+        i=i-1
+    return v
 
 def Mod(poly,d):
     """
@@ -65,25 +99,6 @@ def Div(poly,d):
             raise ValueError,"*/x^"
     else:
         raise ValueError,"*/x^"
-#########################################
-"""
-Evaluate and Mul is not using now
-"""
-def Evaluate(poly,t):
-    """
-    use Horner's rule
-    """
-    if poly.degree()<1:
-        return poly
-    poly=poly.toOneVariableSparsePolynomial()
-    d=poly.degree()
-    P=poly.coefficient
-    v=P[d]*t+P[d-1]
-    i=d-2
-    while i>=0:
-        v=v*t+P[i]
-        i=i-1
-    return v
 
 def Mul(f,g):
     """
@@ -119,7 +134,7 @@ def Mul(f,g):
         k=i
         j=j+1
     return polynomial.OneVariableDensePolynomial(L,"x").toOneVariableSparsePolynomial()
-########################################################
+
 def Inver_p(poly,d,p):
     """
     this returns poly inversion mod x^d /F_p
@@ -139,8 +154,8 @@ def Inver_p(poly,d,p):
         if n>d+1:
             n=d+1
         g=Mod(poly,n)%p
-        g=Mod(f*g%p,n)%p #
-        f=Mod(f*(2-g)%p,n)%p #
+        g=Mod(f*g%p,n)%p 
+        f=Mod(f*(2-g)%p,n)%p 
     if L[0]==1:
         return f%p
     else:
@@ -194,9 +209,9 @@ def PolyMod_p(f,g,p):
     else:
         F=rev(f,f.degree())
         G=rev(g,g.degree())
-        q=Inver_p(G,d,p)# time wastes 
-        q=Mod(q*F%p,d+1) #
-        r=(F-q*G)%p #
+        q=Inver_p(G,d,p)
+        q=Mod(q*F%p,d+1) 
+        r=(F-q*G)%p 
         i=ind(r,d+1)
         r=Div(r,i)
         return rev(r,f.degree()-i)
@@ -235,85 +250,100 @@ def GCD(f,g,p):
                     pass
             return f
 
+def PolyPow_p(f,d,g,p):
+    """
+    this returns (f^d)%g in F_p
+    """
+    poly=1
+    i=0
+    while i<d:
+        poly=poly*f
+        poly=PolyMod_p(poly,g,p)
+        i=i+1
+    return poly
+    
 def PolyMulRed(list,poly,p):
     """
-    list[*] is OneSparsePoly
+    list[*] is (OneSparsePoly,int,long)
     poly is OneSparsePoly
     """
     poly=poly%p
-    if len(poly.coefficient)==1: 
+    if poly.degree()<1:
         return 0 
     i=0
     while i<len(list):
         if list[i]==0:
             return 0 
+        elif isinstance(list[i],(int,long)):
+            pass
         elif list[i].degree()>=poly.degree():
             list[i]=PolyMod_p(list[i],poly,p)
         i=i+1
     POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'])
     i=0
     while i<len(list):
-        POLY=Mul(POLY,list[i])
+        POLY=POLY*list[i]
         if isinstance(POLY,(int,long)):
             pass
         else:
             if POLY.degree()>=poly.degree():
                 POLY=PolyMod_p(POLY,poly,p)
+                if POLY==0:
+                    return 0
         i=i+1
     return POLY
-
 # t=imaginary.Complex(a,b)
-
-def q(t):
-    """
-    this returns exp(2*pi*j*t)
-    t is complex and h.imag>0
-    """
-    return cmath.exp(2*cmath.pi*1j*t)
-
-def delta(t,x):
-    """
-    """
-    qt=q(t)
-    def a(i):
-        if i%2==0:
-            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-        else:
-            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-    i=1
-    b=0
-    while abs(a(i+1))>x: #syuusoku
-       b=a(i)+b
-       print i #
-       i=i+1
-    return qt*(1+b)**24
-
-def h(t,x):
-    """
-    """
-    return delta(2*t,x)/delta(t,x)
-
-def j(t,x):
-    """
-    """
-    return (256*h(t,x)+1)**3/h(t,x)
-    
-def nu(t,x):
-    """
-    """
-    qt=q(t)
-    qq=cmath.exp(cmath.pi*1j/12)
-    def a(i):
-        if i%2==0:
-            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-        else:
-            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-    i=1
-    b=0
-    while abs(a(i+1))>x: # one time we caluculate a(i+1),so waste more time??
-       b=a(k)+b #### miss ,if k==i !
-       i=i+1
-    return qq*(1+b)
+#
+#def q(t):
+#    """
+#    this returns exp(2*pi*j*t)
+#    t is complex and h.imag>0
+#    """
+#    return cmath.exp(2*cmath.pi*1j*t)
+#
+#def delta(t,x):
+#    """
+#    """
+#    qt=q(t)
+#    def a(i):
+#        if i%2==0:
+#            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+#        else:
+#            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+#    i=1
+#    b=0
+#    while abs(a(i+1))>x: #syuusoku
+#       b=a(i)+b
+#       print i #
+#       i=i+1
+#    return qt*(1+b)**24
+#
+#def h(t,x):
+#    """
+#    """
+#    return delta(2*t,x)/delta(t,x)
+#
+#def j(t,x):
+#    """
+#    """
+#    return (256*h(t,x)+1)**3/h(t,x)
+#    
+#def nu(t,x):
+#    """
+#    """
+#    qt=q(t)
+#    qq=cmath.exp(cmath.pi*1j/12)
+#    def a(i):
+#        if i%2==0:
+#            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+#        else:
+#            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+#    i=1
+#    b=0
+#    while abs(a(i+1))>x: # one time we caluculate a(i+1),so waste more time??
+#       b=a(k)+b #### miss ,if k==i !
+#       i=i+1
+#    return qq*(1+b)
         
 class EC:
     """
@@ -379,14 +409,15 @@ class EC:
                         self.a6=coefficient[4]%2
                         self.disc=self.a6
                         if self.disc!=0:
-                            self.j=arith1.inverse(self.a6,2)%2
+                            j=rational.Rational(1,self.a6)
+                            self.j=Element_p(j,2)
                     elif coefficient[0]==coefficient[1]==0:
                         self.a1=0
                         self.a2=0
-                        self.a3=Element_p(coefficient[2],2)
-                        self.a4=Element_p(coefficient[3],2)
-                        self.a6=Element_p(coefficient[4],2)
-                        self.disc=Element_p(self.a3**4,2)
+                        self.a3=coefficient[2]%2
+                        self.a4=coefficient[3]%2
+                        self.a6=coefficient[4]%2
+                        self.disc=self.a3**4%2
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -401,21 +432,21 @@ class EC:
                 if len(self)==5:
                     if coefficient[0]==coefficient[2]==coefficient[3]==0:
                         self.a1=0
-                        self.a2=Element_p(coefficient[1],3)
+                        self.a2=coefficient[1]%3
                         self.a3=0
                         self.a4=0
-                        self.a6=Element_p(coefficient[4],3)
-                        self.disc=Element_p(-self.a2**3*self.a6,3)
+                        self.a6=coefficient[4]%3
+                        self.disc=-self.a2**3*self.a6%3
                         if self.disc!=0:
                             j=rational.Rational(-self.a2**3,self.a6)
-                            self.j=Elemant(j,3)
+                            self.j=Elemant_p(j,3)
                     elif coefficient[0]==coefficient[1]==coefficient[2]==0:
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=Element_p(coefficient[3],3)
-                        self.a6=Element_p(coefficient[4],3)
-                        self.disc=Element_p(-self.a4**3,3)
+                        self.a4=coefficient[3]%3
+                        self.a6=coefficient[4]%3
+                        self.disc=-self.a4**3%3
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -429,37 +460,37 @@ class EC:
                         raise ValueError, "you must input integer coefficients. m(__)m"
                 if prime.millerRabin(self.ch)==1:
                     if len(self)==5:
-                        self.a1=Element_p(coefficient[0],self.ch)
-                        self.a2=Element_p(coefficient[1],self.ch)
-                        self.a3=Element_p(coefficient[2],self.ch)
-                        self.a4=(coefficient[3],self.ch)
-                        self.a6=Element_p(coefficient[4],self.ch)
-                        self.b2=Element_p(self.a1**2+4*self.a2,self.ch)
-                        self.b4=Element_p(self.a1*self.a3+2*self.a4,self.ch)
-                        self.b6=Element_p(self.a3**2+4*self.a6,self.ch)
-                        self.b8=Element_p(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2,self.ch)
-                        self.c4=Element_p(self.b2**2-24*self.b4,self.ch)
-                        self.c6=Element_p(-self.b2**3+36*self.b2*self.b4-216*self.b6,self.ch)
-                        self.disc=Element_p(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
+                        self.a1=coefficient[0]%self.ch
+                        self.a2=coefficient[1]%self.ch
+                        self.a3=coefficient[2]%self.ch
+                        self.a4=coefficient[3]%self.ch
+                        self.a6=coefficient[4]%self.ch
+                        self.b2=(self.a1**2+4*self.a2)%self.ch
+                        self.b4=(self.a1*self.a3+2*self.a4)%self.ch
+                        self.b6=(self.a3**2+4*self.a6)%self.ch
+                        self.b8=(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2)%self.ch
+                        self.c4=(self.b2**2-24*self.b4)%self.ch 
+                        self.c6=(-self.b2**3+36*self.b2*self.b4-216*self.b6)%self.ch
+                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
                         j=rational.Rational(self.c4**3,self.disc)
                         self.j=Element_p(j,self.ch)
                     elif len(self)==2:
-                        self.a=Element_p(coefficient[0],self.ch)
-                        self.b=Element_p(coefficient[1],self.ch)
+                        self.a=coefficient[0]%self.ch
+                        self.b=coefficient[1]%self.ch
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=Element_p(coefficient[0],self.ch)
-                        self.a6=Element_p(coefficient[1],self.ch)
+                        self.a4=coefficient[0]%self.ch
+                        self.a6=coefficient[1]%self.ch
                         self.b2=0
-                        self.b4=Element_p(2*self.a,self.ch)
-                        self.b6=Element_p(4*self.b,self.ch)
-                        self.b8=Element_p(-self.a**2,self.ch)
-                        self.c4=Element_p(-48*self.a,self.ch)
-                        self.c6=Element_p(-864*self.b,self.ch)
-                        self.disc=Element_p(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
+                        self.b4=2*self.a%self.ch
+                        self.b6=4*self.b%self.ch
+                        self.b8=-self.a**2%self.ch
+                        self.c4=-48*self.a%self.ch
+                        self.c6=-864*self.b%self.ch
+                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
                         j=rational.Rational(self.c4**3,self.disc)
@@ -497,7 +528,7 @@ class EC:
             elif self.ch==2 or self.ch==3:
                 return self
             else:
-                other=EC([Element_p(-27*self.c4,self.ch),Element_p(-54*self.c6,self.ch)],self.ch)
+                other=EC([-27*self.c4%self.ch,-54*self.c6%self.ch],self.ch)
                 return other
 
     def changeCurve(self,V):
@@ -606,20 +637,20 @@ class EC:
                 if arith1.legendre(y2,self.ch)>=0:
                     return arith1.sqroot(y2,self.ch)
                 else:
-                    raise ValueError, "(-_-;)"
+                    return False
             else:
                 if y1**2+4*y2>=0:
                     d=arith1.sqroot(y1**2+4*y2,self.ch)
-                    return (-y1-d)*arith1.inverse(2,self.ch)%self.ch
+                    return Element_p(rational.Rational(-y1-d,2),self.ch)
                 else:
-                    raise ValueError, "(-_-;)" 
+                    return False
         elif self.ch==2:
             raise NotImplementedError, "Now making (>_<)"
         else: 
             if y1**2+4*y2>=0:
                 return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)
             else:
-                raise ValueError, "(-_-;)"
+                return False
     def whetherOn(self,P):
         """
         Determine whether P is on curve or not.
@@ -792,59 +823,61 @@ class EC:
                     t=t+1
                 poly=poly%p 
             return poly.toOneVariableSparsePolynomial()
-        f=[]
-        M=[]
-        f.append(0)
-        M.append(0) #
+        f={}
+        M={}
+        f[-1]=-1
+        M[-1]=-1
+        f[0]=0
+        M[0]=0
         H=heart(self.ch)
         if self.ch!=2 and self.ch!=3: 
             E=self.simple()
             e=x**3+E.a*x+E.b
             i=1
-            for i in xrange(1,H[-1]+1):
+            for i in xrange(1,H[-1]+2):
                 if i==1:
-                    f.append(1)
-                    M.append(polynomial.OneVariableSparsePolynomial({0:1},['x']))
+                    f[1]=1
+                    M[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'])
                 elif i==2:
-                    f.append(2*y)
-                    M.append(polynomial.OneVariableSparsePolynomial({0:2},['x']))
+                    f[2]=2*y
+                    M[2]=polynomial.OneVariableSparsePolynomial({0:2},['x'])
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
                     g=g%E.ch
-                    f.append(g)
-                    M.append(g)
+                    f[3]=g
+                    M[3]=g
                 elif i==4:
                     g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
                     g=g%E.ch
-                    f.append(g)
-                    M.append(change(g,i,e,E.ch))#div y
+                    f[4]=g
+                    M[4]=change(g,i,e,E.ch)
                 else:
                     if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
                         g=g%E.ch
-                        f.append(g)
-                        M.append(change(g,i,e,E.ch)) # y^2->e
+                        f[i]=g
+                        M[i]=change(g,i,e,E.ch)
                     else: 
                         j=i//2
                         g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
                         L=g.coefficient.items()
                         t=0
                         dict={}
-                        while t<len(L): #div 2y
+                        while t<len(L):
                             dict[(L[t][0][0],L[t][0][1]-1)]=(L[t][1]%E.ch)//2
                             t=t+1
                         g.coefficient=dict
-                        f.append(g)
-                        M.append(change(g,i,e,E.ch)) # y^2->e and div y
+                        f[i]=g
+                        M[i]=change(g,i,e,E.ch)
         elif self.ch==2:#E(ch=2):y^2+x*y=x^3+a2*x^2+a6
             for i in xrange(1,H[-1]+1):
                 if i==1:
-                    f.append(1)
-                    M.append(1) #
+                    f[1]=1
+                    M[1]=1
                 elif i==2:
-                    f.append(x)
-                    M.append(x)
+                    f[2]=x
+                    M[2]=x
                 elif i==3:
                     g=x**4+x**3+self.a6
                     G=g.coefficient
@@ -855,8 +888,8 @@ class EC:
                         dict[L[t][0]]=Element_p(L[t][1],2)
                         t=t+1
                     g.coefficient=dict
-                    f.append(g)
-                    M.append(g)
+                    f[3]=g
+                    M[3]=g
                 elif i==4:
                     g=x**6+self.a6*x**2
                     L=g.coefficient.items()
@@ -866,8 +899,8 @@ class EC:
                         dict[L[t][0]]=Element_p(L[t][1],2)
                         t=t+1
                     g.coefficient=dict
-                    f.append(g)
-                    M.append(g)
+                    f[4]=g
+                    M[4]=g
                 else:
                     if i%2!=0:
                         j=(i-1)//2
@@ -879,30 +912,30 @@ class EC:
                             dict[L[t][0]]=Element_p(L[t][1],2)
                             t=t+1
                         g.coefficient=dict
-                        f.append(g)
-                        M.append(g)
+                        f[i]=g
+                        M[i]=g
                     else:
                         j=i//2
                         g=(f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j]
                         L=g.coefficient.items()
                         t=0
                         dict={}
-                        while t<len(L): # div x
+                        while t<len(L):
                             dict[(L[t][0][0]-1,)]=Element_p(L[t][1],2)
                             t=t+1
                         g.coefficient=dict
-                        f.append(g)
-                        M.append(g)
-        else: #self.ch==3 
+                        f[i]=g
+                        M[i]=g
+        else: #self.ch==3:
             raise NotImplementedError, "Now making (>_<)"
         return M,H
-
+    
     def order(self): 
         """
         this returns #E(Fp)
         """
-        def schoof(self):
-            if self.ch>3:
+        def schoof2(self):
+           if self.ch>3:
                 if len(self)!=2:
                     other=self.simple()
                 else:
@@ -911,60 +944,119 @@ class EC:
                 D=other.divPoly()
                 L=D[1]
                 D=D[0]
-                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'])
-                f=polynomial.OneVariableSparsePolynomial({1:-1,other.ch**2:1},['x'])
+                P=0
                 i=0
                 while i<len(L):
                     j=L[i]
+                    t=0
+                    while t<other.ch:
+                        if Evaluate_p(D[j],t,other.ch)==0:
+                            if other.coordinateX(t)!=0:
+                                P=[t,other.coordinateX(t)]
+                                break
+                        t=t+1
+                    if P!=0:
+                        k=other.ch%j
+                        Q=other.add(P,other.mul(k,P))
+                        R=[0]
+                        l=1
+                        while l<=j:
+                            R=other.add(R,P)
+                            if R==Q:
+                                T.append((l,j))
+                                break
+                            l=l+1
+                        i=i+1
+                    else: # go schoof GCD
+                        T.append((0,j))
+                        i=i+1
+                        #pass
+                return T
+           else:
+                raise NotImplementedError, "Now making (>_<)"
+        #return schoof2(self)
+            
+        def schoof(self):
+            if self.ch>3:
+                if len(self)!=2:
+                    other=self.simple()
+                else:
+                    other=self 
+                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'])
+                T=[]
+                D=other.divPoly()
+                L=D[1]
+                D=D[0]
+                i=0
+                while i<len(L):
+                    j=L[i]
+                    u=PolyPow_p(polynomial.OneVariableSparsePolynomial({1:1},["x"]),other.ch,D[j],other.ch) #u=x^q
+                    v=PolyPow_p(u,other.ch,D[j],other.ch) #v=x^(q^2)
                     k=self.ch%j
                     if k%2==0:
-                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
-                        if P==1:
-                            F=0 
-                        else:
-                            F=1
-                            P=equation.solve_Fp(P,j) #now making
-                            P=(P,other.coordinateX(P))# P in E[j]
+                        f=v-polynomial.OneVariableSparsePolynomial({1:1},["x"])
+                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],other.ch)+PolyMulRed([D[k-1],D[k+1]],D[j],other.ch),D[j],other.ch)
                     else:
-                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),D[j],j)
-                        if P==1:
-                            F=0
-                        else:
-                            F=1
-                            P=equation.solve_Fp(P,j) #now making
-                            P=(P,other.coordinateX(P))# P in E[j]
-                    if F==1: #GCD!=1
+                        f=v-polynomial.OneVariableSparsePolynomial({1:1},["x"])
+                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],other.ch)+PolyMulRed([D[k-1],D[k+1],E],D[j],other.ch),D[j],other.ch)
+                    print P,j
+                    if P!=1:
                         if arith1.legendre(other.ch,j)==-1:
                             T.append((0,j))
-                            #print T,"@" ### 
                         else:
                             w=arith1.sqroot(k,j)
-                            #print P ###
-#                            if : #
-#                                T.append((2*w,j))
-#                            elif : #
-#                                T.append((-2*w,j))
-#                            else: #
-#                                T.append((0,j))
-                            #T.append(P)###
-                            pass
-                    else: #GCD==1
-                        l=1
-                        while l<k:
-                            #P=GCD(,,)#
-                            if P==1:
-                                T.append((0,j))
-                                print T,"@@"
+                            if w%2==0:
+                                P=GCD(PolyMulRed([u-polynomial.OneVariableSparsePolynomial({1:1},["x"]),D[w],D[w],E],D[j],other.ch)+PolyMulRed([D[w-1],D[w+1]],D[j],other.ch),D[j],other.ch)
                             else:
-                                T.append((l,j))
-                                print T,"@@@"
-                            l=l+1
-                    i=i+1
-                    print i,len(L),"#"###
+                                P=GCD(PolyMulred([u-polynomial.OneVariableSparsePolynomial({1:1},["x"]),D[w],D[w]],D[j],other.ch)+PolyMulRed([D[w-1],D[w+1],E],D[j],other.ch),D[j],other.ch)
+                            if P!=1:
+                                if w%2==0:
+                                    P=GCD(PolyMulRed([4,PolyPow_p(E,int((other.ch-1)/2),D[j],other.ch),PolyPow_p(D[w],3,D[j],other.ch)],D[j],other.ch)-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j],other.ch)+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j],other.ch),D[j],other.ch)
+                                else:
+                                    P=GCD(PolyMulRed([4,PolyPow_p(E,int((other.ch+3)/2),D[j],other.ch),PolyPow_p(D[w],3,D[j],other.ch)],D[j],other.ch)-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j],other.ch)+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j],other.ch),D[j],other.ch)
+                                if P!=1:
+                                    T.append((2*w,j))
+                                else:
+                                    T.append((-2*w,j))
+                            else:
+                                T.append((0,j))
+                    else:
+                        pass
+                        #--------------------------------------------------------
+                        # 
+#                        if k%2==0:
+#                            pass #compute (X,Y)_k
+#                        else:
+#                            pass
+#                        t=1
+#                        while t<k:
+#                            if t%2==0:
+#                                pass #compute X_t
+#                            else:
+#                                pass
+#                            P=GCD(,D[j],other.ch)
+#                            if P!=1:
+#                                if t%2==0:
+#                                    pass #compute Y_t
+#                                else:
+#                                    pass
+#                                P=GCD(,D[j],other.ch)
+#                                if P!=1:
+#                                    T.append((t,j))
+#                                    print T,"@"
+#                                    break
+#                            t=t+1
+#                            if t=k:
+#                                T.append((0,j))
+#                                print T,"@@"
+#                    i=i+1
+#                    print T,j
                 return T
             else:
                 raise NotImplementedError, "Now making (>_<)"
         
+        return schoof(self)###
+
         def Shanks_Mestre(self):
             import sets
             """
@@ -1054,7 +1146,6 @@ class EC:
             else:
                 raise NotImplementedError,"Now making m(__)m"
 
-        #def SEA(self):
         if self.ch<=3:
             raise NotImplementedError,"Now making m(__)m"
         elif self.ch<10**6:
