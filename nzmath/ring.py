@@ -6,11 +6,6 @@ class Ring:
         """This class is abstract and cannot be instanciated."""
         raise NotImplementedError
 
-    def getQuotientField(self):
-        """getQuotientField returns the quotient field of the ring
-        if available, otherwise raises exception."""
-        raise NotImplementedError
-
     def createElement(self, seed):
         """createElement returns an element of the ring with seed."""
         raise NotImplementedError
@@ -21,6 +16,11 @@ class CommutativeRing (Ring):
 
     def __init__(self, *args, **kwd):
         """This class is abstract and cannot be instanciated."""  
+        raise NotImplementedError
+
+    def getQuotientField(self):
+        """getQuotientField returns the quotient field of the ring
+        if available, otherwise raises exception."""
         raise NotImplementedError
 
 class Field (CommutativeRing):
