@@ -176,10 +176,12 @@ class QuotientFieldElement (FieldElement):
     def __pow__(self, index):
         return self.__class__(self.numerator ** index, self.denominator ** index)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         numerator = self.numerator * other.denominator
         denominator = self.denominator * other.numerator
         return self.__class__(numerator, denominator)
+
+    __div__ = __truediv__
 
     def inverse(self):
         return self.__class__(self.denominator, self.numerator)
