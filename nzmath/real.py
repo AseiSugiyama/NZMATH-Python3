@@ -175,10 +175,6 @@ class Float:
             if bits > precision:
                 mantissa >>= (bits - precision)
                 exponent += (bits - precision)
-            elif exponent > 0 and bits + exponent < precision: #underflow
-                precision = bits + exponent
-            elif exponent <= 0 and bits < precision: # underflow
-                precision = bits
         if mantissa != 0:
             k, odd = vp(mantissa,2)
             mantissa, exponent = odd, exponent + k
@@ -204,9 +200,9 @@ class Float:
             retval = self.__class__(self.mantissa,
                                     self.exponent - v2,
                                     self.precision)
-            return retval / self.__class__(c2, 0, None)
+            return retval / self.__class__(c2, 0, self.precision)
         elif isinstance(other, rational.Rational):
-            return self / self.__class__(other, 0, None)
+            return self / self.__class__(other, 0, self.precision)
         exponent = self.exponent - other.exponent
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -234,10 +230,6 @@ class Float:
             if bits > precision:
                 quotient >>= (bits - precision)
                 exponent += (bits - precision)
-            elif exponent > 0 and bits + exponent < precision: #underflow
-                precision = bits + exponent
-            elif exponent <= 0 and bits < precision: # underflow
-                precision = bits
         if quotient != 0:
             k, mantissa = vp(quotient,2)
             exponent += k
@@ -330,6 +322,21 @@ class Float:
 
     def __repr__(self):
         return "Float(" + repr(self.mantissa) + ", " + repr(self.exponent) + ", " + repr(self.precision) + ")"
+
+    def __str__(self):
+        if self.exponent >= 0:
+            return str(self.mantissa * 2**self.exponent)
+        else:
+            if self.mantissa >= 0:
+                q,r = divmod(self.mantissa, 2**(-self.exponent))
+                retval = str(q) + "."
+            else:
+                q,r = divmod(-self.mantissa, 2**(-self.exponent))
+                retval = "-" + str(q) + "."
+            for i in range(20):
+                q,r = divmod(r*10, 2**(-self.exponent))
+                retval += str(q)
+            return retval
 
     def setDefaultPrecision(self, newPrecision):
         self.defaultPrecision = newPrecision
@@ -521,5 +528,4 @@ def exp(x, precision=doubleprecision):
         i += 1
         f *= i
         y *= x
-        print oldretval, retval, (oldretval - retval)
     return retval
