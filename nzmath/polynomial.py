@@ -1199,221 +1199,6 @@ class MultiVariableSparsePolynomial:
         return PolynomialRing(ring, self.variable)
 
 
-class PolynomialRing (ring.CommutativeRing):
-    """
-
-    The class of polynomial ring.
-
-    """
-    def __init__(self, aRing, vars):
-        if isinstance(vars, str):
-            self.vars = sets.Set((vars,))
-        else:
-            self.vars = sets.Set(vars)
-        self.properties = ring.CommutativeRingProperties()
-        if not isinstance(aRing, ring.Ring):
-            raise TypeError, '%s should not be passed as ring' % aRing.__class__
-        self.coefficientRing = aRing
-        if self.coefficientRing.isfield() and len(self.vars) == 1:
-            self.properties.setIseuclidean(True)
-        else:
-            if self.coefficientRing.isufd():
-                self.properties.setIsufd(True)
-            if self.coefficientRing.isnoetherian():
-                self.properties.setIsnoetherian(True)
-            elif self.coefficientRing.isdomain():
-                self.properties.setIsdomain(True)
-            elif False == self.coefficientRing.isdomain():
-                self.properties.setIsdomain(False)
-
-    def getVars(self):
-        return self.vars.copy()
-
-    def getCoefficientRing(self, var = None):
-        """
-
-        returns coefficient ring corresponding to given variable(s).
-        If variable is not given or irrelevant, only univariate
-        polynomial ring can return the answer.  In other cases,
-        TypeError will be raised.
-
-        """
-        if not var:
-            vars = sets.Set()
-        elif isinstance(var, str):
-            vars = sets.Set((var,))
-        else:
-            vars = sets.Set(var)
-        vars &= self.vars
-        varsInRing = self.vars - vars
-        if vars and varsInRing:
-            return PolynomialRing(self.coefficientRing, varsInRing)
-        elif vars:
-            return self.coefficientRing
-        elif varsInRing:
-            if len(varsInRing) == 1:
-                return self.coefficientRing
-            raise TypeError, "The meaning of `coefficient ring' is ambiguous."
-        else:
-            # never happen
-            pass
-
-    def getQuotientField(self):
-        """
-
-        getQuotientField returns the quotient field of the ring
-        if coefficient ring has its quotient field.  Otherwise,
-        an exception will be raised.
-
-        """
-        try:
-            coefficientField = self.coefficientRing.getQuotientField()
-            return rationalFunction.RationalFunctionField(coefficientField, self.vars)
-        except:
-            raise
-
-    def __eq__(self, other):
-        if not isinstance(other, PolynomialRing):
-            return False
-        if self.coefficientRing == other.coefficientRing and self.vars == other.vars:
-            return True
-        elif isinstance(self.coefficientRing, PolynomialRing):
-            return self.unnest() == other
-        elif isinstance(other.coefficientRing, PolynomialRing):
-            return self == other.unnest()
-        return False
-
-    def __str__(self):
-        retval = str(self.coefficientRing)
-        retval += "["
-        for v in self.vars:
-            retval += str(v) + ", "
-        retval = retval[:-2] + "]"
-        return retval
-
-    def __contains__(self, element):
-        """
-
-        `in' operator is provided for checking the element be in the
-        ring.
-
-        """
-        if element in self.coefficientRing:
-            return True
-        try:
-            ring = element.getRing()
-            if ring.issubring(self):
-                return True
-            return False
-        except AttributeError:
-            if isinstance(element, (int,long)):
-                return rational.theIntegerRing.issubring(self)
-
-    def issubring(self, other):
-        """
-
-        reports whether another ring contains this polynomial ring.
-
-        """
-        if isinstance(other, PolynomialRing):
-            if self.coefficientRing.issubring(other.getCoefficientRing(other.getVars())) and \
-                   self.vars.issubset(other.getVars()):
-                return True
-            else:
-                return False
-        elif isinstance(other, rationalFunction.RationalFunctionField):
-            return other.issuperring(self)
-        else:
-            return False
-
-    def issuperring(self, other):
-        """
-
-        reports whether this polynomial ring contains another ring.
-
-        """
-        if self.coefficientRing.issuperring(other):
-            return True
-        if isinstance(other, PolynomialRing):
-            if self.coefficientRing.issuperring(other.getCoefficientRing(other.getVars())) and \
-                   self.vars.issuperset(other.getVars()):
-                return True
-            else:
-                return False
-        return False
-
-    def unnest(self):
-        """
-
-        if self is a nested PolynomialRing i.e. its coefficientRing is
-        also a PolynomialRing, then the function returns one level
-        unnested PolynomialRing.
-
-        For example:
-        PolynomialRing(PolynomialRing(Q, "x"), "y").unnest()
-        returns
-        PolynomialRing(Q, sets.Set(["x","y"])).
-
-        """
-        return PolynomialRing(self.coefficientRing.coefficientRing, self.coefficientRing.vars | self.vars)
-
-    def getCommonSuperring(self, other):
-        if self.issuperring(other):
-            return self
-        elif other.issuperring(self):
-            return other
-        elif not isinstance(other, PolynomialRing) and other.issuperring(self.coefficientRing):
-            return PolynomialRing(other, self.getVars())
-        elif isinstance(other, PolynomialRing):
-            sCoef = self.getCoefficientRing(self.getVars())
-            oCoef = other.getCoefficientRing(other.getVars())
-            sVars = self.getVars()
-            oVars = other.getVars()
-            if sCoef.issuperring(oCoef):
-                return PolynomialRing(sCoef, sVars | oVars)
-            elif oCoef.issuperring(sCoef):
-                return PolynomialRing(oCoef, sVars | oVars)
-
-    def createElement(self, seed):
-        if not isinstance(seed, (int, long)) and seed.getRing() == self:
-            return seed.copy()
-        if len(self.vars) == 1:
-            variable = [v for v in self.vars][0]
-            if seed in self.coefficientRing:
-                return OneVariableDensePolynomial([seed], variable, self.coefficientRing)
-            if isinstance(seed, OneVariablePolynomial):
-                return OneVariableDensePolynomial(seed.coefficient.getAsList(), variable, self.coefficientRing)
-            raise TypeError, "larger ring element cannot be a seed."
-        else:
-            if seed in self.coefficientRing:
-                return MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(seed)}, list(self.vars))
-            listvars = list(self.vars)
-            if isinstance(seed, OneVariablePolynomial):
-                position = listvars.index(seed.getVariable())
-                new_coef = {}
-                for i,c in seed.coefficient.iteritems():
-                    index = [0]*len(listvars)
-                    index[position] = i
-                    new_coef[tuple(index)] = self.coefficientRing.createElement(c)
-                return MultiVariableSparsePolynomial(new_coef, listvars)
-        # seed cannot be a multi-variable polynomial now
-        raise NotImplementedError
-
-    def gcd(self, a, b):
-        if self.coefficientRing.isfield():
-            A = self.createElement(a)
-            B = self.createElement(b)
-            while B:
-                A, B = B, A % B
-            if A in self.coefficientRing:
-                return 1
-            else:
-                return A / A[A.degree()]
-        elif self.coefficientRing.isufd():
-            return subResultantGCD(a,b)
-        else:
-            raise NotImplementedError
-
 def construct(polynomial, kwd={}):
     """
 
@@ -2068,3 +1853,344 @@ class OneVariablePolynomialCoefficients:
         retval = OneVariablePolynomialCoefficients()
         retval.setDict(self.getAsDict())
         return retval
+
+class PolynomialRing (ring.CommutativeRing):
+    """
+
+    The class of polynomial ring.
+
+    """
+    def __init__(self, aRing, vars):
+        if isinstance(vars, str):
+            self.vars = sets.Set((vars,))
+        else:
+            self.vars = sets.Set(vars)
+        self.properties = ring.CommutativeRingProperties()
+        if not isinstance(aRing, ring.Ring):
+            raise TypeError, '%s should not be passed as ring' % aRing.__class__
+        self.coefficientRing = aRing
+        if self.coefficientRing.isfield() and len(self.vars) == 1:
+            self.properties.setIseuclidean(True)
+        else:
+            if self.coefficientRing.isufd():
+                self.properties.setIsufd(True)
+            if self.coefficientRing.isnoetherian():
+                self.properties.setIsnoetherian(True)
+            elif self.coefficientRing.isdomain():
+                self.properties.setIsdomain(True)
+            elif False == self.coefficientRing.isdomain():
+                self.properties.setIsdomain(False)
+
+    def getVars(self):
+        return self.vars.copy()
+
+    def getCoefficientRing(self, var = None):
+        """
+
+        returns coefficient ring corresponding to given variable(s).
+        If variable is not given or irrelevant, only univariate
+        polynomial ring can return the answer.  In other cases,
+        TypeError will be raised.
+
+        """
+        if not var:
+            vars = sets.Set()
+        elif isinstance(var, str):
+            vars = sets.Set((var,))
+        else:
+            vars = sets.Set(var)
+        vars &= self.vars
+        varsInRing = self.vars - vars
+        if vars and varsInRing:
+            return PolynomialRing(self.coefficientRing, varsInRing)
+        elif vars:
+            return self.coefficientRing
+        elif varsInRing:
+            if len(varsInRing) == 1:
+                return self.coefficientRing
+            raise TypeError, "The meaning of `coefficient ring' is ambiguous."
+        else:
+            # never happen
+            pass
+
+    def getQuotientField(self):
+        """
+
+        getQuotientField returns the quotient field of the ring
+        if coefficient ring has its quotient field.  Otherwise,
+        an exception will be raised.
+
+        """
+        try:
+            coefficientField = self.coefficientRing.getQuotientField()
+            return rationalFunction.RationalFunctionField(coefficientField, self.vars)
+        except:
+            raise
+
+    def __eq__(self, other):
+        if not isinstance(other, PolynomialRing):
+            return False
+        if self.coefficientRing == other.coefficientRing and self.vars == other.vars:
+            return True
+        elif isinstance(self.coefficientRing, PolynomialRing):
+            return self.unnest() == other
+        elif isinstance(other.coefficientRing, PolynomialRing):
+            return self == other.unnest()
+        return False
+
+    def __str__(self):
+        retval = str(self.coefficientRing)
+        retval += "["
+        for v in self.vars:
+            retval += str(v) + ", "
+        retval = retval[:-2] + "]"
+        return retval
+
+    def __contains__(self, element):
+        """
+
+        `in' operator is provided for checking the element be in the
+        ring.
+
+        """
+        if element in self.coefficientRing:
+            return True
+        try:
+            ring = element.getRing()
+            if ring.issubring(self):
+                return True
+            return False
+        except AttributeError:
+            if isinstance(element, (int,long)):
+                return rational.theIntegerRing.issubring(self)
+
+    def issubring(self, other):
+        """
+
+        reports whether another ring contains this polynomial ring.
+
+        """
+        if isinstance(other, PolynomialRing):
+            if self.coefficientRing.issubring(other.getCoefficientRing(other.getVars())) and \
+                   self.vars.issubset(other.getVars()):
+                return True
+            else:
+                return False
+        elif isinstance(other, rationalFunction.RationalFunctionField):
+            return other.issuperring(self)
+        else:
+            return False
+
+    def issuperring(self, other):
+        """
+
+        reports whether this polynomial ring contains another ring.
+
+        """
+        if self.coefficientRing.issuperring(other):
+            return True
+        if isinstance(other, PolynomialRing):
+            if self.coefficientRing.issuperring(other.getCoefficientRing(other.getVars())) and \
+                   self.vars.issuperset(other.getVars()):
+                return True
+            else:
+                return False
+        return False
+
+    def unnest(self):
+        """
+
+        if self is a nested PolynomialRing i.e. its coefficientRing is
+        also a PolynomialRing, then the function returns one level
+        unnested PolynomialRing.
+
+        For example:
+        PolynomialRing(PolynomialRing(Q, "x"), "y").unnest()
+        returns
+        PolynomialRing(Q, sets.Set(["x","y"])).
+
+        """
+        return PolynomialRing(self.coefficientRing.coefficientRing, self.coefficientRing.vars | self.vars)
+
+    def getCommonSuperring(self, other):
+        if self.issuperring(other):
+            return self
+        elif other.issuperring(self):
+            return other
+        elif not isinstance(other, PolynomialRing) and other.issuperring(self.coefficientRing):
+            return PolynomialRing(other, self.getVars())
+        elif isinstance(other, PolynomialRing):
+            sCoef = self.getCoefficientRing(self.getVars())
+            oCoef = other.getCoefficientRing(other.getVars())
+            sVars = self.getVars()
+            oVars = other.getVars()
+            if sCoef.issuperring(oCoef):
+                return PolynomialRing(sCoef, sVars | oVars)
+            elif oCoef.issuperring(sCoef):
+                return PolynomialRing(oCoef, sVars | oVars)
+
+    def createElement(self, seed):
+        if not isinstance(seed, (int, long)) and seed.getRing() == self:
+            return seed.copy()
+        if len(self.vars) == 1:
+            variable = [v for v in self.vars][0]
+            if seed in self.coefficientRing:
+                return OneVariableDensePolynomial([seed], variable, self.coefficientRing)
+            if isinstance(seed, OneVariablePolynomial):
+                return OneVariableDensePolynomial(seed.coefficient.getAsList(), variable, self.coefficientRing)
+            raise TypeError, "larger ring element cannot be a seed."
+        else:
+            if seed in self.coefficientRing:
+                return MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(seed)}, list(self.vars))
+            listvars = list(self.vars)
+            if isinstance(seed, OneVariablePolynomial):
+                position = listvars.index(seed.getVariable())
+                new_coef = {}
+                for i,c in seed.coefficient.iteritems():
+                    index = [0]*len(listvars)
+                    index[position] = i
+                    new_coef[tuple(index)] = self.coefficientRing.createElement(c)
+                return MultiVariableSparsePolynomial(new_coef, listvars)
+        # seed cannot be a multi-variable polynomial now
+        raise NotImplementedError
+
+    def gcd(self, a, b):
+        if self.coefficientRing.isfield():
+            A = self.createElement(a)
+            B = self.createElement(b)
+            while B:
+                A, B = B, A % B
+            if A in self.coefficientRing:
+                return 1
+            else:
+                return A / A[A.degree()]
+        elif self.coefficientRing.isufd():
+            return subResultantGCD(a,b)
+        else:
+            raise NotImplementedError
+
+class OneVariablePolynomialIdeal (ring.Ideal):
+    """
+
+    OneVariablePolynomialIdeal is a class to represent an ideal of one
+    variable polynomial ring.
+
+    """
+    def __init__(self, generators, ring):
+        """
+
+        OneVariablePolynomialIdeal(generators, ring) creates an ideal
+        in the ring, which must be a polynomial ring with one
+        variable, with the given generators.
+
+        """
+        if generators in ring:
+            self.generators = [generators]
+        elif isinstance(generators, list) and len(generators) > 0:
+            if ring.ispid():
+                g = generators[0]
+                for t in generators:
+                    g = ring.gcd(t, g)
+                self.generators = [g]
+            else:
+                self.generators = generators[:]
+        else:
+            raise TypeError, "generators of ideal must be elements of the ring."
+        self.ring = ring
+
+    def __eq__(self, other):
+        """
+
+        I == J  <=>  I.__eq__(J)
+
+        """
+        assert self.__class__ == other.__class__
+        for i in self.generators:
+            if i not in other:
+                return False
+        for j in other.generators:
+            if j not in other:
+                return False
+        return True
+
+    def __contains__(self, element):
+        """
+
+        e in I  <=>  I.__contains__(e)
+
+        for e in the ring, to which the ideal I belongs.
+
+        """
+        assert self.ring == e.getRing()
+        for g in self.generators:
+            if not element % g:
+                return True
+        if len(self.generators) == 1:
+            return False
+        else:
+            raise NotImplementedError
+
+    def reduce(self, element):
+        """
+
+        Reduce the given element by the ideal.  The result is an
+        element of the class which represents the equivalent class.
+
+        """
+        reduced = element
+        for g in self.generators:
+            reduced = reduced % g
+        return reduced
+
+class MultiVariablePolynomialIdeal (ring.Ideal):
+    """
+
+    MultiVariablePolynomialIdeal is a class to represent an ideal of
+    multi variable polynomial ring.
+
+    """
+    def __init__(self, generators, ring):
+        if isinstance(generators, list):
+            self.generators = generators[:]
+        elif generators in ring:
+            self.generators = [generators]
+        self.ring = ring
+
+    def reduce(self, element):
+        "reduction have not been provided yet."
+        raise NotImplementedError
+
+class PolynomialResidueRing (ring.ResidueClassRing):
+    """
+
+    PolynomialResidueRing is a ring of polynomial residues by an
+    ideal.
+
+    """
+    def __init__(self, ring, ideal):
+        """
+
+        PolynomialResidueRing(ring, ideal) creates a resudue class
+        ring.  The ring should be a polynomial ring, and ideal must be
+        an instance of OneVariablePolynomialIdeal or
+        MultiVariablePolynomialIdeal according to the number of
+        variables of the ring.
+
+        """
+        self.ring = ring
+        self.ideal = ideal
+        self.properties = CommutativeRingProperties()
+        if self.ring.isnoetherian():
+            self.properties.setIsnoetherian(True)
+        if self.ring.isfield():
+            self.properties.setIspid(True)
+
+    def createElement(self, seed):
+        """
+
+        Create an element of the ring with seed.
+
+        """
+        if seed in self.ring:
+            return ResidueClass(seed, self.ideal)
+        raise ValueError, "seed is not valid."
