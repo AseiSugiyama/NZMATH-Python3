@@ -1028,50 +1028,50 @@ class EC:
                 y=polynomial.OneVariableSparsePolynomial({1:1},["y"],finitefield.FinitePrimeField(p))
                 if not Q:
                     if P!=[0]:
-                        return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)#
+                        return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
                     else:
-                        return 0,x(1)#
+                        return 0,x(1)
                 else:
                     if P==Q:
                         if P==[0]:
-                            return 0,x(1)#
+                            return 0,x(1)
                         s=finitefield.FinitePrimeFieldElement(P[0],p)
                         t=finitefield.FinitePrimeFieldElement(P[1],p)
                         f=(3*s**2+self.a)*(x-s)-2*t*(y-t)
-                        if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
-                            return 0,f#
+                        if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
+                            return 0,f
                         elif len(f.variable)==2:
-                            return 2,f#
+                            return 2,f
                         elif 'x' in f.variable:
-                            return 1,f#
+                            return 1,f
                         else:
-                            return -1,f#
+                            return -1,f
                     elif P==[0] or Q==[0]:
                         if P==[0]:
-                            return 1,x-finitefield.FinitePrimeFieldElement(Q[0],p)#
+                            return 1,x-finitefield.FinitePrimeFieldElement(Q[0],p)
                         else:
                             return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
                     elif P[0]==Q[0]:
                         f=x-finitefield.FinitePrimeFieldElement(P[0],p)
-                        return 1,f#
+                        return 1,f
                     else:
                         Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
                         s=finitefield.FinitePrimeFieldElement(P[0],p)
                         t=finitefield.FinitePrimeFieldElement(P[1],p)
                         f=(Q[0]-s)*(x-s)+(Q[1]-t)-(y-t)*(Q[0]-s)
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
-                            return 0,f#
+                            return 0,f
                         elif len(f.variable)==2:
-                            return 2,f#
+                            return 2,f
                         elif 'x' in f.variable:
-                            return 1,f#
+                            return 1,f
                         else:
-                            return -1,f#
+                            return -1,f
             else:
                 raise NotImplementedError,"Now making m(__)m"
         else:
             raise NotImplementedError,"Now making m(__)m"
-################################################
+
     def Miller(self,P,m,Q):
         """
         this returns value of function
@@ -1128,7 +1128,6 @@ class EC:
             return f
 
     def WeilPairing(self,m,P,Q):
-        #print m,P,Q,"%"
         i=1
         while i:
             T=0
@@ -1140,16 +1139,12 @@ class EC:
                 A=self.add(P,T) 
                 B=self.add(Q,U)
             g=self.Miller(P,m,B)
-            #print g,P,m,B,"@"
             if g!=False and g!=0:
                 G=self.Miller(Q,m,T)
-                #print G,Q,m,T,"@@"
                 if G!=False and G!=0:
                     h=self.Miller(Q,m,A)
-                    #print h,Q,m,A,"@@@"
                     if h!=False and h!=0:
                         H=self.Miller(P,m,U)
-                        #print H,P,m,U,"@@@@"
                         if H!=False and H!=0:
                             return g*G/h*H
 
@@ -1164,16 +1159,15 @@ class EC:
                 if N0==N:
                     return (1,N)
                 N1,N2=N0,N//N0
-                #print N1,N2 #
+                N0=gcd.gcd(N1,N2)
+                N1,N2=N1*N0,N2//N0
                 P1=0
                 P2=0
                 k=1
                 while k: 
                     while P1==P2:
                         P1,P2=other.point(),other.point()
-                    #print P1,P2 #
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
-                    #print P1,P2 #
                     if P1==P2==[0]:
                         ord1=1
                         ord2=1
@@ -1214,10 +1208,7 @@ class EC:
                             P3=other.mul(D[i],P3)
                         ord2=D[i]
                     r=gcd.lcm(ord1,ord2)
-                    #print r,"?"
-                    #print ord1,ord2,r #
                     e=other.WeilPairing(r,P1,P2)
-                    #print e #
                     s=1
                     if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
                         D=divi(self.ch-1)
@@ -1228,8 +1219,7 @@ class EC:
                             i=i+1
                             j=pow(j,D[i])
                         s=D[i]
-                    #print s #
-                    if r*s==N1: #
+                    if r*s==N1: 
                         return (r*N2,s)
             else:
                 raise NotImplementedError,"Now making m(__)m"
