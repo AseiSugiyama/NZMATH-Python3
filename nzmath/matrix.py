@@ -175,7 +175,7 @@ class Matrix:
         if self.row != self.column:
             raise MatrixSizeError
 
-        power = theMatrixRing.unitMatrix(self.row) 
+        power = unitMatrix(self.row)
         if n == 0:
             return power
         if n > 0:
@@ -398,6 +398,16 @@ class Matrix:
             
         return triangle
 
+    def isUpperTriangularMatrix(M):
+        for j in range(M.column):
+            for i in range(j+1, M.row):
+                if M.compo[i][j] != 0:
+                    return False
+        return True
+
+    def isLowerTriangularMatrix(M):
+        return M.transpose().isUpperTriangularMatrix()
+
     def trace(self):
         """
         
@@ -461,13 +471,13 @@ class Matrix:
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
         i = 0
-        C = theMatrixRing.unitMatrix(self.row)
+        C = unitMatrix(self.row)
         coeff = [0] * (self.row+1)
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
             coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
-            C = C + coeff[i] * theMatrixRing.unitMatrix(self.row)
+            C = C + coeff[i] * unitMatrix(self.row)
         import polynomial
         coeff.reverse()
         return polynomial.OneVariableDensePolynomial(coeff, "x")
@@ -775,7 +785,11 @@ class IntegerMatrix(Matrix):
 
 
 class MatrixRing:
+    """
 
+    MatrixRing is a class for matrix rings.
+
+    """ 
     _instances = {}
 
     def __init__(self, size):
@@ -789,12 +803,6 @@ class MatrixRing:
             anInstance = MatrixRing(size)
             self._instances[size] = anInstance
         return self._instances[size]
-
-    def unitMatrix(self):
-        I = Matrix(self.size, self.size)
-        for i in range(self.size):
-            I[i,i] = 1
-        return I
 
     getInstance = classmethod(getInstance)
 
@@ -819,7 +827,7 @@ class Subspace(Matrix):
         k = self.column
 
         M = self.copy()
-        B = theMatrixRing.unitMatrix(n)
+        B = unitMatrix(n)
 
         for s in range(k):
             found = 0; t = s
@@ -885,16 +893,6 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
     M2 = M * N1
     return M2.image()
 
-def isUpperTriangularMatrix(M):
-    for j in range(M.column):
-        for i in range(j+1, M.row):
-            if M.compo[i][j] != 0:
-                return False
-    return True
-
-def isLowerTriangularMatrix(M):
-    return isUpperTriangularMatrix(M.transpose())
-
 
 #--------------------------------------------------------------------
 #   define exceptions 
@@ -910,6 +908,9 @@ class NoInverseImage(Exception):
     pass
 
 class NoInverse(Exception):
+    pass
+
+class NoRing(Exception):
     pass
 
 

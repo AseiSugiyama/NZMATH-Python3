@@ -77,19 +77,19 @@ class MatrixTest(unittest.TestCase):
                           +[0,5,6,7]
                           +[0,0,8,9]
                           +[0,0,1,1])
-        assert isUpperTriangularMatrix(UT)
-        assert not isUpperTriangularMatrix(notUT)
+        assert UT.isUpperTriangularMatrix()
+        assert not notUT.isUpperTriangularMatrix()
 
     def testLUDecomposition(self):
         L, U = d.LUDecomposition()
         assert L * U == d
-        assert isLowerTriangularMatrix(L)
-        assert isUpperTriangularMatrix(U)
+        assert L.isLowerTriangularMatrix()
+        assert U.isUpperTriangularMatrix()
 
 class SubspaceTest(unittest.TestCase):
     def testSupplementBasis(self):
         b = Subspace(3, 2, [1,2,3,4,5,7])
-        b.supplementBasis()
+        assert b.supplementBasis() == Matrix(3,3,[1,2,0,3,4,0,5,7,1])
 
 def suite():
     suite = unittest.makeSuite(MatrixTest, "test")
