@@ -157,6 +157,10 @@ class RationalTest (unittest.TestCase):
         assert "0.25000" == Rational(1,4).decimalString(5)
         assert "0.33333" == Rational(1,3).decimalString(5)
 
+    def testNonzero(self):
+        assert Rational(1,1)
+        assert not Rational(0,1)
+
 class IntegerTest(unittest.TestCase):
     def setUp(self):
         self.three = Integer(3)
@@ -180,6 +184,10 @@ class IntegerTest(unittest.TestCase):
 
     def testGetRing(self):
         assert theIntegerRing == self.three.getRing()
+
+    def testNonzero(self):
+        assert Integer(1)
+        assert not Integer(0)
 
 class IntegerRingTest(unittest.TestCase):
     def testContains(self):

@@ -237,6 +237,12 @@ class Rational (ring.QuotientFieldElement):
     def __repr__(self):
         return "%s(%d, %d)" % (self.__class__.__name__, self.numerator, self.denominator)
 
+    def __nonzero__(self):
+        if self.numerator:
+            return True
+        else:
+            return False
+
     def expand(self, base, limit):
         """
 
