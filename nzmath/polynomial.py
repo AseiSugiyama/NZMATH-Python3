@@ -154,7 +154,7 @@ class OneVariableDensePolynomial:
             return (self.toMultiVariableSparsePolynomial() // other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
         elif isinstance(other, OneVariableDensePolynomial):
             other_adjust = other.adjust()
-            if isIntegerObject(other_adjust) or isinstance(other_adjust, rational.Rational):
+            if rational.isIntegerObject(other_adjust) or isinstance(other_adjust, rational.Rational):
                 return self // other_adjust
             elif other_adjust.integertest():
                 self_adjust = self.adjust()
@@ -162,7 +162,7 @@ class OneVariableDensePolynomial:
                     return 0
                 else:
                     floordiv_polynomial = 0
-                    while isinstance(self_adjust, IntegerPolynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
+                    while isinstance(self_adjust, OneVariableDensePolynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
                         old_length = len(self_adjust.coefficient)
                         quotient_position = len(self_adjust.coefficient) - len(other_adjust.coefficient)
                         quotient_value = self_adjust.coefficient[-1] // other_adjust.coefficient[-1]
@@ -190,7 +190,7 @@ class OneVariableDensePolynomial:
                     return 0
                 else:
                     floordiv_polynomial = 0
-                    while isinstance(self_adjust, RationalPolynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
+                    while isinstance(self_adjust, OneVariableDensePolynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
                         old_length = len(self_adjust.coefficient)
                         quotient_position = len(self_adjust.coefficient) - len(other_adjust.coefficient)
                         quotient_value = self_adjust.coefficient[-1] / other_adjust.coefficient[-1]
@@ -1411,7 +1411,7 @@ class MultiVariableSparsePolynomial:
             return_coefficient = [0]*(max_index + 1)
             for i in disp_polynomial.coefficient:
                 return_coefficient[i[0]] += disp_polynomial.coefficient[i]
-            return str(RationalPolynomial(return_coefficient, disp_polynomial.variable[0]))
+            return str(OneVariableDensePolynomial(return_coefficient, disp_polynomial.variable[0]))
         else:
             old_variable = disp_polynomial.variable[:]
             reverse_coefficient = disp_polynomial.coefficient.copy()
