@@ -47,6 +47,62 @@ class IntegerResidueClass:
 
     __truediv__ = __div__
 
+    def __add__(self, other):
+        if isinstance(other, IntegerResidueClass):
+            if self.m % other.m == 0:
+                return IntegerResidueClass(self.n + other.n, other.m)
+            elif other.m % self.m == 0:
+                return IntegerResidueClass(self.n + other.n, self.m)
+            else:
+                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+        try:
+            return IntegerResidueClass(self.n + other, self.m)
+        except:
+            return NotImplemented
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        if isinstance(other, IntegerResidueClass):
+            if self.m % other.m == 0:
+                return IntegerResidueClass(self.n - other.n, other.m)
+            elif other.m % self.m == 0:
+                return IntegerResidueClass(self.n - other.n, self.m)
+            else:
+                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+        try:
+            return IntegerResidueClass(self.n - other, self.m)
+        except:
+            return NotImplemented
+
+    def __rsub__(self, other):
+        if isinstance(other, IntegerResidueClass):
+            if self.m % other.m == 0:
+                return IntegerResidueClass(other.n - self.n, other.m)
+            elif other.m % self.m == 0:
+                return IntegerResidueClass(other.n - self.n, self.m)
+            else:
+                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+        try:
+            return IntegerResidueClass(other - self.n, self.m)
+        except:
+            return NotImplemented
+
+    def __pow__(self, other, mod=None):
+        if other < 0:
+            inverse = self.inverse()
+            return IntegerResidueClass(pow(inverse.n, -other, self.m), self.m)
+        elif other == 0:
+            return IntegerResidueClass(1, -other, self.m)
+        else:
+            return IntegerResidueClass(pow(self.n, other, self.m), self.m)
+
+    def __neg__(self):
+        return IntegerResidueClass(-self.n, self.m)
+
+    def __pos__(self):
+        return IntegerResidueClass(+self.n, self.m)
+
     def inverse(self):
         t = extgcd(self.n, self.m)
         if t[0] != 1:

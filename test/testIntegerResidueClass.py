@@ -43,6 +43,55 @@ class IntegerResidueClassTest(unittest.TestCase):
         residue3 = IntegerResidueClass(2, 151)
         self.assertRaises(ValueError, residue1.__div__, residue3)
 
+    def testAdd(self):
+        residue1 = IntegerResidueClass(8, 15)
+        residue2 = IntegerResidueClass(7, 15)
+        assert residue1 + residue2
+        assert (residue1 + residue2).getResidue() == 0
+        assert (residue1 + residue2).getModulus() == 15
+        residue3 = IntegerResidueClass(13, 60)
+        assert residue1 + residue3
+        assert (residue1 + residue3).getResidue() == 6
+        assert (residue1 + residue3).getModulus() == 15
+        assert residue1 + 2
+        assert (residue1 + 2).getResidue() == 10
+        assert (residue1 + 2).getModulus() == 15
+
+    def testSub(self):
+        residue1 = IntegerResidueClass(8, 15)
+        residue2 = IntegerResidueClass(7, 15)
+        assert residue1 - residue2
+        assert (residue1 - residue2).getResidue() == 1
+        assert (residue1 - residue2).getModulus() == 15
+        residue3 = IntegerResidueClass(13, 60)
+        assert residue1 - residue3
+        assert (residue1 - residue3).getResidue() == 10
+        assert (residue1 - residue3).getModulus() == 15
+        assert residue1 - 2
+        assert (residue1 - 2).getResidue() == 6
+        assert (residue1 - 2).getModulus() == 15
+        assert 2 - residue1
+        assert (2 - residue1).getResidue() == 9
+        assert (2 - residue1).getModulus() == 15
+
+    def testNeg(self):
+        residue1 = IntegerResidueClass(8, 15)
+        assert -residue1
+        assert (-residue1).getResidue() == 7
+        assert (-residue1).getModulus() == 15
+
+    def testPos(self):
+        residue1 = IntegerResidueClass(8, 15)
+        assert +residue1
+        assert (+residue1).getResidue() == 8
+        assert (+residue1).getModulus() == 15
+
+    def testPow(self):
+        residue1 = IntegerResidueClass(8, 15)
+        assert residue1**4
+        assert (residue1**4).getResidue() == 1
+        assert (residue1**4).getModulus() == 15
+
     def testToInteger(self):
         residue = IntegerResidueClass(8, 15)
         assert isinstance(residue.toInteger(), Integer)
