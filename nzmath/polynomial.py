@@ -18,6 +18,19 @@ class OneVariablePolynomial:
     def getCoefficientRing(self):
         return self.coefficientRing
 
+    def initRing(self):
+        myRing = None
+        for c in self.coefficient.itercoeffs():
+            if isinstance(c, (int,long)):
+                cring = rational.theIntegerRing
+            else:
+                cring = c.getRing()
+            if not myRing or myRing != cring and myRing.issubring(cring):
+                myRing = cring
+            elif not cring.issubring(myRing):
+                myRing = myRing * cring
+        return myRing, PolynomialRing(myRing, self.getVariable())
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -384,19 +397,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                     return_coefficient[(i,)] = self.coefficient[i]
             return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
-    def initRing(self):
-        myRing = None
-        for c in self.coefficient:
-            if isinstance(c, (int,long)):
-                cring = rational.theIntegerRing
-            else:
-                cring = c.getRing()
-            if not myRing or myRing != cring and myRing.issubring(cring):
-                myRing = cring
-            elif not cring.issubring(myRing):
-                myRing = myRing * cring
-        return myRing, PolynomialRing(myRing, self.getVariable())
-
     def degree(self):
         return self.coefficient.degree()
 
@@ -480,7 +480,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                         key = i
                     self.coefficient[key] = c
             self.variable = variable
-            self.ring, self.coefficientRing = self.initRing()
+            self.coefficientRing, self.ring = self.initRing()
         else:
             self.variable = variable
             self.coefficientRing = coeffring
@@ -816,19 +816,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                     return_coefficient[(i,)] = c
             return_variable = self.getVariableList()
             return MultiVariableSparsePolynomial(return_coefficient, return_variable)
-
-    def initRing(self):
-        ring = None
-        for c in self.coefficient.itercoeffs():
-            if isinstance(c, (int,long)):
-                cring = rational.theIntegerRing
-            else:
-                cring = c.getRing()
-            if not ring or ring != cring and ring.issubring(cring):
-                ring = cring
-            elif not cring.issubring(ring):
-                ring = ring * cring
-        return PolynomialRing(ring, self.getVariable()), ring
 
     def content(self):
         """
@@ -1980,7 +1967,7 @@ class PolynomialRing (ring.CommutativeRing):
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
             if seed in self.coefficientRing:
-                return OneVariableDensePolynomial([self.coefficientRing.createElement(seed)], variable)
+                return OneVariableDensePolynomial([self.coefficientRing.createElement(seed)], variable, self.coefficientRing)
             if isinstance(seed, OneVariableSparsePolynomial):
                 seed = seed.toOneVariableDensePolynomial()
             if isinstance(seed, OneVariableDensePolynomial):
@@ -2090,7 +2077,7 @@ def pseudoDivision(A, B):
 
     # step 1
     R = copy.deepcopy(A)
-    Q = OneVariableDensePolynomial([0], A.variable)
+    Q = OneVariableDensePolynomial([0], A.getVariable(), A.getCoefficientRing())
     e = m-n+1
     while 1:
         # step 2
@@ -2379,9 +2366,12 @@ class OneVariablePolynomialCoefficients:
 
     def itercoeffs(self):
         if self._using == OneVariablePolynomialCoefficients.USING_LIST:
-            return iter([c for c in self._list if c])
+            for c in self._list:
+                if c:
+                    yield c
         elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
-            return self._dict.itervalues()
+            for c in self._dict.itervalues():
+                yield c
 
     def iterdegrees(self):
         if self._using == OneVariablePolynomialCoefficients.USING_LIST:
