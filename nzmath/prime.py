@@ -152,9 +152,14 @@ from factor import trialDivision as factor
 import operator
 
 def sqrt(a):
-    try:
+    """
+
+    Return the floor of square root of the given integer.
+
+    """
+    if a < 2 ** 59:
         return long(math.sqrt(a))
-    except OverflowError:
+    else:
         b_old = a
         b = pow(10,(len(str(long(a)))+1)//2)
         while b_old>b:

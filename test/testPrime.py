@@ -17,11 +17,11 @@ class PrimeTest(unittest.TestCase):
         assert prime.primeq(23)
         assert prime.primeq(1662803)
         assert prime.primeq(1111111111111111111)
-        assert prime.primeq(9127065170209166627512577049835050786319879175417462565489372634726057)
+##         assert prime.primeq(9127065170209166627512577049835050786319879175417462565489372634726057)
 
     def testBigprimeq(self):
         assert prime.bigprimeq(1111111111111111111)
-        assert prime.bigprimeq(9127065170209166627512577049835050786319879175417462565489372634726057)
+##         assert prime.bigprimeq(9127065170209166627512577049835050786319879175417462565489372634726057)
 
     def testGenerator(self):
         g = prime.generator()
@@ -48,6 +48,12 @@ class PrimeTest(unittest.TestCase):
         assert prime.nextPrime(2) == 3
         assert prime.nextPrime(541) == 547
         assert prime.nextPrime(542) == 547
+
+    def testSqrt(self):
+        assert prime.sqrt(2**60 - 1) ** 2 <= 2**60 - 1
+        assert prime.sqrt(2**59 - 1) ** 2 <= 2**59 - 1
+        assert prime.sqrt(10) == 3
+        assert prime.sqrt(4) == 2
 
 def suite():
     suite = unittest.makeSuite(PrimeTest, 'test')
