@@ -224,7 +224,7 @@ class OneVariableDensePolynomial:
             raise ValueError, "Not Defined."
 
     def __div__(self, other):
-        if self % other = 0:
+        if self % other == 0:
             return self // other
         else:
             raise ValueError, "Not Defined."
