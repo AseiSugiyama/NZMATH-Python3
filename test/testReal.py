@@ -132,6 +132,18 @@ class ErrorTest (unittest.TestCase):
         assert not real.AbsoluteError(1,1,8).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
         assert real.AbsoluteError(1,1,10).nearlyEqual(rational.Rational(1,3), rational.Rational(1,4))
 
+    def testLt(self):
+        assert real.RelativeError(0,1,4) < real.RelativeError(0,1,3)
+        assert real.AbsoluteError(0,1,4) < real.AbsoluteError(0,1,3)
+        assert not real.RelativeError(0,1,4) < real.RelativeError(0,1,5)
+        assert not real.AbsoluteError(0,1,4) < real.AbsoluteError(0,1,5)
+        assert real.RelativeError(1,1,4) < real.RelativeError(0,1,3)
+        assert real.AbsoluteError(1,1,4) < real.AbsoluteError(0,1,3)
+        assert not real.RelativeError(1,1,4) < real.RelativeError(-1,1,3)
+        assert not real.AbsoluteError(1,1,4) < real.AbsoluteError(-1,1,3)
+        assert not real.RelativeError(0,1,4) < real.AbsoluteError(0,1,3)
+        assert not real.AbsoluteError(0,1,4) < real.RelativeError(0,1,3)
+
 class NewFunctionTest (unittest.TestCase):
     def setUp(self):
         self.err = real.RelativeError(0, 1, 2**100)
@@ -214,7 +226,7 @@ def suite():
     suite.addTest(unittest.makeSuite(FloatTest, 'test'))
     suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
     suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
-#    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
+    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':

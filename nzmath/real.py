@@ -1138,6 +1138,13 @@ class RelativeError:
         """
         return self.absoluteerror(x).nearlyEqual(x, y)
 
+    def __lt__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange < other.relativeerrorrange and (self.comparity == other.comparity or self.comparity != 0 and other.comparity == 0):
+            return True
+        return False
+
 class AbsoluteError:
     def __init__(self, comparity, numerator, denominator=1):
         self.comparity = comparity
@@ -1175,6 +1182,13 @@ class AbsoluteError:
             return 0 <= x - y < self.absoluteerrorrange
         else:
             return abs(x-y) < self.absoluteerrorrange
+
+    def __lt__(self, other):
+        if not isinstance(other, AbsoluteError):
+            return False
+        if self.absoluteerrorrange < other.absoluteerrorrange and (self.comparity == other.comparity or self.comparity != 0 and other.comparity == 0):
+            return True
+        return False
 
 theRealField = RealField()
 
