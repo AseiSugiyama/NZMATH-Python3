@@ -90,8 +90,9 @@ class FloatTest (unittest.TestCase):
 
     def testLog(self):
         log2 = real.log(2)
-        logf2 = real.log(real.Float(2,0))
-        assert log2 == logf2
+        logF2 = real.log(real.Float(2,0))
+        logf2 = real.log(2.0)
+        assert log2 == logF2 == logf2
         log2inverse = real.log(.5)
         assert log2 == -log2inverse
         assert "0.6931471805599452" == str(log2)[:18]

@@ -890,6 +890,8 @@ def log(x, precision=doubleprecision):
         # log(x) = - log(1/x)
         if rational.isIntegerObject(x):
             return -log(rational.Rational(1,x), precision)
+        if isinstance(x, float):
+            x = Float(x)
         return -log(x.inverse(), precision)
     y1 = 1 - x
     retval = sum(log_iter(y1, precision), precision)
