@@ -1,13 +1,14 @@
-import sets
-import rational
-
 """
 
 rational functions and fields of rational functions
 
 """
 
-class RationalFunctionField:
+import sets
+import rational
+import ring
+
+class RationalFunctionField (ring.QuotientField):
     """
 
     The class for rational function fields.
@@ -88,7 +89,7 @@ class RationalFunctionField:
         """
         return RationalFunctionField(self.coefficientField.coefficientField, self.coefficientField.vars | self.vars)
 
-class RationalFunction:
+class RationalFunction (ring.QuotientFieldElement):
     """
 
     The class of rational functions.
@@ -119,3 +120,9 @@ class RationalFunction:
                 self.denominator = rational.Integer(1)
         else:
             raise ValueError, "numerator must be specified."
+
+    def __eq__(self, other):
+        try:
+            return self.numerator * other.denominator == other.numerator * self.denominator
+        except:
+            return NotImplemented
