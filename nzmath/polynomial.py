@@ -2103,7 +2103,7 @@ import copy
 def pseudoDivision(A, B):
     """
 
-    pseudoDivision(A, B) -> (Q, B)
+    pseudoDivision(A, B) -> (Q, R)
 
     Q, R are polynomials such that
     d**(deg(A)-deg(B)+1) * A == B * Q + R,
