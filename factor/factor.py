@@ -544,5 +544,50 @@ def _modp_sqrt(a,p):
     else:
         raise ValueError,"There is no square root of %s mod %s" % (a,p)
 
+import prime
+def PrimePowerTest(n):
+    """
+    This program using Algo. 1.7.5 in Cohen's book judges whether
+    n is of the form p**k with p or not.
+    If it is True, then return is (p,k)
+    If it is False, then return is (n,0)
+    """
+    if n % 2 == 1:
+        q = n
+        while True:
+            if prime.millerRabin(q) == False:
+                a = 1
+                while True:
+                    if prime.spsp(n,a) == False:
+                        break
+                    else:
+                        a += 1
+                d = gcd.gcd(a**q-a,q)
+                if d == 1 or d == q:
+                    return n,0
+                else:
+                    q = d
+            else:
+                p = q
+                if prime.millerRabin(p) == True:
+                    break
+                else:
+                    q = p
+    else:
+        p = 2
+
+    q = n
+    k = 0
+    while True:
+        if q % p == 0:
+            q = q / p
+            k += 1
+        else:
+            if q == 1:
+                break
+            else:
+                return n,0
+    return p,k
+
 def mpqs(N):
     return MPQS(N).run()
