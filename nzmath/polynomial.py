@@ -79,6 +79,9 @@ class OneVariablePolynomial:
         else:
             return NotImplemented
 
+    def __ne__(self, other):
+        return not(self == other)
+
     def __pos__(self):
         retval = self.copy()
         if retval.degree() == 0:
