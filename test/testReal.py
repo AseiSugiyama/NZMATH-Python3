@@ -69,6 +69,11 @@ class FloatTest (unittest.TestCase):
         zero = real.Float(0,0,None)
         assert zero == -zero
 
+    def testExp(self):
+        exp1 = real.exp(1)
+        expf1 = real.exp(real.Float(1,0))
+        assert exp1 == expf1
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite
