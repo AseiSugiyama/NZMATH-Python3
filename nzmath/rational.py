@@ -148,6 +148,9 @@ class Rational:
     def __neg__(self):
         return Rational(-self.numerator, self.denominator)
 
+    def __abs__(self):
+        return Rational(abs(self.numerator), self.denominator)
+
     def __str__(self):
         return str(self.numerator)+"/"+str(self.denominator)
 

@@ -5,6 +5,7 @@ import ring
 
 MatrixSizeError = "MatrixSizeError"
 NoInverse = "NoInverse"
+NoSolution = "NoSolution"
 VectorsNotIndependent = "VectorsNotIndependent"
 
 class Matrix:
@@ -30,6 +31,14 @@ class Matrix:
         return return_str[:-1]
 
     def __eq__(self, other):
+        if isinstance(other, int):
+            if other == 0:          # Is self zero vector/matrix ?
+                for i in range(self.row):
+                    for j in range(self.column):
+                        if self.compo[i][j] != 0:
+                            return 0
+                return 1 
+
         if (self.row != other.row) or (self.column != other.column):
             return 0
 
@@ -140,7 +149,7 @@ class Matrix:
                 for j in range(self.row):
                     self.compo[j][n-1] = arg.compo[j][0]
         else:
-            raise NotImplementedError
+            raise TypeError
 
 
     def set_compo(self, m, n, value):
@@ -176,6 +185,14 @@ class Matrix:
             column_n.compo[j][0] = self.compo[j][n-1]
         return column_n
 
+    def __getitem__(self, n):
+        """M[i] <==> M.get_column_vector(i)"""
+        return self.get_column_vector(n)
+
+    def __setitem__(self, i, vector):
+        """M[i] = V <==> M.set_column(i, V)"""
+        self.set_column(i, vector)
+        
     def swap_row(self, m1, m2):
         tmp = self.compo[m1-1][:]
         self.compo[m1-1] = self.compo[m2-1][:]
@@ -254,27 +271,27 @@ class Matrix:
                 inserted.set_column(l, self.get_column(l-1))
         return inserted
 
-    def delete_row(self, i):
-        deleted = Matrix(self.row-1, self.column)
+    def remove_row(self, i):
+        removed = Matrix(self.row-1, self.column)
         isover_i = 0
-        for k in range(1, deleted.row+1):
+        for k in range(1, removed.row+1):
             if k == i:
                 isover_i = 1
-            deleted.set_row(k, self.get_row(k+isover_i))
-        return deleted
+            removed.set_row(k, self.get_row(k+isover_i))
+        return removed
 
-    def delete_column(self, j):
-        deleted = Matrix(self.row, self.column-1)
+    def remove_column(self, j):
+        removed = Matrix(self.row, self.column-1)
         isover_j = 0
-        for l in range(1, deleted.column+1):
+        for l in range(1, removed.column+1):
             if l == j:
                 isover_j = 1
-            deleted.set_column(l, self.get_column(l+isover_j))
-        return deleted
+            removed.set_column(l, self.get_column(l+isover_j))
+        return removed
 
     def submatrix(self, i, j):
-        """Return submatrix which deleted i-th row and j-th column from self."""
-        return (self.delete_row(i)).delete_column(j)
+        """Return submatrix which removed i-th row and j-th column from self."""
+        return (self.remove_row(i)).remove_column(j)
 
     def cofactors(self):
         cofactors = Matrix(self.row, self.column)
@@ -383,7 +400,7 @@ class Matrix:
                 for i in range(self.row):
                     B = arg.get_column(1)
         else:
-            raise NotImplementedError
+            raise TypeError
         M1 = self.insert_column(self.column+1, B)
         print M1
         V = M1.kernel()
