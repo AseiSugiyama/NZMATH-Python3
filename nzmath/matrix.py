@@ -60,6 +60,7 @@ class Matrix:
         return diff
 
     def __mul__(self, other):
+        """multiplication with a Matrix of a scalar"""
         if isinstance(other, Matrix):
             if self.column != other.row:
                 raise MatrixSizeError
@@ -80,7 +81,7 @@ class Matrix:
             return product
 
     def __div__(self, other):
-        """ division by a scalar """
+        """division by a scalar"""
         if other in ring.theIntegerRing:
             return self * Rational(1, other)
         elif other in ring.theRationalField:    
@@ -98,6 +99,7 @@ class Matrix:
             return product
 
     def copy(self):
+        """create a copy of instance"""
         copy = Matrix(self.row, self.column)
         copy.row = self.row
         copy.column = self.column
@@ -106,14 +108,17 @@ class Matrix:
         return copy
 
     def set(self, list):
+        """set(list) : substitute list for components"""
         for i in range( self.row):
             for j in range( self.column):
                 self.compo[i][j] = list[self.column * i + j]
 
     def set_row(self, m, row_vector):
+        """set_row(m, list) : substitute list for m-th row"""
         self.compo[m-1] = row_vector[:]
     
     def set_column(self, n, column_vector):
+        """set_column(n, list) : substitute list for n-th column"""
         for i in range(self.row):
             self.compo[i][n-1] = column_vector[i]
 
@@ -143,6 +148,7 @@ class Matrix:
         self.set_column(n2, tmp)
 
     def transpose(self):
+        """returns transposed matrix of self"""
         trans = Matrix(self.column, self.row)
         for i in range(trans.row):
             for j in range(trans.column):
@@ -150,6 +156,7 @@ class Matrix:
         return trans
 
     def triangulate(self):
+        """returns triangulated matrix of self"""
         triangle = self.copy()
         print triangle
         for i in range(triangle.row):
@@ -170,12 +177,14 @@ class Matrix:
         return triangle
 
     def trace(self):
+        """returns trace of self"""
         trace = 0
         for i in range(self.row):
             trace += self.compo[i][i]
         return trace
 
     def determinant(self):
+        """returns determinant of self"""
         det = 1
         if self.row != self.column:
             raise MatrixSizeError
@@ -203,6 +212,7 @@ class Matrix:
         return deleted
 
     def submatrix(self, i, j):
+        """returns submatrix which deleted i-th row and j-th column from self"""
         return (self.delete_row(i)).delete_column(j)
 
     def cofactors(self):
@@ -213,6 +223,7 @@ class Matrix:
         return cofactors
 
     def inverse(self):
+        """returns inverse matrix of self"""
         if self.determinant == 0:
             raise NoInverse
         else:
@@ -231,55 +242,83 @@ class Matrix:
             C = C + coeff[i] * unit_matrix(self.row)
         return coeff
 
-    def kernel(self):       # using Cohen's Algorithm 2.3.1
-        copy = self.copy()
-        r = 0               # r: dimension of Kernel
-        c = [0] * (copy.row + 1)
-        d = [-1] * (copy.column + 1)
-        for k in range(1, copy.column+1):
+    def cohens_simplify(self):      # common processes of image() and kernel()
+        """cohens_simplify is used in image() and kernel()"""
+        M = self.copy()
+        c = [0] * (M.row + 1)
+        d = [-1] * (M.column + 1)
+        for k in range(1, M.column+1):
             j = 1
-            while j <= copy.row:
-                if copy.get_compo(j,k) != 0 and c[j] == 0:
+            while j <= M.row:
+                if M.get_compo(j,k) != 0 and c[j] == 0:
                     break
                 j = j+1
             else:           # not found j such that m(j,k)!=0 and c[j]==0
-                r = r+1
                 d[k] = 0
                 continue
-            top = (-1) / toRational(copy.get_compo(j,k))
-            copy.set_compo(j,k,-1)
-            for s in range(k+1, copy.column+1):
-                copy.set_compo(j,s, top*copy.get_compo(j,s) )
-            for i in range(1, copy.row+1):
+            top = (-1) / toRational(M.get_compo(j,k))
+            M.set_compo(j,k,-1)
+            for s in range(k+1, M.column+1):
+                M.set_compo(j,s, top*M.get_compo(j,s) )
+            for i in range(1, M.row+1):
                 if i == j:
                     continue
-                top = copy.get_compo(i,k)
-                copy.set_compo(i,k,0)
-                for s in range(k+1, copy.column+1):
-                    copy.set_compo(i,s, copy.get_compo(i,s) + top * copy.get_compo(j,s))
+                top = M.get_compo(i,k)
+                M.set_compo(i,k,0)
+                for s in range(k+1, M.column+1):
+                    M.set_compo(i,s, M.get_compo(i,s) + top * M.get_compo(j,s))
             c[j] = k
             d[k] = j
+        return [M,c,d]
 
+    def kernel(self):       # using Cohen's Algorithm 2.3.1
+        """returns a basis of self's Kernel in form of a list of vectors"""
+        tmp = self.cohens_simplify()
+        M = tmp[0]
+        c = tmp[1]
+        d = tmp[2]
         # output
-        besis = []
-        vector = [0] * (copy.column+1)
-        for k in range(1, copy.column+1):
+        basis = []
+        vector = [0] * (M.column+1)
+        for k in range(1, M.column+1):
             if d[k] != 0:
                 continue
-            for i in range(1, copy.column+1):
+            for i in range(1, M.column+1):
                 if d[i] > 0:
-                    vector[i] = copy.get_compo(d[i],k)
+                    vector[i] = M.get_compo(d[i],k)
                 elif i == k:
                     vector[i] = 1
                 else:
                     vector[i] = 0
-            besis.append(vector[1:])
-        return besis
+            basis.append(vector[1:])
+        return basis
 
+    def image(self):        # using Cohen's Algorithm 2.3.2
+        """returns basis of self's Image in form of a list of vectors"""
+        tmp = self.cohens_simplify()
+        M = tmp[0]
+        c = tmp[1]
+       # output
+        basis = []
+        for j in range(1, M.row+1):
+            if c[j] != 0:
+                basis.append(self.get_column(c[j]))
+        return basis
+
+
+        
 # the belows are not methods
 def unit_matrix(size):
+    """returns unit matrix whose size is the given argument"""
     unit_matrix = Matrix(size, size)
     for i in range(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
 
+# data for debugging
+a=Matrix(2,2)
+a.set([1,2,3,3])
+
+if __name__ == '__main__':
+    print a.kernel()
+    print a.image()
