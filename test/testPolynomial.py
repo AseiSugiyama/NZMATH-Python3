@@ -41,6 +41,8 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert self.a + b == sum_1
         assert self.a + e + g == sum_2
         assert sum_3 == sx + sx
+        assert self.a == self.a + 0
+        assert self.k == self.k + 0
 
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([0,2,4],"y")

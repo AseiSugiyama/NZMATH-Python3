@@ -16,29 +16,49 @@ class OneVariableDensePolynomial:
         if isinstance(variable, str) and isinstance(coefficient, list):
             self.coefficient = coefficient
             self.variable = variable
-##             self.ring = self.getRing()
+            self.ring = self.initRing()
         else:
             raise ValueError, "You must input (list, string)."
 
     def __setitem__(self, index, value):
-        if rational.isIntegerObject(index) and (rational.isIntegerObject(value) or isinstance(value, rational.Rational)):
-            if len(self.coefficient) - 1 >= index and index >= 0:
+        """
+
+        aOneVariableDensePolynomial[n] = val
+        sets val to the coefficient at degree n.  val must be in the
+        coefficient ring of aOneVariableDensePolynomial.
+
+        TypeError will be raised if n is not an integer, or if val is
+        not in the coefficient ring.
+        ValueError will be raised if n is negative.
+
+        """
+        if value in self.ring.getCoefficientRing():
+            if len(self.coefficient) - 1 >= index >= 0:
                 self.coefficient[index] = value
             elif len(self.coefficient) - 1 < index:
                 self.coefficient += [0]*(index - len(self.coefficient)) + [value]
             else:
                 raise ValueError, "You must input non-negative integer for index."
         else:
-            raise ValueError, "You must input polynomial[index, value]."
+            raise TypeError, "You must input an element of the coefficient ring for value."
 
     def __getitem__(self, index):
-        if rational.isIntegerObject(index):
-            if len(self.coefficient) - 1 >= index and index >= 0:
-                return self.coefficient[index]
-            elif len(self.coefficient) - 1 < index:
-                return 0
+        """
+
+        aOneVariableDensePolynomial[n]
+        returns the coefficient at degree n.
+
+        TypeError will be raised if n is not an integer.
+        ValueError will be raised if n is negative.
+
+        """
+        if len(self.coefficient) - 1 >= index >= 0:
+            return self.coefficient[index]
+        elif len(self.coefficient) - 1 < index:
+            return 0
         else:
             raise ValueError, "You must input non-negative integer for index."
+
 
     def __add__(self, other):
         if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
@@ -426,6 +446,9 @@ class OneVariableDensePolynomial:
             return 1
 
     def getRing(self):
+        return self.ring
+
+    def initRing(self):
         ring = None
         for c in self.coefficient:
             if rational.isIntegerObject(c):
@@ -540,7 +563,7 @@ class OneVariableSparsePolynomial:
         if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
             return other + self_adjust
         elif rational.isIntegerObject(other) or isinstance(other, rational.Rational):
-            return_coefficient.update(self.coefficient)
+            return_coefficient = self.coefficient.copy()
             return_variable = self.variable[:]
             if (0,) in return_coefficient:
                 return_coefficient[(0,)] += other
