@@ -12,6 +12,41 @@ import ring
 from rationalFunction import RationalFunctionField
 
 class OneVariablePolynomial:
+    def __setitem__(self, index, value):
+        """
+
+        aOneVariablePolynomial[n] = val
+        sets val to the coefficient at degree n.  val must be in the
+        coefficient ring of aOneVariablePolynomial.
+
+        TypeError will be raised if n is not an integer, or if val is
+        not in the coefficient ring.
+        ValueError will be raised if n is negative.
+
+        """
+        if value in self.getCoefficientRing():
+            if index >= 0:
+                self.coefficient[index] = value
+            else:
+                raise ValueError, "You must input non-negative integer for index."
+        else:
+            raise TypeError, "You must input an element of the coefficient ring for value."
+
+    def __getitem__(self, index):
+        """
+
+        aOneVariablePolynomial[n]
+        returns the coefficient at degree n.
+
+        TypeError will be raised if n is not an integer.
+        ValueError will be raised if n is negative.
+
+        """
+        if isinstance(index, (int,long)) and index >= 0:
+            return self.coefficient[index]
+        else:
+            raise ValueError, "You must input non-negative integer for index."
+
     def getRing(self):
         return self.ring
 
@@ -38,7 +73,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
         """
-        
+
         OneVariableDensePolynomial(coefficient, variable [,coeffring])
 
         coefficient must be a sequence of coefficients.
@@ -55,35 +90,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
-
-    def __setitem__(self, index, value):
-        """
-
-        aOneVariableDensePolynomial[n] = val
-        sets val to the coefficient at degree n.  val must be in the
-        coefficient ring of aOneVariableDensePolynomial.
-
-        TypeError will be raised if n is not an integer, or if val is
-        not in the coefficient ring.
-        ValueError will be raised if n is negative.
-
-        """
-        if value in self.getCoefficientRing():
-            self.coefficient[index] = value
-        else:
-            raise TypeError, "You must input an element of the coefficient ring for value."
-
-    def __getitem__(self, index):
-        """
-
-        aOneVariableDensePolynomial[n]
-        returns the coefficient at degree n.
-
-        TypeError will be raised if n is not an integer.
-        ValueError will be raised if n is negative.
-
-        """
-        return self.coefficient[index]
 
     def __add__(self, other):
         if isinstance(other, OneVariablePolynomial):
@@ -487,41 +493,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
-
-    def __setitem__(self, index, value):
-        """
-
-        aOneVariableSparsePolynomial[n] = val
-        sets val to the coefficient at degree n.  val must be in the
-        coefficient ring of aOneVariableSparsePolynomial.
-
-        TypeError will be raised if n is not an integer, or if val is
-        not in the coefficient ring.
-        ValueError will be raised if n is negative.
-
-        """
-        if value in self.getCoefficientRing():
-            if index >= 0:
-                self.coefficient[index] = value
-            else:
-                raise ValueError, "You must input non-negative integer for index."
-        else:
-            raise TypeError, "You must input an element of the coefficient ring for value."
-
-    def __getitem__(self, index):
-        """
-
-        aOneVariableSparsePolynomial[n]
-        returns the coefficient at degree n.
-
-        TypeError will be raised if n is not an integer.
-        ValueError will be raised if n is negative.
-
-        """
-        if isinstance(index, (int,long)) and index >= 0:
-            return self.coefficient[index]
-        else:
-            raise ValueError, "You must input non-negative integer for index."
 
     def __add__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
