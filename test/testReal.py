@@ -177,7 +177,6 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.sin_new(0)
         assert 1 == real.cos_new(0)
         assert 0 == real.tan_new(0)
-        pi = real.piGaussLegendre_new()
         assert abs(real.sin_new(pi)) < self.absolute
         assert -1 <= (real.cos_new(pi)) < -1 + self.absolute
         assert abs(real.tan_new(pi)) < self.absolute
@@ -186,6 +185,11 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.sinh_new(0)
         assert 1 == real.cosh_new(0)
         assert 0 == real.tanh_new(0)
+
+    def testInverseTrigonometric(self):
+        assert 0 == real.asin_new(0)
+        assert abs(pi / 2 - real.acos_new(0)) < self.absolute
+        assert 0 == real.atan_new(0)
 
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
@@ -199,5 +203,6 @@ def suite():
     return suite
 
 if __name__ == '__main__':
+    pi = real.piGaussLegendre_new()
     runner = unittest.TextTestRunner()
     runner.run(suite())

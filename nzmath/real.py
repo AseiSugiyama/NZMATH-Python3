@@ -1530,6 +1530,107 @@ def tanh_new(x, err=defaultError):
     rx = rational.Rational(x)
     return sinh_new(rx, err) / cosh_new(rx, err)
 
+def acos_new(x, err= defaultError):
+    """
+
+    acos(x [,err]) returns arc cosine of x.
+
+    """
+    if x > 1 or x < -1:
+        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+    if x == 0:
+        return piGaussLegendre_new(err) / 2
+    rx = rational.Rational(x)
+    y = sqrt_new(1 - rx ** 2)
+    if rx > 0:
+        return asin_new(y, err)
+    else:
+        return piGaussLegendre_new(err) + asin_new(-y, err)
+
+def asin_new(x, err=defaultError):
+    """
+
+    asin(x [,err]) returns arc sine of x.
+
+    """
+    if x > 1 or x < -1:
+        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+    if x < 0:
+        return -asin(-x)
+    u = sqrt_new(rational.Rational(1, 2))
+    if x > u:
+        return piGaussLegendre_new(err) / 2 - asin_new(sqrt_new(1 - x**2))
+    if x == 0:
+        return rational.Integer(0)
+    y = rational.Rational(x)
+    y2 = y ** 2
+    i = 2
+    retval = y
+    term = rational.Rational(y)
+    _err = err
+    if isinstance(err, RelativeError):
+        _err = err.absoluteerror(retval)
+    while True:
+        term *= y2 * (i-1) ** 2 / (i*(i+1))
+        i += 2
+        retval += term
+        if _err.nearlyEquals(term, 0):
+            break
+    return retval
+
+def atan_new(x, err=defaultError):
+    """
+
+    atan(x [,err]) returns arc tangent of x.
+
+    """
+    # atan(x) = -atan(-x)
+    if x < 0:
+        return -atan_new(-x, err)
+    # atan(x) = pi/2 - atan(1/x)
+    elif x > 1:
+        return piGaussLegendre_new(err) / 2 - atan_new(1 / x, err)
+    elif x == 1:
+        return piGaussLegendre_new(err) / 4
+    elif x == 0:
+        return rational.Integer(0)
+    y = rational.Rational(x)
+    y2 = y ** 2
+    retval = y
+    term = rational.Rational(x)
+    i = 1
+    _err = err
+    while True:
+        i += 2
+        term *= -y2 * (i-2) / i
+        retval += term
+        if isinstance(err, RelativeError):
+            _err = err.absoluteerror(retval)
+        if _err.nearlyEquals(term, 0):
+            break
+    return retval
+
+def atan2_new(y, x, err=defaultError):
+    """
+
+    atan2(x, y [,err]) returns the arc tangent of y/x.
+    Unlike atan(y/x), the signs of both x and y are considered.
+
+    It is unrecomended to obtain the value of pi with atan2(0,1).
+
+    """
+    if x > 0 and y > 0:
+        return atan_new(x/y)
+    elif x > 0 and y < 0:
+        return piGaussLegendre_new(err) * 2 + atan_new(x/y)
+    elif x < 0:
+        return piGaussLegendre_new(err) + atan_new(x/y)
+    elif x == 0 and y > 0:
+        return piGaussLegendre_new(err) / 2
+    elif x == 0 and y < 0:
+        return -piGaussLegendre_new(err) / 2
+    return rational.Integer(0)
+
 def hypot_new(x, y, err=defaultError):
     """
 
