@@ -2,15 +2,23 @@ import random
 import gcd
 import factor
 
-#Eulernumber for n 
 def euler(n):                    
+
+    """
+    This program returns Eulernumber for n
+    
+    """
     f = factor.trialDivision(n)
     p = 1
     for f0, f1 in f:
         p *=pow(f0,f1-1)*(f0-1)
     return p
-#Moebius function for n
+
 def moebius(n):
+    """
+    This program returns Moebius function for n
+    
+    """
     f = factor.trialDivision(n)
     i=0
     while i < len(f):
@@ -20,8 +28,13 @@ def moebius(n):
         i=i+1
     return pow(-1,len(f))
 
-#Legendre symbol (a/m)
-def legendre(a,m): #if m is a odd composite then this is Jacobi symbol
+
+def legendre(a,m): 
+    """
+    This program returns Legendre symbol (a/m)
+    If m is a odd composite then this is Jacobi symbol
+    
+    """
     a=a%m
     t=1
     while a!=0:
@@ -37,8 +50,13 @@ def legendre(a,m): #if m is a odd composite then this is Jacobi symbol
         return t
     return 0
 
-#This is solution for " x**2 = a (mod p)"
+
 def sqroot(a,p): # p is a prime
+    """
+    This program returns squareroot of 'a' for mod'p'
+    
+    """
+
     if legendre(a,p)==1:
         if p%8==3 or p%8==5 or p%8==7:
             a=a%p
@@ -72,8 +90,12 @@ def sqroot(a,p): # p is a prime
     else:
         print "no solution"
 
-#This is m-adic expansion for n
+
 def expand(n,m):#n>m>0
+    """
+    This program returns m-adic expansion for n
+    
+    """
     k=[]
     while n/m!=0:
         i=n%m
@@ -81,8 +103,12 @@ def expand(n,m):#n>m>0
         n=n/m
     k.append(n%m)
     return k
-#This is inverse of x for modulo p
+
 def inverse(x,p): #x>0 
+    """
+    This program returns inverse of x for modulo p
+    
+    """
     if x<0:
         while x<0:
             x=x+p
@@ -94,6 +120,30 @@ def inverse(x,p): #x>0
         return y[1]
 
 
+def CRT(list): 
+    """
+    This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
+    of C.Pomerance and R.Crandall's book.
 
-    
-        
+    """
+    r=len(list)
+    product=[]
+    prodinv=[]
+    m=1
+    i=1
+    while i < r:
+        m = m*list[i-1][1]
+        c = inverse(m,list[i][1])
+        product.append(m)
+        prodinv.append(c)
+        i = i+1
+
+    M=product[r-2]*list[r-1][1]
+    n=list[0][0]
+    i=1
+    while i < r:
+        u = ((list[i][0]-n)*prodinv[i-1])%list[i][1]
+        n = n + u*product[i-1]
+        i = i+1
+    n = n%M
+    return n
