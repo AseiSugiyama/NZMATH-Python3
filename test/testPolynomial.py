@@ -53,6 +53,15 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert c * f == mul_2
         assert self.k * self.a == mul_3 #local variable 'return_variable' referenced before assignment
 
+    def testFloordiv(self):
+        assert 0 == self.a // 2
+        assert 0 == self.k // 2
+        assert 1 == self.a // self.k # NameError: global name 'isIntegerObject' is not defined
+
+    def testMod(self):
+        assert self.a == self.a % 2
+        assert 1 == self.a % self.k # NameError: global name 'isIntegerObject' is not defined
+
     def testScalarMul(self):
         mul_1 = OneVariableDensePolynomial([0,3,6,9,12],"z")
         mul_2 = MultiVariableSparsePolynomial({(0,0,0):-5,(0,1,0):10,(3,1,0):-15,(1,1,1):20,(1,0,2):-25,(2,2,2):30},["x","y","z"])
