@@ -66,10 +66,24 @@ class RelativeError:
         """
         return self.absoluteerror(x).nearlyEqual(x, y)
 
+    def __eq__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange == other.relativeerrorrange and (self.comparity == other.comparity or self.comparity * other.comparity == 0):
+            return True
+        return False
+
     def __lt__(self, other):
         if not isinstance(other, RelativeError):
             return False
         if self.relativeerrorrange < other.relativeerrorrange and (self.comparity == other.comparity or self.comparity != 0 and other.comparity == 0):
+            return True
+        return False
+
+    def __le__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange <= other.relativeerrorrange and (self.comparity == other.comparity or self.comparity * other.comparity == 0):
             return True
         return False
 
@@ -174,25 +188,28 @@ class ExponentialPowerSeries:
 defaultError = RelativeError(0, 1, 2 ** 53)
 
 def exp(x, err=defaultError):
-    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
-    reduced = rational.Rational(x)
-    if reduced < 0:
-        reverse = -1
-        reduced = -reduced
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
+        reduced = rational.Rational(x)
+        if reduced < 0:
+            reverse = -1
+            reduced = -reduced
+        else:
+            reverse = 1
+        i = 0
+        while reduced >= 2:
+            reduced /= 2
+            i += 1
+        if reduced == 0:
+            retval = rational.Integer(1)
+        else:
+            retval = series(reduced, err)
+        if i > 0:
+            retval **= 2 ** i
+        if reverse < 0:
+            retval = 1 / retval
     else:
-        reverse = 1
-    i = 0
-    while reduced >= 2:
-        reduced /= 2
-        i += 1
-    if reduced == 0:
-        retval = rational.Integer(1)
-    else:
-        retval = series(reduced, err)
-    if i > 0:
-        retval **= 2 ** i
-    if reverse < 0:
-        retval = 1 / retval
+        retval = rational.Rational(math.exp(x))
     return retval
 
 def sqrt(x, err=defaultError):
@@ -207,11 +224,14 @@ def sqrt(x, err=defaultError):
         raise ValueError, "negative number is passed to sqrt"
     if reduced.numerator == 0:
         return rational.Integer(0)
-    rt = rational.Rational(prime.sqrt(reduced.numerator)+1, prime.sqrt(reduced.denominator))
-    newrt = (rt + reduced / rt) / 2
-    while not err.nearlyEqual(rt, newrt):
-        rt = newrt
+    if err <= defaultError:
+        rt = rational.Rational(prime.sqrt(reduced.numerator)+1, prime.sqrt(reduced.denominator))
         newrt = (rt + reduced / rt) / 2
+        while not err.nearlyEqual(rt, newrt):
+            rt = newrt
+            newrt = (rt + reduced / rt) / 2
+    else:
+        newrt = rational.Rational(math.sqrt(x))
     return newrt
 
 def log(x, err=defaultError):
@@ -224,26 +244,29 @@ def log(x, err=defaultError):
         raise TypeError, "real.log is not for complex numbers."
     if x < 0:
         raise ValueError, "log is not defined for %s" % str(x)
-    rx = rational.Rational(x)
-    upper = rational.Rational(4, 3)
-    lower = rational.Rational(2, 3)
-    shift = 0
-    while rx > upper:
-        rx /= 2
-        shift += 1
-    while rx < lower:
-        rx *= 2
-        shift -= 1
-    if rx == 1:
-        return shift * _log2(err)
-    value = oldvalue = 0
-    for term in log1piter(rx - 1):
-        value += term
-        if err.nearlyEqual(value, oldvalue):
-            break
-        oldvalue = +value
-    if shift != 0:
-        return value + shift * _log2(err)
+    if err <= defaultError:
+        rx = rational.Rational(x)
+        upper = rational.Rational(4, 3)
+        lower = rational.Rational(2, 3)
+        shift = 0
+        while rx > upper:
+            rx /= 2
+            shift += 1
+        while rx < lower:
+            rx *= 2
+            shift -= 1
+        if rx == 1:
+            return shift * _log2(err)
+        value = oldvalue = 0
+        for term in log1piter(rx - 1):
+            value += term
+            if err.nearlyEqual(value, oldvalue):
+                break
+            oldvalue = +value
+        if shift != 0:
+            return value + shift * _log2(err)
+    else:
+        value = rational.Rational(math.log(x))
     return value
 
 def log1piter(xx):
@@ -354,31 +377,34 @@ def sin(x, err=defaultError):
     sin(x [,err]) returns the sine of x.
 
     """
-    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
-    rx = rational.Rational(x)
-    sign = rational.Rational(1)
-    # sin(-x) = -sin(x)
-    if rx < 0:
-        sign = -sign
-        rx = -rx
-    # sin(x + 2 * pi) = sin(x)
-    if rx > 2 * pi(err):
-        rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
-    # sin(x + pi) = -sin(x)
-    if rx > pi(err):
-        rx -= pi(err)
-        sign = -sign
-    # sin(x) = sin(pi - x)
-    if rx > pi(err) / 2:
-        rx = pi(err) - rx
-    # sin(0) = 0 is a special case which must not be computed with series.
-    if rx == 0:
-        return 0
-    retval = series(rx, err) * sign
-    if retval > 1:
-        retval = rational.Integer(1)
-    elif retval < -1:
-        retval = rational.Integer(-1)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+        rx = rational.Rational(x)
+        sign = rational.Rational(1)
+        # sin(-x) = -sin(x)
+        if rx < 0:
+            sign = -sign
+            rx = -rx
+        # sin(x + 2 * pi) = sin(x)
+        if rx > 2 * pi(err):
+            rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
+        # sin(x + pi) = -sin(x)
+        if rx > pi(err):
+            rx -= pi(err)
+            sign = -sign
+        # sin(x) = sin(pi - x)
+        if rx > pi(err) / 2:
+            rx = pi(err) - rx
+        # sin(0) = 0 is a special case which must not be computed with series.
+        if rx == 0:
+            return 0
+        retval = series(rx, err) * sign
+        if retval > 1:
+            retval = rational.Integer(1)
+        elif retval < -1:
+            retval = rational.Integer(-1)
+    else:
+        retval = rational.Rational(math.sin(x))
     return retval
 
 def cos(x, err=defaultError):
@@ -387,31 +413,34 @@ def cos(x, err=defaultError):
     cos(x [,err]) returns the cosine of x.
 
     """
-    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
-    rx = rational.Rational(x)
-    sign = rational.Rational(1)
-    # cos(-x) = cos(x)
-    if rx < 0:
-        rx = -rx
-    # cos(x + 2 * pi) = cos(x)
-    if rx > 2 * pi(err):
-        rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
-    # cos(x + pi) = -cos(x)
-    if rx > pi(err):
-        rx -= pi(err)
-        sign = -sign
-    # cos(x) = -cos(pi - x)
-    if rx > pi(err) / 2:
-        rx = pi(err) - rx
-        sign = -sign
-    # cos(0) = 1 is a special case which must not be computed with series.
-    if rx == 0:
-        return sign
-    retval = series(rx, err) * sign
-    if retval > 1:
-        retval = rational.Integer(1)
-    elif retval < -1:
-        retval = rational.Integer(-1)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+        rx = rational.Rational(x)
+        sign = rational.Rational(1)
+        # cos(-x) = cos(x)
+        if rx < 0:
+            rx = -rx
+        # cos(x + 2 * pi) = cos(x)
+        if rx > 2 * pi(err):
+            rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
+        # cos(x + pi) = -cos(x)
+        if rx > pi(err):
+            rx -= pi(err)
+            sign = -sign
+        # cos(x) = -cos(pi - x)
+        if rx > pi(err) / 2:
+            rx = pi(err) - rx
+            sign = -sign
+        # cos(0) = 1 is a special case which must not be computed with series.
+        if rx == 0:
+            return sign
+        retval = series(rx, err) * sign
+        if retval > 1:
+            retval = rational.Integer(1)
+        elif retval < -1:
+            retval = rational.Integer(-1)
+    else:
+        retval = rational.Rational(math.cos(x))
     return retval
 
 def tan(x, err=defaultError):
@@ -428,11 +457,14 @@ def sinh(x, err=defaultError):
     sinh(x [,err]) returns the hyperbolic sine of x.
 
     """
-    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
-    rx = rational.Rational(x)
-    if rx == 0:
-        return rational.Integer(0)
-    return series(rx, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
+        rx = rational.Rational(x)
+        if rx == 0:
+            return rational.Integer(0)
+        return series(rx, err)
+    else:
+        return rational.Rational(math.sinh(x))
 
 def cosh(x, err=defaultError):
     """
@@ -440,11 +472,14 @@ def cosh(x, err=defaultError):
     cosh(x [,err]) returns the hyperbolic cosine of x.
 
     """
-    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
-    rx = rational.Rational(x)
-    if rx == 0:
-        return rational.Integer(1)
-    return series(rx, err)
+    if err <= defaultError:
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
+        rx = rational.Rational(x)
+        if rx == 0:
+            return rational.Integer(1)
+        return series(rx, err)
+    else:
+        return rational.Rational(math.cosh(x))
 
 def tanh(x, err=defaultError):
     """
@@ -465,12 +500,15 @@ def acos(x, err= defaultError):
         raise ValueError, "%s is not in the range [-1, 1]." % str(x)
     if x == 0:
         return pi(err) / 2
-    rx = rational.Rational(x)
-    y = sqrt(1 - rx ** 2)
-    if rx > 0:
-        return asin(y, err)
+    if err <= defaultError:
+        rx = rational.Rational(x)
+        y = sqrt(1 - rx ** 2)
+        if rx > 0:
+            return asin(y, err)
+        else:
+            return pi(err) + asin(-y, err)
     else:
-        return pi(err) + asin(-y, err)
+        return rational.Rational(math.acos(x))
 
 def asin(x, err=defaultError):
     """
@@ -482,22 +520,25 @@ def asin(x, err=defaultError):
         raise ValueError, "%s is not in the range [-1, 1]." % str(x)
     if x < 0:
         return -asin(-x)
-    u = sqrt(rational.Rational(1, 2))
-    if x > u:
-        return pi(err) / 2 - asin(sqrt(1 - x**2))
-    if x == 0:
-        return rational.Integer(0)
-    y = rational.Rational(x)
-    y2 = y ** 2
-    i = 2
-    retval = y
-    term = rational.Rational(y)
-    oldvalue = 0
-    while err.nearlyEquals(retval, oldvalue):
-        oldvalue = +retval
-        term *= y2 * (i-1) ** 2 / (i*(i+1))
-        i += 2
-        retval += term
+    if err <= defaultError:
+        u = sqrt(rational.Rational(1, 2))
+        if x > u:
+            return pi(err) / 2 - asin(sqrt(1 - x**2))
+        if x == 0:
+            return rational.Integer(0)
+        y = rational.Rational(x)
+        y2 = y ** 2
+        i = 2
+        retval = y
+        term = rational.Rational(y)
+        oldvalue = 0
+        while err.nearlyEquals(retval, oldvalue):
+            oldvalue = +retval
+            term *= y2 * (i-1) ** 2 / (i*(i+1))
+            i += 2
+            retval += term
+    else:
+        retval = rational.Rational(math.asin(x))
     return retval
 
 def atan(x, err=defaultError):
@@ -506,27 +547,30 @@ def atan(x, err=defaultError):
     atan(x [,err]) returns arc tangent of x.
 
     """
-    # atan(x) = -atan(-x)
-    if x < 0:
-        return -atan(-x, err)
-    # atan(x) = pi/2 - atan(1/x)
-    elif x > 1:
-        return pi(err) / 2 - atan(1 / x, err)
-    elif x == 1:
-        return pi(err) / 4
-    elif x == 0:
-        return rational.Integer(0)
-    y = rational.Rational(x)
-    y2 = y ** 2
-    retval = y
-    oldvalue = 0
-    term = rational.Rational(x)
-    i = 1
-    while err.nearlyEquals(retval, oldvalue):
-        oldvalue = +retval
-        i += 2
-        term *= -y2 * (i-2) / i
-        retval += term
+    if err <= defaultError:
+        # atan(x) = -atan(-x)
+        if x < 0:
+            return -atan(-x, err)
+        # atan(x) = pi/2 - atan(1/x)
+        elif x > 1:
+            return pi(err) / 2 - atan(1 / x, err)
+        elif x == 1:
+            return pi(err) / 4
+        elif x == 0:
+            return rational.Integer(0)
+        y = rational.Rational(x)
+        y2 = y ** 2
+        retval = y
+        oldvalue = 0
+        term = rational.Rational(x)
+        i = 1
+        while err.nearlyEquals(retval, oldvalue):
+            oldvalue = +retval
+            i += 2
+            term *= -y2 * (i-2) / i
+            retval += term
+    else:
+        retval = rational.Rational(math.atan(x))
     return retval
 
 def atan2(y, x, err=defaultError):
