@@ -1,16 +1,16 @@
 #rationalnumber add,sub,mul,div,comp
-def GCD(a,b):
-    while 1:
-        r = a%b
-        if r == 0:
-            if b < 0:
-                return -b
-            else :
-                return  b
-        else :
-            a=b
-            b=r
-
+## def GCD(a,b):
+##     while 1:
+##         r = a%b
+##         if r == 0:
+##             if b < 0:
+##                 return -b
+##             else :
+##                 return  b
+##         else :
+##             a=b
+##             b=r
+from gcd import gcd
 
 class Rational:
 
@@ -116,6 +116,7 @@ class Rational:
             return +Rational(numerator,denominator)             
         else:
             return NotImplemented    
+
     def __lt__(self,other):
         if self.numerator*other.denominator < self.denominator*other.numerator:
             return 1
@@ -152,13 +153,17 @@ class Rational:
             return 0
 
     def __pos__(self):
-        gcd=GCD(self.numerator,self.denominator)
-        if gcd != 1:
-            self.numerator=self.numerator//gcd
-            self.denominator=self.denominator//gcd
+        g=gcd(self.numerator,self.denominator)
+        if g != 1:
+            self.numerator=self.numerator//g
+            self.denominator=self.denominator//g
         if self.denominator == 1:
             return self.numerator
         else:
-            return self
+            return Rational(self.numerator, self.denominator)
+
+    def __neg__(self):
+        return Rational(-self.numerator, self.denominator)
+
     def __repr__(self):
         return str(self.numerator)+"/"+str(self.denominator)
