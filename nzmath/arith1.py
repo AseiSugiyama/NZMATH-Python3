@@ -82,8 +82,10 @@ def sqroot(a,p): # p is a prime
                     m=m+2**i
             x=(a**((t+1)/2))*(D**(m/2))%p
             return x
+    elif legendre(a,p)==0:
+        return 0
     else:
-        raise valueError,"There is no solution"
+        raise ValueError,"There is no solution"
 
 
 def expand(n,m):#n>m>0
