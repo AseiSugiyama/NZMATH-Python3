@@ -21,7 +21,7 @@ class OneVariableDensePolynomial:
     def __setitem__(self, index, value):
         if rational.isIntegerObject(index) and (rational.isIntegerObject(value) or isinstance(value, rational.Rational)):
             origin_polynomial = self.adjust()
-            if rational.isIntegerObject(origin_polynomil):
+            if rational.isIntegerObject(origin_polynomial):
                 if index == 0:
                     return value
                 elif index > 0:
@@ -37,7 +37,7 @@ class OneVariableDensePolynomial:
                 return_coefficient = origin_polynomial.coefficient[:]
                 return_variable = origin_polynomial.variable
                 return_coefficient[index] = value
-                return_polynomil = OneVariableDensePolynomial(return_coefficient, return_variable)
+                return_polynomial = OneVariableDensePolynomial(return_coefficient, return_variable)
                 return return_polynomial.adjust()
             elif len(origin_polynomial.coefficient - 1) < index:
                 add_coefficient = [0]*(index+1)
