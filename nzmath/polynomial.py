@@ -938,12 +938,14 @@ class MultiVariableSparsePolynomial:
                     return_str += ' + '
                     if (reverse_polynomial.coefficient[result_coefficient[i]] != 1) or (result_coefficient[i] == test_key):
                         return_str += str(reverse_polynomial.coefficient[result_coefficient[i]])
+                        if result_coefficient[i] != test_key:
+                            return_str += ' * '
                 else:
                     return_str += ' - '
                     if (reverse_polynomial.coefficient[result_coefficient[i]] != -1) or (result_coefficient[i] == test_key):
                         return_str += str(abs(reverse_polynomial.coefficient[result_coefficient[i]]))
-                if result_coefficient[i] != test_key:
-                    return_str += ' * '
+                        if result_coefficient[i] != test_key:
+                            return_str += ' * '
                 index_total = 0
                 for k in range(len(result_coefficient[i])):
                     index_total += result_coefficient[i][k]
@@ -955,7 +957,7 @@ class MultiVariableSparsePolynomial:
                         if result_coefficient[i][- 1 - j] != index_total:
                             return_str += '('
                         return_str += old_variable[j]
-                        return_str += '**'
+                        return_str += ' ** '
                         return_str += str(result_coefficient[i][- 1 - j])
                         if result_coefficient[i][- 1 - j] != index_total:
                             return_str += ')'
