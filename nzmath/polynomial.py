@@ -35,7 +35,7 @@ class OneVariableDensePolynomial:
         if rational.isIntegerObject(index):
             if len(self.coefficient) - 1 >= index and index >= 0:
                 return self.coefficient[index]
-            elif len(self.coefficient - 1) < index:
+            elif len(self.coefficient) - 1 < index:
                 return 0
         else:
             raise ValueError, "You must input non-negative integer for index."

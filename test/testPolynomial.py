@@ -111,6 +111,7 @@ class IntegerPolynomialTest(unittest.TestCase):
 
     def testGetitem(self):
         assert 1 == self.a[0]
+        assert 0 == self.a[100]
         assert 1 == k[1]
 
     def testSetitem(self):
