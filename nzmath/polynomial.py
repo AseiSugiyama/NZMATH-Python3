@@ -1818,6 +1818,22 @@ class PolynomialRing (ring.CommutativeRing):
         """
         return PolynomialRing(self.coefficientRing.coefficientRing, self.coefficientRing.vars | self.vars)
 
+    def getCommonSuperring(self, other):
+        if self.issuperring(other):
+            return self
+        elif other.issuperring(self):
+            return other
+        elif not isinstance(other, PolynomialRing) and other.issuperring(self.coefficientRing):
+            return PolynomialRing(other, self.getVars())
+        elif isinstance(other, PolynomialRing):
+            sCoef = self.getCoefficientRing(self.getVars())
+            oCoef = other.getCoefficientRing(other.getVars())
+            sVars = self.getVars()
+            oVars = other.getVars()
+            if sCoef.issuperring(oCoef):
+                return PolynomialRing(sCoef, sVars | oVars)
+            elif oCoef.issuperring(sCoef):
+                return PolynomialRing(oCoef, sVars | oVars)
 
 import re
 

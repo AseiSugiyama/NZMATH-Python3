@@ -122,6 +122,7 @@ class PolynomialRingTest(unittest.TestCase):
         self.Qx = PolynomialRing(self.Q, "x")
         self.Zx = PolynomialRing(self.Z, "x")
         self.Zxz = PolynomialRing(self.Z, ("x", "z"))
+        self.Qxz = PolynomialRing(self.Q, ("x", "z"))
         self.QwithXwithY = PolynomialRing(self.Qx, "y")
 
     def testEquals(self):
@@ -160,6 +161,9 @@ class PolynomialRingTest(unittest.TestCase):
         assert not self.Zx.ispid()
         assert self.QwithXwithY.isufd()
         assert not self.QwithXwithY.ispid()
+
+    def testGetCommonSuperring(self):
+        assert self.Qxz == self.Qx.getCommonSuperring(self.Zxz), self.Qx.getCommonSuperring(self.Zxz)
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
