@@ -294,9 +294,9 @@ def exp(x, err=defaultError):
             _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
         radius = real.exp(x.real, _err)
         if isinstance(err, RelativeError):
-            _err = RelativeError(err.relativeerrorrange, 2)
+            _err = RelativeError(err.relativeerrorrange / 2)
         elif isinstance(err, AbsoluteError):
-            _err = AbsoluteError(err.absoluteerrorrange, 2)
+            _err = AbsoluteError(err.absoluteerrorrange / 2)
         arg = expi(x.imag, _err)
         return radius * arg
     else:
