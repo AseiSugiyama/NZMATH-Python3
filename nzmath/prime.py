@@ -1,14 +1,11 @@
 #prime.py
-import string
-import bigrandom
-boundary_p = 20000000000
+boundary_p = 4000000000000
 
 def primeq(z):
     """Judge the integer which you input.
 return 1 if the integer belongs prime numbers.
 return 0 in the case of others."""
     import math
-    import prime
     if long(z) != z:
         raise ValueError, "non-integer for primeq()"
     elif z <= 1:
@@ -16,73 +13,81 @@ return 0 in the case of others."""
     elif z == 2:
         return 1
 #    elif z >= boundary_p:
-#        return prime.bigprimeq(z)
+#        return bigprimeq(z)
+#        return isprimeq(z)
     else:
-        f_1 = open("primes.txt","r")
-        line=f_1.readline()
-        v = 2
+        primes = open("primes.txt","r")
+#        line=primes.readlines() 
+        line=primes.readline()
+#        for i in line:
+#            if z % long(i) == 0:
+#                return 0
+#            elif long(i)**2 > z:
+#                return 1
         while line:
-            x=string.split(line)
-            if z % long(x[0]) == 0:
+            if z % long(line) == 0:
                 return 0
-                break
-            elif long(x[0])**2 > z:
+            elif long(line)**2 > z:
                 return 1
-                break
-            line=f_1.readline()
-        f_1.close()
-        if v == 2:
-            prime.produce(long(math.sqrt(2*z)))
+            line=primes.readline()
+        primes.close()
+        produce(long(math.sqrt(2*z)))
         return prime.primeq(z)
 
 def produce(n):
     """Produce prime numbers to the integer which you input."""
     if n != long(n):
         raise ValueError, "non-integer for produce()"
-    import prime
-    f_2 = open("primes.txt","r")
-    line=f_2.readline()
+    primes = open("primes.txt","r")
+    line=primes.readline()
+#    line = primes.readlines()
+#    max = long(line[-1:][0])
     while line:
-        x=string.split(line)
-        max = long(x[0])
-        line=f_2.readline()
-    f_2.close()
+        max = long(line)
+        line=primes.readline()
+    primes.close()
     p = max + 2
     while p < n+1:
-        while prime.primeq(p) == 0:
+        while primeq(p) == 0:
             p += 2 
-        f_3 = open("primes.txt","r")
-        plist = f_3.readlines()
+        primes = open("primes.txt","r")
+        plist = primes.readlines()
         plist.append(str(p))
         plist.append("\n")
-        f_3.close()
-        f_3 = open("primes.txt","w")
-        f_3.writelines(plist)
-        f_3.close()
+        primes.close()
+        primes = open("primes.txt","w")
+        primes.writelines(plist)
+        primes.close()
         p += 2
 
 def prime(s):
     """Return the prime number in the number which you input."""
-    import prime
     import math
     if s != long(s):
         raise ValueError, "non-integer for prime()"
     elif s <= 0:
         raise ValueError, "non-positive-integer for prime()" 
-    f_4 = open("primes.txt","r")
-    line = f_4.readline()
+    primes = open("primes.txt","r")
+#    line = primes.readlines()
+    line = primes.readline()
+#    l = len(line) 
+#    if l < s:
+#        produce(s*(long(math.log(s)/math.log(2))))
+#        return prime(s)
     i=0
     t=0
     while i+1 != s:
         i += 1
-        line = f_4.readline()
+        line = primes.readline()
         if not line:
             t = 1
             break
-    f_4.close() 
+    primes.close() 
+#    return long(line[s-1:s][0])
+
     if t == 1:
-        prime.produce(s*(long(math.log(s)/math.log(2))))
-        return prime.prime(s)
+        produce(s*(long(math.log(s)/math.log(2))))
+        return prime(s)
     else:
         return long(line[:-1])
 
@@ -122,4 +127,44 @@ return 0 in the case of others."""
                     return 0
         return 1
 
+def isprime(a):
+    if a<10000000:
+        return trial_division(a,'i')
+    elif gcd(a,510510)>1:
+        return 0
+    for p in [2, 13, 23, 1662803]:
+        if not spsp(a,p):
+            return 0
+    if a<1000000000000: # 10^12
+        return 1
+    f=trial_division(a-1,'f',32)
+    fk=f.keys()
+    fk.sort()
+    r=fk[-1]
+    if isprime(r):
+        i=2
+        while 1:
+            if not psp(a,i):
+                return 0
+            for p in fk:
+                if pow(i,(a-1)//p,a)==1:
+                    break
+            else:
+                return 1
+            i=i+1
+    elif r*r<a:
+        del f[r]
+        fk=fk[:-1]
+        i=2
+        while 1:
+            if not psp(a,i):
+                return 0
+            for p in fk:
+                if pow(i,(a-1)//p,a)!=1:
+                    fk.remove(p)
+                    if len(fk)==0:
+                        return 1
+            i=i+1
+    else:
+        return apr(a)
           
