@@ -1789,6 +1789,14 @@ class PolynomialRing (ring.CommutativeRing):
                 return False
         return False
 
+    def isnoetherian(self):
+        if self.ispid():
+            return True
+        elif self.coefficientRing.isnoetherian():
+            return True
+        else:
+            return None
+
     def isufd(self):
         if self.ispid():
             return True
