@@ -138,8 +138,7 @@ class Matrix:
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
                     product[i,j] = self[i,j] * other
-            return product
-
+            return product 
 
     def __neg__(self):
         return (-1) * self
@@ -166,8 +165,7 @@ class Matrix:
             n //= 2
             if n == 0:
                 return power
-            z = z*z
-
+            z = z*z 
 
     def __repr__(self):
         return_str = ""
@@ -222,22 +220,25 @@ class Matrix:
         elif isinstance(arg, Matrix):
             for j in range(self.row):
                 self.compo[j][n-1] = arg.compo[j][0]
+        elif isinstance(arg, vector.Vector):
+            for j in range(self.row):
+                self.compo[j][n-1] = arg.compo[j]
         else:
             raise TypeError, self.setColumn.__doc__
 
     def getRow(self, i):
         """getRow(i) : Return i-th row in form of Matrix"""
-        row = Matrix(1, self.column)
+        row = []
         for k in range(row.column):
-            row.compo[0][k] = self.compo[i-1][k]
-        return row
+            row.append(self.compo[i-1][k])
+        return vector.Vector(row)
 
     def getColumn(self, j):
         """getColumn(j) : Return j-th column in form of Matrix"""
-        column = Matrix(self.row, 1)
+        column = []
         for k in range(self.row):
-            column.compo[k][0] = self.compo[k][j-1]
-        return column
+            column.append(self.compo[k][j-1])
+        return vector.Vector(column)
 
     def swapRow(self, m1, m2):
         """swapRow(m1, m2) : Swap self's m1-th row and m2-th row."""
@@ -283,6 +284,13 @@ class Matrix:
         self.column -= 1
         for k in range(self.row):
             del self.compo[k][j-1]
+
+    def getRing(self):
+        if self.row == self.column:
+            return MatrixRing.getInstance(self.row)
+        else:
+            raise NoRing
+
 
     # Mathematical functions ---------------------------------------------
 
@@ -644,8 +652,14 @@ class MatrixRing:
     def getInstance(self, size):
         if size not in self._instances:
             anInstance = MatrixRing(size)
-            self.instances[size] = anInstance
+            self._instances[size] = anInstance
         return self._instances[size]
+
+    def unitMatrix(self):
+        I = Matrix(self.size, self.size)
+        for i in range(self.size):
+            I[i,i] = 1
+        return I
 
     getInstance = classmethod(getInstance)
 

@@ -1,4 +1,4 @@
-from matrix import *
+#from matrix import *
 
 class Vector:
 
@@ -42,36 +42,30 @@ class Vector:
         return self.__class__(tmp)
 
     def __mul__(self, other):
-#        if isinstance(other, Matrix):
-#            if len(self) != other.row:
-#                raise VectorSizeError
-#            tmp = [0] * len(self)
-#            for j in range(other.column):
-#                for i in range(len(self)):
-#                    tmp[j] += self.compo[i] * other.compo[i][j]
-#            return self.__class__(tmp)
-#        else:
-#            tmp = []
-#            for each in self.compo:
-#                tmp.append(each * other)
-#            return self.__class__(tmp)
+        from matrix import Matrix
+        if isinstance(other, Vector):
             return NotImplemented
+        elif isinstance(other, Matrix):
+            return NotImplemented
+        else:
+            product = Vector([0]*len(self))
+            for i in range(1, len(self)+1):
+                product[i] = self[i] * other
+            return product
 
     def __rmul__(self, other):
-        if isinstance(other, Matrix):
-            if len(self) != other.column:
-                raise VectorSizeError
-            tmp = [0] * len(self)
-            for i in range(other.row):
-                for j in range(other.column):
-                    tmp[i] += other.compo[i][j] * self.compo[j]
-            return self.__class__(tmp)
-        else:
-#            tmp = []
-#            for each in self.compo:
-#                tmp.append(each * other)
-#            return self.__class__(tmp) 
+        from matrix import Matrix
+        if isinstance(other, Vector):
             return NotImplemented
+        elif isinstance(other, Matrix):
+            return NotImplemented
+        else:
+            product = Vector([0]*len(self))
+            for i in range(1, len(self)+1):
+                product[i] = other * self[i]
+            return product
+
+
 
     def __repr__(self):
         return "Vector " + repr(self.compo)
@@ -97,6 +91,13 @@ class Vector:
                 return c
             c += 1
         raise Exception, "all zero"
+
+def innerProduct(self, other):
+    v=0
+    for i in range(1,len(self)+1):
+        v += self[i] * other[i]
+    return v
+
 
 
 class VectorSizeError(Exception):
