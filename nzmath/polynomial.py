@@ -87,6 +87,36 @@ class OneVariablePolynomial:
             retval = 0
         return retval
 
+    def __add__(self, other):
+        if not other:
+            return self.copy()
+        if isinstance(other, OneVariablePolynomial):
+            if self.getVariable() == other.getVariable():
+                sum = OneVariablePolynomialCoefficients()
+                sum.setDict(self.coefficient.getAsDict())
+                for i,c in other.coefficient.iteritems():
+                    sum[i] = sum[i] + c
+                commonRing = self.ring.getCommonSuperring(other.getRing())
+                return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
+            else:
+                return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableDensePolynomial):
+            return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            return self.toMultiVariableSparsePolynomial() + other
+        elif other in self.getCoefficientRing():
+            sum = OneVariablePolynomialCoefficients()
+            sum.setDict(self.coefficient.getAsDict())
+            sum[0] = sum[0] + other
+            return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+        else:
+            if isinstance(other, (int,long)):
+                other = rational.Integer(other)
+            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            return commonSuperring.createElement(self) + commonSuperring.createElement(other)
+
+    __radd__=__add__
+
     def degree(self):
         return self.coefficient.degree()
 
@@ -216,35 +246,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
-
-    def __add__(self, other):
-        if not other:
-            return self.copy()
-        if isinstance(other, OneVariablePolynomial):
-            if self.getVariable() == other.getVariable():
-                sum = OneVariablePolynomialCoefficients()
-                for i in range(max(self.degree(), other.degree()) + 1):
-                    sum[i] = self[i] + other[i]
-                commonRing = self.ring.getCommonSuperring(other.getRing())
-                return OneVariableDensePolynomial(sum.getAsList(), self.getVariable(), commonRing.getCoefficientRing())
-            else:
-                return (self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self.toMultiVariableDensePolynomial() + other
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return self.toMultiVariableSparsePolynomial() + other
-        elif other in self.getCoefficientRing():
-            sum = OneVariablePolynomialCoefficients()
-            sum.setList(self.coefficient.getAsList())
-            sum[0] = sum[0] + other
-            return OneVariableDensePolynomial(sum.getAsList(), self.getVariable(), self.getCoefficientRing())
-        else:
-            if isinstance(other, (int,long)):
-                other = rational.Integer(other)
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
-            return commonSuperring.createElement(self) + commonSuperring.createElement(other)
-
-    __radd__=__add__
 
     def __neg__(self):
         reciprocal = [-c for c in self.coefficient.getAsList()]
@@ -556,35 +557,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             self.ring = PolynomialRing(coeffring, self.variable)
             for i,c in coefficient.iteritems():
                 self.coefficient[i] = coeffring.createElement(c)
-
-    def __add__(self, other):
-        if not other:
-            return self.copy()
-        if isinstance(other, OneVariablePolynomial):
-            if self.getVariable() == other.getVariable():
-                sum = OneVariablePolynomialCoefficients()
-                sum.setDict(self.coefficient.getAsDict())
-                for i,c in other.coefficient.iteritems():
-                    sum[i] = sum[i] + c
-                return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-            else:
-                return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return self.toMultiVariableSparsePolynomial() + other
-        elif other in self.getCoefficientRing():
-            sum = OneVariablePolynomialCoefficients()
-            sum.setDict(self.coefficient.getAsDict())
-            sum[0] = sum[0] + other
-            return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-        else:
-            if isinstance(other, (int,long)):
-                other = rational.Integer(other)
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
-            return commonSuperring.createElement(self) + commonSuperring.createElement(other)
-
-    __radd__=__add__
 
     def __neg__(self):
         reciprocal = {}
