@@ -47,6 +47,9 @@ class OneVariablePolynomial:
         else:
             raise ValueError, "You must input non-negative integer for index."
 
+    def degree(self):
+        return self.coefficient.degree()
+
     def getRing(self):
         return self.ring
 
@@ -66,8 +69,25 @@ class OneVariablePolynomial:
                 myRing = myRing * cring
         return myRing, PolynomialRing(myRing, self.getVariable())
 
-    def degree(self):
-        return self.coefficient.degree()
+    def __sub__(self, other):
+        return self + (-other)
+
+    def __rsub__(self, other):
+        return other + (-self)
+
+    def __mod__(self, other):
+        return self - (self // other) * other
+
+    def __rmod__(self, other):
+        return other - (other // self) * self
+
+    def __divmod__(self, other):
+        quotient = self // other
+        return (quotient, self - quotient * other)
+
+    def __rdivmod__(self, other):
+        quotient = other // self
+        return (quotient, other - quotient * self)
 
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
@@ -118,12 +138,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             return commonSuperring.createElement(self) + commonSuperring.createElement(other)
 
     __radd__=__add__
-
-    def __sub__(self, other):
-        return self + (-other)
-
-    def __rsub__(self, other):
-        return other + (-self)
 
     def __neg__(self):
         reciprocal = [-c for c in self.coefficient]
@@ -527,12 +541,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
     __radd__=__add__
 
-    def __sub__(self, other):
-        return self + (-other)
-
-    def __rsub__(self, other):
-        return other + (-self)
-
     def __neg__(self):
         reciprocal = {}
         for i, c in self.coefficient.iteritems():
@@ -649,18 +657,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
         return self.toOneVariableDensePolynomial() / other
 
     __div__ = __truediv__
-
-    def __mod__(self, other):
-        return self - (self // other) * other
-
-    def __rmod__(self, other):
-        return other - (other // self) * self
-
-    def __divmod__(self, other):
-        return (self // other, self % other)
-
-    def __rdivmod__(self, other):
-        return (other // self, other % self)
 
     def __eq__(self, other):
         if not self and not other:
