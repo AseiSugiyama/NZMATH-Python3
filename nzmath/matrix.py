@@ -3,8 +3,8 @@
 from rational import * 
 import ring
 
-MATRIX_SIZE_ERROR = "MatrixSizeError"
-NO_INVERSE = "NoInverse"
+MatrixSizeError = "MatrixSizeError"
+NoInverse = "NoInverse"
 
 class Matrix:
 
@@ -35,7 +35,7 @@ class Matrix:
 
     def __add__(self, other):
         if (self.row != other.row) or (self.column != other.column): 
-            raise MATRIX_SIZE_ERROR
+            raise MatrixSizeError
             return
 
         sum = Matrix(self.row, self.column)
@@ -46,10 +46,23 @@ class Matrix:
 
         return sum
 
+    def __sub__(self, other):
+        if (self.row != other.row) or (self.column != other.column): 
+            raise MatrixSizeError
+            return
+
+        diff = Matrix(self.row, self.column)
+
+        for i in range( self.row):
+            for j in range( self.column):
+                diff.compo[i][j] = self.compo[i][j] - other.compo[i][j]
+
+        return diff
+
     def __mul__(self, other):
         if isinstance(other, Matrix):
             if self.column != other.row:
-                raise MATRIX_SIZE_ERROR
+                raise MatrixSizeError
                 return
             product = Matrix(self.row, other.column) 
             for i in range(self.row):
@@ -66,8 +79,8 @@ class Matrix:
                     product.compo[i][j] = self.compo[i][j] * other
             return product
 
-    # division by a scalar
     def __div__(self, other):
+        """ division by a scalar """
         if other in ring.theIntegerRing:
             return self * Rational(1, other)
         elif other in ring.theRationalField:    
@@ -92,12 +105,6 @@ class Matrix:
             copy.set_row(i, self.get_row(i))
         return copy
 
-    def toRational(self):
-        for i in range(self.row):
-            for j in range(self.column):
-                if self.compo[i][j] in ring.theIntegerRing:
-                    self.compo[i][j] = Rational(self.compo[i][j], 1)
-                
     def set(self, list):
         for i in range( self.row):
             for j in range( self.column):
@@ -144,7 +151,7 @@ class Matrix:
 
     def triangulate(self):
         triangle = self.copy()
-
+        print triangle
         for i in range(triangle.row):
             if triangle.compo[i][i] == 0:
                 for k in range(i+1, triangle.row):
@@ -171,7 +178,7 @@ class Matrix:
     def determinant(self):
         det = 1
         if self.row != self.column:
-            raise MATRIX_SIZE_ERROR
+            raise MatrixSizeError
         triangle = self.triangulate()
         for i in range(self.row):
             det *= triangle.compo[i][i]
@@ -207,21 +214,21 @@ class Matrix:
 
     def inverse(self):
         if self.determinant == 0:
-            raise NO_INVERSE
+            raise NoInverse
         else:
             return self.cofactors() / self.determinant()
 
     def characteristic_polynomial(self):        # using Cohen's Algorithm 2.2.7
         if self.row != self.column:
-            raise MATRIX_SIZE_ERROR
+            raise MatrixSizeError
         i = 0
-        C = identity(self.row)
+        C = unit_matrix(self.row)
         coeff = [0] * (self.row+1)
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
             coeff[i] = (-1) * C.trace() / Rational(i, 1)
-            C = C + coeff[i] * identity(self.row)
+            C = C + coeff[i] * unit_matrix(self.row)
         return coeff
 
 # This function does not work well.
@@ -275,55 +282,11 @@ class Matrix:
 #
 
 # the belows are not methods
-def identity(size):
-    identity = Matrix(size, size)
+def unit_matrix(size):
+    unit_matrix = Matrix(size, size)
     for i in range(size):
-        identity.compo[i][i] = 1
-    return identity
-
-
-# data for debugging
-
-a = Matrix(2,2)
-a.set([1,2,3,4])
-b = Matrix(2,2)
-b.set([0,-1,1,-2])
-c = Matrix(3,3)
-c.set([1,2,3]+[0,5,-2]+[7,1,9])
-d = Matrix(6,6)
-d.set([4,2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
-def matrix_test():
-
-    print "a=\n", a
-    print "b=\n", b
-    print "c=\n", c
-    print "a.triangulate"
-    print a.triangulate()
-    print "det(a) = ", a.determinant()
-    print "b.triangulate()"
-    print b.triangulate()
-    print "Det(b)" , b.determinant()
-    print "triangulate(c)"
-    print c.triangulate()
-    
-    print c.determinant()
-
-    print "c.inverse * c"
-    print c.inverse() * c
-    print "d.determinant"
-    print d.determinant()
-    print "d.inverse * d"
-    print d.inverse() * d
-
-    print "d.characteristic_polynomial()"
-    print d.characteristic_polynomial()
-
-
-    e = Matrix(2,4)
-    e.set([24,6,4,1] + [-2,0,0,9])
-    print e
-    print "e.kernel()"
-    print e.kernel()
+        unit_matrix.compo[i][i] = 1
+    return unit_matrix
 
 if __name__ == "__main__":
     print "Matrix test ==============================\n"
