@@ -332,12 +332,12 @@ def log(x, err=defaultError):
             _err = real.RelativeError(0, err.relativeerrorrange, 2)
         elif isinstance(err, AbsoluteError):
             _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-            if x in real.theRealField:
-                x = +x
-                if x > 0:
-                    return real.log(x, _err)
-                elif x < 0:
-                    return Complex(real.log(abs(x), _err), real.pi(_err))
+        if x in real.theRealField:
+            x = +x
+            if x > 0:
+                return real.log(x, _err)
+            elif x < 0:
+                return Complex(real.log(abs(x), _err), real.pi(_err))
         return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
     else:
         return Complex(cmath.log(complex(x.real,x.imag)))
@@ -429,3 +429,7 @@ def cosh(z, err=defaultError):
 
 def tanh(z, err=defaultError):
     return sinh(z, err) / cosh(z, err)
+
+
+def atanh(z, err=defaultError):
+    return log((1+z)/(1-z))/2
