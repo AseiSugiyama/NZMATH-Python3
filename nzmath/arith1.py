@@ -52,21 +52,21 @@ def sqroot(a,p): # p is a prime
     """
     This program returns squareroot of 'a' for mod'p'
     """
-    if legendre(a,p)==1:
+    if arith1.legendre(a,p)==1:
         if p%8==3 or p%8==5 or p%8==7:
             a=a%p
             if p%8==3 or p%8==7:
-                x=a**((p+1)/4)%p
-                return x 
+                x=pow(a,((p+1)/4),p)
+                return x
             else: # p%8==5
-                x=a**((p+3)/8)%p
+                x=pow(a,((p+3)/8),p)
                 c= (x**2)%p
                 if c%p!=a%p:
                     x=x*(2**((p-1)/4))%p
-                return x 
+                return x
         else: #p%8==1
-            d=0
-            while legendre(d,p)!=-1:
+            d=random.randint(2,p-1)
+            while arith1.legendre(d,p)!=-1:
                 d=random.randint(2,p-1)
             s=0
             q=p-1
@@ -74,16 +74,16 @@ def sqroot(a,p): # p is a prime
                 q=q/2
                 s=s+1
             t=(p-1)/2**s
-            A=(a**t)%p
-            D=(d**t)%p
+            A=pow(a,t,p)
+            D=pow(d,t,p)
             m=0
             for i in range(1,s):
-                if ((A*(D**m))**(2**(s-1-i)))%p==(p-1):
+                if pow((A*(D**m)),(2**(s-1-i)),p) == (p-1):
                     m=m+2**i
             x=(a**((t+1)/2))*(D**(m/2))%p
             return x
     else:
-        print "no solution"
+        raise valueError,"There is no solution"
 
 
 def expand(n,m):#n>m>0
