@@ -63,10 +63,24 @@ class MatrixTest(unittest.TestCase):
     def testDeterminant(self):
         assert a.determinant() == -2 
 
+    def testInverse(self):
+        cinverse = Matrix(3,3,[rational.Rational(-47,86),rational.Rational(15,86), rational.Rational(19,86),
+                               rational.Rational(7,43),rational.Rational(6,43),rational.Rational(-1,43),
+                               rational.Rational(35,86),rational.Rational(-13,86),rational.Rational(-5,86)])
+        noinverse = Matrix(3,3,[1,2,3,
+                                4,5,6,
+                                5,7,9])
+        assert cinverse == c.inverse()
+        assert None == noinverse.inverse()
+
     def testInverseImage(self):
         M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
         V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
-        assert M * M.inverseImage(V) == V 
+        noinverse = Matrix(3,3,[1,2,3,
+                                4,5,6,
+                                5,7,9])
+        assert M * M.inverseImage(V) == V
+        self.assertRaises(VectorsNotIndependent, noinverse.inverseImage, unitMatrix(3))
 
     def testIsUpperTriangularMatrix(self):
         UT = Matrix(4,4,[1,2,3,4]
