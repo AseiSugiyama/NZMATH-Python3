@@ -13,7 +13,7 @@ def extgcd(a, b):
     for i in range(len(q)):
         m.set([0,1,1,-q[i]])
         tmp = m * tmp
-    return [a, [tmp.compo[(1,1)], tmp.compo[(1,2)]]]
+    return [a, [tmp.compo[0][0], tmp.compo[0][1]]
 
 def gcd_of_list(integers):
     the_gcd = 0

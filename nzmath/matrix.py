@@ -72,6 +72,9 @@ class Matrix:
         for i in range(self.row):
             self.compo[i][n-1] = column_vector[i]
 
+    def get_compo(self, m, n):
+        return self.compo[m-1][n-1]
+
     def get_row(self, m):
         return self.compo[m-1]
 
