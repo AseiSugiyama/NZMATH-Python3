@@ -230,6 +230,21 @@ class RelativeError:
 
     def __eq__(self, other):
         if not isinstance(other, RelativeError):
+            ###
+            ### Note:
+            ### all RelativeError comparison methods take a secondary
+            ### parameter as class RelativeError only, so if you give
+            ### to class AbsoluteError, however, methods are returned
+            ### only Boolean, False.
+            ###
+            
+            #if isinstance(other, AbsoluteError):
+            #    if self.absoluteerror(x).absoluteerrorrange == other.absoluteerrorrange :
+            #        return True
+            #    else:
+            #        return False
+            #else:
+            #    return False
             return False
         if self.relativeerrorrange == other.relativeerrorrange :
             return True
@@ -246,6 +261,20 @@ class RelativeError:
         if not isinstance(other, RelativeError):
             return False
         if self.relativeerrorrange <= other.relativeerrorrange :
+            return True
+        return False
+
+    def __gt__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange > other.relativeerrorrange :
+            return True
+        return False
+
+    def __ge__(self, other):
+        if not isinstance(other, RelativeError):
+            return False
+        if self.relativeerrorrange >= other.relativeerrorrange :
             return True
         return False
 
@@ -281,6 +310,13 @@ class AbsoluteError:
 ### function rewrite
 defaultError = RelativeError(1, 2 ** 53)
 
+###
+### Note:
+### so because of class RelativeError design, follows accept
+### class AbsoluteError from user assign parameter, and if
+### accept AbsoluteError, not use cmath module.
+###
+
 def exp(x, err=defaultError):
     """
 
@@ -293,10 +329,10 @@ def exp(x, err=defaultError):
             _err = real.RelativeError(0, err.relativeerrorrange)
         elif isinstance(err, AbsoluteError):
             _err = real.AbsoluteError(0, err.absoluteerrorrange)
-        return real.exp(x, _err)
+        return real.exp(rx, _err)
     except TypeError:
         pass
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         # divide real part and imaginary part
         if isinstance(err, RelativeError):
             _err = real.RelativeError(0, err.relativeerrorrange, 2)
@@ -337,7 +373,7 @@ def log(x, err=defaultError):
     continuous from above.
 
     """
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         if isinstance(err, RelativeError):
             _err = real.RelativeError(0, err.relativeerrorrange, 2)
         elif isinstance(err, AbsoluteError):
@@ -403,14 +439,14 @@ class ExponentialPowerSeries:
             oldvalue = +value
 
 def sin(z, err=defaultError):
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
         return series(z, err)
     else:
         return Complex(cmath.sin(complex(z.real,z.imag)))
 
 def cos(z, err=defaultError):
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
         return series(z, err)
     else:
@@ -422,7 +458,7 @@ def tan(z, err=defaultError):
 def sinh(z, err=defaultError):
     if z == 0:
         return rational.Integer(0)
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
         return series(z, err)
     else:
@@ -431,7 +467,7 @@ def sinh(z, err=defaultError):
 def cosh(z, err=defaultError):
     if z == 0:
         return rational.Integer(1)
-    if err <= defaultError:
+    if (defaultError >= err) or isinstance(err, AbsoluteError):
         series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
         return series(z, err)
     else:
