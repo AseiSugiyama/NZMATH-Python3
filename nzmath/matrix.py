@@ -1,6 +1,6 @@
 # matrix.py
 
-from rational import Rational
+from rational import * 
 import ring
 
 MATRIX_SIZE_ERROR = "MatrixSizeError"
@@ -95,7 +95,7 @@ class Matrix:
     def rational(self):
         for i in range(self.row):
             for j in range(self.column):
-                if isinstance(self.compo[i][j], int):
+                if self.compo[i][j] in ring.theIntegerRing:
                     self.compo[i][j] = Rational(self.compo[i][j], 1)
                 
     def set(self, list):
@@ -145,13 +145,12 @@ class Matrix:
     def triangulate(self):
         triangle = self.copy()
 
-        # int -> Rational
         triangle.rational()
 
         for i in range(triangle.row):
-            if triangle.compo[i][i] == Rational(0, 1):
+            if triangle.compo[i][i] == 0:
                 for k in range(i+1, triangle.row):
-                    if triangle.compo[k][i] != Rational(0, 1):
+                    if triangle.compo[k][i] != 0:
                         triangle.swap_row(i+1, k+1)
                         for l in range(triangle.column):     # for calculation of determinant
                             triangle.compo[i+1][l] *= -1
@@ -159,9 +158,9 @@ class Matrix:
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                ratio = triangle.compo[k][i] / triangle.compo[i][i]
+                ratio = triangle.compo[k][i] / rational(triangle.compo[i][i])
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] -= triangle.compo[i][l] * ratio
+                    triangle.compo[k][l] -= rational(triangle.compo[i][l] * ratio)
             
         return triangle
 

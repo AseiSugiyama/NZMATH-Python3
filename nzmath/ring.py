@@ -25,8 +25,8 @@ class CommutativeRing (Ring):
     whose multiplication is commutative."""
 
     def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""  raise
-        NotImplementedError
+        """This class is abstract and cannot be instanciated."""  
+        raise NotImplementedError
 
 class Field (CommutativeRing):
     """Field is an abstract class which expresses that

@@ -4,6 +4,12 @@ import ring
 
 from gcd import gcd
 
+def rational(value):
+    if isinstance(value, int):
+        return Rational(value, 1)
+    elif isinstance(value, Rational):
+        return value
+
 class Rational:
 
     def __init__(self,numerator,denominator):
