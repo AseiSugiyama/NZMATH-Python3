@@ -218,6 +218,14 @@ class PolynomialRingTest(unittest.TestCase):
         assert self.QwithXandY.isufd() == self.QwithXwithY.isufd()
         assert not self.QwithXwithY.ispid()
         assert self.QwithXandY.ispid() == self.QwithXwithY.ispid()
+        class Domain:
+            def isdomain(self):
+                return True
+            def __getattr__(self, attr):
+                if attr in ['isfield', 'iseuclidean', 'ispid', 'isufd', 'isnoetherian']:
+                    return lambda : False
+        domainPolyRing = PolynomialRing(Domain(), "x")
+        assert domainPolyRing.isdomain()
 
     def testGetCommonSuperring(self):
         assert self.Qxz == self.Qx.getCommonSuperring(self.Zxz), self.Qx.getCommonSuperring(self.Zxz)

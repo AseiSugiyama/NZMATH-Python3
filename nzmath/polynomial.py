@@ -1733,6 +1733,17 @@ class PolynomialRing (ring.CommutativeRing):
         else:
             self.vars = sets.Set(vars)
         self.properties = ring.CommutativeRingProperties()
+        if self.coefficientRing.isfield() and len(self.vars) == 1:
+            self.properties.setIseuclidean(True)
+        else:
+            if self.coefficientRing.isufd():
+                self.properties.setIsufd(True)
+            if self.coefficientRing.isnoetherian():
+                self.properties.setIsnoetherian(True)
+            elif self.coefficientRing.isdomain():
+                self.properties.setIsdomain(True)
+            elif False == self.coefficientRing.isdomain():
+                self.properties.setIsdomain(False)
 
     def getVars(self):
         return self.vars.copy()
@@ -1847,31 +1858,6 @@ class PolynomialRing (ring.CommutativeRing):
             else:
                 return False
         return False
-
-    def isnoetherian(self):
-        if None == self.properties.isnoetherian():
-            if self.coefficientRing.isnoetherian():
-                self.properties.setIsnoetherian(True)
-                return True
-        return self.properties.isnoetherian()
-
-    def isufd(self):
-        if None == self.properties.isufd():
-            if self.coefficientRing.isufd():
-                self.properties.setIsufd(True)
-                return True
-        return self.properties.isufd()
-
-    def iseuclidean(self):
-        if None == self.properties.iseuclidean():
-            if self.coefficientRing.isfield() and len(self.vars) == 1:
-                self.properties.setIseuclidean(True)
-                return True
-        return self.properties.iseuclidean()
-
-    def ispid(self):
-        if None == self.properties.ispid():
-            return self.iseuclidean()
 
     def unnest(self):
         """
