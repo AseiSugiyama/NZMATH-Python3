@@ -450,7 +450,7 @@ class OneVariablePolynomial:
 
     def copy(self):
         "Copy the structure"
-        if self.coefficient._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self.coefficient._using == self.coefficient.USING_LIST:
             return OneVariableDensePolynomial(self.coefficient.getAsList(),
                                               self.getVariable(),
                                               self.getCoefficientRing())
@@ -1194,6 +1194,8 @@ class MultiVariableSparsePolynomial:
             return result_coefficient[zero_test]
         return result_polynomial
 
+    copy = adjust 
+
     def sort_variable(self):
         positions = {}
         for i in range(len(self.variable)):
@@ -1604,13 +1606,13 @@ class PolynomialRing (ring.CommutativeRing):
 
     def createElement(self, seed):
         if not isinstance(seed, (int, long)) and seed.getRing() == self:
-            return +seed
+            return seed.copy()
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
             if seed in self.coefficientRing:
-                return OneVariableDensePolynomial([self.coefficientRing.createElement(seed)], variable, self.coefficientRing)
+                return OneVariableDensePolynomial([seed], variable, self.coefficientRing)
             if isinstance(seed, OneVariablePolynomial):
-                return OneVariableDensePolynomial([self.coefficientRing.createElement(c) for c in seed.coefficient.getAsList()], variable)
+                return OneVariableDensePolynomial(seed.coefficient.getAsList(), variable, self.coefficientRing)
             raise TypeError, "larger ring element cannot be a seed."
         else:
             if seed in self.coefficientRing:
