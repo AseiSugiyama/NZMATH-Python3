@@ -59,7 +59,7 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
 
-    def __div__(self,other):
+    def __truediv__(self,other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator
             denominator = self.denominator*other.numerator
@@ -71,7 +71,8 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
 
-    __truediv__ = __div__
+    __div__ = __truediv__
+    __floordiv__ = __truediv__
 
     def __radd__(self,other):
         if isIntegerObject(other):
@@ -97,7 +98,7 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
 
-    def __rdiv__(self,other):
+    def __rtruediv__(self,other):
         if isIntegerObject(other):
             numerator = self.denominator*other
             denominator = self.numerator
@@ -105,7 +106,8 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
 
-    __rtruediv__ = __rdiv__
+    __rdiv__ = __rtruediv__
+    __rfloordiv__ = __rtruediv__
 
     def __pow__(self, index):
         return +Rational(self.numerator ** index, self.denominator ** index)
