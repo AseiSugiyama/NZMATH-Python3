@@ -8,12 +8,19 @@ import rational
 class EC:
 
     """
-    now, you can use elliptic curves over Q and Fp 
-    if you wanna use over other field,just a moment please :-)
+    Elliptic curves over Q and Fp.
+    # If you wanna use over other fields, just a moment please :-)
 
     """
-    
-    def __init__(self,coefficient,character):# E:y^2+a1*x*y+a3*y=x^3+a2*x^2+a4*x+a6 or y^2=x^3+a*x+b
+
+    def __init__(self,coefficient,character):
+        """
+
+        Initialize an elliptic curve. If coefficient has 5 elements,
+        it represents E:y**2+a1*x*y+a3*y=x**3+a2*x**2+a4*x+a6 or 2
+        elements, E:y*2=x*3+a*x+b.
+
+        """
         if isinstance(coefficient,list):
             self.coefficient=coefficient
             self.ch=character
@@ -32,10 +39,6 @@ class EC:
                     self.c4=self.b2**2-24*self.b4
                     self.c6=-self.b2**3+36*self.b2*self.b4-216*self.b6
                     self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
-                    if self.disc==0:
-                        raise "singular curve (@_@)"
-                    else:
-                        self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
                 elif len(self)==2:
                     self.a=coefficient[0]
                     self.b=coefficient[1]
@@ -51,13 +54,13 @@ class EC:
                     self.c4=-48*self.a
                     self.c6=-864*self.b
                     self.disc=rational.IntegerIfIntOrLong(self.c4**3-self.c6**2)/1728
-                    if self.disc==0:
-                        raise "singular curve (@_@)"
-                    self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
                 else:
-                    raise "coefficient is less or more,can't defined EC (-_-;)"
+                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
+                if self.disc==0:
+                    raise ValueError, "singular curve (@_@)"
+                self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
             elif self.ch==1:
-                raise "character is 0 or prime (-_-;)"
+                raise ValueError, "characteristic must be 0 or prime (-_-;)"
             else:
                 for i in range(0,len(self)):
                     if isinstance(coefficient[i],int):
@@ -76,7 +79,7 @@ class EC:
                                 self.c6=(-self.b2**3+36*self.b2*self.b4-216*self.b6)%self.ch
                                 self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
                                 if self.disc==0:
-                                    raise "singuler curve (@_@)"
+                                    raise ValueError, "singuler curve (@_@)"
                                 j=rational.Rational(self.c4**3,self.disc)*1
                                 if isinstance(j,rational.Rational):
                                     jd=j.denominator
@@ -101,7 +104,7 @@ class EC:
                                 self.c6=(-864*self.b)%self.ch
                                 self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
                                 if self.disc==0:
-                                    raise "singuler curve (@_@)"
+                                    raise ValueError, "singuler curve (@_@)"
                                 j=rational.Rational(self.c4**3,self.disc)*1
                                 if isinstance(j,rational.Rational):
                                     jd=j.denominator
@@ -111,13 +114,13 @@ class EC:
                                     jn=j
                                 self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
                             else:
-                                raise "can't defined EC (-_-;)"
+                                raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                         else:
-                            raise "character is 0 or prime (-_-;)"
+                            raise ValueError "characteristic must be 0 or prime (-_-;)"
                     else:
-                        raise "you must input (coefficient,int) m(__)m"
+                        raise ValueError, "you must input (coefficient,int) m(__)m"
         else:
-            raise "you must input (coefficient,list) m(__)m"
+            raise ValueError, "you must input (coefficient,list) m(__)m"
            
     def __len__(self):
         return len(self.coefficient)
@@ -144,15 +147,15 @@ def simple(E): # over Fp
     
     """
     if len(E)==2 or (E.a1==E.a2==E.a3==0):
-        raise "no need to simplyfy (^o^)"  
+        raise "no need to simplyfy (^o^)"
     else:
         if E.ch==0:
             F=EC([-27*E.c4,-54*E.c6],E.ch)
             return F   
         elif E.ch==3:
-            raise "Now making (>_<)"
+            raise NotImplementedError, "Now making (>_<)"
         elif E.ch==2:
-            raise "Now making (>_<)"
+            raise NotImplementedError, "Now making (>_<)"
         else:
             F=EC([(-27*E.c4)%E.ch,(-54*E.c6)%E.ch],E.ch)
             return F
@@ -198,13 +201,13 @@ def changeCurve(E,V):
                                   (B[4][0]*B[4][1])%E.ch],E.ch)
                             return F
                         else:
-                            raise "you must input (,int) m(__)m"
+                            raise ValueError, "you must input (,int) m(__)m"
             else: # u==0
-                raise "you must input u is nonzero (-_-;)"
+                raise ValueError, "you must input nonzero u (-_-;)"
         else:        
-            raise "you must input (-_-;)"
+            raise ValueError, "you must input (-_-;)"
     else:
-        raise "you must input (,list) m(__)m"
+        raise ValueError, "you must input (,list) m(__)m"
 
 def changePoint(E,P,V):
     
@@ -237,9 +240,9 @@ def changePoint(E,P,V):
             Q=[Q0,Q1]
             return Q
         else:
-            raise "(-_-;)"
+            raise ValueError, "(-_-;)"
     else:
-        raise "m(__)m"
+        raise ValueError, "m(__)m"
 
 def point(E): # E(ch>3):y^2=x^3+a*x+b use change!!     
 
@@ -251,14 +254,14 @@ def point(E): # E(ch>3):y^2=x^3+a*x+b use change!!
         if len(E)==2 or (E.a1==E.a2==E.a3==0):    
             t=0
             while arith1.legendre(t,E.ch)!=1:
-                s=random.randint(0,E.ch-1) #random??
+                s=random.randrange(0,E.ch) #random??
                 t=s**3+E.a4*s+E.a6
             return [s,arith1.sqroot(t,E.ch)]
         elif E.ch!=2 or E.ch!=3:#len==5
             F=simple(E)
             t=0
             while arith1.legendre(t,E.ch)!=1:
-                s=random.randint(0,E.ch-1) #random??
+                s=random.randrange(0,E.ch) #random??
                 t=s**3+F.a*s+F.b
             x=rational.Rational(s-3*E.b2,36)*1
             if isinstance(x,rational.Rational):
@@ -276,17 +279,16 @@ def point(E): # E(ch>3):y^2=x^3+a*x+b use change!!
                 yn=y
             return [(xn*arith1.inverse(xd,E.ch))%E.ch,(yn*arith1.inverse(yd,E.ch))%E.ch]
         else: #E.ch==2 or 3
-            raise "Now making (>_<)"
+            raise NotImplementedError, "Now making (>_<)"
     else: #E.ch==0
-        raise "I don't know (?_?)"
-                
+        raise NotImplementedError, "I don't know (?_?)"
+
 def whetherOn(E,P): # E(ch>3):y^2=x^3+a*x+b
-    
+
     """
-    this is for check whether P is on curve or not,
-    if P is on,return 1
-    else,return 0
-        
+    Determine whether P is on curve or not.
+    Return 1 if P is on, return 0 otherwise.
+
     """
     if isinstance(P,list):
         if len(P)==2:
@@ -294,32 +296,32 @@ def whetherOn(E,P): # E(ch>3):y^2=x^3+a*x+b
                 if P[1]**2+E.a1*P[0]*P[1]+E.a3*P[1]==P[0]**3+E.a2*P[0]**2+E.a4*P[0]+E.a6:
                     return 1
                 else:
-                    return 0   
+                    return 0
             else:
                 if (P[1]**2+E.a1*P[0]*P[1]+E.a3*P[1])%E.ch==(P[0]**3+E.a2*P[0]**2+E.a4*P[0]+E.a6)%E.ch:
                     return 1
                 else:
-                        return 0
+                    return 0
         elif P==[0]:
             return 1
         else:
-            raise "you must input (len(point)==2) (-_-;)"
+            raise ValueError, "you must input (len(point)==2) (-_-;)"
     else:
-        raise "you must input (point,list) m(__)m"
+        raise ValueError, "you must input (point,list) m(__)m"
 
 def add(E,P,Q):
-    
+
     """
     this returns P+Q
     
     """
     if isinstance(P,list) and isinstance(Q,list):
-        if whetherOn(E,P)==whetherOn(E,Q)==1:
+        if whetherOn(E,P) and whetherOn(E,Q):
             if len(P)==len(Q)==2:
                 if E.ch==0:
                     if P[0]==Q[0]:
                         if P[1]+Q[1]+E.a1*Q[0]+E.a3==0:
-                            return [0] #
+                            return [0]
                         else: # P=Q
                             s=rational.IntegerIfIntOrLong(3*P[0]**2+2*E.a2*P[0]+E.a4-E.a1*P[1])/rational.IntegerIfIntOrLong(2*P[1]+E.a1*P[0]+E.a3)
                             t=rational.IntegerIfIntOrLong(-P[0]**3+E.a4*P[0]+2*E.a6-E.a3*P[1])/rational.IntegerIfIntOrLong(2*P[1]+E.a1*P[0]+E.a3)
@@ -333,7 +335,7 @@ def add(E,P,Q):
                 else:
                     if P[0]==Q[0]:
                         if (P[1]+Q[1]+E.a1*Q[0]+E.a3)%E.ch==0:
-                            return [0] #
+                            return [0]
                         else: # P=Q
                             s=rational.Rational(3*P[0]**2+2*E.a2*P[0]+E.a4-E.a1*P[1],2*P[1]+E.a1*P[0]+E.a3)
                             t=rational.Rational(-P[0]**3+E.a4*P[0]+2*E.a6-E.a3*P[1],2*P[1]+E.a1*P[0]+E.a3)
@@ -365,11 +367,11 @@ def add(E,P,Q):
             elif (P==[0]) and (Q==[0]):
                 return [0]
             else:
-                raise "you must input (len(point)==2) (-_-;)"
+                raise ValueError, "you must input (len(point)==2) (-_-;)"
         else:
-            raise "you must input point on curve (-_-;)"
+            raise ValueError, "you must input point on curve (-_-;)"
     else:
-        raise "you must input (point,list) m(__)m"
+        raise ValueError, "you must input (point,list) m(__)m"
 
 def sub(E,P,Q): # P-Q
 
@@ -378,7 +380,7 @@ def sub(E,P,Q): # P-Q
     
     """
     if isinstance(P,list) and isinstance(Q,list):
-        if whetheron(E,P)==whetheron(E,Q)==1:
+        if whetheron(E,P) and whetheron(E,Q):
             if len(P)==len(Q)==2:
                 x=Q[0]
                 y=-Q[1]-E.a1*Q[0]-E.a3
@@ -394,11 +396,11 @@ def sub(E,P,Q): # P-Q
             elif (P==[0]) and (Q==[0]):
                 return [0]
             else:
-                raise "you must input (len(point)==2) (-_-;)"
+                raise ValueError, "you must input (len(point)==2) (-_-;)"
         else:
-            raise "you must input point on curve (-_-;)"
+            raise ValueError, "you must input point on curve (-_-;)"
     else:
-        raise "you must input (point,list) m(__)m"
+        raise ValueError, "you must input (point,list) m(__)m"
             
 def mul(E,k,P):
     
@@ -422,4 +424,3 @@ def mul(E,k,P):
             if l[j]==1:
                 Q=E.add(Q,P)
         return sub(E,[0],Q)
-
