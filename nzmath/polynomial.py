@@ -2306,3 +2306,84 @@ class RationalOneVariableDensePolynomial (OneVariableDensePolynomial):
                 other = rational.Integer(other)
             commonSuperring = self.getRing().getCommonSuperring(other.getRing())
             return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
+
+class OneVariablePolynomialCoefficients:
+    """
+
+    Polynomial coefficients data type for one variable polynomial.
+
+    """
+
+    USING_LIST = 0
+    USING_DICT = 1
+
+    def __init__(self):
+        self._list = list()
+        self._dict = dict()
+        self._degree = -1
+        self._using = OneVariablePolynomialCoefficients.USING_LIST
+
+    def __getitem__(self, index):
+        assert isinstance(index, (int,long)) and index >= 0
+        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+            if len(self._list) > index:
+                return self._list[index]
+            else:
+                return 0
+        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+            return self._dict.get(index,0)
+
+    def __setitem__(self, index, value):
+        assert isinstance(index, (int,long)) and index >= 0
+        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+            if len(self._list) > index:
+                self._list[index] = value
+            elif value:
+                self._list += [0]*(index - len(self._list)) + [value]
+        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+            self._dict[index] = value
+
+    def degree(self):
+        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+            if not self._list:
+                return -1
+            deg = len(self._list) - 1
+            for index in range(deg, -1, -1):
+                if not self._list[index]:
+                    deg -= 1
+            return deg
+        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+            if not self._dict:
+                return -1
+            deg = -1
+            for index in self._dict:
+                if index > deg and self._dict[index]:
+                    deg = index
+            return deg
+
+    def getAsList(self):
+        return [+self[i] for i in range(self.degree()+1)]
+
+    def getAsDict(self):
+        retval = dict()
+        for i in range(self.degree()+1):
+            if self[i]:
+                retval[i] = +self[i]
+
+    def changeRepresentation(self, rep):
+        """
+
+        Change inner representaion.
+        This method is destructive.
+
+        """
+        if self._using == rep:
+            pass
+        elif rep == OneVariablePolynomialCoefficients.USING_LIST:
+            self._list = self.getAsList()
+            self._using = rep
+        elif rep == OneVariablePolynomialCoefficients.USING_DICT:
+            self._dict = self.getAsDict()
+            self._using = rep
+        return
+
