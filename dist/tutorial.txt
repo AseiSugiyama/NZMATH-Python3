@@ -1,0 +1,159 @@
+===============
+NZMATH Tutorial
+===============
+
+--------------
+1. What is it?
+--------------
+
+The purpose of the NZMATH system is to provide mathematical,
+especially number-theoretic computational power to you.  It is written
+in Python scripting language in order to enhance quickly with users'
+experiences.
+
+
+--------
+2. Usage
+--------
+
+2.1. Before You Start
+=====================
+
+NZMATH requires Python version 2.3 or newer.  If you do not have
+Python installed on your computer, please install it.
+
+The Python language is a very high level language.  It is downloadable
+from the website_.  There are also some documents there.
+
+_website: http://www.python.org/
+
+
+2.1.1. User Interfaces
+----------------------
+
+At the time of writing this tutorial, NZMATH is on an early stage of
+development and does not have own interpreter nor graphical interface.
+Users have to use with the raw Python interpreter.  Though the
+interpreter is designed well, but, of course, it is not specialized
+for mathematical computation.  Please be patient about it.
+
+2.2. Quick Start
+================
+
+Start your Python interpreter:
+
+ % python
+Python 2.3.4 (#1, May 31 2004, 23:11:48) 
+[GCC 2.95.3 20010315 (release)] on linux2
+Type "help", "copyright", "credits" or "license" for more information.
+>>> 
+
+(we use '%' for a command prompt.  If you are on Windows, it may be
+'C:\>' or something.)
+
+Here, '>>>' is a Python prompt.  You are in the Python interpreter
+until you will type EOF (Ctrl-D on unices and Ctrl-Z on Windows).
+Then, type:
+
+>>> from nzmath import *
+>>>
+
+The whole NZMATH stuff is imported.
+
+>>> r = rational.Rational(113, 355)
+>>> print r
+113/355
+>>> 
+....
+
+The session continues until you will stop.
+
+-------------------------
+3. How to Write a Program
+-------------------------
+
+Writing everything at the interpreter prompt is a dull work.  Instead
+of it, you can make a program file.
+
+The name of file must end with '.py'; for example, 'sample.py'.
+
+The contents of the file must be a valid Python program.  And, you may
+want to import NZMATH module at the start of the file.
+
+See the Python documents for detailed Python syntax or built-in data
+types and functions.  NZMATH data types are explained below.
+
+To invoke your program (sample.py, say), simply:
+
+ % python sample.py
+
+Or, if you are using unices, make it executable as usual.
+
+-------------
+4. Data types
+-------------
+
+Python is an object-oriented programming language, and user can create
+a new data type as class.  The data types provided by NZMATH are also
+classes, which have a lot of methods including overloaded operators.
+
+
+4.1 Integer
+===========
+
+There are two integer data types already in Python; int (single
+precision) and long (arbitrary precision).  NZMATH has Integer
+(nzmath.rational.Integer) to give a rational result for division
+instead of a float.
+
+4.2 Rational
+============
+
+NZMATH provides Rational (nzmath.rational.Rational) class representing
+a rational number.
+
+--------------
+5. Development
+--------------
+
+5.1. Bug Report
+===============
+
+If you encounter a bug, please notify us with, if possible, the data
+you supply, by email to nzmath-user@tnt.math.metro-u.ac.jp.
+(See 6.1. Mailing List)
+
+5.2. Development Source Code
+============================
+
+The snapshot source code will be available via web site.
+
+5.3. Join to the Team
+=====================
+
+If you are interested in joining to the development team, say so on
+the mailing list.  We will then give you an account on the server
+which provides cvs repository.
+(See 6.1. Mailing List)
+
+
+----------
+6. Contact
+----------
+
+6.1. Mailing List
+=================
+
+A mailing list nzmath-user@tnt.math.metro-u.ac.jp is for discussing
+anything about NZMATH.  You can join the list with writing a mail
+containing a line of "subscribe" in the body to
+nzmath-user-request@tnt.math.metro-u.ac.jp.  *Be careful* not to send
+it to nzmath-user.
+
+
+----------
+7. Lisence
+----------
+
+NZMATH is distributed under the BSD lisence.  Please read LISENCE.txt
+in the distribution tar ball for detail.
