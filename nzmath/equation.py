@@ -31,7 +31,10 @@ def e2_Fp(x,p):
     a=x[0]%p    
     b=x[1]%p
     c=x[2]%p
-    sqrtd = arith1.sqroot(b**2-4*a*c,p)
+    if arith1.legendre(,p)!=1:
+        return []
+    else:
+        sqrtd = arith1.sqroot(b**2-4*a*c,p)
     a=arith1.inverse(2*a,p)
     return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
 
@@ -78,11 +81,22 @@ def e3_Fp(x,p): # p is prime
         else:
             i=i+1
     if len(equ)==0:
-        raise ValueError,"function is irred"
+        return equ
     X=e2_Fp([1,coeff[0]+equ[0],coeff[1]+coeff[0]*equ[0]+equ[0]**2],p)
-    equ.append(X[0])
-    equ.append(X[1])
+    if len(X)!=0:
+        equ.append(X[0])
+        equ.append(X[1])
     return equ
+
+def solve_Fp(poly,p):
+    if poly.degree()==1:
+        return 0
+    elif poly.degree()==2:
+        return 0
+    elif poly.degree()==3:
+        return 0
+    else:
+        return 0
 
 def EA(f,m): # f is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n => [a_0, a_1, ... , a_n] (a_0 != 0 and a_i is complex number))
     if f[0] == 0 :
