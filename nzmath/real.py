@@ -386,11 +386,6 @@ def sin(x, err=defaultError):
     """
     if err <= defaultError:
         rx = rational.Rational(x)
-        if rx.denominator == 1:
-            if abs(rx.numerator) > 1:
-                return _sinTriple(rx, err)
-            else:
-                return _sinTaylor(rx, err)
         sign = rational.Rational(1)
         # sin(-x) = -sin(x)
         if rx < 0:
