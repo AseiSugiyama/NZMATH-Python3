@@ -43,7 +43,7 @@ class Rational (ring.QuotientFieldElement):
             self.numerator = rationalized.numerator
             self.denominator = rationalized.denominator
         else:
-            raise TypeError, "Rational cannot be created with %s." % numerator
+            raise TypeError, "Rational cannot be created with %s(%s)." % (numerator, numerator.__class__)
         # denominator
         if isinstance(denominator, Rational):
             self.numerator *= denominator.denominator
@@ -61,7 +61,7 @@ class Rational (ring.QuotientFieldElement):
             self.numerator *= rationalized.denominator
             self.denominator *= rationalized.numerator
         else:
-            raise TypeError, "Rational cannot be created with %s." % denominator
+            raise TypeError, "Rational cannot be created with %s(%s)." % (denominator, denominator.__class__)
         self._reduce()
 
     def __add__(self,other):
@@ -215,10 +215,7 @@ class Rational (ring.QuotientFieldElement):
         if commonDivisor != 1:
             self.numerator //= commonDivisor
             self.denominator //= commonDivisor
-        if self.denominator == 1:
-            return Integer(self.numerator)
-        else:
-            return Rational(self.numerator, self.denominator)
+        return Rational(self.numerator, self.denominator)
 
     def __neg__(self):
         return Rational(-self.numerator, self.denominator)
@@ -336,8 +333,6 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
         self._reduce()
-        if self.denominator == 1:
-            self = Integer(self.numerator)
         return self
 
     def __isub__(self, other):
@@ -349,8 +344,6 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
         self._reduce()
-        if self.denominator == 1:
-            self = Integer(self.numerator)
         return self
 
     def __imul__(self,other):
@@ -362,8 +355,6 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
         self._reduce()
-        if self.denominator == 1:
-            self = Integer(self.numerator)
         return self
 
     def __itruediv__(self,other):
@@ -375,8 +366,6 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
         self._reduce()
-        if self.denominator == 1:
-            self = Integer(self.numerator)
         return self
 
     __idiv__ = __itruediv__
