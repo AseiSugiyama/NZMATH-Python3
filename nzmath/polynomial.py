@@ -198,7 +198,7 @@ class OneVariableDensePolynomial:
                         quotient_polynomial.coefficient[quotient_position] = quotient_value
                         floordiv_polynomial += quotient_polynomial
                         self_adjust -= other_adjust * quotient_polynomial
-                        if isinstance(self_adjust,int) or isinstance(self_adjust,long):
+                        if rational.isIntegerObject(self_adjust) or isinstance(self_adjust,rational.Rational):
                             return floordiv_polynomial
                         elif len(self_adjust.coefficient) == old_length:
                             new_coefficient = self_adjust.coefficient[:]
