@@ -376,7 +376,7 @@ class Matrix:
             C = C + coeff[i] * theMatrixRing.unitMatrix(self.row)
         import polynomial
         coeff.reverse()
-        return polynomial.Polynomial(coeff, "x")
+        return polynomial.OneVariableDensePolynomial(coeff, "x")
 
     def cohensSimplify(self):      # common process of image() and kernel()
         """cohensSimplify is used in image() and kernel()"""
