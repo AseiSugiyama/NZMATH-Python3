@@ -67,9 +67,10 @@ class Lattice:
                 return self.H
     
     def RED(self,k,l):
+        from math import floor
         if abs(self.mu[(k,l)]) <= 0.5:
             return
-        q = int(0.5+self.mu[(k,l)])
+        q = floor(0.5+self.mu[(k,l)])
         self.basis[k] = self.basis[k] - q*self.basis[l]
         self.H.setColumn(k, self.H[k] - q*self.H[l])
         self.mu[(k,l)] -= q
