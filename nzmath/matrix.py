@@ -478,63 +478,107 @@ class Matrix:
 #        inverseImage.setColumn(1, x)
 #        return inverseImage
 
+#    def inverseImage(self, V):    # Cohen's Algorithm 2.3.5
+#        """M.inverseImage(V) -> X such that MX=V
+#        It raises NoInverseImage exception if inverse image of it is not exist."""
+#        M = self.copy()
+#        m = M.row;  n = M.column;  r = V.column 
+#        if n > m:
+#            raise MatrixSizeError
+#        C = Matrix(m,1)
+#        X = Matrix(n,r)
+#        # step 1
+#        j = 0
+#        B = V.copy()
+#        while 1:
+#            # step 2
+#            j += 1
+#            if j > n:
+#                break
+#            # step 3
+#            for i in range(j,m+1):
+#                if M[i,j] != 0:
+#                    break
+#            else:
+#                raise VectorsNotIndependent, self.__name__
+#            # step 4
+#            if i > j:
+#                #for l in range(j,n+1):
+#                for l in range(1,n+1):
+#                    tmp = M[i,l]
+#                    M[i,l] = M[j,l]
+#                    M[j,l] = tmp
+#                B.swapRow(i,j)
+#            # step 5
+#            d = 1 / rational.Rational(M[j,j])
+#            for k in range(j+1,m+1):
+#                C[k,1] = d * M[k,j]
+#            for k in range(j+1,m+1):
+#                for l in range(j+1,n+1):
+#                    M[k,l] = M[k,l] - C[k,1] * M[j,l]
+#            for k in range(j+1,m+1):
+#                B.setRow(k, B.getRow(k)-C[k,1]*B.getRow(j))
+#        # step 6
+#        for i in range(n,0,-1):
+#            tmp = B.getRow(i)
+#            for j in range(i+1,n+1): 
+#                tmp -= M[i,j] * X.getRow(j)
+#            X.setRow(i, tmp / M[i,i])
+#        # step 7
+#        for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
+#            if B.getRow(k) != M.getRow(k) * X:
+#                raise NoInverseImage, "some vectors are not in the inverse image"
+#        return X
+
     def inverseImage(self, V):    # Cohen's Algorithm 2.3.5
-        """M.inverseImage(V) -> X such that MX=V"""
         M = self.copy()
-        m = M.row;  n = M.column;  r = V.column 
-        if n > m:
-            raise MatrixSizeError
-        C = Matrix(m,1)
+        m = M.row; n = M.column; r = V.column
         X = Matrix(n,r)
+
         # step 1
-        j = 0
         B = V.copy()
-        while 1:
-            # step 2
-            j += 1
-            if j > n:
-                break
+
+        # step 2 - 
+        for j in range(n):
             # step 3
-            for i in range(j,m+1):
-                if M[i,j] != 0:
+            for i in range(j,m):
+                if M.compo[i][j] != 0:
                     break
             else:
                 raise VectorsNotIndependent, self.__name__
             # step 4
             if i > j:
-                for l in range(j,n+1):
-                    tmp = M[i,l]
-                    M[i,l] = M[j,l]
-                    M[j,l] = tmp
-                B.swapRow(i,j)
+                for l in range(n):
+                    t = M.compo[i][l]; M.compo[i][l] = M.compo[j][l]; M.compo[j][l] = t
+                for l in range(r):
+                    t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t 
             # step 5
-            d = 1 / rational.Rational(M[j,j])
-            for k in range(j+1,m+1):
-                C[k,1] = d * M[k,j]
-            for k in range(j+1,m+1):
-                for l in range(j+1,n+1):
-                    M[k,l] = M[k,l] - C[k,1] * M[j,l]
-            for k in range(j+1,m+1):
-                B.setRow(k, B.getRow(k)-C[k,1]*B.getRow(j))
+            d = 1 / rational.Rational(M.compo[j][j])
+            for k in range(j+1, m):
+                ck = d * rational.Rational(M.compo[k][j])
+                for l in range(j+1, n):
+                    M.compo[k][l] -= ck * M.compo[j][l]
+                for l in range(r):
+                    B.compo[k][l] -= ck * B.compo[j][l]
         # step 6
-        for i in range(n,0,-1):
-            tmp = B.getRow(i)
-            for j in range(i+1,n+1): 
-                tmp -= M[i,j] * X.getRow(j)
-            X.setRow(i, tmp / M[i,i])
-        # step 7
-        for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
-            if B.getRow(k) != M.getRow(k) * X:
-                raise NoInverseImage, "some vectors are not in the inverse image"
+        for i in range(n-1, -1, -1):
+            for k in range(r):
+                sum = 0
+                for j in range(i+1, n):
+                    sum += M.compo[i][j] * X.compo[j][k]
+                X.compo[i][k] = (B.compo[i][k] - sum) / M.compo[i][i]
+
+        for k in range(n+1, m):
+            for j in range(r):
+                sum = 0
+                for i in range(n):
+                    sum += M.compo[k][i] * X.compo[i][j]
+                if (sum != B.compo[k][j]): 
+                    raise NoInverseImage, "some vectors are not in the inverse image"
+
         return X
 
-    def hessenbergForm(self):      # Cohen's Algorithm 2.2.9
-        if self.row != self.column:
-            raise MatrixSizeError
-        n = self.row
-
-        # step 1
-        H = self.copy()
+    def hessenbergForm(self):      # Cohen's Algorithm 2.2.9 if self.row != self.column: raise MatrixSizeError n = self.row # step 1 H = self.copy()
         for m in range(2, H.row):
             # step 2
             for i in range(m+1, n+1):
@@ -744,7 +788,10 @@ def intersectionOfSubspaces(M, M_):    # Cohen's Algorithm 2.3.9
     M2 = M * N1
     return M2.image()
 
-# define exceptions --------------------------------------------------
+#--------------------------------------------------------------------
+#   define exceptions 
+#--------------------------------------------------------------------
+
 class MatrixSizeError(Exception):
     pass
 
@@ -757,7 +804,10 @@ class NoInverseImage(Exception):
 class NoInverse(Exception):
     pass
 
-# data for debugging -------------------------------------------------
+#--------------------------------------------------------------------
+#   data for debugging 
+#--------------------------------------------------------------------
+
 a=Matrix(5,3)
 a.set([0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0])
 
@@ -792,20 +842,6 @@ def pause():
 
 if __name__ == '__main__':
     pass
-#    import testMatrix
-#    runner = testMatrix.unittest.TextTestRunner()
-#    runner.run(testMatrix.suite())
-#    print c
-#    print c.hermiteNormalForm()
-
-#    print c
-#    print c.inverseImageMatrix(Matrix(3,2,[2,2,-1,-2,8,11]))
-#    print f
-#    print f * Matrix(2,1,[1,9])
-#    print f.inverseImageMatrix(Matrix(3,1,[9,35,56]))
-#    print h
-#    print h.hessenbergForm()
-#    print c.hessenbergForm()
-    print k
-    print k.determinant()
-    print k.inverseImage(Matrix(3,1,[8,4,5]))
+    M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
+    V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
+    print M.inverseImage(V)

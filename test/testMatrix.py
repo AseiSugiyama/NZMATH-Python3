@@ -1,8 +1,6 @@
 import unittest
 from matrix import *
 
-# data for debugging
-
 a = Matrix(2,2)
 a.set([1,2,3,4])
 
@@ -49,13 +47,6 @@ class MatrixTest(unittest.TestCase):
         div.set([1,rational.Rational(2,3)])
         assert e / 3 == div
 
-    def testGet_row(self):
-        assert `d.get_row(2)` == "5 1 2 5 1 1 "
-
-    def testGet_column(self):
-        print d.get_column(2)
-        assert `d.get_column(2)` == "2 \n1 \n7 \n5 \n2 \n1 "
-
     def testTranspose(self):
         trans = Matrix(2,1)
         trans.set([3,2])
@@ -73,12 +64,17 @@ class MatrixTest(unittest.TestCase):
         assert a.determinant() == -2 
 
     def testInverseImage(self):
-        gInv = g.inverseImage(Matrix(3,1,[5,5,5]))   
-        print g
-        print gInv
-        print g * gInv
-        assert g * gInv == Matrix(3,1,[5,5,5])
-
+        M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
+        V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
+#        print "\nM is as follows:"
+#        print M
+#        print "\nV is as follows:"
+#        print V
+#        print "\nX is as follows:"
+#        print M.inverseImage(V)
+#        print "\nM * X is as follows:"
+#        print M * M.inverseImage(V)
+        assert M * M.inverseImage(V) == V 
 
 def suite():
     suite = unittest.TestSuite()
@@ -88,8 +84,6 @@ def suite():
     suite.addTest(MatrixTest("testSub"))
     suite.addTest(MatrixTest("testScalarMul"))
     suite.addTest(MatrixTest("testDiv"))
-    suite.addTest(MatrixTest("testGet_row"))
-    suite.addTest(MatrixTest("testGet_column"))
     suite.addTest(MatrixTest("testTranspose"))
     suite.addTest(MatrixTest("testTriangulate"))
     suite.addTest(MatrixTest("testTrace"))
