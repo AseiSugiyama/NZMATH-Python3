@@ -1,5 +1,7 @@
 def gcd(a, b):
-    return extgcd(a, b)[0]
+    while b:
+        a, b = b, a%b
+    return a
  
 def extgcd(a, b):
     from matrix import Matrix

@@ -25,7 +25,7 @@ class Matrix:
                     maxlen[j] = len(`self.compo[i][j]`)
         for i in range(self.row):
             for j in range(self.column):
-                return_str += (("%" + `maxlen[j]` + "s") % `self.compo[i][j]`) + " "
+                return_str += "%*s " % (maxlen[j], `self.compo[i][j]`)
             return_str += "\n"
         return return_str[:-1]
 
