@@ -10,12 +10,6 @@ import prime
 import random
 import rational
 
-"""
-f=polynomial.OneVariableSparsePolynomial({1:-1,10201:1}, ['x']) 
-g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,( 4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5}, ['x']) 
-h=polynomial.OneVariableSparsePolynomial({0:1,2:17,3:1,4:13,5:71,6:36,7:59,8:46,9:12,10:51,11:52,12:50},["x"])
-
-"""
 def Element_p(a,p):
     """
     a is (rational,int,long) number
@@ -71,7 +65,10 @@ def Div(poly,d):
             raise ValueError,"*/x^"
     else:
         raise ValueError,"*/x^"
-
+#########################################
+"""
+Evaluate and Mul is not using now
+"""
 def Evaluate(poly,t):
     """
     use Horner's rule
@@ -122,7 +119,7 @@ def Mul(f,g):
         k=i
         j=j+1
     return polynomial.OneVariableDensePolynomial(L,"x").toOneVariableSparsePolynomial()
-
+########################################################
 def Inver_p(poly,d,p):
     """
     this returns poly inversion mod x^d /F_p
@@ -144,7 +141,6 @@ def Inver_p(poly,d,p):
         g=Mod(poly,n)%p
         g=Mod(f*g%p,n)%p #
         f=Mod(f*(2-g)%p,n)%p #
-        print n ,d+1,"*" ###
     if L[0]==1:
         return f%p
     else:
@@ -969,8 +965,6 @@ class EC:
             else:
                 raise NotImplementedError, "Now making (>_<)"
         
-        return schoof(self)###
-
         def Shanks_Mestre(self):
             import sets
             """
