@@ -25,6 +25,8 @@ j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],
 
 k = OneVariableSparsePolynomial({(1,):1},["x"])
 
+l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)],"y")
+
 class IntegerPolynomialTest(unittest.TestCase):
     def setUp(self):
         self.a = OneVariableDensePolynomial([1,1],"x")
@@ -53,23 +55,23 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert c * f == mul_2
         assert self.k * self.a == mul_3
 
-    def testFloordiv(self):
-        assert 0 == self.a // 2
-        assert 0 == self.k // 2
-        assert 1 == self.a // self.k # NameError: global name 'isIntegerObject' is not defined
-
-    def testMod(self):
-        assert self.a == self.a % 2
-        assert 1 == self.a % self.k # NameError: global name 'isIntegerObject' is not defined
-
-    def testDivmod(self):
-        assert (1,1) == divmod(self.a, self.k) # NameError: global name 'isIntegerObject' is not defined
-
     def testScalarMul(self):
         mul_1 = OneVariableDensePolynomial([0,3,6,9,12],"z")
         mul_2 = MultiVariableSparsePolynomial({(0,0,0):-5,(0,1,0):10,(3,1,0):-15,(1,1,1):20,(1,0,2):-25,(2,2,2):30},["x","y","z"])
         assert e * 3 == mul_1
         assert g * (-5) == mul_2
+
+    def testFloordiv(self):
+        assert 0 == self.a // 2
+        assert 0 == self.k // 2
+        assert 1 == self.a // self.k
+
+    def testMod(self):
+        assert self.a == self.a % 2
+        assert 1 == self.a % self.k
+
+    def testDivmod(self):
+        assert (1,1) == divmod(self.a, self.k)
 
     def testDifferentiate(self):
         deff_1 = OneVariableDensePolynomial([1,4,9,16],"z")
@@ -149,6 +151,9 @@ class RationalPolynomialTest(unittest.TestCase):
         mul_2 = MultiVariableSparsePolynomial({(0,0):rational.Rational(3,4),(1,0):rational.Rational(21,16),(0,1):rational.Rational(9,8),(1,1):rational.Rational(63,32),(2,0):rational.Rational(3,26),(2,1):rational.Rational(9,52)},["x","y"])
         assert h * i == mul_1
         assert h * j == mul_2
+
+    def testFloordiv(self):
+        assert rational.Rational(-3,2) ==  j - 2 * l # AttributeError: Rational instance has no attribute 'coefficient'
 
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, "x")
