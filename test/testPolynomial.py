@@ -450,6 +450,9 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
     def testGcd(self):
         assert self.f == self.f.getRing().gcd(self.f, self.g)
 
+    def testPow(self):
+        assert self.f ** 2
+
 def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerOneVariableDensePolynomialTest, "test"))

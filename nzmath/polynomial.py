@@ -256,10 +256,8 @@ class OneVariablePolynomial:
             raise TypeError, "You must input an integer for index."
         if index < 0:
             raise ValueError, "You must input a non-negative integer for index."
-        if index == 0:
-            return 1
         if mod == None:
-            power_product = self.getRing().createElement(1)
+            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
             power_of_2 = self.copy()
             while index > 0:
                 if index % 2 == 1:
@@ -268,7 +266,7 @@ class OneVariablePolynomial:
                 index = index // 2
             return power_product.copy()
         else:
-            power_product = self.getRing().createElement(1)
+            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
             power_of_2 = self.copy()
             while index > 0:
                 if index % 2 == 1:
