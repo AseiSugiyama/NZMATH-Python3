@@ -1,9 +1,12 @@
 #bigrandom.py
-def randrange(start,stop = 0,step = 1):
+def randrange(start,stop = "zero",step = 1):
     """Choose a random item from range([start,] stop[, step]).
 (Return long integer.)"""
     import random
     t = 1
+    if stop == "zero":
+        stop = start
+        start = 0
     if step == 0:
         raise ValueError, "zero step for randrange()"
     elif start != long(start):
