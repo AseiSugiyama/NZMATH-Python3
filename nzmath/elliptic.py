@@ -311,7 +311,7 @@ class EC:
         
         """
         if isinstance(P,list) and isinstance(Q,list):
-            if whetherOn(self,P) and whetherOn(self,Q):
+            if self.whetherOn(P) and self.whetherOn(Q):
                 if len(P)==len(Q)==2:
                     if self.ch==0:
                         if P[0]==Q[0]:
@@ -375,12 +375,12 @@ class EC:
         
         """
         if isinstance(P,list) and isinstance(Q,list):
-            if whetheron(self,P) and whetheron(self,Q):
+            if self.whetheron(P) and self.whetheron(Q):
                 if len(P)==len(Q)==2:
                     x=Q[0]
                     y=-Q[1]-self.a1*Q[0]-self.a3
                     R=[x,y] # R=-Q
-                    return add(self,P,R) 
+                    return self.add(P,R) 
                 elif (P==[0]) and (Q!=[0]):
                     x=Q[0]
                     y=-Q[1]-self.a1*Q[0]-self.a3
@@ -407,15 +407,112 @@ class EC:
             l=arith1.expand(k,2)
             Q=[0]
             for j in range(len(l)-1,-1,-1):
-                Q=add(self,Q,Q)
+                Q=self.add(Q,Q)
                 if l[j]==1:
-                    Q=add(self,Q,P)
+                    Q=self.add(Q,P)
             return Q
         else:
             l=arith1.expand(-k,2)
             Q=[0]
             for j in range(len(l)-1,-1,-1):
-                Q=add(self,Q,Q)
+                Q=self.add(Q,Q)
                 if l[j]==1:
                     Q=self.add(Q,P)
-            return sub(self,[0],Q)
+            return self.sub([0],Q)
+
+# t=imaginary.Complex(a,b)
+
+def q(t):
+
+    """
+    this returns exp(2*pi*j*t)
+    t is complex and h.imag>0
+    
+    """
+    return imaginary.exp(2*imaginary.pi*imaginary.j*t)
+
+def delta(t,x):
+
+    """
+    """
+    qt=q(t)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x:
+       b=a(i)+b
+       print i
+       i=i+1
+    return qt*(1+b)**24
+
+def h(t,x):
+
+    """
+    """
+    return delta(2*t,x)/delta(t,x)
+
+def j(t,x):
+
+    """
+    """
+    return (256*h(t,x)+1)**3/h(t,x)
+    
+def nu(t,x):
+
+    """
+    """
+    qt=q(t)
+    qq=imaginary.exp(imaginary.pi*imaginary.j/12)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x:
+       b=a(k)+b
+       i=i+1
+    return qq*(1+b)
+
+def order(E): # =#E(Fp)
+
+    """
+    this returns #E(Fp)
+    by using Shanks-Mestre method
+    
+    """
+    if E.ch!=0:
+        if E.ch<=229:
+            if len(E)!=2:
+                F=simple(E)
+            else:
+                F=E
+            k=0
+            for i in range(0,F.ch):
+                k=k+arith1.legendre(i*(i**2+F.a)+F.b,F.ch)
+            return F.ch+1+k
+        else: #E.ch>229
+            if len(E)!=2:
+                F=simple(E)
+            else:
+                F=E
+            g=0
+            while arith1.legendre(g,F.ch)!=-1:
+                g=random.randint(2,F.ch)
+            W=math.floor(math.sqrt(math.sqrt(p))*math.sqrt(2))+1
+            c,d=g**2*F.a,g**3*F.b
+            cg=0
+            f=polynomial.OneVariableDensePolynomial([F.b,F.a,0,1],"x")
+            while arith1.legendre(f(cg),F.ch)==0:
+                cg=random.randint(0,F.ch-1)
+                
+                
+    else:
+        raise "now making m(__)m"
+
+#def shanks(P,E):
