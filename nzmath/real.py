@@ -183,8 +183,8 @@ class ExponentialPowerSeries:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
         value, oldvalue = rational.Rational(0), rational.Rational(0)
+        maxDenom = minNumer = 0
         if isinstance(maxerror, RelativeError):
-            maxDenom = minNumer = 0
             for t in self.terms(x):
                 if not t:
                     continue
@@ -204,7 +204,6 @@ class ExponentialPowerSeries:
                         break
                 oldvalue = +value
         else:
-            maxDenom = minNumer = 0
             for t in self.terms(x):
                 if not t:
                     continue
@@ -258,17 +257,17 @@ def sqrt(x, err=defaultError):
 
     """
     import prime
-    reduced = rational.Rational(x)
-    if reduced.numerator < 0:
+    rx = rational.Rational(x)
+    if rx.numerator < 0:
         raise ValueError, "negative number is passed to sqrt"
-    if reduced.numerator == 0:
+    if rx.numerator == 0:
         return rational.Integer(0)
     if err <= defaultError:
-        rt = rational.Rational(prime.sqrt(reduced.denominator * reduced.numerator)+1, reduced.denominator)
+        rt = rational.Rational(prime.sqrt(rx.denominator * rx.numerator), rx.denominator)
         newrt = (rt + reduced / rt) / 2
         while not err.nearlyEqual(rt, newrt):
             rt = newrt
-            newrt = (rt + reduced / rt) / 2
+            newrt = (rt + rx / rt) / 2
     else:
         newrt = rational.Rational(math.sqrt(x))
     return newrt
