@@ -16,6 +16,7 @@ import rationalFunction
 import real
 import ring
 import vector
+import multiplicative
 
 __all__ = [
     "arith1",
@@ -29,6 +30,7 @@ __all__ = [
     "integerResidueClass",
     "lattice",
     "matrix",
+    "multiplicative",
     "polynomial",
     "prime",
     "rational",
