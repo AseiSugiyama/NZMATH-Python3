@@ -906,7 +906,7 @@ class RealField:
         reduced = +element
         if reduced in rational.RationalField:
             return 1
-        if isinstance(reduced, Float):
+        if isinstance(reduced, float) or isinstance(reduced, Float):
             return 1
         return 0  ## How to know a number is real ?
 
