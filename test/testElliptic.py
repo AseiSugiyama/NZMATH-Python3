@@ -89,13 +89,13 @@ class EllipticTest(unittest.TestCase):
         D=({-1:polynomial.OneVariableSparsePolynomial({0:-1},['x'],finitefield.FinitePrimeField(self.ch)),
             0:polynomial.OneVariableSparsePolynomial({},['x'],finitefield.FinitePrimeField(self.ch)),
             1:polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(self.ch)),
-            2:polynomial.OneVariableSparsePolynomial({0:2},['x'],finitefield.FinitePrimeField(self.ch)),
-            3:polynomial.OneVariableSparsePolynomial({1:48,0:92,2:18,4:3},["x"],finitefield.FinitePrimeField(self.ch)),
-            4:polynomial.OneVariableSparsePolynomial({0:87,1:10,2:22,3:17,4:60,6:4},["x"],finitefield.FinitePrimeField(self.ch)),
-            5:polynomial.OneVariableSparsePolynomial({9:5,8:65,10:85,12:5,1:58,0:48,3:60,2:53,5:93,4:28,7:52,6:79},["x"],finitefield.FinitePrimeField(self.ch)),
-            6:polynomial.OneVariableSparsePolynomial({0:60,1:62,2:25,3:58,4:50,5:23,6:81,7:37,8:68,9:24,10:57,11:34,12:55,13:69,14:24,16:56},["x"],finitefield.FinitePrimeField(self.ch)),
-            7:polynomial.OneVariableSparsePolynomial({9:76,8:44,11:49,10:5,13:74,12:49,15:53,14:76,1:77,0:94,3:65,2:87,5:45,4:97,7:22,6:80,24:7,17:47,16:69,19:70,18:63,21:20,20:78,22:15},["x"],finitefield.FinitePrimeField(self.ch)),
-            8:polynomial.OneVariableSparsePolynomial({0:19,1:17,2:81,3:77,4:68,5:23,6:59,7:66,8:65,9:52,10:12,11:98,12:1,13:58,14:63,15:38,17:42,18:43,19:36,20:50,21:36,22:6,23:39,24:7,26:66,27:85,28:19,30:99},["x"],finitefield.FinitePrimeField(self.ch))},
+            2:polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(self.ch)),
+            3:polynomial.OneVariableSparsePolynomial({0:92,1:48,2:18,4:3},["x"],finitefield.FinitePrimeField(self.ch)),
+            4:polynomial.OneVariableSparsePolynomial({0:94,1:5,2:11,3:59,4:30,6:2},["x"],finitefield.FinitePrimeField(self.ch)),
+            5:polynomial.OneVariableSparsePolynomial({0:48,1:58,2:53,3:60,4:28,5:93,7:52,8:65,9:5,10:85,12:5},["x"],finitefield.FinitePrimeField(self.ch)),
+            6:polynomial.OneVariableSparsePolynomial({0:9,1:12,2:44,3:15,4:64,5:22,6:76,7:28,8:42,9:96,10:87,12:57,13:62,14:14,16:3},["x"],finitefield.FinitePrimeField(self.ch)),
+            7:polynomial.OneVariableSparsePolynomial({0:94,1:77,2:87,3:65,4:97,5:45,6:80,7:22,8:44,9:76,10:5,11:49,12:49,13:74,14:76,15:53,16:69,17:47,18:63,19:70,20:78,21:20,22:15,24:7},["x"],finitefield.FinitePrimeField(self.ch)),
+            8:polynomial.OneVariableSparsePolynomial({0:16,1:50,2:29,3:10,4:62,5:80,6:41,7:66,8:79,9:48,10:77,11:53,12:67,13:70,14:5,15:18,16:36,17:28,18:58,19:95,20:67,21:91,22:37,23:93,24:25,25:93,26:61,27:34,28:68,30:4},["x"],finitefield.FinitePrimeField(self.ch))},
            [3,5,7])
         assert E.divPoly()==D
 
