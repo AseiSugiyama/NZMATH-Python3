@@ -350,6 +350,12 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         assert result == self.f * self.g
         assert self.f.getRing() == (self.f * self.g).getRing()
 
+    def testDifferentiate(self):
+        import finitefield
+        result = finitefield.FinitePrimeFieldElement(1,2)
+        assert result == self.f.differentiate(self.f.variable)
+        assert 0 == self.g.differentiate(self.g.variable)
+
 def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
