@@ -15,7 +15,7 @@ Installation
 ------------
 
 To install NZMATH on your computer, you must have Python 2.3 or
-better.  The latest release 2.3.2 is recommended.  If you don't have a
+better.  The latest release 2.3.3 is recommended.  If you don't have a
 copy of Python, please install it first.  Python is available from
 http://www.python.org/ .
 
