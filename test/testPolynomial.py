@@ -50,7 +50,7 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert self.c == (self.c * self.d) // self.d
 
     def testMod(self):
-        assert self.a == self.a % 2, (self.a % 2).__class__
+        assert self.a == self.a % 2, (self.a, (self.a % 2))
 
     def testGetitem(self):
         assert 1 == self.a[0]
