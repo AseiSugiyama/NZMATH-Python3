@@ -1254,7 +1254,10 @@ def exp_new(x, err=defaultError):
     while reduced >= 2:
         reduced /= 2
         i += 1
-    retval = series(reduced, err)
+    if reduced == 0:
+        retval = rational.Integer(1)
+    else:
+        retval = series(reduced, err)
     if i > 0:
         retval **= 2 ** i
     if reverse < 0:
@@ -1493,6 +1496,39 @@ def tan_new(x, err=defaultError):
 
     """
     return sin_new(x, err) / cos_new(x, err)
+
+def sinh_new(x, err=defaultError):
+    """
+
+    sinh(x [,err]) returns the hyperbolic sine of x.
+
+    """
+    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
+    rx = rational.Rational(x)
+    if rx == 0:
+        return rational.Integer(0)
+    return series(rx, err)
+
+def cosh_new(x, err=defaultError):
+    """
+
+    cosh(x [,err]) returns the hyperbolic cosine of x.
+
+    """
+    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
+    rx = rational.Rational(x)
+    if rx == 0:
+        return rational.Integer(1)
+    return series(rx, err)
+
+def tanh_new(x, err=defaultError):
+    """
+
+    tanh(x [,err]) returns the hyperbolic tangent of x.
+
+    """
+    rx = rational.Rational(x)
+    return sinh_new(rx, err) / cosh_new(rx, err)
 
 def hypot_new(x, y, err=defaultError):
     """

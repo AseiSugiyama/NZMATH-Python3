@@ -133,6 +133,7 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(sqrt2 ** 2 - 2) < self.absolute
 
     def testExp(self):
+        assert 1 == real.exp_new(0)
         exp1 = real.exp_new(1)
         exp1e = real.exp_new(1, self.err)
         assert exp1 < exp1e < exp1 * self.relative
@@ -180,6 +181,11 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(real.sin_new(pi)) < self.absolute
         assert -1 <= (real.cos_new(pi)) < -1 + self.absolute
         assert abs(real.tan_new(pi)) < self.absolute
+
+    def testHyperbolic(self):
+        assert 0 == real.sinh_new(0)
+        assert 1 == real.cosh_new(0)
+        assert 0 == real.tanh_new(0)
 
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
