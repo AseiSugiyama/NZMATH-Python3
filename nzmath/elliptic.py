@@ -7,7 +7,6 @@ import polynomial
 import prime
 import random
 import rational 
-import factor
         
 class EC:
     """
@@ -442,17 +441,51 @@ class EC:
                 elif i==2:
                     f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
                 elif i==3:
-                    f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
+                    g=polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"])
+                    G=g.coefficient
+                    L=G.items()
+                    j=0
+                    dict={}
+                    while j<len(L):
+                        dict[L[j][0]]=L[j][1]%self.ch
+                        j=j+1
+                    g.coefficient=dict
+                    f.append(g)
                 elif i==4:
-                    f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
+                    g=4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"])
+                    G=g.coefficient
+                    L=G.items()
+                    j=0
+                    dict={}
+                    while j<len(L):
+                        dict[L[j][0]]=L[j][1]%self.ch
+                        j=j+1
+                    g.coefficient=dict
+                    f.append(g)
                 else:
                     if i%2!=0:
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                        G=g.coefficient
+                        L=G.items()
+                        j=0
+                        dict={}
+                        while j<len(L):
+                            dict[L[j][0]]=L[j][1]%self.ch
+                            j=j+1
+                        g.coefficient=dict
                         f.append(g)
                     else:
                         j=i//2
                         g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] #div 2y??
+                        G=g.coefficient
+                        L=G.items()
+                        j=0
+                        dict={}
+                        while j<len(L):
+                            dict[L[j][0]]=L[j][1]%self.ch
+                            j=j+1
+                        g.coefficient=dict
                         f.append(g)
                         #h=f[m]#->f'
             return f[m] #->f'
@@ -461,19 +494,53 @@ class EC:
                 if i==1:
                     f.append(1)
                 elif i==2:
-                    f.append(OneVariableSparsePolynomial({(1,):1},["x"]))
+                    f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["x"]))
                 elif i==3:
-                    f.append(OneVariableSparsePolynomial({(0,):a6,(3,):1,(4,):1},["x"]))
+                    g=polynomial.OneVariableSparsePolynomial({(0,):self.a6,(3,):1,(4,):1},["x"])
+                    G=g.coefficient
+                    L=G.items()
+                    j=0
+                    dict={}
+                    while j<len(L):
+                        dict[L[j][0]]=L[j][1]%2
+                        j=j+1
+                    g.coefficient=dict
+                    f.append(g)
                 elif i==4:
-                    f.append(OneVariableSparsePolynomial({(2,):a6,(6,):1},["x"]))
+                    g=polynomial.OneVariableSparsePolynomial({(2,):self.a6,(6,):1},["x"])
+                    G=g.coefficient
+                    L=G.items()
+                    j=0
+                    dict={}
+                    while j<len(L):
+                        dict[L[j][0]]=L[j][1]%2
+                        j=j+1
+                    g.coefficient=dict
+                    f.append(g)
                 else:
                     if i%2!=0:
                         j=(i-1)//2
                         g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
+                        G=g.coefficient
+                        L=G.items()
+                        j=0
+                        dict={}
+                        while j<len(L):
+                            dict[L[j][0]]=L[j][1]%2
+                            j=j+1
+                        g.coefficient=dict
                         f.append(g)
                     else:
                         j=i//2
-                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(OneVariableSparsePolynomial({(1,):1},["x"])) 
+                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(polynomial.OneVariableSparsePolynomial({(1,):1},["x"]))
+                        G=g.coefficient
+                        L=G.items()
+                        j=0
+                        dict={}
+                        while j<len(L):
+                            dict[L[j][0]]=L[j][1]%2
+                            j=j+1
+                        g.coefficient=dict
                         f.append(g)
                         #h=f[m]
             return f[m]
@@ -482,52 +549,7 @@ class EC:
         """
         this returns #E(Fp)
         """
-        def schoof(self):
-            def divPoly(self,m):
-                f=[]
-                f.append(0)
-                if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
-                    for i in range(1,m+1):
-                        if i==1:
-                            f.append(1)
-                        elif i==2:
-                            f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
-                        elif i==3:
-                            f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
-                        elif i==4:
-                            f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
-                        else:
-                            if i%2!=0:
-                                j=(i-1)//2
-                                g=f[j+2]*f[j]*f[j]*f[j]-f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                                f.append(g)
-                            else:
-                                j=i//2
-                                g=(f[j+2]*f[j-1]*f[j-1]-f[j-2]*f[j+1]*f[j+1])*f[j] #div 2y??
-                                f.append(g)
-                                h=f[m]#->f'
-                    return h
-                else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
-                    for i in range(1,m+1):
-                        if i==1:
-                            f.append(1)
-                        elif i==2:
-                            f.append(OneVariableSparsePolynomial({(1,):1},["x"]))
-                        elif i==3:
-                            f.append(OneVariableSparsePolynomial({(0,):a6,(3,):1,(4,):1},["x"]))
-                        elif i==4:
-                            f.append(OneVariableSparsePolynomial({(2,):a6,(6,):1},["x"]))
-                        else:
-                            if i%2!=0:
-                                j=rational.Rational(i-1,2)*1
-                                g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                                f.append(g)
-                            else:
-                                j=rational.Rational(i,2)
-                                g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(OneVariableSparsePolynomial({(1,):1},["x"])) 
-                                f.append(g)
-                    h=f[m]
-                    return h
+        #def schoof(self):
 
         def Shanks_Mestre(self):
             import sets
