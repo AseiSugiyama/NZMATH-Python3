@@ -71,7 +71,7 @@ class MatrixTest(unittest.TestCase):
                                 4,5,6,
                                 5,7,9])
         assert cinverse == c.inverse()
-        assert None == noinverse.inverse()
+        self.assertRaises(VectorsNotIndependent, noinverse.inverse)
 
     def testInverseImage(self):
         M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
