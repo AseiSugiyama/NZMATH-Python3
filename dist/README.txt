@@ -55,9 +55,9 @@ Feedback
 
 Your feedbacks are always welcomed.  Please consider to join the
 mailing list nzmath-user@tnt.math.metro-u.ac.jp.  You can join the
-list with writing a mail containing a line of "add" in the body to
-nzmath-user-request@tnt.math.metro-u.ac.jp.  *Be careful* not to send
-it to nzmath-user.
+list with writing a mail containing a line of "subscribe" in the body
+to nzmath-user-request@tnt.math.metro-u.ac.jp.  *Be careful* not to
+send it to nzmath-user.
 
 
 Copyright
