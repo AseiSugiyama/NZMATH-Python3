@@ -2,13 +2,14 @@ from __future__ import division
 import arith1
 import cmath
 import factor
+#import finitefield
 import imaginary
 import math
 import polynomial 
 import prime
 import random
 import rational
-import whrandom
+import subec
         
 class EC:
     """
@@ -78,10 +79,10 @@ class EC:
                     elif coefficient[0]==coefficient[1]==0:
                         self.a1=0
                         self.a2=0
-                        self.a3=coefficient[2]%2
-                        self.a4=coefficient[3]%2
-                        self.a6=coefficient[4]%2
-                        self.disc=self.a3**4%2
+                        self.a3=subec.Element(coefficient[2],2)
+                        self.a4=subec.Element(coefficient[3],2)
+                        self.a6=subec.Element(coefficient[4],2)
+                        self.disc=subec.Element(self.a3**4,2)
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -96,20 +97,21 @@ class EC:
                 if len(self)==5:
                     if coefficient[0]==coefficient[2]==coefficient[3]==0:
                         self.a1=0
-                        self.a2=coefficient[1]%3
+                        self.a2=subec.Element(coefficient[1],3)
                         self.a3=0
                         self.a4=0
-                        self.a6=coefficient[4]%3
-                        self.disc=(-self.a2**3*self.a6)%3
+                        self.a6=subec.Element(coefficient[4],3)
+                        self.disc=subec.Element(-self.a2**3*self.a6,3)
                         if self.disc!=0:
-                            self.j=-self.a2**3*arith1.inverse(self.a6,3)%3
+                            j=rational.Rational(-self.a2**3,self.a6)
+                            self.j=subec.Elemant(j,3)
                     elif coefficient[0]==coefficient[1]==coefficient[2]==0:
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=coefficient[3]%3
-                        self.a6=coefficient[4]%3
-                        self.disc=(-self.a4**3)%3
+                        self.a4=subec.Element(coefficient[3],3)
+                        self.a6=subec.Element(coefficient[4],3)
+                        self.disc=subec.Element(-self.a4**3,3)
                         self.j=0
                     else:
                         raise ValueError, "can't defined EC (-_-;)"
@@ -123,53 +125,41 @@ class EC:
                         raise ValueError, "you must input integer coefficients. m(__)m"
                 if prime.millerRabin(self.ch)==1:
                     if len(self)==5:
-                        self.a1=coefficient[0]%self.ch
-                        self.a2=coefficient[1]%self.ch
-                        self.a3=coefficient[2]%self.ch
-                        self.a4=coefficient[3]%self.ch
-                        self.a6=coefficient[4]%self.ch
-                        self.b2=(self.a1**2+4*self.a2)%self.ch
-                        self.b4=(self.a1*self.a3+2*self.a4)%self.ch
-                        self.b6=(self.a3**2+4*self.a6)%self.ch
-                        self.b8=(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2)%self.ch
-                        self.c4=(self.b2**2-24*self.b4)%self.ch
-                        self.c6=(-self.b2**3+36*self.b2*self.b4-216*self.b6)%self.ch
-                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
+                        self.a1=subec.Element(coefficient[0],self.ch)
+                        self.a2=subec.Element(coefficient[1],self.ch)
+                        self.a3=subec.Element(coefficient[2],self.ch)
+                        self.a4=(coefficient[3],self.ch)
+                        self.a6=subec.Element(coefficient[4],self.ch)
+                        self.b2=subec.Element(self.a1**2+4*self.a2,self.ch)
+                        self.b4=subec.Element(self.a1*self.a3+2*self.a4,self.ch)
+                        self.b6=subec.Element(self.a3**2+4*self.a6,self.ch)
+                        self.b8=subec.Element(self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2,self.ch)
+                        self.c4=subec.Element(self.b2**2-24*self.b4,self.ch)
+                        self.c6=subec.Element(-self.b2**3+36*self.b2*self.b4-216*self.b6,self.ch)
+                        self.disc=subec.Element(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
-                        j=rational.Rational(self.c4**3,self.disc)*1
-                        if isinstance(j,rational.Rational):
-                            jd=j.denominator
-                            jn=j.numerator
-                        else:
-                            jd=1
-                            jn=j
-                        self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
+                        j=rational.Rational(self.c4**3,self.disc)
+                        self.j=subec.Element(j,self.ch)
                     elif len(self)==2:
-                        self.a=coefficient[0]%self.ch
-                        self.b=coefficient[1]%self.ch
+                        self.a=subec.Element(coefficient[0],self.ch)
+                        self.b=subec.Element(coefficient[1],self.ch)
                         self.a1=0
                         self.a2=0
                         self.a3=0
-                        self.a4=coefficient[0]%self.ch
-                        self.a6=coefficient[1]%self.ch
+                        self.a4=subec.Element(coefficient[0],self.ch)
+                        self.a6=subec.Element(coefficient[1],self.ch)
                         self.b2=0
-                        self.b4=(2*self.a)%self.ch
-                        self.b6=(4*self.b)%self.ch
-                        self.b8=(-self.a**2)%self.ch
-                        self.c4=(-48*self.a)%self.ch
-                        self.c6=(-864*self.b)%self.ch
-                        self.disc=(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6)%self.ch
+                        self.b4=subec.Element(2*self.a,self.ch)
+                        self.b6=subec.Element(4*self.b,self.ch)
+                        self.b8=subec.Element(-self.a**2,self.ch)
+                        self.c4=subec.Element(-48*self.a,self.ch)
+                        self.c6=subec.Element(-864*self.b,self.ch)
+                        self.disc=subec.Element(-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6,self.ch)
                         if self.disc==0:
                             raise ValueError, "singuler curve (@_@)"
-                        j=rational.Rational(self.c4**3,self.disc)*1
-                        if isinstance(j,rational.Rational):
-                            jd=j.denominator
-                            jn=j.numerator
-                        else:
-                            jd=1
-                            jn=j
-                        self.j=(jn*arith1.inverse(jd,self.ch))%self.ch
+                        j=rational.Rational(self.c4**3,self.disc)
+                        self.j=subec.Element(j,self.ch)
                     else:
                         raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                 else:
@@ -203,7 +193,7 @@ class EC:
             elif self.ch==2 or self.ch==3:
                 return self
             else:
-                other=EC([(-27*self.c4)%self.ch,(-54*self.c6)%self.ch],self.ch)
+                other=EC([subec.Element(-27*self.c4,self.ch),subec.Element(-54*self.c6,self.ch)],self.ch)
                 return other
 
     def changeCurve(self,V):
@@ -214,36 +204,26 @@ class EC:
             if len(V)==4:
                 if V[0]!=0:
                     if self.ch==0:
-                        other=EC([rational.Rational(self.a1+2*V[2],V[0])*1,
-                              rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2)*1,
-                              rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3)*1,
-                              rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4)*1,
-                              rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)*1],0) 
+                        other=EC([rational.Rational(self.a1+2*V[2],V[0]),
+                              rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2),
+                              rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3),
+                              rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4),
+                              rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)],0) 
                         return other
                     else: #self.ch!=0
                         for v in V:
                             if not isinstance(v,(int,long)):
                                 raise ValueError, "you must input integer m(__)m"
-                        A=[rational.Rational(self.a1+2*V[2],V[0])*1,
-                           rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2)*1,
-                           rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3)*1,
-                           rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4)*1,
-                           rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)*1]
-                        B=[]
-                        for i in range(0,5):
-                            if isinstance(A[i],rational.Rational):
-                                ad=A[i].denominator
-                                an=A[i].numerator
-                                B.append((arith1.inverse(ad,self.ch),an))
-                            else:
-                                ad=1
-                                an=A[i]
-                                B.append((arith1.inverse(ad,self.ch),an))
-                        other=EC([(B[0][0]*B[0][1])%self.ch,
-                              (B[1][0]*B[1][1])%self.ch,
-                              (B[2][0]*B[2][1])%self.ch,
-                              (B[3][0]*B[3][1])%self.ch,
-                              (B[4][0]*B[4][1])%self.ch],self.ch)
+                        A=[rational.Rational(self.a1+2*V[2],V[0]),
+                           rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2),
+                           rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3),
+                           rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4),
+                           rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)]
+                        other=EC([subec.Element(A[0],self.ch),
+                                  subec.Element(A[1],self.ch),
+                                  subec.Element(A[2],self.ch),
+                                  subec.Element(A[3],self.ch),
+                                  subec.Element(A[4],self.ch),],self.ch)
                         return other
                 else: # u==0
                     raise ValueError, "you must input nonzero u (-_-;)"
@@ -262,22 +242,11 @@ class EC:
                     Q0=rational.IntegerIfIntOrLong(P[0]-V[1])/rational.IntegerIfIntOrLong(V[0]**2)
                     Q1=rational.IntegerIfIntOrLong(P[1]-V[2]*(P[0]-V[1])-V[3])/rational.IntegerIfIntOrLong(V[0]**3)
                 else:
-                    qx=rational.Rational(P[0]-V[1],V[0]**2)*1
-                    if isinstance(qx,rational.Rational):
-                        qxd=qx.denominator
-                        qxn=qx.numerator
-                    else:
-                        qxd=1
-                        qxn=qx
-                    Q0=(qxn*arith1.inverse(qxd,self.ch))%self.ch
-                    qy=rational.Rational(P[1]-V[2]*(P[0]-V[1])-V[3],V[0]**3)*1
-                    if isinstance(qy,rational.Rational):
-                        qyd=qy.denominator
-                        qyn=qy.numerator
-                    else:
-                        qyd=1
-                        qyn=qy
-                    Q1=(qyn*arith1.inverse(qyd,self.ch))%self.ch
+
+                    qx=rational.Rational(P[0]-V[1],V[0]**2)
+                    Q0=subec.Element(qx,self.ch)
+                    qy=rational.Rational(P[1]-V[2]*(P[0]-V[1])-V[3],V[0]**3)
+                    Q1=subec.Element(qy,self.ch)
                 Q=[Q0,Q1]
                 return Q
             else:
@@ -302,21 +271,11 @@ class EC:
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch) 
                     t=s**3+other.a*s+other.b
-                x=rational.Rational(s-3*self.b2,36)*1
-                if isinstance(x,rational.Rational):
-                    xd=x.denominator
-                    xn=x.numerator
-                else:
-                    xd=1
-                    xn=x
+                x=rational.Rational(s-3*self.b2,36)
+                x=subec.Element(x,self.ch)
                 y=rational.Rational(1,2)*(rational.Rational(arith1.sqroot(t,self.ch),108)-self.a1*x-self.a3)
-                if isinstance(y,rational.Rational):
-                    yd=y.denominator
-                    yn=y.numerator
-                else:
-                    yd=1
-                    yn=y
-                return [(xn*arith1.inverse(xd,self.ch))%self.ch,(yn*arith1.inverse(yd,self.ch))%self.ch]
+                y=subec.Element(y,self.ch)
+                return [x,y]
             elif self.ch==3:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
@@ -329,7 +288,7 @@ class EC:
                     s=random.randrange(0,self.ch)
                 return [s,self.coordinateX(s)]
         else: #self.ch==0
-            w=int(whrandom.random()*10**3)
+            w=int(random.random()*10**3)
             s=random.randrange(1,w)
             return [s,self.coordinateX(s)]
 
@@ -355,15 +314,13 @@ class EC:
             raise NotImplementedError, "Now making (>_<)"
         else: #self.ch==0
             if y1**2+4*y2>=0:
-                return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)*1
+                return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)
             else:
                 raise ValueError, "(-_-;)"
     def whetherOn(self,P):
-
         """
         Determine whether P is on curve or not.
         Return 1 if P is on, return 0 otherwise.
-
         """
         if isinstance(P,list):
             if len(P)==2:
@@ -385,10 +342,8 @@ class EC:
             raise ValueError, "you must input (point,list) m(__)m"
 
     def add(self,P,Q):
-
         """
         this returns P+Q
-        
         """
         if isinstance(P,list) and isinstance(Q,list):
             if self.whetherOn(P) and self.whetherOn(Q):
@@ -417,22 +372,10 @@ class EC:
                         else: # P!=Q
                             s=rational.Rational(Q[1]-P[1],Q[0]-P[0])
                             t=rational.Rational(P[1]*Q[0]-Q[1]*P[0],Q[0]-P[0])
-                        x=s**2+self.a1*s-self.a2-P[0]-Q[0]
-                        if isinstance(x,rational.Rational):
-                            xd=(s**2+self.a1*s-self.a2-P[0]-Q[0]).denominator
-                            xn=(s**2+self.a1*s-self.a2-P[0]-Q[0]).numerator
-                        else:
-                            xd=1
-                            xn=x
-                        x3=xn*arith1.inverse(xd,self.ch)%self.ch
-                        y=-(s+self.a1)*x3-t-self.a3
-                        if isinstance(y,rational.Rational):
-                            yd=(-(s+self.a1)*x3-t-self.a3).denominator
-                            yn=(-(s+self.a1)*x3-t-self.a3).numerator
-                        else:
-                            yd=1
-                            yn=y
-                        y3=yn*arith1.inverse(yd,self.ch)%self.ch
+                        x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
+                        x3=subec.Element(x3,self.ch)
+                        y3=-(s+self.a1)*x3-t-self.a3
+                        y3=subec.Element(y3,self.ch)
                         R=[x3,y3]
                         return R
                 elif (P==[0]) and (Q!=[0]):
@@ -449,10 +392,8 @@ class EC:
             raise ValueError, "you must input (point,list) m(__)m"
 
     def sub(self,P,Q): # P-Q
-
         """
         this retuens P-Q
-        
         """
         if isinstance(P,list) and isinstance(Q,list):
             if self.whetherOn(P) and self.whetherOn(Q):
@@ -500,8 +441,9 @@ class EC:
                     Q=self.add(Q,P)
             return self.sub([0],Q)
 
-    #def lattice(self):
-        
+    def lattice(self):###
+        raise NotImplementedError,"Now making (>_<)"
+
     def divPoly(self):
         x=polynomial.OneVariableSparsePolynomial({(1,):1},['x'])
         y=polynomial.OneVariableSparsePolynomial({(1,):1},['y'])
@@ -515,15 +457,15 @@ class EC:
                     j=j*i
                 i=i+1
             return l
-        def CoefficientReduction(poly,p): #Z[x]->(Z/p)[x]
-            L=poly.coefficient.items()
-            t=0
-            dict={}
-            while t<len(L):
-                dict[L[t][0]]=L[t][1]%p
-                t=t+1
-            poly.coefficient=dict
-            return poly
+#        def CoefficientReduction(poly,p): #Z[x]->(Z/p)[x]
+#            L=poly.coefficient.items()
+#            t=0
+#            dict={}
+#            while t<len(L):
+#                dict[L[t][0]]=L[t][1]%p
+#                t=t+1
+#            poly.coefficient=dict
+#            return poly
         def change(poly,i,e,p):#y^2->e=x^3+a*x+b and if i%2,div y
             L=poly.coefficient.items()
             if i%2==0:
@@ -538,7 +480,7 @@ class EC:
                         k=(k-1)//2
                         poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=CoefficientReduction(poly,p)
+                poly=subec.mod_p(poly,p)
                 L=poly.coefficient.items()
                 t=0
                 dict={}
@@ -553,12 +495,12 @@ class EC:
                     k=L[t][0][1]//2
                     poly=poly+e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=CoefficientReduction(poly,p)
+                poly=subec.mod_p(poly,p)
             return poly
         f=[]
         M=[]
         f.append(0)
-        M.append(0)
+        M.append(polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x']))#
         H=heart(self.ch)
         if self.ch!=2 and self.ch!=3: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
@@ -567,25 +509,25 @@ class EC:
             for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
-                    M.append(1)
+                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 1}, ['x']))#
                 elif i==2:
                     f.append(2*y)
-                    M.append(2)
+                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))#
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    g=CoefficientReduction(g,E.ch)
+                    g=subec.mod_p(g,E.ch)
                     f.append(g)
                     M.append(g)
                 elif i==4:
                     g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    g=CoefficientReduction(g,E.ch)
+                    g=subec.mod_p(g,E.ch)
                     f.append(g)
                     M.append(change(g,i,e,E.ch))#div y
                 else:
                     if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        g=CoefficientReduction(g,E.ch)
+                        g=subec.mod_p(g,E.ch)
                         f.append(g)
                         M.append(change(g,i,e,E.ch)) # y^2->e
                     else: 
@@ -604,7 +546,7 @@ class EC:
             for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
-                    M.append(1)
+                    M.append(1) #
                 elif i==2:
                     f.append(x)
                     M.append(x)
@@ -660,45 +602,66 @@ class EC:
             raise NotImplementedError, "Now making (>_<)"
         return M,H
 
-    def order(self): # =#E(Fp)
+    def order(self): # ==#E(Fp)
         """
         this returns #E(Fp)
         """
         def schoof(self):
-            T=[]
-            if self.ch!=0:
-                D=self.divPoly()
+            if self.ch>3:
+                if len(self)!=2:
+                    other=self.simple()
+                else:
+                    other=self 
+                T=[]
+                D=other.divPoly()
                 L=D[1]
-                D=D[0] # D in divPoly  
+                D=D[0]
+                E=polynomial.OneVariableSparsePolynomial({(0,):other.b,(1,):other.a,(3,):1},['x'])
+                f=polynomial.OneVariableSparsePolynomial({(1,):-1,(other.ch**2,):1},['x'])###deg(f)is large ==ch**2
                 i=0
                 while i<len(L):
-                    return 0 ###
                     j=L[i]
                     k=self.ch%j
                     if k%2==0:
-                        P=gcd # P is poly,gcd is now making
-                        if gcd==1:
-                            F=0 # F is flag
+                        print f,E,D[k],D[k],"*"
+                        print PolyReduction([f,E,D[k],D[k]],D[j],j)+PolyReduction([D[k-1],D[k+1]],D[j],j) ### use
+                        P=GCD(PolyReduction([f,E,D[k],D[k]],D[j],j)+PolyReduction([D[k-1],D[k+1]],D[j],j),D[j],j) ### use
+                        if P==1:
+                            F=0 
                         else:
                             F=1
-                            P=solve(P) # P is X(point),solve is now making
+                        #    P=solve(P) # P is X(point),solve is now making
                     else:
-                        P=gcd #
-                        if gcd==1: #
+                        print f,D[k],D[k],"**"
+                        print PolyReduction([f,D[k],D[k]],D[j],j)+PolyReduction([D[k-1],D[k+1],E],D[j],j) ### use
+                        P=GCD(PolyReduction([f,D[k],D[k]],D[j],j)+PolyReduction([D[k-1],D[k+1],E],D[j],j),D[j],j) ### use
+                        if P==1:
                             F=0
                         else:
                             F=1
-                            P=solve(P) #
-                    if F==1:
-                        if arith1.legendre(k,j)==-1:
+                        #    P=solve(P)
+                    if F==1: #GCD!=1
+                        if arith1.legendre(other.ch,j)==-1:
                             T.append((0,j))
                         else:
-                            pass
-                    else: # F==0
-                        return 0 ###
+                            print P
+                            #T.append(P)###
+                            #pass
+                    else: #GCD==1
+                        l=1
+                        while l<k:
+                            #P=GCD(,,)#
+                            #if P==1:
+                            #    T.append((0,j))
+                            #else:
+                            #    T.append((l,j))
+                            break
                     i=i+1
-            return L
+                return T
+            else:
+                raise NotImplementedError, "Now making (>_<)"
         
+        return schoof(self)
         #return schoof(self) ###    
         def Shanks_Mestre(self):
             import sets
@@ -790,8 +753,12 @@ class EC:
                 raise NotImplementedError,"Now making m(__)m"
 
         #def SEA(self):
-            
-        return Shanks_Mestre(self)
+        if self.ch<=3:
+            raise NotImplementedError,"Now making m(__)m"
+        elif self.ch<10**6:
+            return Shanks_Mestre(self)
+        else: # self.ch>=10**6
+            raise NotImplementedError,"Now making m(__)m"
 
     # Cremona's book p.66
     def tatesAlgorithm(self):
@@ -980,64 +947,6 @@ class EC:
                 else:
                     self.changeCurve(0, 0, 0, p)
                     self.tatesAlgorithm()
-
-# t=imaginary.Complex(a,b)
-
-def q(t):
-
-    """
-    this returns exp(2*pi*j*t)
-    t is complex and h.imag>0
-    """
-    return cmath.exp(2*cmath.pi*1j*t)
-
-def delta(t,x):
-
-    """
-    """
-    qt=q(t)
-    def a(i):
-        if i%2==0:
-            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-        else:
-            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-    i=1
-    b=0
-    while abs(a(i+1))>x: #
-       b=a(i)+b
-       print i
-       i=i+1
-    return qt*(1+b)**24
-
-def h(t,x):
-
-    """
-    """
-    return delta(2*t,x)/delta(t,x)
-
-def j(t,x):
-
-    """
-    """
-    return (256*h(t,x)+1)**3/h(t,x)
-    
-def nu(t,x):
-
-    """
-    """
-    qt=q(t)
-    qq=cmath.exp(cmath.pi*1j/12)
-    def a(i):
-        if i%2==0:
-            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-        else:
-            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-    i=1
-    b=0
-    while abs(a(i+1))>x:
-       b=a(k)+b
-       i=i+1
-    return qq*(1+b)
 
 # necessary for tatesAlgorithm ---------------------------------------
 
