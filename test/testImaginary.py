@@ -3,6 +3,8 @@ import time
 import imaginary
 import real, rational
 
+"$Id:"
+
 class ImaginaryTest (unittest.TestCase):
     def testAdd(self):
         a = imaginary.Complex(1, 1)
@@ -99,6 +101,12 @@ class ErrorTest (unittest.TestCase):
 
     def testAbsoluteError(self):
         assert imaginary.AbsoluteError(rational.Rational(1,2))
+
+    def testDiv(self):
+        re2 = imaginary.RelativeError(rational.Rational(1, 6)) / 5
+        assert re2.relativeerrorrange == rational.Rational(1,30)
+        ae2 = imaginary.AbsoluteError(rational.Rational(1, 6)) / 5
+        assert ae2.absoluteerrorrange == rational.Rational(1,30)
 
 def suite():
     suite = unittest.TestSuite()

@@ -249,6 +249,11 @@ class RelativeError:
             return True
         return False
 
+    def __div__(self, other):
+        return self.__class__(self.relativeerrorrange / other)
+
+    __truediv__ = __div__
+
 class AbsoluteError:
     def __init__(self, numeric):
         """
@@ -267,6 +272,11 @@ class AbsoluteError:
 
         """
         return abs(x-y) < self.absoluteerrorrange
+
+    def __div__(self, other):
+        return self.__class__(self.absoluteerrorrange / other)
+
+    __truediv__ = __div__
 
 ### function rewrite
 defaultError = RelativeError(1, 2 ** 53)
