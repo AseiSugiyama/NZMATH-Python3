@@ -54,6 +54,15 @@ class FloatTest (unittest.TestCase):
         quot2 = divisee / real.Float(125,2,None)
         assert quot2.precision == 1000
 
+    def testSqrt(self):
+        zero = real.Float(0,0,None)
+        sqrt0 = real.sqrt(zero)
+        assert sqrt0.mantissa == 0
+        two = real.Float(2,0,None)
+        sqrt2 = real.sqrt(two, 5)
+        assert sqrt2.mantissa == 23, sqrt2.mantissa
+        assert sqrt2.exponent == -4, sqrt2.exponent
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite

@@ -8,6 +8,8 @@ utilities.
 
 """
 
+doubleprecision = 53
+
 class Float:
     """
 
@@ -37,7 +39,7 @@ class Float:
             self.mantissa, self.exponent = 0, 0
         self.precision = precision
         if not self.precision:
-            self.defaultPrecision = max((53, getNumberOfBits(mantissa)))
+            self.defaultPrecision = max((doubleprecision, getNumberOfBits(mantissa)))
         else:
             self.defaultPrecesion = self.precision
 
@@ -246,8 +248,19 @@ class Float:
     def __pos__(self):
         return self.__class__(+mantissa, exponent, precision)
 
+    def __repr__(self):
+        return "Float(" + repr(self.mantissa) + ", " + repr(self.exponent) + ", " + repr(self.precision) + ")"
+
     def setDefaultPrecision(self, newPrecision):
         self.defaultPrecision = newPrecision
+
+    def toRational(self):
+        if self.exponent < 0:
+            return rational.Rational(self.mantissa, 2 ** (-self.exponent))
+        elif self.exponent > 0:
+            return rational.Rational(self.mantissa * 2 ** self.exponent)
+        else:
+            return rational.Rational(self.mantissa)
 
 def getNumberOfBits(anInteger):
     """
@@ -286,3 +299,26 @@ def rationalToFloat(aRational, precision):
     mantissa = (aRational.numerator * 2**(bits + precision)) // aRational.denominator
     exponent = -(bits + precision)
     return Float(mantissa, exponent, precision)
+
+def sqrt(aFloat, precision=doubleprecision):
+    def _isCloseEnough(x, y, prec):
+        xrat = x.toRational()
+        yrat = y.toRational()
+        prat = rational.Rational(1, 2**prec)
+        return -prat < (xrat - yrat) / xrat < prat
+    if aFloat.mantissa < 0:
+        raise ValueError, "negative number is passed to sqrt"
+    if aFloat.mantissa == 0:
+        return Float(0,0,None)
+    x = Float(1, getNumberOfBits(aFloat.mantissa) // 2 + aFloat.exponent // 2, precision*2)
+    xnew = (x + aFloat / x) / 2
+    while not _isCloseEnough(x, xnew, precision):
+        x = xnew
+        xnew = (x + aFloat / x) / 2
+    assert x.precision > precision
+    while x.precision > precision:
+        x.mantissa = x.mantissa // 2 + (x.mantissa & 1)
+        x.exponent += 1
+        x.precision -= 1
+    return x
+
