@@ -213,7 +213,12 @@ class Rational (ring.QuotientFieldElement):
             return approximant1
         rest = Rational(remainder, rest.numerator)
         while remainder:
-            quotient, remainder = divmod(rest.denominator, rest.numerator)
+            if rest.numerator > 1:
+                quotient, remainder = divmod(rest.denominator, rest.numerator)
+            elif rest.denominator > 1:
+                quotient, remainder = (rest.denominator-1,1)
+            else:
+                quotient, remainder = (1,0)
             approximant = Rational(quotient * approximant1.numerator + approximant0.numerator, quotient * approximant1.denominator + approximant0.denominator)
             if approximant.denominator > max_denominator:
                 break
