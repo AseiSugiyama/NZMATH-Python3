@@ -66,6 +66,12 @@ class ComplexTest (unittest.TestCase):
         assert complex.exp(complex.Complex(0, real.Float(1))).real == cos1.real
         assert cos1 == cosc1, (cos1, cosc1, cos1 - cosc1)
 
+    def testTan(self):
+        tan1 = complex.tan(1)
+        tanc1 = complex.tan(complex.Complex(real.Float(1), 0))
+        assert tan1 == tanc1
+        assert tan1.real > 0
+
     def testLog(self):
         log2 = complex.log(2)
         logf2 = complex.log(real.Float(2,0))
@@ -73,6 +79,11 @@ class ComplexTest (unittest.TestCase):
         assert log2 == logf2 == logc2
         log2inverse = real.log(.5)
         assert log2 == -log2inverse
+
+    def testHyperbolic(self):
+        assert complex.sinh(1)
+        assert complex.cosh(1)
+        assert complex.tanh(1)
 
 def suite():
     suite = unittest.makeSuite(ComplexTest, 'test')
