@@ -17,6 +17,12 @@ f = FlatIntegerPolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},["x","z"])
 
 g = FlatIntegerPolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},["y","z","x"])
 
+h = RationalPolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)],"x")
+
+i =  RationalPolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)],"x")
+
+j =  RationalPolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")                       
+                       
 class IntegerPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = IntegerPolynomial([2,-1,3,-4],"x")
@@ -58,16 +64,39 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert f(x = 2,z = -1) == call_3
         assert f(x = -2,z = "y") == call_4
 
+class RationalPolynomialTest(unittest.TestCase):
+    def testAdd(self):
+        sum_1 = RationalPolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
+        sum_2 = FlatRationalPolynomial({(0,0):2,(1,0):rational.Rational(7,8),(0,1):rational.Rational(9,4),(2,0):rational.Rational(1,13)},["x","y"])
+        assert h + i == sum_1
+        assert h + j == sum_2
+        
+    def testSub(self):
+        sub_1 = RationalPolynomial([rational.Rational(-1,2),rational.Rational(7,8),rational.Rational(-11,26),rational.Rational(-5,2)],"x")
+        sub_2 = FlatRationalPolynomial({(0,0):-1,(1,0):rational.Rational(7,8),(0,1):rational.Rational(-9,4),(2,0):rational.Rational(1,13)},["x","y"])
+        assert h - i == sub_1
+        assert h - j == sub_2
+        
+    def testMul(self):
+        mul_1 = RationalPolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(17,52),rational.Rational(27,16),rational.Rational(463,208),rational.Rational(5,26)],"x")
+        mul_2 = FlatRationalPolynomial({(0,0):rational.Rational(3,4),(1,0):rational.Rational(21,16),(0,1):rational.Rational(9,8),(1,1):rational.Rational(63,32),(2,0):rational.Rational(3,26),(2,1):rational.Rational(9,52)},["x","y"])
+        assert h * i == mul_1
+        assert h * j == mul_2
+        
 def suite():
-    suite = unittest.TestSuite()
+    suite=unittest.TestSuite()
     suite.addTest(IntegerPolynomialTest("testAdd"))
     suite.addTest(IntegerPolynomialTest("testSub"))
     suite.addTest(IntegerPolynomialTest("testMul"))
     suite.addTest(IntegerPolynomialTest("testScalarMul"))
     suite.addTest(IntegerPolynomialTest("testDifferentiate"))
     suite.addTest(IntegerPolynomialTest("testCall"))
+    suite.addTest(RationalPolynomialTest("testAdd"))
+    suite.addTest(RationalPolynomialTest("testSub"))
+    suite.addTest(RationalPolynomialTest("testMul"))
     return suite
 
 if __name__== '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
+
