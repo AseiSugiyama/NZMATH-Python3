@@ -190,239 +190,15 @@ class ComplexField:
     def __contains__(self, element):
         reduced = +element
         if reduced in real.theRealField:
-            return 1
+            return True
         if isinstance(reduced, complex) or isinstance(reduced, Complex):
-            return 1
-        return 0  ## How to know a number is complex ?
+            return True
+        return False  ## How to know an object be complex ?
 
 theComplexField = ComplexField()
 
 pi = real.pi
 e = real.e
-
-def sum(iter, precision):
-    """
-
-    sum(iter, precision) computes sum of the series given by iter to
-    the precision.  It is assumed that:
-    1) iter does not yield zeros,
-    2) the series converges to zero.
-
-    """
-    def abscmp(a, b):
-        absa = abs(a)
-        absb = abs(b)
-        if absa < absb:
-            return -1
-        elif absa == absb:
-            return 0
-        return 1
-    roughEvaluation = Complex(real.Float(0,0,precision), real.Float(0,0,precision))
-    termList = []
-    for term in iter:
-        roughEvaluation += term
-        termList.append(term)
-        if abs(term) < abs(roughEvaluation) / 2**(2*precision):
-            break
-    termList.sort(abscmp)
-    return reduce(operator.add, termList, Complex(0, 0))
-
-def exp(x, precision=real.doubleprecision):
-    def exp_iter(xx, pp):
-        yield 1
-        try:
-            y = real.Float(xx, 0, pp)
-        except:
-            y = xx.copy()
-        f = i = 1
-        yield y
-        while 1:
-            i += 1
-            f *= i
-            y *= xx
-            yield y / f
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        if isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    elif x in real.theRealField:
-        return real.exp(x, precision)
-    if x == 0:
-        return real.Float(1, 0, None)
-    return sum(exp_iter(x, precision), precision)
-
-def sin(x, precision=real.doubleprecision):
-    def sin_iter(xx, pp):
-        yield xx
-        try:
-            y = real.Float(xx, 0, pp)
-        except:
-            y = xx.copy()
-        y2 = xx ** 2
-        i = f = 1
-        while 1:
-            f *= (i+1)*(i+2)
-            i += 2
-            y *= y2
-            yield (-y / f)
-            f *= (i+1)*(i+2)
-            i += 2
-            y *= y2
-            yield (y / f)
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    try:
-        y = real.Float(x, 0, precision)
-    except:
-        y = x.copy()
-    return sum(sin_iter(y, precision), precision)
-
-def cos(x, precision=real.doubleprecision):
-    def cos_iter(xx, pp):
-        yield 1
-        try:
-            y = real.Float(xx, 0, pp)
-        except:
-            y = xx.copy()
-        y2 = xx ** 2
-        i = f = 1
-        while 1:
-            f *= i*(i+1)
-            i += 2
-            y *= y2
-            yield (-y / f)
-            f *= i*(i+1)
-            i += 2
-            y *= y2
-            yield (y / f)
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    try:
-        y = real.Float(x, 0, precision)
-    except:
-        y = x.copy()
-    return sum(cos_iter(y, precision), precision)
-
-def tan(x, precision=real.doubleprecision):
-    """
-
-    tan(x [,precision]) returns the tangent of x.
-
-    """
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    return sin(x, precision) / cos(x, precision)
-
-def log(x, precision=real.doubleprecision):
-    """
-
-    log(x [,precision]) returns the natural logarithm of x. There is
-    one branch cut, from 0 along the negative real axis to -infinity,
-    continuous from above.
-
-    """
-    if isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        if isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    if x in real.theRealField:
-        x = +x
-        if x > 0:
-            return real.log(x, precision)
-        elif x < 0:
-            return Complex(real.log(abs(x)), pi)
-    return Complex(real.log(abs(x)), real.atan2(x.real, x.imag))
-
-def sinh(x, precision=real.doubleprecision):
-    """
-
-    sinh(x [,precision]) returns the hyperbolic sine of x.
-
-    """
-    def sinh_iter(xx, pp):
-        yield xx
-        y2 = xx ** 2
-        i = f = 1
-        while 1:
-            f *= (i+1)*(i+2)
-            xx *= y2
-            i += 2
-            yield (xx / f)
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    try:
-        y = real.Float(x, 0, precision)
-    except:
-        y = x.copy()
-    return sum(sinh_iter(y, precision), precision)
-
-def cosh(x, precision=real.doubleprecision):
-    """
-
-    cosh(x [,precision]) returns the hyperbolic cosine of x.
-
-    """
-    def cosh_iter(xx, pp):
-        yield 1
-        x2 = xx ** 2
-        y = real.Float(1, 0 ,2*precision)
-        i = f = 1
-        while 1:
-            f *= i*(i+1)
-            y *= x2
-            i += 2
-            yield (y / f)
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    try:
-        y = real.Float(x, 0, precision)
-    except:
-        y = x.copy()
-    return sum(cosh_iter(y, precision), precision)
-
-def tanh(x, precision=real.doubleprecision):
-    """
-
-    tanh(x [,precision]) returns the hyperbolic tangent of x.
-
-    """
-    if isinstance(x, real.Float) and precision < x.precision:
-        precision = x.precision
-    elif isinstance(x, Complex):
-        if isinstance(x.real, real.Float) and precision < x.real.precision:
-            precision = x.real.precision
-        elif isinstance(x.imag, real.Float) and precision < x.imag.precision:
-            precision = x.imag.precision
-    return sinh(x, precision) / cosh(x, precision)
 
 j = Complex(0,1)
 
@@ -436,6 +212,15 @@ class RelativeError:
         r = abs(complexnumeric)*self.relativeerrorrange
         return AbsoluteError(r)
 
+    def nearlyEqual(self, x, y):
+        """
+
+        Compare two complex numbers with respect to this error,
+        whether they are within the given range or not.
+
+        """
+        return self.absoluteerror(x).nearlyEqual(x, y)
+
 
 class AbsoluteError:
     def __init__(self, numeric):
@@ -445,13 +230,21 @@ class AbsoluteError:
         absoluteerrorrange from x. x must be a positive value.
 
         """
-
         self.absoluteerrorrange = abs(numeric)
         
+    def nearlyEqual(self, x, y):
+        """
+
+        Compare two complex numbers with respect to this error,
+        whether they are within the given range or not.
+
+        """
+        return abs(x-y) < self.absoluteerrorrange
+
 ### function rewrite
 defaultError = RelativeError(1, 2 ** 53)
 
-def exp_new(x, err=defaultError):
+def exp(x, err=defaultError):
     """
 
     exp(x [,err]) is the exponential function.
@@ -463,15 +256,15 @@ def exp_new(x, err=defaultError):
             _err = real.RelativeError(0, err.relativeerrorrange)
         elif isinstance(err, AbsoluteError):
             _err = real.AbsoluteError(0, err.absoluteerrorrange)
-        return real.exp_new(x, _err)
+        return real.exp(x, _err)
     except TypeError:
         pass
-    # divide real part and imaginary part?
+    # divide real part and imaginary part
     if isinstance(err, RelativeError):
         _err = real.RelativeError(0, err.relativeerrorrange, 2)
     elif isinstance(err, AbsoluteError):
         _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-    radius = real.exp_new(x.real, _err)
+    radius = real.exp(x.real, _err)
     if isinstance(err, RelativeError):
         _err = RelativeError(err.relativeerrorrange, 2)
     elif isinstance(err, AbsoluteError):
@@ -486,15 +279,17 @@ def expi(x, err=defaultError):
     and x must be a real number.
 
     """
+    if x == 0:
+        return rational.Integer(1)
     if isinstance(err, RelativeError):
         _err = real.RelativeError(0, err.relativeerrorrange, 2)
     elif isinstance(err, AbsoluteError):
         _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-    re = real.cos_new(x, _err)
-    im = real.sin_new(x, _err)
+    re = real.cos(x, _err)
+    im = real.sin(x, _err)
     return Complex(re, im)
 
-def log_new(x, err=defaultError):
+def log(x, err=defaultError):
     """
 
     log(x [,err]) returns the natural logarithm of x. There is one
@@ -509,8 +304,75 @@ def log_new(x, err=defaultError):
     if x in real.theRealField:
         x = +x
         if x > 0:
-            return real.log_new(x, _err)
+            return real.log(x, _err)
         elif x < 0:
-            return Complex(real.log_new(abs(x), _err), real.piGaussLegendre_new(_err))
+            return Complex(real.log(abs(x), _err), real.pi(_err))
     return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
 
+class ExponentialPowerSeries:
+    """
+
+    A class for exponential power serieses, whose n-th term has form:
+      a_n * x ** n / n!
+    
+
+    """
+    def __init__(self, iterator):
+        """
+
+        ExponentialPowerSeries(iterator) constructs an exponential
+        power series with coefficient generated by the given iterator,
+        which can be an infinite iterator.
+
+        """
+        self.iterator = iterator
+        self.dirtyflag = False
+
+    def terms(self, x):
+        """
+
+        Generator of terms of series with assigned x value.
+
+        """
+        if x == 0:
+            yield self.iterator.next()
+        else:
+            f = 1
+            i = 0
+            y = rational.Integer(1)
+            for an in self.iterator:
+                yield an * y / f
+                y *= x
+                i += 1
+                f *= i
+
+    def __call__(self, x, maxerror):
+        if self.dirtyflag:
+            raise Exception, 'ExponentialPowerSeries cannot be called more than once'
+        self.dirtyflag = True
+        value = oldvalue = 0
+        for t in self.terms(x):
+            if not t:
+                continue
+            value += t
+            if maxerror.nearlyEqual(value, oldvalue):
+                return value
+            oldvalue = +value
+
+def sin(z, err=defaultError):
+    pass
+
+def cos(z, err=defaultError):
+    pass
+
+def tan(z, err=defaultError):
+    return sin(z, err) / cos(z,err)
+
+def sinh(z, err=defaultError):
+    pass
+
+def cosh(z, err=defaultError):
+    pass
+
+def tanh(z, err=defaultError):
+    pass

@@ -1,6 +1,6 @@
 import unittest
 import imaginary
-import real
+import real, rational
 
 class ImaginaryTest (unittest.TestCase):
     def testAdd(self):
@@ -23,17 +23,14 @@ class ImaginaryTest (unittest.TestCase):
     def testAbs(self):
         root2 = real.sqrt(2)
         assert root2 == abs(imaginary.Complex(1,1))
-        assert root2 == abs(imaginary.Complex(1, real.Float(1)))
-        assert root2 == abs(imaginary.Complex(real.Float(1), 1))
-        assert root2 == abs(imaginary.Complex(real.Float(1), real.Float(1)))
         assert 1 == abs(imaginary.Complex(1, 0))
         assert 1 == abs(imaginary.Complex(0, 1.0))
 
     def testWithFloat(self):
         a = imaginary.Complex(8, 1)
-        b = real.Float(1, -3)
-        a_add_b = imaginary.Complex(8 + real.Float(1, -3), 1)
-        a_mul_b = imaginary.Complex(1, real.Float(1, -3))
+        b = rational.Rational(1, 8)
+        a_add_b = imaginary.Complex(8 + rational.Rational(1, 8), 1)
+        a_mul_b = imaginary.Complex(1, rational.Rational(1, 8))
         assert a_add_b == a + b
         assert a_add_b == b + a
         assert a_mul_b == a * b
@@ -50,8 +47,7 @@ class ImaginaryTest (unittest.TestCase):
     def testExp(self):
         exp1 = imaginary.exp(1)
         expc1 = imaginary.exp(imaginary.Complex(1, 0))
-        rexpf1 = real.exp(real.Float(1, 0))
-        assert exp1 == expc1 == rexpf1
+        rexp1 = real.exp(rational.Integer(1))
         assert -1 < imaginary.exp(imaginary.Complex(0, 1)).imag < 1
 
     def testSin(self):
@@ -62,23 +58,23 @@ class ImaginaryTest (unittest.TestCase):
 
     def testCos(self):
         cos1 = imaginary.cos(1)
-        cosc1 = imaginary.cos(imaginary.Complex(real.Float(1), 0))
-        assert imaginary.exp(imaginary.Complex(0, real.Float(1))).real == cos1.real
+        cosc1 = imaginary.cos(imaginary.Complex(rational.Integer(1), 0))
+        assert imaginary.exp(imaginary.Complex(0, rational.Integer(1))).real == cos1.real
         assert cos1 == cosc1, (cos1, cosc1, cos1 - cosc1)
 
     def testTan(self):
         tan1 = imaginary.tan(1)
-        tanc1 = imaginary.tan(imaginary.Complex(real.Float(1), 0))
+        tanc1 = imaginary.tan(imaginary.Complex(rational.Integer(1), 0))
         assert tan1 == tanc1
         assert tan1.real > 0
 
     def testLog(self):
         log2 = imaginary.log(2)
-        logf2 = imaginary.log(real.Float(2,0))
+        logf2 = imaginary.log(rational.Integer(2))
         logc2 = imaginary.log(imaginary.Complex(2,0))
         assert log2 == logf2 == logc2
         log2inverse = real.log(.5)
-        assert abs(imaginary.log(2,53) + log2inverse) <= real.Float(1, -53)
+        assert abs(imaginary.log(2) + log2inverse) <= rational.Rational(1, 2**(-53))
 
     def testHyperbolic(self):
         assert imaginary.sinh(1)
@@ -92,18 +88,19 @@ class ImaginaryTest (unittest.TestCase):
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):
         assert imaginary.RelativeError(1,2)
-        assert isinstance(real.RelativeError(1,2).absoluteerror(imaginary.Complex(3,4)), real.AbsoluteError)
+        assert isinstance(imaginary.RelativeError(1,2).absoluteerror(imaginary.Complex(3,4)), imaginary.AbsoluteError)
 
     def testAbsoluteError(self):
         assert imaginary.AbsoluteError(rational.Rational(1,2))
 
 class NewFunctionTest (unittest.TestCase):
     def testExp(self):
-        assert isinstance(imaginary.exp_new(imaginary.j), imaginary.Complex)
+        assert isinstance(imaginary.exp(imaginary.j), imaginary.Complex)
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ImaginaryTest, 'test'))
+    suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
     suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
