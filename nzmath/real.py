@@ -87,6 +87,11 @@ class RelativeError:
             return True
         return False
 
+    def __div__(self, other):
+        return self.__class__(self.comparity, self.relativeerrorrange, other)
+
+    __truediv__ = __div__
+
 class AbsoluteError:
     def __init__(self, comparity, numerator, denominator=1):
         self.comparity = comparity
@@ -132,7 +137,10 @@ class AbsoluteError:
             return True
         return False
 
-theRealField = RealField()
+    def __div__(self, other):
+        return self.__class__(self.comparity, self.absoluteerrorrange, other)
+
+    __truediv__ = __div__
 
 ### function rewrite
 class ExponentialPowerSeries:
@@ -161,35 +169,33 @@ class ExponentialPowerSeries:
 
         """
         if x == 0:
-            yield self.iterator.next()
+            yield rational.Rational(self.iterator.next())
         else:
-            f = 1
             i = 0
-            y = rational.Integer(1)
+            r = rational.Rational(1,1)
             for an in self.iterator:
-                yield an * y / f
-                y *= x
+                yield an * r
                 i += 1
-                f *= i
+                r *= rational.Rational(x, i)
 
     def __call__(self, x, maxerror):
         if self.dirtyflag:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
-        value = oldvalue = 0
+        value, oldvalue = rational.Rational(0), rational.Rational(0)
         for t in self.terms(x):
             if not t:
                 continue
             value += t
             if maxerror.nearlyEqual(value, oldvalue):
-                return value
+                break
             oldvalue = +value
+        return value
 
 defaultError = RelativeError(0, 1, 2 ** 53)
 
 def exp(x, err=defaultError):
     if err <= defaultError:
-        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
         reduced = rational.Rational(x)
         if reduced < 0:
             reverse = -1
@@ -203,6 +209,7 @@ def exp(x, err=defaultError):
         if reduced == 0:
             retval = rational.Integer(1)
         else:
+            series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
             retval = series(reduced, err)
         if i > 0:
             retval **= 2 ** i
@@ -378,18 +385,22 @@ def sin(x, err=defaultError):
 
     """
     if err <= defaultError:
-        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
         rx = rational.Rational(x)
+        if rx.denominator == 1:
+            if abs(rx.numerator) > 1:
+                return _sinTriple(rx, err)
+            else:
+                return _sinTaylor(rx, err)
         sign = rational.Rational(1)
         # sin(-x) = -sin(x)
         if rx < 0:
             sign = -sign
             rx = -rx
         # sin(x + 2 * pi) = sin(x)
-        if rx > 2 * pi(err):
+        if rx >= 2 * pi(err):
             rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
         # sin(x + pi) = -sin(x)
-        if rx > pi(err):
+        if rx >= pi(err):
             rx -= pi(err)
             sign = -sign
         # sin(x) = sin(pi - x)
@@ -397,15 +408,25 @@ def sin(x, err=defaultError):
             rx = pi(err) - rx
         # sin(0) = 0 is a special case which must not be computed with series.
         if rx == 0:
-            return 0
-        retval = series(rx, err) * sign
+            return rational.Rational(0)
+        retval = _sinTaylor(rx, err)
         if retval > 1:
             retval = rational.Integer(1)
-        elif retval < -1:
-            retval = rational.Integer(-1)
+        retval *= sign
     else:
         retval = rational.Rational(math.sin(x))
     return retval
+
+def _sinTaylor(x, err=defaultError):
+    """
+
+    _sinTaylor(x [,err]) returns the sine of x by Taylor expansion.
+    It is recommended to use only for 0 <= x <= pi / 4.
+
+    """
+    rx = rational.Rational(x)
+    sinSeries = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+    return sinSeries(rx, err)
 
 def cos(x, err=defaultError):
     """
@@ -414,7 +435,6 @@ def cos(x, err=defaultError):
 
     """
     if err <= defaultError:
-        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
         rx = rational.Rational(x)
         sign = rational.Rational(1)
         # cos(-x) = cos(x)
@@ -431,17 +451,28 @@ def cos(x, err=defaultError):
         if rx > pi(err) / 2:
             rx = pi(err) - rx
             sign = -sign
-        # cos(0) = 1 is a special case which must not be computed with series.
-        if rx == 0:
-            return sign
-        retval = series(rx, err) * sign
+        # cos(x) = sin(pi/2 - x) (pi/2 >= x > 4/pi)
+        if rx > pi(err) / 4:
+            retval = _sinTaylor(pi(err) / 2 - rx, err)
+        else:
+            retval = _cosTaylor(rx, err)
         if retval > 1:
             retval = rational.Integer(1)
-        elif retval < -1:
-            retval = rational.Integer(-1)
+        retval *= sign
     else:
         retval = rational.Rational(math.cos(x))
     return retval
+
+def _cosTaylor(x, err=defaultError):
+    """
+
+    _cosTaylor(x [,err]) returns the cosine of x by Taylor series.
+    It is recomended to use only for 0 <= x <= pi / 4.
+
+    """
+    cosSeries = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+    rx = rational.Rational(x)
+    return cosSeries(rx, err)
 
 def tan(x, err=defaultError):
     """
@@ -532,7 +563,7 @@ def asin(x, err=defaultError):
         retval = y
         term = rational.Rational(y)
         oldvalue = 0
-        while err.nearlyEquals(retval, oldvalue):
+        while err.nearlyEqual(retval, oldvalue):
             oldvalue = +retval
             term *= y2 * (i-1) ** 2 / (i*(i+1))
             i += 2
@@ -680,7 +711,7 @@ class Constant:
             return self.cache.__rsub__(other)
 
     def __mul__(self, other):
-        return self.cache.__mul__.other
+        return self.cache.__mul__(other)
 
     def __rmul__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -775,3 +806,5 @@ class Constant:
 pi = Constant(piGaussLegendre)
 e = Constant(lambda err: exp(1, err))
 Log2 = Constant(lambda err: _log2(err))
+
+theRealField = RealField()

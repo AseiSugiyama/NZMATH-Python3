@@ -35,6 +35,12 @@ class ErrorTest (unittest.TestCase):
         assert not real.RelativeError(0,1,4) < real.AbsoluteError(0,1,3)
         assert not real.AbsoluteError(0,1,4) < real.RelativeError(0,1,3)
 
+    def testDiv(self):
+        re2 = real.RelativeError(0, 1, 6) / 5
+        assert re2.relativeerrorrange == rational.Rational(1,30)
+        ae2 = real.AbsoluteError(0, 1, 6) / 5
+        assert ae2.absoluteerrorrange == rational.Rational(1,30)
+
 class NewFunctionTest (unittest.TestCase):
     def setUp(self):
         self.err = real.RelativeError(0, 1, 2**100)
