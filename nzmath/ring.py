@@ -1,6 +1,15 @@
 class Ring:
-    """Ring is an abstract class which expresses that
-    the derived classes are (in mathematical meaning) rings."""
+    """
+
+    Ring is an abstract class which expresses that
+    the derived classes are (in mathematical meaning) rings.
+
+    Definition of ring is as follows:
+      Ring is a structure with addition and multiplication.  It is an
+      abelian group with addition, and a monoid with multiplication.
+      The multiplication obeys the distributive law.
+
+    """
 
     def __init__(self, *args, **kwd):
         """This class is abstract and cannot be instanciated."""
@@ -177,6 +186,130 @@ class QuotientFieldElement (FieldElement):
 
     def __eq__(self,other):
         return self.numerator*other.denominator == self.denominator*other.numerator
+
+class Ideal:
+    """
+
+    Ideal class is an abstract class to represent the finitely
+    generated ideals.  Because the finitely-generatedness is not a
+    restriction for Noetherian rings and in the most cases only
+    Noetherian rings are used, it is general enough.
+
+    """
+    def __init__(self, generators, ring):
+        """
+
+        Ideal(generators, ring) creates an ideal of the ring genarated
+        by the generators.  generators must be an element of the ring
+        or a list of elements of the ring.
+
+        """
+        raise NotImplementedError
+
+    def __add__(self, other):
+        """
+
+        I + J <=> I.__add__(J)
+
+        where I+J = {i+j | i in I and j in J}
+
+        """
+        raise NotImplementedError
+
+    def __mul__(self, other):
+        """
+
+        I * J <=> I.__mul__(J)
+
+        where I*J = {sum of i*j | i in I and j in J}
+
+        """
+        raise NotImplementedError
+
+    def __eq__(self, other):
+        """
+
+        I == J <=> I.__eq__(J)
+
+        """
+        raise NotImplementedError
+
+    def __ne__(self, other):
+        """
+
+        I != J <=> I.__ne__(J)
+
+        """
+        raise NotImplementedError
+
+    def reduce(self, element):
+        """
+
+        Reduce an element with the ideal to simpler representative.
+
+        """
+        raise NotImplementedError
+
+class ResidueClassRing (CommutativeRing):
+    """
+
+    A residue class ring R/I,
+    where R is a commutative ring and I is its ideal.
+
+    """
+    def __init__(self, ring, ideal):
+        """
+
+        ResidueClassRing(ring, ideal) creates a resudue class ring.
+        The ring should be an instance of CommutativeRing, and ideal
+        must be an instance of Ideal, whose ring attribute points the
+        same ring with the given ring.
+
+        """
+        self.ring = ring
+        self.ideal = ideal
+        self.properties = CommutativeRingProperties()
+        if self.ring.isnoetherian():
+            self.properties.setIsnoetherian(True)
+
+    def __contains__(self, element):
+        if isinstance(element, ResidueClass) and element.ideal == self.ideal:
+            return True
+        return False
+
+    def __eq__(self, other):
+        try:
+            if self.ideal == other.ideal:
+                return True
+        except:
+            pass
+        return False
+
+    def __ne__(self, other):
+        return not (self == other)
+
+class ResidueClass (CommutativeRingElement):
+    """
+
+    Element of residue class ring x+I, where I is the modulus ideal
+    and x is a representative element.
+
+    """
+    def __init__(self, x, ideal):
+        self.x = x
+        self.ideal = ideal
+
+    def __add__(self, other):
+        assert self.ideal == other.ideal
+        return self.__class__(self.ideal.reduce(self.x + other.x), self.ideal)
+
+    def __sub__(self, other):
+        assert self.ideal == other.ideal
+        return self.__class__(self.ideal.reduce(self.x - other.x), self.ideal)
+
+    def __mul__(self, other):
+        assert self.ideal == other.ideal
+        return self.__class__(self.ideal.reduce(self.x * other.x), self.ideal)
 
 class CommutativeRingProperties:
     """
