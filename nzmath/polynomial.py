@@ -134,6 +134,25 @@ class OneVariablePolynomial:
                                          repr(self.getCoefficientRing()))
         return return_str
 
+    def __str__(self):
+        if self.degree() < 1:
+            return str(self[0])
+        termlist = []
+        for i in range(self.degree() + 1):
+            if self[i]:
+                if i == 0:
+                    termlist.append("%s" % (str(self[i]),))
+                elif i == 1:
+                    termlist.append("%s * %s" % (str(self[i]), str(self.getVariable()),))
+                else:
+                    termlist.append("%s * %s ** %d" % (str(self[i]), str(self.getVariable()), i))
+        return_str = " + ".join(termlist)
+        w_sign = re.compile(r"\+ -")
+        return_str = w_sign.sub("- ", return_str)
+        one_coeff = re.compile("(^| )1 \* ")
+        return_str = one_coeff.sub(" ", return_str)
+        return return_str
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -370,28 +389,8 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             retval = 0
         return retval
 
-    def __str__(self):
-        if self.degree() < 1:
-            return str(self[0])
-        coeffs = self.coefficient.getAsList()
-        termlist = []
-        for i in range(self.degree() + 1):
-            if self[i]:
-                if i == 0:
-                    termlist.append("%s" % (str(self[i]),))
-                elif i == 1:
-                    termlist.append("%s * %s" % (str(self[i]), self.getVariable(),))
-                else:
-                    termlist.append("%s * %s ** %d" % (str(self[i]), self.getVariable(), i))
-        return_str = " + ".join(termlist)
-        w_sign = re.compile(r"\+ -")
-        return_str = w_sign.sub("- ", return_str)
-        one_coeff = re.compile("(^| )1 \* ")
-        return_str = one_coeff.sub(" ", return_str)
-        return return_str
-
     def adjust(self):
-        "Use this method in case of leading term of coefffidcient = 0"
+        "Use this method in case of leading term of coefficient = 0"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
     def differentiate(self, other):
@@ -703,9 +702,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
     def __pos__(self):
         return self.adjust()
-
-    def __str__(self):
-        return str(self.toOneVariableDensePolynomial())
 
     def adjust(self):
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
