@@ -219,7 +219,7 @@ class EC:
                     qx=rational.Rational(P[0]-V[1],V[0]**2)*1
                     if isinstance(qx,rational.Rational):
                         qxd=qx.denominator
-                        qxn=qx.numetator
+                        qxn=qx.numerator
                     else:
                         qxd=1
                         qxn=qx
@@ -322,7 +322,7 @@ class EC:
                                 t=rational.IntegerIfIntOrLong(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
                         else: # P!=Q
                             s=rational.IntegerIfIntOrLong(Q[1]-P[1])/rational.IntegerIfIntOrLong(Q[0]-P[0])
-                            t=rational.IntegreIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
+                            t=rational.IntegerIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
                         y3=-(s+self.a1)*x3-t-self.a3
                         R=[x3,y3]
@@ -375,7 +375,7 @@ class EC:
         
         """
         if isinstance(P,list) and isinstance(Q,list):
-            if self.whetheron(P) and self.whetheron(Q):
+            if self.whetherOn(P) and self.whetherOn(Q):
                 if len(P)==len(Q)==2:
                     x=Q[0]
                     y=-Q[1]-self.a1*Q[0]-self.a3
@@ -419,6 +419,40 @@ class EC:
                 if l[j]==1:
                     Q=self.add(Q,P)
             return self.sub([0],Q)
+
+    def order(self): # =#E(Fp)
+
+        """
+        this returns #E(Fp)
+        by using Shanks-Mestre method
+        
+        """
+        if self.ch!=0:
+            if self.ch<=229:
+                if len(self)!=2:
+                    F=simple(self)
+                else:
+                    F=self
+                k=0
+                for i in range(0,F.ch):
+                    k=k+arith1.legendre(i*(i**2+F.a)+F.b,F.ch)
+                return F.ch+1+k
+            else: #self.ch>229
+                if len(self)!=2:
+                    F=simple(self)
+                else:
+                    F=self
+                g=0
+                while arith1.legendre(g,F.ch)!=-1:
+                    g=random.randint(2,F.ch)
+                W=math.floor(math.sqrt(math.sqrt(p))*math.sqrt(2))+1
+                c,d=g**2*F.a,g**3*F.b
+                cg=0
+                f=polynomial.OneVariableDensePolynomial([F.b,F.a,0,1],"x")
+                while arith1.legendre(f(cg),F.ch)==0:
+                    cg=random.randint(0,F.ch-1) 
+        else:
+            raise "now making m(__)m"
 
 # t=imaginary.Complex(a,b)
 
@@ -478,41 +512,5 @@ def nu(t,x):
        b=a(k)+b
        i=i+1
     return qq*(1+b)
-
-def order(E): # =#E(Fp)
-
-    """
-    this returns #E(Fp)
-    by using Shanks-Mestre method
-    
-    """
-    if E.ch!=0:
-        if E.ch<=229:
-            if len(E)!=2:
-                F=simple(E)
-            else:
-                F=E
-            k=0
-            for i in range(0,F.ch):
-                k=k+arith1.legendre(i*(i**2+F.a)+F.b,F.ch)
-            return F.ch+1+k
-        else: #E.ch>229
-            if len(E)!=2:
-                F=simple(E)
-            else:
-                F=E
-            g=0
-            while arith1.legendre(g,F.ch)!=-1:
-                g=random.randint(2,F.ch)
-            W=math.floor(math.sqrt(math.sqrt(p))*math.sqrt(2))+1
-            c,d=g**2*F.a,g**3*F.b
-            cg=0
-            f=polynomial.OneVariableDensePolynomial([F.b,F.a,0,1],"x")
-            while arith1.legendre(f(cg),F.ch)==0:
-                cg=random.randint(0,F.ch-1)
-                
-                
-    else:
-        raise "now making m(__)m"
 
 #def shanks(P,E):
