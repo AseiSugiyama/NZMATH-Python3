@@ -1,5 +1,6 @@
-Version 0.0.1 to
+Version 0.0.1 to 0.1.0
 ----------------------
+* add new module combinatrial including binomial and factorial.
 * add mpqs function (multi-polynomial quadratic sieve) in factor.py.
 * add IntegerIfIntOrLong function in rational.py.
 * add LUDecomposition method to Matrix in matrix.py.
