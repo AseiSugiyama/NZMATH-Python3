@@ -9,7 +9,9 @@ import rational
 import ring
 
 class FiniteField (ring.Field):
-    pass
+    def __len__(self):
+        "Cardinality of the field"
+        raise NotImplementedError
 
 class FiniteFieldElement (ring.FieldElement):
     pass
@@ -101,3 +103,6 @@ class FinitePrimeField (FiniteField):
 
     def createElement(self, seed):
         return FinitePrimeFieldElement(seed, self.char)
+
+    def __len__(self):
+        return self.char
