@@ -1369,14 +1369,14 @@ def piGaussLegendre_new(err=defaultError):
     else:
         _err = err
     werr = AbsoluteError(0, _err.absoluteerrorrange ** 2)
+    maxdenom = int(1 / werr.absoluteerrorrange) * 2
     a = rational.Integer(1)
-    b = 1 / sqrt_new(rational.Rational(2), werr)
+    b = (1 / sqrt_new(rational.Rational(2), werr)).trim(maxdenom)
     t = rational.Rational(1, 4)
     x = 1
     while not err.nearlyEqual(a, b):
-        olda = a
-        a, b = (a + b) / 2, sqrt_new(a * b, werr)
-        t -= (x * (olda - a) ** 2)
+        a, b, c = (a + b) / 2, sqrt_new(a * b, werr).trim(maxdenom), (b - a) ** 2 / 4
+        t -= x * c
         x *= 2
     return (a + b) ** 2 / (t * 4)
 

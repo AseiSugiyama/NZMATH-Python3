@@ -152,6 +152,7 @@ class NewFunctionTest (unittest.TestCase):
     def testPiGaussLegendre(self):
         pi = real.piGaussLegendre_new()
         assert rational.Rational(355,113) == pi.trim(365)
+        assert abs(pi - real.piGaussLegendre_new(self.err)) < self.absolute
 
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
