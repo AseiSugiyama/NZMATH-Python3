@@ -21,7 +21,7 @@ class FiniteFieldElement (ring.FieldElement):
 
 import integerResidueClass
 
-class FinitePrimeFieldElement(integerResidueClass.IntegerResidueClass):
+class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFieldElement):
     def __init__(self, representative, modulus):
         if modulus < 0:
             modulus = -modulus
@@ -113,3 +113,129 @@ class FinitePrimeField (FiniteField):
 
     def __nonzero__(self):
         return True
+
+import arith1
+import polynomial
+
+class FiniteExtendedField (FiniteField):
+    """
+
+    FiniteExtendedField is a class for finite field, whose cardinality
+    q = p**n with a prime p and n>1. It is usually called F_q or GF(q).
+
+    """
+    def __init__(self, characteristic, n_or_modulus):
+        """
+
+        FiniteExtendedField(p, n_or_modulus) creates a finite field.
+        characteristic must be prime. n_or_modulus can be:
+          1) an integer greater than 1, or
+          2) a polynomial in a polynomial ring of F_p with degree
+             greater than 1.
+
+        """
+        if prime.primeq(characteristic):
+            self.char = characteristic
+        else:
+            raise ValueError, "characteristic must be a prime."
+        if isinstance(n_or_modulus, (int,long)):
+            if n_or_modulus <= 1:
+                raise ValueError, "degree of extension must be > 1."
+            self.degree = n_or_modulus
+            self.modulus = spam # use a randomly chosen polynomial as modulus
+        elif not isinstance(n_or_modulus, polynomial.OneVariablePolynomial):
+            raise TypeError, "n_or_modulus must be integer or polynomial"
+        elif not isinstance(n_or_modulus.getCoefficientRing(), FinitePrimeField):
+            raise TypeError, "n_or_modulus must be F_p polynomial."
+        elif n_or_modulus.degree() > 1 and n_or_modulus.isIrreducible():
+            self.modulus = n_or_modulus("#1")
+            self.degree = n_or_modulus.degree()
+
+    def getCharacteristic(self):
+        """
+
+        Return the characteristic of the field.
+
+        """
+        return self.char
+
+    def __len__(self):
+        """
+
+        Return the cardinality of the field
+
+        """
+        return self.char ** self.degree
+
+    def createElement(self, seed):
+        expansion = arith1.expand(seed, self.char)
+        return FiniteExtendedFieldElement(
+            polynomial.OneVariableDensePolynomial(
+            expansion, "#1", FinitePrimeField(self.char)),
+            self.modulus)
+
+class FiniteExtendedFieldElement (FiniteFieldElement):
+    """
+
+    FiniteExtendedFieldElement is a class for an element of F_q.
+
+    """
+    def __init__(self, representative, modulus=None):
+        if modulus == None:
+            if not isinstance(representative, ring.ResidueClass) or
+            not isinstance(representative.getRing().ring,
+                           polynomial.PolynomialRing) or
+            not isinstance(representative.getRing().ring.getCoefficientRing(),
+                           FinitePrimeField):
+                raise TypeError, "wrong type argument for representative."
+            self.rep = representative
+            self.field = FiniteExtendedField(
+                representative.getRing().ring.getCoefficientRing().getCharacteristic(),
+                representative.ideal.generators[0])
+        else:
+            if not isinstance(representative,
+                              polynomial.OneVariablePolynomial) or
+            not isinstance(representative.getCoefficientRing(),
+                           FinitePrimeField):
+                raise TypeError, "wrong type argument for representative."
+            if not isinstance(modulus, polynomial.OneVariablePolynomial) or
+            not isinstance(modulus.getCoefficientRing(), FinitePrimeField) or
+            modulus.degree() <= 1:
+                raise TypeError, "wrong type argument for modulus."
+            self.rep = ring.ResidueClass(
+                representative,
+                polynomial.OneVariablePolynomialIdeal(
+                modulus, modulus.getRing()))
+            self.field = FiniteExtendedField(
+                modulus.getCoefficientRing().getCharacteristic(),
+                modulus)
+
+    def getRing(self):
+        return self.field
+
+    def __add__(self, other):
+        pass
+
+    def __sub__(self, other):
+        pass
+
+    def __mul__(self, other):
+        pass
+
+    def __truediv__(self, other):
+        pass
+
+    __div__ = __truediv__
+
+    def inverse(self):
+        pass
+
+    def __pow__(self, index):
+        pass
+
+    def __eq__(self, other):
+        pass
+
+    def __ne__(self, other):
+        pass
+
