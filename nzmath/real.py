@@ -1358,6 +1358,28 @@ def _log2_new(err=defaultError):
         if _err.nearlyEqual(term, 0):
             return value
 
+def piGaussLegendre_new(err=defaultError):
+    """
+
+    piGaussLegendre computes pi by Gauss-Legendre algorithm.
+
+    """
+    if isinstance(err, RelativeError):
+        _err = err.absoluteerror(3.1415)
+    else:
+        _err = err
+    werr = AbsoluteError(0, _err.absoluteerrorrange ** 2)
+    a = rational.Integer(1)
+    b = 1 / sqrt_new(rational.Rational(2), werr)
+    t = rational.Rational(1, 4)
+    x = 1
+    while not err.nearlyEqual(a, b):
+        olda = a
+        a, b = (a + b) / 2, sqrt_new(a * b, werr)
+        t -= (x * (olda - a) ** 2)
+        x *= 2
+    return (a + b) ** 2 / (t * 4)
+
 def hypot_new(x, y, err=defaultError):
     """
 

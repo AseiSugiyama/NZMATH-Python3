@@ -149,6 +149,10 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(real.log_new(real.exp_new(1)) - 1)  < 2 * self.absolute
         assert abs(real.log_new(real.exp_new(1).trim(2**53)) - 1) < 2 * self.absolute
 
+    def testPiGaussLegendre(self):
+        pi = real.piGaussLegendre_new()
+        assert rational.Rational(355,113) == pi.trim(365)
+
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
 
