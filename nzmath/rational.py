@@ -663,10 +663,9 @@ class IntegerRing (ring.CommutativeRing):
         gcd returns the greatest common divisor of given 2 integers.
 
         """
+        import gcd
         a, b = abs(n), abs(m)
-        while b:
-            a, b = b, a%b
-        return Integer(a)
+        return Integer(gcd.binarygcd(a, b))
 
     def lcm(self, a, b):
         """
