@@ -13,6 +13,9 @@ class FiniteField (ring.Field):
         "Cardinality of the field"
         raise NotImplementedError
 
+    def __nonzero__(self):
+        return True
+
 class FiniteFieldElement (ring.FieldElement):
     pass
 
@@ -105,4 +108,8 @@ class FinitePrimeField (FiniteField):
         return FinitePrimeFieldElement(seed, self.char)
 
     def __len__(self):
+        "Cardinality of the field"
         return self.char
+
+    def __nonzero__(self):
+        return True

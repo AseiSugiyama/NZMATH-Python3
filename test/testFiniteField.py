@@ -43,6 +43,10 @@ class FinitePrimeFieldTest(unittest.TestCase):
     def testEq(self):
         assert FinitePrimeField(17) == FinitePrimeField(17)
 
+    def testNonZero(self):
+        assert FinitePrimeField(17)
+        assert FinitePrimeField(17L)
+
 def suite():
     suite = unittest.TestSuite((
         unittest.makeSuite(FinitePrimeFieldElementTest, 'test'),
