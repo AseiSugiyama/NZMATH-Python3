@@ -117,6 +117,11 @@ class Field (CommutativeRing):
         """A field is trivially a ufd and shuold be provide gcd."""
         return self.createElement(1)
 
+    def getQuotientField(self):
+        """getQuotientField returns the quotient field of the field.
+        It is, of course, itself."""
+        return self
+
 class QuotientField (Field):
     """QuotientField is a class of quotient field."""
 
