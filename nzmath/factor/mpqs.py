@@ -1,11 +1,11 @@
 import math
-import bigrandom
+import nzmath.bigrandom as bigrandom
 import random
 import time
-import arith1
-import gcd
+import nzmath.arith1 as arith1
+import nzmath.gcd as gcd
 import trialdivision
-import prime
+import nzmath.prime as prime
 
 class MPQS:
     def __init__(self,n,sieverange=0,factorbase=0):

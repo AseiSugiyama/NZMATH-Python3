@@ -1,6 +1,6 @@
 import math
-import gcd
-import bigrandom
+import nzmath.gcd as gcd
+import nzmath.bigrandom as bigrandom
 import trialdivision
 
 def sort_factor(list):
