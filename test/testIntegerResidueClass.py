@@ -91,6 +91,7 @@ class IntegerResidueClassTest(unittest.TestCase):
         assert residue1**4
         assert (residue1**4).getResidue() == 1
         assert (residue1**4).getModulus() == 15
+        assert (residue1**0).getResidue() == 1
 
     def testToInteger(self):
         residue = IntegerResidueClass(8, 15)
