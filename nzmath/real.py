@@ -1669,7 +1669,7 @@ class Constant:
     3.14159265358979
     >>> pi + 1
     4.14159265358979
-    >>> pi(100) # for 100 bit precision
+    >>> pi(RelativeError(0,1,2**100)) # for 100 bit precision
     3.1415926535897932384626433832795
 
     """
