@@ -1,3 +1,8 @@
+version 0.2.1 to 0.3.0
+----------------------
+* create a new module multiplicative.py with euler and moebius
+  from arith1.py to avoid circular import.
+
 version 0.2.0 to 0.2.1
 ----------------------
 * include some missing files in 0.2.0.
