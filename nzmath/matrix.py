@@ -1,9 +1,8 @@
-# matrix.py
-
 import rational
 import ring
 
 class Matrix:
+    """ Matrix is the class of matrices."""
 
     def __init__(self, row, column, compo = 0):
         "Matrix(row, column)"
@@ -100,6 +99,8 @@ class Matrix:
                     for k in range(self.column):
                         product[i,j] += self[i,k] * other[k,j]
             return product 
+        elif isinstance(other, Vector):
+            return NotImplemented
         else:           # product with a scalar
             product = self.__class__(self.row, self.column)
             for i in range(1, self.row+1):
@@ -461,7 +462,6 @@ class Matrix:
                     break
             else:
                 raise VectorsNotIndependent, self.__name__
-            #print "i=,",i
             # step 4
             if i > j:
                 for l in range(j,n+1):
@@ -471,108 +471,29 @@ class Matrix:
                 B.swapRow(i,j)
             # step 5
             d = 1 / rational.Rational(M[j,j])
-            #print "d=",d
             for k in range(j+1,m+1):
                 C[k,1] = d * M[k,j]
-            #print C
             for k in range(j+1,m+1):
                 for l in range(j+1,n+1):
                     M[k,l] = M[k,l] - C[k,1] * M[j,l]
             for k in range(j+1,m+1):
                 B.setRow(k, B.getRow(k)-C[k,1]*B.getRow(j))
-            #print M
-            #print B
-            #pause()
         # step 6
         for i in range(n,0,-1):
             tmp = B.getRow(i)
             for j in range(i+1,n+1): 
                 tmp -= M[i,j] * X.getRow(j)
             X.setRow(i, tmp / M[i,i])
-        #print "X==="
-        #print X
         # step 7
         for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
             if B.getRow(k) != M.getRow(k) * X:
-                #print "X---"
-                #print X
-                #print "B---"
-                #print B
-                #print "M---"
-                #print M
-                #print "row :", k
-                #print B.getRow(k)
-                #print self.getRow(k) * X
+                print self.getRow(k) * X
                 print "-"*30
                 print X
                 raise Exception, "some vectors are not in the inverse image"
         return X
 
-# does not work well ???
-    def supplementBasis(self):     # Cohen's Algorithm 2.3.6
-        """Return a basis of full space, which including self's column vectors."""
-        if self.row < self.column:
-            raise MatrixSizeError
 
-        # for make it easy to read
-        n = self.row
-        k = self.column
-
-        M = self.copy()
-        B = theMatrixRing.unitMatrix(n)
-
-        for s in range(k):
-            found = 0; t = s
-            while (not found and t < n):
-                found  = M.compo[t][s] != 0
-                if not found:
-                    t += 1
-            if not found:
-                raise VectorsNotIndependent
-            d = 1 / rational.Rational(M.compo[t][s])
-            M.compo[t][s] = 1
-            if t != s:
-                for i in range(n):
-                    B.compo[i][t] = B.compo[i][s]
-            for i in range(n):
-                B.compo[i][s] = self.compo[i][s]
-            for j in range(k):
-                for i in range(n):
-                    if i != s and i != t and i != j:
-                        M.compo[i][j] = 0
-            for j in range(s+1,k):
-                if t != s:
-                    tmp = M.compo[s][j]; M.compo[s][j] = M.compo[t][j]; M.compo[t][j] = tmp
-                d *= M.compo[s][j]
-                for i in range(n):
-                    if i != s and i != t:
-                        M.compo[i][j] -= M.compo[i][s] * d
-                    else:
-                        M.compo[i][j] = 0
-
-
-#        for s in range(1,k+1):
-#            for t in range(s,n+1):
-#                if M[t,s] != 0:
-#                    break
-#            else:
-#                raise VectorsNotIndependent
-#            d = 1 / rational.Rational(M[t,s])
-#            M[t,s] = 1  # ommited from the book !!!
-#            if t != s:
-#                B.setColumn(t, B[s])
-#            B.setColumn(s, M[s])
-#            for j in range(s+2, k+1):
-#                if t != s:
-#                    tmp = M[s,j]
-#                    M[s,j] = M[t,j]
-#                    M[t,j] = tmp
-#                d *= M[s-1,j-1]
-#                for i in range(1,n+1):
-#                    if i != s and i != t:
-#                        M[i-1,j-1] -= M[i-1,s-1] * d
-#                    else:
-#                        M[i-1,j-1] = 0
         return B
 
     def hessenbergForm(self):      # Cohen's Algorithm 2.2.9
@@ -593,11 +514,7 @@ class Matrix:
             if i > m:
                 for j in range(m-1, n+1):
                     tmp = H[i,j] ; H[i,j] = H[m,j] ; H[m,j] = tmp
-                #print "line90----------------- m=%d" % m
-                #print H
                 H.swapColumn(i,m)
-            #print "end of step 2------------- m=%d" % m
-            #print H
             # step 3
             for i in range(m+1,n+1):
                 if H[i,m-1] != 0:
@@ -606,7 +523,6 @@ class Matrix:
                         H[i,j] -= u * H[m,j]
                         H[i,m-1] = 0    # ommited from the book !!!
                     H.setColumn(m, H[m] + u * H[i] )
-            #print "end of step 3-------------"
         return H
 
     def columnEchelonForm(self):  # Cohen's Algorithm 2.3.11
@@ -710,6 +626,52 @@ class _MatrixRing:
 
 theMatrixRing = _MatrixRing()
 
+class Subspace(Matrix):
+    """A subspace formed by the column vectors."""
+
+    def supplementBasis(self):     # Cohen's Algorithm 2.3.6
+        """Return a basis of full space, which including self's column vectors."""
+        if self.row < self.column:
+            raise MatrixSizeError
+
+        # to make it easy to read
+        n = self.row
+        k = self.column
+
+        M = self.copy()
+        B = theMatrixRing.unitMatrix(n)
+
+        for s in range(k):
+            found = 0; t = s
+            while (not found and t < n):
+                found  = M.compo[t][s] != 0
+                if not found:
+                    t += 1
+            if not found:
+                raise VectorsNotIndependent
+            d = 1 / rational.Rational(M.compo[t][s])
+            M.compo[t][s] = 1
+            if t != s:
+                for i in range(n):
+                    B.compo[i][t] = B.compo[i][s]
+            for i in range(n):
+                B.compo[i][s] = self.compo[i][s]
+            for j in range(k):
+                for i in range(n):
+                    if i != s and i != t and i != j:
+                        M.compo[i][j] = 0
+            for j in range(s+1,k):
+                if t != s:
+                    tmp = M.compo[s][j]; M.compo[s][j] = M.compo[t][j]; M.compo[t][j] = tmp
+                d *= M.compo[s][j]
+                for i in range(n):
+                    if i != s and i != t:
+                        M.compo[i][j] -= M.compo[i][s] * d
+                    else:
+                        M.compo[i][j] = 0
+        return B
+
+
 # the belows are not class methods------------------------------------
 def sumOfSubspaces(L, M):             # Cohen's Algorithm 2.3.8
     if L.row != M.row:
@@ -728,7 +690,7 @@ def intersectionOfSubspaces(M, M_):    # Cohen's Algorithm 2.3.9
     for j in range(1, M_.column+1):
         M1.setColumn(M.column + j, M_[j])
     N = M1.kernel()
-    N1 = Matrix(M.column , N.column)    # N.column is dimension of kernel(M1)
+    N1 = Matrix(M.column , N.column)    # N.column is the dimension of kernel(M1)
     for j in range(1, M.column + 1):
         N1.setRow(j, N.getRow(j))
     M2 = M * N1
@@ -785,5 +747,3 @@ if __name__ == '__main__':
 #    print h
 #    print h.hessenbergForm()
 #    print c.hessenbergForm()
-    print sb
-    print sb.supplementBasis()
