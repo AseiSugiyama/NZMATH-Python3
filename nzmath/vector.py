@@ -65,7 +65,8 @@ class Vector:
                 product[i] = other * self[i]
             return product
 
-
+    def __div__(self, other):
+        return self * (1/other) 
 
     def __repr__(self):
         return "Vector " + repr(self.compo)
