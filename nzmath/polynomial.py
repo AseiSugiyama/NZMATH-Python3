@@ -522,7 +522,6 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
         if _coefficientRing.getCharacteristic() > 0:
             return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
     except AttributeError, e:
-        print e
         pass
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
@@ -1771,6 +1770,81 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         for i in self.coefficient.iterdegrees():
             rootcoeff[i/ch] = self[i]
         return self.__class__(rootcoeff, self.getVariable(), self.getCoefficientRing())
+
+    def distinctDegreeFactorization(self):
+        """
+
+        Return the distinct degree factorization of the polynomial.
+        The return value is a dict whose keys are integers and values
+        are corresponding product of factors of the degree.  For
+        example, if A = A1 * A2, and all irreducible factors of A1
+        having degree 1 and all irreducible factors of A2 having
+        degree 2, then the result is:
+          {1: A1, 2: A2}.
+
+        The given polynomial must be square free, and its coefficient
+        ring must be a finite field.
+
+        """
+        Fq = self.getCoefficientRing()
+        q = len(Fq)
+        f = self.copy()
+        x = f.__class__([0,1], f.getVariable(), Fq)
+        w = x.copy()
+        i = 1
+        result = {}
+        while i*2 <= f.degree():
+            w = pow(w, q, f)
+            result[i] = f.getRing().gcd(f, w-x)
+            if result[i].degree() > 0:
+                f = f / result[i]
+                w = w % f
+        result[f.degree()] = f
+        return result
+
+    def splitSameDegrees(self, degree):
+        """
+
+        Return the irreducible factors of the polynomial.  The
+        polynomial must be a product of irreducible factors of the
+        given degree.
+
+
+        """
+        import bigrandom
+        result = [self.copy()]
+        r = self.degree() / degree
+        Fq = self.getCoefficientRing()
+        FqX = self.getRing()
+        q = len(Fq)
+        p = Fq.getCharacteristic()
+        one = self.__class__([1], self.getVariable(), Fq)
+        while len(result) < r:
+            # g is a random polynomial
+            randPolyCoeff = OneVariablePolynomialCoefficients()
+            for i in range(2 * degree):
+                randPolyCoeff[i] = Fq.createElement(bigrandom.randrange(q))
+            randPoly = self.__class__(randPolyCoeff, self.getVariable(), Fq)
+            G = 0
+            if p == 2:
+                for j in range(degree*r):
+                    G = G + pow(randPoly, 2**i, f)
+            else:
+                G = pow(randPoly, (q**degree - 1)//2, f) - one
+            subresult = []
+            while result:
+                h = result.pop()
+                if h.degree() == degree:
+                    subresult.append(h)
+                    continue
+                z = FqX.gcd(h, G)
+                if 0 < z.degree() < h.degree():
+                    subresult.append(z)
+                    subresult.append(h / z)
+                else:
+                    subresult.append(h)
+            result = subresult
+        return result
 
 class OneVariablePolynomialCoefficients:
     """
