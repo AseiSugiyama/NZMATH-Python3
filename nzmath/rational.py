@@ -195,6 +195,9 @@ class RationalField:
         """
         return Rational(numerator, denominator)
 
+    def __str__(self):
+        return "Q"
+
 theRationalField = RationalField()
 
 class Integer(long):
@@ -311,6 +314,9 @@ class IntegerRing:
         """createElement returns an Integer object with seed,
         which must be an integer."""
         return Integer(seed)
+
+    def __str__(self):
+        return "Z"
 
 theIntegerRing = IntegerRing()
 
