@@ -10,6 +10,28 @@ import rational
 
 
 # x is (list,tuple) 
+# t is variable
+def e1(x):
+    """
+    f = x[0]*t + x[1]
+    """
+    return -x[1]/x[0]
+
+def e1_Zn(x,n):
+    """
+    n is a element in Integer Sets.
+    x = [a,b] <=> a*t = b (mod n)
+    """
+    (a,b,e,m) = (x[0],x[1],0,n)
+    (c,d) = (m//a,m%a)
+    while d :
+        (m,a,e,b) = (a,d,b,e-c*b)
+        (c,d) = (m//a,m%a)
+    if x[1]%a != 0:
+        print "No Solution"
+        return
+    return b//a
+    
 def e2(x):
     """
     f=x[0]*t**2+x[1]*t+x[2]
