@@ -1103,11 +1103,8 @@ class RealField:
 
 class RelativeError:
     def __init__(self, comparity, numerator, denominator=1):
-
         self.comparity = comparity
         self.relativeerrorrange = rational.Rational(numerator, denominator)
-        #if self.relativeerrorange <= 0:
-        #    raise
 
     def absoluteerror(self, numerator, denominator=1):
         r = rational.Rational(numerator,denominator)*self.relativeerrorrange
@@ -1143,7 +1140,6 @@ class RelativeError:
 
 class AbsoluteError:
     def __init__(self, comparity, numerator, denominator=1):
-
         self.comparity = comparity
         self.absoluteerrorrange = abs(rational.Rational(numerator, denominator))
         
@@ -1224,7 +1220,6 @@ class ExponentialPowerSeries:
             f *= i
 
     def __call__(self, x, maxerror):
-        import sys
         if self.dirtyflag:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
@@ -1289,7 +1284,6 @@ def log_new(x, err=defaultError):
     Return logarithm of a positive number x.
 
     """
-    _err = err
     if isinstance(x, complex):
         raise TypeError, "real.log is not for complex numbers."
     if x < 0:
@@ -1309,10 +1303,9 @@ def log_new(x, err=defaultError):
     value = oldvalue = 0
     for term in log1piter(rx - 1):
         value += term
-        if isinstance(err, RelativeError):
-            _err = err.absoluteerror(value)
-        if _err.nearlyEqual(term, 0):
+        if err.nearlyEqual(value, oldvalue):
             break
+        oldvalue = +value
     if shift != 0:
         return value + shift * _log2_new(err)
     return value
@@ -1353,14 +1346,12 @@ def _log2_new(err=defaultError):
             d += 1
             yield (t / d)
 
-    _err = err
-    value = 0
+    value = oldvalue = 0
     for term in log_iter_half():
         value += term
-        if isinstance(err, RelativeError):
-            _err = err.absoluteerror(value)
-        if _err.nearlyEqual(term, 0):
+        if err.nearlyEqual(value, oldvalue):
             return value
+        oldvalue = +value
 
 def piGaussLegendre_new(err=defaultError):
     """
@@ -1567,15 +1558,12 @@ def asin_new(x, err=defaultError):
     i = 2
     retval = y
     term = rational.Rational(y)
-    _err = err
-    if isinstance(err, RelativeError):
-        _err = err.absoluteerror(retval)
-    while True:
+    oldvalue = 0
+    while err.nearlyEquals(retval, oldvalue):
+        oldvalue = +retval
         term *= y2 * (i-1) ** 2 / (i*(i+1))
         i += 2
         retval += term
-        if _err.nearlyEquals(term, 0):
-            break
     return retval
 
 def atan_new(x, err=defaultError):
@@ -1597,17 +1585,14 @@ def atan_new(x, err=defaultError):
     y = rational.Rational(x)
     y2 = y ** 2
     retval = y
+    oldvalue = 0
     term = rational.Rational(x)
     i = 1
-    _err = err
-    while True:
+    while err.nearlyEquals(retval, oldvalue):
+        oldvalue = +retval
         i += 2
         term *= -y2 * (i-2) / i
         retval += term
-        if isinstance(err, RelativeError):
-            _err = err.absoluteerror(retval)
-        if _err.nearlyEquals(term, 0):
-            break
     return retval
 
 def atan2_new(y, x, err=defaultError):
