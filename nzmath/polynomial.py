@@ -1273,6 +1273,8 @@ class MultiVariableSparsePolynomial:
             return self // other.toMultiVariableSparsePolynomial()
         elif isinstance(other,MultiVariableSparsePolynomial):
             if self.variable != other.variable:
+                self_adjust = self.adjust()
+                other_adjust = other.adjust()
                 sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
                 sum_variable.sort()
                 return self_adjust.arrange_variable(sum_variable) //  other_adjust.arrange_variable(sum_variable)
