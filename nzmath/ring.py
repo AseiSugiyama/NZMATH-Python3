@@ -311,6 +311,9 @@ class ResidueClass (CommutativeRingElement):
         assert self.ideal == other.ideal
         return self.__class__(self.ideal.reduce(self.x * other.x), self.ideal)
 
+    def getRing(self):
+        return ResidueClassRing(self.ideal.ring, self.ideal)
+
 class CommutativeRingProperties:
     """
 
