@@ -1,6 +1,7 @@
 Version 0.1.0 to 0.1.1?
 -----------------------
 * add a constant j to imaginary.
+* intializing Rational with denominator 0 raises ZeroDivisionError.
 * fix a bug in real.py.
 
 Version 0.0.1 to 0.1.0

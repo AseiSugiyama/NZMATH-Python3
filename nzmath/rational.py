@@ -23,7 +23,9 @@ class Rational (ring.QuotientFieldElement):
         elif denominator == 1 and isinstance(numerator, Rational):
             self.numerator = numerator.numerator
             self.denominator = numerator.denominator
-        else :
+        elif denominator == 0:
+            raise ZeroDivisionError
+        else:
             self.numerator = Integer(numerator)
             self.denominator = Integer(denominator)
 
