@@ -12,7 +12,11 @@ import ring
 from rationalFunction import RationalFunctionField
 
 class OneVariablePolynomial:
-    pass
+    def getRing(self):
+        return self.ring
+
+    def getCoefficientRing(self):
+        return self.coefficientRing
 
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
@@ -30,9 +34,9 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         self.variable = variable
         if not coeffring:
             self.coefficient.setList(list(coefficient))
-            self.coeffcientRing, self.ring = self.initRing()
+            self.coefficientRing, self.ring = self.initRing()
         else:
-            self.coeffcientRing = coeffring
+            self.coefficientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient.setList([coeffring.createElement(c) for c in coefficient])
 
@@ -379,12 +383,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                 if self.coefficient[i] != 0:
                     return_coefficient[(i,)] = self.coefficient[i]
             return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
-
-    def getRing(self):
-        return self.ring
-
-    def getCoefficientRing(self):
-        return self.coeffcientRing
 
     def initRing(self):
         myRing = None
@@ -818,12 +816,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                     return_coefficient[(i,)] = c
             return_variable = self.getVariableList()
             return MultiVariableSparsePolynomial(return_coefficient, return_variable)
-
-    def getRing(self):
-        return self.ring
-
-    def getCoefficientRing(self):
-        return self.coefficientRing
 
     def initRing(self):
         ring = None
