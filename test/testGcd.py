@@ -2,16 +2,23 @@ import unittest
 import gcd
 
 class GcdTest (unittest.TestCase):
-    def runTest(self):
+    def testGcd(self):
         assert gcd.gcd(1, 2) == 1
         assert gcd.gcd(2, 4) == 2
         assert gcd.gcd(0, 10) == 10
         assert gcd.gcd(10, 0) == 10
         assert gcd.gcd(13, 21) == 1
+    def testLcm(self):
+        assert gcd.lcm(1, 2) == 2
+        assert gcd.lcm(2, 4) == 4
+        assert gcd.lcm(0, 10) == 0
+        assert gcd.lcm(10, 0) == 0
+        assert gcd.lcm(13, 21) == 273
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(GcdTest())
+    suite.addTest(GcdTest("testGcd"))
+    suite.addTest(GcdTest("testLcm"))
     return suite
 
 if __name__ == '__main__':

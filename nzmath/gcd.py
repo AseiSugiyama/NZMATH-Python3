@@ -28,6 +28,15 @@ def gcd_of_list(integers):
         coeff += [t[1][1]]
     return [the_gcd, coeff]
 
+def lcm(a, b):
+    """
+
+    lcm returns the lowest common multiple of given 2 integers.
+    If both are zero, it raises an exception.
+
+    """
+    return a // gcd(a, b) * b 
+
 if __name__ == "__main__":
     doc = """calculate the G.C.D. of some integers
 usage: gcd integer1 integer2 [integer3 ...]"""
