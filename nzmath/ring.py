@@ -100,9 +100,16 @@ class Field (CommutativeRing):
     the derived classes are (in mathematical meaning) fields."""
 
     def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""
+        """
+
+        This class is abstract and cannot be instanciated.
+
+        Derived classes should initialize self.properties like:
+
         self.properties = CommutativeRingProperties()
         self.properties.setIsfield(True)
+
+        """
         raise NotImplementedError
 
     def createElement(self, *args):
