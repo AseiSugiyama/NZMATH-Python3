@@ -660,7 +660,7 @@ def atan(x, err=defaultError):
 def atan2(y, x, err=defaultError):
     """
 
-    atan2(x, y [,err]) returns the arc tangent of y/x.
+    atan2(y, x [,err]) returns the arc tangent of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
 
     It is unrecomended to obtain the value of pi with atan2(0,1).
