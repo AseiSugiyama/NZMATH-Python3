@@ -114,6 +114,9 @@ class IntegerPolynomialTest(unittest.TestCase):
         self.k[5] = 0
         self.k = self.k.adjust()
 
+    def testContent(self):
+        assert 1 == self.a.content()
+
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
@@ -140,6 +143,9 @@ class RationalPolynomialTest(unittest.TestCase):
         assert Qx == i.getRing()
         assert Qy == j.getRing()
         assert Qxy == (i*j).getRing(), (i*j).getRing()
+
+    def testContent(self):
+        assert rational.Rational(1,4) == i.content()
 
 class PolynomialRingTest(unittest.TestCase):
     def setUp(self):

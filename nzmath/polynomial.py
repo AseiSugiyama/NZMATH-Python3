@@ -436,6 +436,28 @@ class OneVariableDensePolynomial:
         else:
             return len(self.coefficient) - 1
 
+    def content(self):
+        """
+
+        Return content of the polynomial.
+
+        """
+        coefring = self.getRing().getCoefficientRing()
+        if coefring.isfield():
+            if isinstance(coefring, ring.QuotientField):
+                num, den = 0, 1
+                for c in self.coefficient:
+                    num = c.numerator.getRing().gcd(num, c.numerator)
+                    den = c.denominator.getRing().lcm(den, c.denominator)
+                return coefring.createElement(num,den)
+            else:
+                raise NotImplementedError
+        else:
+            cont = 0
+            for c in self.coefficient:
+                cont = coefring.gcd(cont, c)
+            return cont
+
 class OneVariableSparsePolynomial:
 
     def __init__(self, coefficient, variable):
