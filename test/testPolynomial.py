@@ -48,6 +48,16 @@ class PolynomialTest(unittest.TestCase):
         assert deff_1 == Polynomial.differentiate(e,"z")
         assert deff_2 == FlatPolynomial.differentiate(g,"x")
 
+    def testCall(self):
+        call_1 = 49
+        call_2 = Polynomial([0,1,2,3,4],"y")
+        call_3 = 4
+        call_4 = FlatPolynomial({(0,):9,(1,):-8,(3,):5},["y"])
+        assert b(-2) == call_1
+        assert e("y") == call_2
+        assert f(x = 2,z = -1) == call_3
+        assert f(x = -2,z = "y") == call_4
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(PolynomialTest("testAdd"))
@@ -55,6 +65,7 @@ def suite():
     suite.addTest(PolynomialTest("testMul"))
     suite.addTest(PolynomialTest("testScalarMul"))
     suite.addTest(PolynomialTest("testDifferentiate"))
+    suite.addTest(PolynomialTest("testCall"))
     return suite
 
 if __name__== '__main__':
