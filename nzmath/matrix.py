@@ -11,6 +11,8 @@ VectorsNotIndependent = "VectorsNotIndependent"
 class Matrix:
 
     def __init__(self, row, column):
+        if row <= 0 or column <= 0:
+            raise ValueError
         self.row = row
         self.column = column
         self.compo = []
@@ -129,25 +131,23 @@ class Matrix:
                 self.compo[i][j] = list[self.column * i + j]
 
     def set_row(self, m, arg):
-        """set_row(m, arg) : 2nd argument can be a list or a row vector(Matrix)"""
+        """set_row(m, new_row) : new_row can be a list or a row vector(Matrix)"""
         if isinstance(arg, list):
             self.compo[m-1] = arg[:]
         elif isinstance(arg, Matrix):
-            if arg.row == 1 and arg.column == self.column: # case that the argument is a row vector
-                for i in range(self.column):
-                    self.compo[m-1][i] = arg.compo[0][i]
+            for i in range(self.column):
+                self.compo[m-1][i] = arg.compo[0][i]
         else:
             raise NotImplementedError
     
     def set_column(self, n, arg):
-        """set_column(n, list) : 2nd argument can be a list or a column vector(Matrix)"""
+        """set_column(n, new_column) : new_column can be a list or a column vector(Matrix)"""
         if isinstance(arg, list):
             for i in range(self.row):
                 self.compo[i][n-1] = arg[i]
         elif isinstance(arg, Matrix):
-            if arg.row == self.row and arg.column == 1: # case that the argument is a column vector
-                for j in range(self.row):
-                    self.compo[j][n-1] = arg.compo[j][0]
+            for j in range(self.row):
+                self.compo[j][n-1] = arg.compo[j][0]
         else:
             raise TypeError
 
@@ -192,7 +192,7 @@ class Matrix:
     def __setitem__(self, i, vector):
         """M[i] = V <==> M.set_column(i, V)"""
         self.set_column(i, vector)
-        
+
     def swap_row(self, m1, m2):
         tmp = self.compo[m1-1][:]
         self.compo[m1-1] = self.compo[m2-1][:]
@@ -249,49 +249,40 @@ class Matrix:
             det *= triangle.compo[i][i]
         return det
 
-    def insert_row(self, i, list):
-        inserted = Matrix(self.row+1, self.column)
-        for k in range(1, inserted.row+1):
-            if k < i:
-                inserted.set_row(k, self.get_row(k))
-            elif k == i:
-                inserted.set_row(k, list)
-            elif k > i:
-                inserted.set_row(k, self.get_row(k-1))
-        return inserted
+    def insert_row(self, i, arg):
+        """insert_row(i, new_row) : new_row can be a list or a Matrix""" 
+        if isinstance(arg, list):
+            new_row = arg
+        elif isinstance(arg, Matrix):
+            new_row = arg.compo[0][:]
+        self.row += 1
+        self.compo.insert(i-1, new_row)
 
-    def insert_column(self, j, list):
-        inserted = Matrix(self.row, self.column+1)
-        for l in range(1, inserted.column+1):
-            if l < j:
-                inserted.set_column(l, self.get_column(l))
-            elif l == j:
-                inserted.set_column(l, list)
-            elif l > j:
-                inserted.set_column(l, self.get_column(l-1))
-        return inserted
+    def insert_column(self, j, arg):
+        """insert_column(j, arg) : new_column can be a list or a Matrix"""
+        if isinstance(arg, list):
+            new_column = arg
+        elif isinstance(arg, Matrix):
+            new_column = arg.get_column(1)
+        self.column += 1
+        for k in range(self.row):
+            self.compo[k].insert(j-1, new_column[k])
 
-    def remove_row(self, i):
-        removed = Matrix(self.row-1, self.column)
-        isover_i = 0
-        for k in range(1, removed.row+1):
-            if k == i:
-                isover_i = 1
-            removed.set_row(k, self.get_row(k+isover_i))
-        return removed
+    def delete_row(self, i):
+        self.row -= 1
+        del self.compo[i-1]
 
-    def remove_column(self, j):
-        removed = Matrix(self.row, self.column-1)
-        isover_j = 0
-        for l in range(1, removed.column+1):
-            if l == j:
-                isover_j = 1
-            removed.set_column(l, self.get_column(l+isover_j))
-        return removed
+    def delete_column(self, j):
+        self.column -= 1
+        for k in range(self.row):
+            del self.compo[k][j-1]
 
     def submatrix(self, i, j):
-        """Return submatrix which removed i-th row and j-th column from self."""
-        return (self.remove_row(i)).remove_column(j)
+        """Return submatrix which deleted i-th row and j-th column from self."""
+        sub = self.copy()
+        sub.delete_row(i)
+        sub.delete_column(j)
+        return sub
 
     def cofactors(self):
         cofactors = Matrix(self.row, self.column)
@@ -390,22 +381,13 @@ class Matrix:
     def rank(self):
         return len(self.image())
 
-    def inverse_image(self, arg):      # using Cohen's Algorithm 2.3.4
-        """inverse_image(arg) : argument can be a list or a column vector(Matrix)
-        Return a vector contained in arg's inverse image."""
-        if isinstance(arg, list):
-            B = arg[:]
-        elif isinstance(arg, Matrix):
-            if arg.row == self.row and arg.column == 1:
-                for i in range(self.row):
-                    B = arg.get_column(1)
-        else:
-            raise TypeError
-        M1 = self.insert_column(self.column+1, B)
-        print M1
+    def inverse_image(self, B):      # using Cohen's Algorithm 2.3.4
+        """inverse_image(B) : B can be a list or a column vector(Matrix)
+        Return a vector belongs to the inverse image of B."""
+        M1 = self.copy()
+        M1.insert_column(self.column+1, B)
         V = M1.kernel()
         r = V.column
-        print V
         for j in range(1, r+1):
             if V.get_compo(self.column+1, j) != 0:
                 break
@@ -546,4 +528,7 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
-    print intersection_of_subspaces(e,f)
+    print "b.kernel"
+    print b.kernel()
+    print "---"
+    print b.inverse_image([3,15])
