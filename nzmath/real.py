@@ -264,16 +264,6 @@ def sqrt(x, err=defaultError):
         return rational.Integer(0)
     if err <= defaultError:
         n = rx.denominator * rx.numerator
-        if err.comparity == 0:
-            try:
-                p, q = arith1._BhaskaraBrouncker(n)
-                P, Q = p, q
-                while not err.__class__(0, P, Q**3) < err:
-                    P, Q = p*P + n*q*Q, p*Q + q*P
-                return rational.Rational(P, Q * rx.denominator)
-            except ZeroDivisionError:
-                # rx is a perfect square
-                return rational.Rational(arith1.floorsqrt(n), rx.denominator)
         rt = rational.Rational(arith1.floorsqrt(n), rx.denominator)
         newrt = (rt + rx / rt) / 2
         while not err.nearlyEqual(rt, newrt):
