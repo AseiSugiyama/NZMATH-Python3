@@ -448,6 +448,14 @@ class OneVariableDensePolynomial:
                 cont = coefring.gcd(cont, c)
             return cont
 
+    def primitivePart(self):
+        """
+
+        Return the primitive part of the polynomial.
+
+        """
+        return self / self.content()
+
 class OneVariableSparsePolynomial:
 
     def __init__(self, coefficient, variable):
@@ -830,6 +838,14 @@ class OneVariableSparsePolynomial:
             for c in self.coefficient.values():
                 cont = coefring.gcd(cont, c)
             return cont
+
+    def primitivePart(self):
+        """
+
+        Return the primitive part of the polynomial.
+
+        """
+        return self / self.content()
 
     def degree(self):
         degreelist = [d for (d,) in self.coefficient.keys()]
@@ -1965,7 +1981,6 @@ def pseudoDivision(A, B):
         R = d * R - S * B
         e -= 1
 
-import gcd
 # Algorithm 3.3.1 of Cohen's book
 def subResultantGCD(A, B):
     """
@@ -1980,11 +1995,11 @@ def subResultantGCD(A, B):
         return A
     a = A.content()
     b = B.content()
-    d = gcd.gcd(a, b)
-    A = A * rational.Rational(1, a)
-    B = B * rational.Rational(1, b)
-    g = 1
-    h = 1
+    d = a.getRing().gcd(a, b)
+    A = A.primitivePart()
+    B = B.primitivePart()
+    g = rational.Integer(1)
+    h = rational.Integer(1)
 
     while 1:
         # step 2
@@ -1999,7 +2014,7 @@ def subResultantGCD(A, B):
         delta = degA - degB
         Q, R = pseudoDivision(A, B)
         if R == 0:
-            return d * B * rational.Rational(1, B.content())
+            return d * B.primitivePart()
         if isinstance(R, OneVariableDensePolynomial):
             degR = R.degree()
         else:
@@ -2009,9 +2024,9 @@ def subResultantGCD(A, B):
 
         # step 3
         A = copy.deepcopy(B)
-        B = R * rational.Rational(1, g * h**delta)
+        B = R / (g * h**delta)
         g = A[A.degree()]
         if 1 - delta >= 0:
             h = h ** (1 - delta) * g ** delta
         else:
-            h = rational.Rational(1, h ** (1 - delta)) * g ** delta
+            h = h ** (delta - 1) * g ** delta
