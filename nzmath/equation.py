@@ -31,8 +31,9 @@ def e2_Fp(x,p):
     a=x[0]%p    
     b=x[1]%p
     c=x[2]%p
-    a=arith1.inverse(2*a,p)
+#    print b**2-4*a*c
     sqrtd = arith1.sqroot(b**2-4*a*c,p)
+    a=arith1.inverse(2*a,p)
     return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
 
 def e3(x):
@@ -67,16 +68,18 @@ def e3_Fp(x,p): # p is prime
     coeff=[]
     i=1
     while i<len(x):
-        coeff[1]=int(finitefield.FinitePrimeField(p).createElement(rational.Rational(x[i],x[0])).n)
+        coeff.append(int(finitefield.FinitePrimeField(p).createElement(rational.Rational(x[i],x[0])).n))
         i=i+1
     equ=[]
     i=0
     while i<p:
-        if (coeff[0]*i**3+coeff[1]*i**2+coeff[2]*i+coeff[3])%p==0:
+        if (i**3+coeff[0]*i**2+coeff[1]*i+coeff[2])%p==0:
             equ.append(i)
             break
         else:
             i=i+1
+    if len(equ)==0:
+        raise ValueError,"function is irred"
     X=e2_Fp([1,coeff[0]+equ[0],coeff[1]+coeff[0]*equ[0]+equ[0]**2],p)
     equ.append(X[0])
     equ.append(X[1])
