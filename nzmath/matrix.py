@@ -1,5 +1,4 @@
 import rational
-import ring
 import vector
 
 class Matrix:
@@ -145,7 +144,7 @@ class Matrix:
 
     def __pow__(self, other):
         n = +other
-        if not n in ring.theIntegerRing:
+        if not n in rational.theIntegerRing:
             raise ValueError 
         if self.row != self.column:
             raise MatrixSizeError
