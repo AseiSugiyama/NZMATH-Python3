@@ -1,15 +1,7 @@
 #rationalnumber add,sub,mul,div,comp
-## def GCD(a,b):
-##     while 1:
-##         r = a%b
-##         if r == 0:
-##             if b < 0:
-##                 return -b
-##             else :
-##                 return  b
-##         else :
-##             a=b
-##             b=r
+
+import ring
+
 from gcd import gcd
 
 class Rational:
@@ -130,11 +122,23 @@ class Rational:
             return 0
 
     def __eq__(self,other):
+        if other in ring.theIntegerRing:
+            if self.numerator == self.denominator * other:
+                return 1
+            else:
+                return 0
         if self.numerator*other.denominator == self.denominator*other.numerator:
             return 1
         else:
             return 0
+
     def __ne__(self,other):
+        if other in ring.theIntegerRing:
+            if self.numerator != self.denominator * other:
+                return 1
+            else:
+                return 0
+        
         if self.numerator*other.denominator != self.denominator*other.numerator:
             return 1
         else:

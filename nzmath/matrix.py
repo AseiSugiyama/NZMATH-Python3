@@ -1,6 +1,7 @@
 # matrix.py
 
 from rational import Rational
+import ring
 
 MATRIX_SIZE_ERROR = "MatrixSizeError"
 NO_INVERSE = "NoInverse"
@@ -57,6 +58,7 @@ class Matrix:
                         product.compo[i][j] += self.compo[i][k] * other.compo[k][j]
             return product
 
+        # product with a scalar
         elif isinstance(other, int) or isinstance(other, long) or isinstance(other, Rational):
             product = Matrix(self.row, self.column)
             for i in range(self.row):
@@ -64,8 +66,11 @@ class Matrix:
                     product.compo[i][j] = self.compo[i][j] * other
             return product
 
+    # division by a scalar
     def __div__(self, other):
-        if isinstance(other, int) or isinstance(other, long) or isinstance(other, Rational):   
+        if other in ring.theIntegerRing:
+            return self * Rational(1, other)
+        elif other in ring.theRationalField:    
             return self * (1/other)
 
     def __rmul__(self, other):
@@ -79,10 +84,10 @@ class Matrix:
                     product.compo[i][j] = self.compo[i][j] * other
             return product
 
-    def create_copy(self):
+    def copy(self):
         copy = Matrix(self.row, self.column)
         copy.row = self.row
-        copy.column = copy.column
+        copy.column = self.column
         for i in range(1, self.row+1):
             copy.set_row(i, self.get_row(i))
         return copy
@@ -138,7 +143,7 @@ class Matrix:
         return trans
 
     def triangulate(self):
-        triangle = self.create_copy()
+        triangle = self.copy()
 
         # int -> Rational
         triangle.rational()
@@ -225,7 +230,7 @@ class Matrix:
 # This function does not work well.
 #
 #    def kernel(self):       # using Cohen's Algorithm 2.3.1
-#        copy = self.create_copy()
+#        copy = self.copy()
 #        copy.rational()
 #        r = 0
 #        c = [0] * copy.row
