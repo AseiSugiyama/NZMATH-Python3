@@ -108,12 +108,14 @@ def inverse(x,p): #x>0
         while x<0:
             x=x+p
     y=gcd.extgcd(p,x)
-    if y[1]<0:
-        r=p+y[1]
-        return r
+    if y[2]==1:
+        if y[1]<0:
+            r=p+y[1]
+            return r
+        else:
+            return y[1]
     else:
-        return y[1]
-
+        return False
 
 def CRT(list): 
     """
