@@ -15,6 +15,8 @@ def e1(x):
     """
     f = x[0]*t + x[1]
     """
+    if x[0] == 0:
+        return 
     return -x[1]/x[0]
 
 def e1_Zn(x,n):
@@ -120,6 +122,40 @@ def solve_Fp(poly,p):
     else:
         return 0
 
+def Newton(x,initial,repeat):
+    l = initial
+    # differential of polynomial
+    length = len(x)
+    df = []
+    i = -2
+    j = 1
+    while i != -length - 1:
+        df.append(j*x[i])
+        i = i - 1
+        j = j + 1
+    df.reverse()
+
+    l = initial
+    for k in range(0,repeat):
+        # coefficient of tangent
+        i = -1
+        j = 0
+        coeff = 0
+        dfcoeff = 0
+        while i != -length :
+            coeff = coeff + x[i]*(l**j)
+            dfcoeff = dfcoeff + df[i]*(l**j)
+            i = i - 1
+            j = j + 1
+        coeff = coeff + x[i]*(l**j)
+        
+        # tangent in initial
+        tangent = [dfcoeff,coeff-l*dfcoeff]
+
+        l = e1(tangent)
+
+    return l
+    
 def EA(f,m): # f is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n => [a_0, a_1, ... , a_n] (a_0 != 0 and a_i is complex number))
     if f[0] == 0 :
         raise ValueError, "Delate 0 of first"
