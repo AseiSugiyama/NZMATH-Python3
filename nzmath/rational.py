@@ -1,7 +1,5 @@
 #rationalnumber add,sub,mul,div,comp
 def GCD(a,b):
-    if b == 0:
-        return a
     while 1:
         r = a%b
         if r == 0:
@@ -28,22 +26,11 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator+self.denominator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                sum=Rational(numerator,denominator)
-            else:
-                sum=Rational(numerator//gcd,denominator//gcd)
-            return sum
+            return  +Rational(numerator,denominator)
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator+self.denominator*other
             denominator=self.denominator
-            gcd=GCD(numerator,denominator)          
-            if gcd == 1:
-                sum=Rational(numerator,denominator)
-            else:
-                sum=Rational(numerator//gcd,denominator//gcd)
-            return sum
-            
+            return  +Rational(numerator,denominator)
         else:
             return NotImplemented 
 
@@ -51,22 +38,11 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator-self.denominator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                dif=Rational(numerator,denominator)
-            else:
-                dif=Rational(numerator//gcd,denominator//gcd)
-            return dif
+            return +Rational(numerator,denominator) 
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator-self.denominator*other
             denominator=self.denominator            
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                dif=Rational(numerator,denominator)
-            else:
-                dif=Rational(numerator//gcd,denominator//gcd)
-            return dif
-            
+            return +Rational(numerator,denominator) 
         else:
             return NotImplemented
 
@@ -74,22 +50,11 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                mul=Rational(numerator,denominator)
-            else:
-                mul=Rational(numerator//gcd,denominator//gcd)
-            return mul
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator*other
             denominator=self.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                mul=Rational(numerator,denominator)
-            else:
-                mul=Rational(numerator//gcd,denominator//gcd)
-            return mul
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented
 
@@ -97,44 +62,22 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator
             denominator=self.denominator*other.numerator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                div=Rational(numerator,denominator)
-            else:
-                div=Rational(numerator//gcd,denominator//gcd)
-            return div
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator
             denominator=self.denominator*other
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                div=Rational(numerator,denominator)
-            else:
-                div=Rational(numerator//gcd,denominator//gcd)
-            return div
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented
     def __radd__(self,other):
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator+self.denominator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                sum=Rational(numerator,denominator)
-            else:
-                sum=Rational(numerator//gcd,denominator//gcd)
-            return sum
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator+self.denominator*other
             denominator=self.denominator
-            gcd=GCD(numerator,denominator)          
-            if gcd == 1:
-                sum=Rational(numerator,denominator)
-            else:
-                sum=Rational(numerator//gcd,denominator//gcd)
-            return sum
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented 
 
@@ -142,22 +85,11 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator-self.denominator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                dif=Rational(numerator,denominator)
-            else:
-                dif=Rational(numerator//gcd,denominator//gcd)
-            return dif
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.denominator*other-self.numerator
             denominator=self.denominator            
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                dif=Rational(numerator,denominator)
-            else:
-                dif=Rational(numerator//gcd,denominator//gcd)
-            return dif
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented
 
@@ -165,22 +97,11 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.numerator
             denominator=self.denominator*other.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                mul=Rational(numerator,denominator)
-            else:
-                mul=Rational(numerator//gcd,denominator//gcd)
-            return mul
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.numerator*other
             denominator=self.denominator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                mul=Rational(numerator,denominator)
-            else:
-                mul=Rational(numerator//gcd,denominator//gcd)
-            return mul
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented
 
@@ -188,64 +109,31 @@ class Rational:
         if isinstance(other, Rational):
             numerator=self.numerator*other.denominator
             denominator=self.denominator*other.numerator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                div=Rational(numerator,denominator)
-            else:
-                div=Rational(numerator//gcd,denominator//gcd)
-            return div
+            return +Rational(numerator,denominator)             
         elif isinstance(other, int) or isinstance(other, long):
             numerator=self.denominator*other
             denominator=self.numerator
-            gcd=GCD(numerator,denominator)
-            if gcd == 1:
-                div=Rational(numerator,denominator)
-            else:
-                div=Rational(numerator//gcd,denominator//gcd)
-            return div
-            
+            return +Rational(numerator,denominator)             
         else:
             return NotImplemented    
     def __lt__(self,other):
-        if isinstance(other, int):
-            if self.numerator / float(self.denominator) < other:
-                return 1
-            else:
-                return 0
-
         if self.numerator*other.denominator < self.denominator*other.numerator:
             return 1
         else:
             return 0
 
     def __le__(self,other):
-        if isinstance(other, int):
-            if self.numerator / float(self.denominator) <= other:
-                return 1
-            else:
-                return 0
-
         if self.numerator*other.denominator <= self.denominator*other.numerator:
             return 1 
         else:
             return 0
 
     def __eq__(self,other):
-        if isinstance(other, int):
-            if self.numerator == self.denominator*other:
-                return 1
-            else:
-                return 0
         if self.numerator*other.denominator == self.denominator*other.numerator:
             return 1
         else:
             return 0
     def __ne__(self,other):
-        if isinstance(other, int):
-            if self.__eq__(other):
-                return 0
-            else:
-                return 1
         if self.numerator*other.denominator != self.denominator*other.numerator:
             return 1
         else:
@@ -263,5 +151,14 @@ class Rational:
         else:
             return 0
 
+    def __pos__(self):
+        gcd=GCD(self.numerator,self.denominator)
+        if gcd != 1:
+            self.numerator=self.numerator//gcd
+            self.denominator=self.denominator//gcd
+        if self.denominator == 1:
+            return self.numerator
+        else:
+            return self
     def __repr__(self):
         return str(self.numerator)+"/"+str(self.denominator)
