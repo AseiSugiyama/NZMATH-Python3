@@ -97,6 +97,9 @@ class FloatTest (unittest.TestCase):
         assert abs(real.log(2,53) + log2inverse) <= real.Float(1, -53)
         assert "0.69314718055994530" == str(real.Log2)[:19], str(real.Log2)
 
+    def testAtan(self):
+        assert real.atan(0.5, 0)
+
     def testAtan2(self):
         assert real.pi / 2 == real.atan2(1,0)
         assert 0 == real.atan2(0, 1)
