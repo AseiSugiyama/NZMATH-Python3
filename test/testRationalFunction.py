@@ -6,7 +6,7 @@ import polynomial
 
 class RationalFunctionTest (unittest.TestCase):
     def testInit(self):
-        RationalFunction()
+        RationalFunction(1)
 
 class RationalFunctionFieldTest (unittest.TestCase):
     def setUp(self):
@@ -33,6 +33,9 @@ class RationalFunctionFieldTest (unittest.TestCase):
     def testContains(self):
         assert 1 in self.Qx
         assert Q.createElement(3,4) in self.Qx
+
+    def testCreateElement(self):
+        assert self.Qx.createElement(Z.createElement(8))
 
 def suite():
     suite = unittest.TestSuite()
