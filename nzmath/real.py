@@ -7,7 +7,8 @@ import rational
 """
 
 The module `real' provides arbitrary precision real numbers and their
-utilities.
+utilities.  The functions provided are corresponding to the `math'
+standard module.
 
 """
 
@@ -895,22 +896,19 @@ def sinh(x, precision=doubleprecision):
     sinh(x [,precision]) returns the hyperbolic sine of x.
 
     """
+    def sinh_iter(xx, pp):
+        yield xx
+        y2 = xx ** 2
+        i = f = 1
+        while 1:
+            f *= (i+1)*(i+2)
+            xx *= y2
+            i += 2
+            yield (xx / f)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
-    y = x.copy()
-    y.setDefaultPrecision(2*precision)
-    eps = Float(1, -2*precision)
-    y2 = y ** 2
-    i = f = 1
-    series = [y]
-    while abs(series[-1]) > eps:
-        f *= (i+1)*(i+2)
-        y *= y2
-        series.append(y / f)
-        i += 2
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
-    return retval
+    y = Float(x, 0, precision)
+    return sum(sinh_iter(y, precision), precision)
 
 def cosh(x, precision=doubleprecision):
     """
@@ -918,23 +916,19 @@ def cosh(x, precision=doubleprecision):
     cosh(x [,precision]) returns the hyperbolic cosine of x.
 
     """
+    def cosh_iter(xx, pp):
+        yield 1
+        x2 = xx ** 2
+        y = Float(1, 0 ,2*precision)
+        i = f = 1
+        while 1:
+            f *= i*(i+1)
+            y *= x2
+            i += 2
+            yield (y / f)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
-    t = x.copy()
-    t.setDefaultPrecision(2*precision)
-    eps = Float(1, -2*precision)
-    x2 = t ** 2
-    y = Float(1, 0 ,2*precision)
-    i = f = 1
-    series = [y]
-    while series[-1] > eps:
-        f *= i*(i+1)
-        y *= x2
-        series.append(y / f)
-        i += 2
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
-    return retval
+    return sum(cosh_iter(x,precision), precision)
 
 def tanh(x, precision=doubleprecision):
     """
