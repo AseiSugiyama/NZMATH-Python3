@@ -210,7 +210,7 @@ class EC:
                     qx=rational.Rational(P[0]-V[1],V[0]**2)*1
                     if isinstance(qx,rational.Rational):
                         qxd=qx.denominator
-                        qxn=qx.numetator
+                        qxn=qx.numerator
                     else:
                         qxd=1
                         qxn=qx
@@ -301,16 +301,16 @@ class EC:
             if len(P)==2:
                 if self.ch==0:
                     if P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]==P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6:
-                        return 1
+                        return True
                     else:
-                        return 0
+                        return False
                 else:
                     if (P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1])%self.ch==(P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6)%self.ch:
-                        return 1
+                        return True
                     else:
-                        return 0
+                        return False
             elif P==[0]:
-                return 1
+                return True
             else:
                 raise ValueError, "you must input (len(point)==2) (-_-;)"
         else:
