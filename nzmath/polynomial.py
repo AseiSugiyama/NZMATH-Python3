@@ -110,6 +110,17 @@ class OneVariablePolynomial:
     def toOneVariableSparsePolynomial(self):
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
 
+    def toMultiVariableDensePolynomial(self):
+        return_variable = self.getVariable()
+        return_coefficient = self.coefficient.getAsList()
+        return MultiVariableDensePolynomial(return_coefficient, return_variable)
+
+    def toMultiVariableSparsePolynomial(self):
+        return_coefficient = {}
+        for i,c in self.coefficient.iteritems():
+            return_coefficient[(i,)] = c
+        return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -421,19 +432,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                  return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(max) - OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(min)
         else:
             raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
-
-    def toMultiVariableDensePolynomial(self):
-        return MultiVariableDensePolynomial(self.coefficient, self.getVariable()).adjust()
-
-    def toMultiVariableSparsePolynomial(self):
-        if self.degree() < 1:
-            return self[0]
-        else:
-            return_coefficient = {}
-            for i in range(len(self.coefficient)):
-                if self.coefficient[i] != 0:
-                    return_coefficient[(i,)] = self.coefficient[i]
-            return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
     def content(self):
         """
@@ -774,22 +772,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                 return self * (other_polynomial(max) - other_polynomial(min))
         else:
             raise ValueError, "You must input integrate(polynomial, variable (, min, max))."
-
-    def toMultiVariableDensePolynomial(self):
-        return_variable = self.getVariable()
-        return_coefficient = self.coefficient.getAsList()
-        return MultiVariableDensePolynomial(return_coefficient, return_variable)
-
-    def toMultiVariableSparsePolynomial(self):
-        if self.degree() < 1:
-            return self[0]
-        else:
-            return_coefficient = {}
-            for i,c in self.coefficient.iteritems():
-                if c:
-                    return_coefficient[(i,)] = c
-            return_variable = self.getVariableList()
-            return MultiVariableSparsePolynomial(return_coefficient, return_variable)
 
     def content(self):
         """
