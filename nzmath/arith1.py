@@ -52,7 +52,7 @@ def sqroot(a,p): # p is a prime
     """
     This program returns squareroot of 'a' for mod'p'
     """
-    if arith1.legendre(a,p)==1:
+    if legendre(a,p)==1:
         if p%8==3 or p%8==5 or p%8==7:
             a=a%p
             if p%8==3 or p%8==7:
@@ -66,7 +66,7 @@ def sqroot(a,p): # p is a prime
                 return x
         else: #p%8==1
             d=random.randint(2,p-1)
-            while arith1.legendre(d,p)!=-1:
+            while legendre(d,p)!=-1:
                 d=random.randint(2,p-1)
             s=0
             q=p-1
