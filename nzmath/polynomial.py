@@ -325,16 +325,18 @@ class FlatPolynomial:
 
     def __add__(self, other):
         if (type(other) == int) or (type(other) == long):
-            self = FlatPolynomial.adjust(self)
-            sum = FlatPolynomial({}, self.variables)
-            for i in range(len(self.coefficients)):
-                sum.coefficients[self.coefficients.keys()[i]] = self.coefficients.values()[i]
-            if sum.coefficients.has_key((0,)*len(sum.variables)):
-                sum.coefficients[(0,)*len(sum.variables)] += other
+            self_adjust = FlatPolynomial.adjust(self)
+            if isinstance(self_adjust,int) or isinstance(self_adjust,long):
+                return self_adjust + other
             else:
-                sum.coefficients[(0,)*len(sum.variables)] = other
-            return FlatPolynomial.adjust(sum)
-
+                sum = FlatPolynomial({}, self_adjust.variables)
+                for i in range(len(self_adjust.coefficients)):
+                    sum.coefficients[self_adjust.coefficients.keys()[i]] = self_adjust.coefficients.values()[i]
+                if sum.coefficients.has_key((0,)*len(sum.variables)):
+                    sum.coefficients[(0,)*len(sum.variables)] += other
+                else:
+                    sum.coefficients[(0,)*len(sum.variables)] = other
+                return FlatPolynomial.adjust(sum)
         elif isinstance(other, Polynomial):
             return self + Polynomial.toFlatPolynomial(other)
         elif self.variables == other.variables:
@@ -745,5 +747,8 @@ class FlatPolynomial:
                         new_polynomial = FlatPolynomial(new_coefficients, origin_polynomial.variables[:-1])
                         sum_polynomial_list[j] += new_polynomial
             for i in range(max_index+1):
-                return_polynomial.coefficient[i] = sum_polynomial_list[i].toPolynomial()
+                if isinstance(sum_polynomial_list[i],FlatPolynomial):
+                    return_polynomial.coefficient[i] = sum_polynomial_list[i].toPolynomial()
+                else:
+                    return_polynomial.coefficient[i] = sum_polynomial_list[i]
             return return_polynomial
