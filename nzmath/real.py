@@ -667,11 +667,11 @@ def atan2(y, x, err=defaultError):
 
     """
     if x > 0 and y > 0:
-        return atan(x/y)
+        return atan(y/x)
     elif x > 0 and y < 0:
-        return pi(err) * 2 + atan(x/y)
+        return pi(err) * 2 + atan(y/x)
     elif x < 0:
-        return pi(err) + atan(x/y)
+        return pi(err) + atan(y/x)
     elif x == 0 and y > 0:
         return pi(err) / 2
     elif x == 0 and y < 0:
