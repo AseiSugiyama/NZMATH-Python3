@@ -240,10 +240,11 @@ class OneVariableDensePolynomial:
             return self//other
 
     def __truediv__(self,other):
-        if not self%other:
-            return self//other
-        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
-            return self//other
+        quot, rem = divmod(self, other)
+        if not rem:
+            return quot
+        elif isinstance(other, (int,long)):
+            return self * rational.Rational(1, other)
         else:
             raise NotImplementedError
 
@@ -253,7 +254,7 @@ class OneVariableDensePolynomial:
         return self.__divmod__(other)[1]
 
     __rmod__=__mod__
-       
+
     def __eq__(self, other):
         if not self and not other:
             True
@@ -678,7 +679,7 @@ class OneVariableSparsePolynomial:
         raise ValueError, "You must input non-negative integer for index."
 
     def __floordiv__(self, other):
-        if other == 0:
+        if not other:
             raise ZeroDivisionError, "integer division or modulo by zero."
         elif isinstance(other, OneVariableDensePolynomial):
             if self.variable[0] == other.variable:
