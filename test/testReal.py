@@ -73,6 +73,26 @@ class FloatTest (unittest.TestCase):
         exp1 = real.exp(1)
         expf1 = real.exp(real.Float(1,0))
         assert exp1 == expf1
+        assert exp1 == real.e
+
+    def testSin(self):
+        sin1 = real.sin(1)
+        sinf1 = real.sin(real.Float(1,0))
+        assert sin1 == sinf1
+        assert 1 >= sin1 >= -1
+
+    def testCos(self):
+        cos1 = real.cos(1)
+        cosf1 = real.cos(real.Float(1,0))
+        assert cos1 == cosf1
+        assert 1 >= cos1 >= -1
+
+    def testLog(self):
+        log2 = real.log(2)
+        logf2 = real.log(real.Float(2,0))
+        assert log2 == logf2
+        log2inverse = real.log(.5)
+        assert log2 == -log2inverse
 
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
