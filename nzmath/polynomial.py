@@ -2370,6 +2370,14 @@ class OneVariablePolynomialCoefficients:
             if self[i]:
                 retval[i] = +self[i]
 
+    def setList(self, aList):
+        self._using = OneVariablePolynomialCoefficients.USING_LIST
+        self._list = aList
+
+    def setDict(self, aDict):
+        self._using = OneVariablePolynomialCoefficients.USING_DICT
+        self._dict = aDict
+
     def changeRepresentation(self, rep):
         """
 
