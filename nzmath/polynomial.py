@@ -223,7 +223,11 @@ class OneVariableDensePolynomial:
         else:
             raise ValueError, "Not Defined."
 
-    __div__=__floordiv__
+    def __div__(self, other):
+        if self % other = 0:
+            return self // other
+        else:
+            raise ValueError, "Not Defined."
 
 #    __truediv__=__div__
 
