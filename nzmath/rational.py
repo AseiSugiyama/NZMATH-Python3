@@ -221,13 +221,19 @@ class Integer(long):
         return Integer(long(self)//other)
 
     def __rfloordiv__(self, other):
-        return Integer(other//long(self))
+        try:
+            return Integer(other//long(self))
+        except:
+            return NotImplemented
 
     def __mod__(self, other):
         return Integer(long(self)%other)
 
     def __rmod__(self, other):
-        return Integer(other%long(self))
+        try:
+            return Integer(other%long(self))
+        except:
+            return NotImplemented
 
     def __divmod__(self, other):
         return tuple(map(Integer, divmod(long(self), other)))
@@ -247,15 +253,15 @@ class Integer(long):
         return Integer(other-long(self))
 
     def __mul__(self, other):
-        return Integer(long(self)*other)
+        try:
+            return Integer(long(self)*other)
+        except:
+            return NotImplemented
 
     __rmul__ = __mul__
 
     def __pow__(self, other, modulo=None):
         return Integer(pow(long(self), other, modulo))
-
-    def __rpow__(self, other, modulo=None):
-        return Integer(pow(other, long(self), modulo))
 
     def __pos__(self):
         return Integer(self)
