@@ -104,6 +104,10 @@ class Field (CommutativeRing):
         """Field overrides isfield of CommutativeRing."""
         return True
 
+    def gcd(self, a, b):
+        """A field is trivially a ufd and shuold be provide gcd."""
+        return self.createElement(1)
+
 class QuotientField (Field):
     """QuotientField is a class of quotient field."""
 
