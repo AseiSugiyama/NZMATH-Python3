@@ -183,14 +183,46 @@ class ExponentialPowerSeries:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
         value, oldvalue = rational.Rational(0), rational.Rational(0)
-        for t in self.terms(x):
-            if not t:
-                continue
-            value += t
-            if maxerror.nearlyEqual(value, oldvalue):
-                break
-            oldvalue = +value
+        if isinstance(maxerror, RelativeError):
+            maxDenom = minNumer = 0
+            for t in self.terms(x):
+                if not t:
+                    continue
+                if not maxDenom:
+                    value += t
+                    maxDenom = (maxerror.relativeerrorrange.denominator * value.denominator) ** 2
+                elif value.denominator < maxDenom:
+                    value += t
+                    if maxerror.nearlyEqual(value, oldvalue):
+                        break
+                else:
+                    if not minNumer:
+                        minNumer = maxerror.relativeerrorrange.numerator * abs(value.numerator) // maxerror.relativeerrorrange.denominator
+                    approx = t.numerator * value.denominator // t.denominator
+                    value.numerator += approx
+                    if abs(approx) < minNumer:
+                        break
+                oldvalue = +value
+        else:
+            maxDenom = minNumer = 0
+            for t in self.terms(x):
+                if not t:
+                    continue
+                if not maxDenom:
+                    value += t
+                    maxDenom = (maxerror.absoluteerrorrange.denominator * value.denominator) ** 2
+                elif value.denominator < maxDenom:
+                    value += t
+                else:
+                    if not minNumer:
+                        minNumer = maxerror.absoluteerrorrange.numerator * value.numerator // maxerror.absoluteerrorrange.denominator
+                    approx = t.numerator * value.denominator // t.denominator
+                    value.numerator += approx
+                    if abs(approx) < minNumer:
+                        break
+                oldvalue = +value
         return value
+            
 
 defaultError = RelativeError(0, 1, 2 ** 53)
 
@@ -384,7 +416,7 @@ def sin(x, err=defaultError):
     sin(x [,err]) returns the sine of x.
 
     """
-    if err <= defaultError:
+    if not isinstance(err, defaultError.__class__) or err <= defaultError:
         rx = rational.Rational(x)
         sign = rational.Rational(1)
         # sin(-x) = -sin(x)
@@ -392,19 +424,30 @@ def sin(x, err=defaultError):
             sign = -sign
             rx = -rx
         # sin(x + 2 * pi) = sin(x)
-        if rx >= 2 * pi(err):
-            rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
+        if rx >= 2 * pi:
+            rx -= floor(rx / (pi * 2)) * (pi * 2)
         # sin(x + pi) = -sin(x)
-        if rx >= pi(err):
-            rx -= pi(err)
+        if rx >= pi:
+            rx -= pi
             sign = -sign
         # sin(x) = sin(pi - x)
-        if rx > pi(err) / 2:
-            rx = pi(err) - rx
+        if rx > pi / 2:
+            rx = pi - rx
         # sin(0) = 0 is a special case which must not be computed with series.
         if rx == 0:
             return rational.Rational(0)
-        retval = _sinTaylor(rx, err)
+        # sin(x) = cos(pi/2 - x) (pi/2 >= x > 4/pi)
+        if rx > pi / 4:
+            if rx == pi / 3:
+                retval = sqrt(3) / 2
+            else:
+                retval = _cosTaylor(pi / 2 - rx, err)
+        elif rx == pi / 4:
+            retval = 1 / sqrt(2)
+        elif rx == pi / 6:
+            retval = rational.Rational(1, 2)
+        else:
+            retval = _sinTaylor(rx, err)
         if retval > 1:
             retval = rational.Integer(1)
         retval *= sign
@@ -436,19 +479,26 @@ def cos(x, err=defaultError):
         if rx < 0:
             rx = -rx
         # cos(x + 2 * pi) = cos(x)
-        if rx > 2 * pi(err):
-            rx -= floor(rx / (pi(err) * 2)) * (pi(err) * 2)
+        if rx > 2 * pi:
+            rx -= floor(rx / (pi * 2)) * (pi * 2)
         # cos(x + pi) = -cos(x)
-        if rx > pi(err):
-            rx -= pi(err)
+        if rx > pi:
+            rx -= pi
             sign = -sign
         # cos(x) = -cos(pi - x)
-        if rx > pi(err) / 2:
-            rx = pi(err) - rx
+        if rx > pi / 2:
+            rx = pi - rx
             sign = -sign
         # cos(x) = sin(pi/2 - x) (pi/2 >= x > 4/pi)
-        if rx > pi(err) / 4:
-            retval = _sinTaylor(pi(err) / 2 - rx, err)
+        if rx > pi / 4:
+            if rx == pi / 3:
+                retval = rational.Rational(1,2)
+            else:
+                retval = _sinTaylor(pi / 2 - rx, err)
+        elif rx == pi / 4:
+            retval = 1 / sqrt(2)
+        elif rx == pi / 6:
+            retval = sqrt(3) / 2
         else:
             retval = _cosTaylor(rx, err)
         if retval > 1:
@@ -483,11 +533,11 @@ def sinh(x, err=defaultError):
     sinh(x [,err]) returns the hyperbolic sine of x.
 
     """
-    if err <= defaultError:
+    if not isinstance(err, defaultError.__class__) or err <= defaultError:
         series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
         rx = rational.Rational(x)
         if rx == 0:
-            return rational.Integer(0)
+            return rational.Rational(0)
         return series(rx, err)
     else:
         return rational.Rational(math.sinh(x))

@@ -1,5 +1,4 @@
-import unittest
-import math
+import math, time, unittest
 import real
 import rational
 
@@ -103,13 +102,22 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(real.sin(pi)) < self.absolute
         assert -1 <= (real.cos(pi)) < -1 + self.absolute
         assert abs(real.tan(pi)) < self.absolute
+        s = time.time()
+        abs7 = real.sin(7, real.AbsoluteError(0, 1, 10**20))
+        abstime = time.time() - s
+        assert abstime < 1.5
+        s = time.time()
+        rel7 = real.sin(7, real.RelativeError(0, 1, 10**20))
+        reltime = time.time() - s
+        assert reltime < 1.5
+        assert abs(abs7 - rel7) < rational.Rational(1, 10**20), abs(abs7 - rel7).trim(10**20)
 
     def testHyperbolic(self):
         assert 0 == real.sinh(0)
         assert 1 == real.cosh(0)
         assert 0 == real.tanh(0)
         assert real.cosh(2) == real.cosh(-2)
-        assert real.sinh(2) == -real.sinh(-2)
+        assert real.sinh(2) == -real.sinh(-2), (real.sinh(2), -real.sinh(-2)) 
         assert real.sinh(4) == -real.sinh(-4)
 
     def testInverseTrigonometric(self):
