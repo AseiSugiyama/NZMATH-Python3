@@ -6,9 +6,8 @@ class Matrix:
 
     def __init__(self, row, column, compo = 0):
         "Matrix(row, column)"
-        if (    ( isinstance(row, int) or isinstance(row, long) )
-            and ( isinstance(column, int) or isinstance(column, long) )
-            and row > 0 and column > 0    ): 
+        if (rational.isIntegerObject(row) and rational.isIntegerObject(column)
+            and row > 0 and column > 0 ): 
             self.row = row
             self.column = column
             self.compo = []
@@ -99,8 +98,6 @@ class Matrix:
                     for k in range(self.column):
                         product[i,j] += self[i,k] * other[k,j]
             return product 
-        elif isinstance(other, Vector):
-            return NotImplemented
         else:           # product with a scalar
             product = self.__class__(self.row, self.column)
             for i in range(1, self.row+1):
@@ -163,7 +160,7 @@ class Matrix:
     __str__ = __repr__ 
 
 
-# utility methods ----------------------------------------------------
+    # utility methods ----------------------------------------------------
 
     def copy(self):
         """Create a copy of the instance."""
@@ -259,7 +256,7 @@ class Matrix:
         for k in range(self.row):
             del self.compo[k][j-1]
 
-# Mathematical functions ---------------------------------------------
+    # Mathematical functions ---------------------------------------------
 
     def transpose(self):
         """Return transposed matrix of self"""
@@ -323,13 +320,12 @@ class Matrix:
     def inverse(self):
         """Return inverse matrix of self,
         or return None if inverse is not exist."""
-        det = self.determinant()
-        if det == 0:
-            return None
-        else:
-            return self.cofactors() / det 
+        if self.row != self.column:
+            raise MatrixSizeError
+        return self.inverseImage(unitMatrix(self.row))
 
     def characteristicPolynomial(self):        # Cohen's Algorithm 2.2.7
+        """characteristicPolynomial() -> Polynomial"""
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
         i = 0
@@ -418,30 +414,34 @@ class Matrix:
         """Rerutn self's rank."""
         return len(self.image())
 
-    def inverseImage(self, B):      # Cohen's Algorithm 2.3.4
-        """inverseImage(B) : B can be a list or a column vector(Matrix)
+#    def inverseImage(self, B):      # Cohen's Algorithm 2.3.4
+#        """inverseImage(B) : B can be a list or a column vector(Matrix)
+#
+#        Return a vector belongs to the inverse image of B if exist,
+#        or raise Exception if not exist."""
+#        
+#        if isinstance(B, Matrix):
+#            return self._inverseImageMatrix(V)
+#
+#        M1 = self.copy()
+#        M1.insertColumn(self.column+1, B)
+#        V = M1.kernel()
+#        r = V.column
+#        for j in range(1, r+1):
+#            if V[self.column+1, j] != 0:
+#                break
+#        else:
+#            raise NoInverseImage, "No inverse image"
+#        d = (-1)/rational.Rational(V[self.column+1,j])
+#        x = []
+#        for i in range(1, self.column+1):
+#            x.append(d*V[i,j])
+#        inverseImage = Matrix(self.column, 1)
+#        inverseImage.setColumn(1, x)
+#        return inverseImage
 
-        Return a vector belongs to the inverse image of B if exist,
-        or raise Exception if not exist."""
-        M1 = self.copy()
-        M1.insertColumn(self.column+1, B)
-        V = M1.kernel()
-        r = V.column
-        for j in range(1, r+1):
-            if V[self.column+1, j] != 0:
-                break
-        else:
-            raise Exception, "inverse image not exist"
-        d = (-1)/rational.Rational(V[self.column+1,j])
-        x = []
-        for i in range(1, self.column+1):
-            x.append(d*V[i,j])
-        inverseImage = Matrix(self.column, 1)
-        inverseImage.setColumn(1, x)
-        return inverseImage
-
-    def inverseImageMatrix(self, V):    # Cohen's Algorithm 2.3.5
-        """M.inverseImageMatrix(V) -> X such that MX=V"""
+    def inverseImage(self, V):    # Cohen's Algorithm 2.3.5
+        """M.inverseImage(V) -> X such that MX=V"""
         M = self.copy()
         m = M.row;  n = M.column;  r = V.column 
         if n > m:
@@ -487,14 +487,8 @@ class Matrix:
         # step 7
         for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
             if B.getRow(k) != M.getRow(k) * X:
-                print self.getRow(k) * X
-                print "-"*30
-                print X
-                raise Exception, "some vectors are not in the inverse image"
+                raise NoInverseImage, "some vectors are not in the inverse image"
         return X
-
-
-        return B
 
     def hessenbergForm(self):      # Cohen's Algorithm 2.2.9
         if self.row != self.column:
@@ -552,6 +546,7 @@ class Matrix:
             k = k-1
         return M 
 
+#---------------------------------------------------------------------
 
 class IntegerMatrix(Matrix):
 
@@ -607,24 +602,28 @@ class IntegerMatrix(Matrix):
                 # go to step 2
 
 
-class _MatrixRing:
-    """MatrixRing is a (private) class of ring of matrices.
-    The class has the single instance 'theMatrixRing'."""
 
-    def __contains__(self, element):
-        return isinstance(element, Matrix) or isinstance(element, IntegerMatrix)
+class MatrixRing:
 
-    def createElement(self, row, column, compo=0):
-        return Matrix(row, column, compo)
-    
-    def unitMatrix(self, size):
-        """unitMatrix(n) : Return unit matrix whose size is n * n"""
-        unitMatrix = Matrix(size, size)
-        for i in range(size):
-            unitMatrix.compo[i][i] = 1
-        return unitMatrix
+    _instances = {}
 
-theMatrixRing = _MatrixRing()
+    def __init__(self, size):
+        self.size = size
+
+    def __repr__(self):
+        return "MatrixRing(%d)" % self.size
+
+    def getInstance(self, size):
+        if size not in self._instances:
+            anInstance = MatrixRing(size)
+            self.instances[size] = anInstance
+        return self._instances[size]
+
+    getInstance = classmethod(getInstance)
+
+
+
+
 
 class Subspace(Matrix):
     """A subspace formed by the column vectors."""
@@ -634,7 +633,6 @@ class Subspace(Matrix):
         if self.row < self.column:
             raise MatrixSizeError
 
-        # to make it easy to read
         n = self.row
         k = self.column
 
@@ -673,6 +671,12 @@ class Subspace(Matrix):
 
 
 # the belows are not class methods------------------------------------
+def unitMatrix(size):
+    unit_matrix = Matrix(size, size)
+    for i in range(size):
+        unit_matrix.compo[i][i] = 1
+    return unit_matrix
+
 def sumOfSubspaces(L, M):             # Cohen's Algorithm 2.3.8
     if L.row != M.row:
         raise MatrixSizeError
@@ -703,6 +707,12 @@ class MatrixSizeError(Exception):
 class VectorsNotIndependent(Exception):
     pass
 
+class NoInverseImage(Exception):
+    pass
+
+class NoInverse(Exception):
+    pass
+
 # data for debugging -------------------------------------------------
 a=Matrix(5,3)
 a.set([0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0])
@@ -728,12 +738,14 @@ i = Matrix(2,3,[-1,-2,-3,1,4,5])
 
 sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9])
 
+j = Matrix(2,2,[3,4,5,6])
+
 def pause():
     print "--- hit enter key ---"
     raw_input()
 
 if __name__ == '__main__':
-	pass
+    pass
 #    import testMatrix
 #    runner = testMatrix.unittest.TextTestRunner()
 #    runner.run(testMatrix.suite())
@@ -748,3 +760,5 @@ if __name__ == '__main__':
 #    print h
 #    print h.hessenbergForm()
 #    print c.hessenbergForm()
+    print j
+    print j.inverse()
