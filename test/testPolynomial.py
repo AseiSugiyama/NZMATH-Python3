@@ -117,6 +117,9 @@ class IntegerOneVariableSparsePolynomialTest (unittest.TestCase):
         Zx = PolynomialRing(Z, x)
         assert Zx == self.k.getRing(), self.k.getRing()
 
+    def testPow(self):
+        assert self.k * self.k == self.k ** 2
+
 class IntegerOneVariablePolynomialsTest(unittest.TestCase):
     def setUp(self):
         self.a = OneVariableDensePolynomial([1,1], x, Z)
