@@ -40,7 +40,7 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             assert representative.m == modulus
             self.n = representative.n
         else:
-            raise NotImplementedError, repr(representative)
+            raise NotImplementedError, "FinitePrimeFieldElement is not made from %s." % (repr(representative),)
 
     def __repr__(self):
         return "FinitePrimeFieldElement(%d, %d)" % (self.n, self.m)
