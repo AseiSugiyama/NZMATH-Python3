@@ -230,7 +230,7 @@ class OneVariableDensePolynomial:
                 new_coeff.reverse() 
                 return OneVariableDensePolynomial(new_coeff,self.variable),OneVariableDensePolynomial(self_coeff,self.variable)
         
-        elif isinstance(other,rational.Rational):
+        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
             new_coeff=[]
             for j in self.coefficient: 
                 new_coeff.append(rational.Rational(j,1)//other)
@@ -262,13 +262,18 @@ class OneVariableDensePolynomial:
         else:
             self,other = other,self
             return self//other
-        
-    def __truerdiv__(self,other):
+
+    
+    def __truediv__(self,other):
         if self%other==0:
+            return self//other
+        elif isinstance(other,rational.Rational) or isinstance(other,rational.Integer):
             return self//other
         else:
             raise NotImplementedError
 
+
+    __div__=__truediv__
     def __mod__(self, other):
         return self.__divmod__(other)[1]
 
