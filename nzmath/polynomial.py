@@ -9,9 +9,24 @@ import re
 
 import rational
 import ring
-from rationalFunction import RationalFunctionField
+import rationalFunction
 
 class OneVariablePolynomial:
+    def __init__(self, coefficient, variable, coeffring):
+        """
+
+        OneVariablePolynomial(coefficient, variable, coeffring)
+        makes a one variable polynomial object.
+
+        coefficient must be an instance of OneVariablePolynomialCoefficient.
+        variable must be either one of string, list or tuple.
+        coeffring must be a ring object, which implements ring.Ring.
+
+        """
+        self.coefficient = coefficient
+        self.variable = variable
+        self.coeffring = coeffring
+
     def __setitem__(self, index, value):
         """
 
@@ -126,9 +141,10 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
         elif other in self.getCoefficientRing():
-            sum = OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable())
-            sum.coefficient[0] += other
-            return sum.adjust()
+            sum = OneVariablePolynomialCoefficients()
+            sum.setList(self.coefficient.getAsList())
+            sum[0] = sum[0] + other
+            return OneVariableDensePolynomial(sum.getAsList(), self.getVariable(), self.getCoefficientRing())
         elif other == 0:
             return +self
         else:
@@ -140,17 +156,16 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
     __radd__=__add__
 
     def __neg__(self):
-        reciprocal = [-c for c in self.coefficient]
+        reciprocal = [-c for c in self.coefficient.getAsList()]
         return OneVariableDensePolynomial(reciprocal, self.getVariable(), self.getCoefficientRing())
 
     def __mul__(self, other):
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
                 product = OneVariablePolynomialCoefficients()
-                for l in range(len(self.coefficient)):
-                    if self[l]:
-                        for r in range(len(other.coefficient)):
-                            product[l + r] = product[l + r] + self[l] * other[r]
+                for i,c in self.coefficient.iteritems():
+                    for j,d in other.coefficient.iteritems():
+                        product[i + j] = product[i + j] + c * d
                 commonRing = self.getRing().getCommonSuperring(other.getRing())
                 if not commonRing and self.getCoefficientRing():
                     return OneVariableDensePolynomial(product.getAsList(), self.getVariable(), self.getCoefficientRing())
@@ -211,7 +226,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             if other.degree() == 0:
                 other = other[0]
                 if self.getCoefficientRing().isfield() or isinstance(other, ring.FieldElement):
-                    div_coeff = [c / other for c in self.coefficient]
+                    div_coeff = [c / other for c in self.coefficient.getAsList()]
                     return OneVariableDensePolynomial(div_coeff, self.getVariable(), self.getCoefficientRing()), OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
                 else:
                     div_coeff = [c // other for c in self.coefficient]
@@ -257,7 +272,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __floordiv__(self,other):
         return self.__divmod__(other)[0]
-    
+
     def __rfloordiv__(self, other):
         if isinstance(other, MultiVariableDensePolynomial):
             return other.toMultiVariableSparsePolynomial() // self.toMultiVariableSparsePolynomial()
@@ -269,14 +284,14 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             self,other = other,self
             return self//other
 
-    def __truediv__(self,other):
+    def __truediv__(self, other):
         quot, rem = divmod(self, other)
         if not rem:
             return quot
         elif isinstance(other, (int,long)):
             return self * rational.Rational(1, other)
         else:
-            raise NotImplementedError
+            return rationalFunction.RationalFunction(self, other)
 
     __div__=__truediv__
 
@@ -558,12 +573,14 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             if self.getVariable() != other.getVariable():
                 return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
             else:
-                return_coefficient = OneVariablePolynomialCoefficients()
-                return_variable = self.getVariableList()
+                product = OneVariablePolynomialCoefficients()
                 for i,c in self.coefficient.iteritems():
                     for j,d in other.coefficient.iteritems():
-                        return_coefficient[i + j] = return_coefficient[i + j] + c * d
-                return OneVariableSparsePolynomial(return_coefficient.getAsDict(), return_variable)
+                        product[i + j] = product[i + j] + c * d
+                commonRing = self.getRing().getCommonSuperring(other.getRing())
+                if not commonRing and self.getCoefficientRing():
+                    return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+                return OneVariableSparsePolynomial(product.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
         elif other in self.ring.getCoefficientRing():
             product = {}
             for i,c in self.coefficient.iteritems():
@@ -1821,7 +1838,7 @@ class PolynomialRing (ring.CommutativeRing):
         """
         try:
             coefficientField = self.coefficientRing.getQuotientField()
-            return RationalFunctionField(coefficientField, self.vars)
+            return rationalFunction.RationalFunctionField(coefficientField, self.vars)
         except:
             raise
 
@@ -1872,7 +1889,7 @@ class PolynomialRing (ring.CommutativeRing):
                 return True
             else:
                 return False
-        elif isinstance(other, RationalFunctionField):
+        elif isinstance(other, rationalFunction.RationalFunctionField):
             return other.issuperring(self)
         else:
             return False
@@ -1939,7 +1956,7 @@ class PolynomialRing (ring.CommutativeRing):
             raise TypeError, "larger ring element cannot be a seed."
         else:
             if seed in self.coefficientRing:
-                return MultiVariableSparsePolynomial({tuple([0]*len(self.vars)): self.coefficientRing.createElement(seed)}, list(self.vars))
+                return MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(seed)}, list(self.vars))
             listvars = list(self.vars)
             if isinstance(seed, OneVariableSparsePolynomial):
                 seed = seed.toOneVariableDensePolynomial()
