@@ -10,11 +10,8 @@ class IntegerResidueClass:
             modulus = -modulus
         self.m = modulus
         if isinstance(representative, Rational):
-            t = extgcd(representative.denominator, self.m)
-            if t[2] != 1:
-                raise ValueError, "No inverse of %s." % representative
-            self.n = (representative.numerator * t[0]) % self.m
-
+            t = IntegerResidueClass(representative.denominator, self.m).inverse().getResidue()
+            self.n = representative.numerator * t % self.m
         else:
             self.n = representative % self.m
 
@@ -23,6 +20,8 @@ class IntegerResidueClass:
 
     def __mul__(self, other):
         if isinstance(other, IntegerResidueClass):
+            if self.m == other.m:
+                return self.__class__(self.n * other.n, self.m)
             if self.m % other.m == 0:
                 return IntegerResidueClass(self.n * other.n, other.m)
             elif other.m % self.m == 0:
@@ -50,6 +49,8 @@ class IntegerResidueClass:
 
     def __add__(self, other):
         if isinstance(other, IntegerResidueClass):
+            if self.m == other.m:
+                return self.__class__(self.n + other.n, self.m)
             if self.m % other.m == 0:
                 return IntegerResidueClass(self.n + other.n, other.m)
             elif other.m % self.m == 0:
@@ -65,6 +66,8 @@ class IntegerResidueClass:
 
     def __sub__(self, other):
         if isinstance(other, IntegerResidueClass):
+            if self.m == other.m:
+                return self.__class__(self.n - other.n, self.m)
             if self.m % other.m == 0:
                 return IntegerResidueClass(self.n - other.n, other.m)
             elif other.m % self.m == 0:
@@ -77,13 +80,6 @@ class IntegerResidueClass:
             return NotImplemented
 
     def __rsub__(self, other):
-        if isinstance(other, IntegerResidueClass):
-            if self.m % other.m == 0:
-                return IntegerResidueClass(other.n - self.n, other.m)
-            elif other.m % self.m == 0:
-                return IntegerResidueClass(other.n - self.n, self.m)
-            else:
-                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
         try:
             return IntegerResidueClass(other - self.n, self.m)
         except:
@@ -92,17 +88,17 @@ class IntegerResidueClass:
     def __pow__(self, other, mod=None):
         if other < 0:
             inverse = self.inverse()
-            return IntegerResidueClass(pow(inverse.n, -other, self.m), self.m)
+            return self.__class__(pow(inverse.n, -other, self.m), self.m)
         elif other == 0:
-            return IntegerResidueClass(1, -other, self.m)
+            return self.__class__(1, self.m)
         else:
-            return IntegerResidueClass(pow(self.n, other, self.m), self.m)
+            return self.__class__(pow(self.n, other, self.m), self.m)
 
     def __neg__(self):
-        return IntegerResidueClass(-self.n, self.m)
+        return self.__class__(-self.n, self.m)
 
     def __pos__(self):
-        return IntegerResidueClass(+self.n, self.m)
+        return self.__class__(+self.n, self.m)
 
     def __eq__(self, other):
         if other == 0 and self.n == 0:
@@ -121,7 +117,7 @@ class IntegerResidueClass:
         t = extgcd(self.n, self.m)
         if t[2] != 1:
             raise ValueError, "No inverse of %s." % self
-        return IntegerResidueClass(t[0], self.m)
+        return self.__class__(t[0], self.m)
 
     def getModulus(self):
         return self.m
@@ -176,6 +172,12 @@ class IntegerResidueClassRing (CommutativeRing):
             return IntegerResidueClass(seed, self.m)
         except:
             raise ValueError, "%s can not be converted to an IntegerResidueClass object." % seed
+
+    def __contains__(self, elem):
+        if isinstance(elem, IntegerResidueClass) and \
+           elem.getModulus() == self.m:
+            return True
+        return False
 
     def isfield(self):
         """
