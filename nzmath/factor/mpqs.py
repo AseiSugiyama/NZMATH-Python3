@@ -1,11 +1,11 @@
 import math
-import nzmath.bigrandom as bigrandom
+import bigrandom
 import random
 import time
-import nzmath.arith1 as arith1
-import nzmath.gcd as gcd
+import arith1
+import gcd
 import trialdivision
-import nzmath.prime as prime
+import prime
 
 class QS:
     def __init__(self,n,sieverange,factorbase):
