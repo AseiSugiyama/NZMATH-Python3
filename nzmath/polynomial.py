@@ -16,6 +16,7 @@ class OneVariableDensePolynomial:
         if isinstance(variable, str) and isinstance(coefficient, list):
             self.coefficient = coefficient
             self.variable = variable
+##             self.ring = self.getRing()
         else:
             raise ValueError, "You must input (list, string)."
 
@@ -41,6 +42,7 @@ class OneVariableDensePolynomial:
 
     def __add__(self, other):
         if rational.isIntegerObject(other) or isinstance(other, rational.Rational):
+##         if other in self.ring.getCoefficientRing():
             sum = OneVariableDensePolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
             return sum.adjust()
@@ -265,6 +267,9 @@ class OneVariableDensePolynomial:
             return return_polynomial.adjust()
         else:
             raise ValueError, "You must input Polynomial and [variable or Rational or polynomial]."
+
+    def __pos__(self):
+        return self.adjust()
 
     def __repr__(self):
         self_adjust = self.adjust()
@@ -682,6 +687,9 @@ class OneVariableSparsePolynomial:
         else:
             raise ValueError, "You must input variable or Rational or Polynomial for other."
 
+    def __pos__(self):
+        return self.adjust()
+
     def __repr__(self):
         adjust_polynomial = self.adjust()
         if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
@@ -1020,6 +1028,9 @@ class MultiVariableDensePolynomial:
             return return_polynomial
         else:
             return return_polynomial.toMultiVariableDensePolynomial()
+
+    def __pos__(self):
+        return self.adjust()
 
     def __repr__(self):
         self_adjust = self.adjust()
@@ -1394,6 +1405,9 @@ class MultiVariableSparsePolynomial:
             return adjust_polynomial
         else:
             return new_polynomial.adjust()
+
+    def __pos__(self):
+        return self.adjust()
 
     def __repr__(self):
         self_adjust = self.adjust()
