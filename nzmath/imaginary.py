@@ -186,6 +186,11 @@ class Complex:
     def __ge__(self, other):
         raise TypeError, "cannot compare complex numbers using <, <=, >, >="
 
+    def arg(self, err=defaultError):
+        x = self.real
+        y = self.imag
+        return real.atan2(y,x)
+
 class ComplexField:
     """
 
@@ -479,3 +484,4 @@ def tanh(z, err=defaultError):
 
 def atanh(z, err=defaultError):
     return log((1+z)/(1-z), err=err) / 2
+
