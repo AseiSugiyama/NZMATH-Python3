@@ -40,8 +40,6 @@ class Matrix:
         else:
             raise TypeError, self.__setitem__.__doc__
 
-           return 0
-
     def __eq__(self, other):
         if isinstance(other, Matrix):
             if (self.row != other.row) or (self.column != other.column):
@@ -118,6 +116,7 @@ class Matrix:
         return (-1) * self
 
     def __pow__(self, other):
+        other = +other
         if other in ring.theIntegerRing and other >= 0:
             power = unit_matrix(self.row)
             for i in range(other):
