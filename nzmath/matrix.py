@@ -11,13 +11,14 @@ VectorsNotIndependent = "VectorsNotIndependent"
 class Matrix:
 
     def __init__(self, row, column):
-        if row <= 0 or column <= 0:
+        if isinstance(row, int) and isinstance(column, int) and row > 0 and column > 0:
+            self.row = row
+            self.column = column
+            self.compo = []
+            for i in range(self.row):
+                self.compo.append([0] * self.column)
+        else:
             raise ValueError
-        self.row = row
-        self.column = column
-        self.compo = []
-        for i in range(self.row):
-            self.compo.append([0] * self.column)
 
     def __repr__(self):
         return_str = ""
@@ -31,6 +32,8 @@ class Matrix:
                 return_str += "%*s " % (maxlen[j], `self.compo[i][j]`)
             return_str += "\n"
         return return_str[:-1]
+
+    __str__ = __repr__ 
 
     def __eq__(self, other):
         if isinstance(other, int):
@@ -49,6 +52,9 @@ class Matrix:
                 if self.compo[i][j] != other.compo[i][j]:
                     return 0
         return 1
+
+    def __neg__(self):
+        return (-1) * self
 
     def __add__(self, other):
         if (self.row != other.row) or (self.column != other.column): 
@@ -114,6 +120,15 @@ class Matrix:
                 for j in range(self.column):
                     product.compo[i][j] = self.compo[i][j] * other
             return product
+
+    def __pow__(self, other):
+        if isinstance(other, int):
+            power = unit_matrix(self.row)
+            for i in range(other):
+                power *= self
+            return power
+        else:
+            raise TypeError
 
     def copy(self):
         """create a copy of instance"""
@@ -185,13 +200,29 @@ class Matrix:
             column_n.compo[j][0] = self.compo[j][n-1]
         return column_n
 
-    def __getitem__(self, n):
-        """M[i] <==> M.get_column_vector(i)"""
-        return self.get_column_vector(n)
+    def __getitem__(self, *key):
+        """M[i,j] <==> M.get_compo(i,j)
+        M[i] <==> M.get_column_vector(i)"""
+        print "len=",len(key)
+        print key
+        if isinstance(key[0], tuple):
+            return self.get_compo(key[0][0],key[0][1])
+        elif isinstance(key[0], int):
+            return self.get_column_vector(key[0])
+        else:
+            raise TypeError
 
-    def __setitem__(self, i, vector):
-        """M[i] = V <==> M.set_column(i, V)"""
-        self.set_column(i, vector)
+    def __setitem__(self, *args):
+        """M[i,j] = a <==> M.set_compo(i, j, a)
+        M[i] = V <==> M.set_column(i, V)"""
+        key = args[0]
+        value = args[1]
+        if isinstance(key, tuple):
+            self.set_compo(key[0], key[1], value)
+        elif isinstance(key, int):
+            self.set_column(key, value)
+        else:
+            raise TypeError
 
     def swap_row(self, m1, m2):
         tmp = self.compo[m1-1][:]
@@ -481,6 +512,34 @@ class Matrix:
                     H.set_column( m, (H.get_column_vector(m) + u*H.get_column_vector(i)) )
         return H
 
+    def column_echelon_form(self):  # using Cohen's Algorithm 2.3.11
+        """Return a Matrix in column echelon form whose image is equal to the image of self."""
+        M = self.copy()
+        # i = M.row
+        k = M.column
+        i_range = range(1, M.row+1)
+        i_range.reverse()
+        for i in i_range:
+            search_range = range(1, k+1)
+            search_range.reverse()
+            for j in search_range:
+                if M.get_compo(i,j) != 0:
+                    break
+            else:
+                continue
+            d = 1 / toRational(M.get_compo(i,j))
+            for l in range(1, i+1):
+                t = d * M.get_compo(l,j)
+                M.set_compo(l,j,M.get_compo(l,k))
+                M.set_compo(l,k,t)
+            for j in range(1, M.column+1):
+                if j == k:
+                    continue
+                for l in range(1,i+1):
+                    M.set_compo(l,j,M.get_compo(l,j)-M.get_compo(l,k)*M.get_compo(i,j))
+            k = k-1
+        return M 
+
 # the belows are not class methods
 def unit_matrix(size):
     """unit_matrix(n) : Return unit matrix whose size is n * n"""
@@ -528,7 +587,4 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
-    print "b.kernel"
-    print b.kernel()
-    print "---"
-    print b.inverse_image([3,15])
+    pass
