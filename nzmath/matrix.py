@@ -2,29 +2,43 @@ import rational
 import vector
 
 class Matrix:
-    """ Matrix is the class of matrices."""
+    """
+    
+    Matrix is a class for matrices.
+
+    """
 
     def __init__(self, row, column, compo = 0):
-        "Matrix(row, column)"
-        if (rational.isIntegerObject(row) and rational.isIntegerObject(column)
-            and row > 0 and column > 0 ): 
+        """
+
+        Matrix(row, column [,components])
+
+        """
+        if (rational.isIntegerObject(row)
+            and rational.isIntegerObject(column)
+            and row > 0
+            and column > 0 ): 
             self.row = row
             self.column = column
             self.compo = []
-            if compo == 0 :
+            if compo == 0:
                 for i in range(self.row):
                     self.compo.append([0] * self.column)
             else:
-                if (len(compo) < self.row * self.column):
-                    compo += [0] * (self.row * self.column - len(compo))
+                if (len(compo) != self.row * self.column):
+                    raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
                     self.compo.append(compo[self.column*i : self.column*(i+1)])
         else:
-            raise ValueError, "Arguments are not integers > 0."
+            raise ValueError, "invalide value for matrix size"
 
     def __getitem__(self, *arg):
-        """M[i,j] : Return (i,j)-component of M. 
-        M[i] <==> M.getColumn(i)"""
+        """
+        
+        M[i,j] : Return (i,j)-component of M. 
+        M[i] <==> M.getColumn(i)
+        
+        """
         if isinstance(arg[0], tuple):
             return self.compo[ arg[0][0]-1 ][ arg[0][1]-1 ]
         elif isinstance(arg[0], int) or isinstance(arg[0], long): 
@@ -33,8 +47,12 @@ class Matrix:
             raise IndexError, self.__getitem__.__doc__
 
     def __setitem__(self, *arg):
-        """M[i,j] = a : Substitute a for (i,j)-component of M.
-        M[i] = V <==> M.setColumn(i, V)"""
+        """
+
+        M[i,j] = a   :   Substitute a for (i,j)-component of M.
+        M[i] = V <==> M.setColumn(i, V)
+        
+        """
         key = arg[0]
         value = arg[1]
         if isinstance(key, tuple):
@@ -88,7 +106,11 @@ class Matrix:
         return diff
 
     def __mul__(self, other):
-        """multiplication with a Matrix or a scalar"""
+        """
+        
+        multiplication with a Matrix or a scalar
+        
+        """
         if isinstance(other, Matrix):
             if self.column != other.row:
                 raise MatrixSizeError
@@ -114,7 +136,11 @@ class Matrix:
             return product
 
     def __div__(self, other):
-        """division by a scalar"""
+        """
+        
+        division by a scalar
+        
+        """
         return self * (1 / rational.Rational(other)) 
 
     def __rmul__(self, other):
@@ -149,7 +175,7 @@ class Matrix:
         if self.row != self.column:
             raise MatrixSizeError
 
-        power = unitMatrix(self.row)
+        power = theMatrixRing.unitMatrix(self.row) 
         if n == 0:
             return power
         if n > 0:
@@ -188,7 +214,11 @@ class Matrix:
     # utility methods ----------------------------------------------------
 
     def copy(self):
-        """Create a copy of the instance."""
+        """
+        
+        Create a copy of the instance.
+        
+        """
         copy = self.__class__(self.row, self.column)
         copy.row = self.row
         copy.column = self.column
@@ -197,12 +227,20 @@ class Matrix:
         return copy
 
     def set(self, list):
-        """set(list) : Substitute list for components"""
+        """
+
+        set(list) : Substitute list for components
+        
+        """
         for i in range(self.row):
             self.compo[i] = list[self.column*i : self.column*(i+1)]
 
     def setRow(self, m, arg):
-        """setRow(m, new_row) : new_row should be a list/Vector/Matrix"""
+        """
+        
+        setRow(m, new_row) : new_row should be a list/Vector/Matrix
+        
+        """
         if isinstance(arg, list):
             self.compo[m-1] = arg[:]
         elif isinstance(arg, Matrix):
@@ -215,7 +253,11 @@ class Matrix:
             raise TypeError, self.setRow.__doc__
     
     def setColumn(self, n, arg):
-        """setColumn(n, new_column) : new_column should be a list/Vector/Matrix"""
+        """
+        
+        setColumn(n, new_column) : new_column should be a list/Vector/Matrix
+        
+        """ 
         if isinstance(arg, list):
             for i in range(self.row):
                 self.compo[i][n-1] = arg[i]
@@ -229,33 +271,53 @@ class Matrix:
             raise TypeError, self.setColumn.__doc__
 
     def getRow(self, i):
-        """getRow(i) : Return i-th row in form of Matrix"""
+        """
+        
+        getRow(i) : Return i-th row in form of Matrix
+        
+        """
         row = []
         for k in range(self.column):
             row.append(self.compo[i-1][k])
         return vector.Vector(row)
 
     def getColumn(self, j):
-        """getColumn(j) : Return j-th column in form of Matrix"""
+        """
+
+        getColumn(j) : Return j-th column in form of Matrix
+        
+        """
         column = []
         for k in range(self.row):
             column.append(self.compo[k][j-1])
         return vector.Vector(column)
 
     def swapRow(self, m1, m2):
-        """swapRow(m1, m2) : Swap self's m1-th row and m2-th row."""
+        """
+        
+        swapRow(m1, m2) : Swap self's m1-th row and m2-th row.
+        
+        """
         tmp = self.compo[m1-1][:]
         self.compo[m1-1] = self.compo[m2-1][:]
         self.compo[m2-1] = tmp[:]
 
     def swapColumn(self, n1, n2):
-        """swapColumn(n1, n2) : Swap self's n1-th column and n2-th column."""
+        """
+        
+        swapColumn(n1, n2) : Swap self's n1-th column and n2-th column.
+        
+        """
         tmp = self[n1]
         self.setColumn(n1, self[n2])
         self.setColumn(n2, tmp)
 
     def insertRow(self, i, arg):
-        """insertRow(i, new_row) : new_row can be a list or a Matrix""" 
+        """
+        
+        insertRow(i, new_row) : new_row can be a list or a Matrix
+        
+        """ 
         if isinstance(arg, list):
             self.compo.insert(i-1, arg)
             self.row += 1
@@ -266,7 +328,11 @@ class Matrix:
             raise TypeError
 
     def insertColumn(self, j, arg):
-        """insertColumn(j, arg) : new_column can be a list or a Matrix"""
+        """
+        
+        insertColumn(j, arg) : new_column can be a list or a Matrix
+        
+        """
         if isinstance(arg, list):
             for k in range(self.row):
                 self.compo[k].insert(j-1, list[k])
@@ -297,7 +363,11 @@ class Matrix:
     # Mathematical functions ---------------------------------------------
 
     def transpose(self):
-        """Return transposed matrix of self"""
+        """
+        
+        Return transposed matrix of self.
+    
+        """
         trans = self.__class__(self.column, self.row)
         for i in range(1, trans.row+1):
             for j in range(1, trans.column+1):
@@ -305,7 +375,11 @@ class Matrix:
         return trans
 
     def triangulate(self):
-        """Return triangulated matrix of self."""
+        """
+        
+        Return triangulated matrix of self.
+    
+        """
         triangle = self.copy()
         for i in range(triangle.row):
             if triangle.compo[i][i] == 0:
@@ -325,14 +399,22 @@ class Matrix:
         return triangle
 
     def trace(self):
-        """Return trace of self."""
+        """
+        
+        Return trace of self.
+    
+        """
         trace = 0
         for i in range(self.row):
             trace += self.compo[i][i]
         return trace
 
     def determinant(self):
-        """Return determinant of self."""
+        """
+        
+        Return determinant of self.
+    
+        """
         det = 1
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
@@ -342,7 +424,11 @@ class Matrix:
         return det
 
     def submatrix(self, i, j):
-        """Return submatrix which deleted i-th row and j-th column from self."""
+        """
+        
+        Return submatrix which deleted i-th row and j-th column from self.
+    
+        """
         sub = self.copy()
         sub.deleteRow(i)
         sub.deleteColumn(j)
@@ -356,30 +442,76 @@ class Matrix:
         return cofactors
 
     def inverse(self):
-        """Return inverse matrix of self,
-        or return None if inverse is not exist."""
+        """
+        
+        Return inverse matrix of self if exists,
+        or return None.
+        
+        """
         if self.row != self.column:
             raise MatrixSizeError
         return self.inverseImage(unitMatrix(self.row))
 
     def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
-        """characteristicPolynomial() -> Polynomial"""
+        """
+        
+        characteristicPolynomial() -> Polynomial
+        
+        """
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
         i = 0
-        C = unitMatrix(self.row)
+        C = theMatrixRing.unitMatrix(self.row)
         coeff = [0] * (self.row+1)
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
             coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
-            C = C + coeff[i] * unitMatrix(self.row)
+            C = C + coeff[i] * theMatrixRing.unitMatrix(self.row)
         import polynomial
         coeff.reverse()
         return polynomial.OneVariableDensePolynomial(coeff, "x")
 
+    def LUDecomposition(self):
+        """
+
+        LUDecomposition() -> (L, U)
+
+        L and U are matrices such that
+            self == L * U
+            L : lower triangular matrix
+            U : upper triangular matrix
+
+        """
+
+        A = self.copy()
+        n = A.row
+        L = unitMatrix(n)
+        U = unitMatrix(n)
+
+        # initialize L and U
+        for i in range(n):
+            for j in range(n):
+                if i == j:
+                    L.compo[i][j] = 1
+                else:
+                    L.compo[i][j] = 0
+                U.compo[i][j] = A.compo[i][j]
+
+        for i in range(n):
+            for j in range(i+1, n):
+                L.compo[j][i] = U.compo[j][i] / rational.Rational(U.compo[i][i])
+                for k in range(i, n):
+                    U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
+
+        return (L, U)
+
     def cohensSimplify(self):      # common process of image() and kernel()
-        """cohensSimplify is used in image() and kernel()"""
+        """
+        
+        cohensSimplify is used in image() and kernel()
+        
+        """
         c = [0] * (self.row + 1)
         d = [-1] * (self.column + 1)
         for k in range(1, self.column+1):
@@ -407,8 +539,12 @@ class Matrix:
         return (c,d)
 
     def kernel(self):       # Algorithm 2.3.1 of Cohen's book
-        """Return a Matrix which column vectors are one basis of self's kernel,
-        or return None if self's kernel is 0."""
+        """
+        
+        Return a Matrix which column vectors are one basis of self's kernel,
+        or return None if self's kernel is 0.
+        
+        """
         M = self.copy()
         tmp = M.cohensSimplify()
         c = tmp[0]
@@ -434,8 +570,12 @@ class Matrix:
         return output
 
     def image(self):        # Algorithm 2.3.2 of Cohen's book
-        """Return a Matrix which column vectors are one basis of self's image,
-        or return None if self's image is 0."""
+        """
+        
+        Return a Matrix which column vectors are one basis of self's image,
+        or return None if self's image is 0.
+        
+        """
         M = self.copy()
         tmp = M.cohensSimplify()
         c = tmp[0]
@@ -449,88 +589,22 @@ class Matrix:
         return output
 
     def rank(self):
-        """Rerutn self's rank."""
+        """
+        
+        Return rank of self.
+
+        """
         return len(self.image())
 
-#    def inverseImage(self, B):      # Algorithm 2.3.4 of Cohen's book
-#        """inverseImage(B) : B can be a list or a column vector(Matrix)
-#
-#        Return a vector belongs to the inverse image of B if exist,
-#        or raise Exception if not exist."""
-#        
-#        if isinstance(B, Matrix):
-#            return self._inverseImageMatrix(V)
-#
-#        M1 = self.copy()
-#        M1.insertColumn(self.column+1, B)
-#        V = M1.kernel()
-#        r = V.column
-#        for j in range(1, r+1):
-#            if V[self.column+1, j] != 0:
-#                break
-#        else:
-#            raise NoInverseImage, "No inverse image"
-#        d = (-1)/rational.Rational(V[self.column+1,j])
-#        x = []
-#        for i in range(1, self.column+1):
-#            x.append(d*V[i,j])
-#        inverseImage = Matrix(self.column, 1)
-#        inverseImage.setColumn(1, x)
-#        return inverseImage
-
-#    def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
-#        """M.inverseImage(V) -> X such that MX=V
-#        It raises NoInverseImage exception if inverse image of it is not exist."""
-#        M = self.copy()
-#        m = M.row;  n = M.column;  r = V.column 
-#        if n > m:
-#            raise MatrixSizeError
-#        C = Matrix(m,1)
-#        X = Matrix(n,r)
-#        # step 1
-#        j = 0
-#        B = V.copy()
-#        while 1:
-#            # step 2
-#            j += 1
-#            if j > n:
-#                break
-#            # step 3
-#            for i in range(j,m+1):
-#                if M[i,j] != 0:
-#                    break
-#            else:
-#                raise VectorsNotIndependent, self.__name__
-#            # step 4
-#            if i > j:
-#                #for l in range(j,n+1):
-#                for l in range(1,n+1):
-#                    tmp = M[i,l]
-#                    M[i,l] = M[j,l]
-#                    M[j,l] = tmp
-#                B.swapRow(i,j)
-#            # step 5
-#            d = 1 / rational.Rational(M[j,j])
-#            for k in range(j+1,m+1):
-#                C[k,1] = d * M[k,j]
-#            for k in range(j+1,m+1):
-#                for l in range(j+1,n+1):
-#                    M[k,l] = M[k,l] - C[k,1] * M[j,l]
-#            for k in range(j+1,m+1):
-#                B.setRow(k, B.getRow(k)-C[k,1]*B.getRow(j))
-#        # step 6
-#        for i in range(n,0,-1):
-#            tmp = B.getRow(i)
-#            for j in range(i+1,n+1): 
-#                tmp -= M[i,j] * X.getRow(j)
-#            X.setRow(i, tmp / M[i,i])
-#        # step 7
-#        for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
-#            if B.getRow(k) != M.getRow(k) * X:
-#                raise NoInverseImage, "some vectors are not in the inverse image"
-#        return X
-
     def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
+        """
+
+        inverseImage(V) -> X
+
+        such that
+        self * X == V
+
+        """ 
         M = self.copy()
         m = M.row; n = M.column; r = V.column
         X = Matrix(n,r)
@@ -603,12 +677,16 @@ class Matrix:
                     u = H[i,m-1] / rational.Rational(t)
                     for j in range(m,n+1):
                         H[i,j] -= u * H[m,j]
-                        H[i,m-1] = 0    # ommited from the book !!!
+                        H[i,m-1] = 0 
                     H.setColumn(m, H[m] + u * H[i] )
         return H
 
     def columnEchelonForm(self):  # Algorithm 2.3.11 of Cohen's book
-        """Return a Matrix in column echelon form whose image is equal to the image of self."""
+        """
+        
+        Return a Matrix in column echelon form whose image is equal to the image of self.
+    
+        """
         M = self.copy()
         k = M.column
         i_range = range(1, M.row+1)
@@ -634,9 +712,14 @@ class Matrix:
             k = k-1
         return M 
 
-#---------------------------------------------------------------------
 
 class IntegerMatrix(Matrix):
+    """
+
+    IntegerMatrix is a class for matrices
+    which coefficients are all integers.
+
+    """
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -716,14 +799,19 @@ class MatrixRing:
     getInstance = classmethod(getInstance)
 
 
-
-
-
 class Subspace(Matrix):
-    """A subspace formed by the column vectors."""
+    """
+    
+    Subspace is a class for subspaces.
+    
+    """
 
     def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
-        """Return a basis of full space, which including self's column vectors."""
+        """
+        
+        Return a basis of full space, which including self's column vectors.
+    
+        """
         if self.row < self.column:
             raise MatrixSizeError
 
@@ -731,7 +819,7 @@ class Subspace(Matrix):
         k = self.column
 
         M = self.copy()
-        B = unitMatrix(n)
+        B = theMatrixRing.unitMatrix(n)
 
         for s in range(k):
             found = 0; t = s
@@ -764,7 +852,10 @@ class Subspace(Matrix):
         return B
 
 
-# the belows are not class methods------------------------------------
+# --------------------------------------------------------------------
+#       the belows are not class methods
+# --------------------------------------------------------------------
+
 def unitMatrix(size):
     unit_matrix = Matrix(size, size)
     for i in range(size):
@@ -794,6 +885,17 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
     M2 = M * N1
     return M2.image()
 
+def isUpperTriangularMatrix(M):
+    for j in range(M.column):
+        for i in range(j+1, M.row):
+            if M.compo[i][j] != 0:
+                return False
+    return True
+
+def isLowerTriangularMatrix(M):
+    return isUpperTriangularMatrix(M.transpose())
+
+
 #--------------------------------------------------------------------
 #   define exceptions 
 #--------------------------------------------------------------------
@@ -809,6 +911,7 @@ class NoInverseImage(Exception):
 
 class NoInverse(Exception):
     pass
+
 
 #--------------------------------------------------------------------
 #   data for debugging 
@@ -846,8 +949,23 @@ def pause():
     print "--- hit enter key ---"
     raw_input()
 
+
 if __name__ == '__main__':
     pass
-    M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
-    V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
-    print M.inverseImage(V)
+    A = Matrix(4,4,[1,1,0,3]+[2,1,-1,1]+[3,-1,-1,2]+[-1,2,3,-1])
+    L, U = A.LUDecomposition()
+    print A
+    print L
+    print U
+    print L * U
+    if L*U == A:
+        print "True"
+    else:
+        print "False"
+    B = Matrix(3,3, [1,2,3]+[2,8,11]+[3,22,25])
+    print B
+    L, U = B.LUDecomposition()
+    print L
+    print U
+    print L * U
+    print L * U == B
