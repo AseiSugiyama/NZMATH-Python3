@@ -365,7 +365,7 @@ class OneVariablePolynomial:
             primitive_function = self.integrate(var)
             return primitive_function(max) - primitive_function(min)
         else:
-            raise ValueErroe, "You must call integrate with variable or with variable, min and max."
+            raise ValueError, "You must call integrate with variable or with variable, min and max."
 
     def getRing(self):
         return self.ring
