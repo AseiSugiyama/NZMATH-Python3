@@ -62,6 +62,23 @@ class OneVariablePolynomial:
         else:
             raise ValueError, "You must input non-negative integer for index."
 
+    def __eq__(self, other):
+        if not self and not other:
+            True
+        if isinstance(other, OneVariablePolynomial):
+            if self.getVariable() == other.getVariable() and self.degree() == other.degree():
+                for i in range(self.degree() + 1):
+                    if self[i] != other[i]:
+                        return False
+                return True
+            return False
+        elif other in self.getCoefficientRing():
+            if self.degree() < 1 and self[0] == other:
+                return True
+            return False
+        else:
+            return NotImplemented
+
     def degree(self):
         return self.coefficient.degree()
 
@@ -348,23 +365,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         return self.__divmod__(other)[1]
 
     __rmod__=__mod__
-
-    def __eq__(self, other):
-        if not self and not other:
-            True
-        if isinstance(other, OneVariablePolynomial):
-            if self.getVariable() == other.getVariable() and self.degree() == other.degree():
-                for i in range(self.degree() + 1):
-                    if self[i] != other[i]:
-                        return False
-                return True
-            return False
-        elif other in self.getCoefficientRing():
-            if self.degree() < 1 and self[0] == other:
-                return True
-            return False
-        else:
-            return NotImplemented
 
     def __call__(self,other):
         if isinstance(other,str):
@@ -668,23 +668,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
         return self.toOneVariableDensePolynomial() / other
 
     __div__ = __truediv__
-
-    def __eq__(self, other):
-        if not self and not other:
-            True
-        if isinstance(other, OneVariablePolynomial):
-            if self.getVariable() == other.getVariable() and self.degree() == other.degree():
-                for i in range(self.degree() + 1):
-                    if self[i] != other[i]:
-                        return False
-                return True
-            return False
-        elif other in self.getCoefficientRing():
-            if self.degree() < 1 and self[0] == other:
-                return True
-            return False
-        else:
-            return NotImplemented
 
     def __call__(self, other):
         if isinstance(other, str):
