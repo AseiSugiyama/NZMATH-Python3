@@ -121,6 +121,13 @@ class OneVariablePolynomial:
             return_coefficient[(i,)] = c
         return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
+    def __repr__(self):
+        return_str = '%s(%s, %s, %s)' % (self.__class__.__name__,
+                                         repr(self.coefficient),
+                                         repr(self.getVariable()),
+                                         repr(self.getCoefficientRing()))
+        return return_str
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -362,16 +369,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             return True
         else:
             return False
-
-    def __repr__(self):
-        self_adjust = self.adjust()
-        if not isinstance(self_adjust, OneVariableDensePolynomial):
-            return repr(self_adjust)
-        return_str = 'OneVariableDensePolynomial(' + repr(self.coefficient) + ', "'
-        return_str += repr(self.getVariable()) + '", '
-        return_str += repr(self.getCoefficientRing()) + ','
-        return_str += ')'
-        return return_str
 
     def __str__(self):
         if self.degree() < 1:
@@ -712,13 +709,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             return True
         else:
             return False
-
-    def __repr__(self):
-        if self.degree() < 1:
-            return repr(self[0])
-        return_str = "OneVariableSparsePolynomial(" + repr(self.coefficient) + ", "
-        return_str += repr(self.variable) + ")"
-        return return_str
 
     def __str__(self):
         return str(self.toOneVariableDensePolynomial())
