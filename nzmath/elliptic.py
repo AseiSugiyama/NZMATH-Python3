@@ -352,7 +352,7 @@ class EC:
                 else:
                     raise ValueError, "(-_-;)" 
         elif self.ch==2:
-            pass
+            raise NotImplementedError, "Now making (>_<)"
         else: #self.ch==0
             if y1**2+4*y2>=0:
                 return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)*1
