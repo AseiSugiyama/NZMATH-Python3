@@ -98,6 +98,11 @@ class FloatTest (unittest.TestCase):
         assert 0 == real.atan2(1,0)
         assert real.pi / 2 == real.atan2(0, 1)
 
+    def testHyperbolic(self):
+        assert complex.sinh(1)
+        assert complex.cosh(1)
+        assert complex.tanh(1)
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite
