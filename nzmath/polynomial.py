@@ -273,8 +273,13 @@ class OneVariableDensePolynomial:
             for i in range(len(self.coefficient)):
                 return_value = return_value * other + self.coefficient[-1-i]
             return return_value
+        elif isinstance(other, OneVariableDensePolynomial) or isinstance(other, OneVariableSparsePolynomial) or isinstance(other, MultiVariableDensePolynomial) or isinstance(other, MultiVariableSparsePolynomial):
+            return_polynomial = 0
+            for i in range(len(self.coefficient)):
+                return_polynomial += self.coefficient[i] * (other**i)
+            return return_polynomial.adjust()
         else:
-            raise ValueError, "You must input Polynomial and [variable or Rational]."
+            raise ValueError, "You must input Polynomial and [variable or Rational or polynomial]."
 
     def __repr__(self):
         self_adjust = self.adjust()
@@ -385,7 +390,7 @@ class OneVariableDensePolynomial:
             return_coefficient = {}
             for i in range(len(adjust_polynomial.coefficient)):
                 if adjust_polynomial.coefficient[i] != 0:
-                    key = [(i,)]
+                    key = (i,)
                     value = adjust_polynomial.coefficient[i]
                     return_coefficient[key] = value
             return_variable = [adjust_polynomial.variable]
@@ -677,8 +682,13 @@ class OneVariableSparsePolynomial:
             for i in self.coefficient:
                 return_value += (other**i[0]) * self.coefficient[i]
             return return_value
+        elif isinstance(other,OneVariableDensePolynomial) or isinstance(other, OneVariableSparsePolynomial) or isinstance(other, MultiVariableDensePolynomial) or isinstance(other, MultiVariableSparsePolynomial):
+            return_polynomial = 0
+            for i in self.coefficient:
+                return_polynomial += self.coefficient[i] * (other**i[0])
+            return return_polynomial.adjust()
         else:
-            raise ValueError, "You must input variable or Rational for other."
+            raise ValueError, "You must input variable or Rational or Polynomial for other."
 
     def __repr__(self):
         adjust_polynomial = self.adjust()
@@ -1280,7 +1290,7 @@ class MultiVariableSparsePolynomial:
             return adjust_polynomial
         substitutions = other
         for i in adjust_polynomial.variable:
-            if i in substitutions and rational.isIntegerObject(substitutions[i]):
+            if i in substitutions and (rational.isIntegerObject(substitutions[i]) or isinstance(substitutions[i], rational.Rational)):
                 variable_position = adjust_polynomial.variable.index(i)
                 new_coefficient = {}
                 for j in adjust_polynomial.coefficient:
