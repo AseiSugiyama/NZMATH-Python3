@@ -460,7 +460,13 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         one_field = self.F2.createElement(1)
         assert one_poly == one_field
         assert not one_poly != one_field
-        
+
+    def testFactor(self):
+        import finitefield
+        p = OneVariableDensePolynomial([1,2,3,0,0,3,2,1],
+                                       x,
+                                       finitefield.FinitePrimeField(5))
+        assert len(p.factor()) == 3
 
 def suite():
     suite=unittest.TestSuite()
