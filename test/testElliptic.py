@@ -30,7 +30,7 @@ class EllipticTest(unittest.TestCase):
         assert b.j == rational.Rational(b.c4**3, b.disc)
 
     def testSimple(self): 
-        assert str(a.simple()) == '- 8208 + 432x - x**3 + y**2' 
+        assert str(a.simple()) == ' y ** 2=8208 - 432 * x + x ** 3' 
 
     def testWhetherOn(self): 
         assert c.whetherOn(P1)
@@ -72,7 +72,7 @@ class EllipticTest(unittest.TestCase):
         assert f.whetherOn(f.point())
 
     def testChangeCurve(self):
-        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '10/1x + 3/1x**2 - x**3 + 8/1y + 6/1xy + y**2'
+        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '8/1y + 6/1xy + y**2=-10/1 * x - 3/1 * x ** 2 + x ** 3'
 
     def testPoint(self):
         assert elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
@@ -91,9 +91,9 @@ class EllipticTest(unittest.TestCase):
             8:polynomial.OneVariableSparsePolynomial({0:16,1:50,2:29,3:10,4:62,5:80,6:41,7:66,8:79,9:48,10:77,11:53,12:67,13:70,14:5,15:18,16:36,17:28,18:58,19:95,20:67,21:91,22:37,23:93,24:25,25:93,26:61,27:34,28:68,30:4},["x"],finitefield.FinitePrimeField(E.ch))*2},
            [3,5,7])
         assert E.divPoly([])==D
-        F=elliptic.EC([3,4],0)
-        #assert F.divPoly(5)=0#
-        #assert F.divPoly(6)=0#
+        F=elliptic.EC([3,4],7,3)
+        D=F.divPoly(1)[0]
+        assert F.divPoly(1,7)==D[7]
 
 def suite():
     suite = unittest.makeSuite(EllipticTest, 'test') 
