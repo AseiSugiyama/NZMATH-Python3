@@ -70,10 +70,16 @@ class IntegerPolynomialTest(unittest.TestCase):
         call_2 = OneVariableDensePolynomial([0,1,2,3,4],"y")
         call_3 = 4
         call_4 = OneVariableSparsePolynomial({(0,):9,(1,):-8,(3,):5},["y"])
+        call_5 = OneVariableDensePolynomial([-2,-8,-9,-4],"x")
+        call_6 = MultiVariableSparsePolynomial({(0,0):6,(1,0):8,(2,0):3,(0,1):4,(1,1):4,(0,3):5},["x","z"])
+        call_7 = OneVariableDensePolynomial([6,21,22,5],"x")
         assert b(-2) == call_1
         assert e("y") == call_2
         assert f(x = 2,z = -1) == call_3
         assert f(x = -2,z = "y") == call_4
+        assert b(a) == call_5
+        assert f(x = a) == call_6
+        assert f(z = a) == call_7
 
     def testGetRing(self):
         Zx = PolynomialRing(rational.theIntegerRing, "x")
