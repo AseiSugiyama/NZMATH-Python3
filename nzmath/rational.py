@@ -71,11 +71,7 @@ class Rational:
     __truediv__ = __div__
 
     def __radd__(self,other):
-        if isinstance(other, Rational):
-            numerator = self.numerator*other.denominator + self.denominator*other.numerator
-            denominator = self.denominator*other.denominator
-            return +Rational(numerator,denominator)
-        elif isIntegerObject(other):
+        if isIntegerObject(other):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
             return +Rational(numerator,denominator)
@@ -83,11 +79,7 @@ class Rational:
             return NotImplemented
 
     def __rsub__(self,other):
-        if isinstance(other, Rational):
-            numerator = self.numerator*other.denominator - self.denominator*other.numerator
-            denominator = self.denominator*other.denominator
-            return +Rational(numerator,denominator)
-        elif isIntegerObject(other):
+        if isIntegerObject(other):
             numerator = self.denominator*other - self.numerator
             denominator = self.denominator
             return +Rational(numerator,denominator)
@@ -95,11 +87,7 @@ class Rational:
             return NotImplemented
 
     def __rmul__(self,other):
-        if isinstance(other, Rational):
-            numerator = self.numerator*other.numerator
-            denominator = self.denominator*other.denominator
-            return +Rational(numerator,denominator)
-        elif isIntegerObject(other):
+        if isIntegerObject(other):
             numerator = self.numerator*other
             denominator = self.denominator
             return +Rational(numerator,denominator)
@@ -107,11 +95,7 @@ class Rational:
             return NotImplemented
 
     def __rdiv__(self,other):
-        if isinstance(other, Rational):
-            numerator = self.numerator*other.denominator
-            denominator = self.denominator*other.numerator
-            return +Rational(numerator,denominator)
-        elif isIntegerObject(other):
+        if isIntegerObject(other):
             numerator = self.denominator*other
             denominator = self.numerator
             return +Rational(numerator,denominator)
@@ -167,6 +151,8 @@ class Rational:
         if isIntegerObject(other):
             return self.numerator - self.denominator * other
         return self.numerator*other.denominator - self.denominator*other.numerator
+    def getRing(self):
+        return theRationalField
 
 class RationalField:
     """
@@ -395,4 +381,4 @@ class IntegerRing:
 theIntegerRing = IntegerRing()
 
 def isIntegerObject(anObject):
-    return (isinstance(anObject, int) or isinstance(anObject, long))
+    return isinstance(anObject, (int, long))
