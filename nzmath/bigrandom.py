@@ -2,6 +2,9 @@
 import random
 
 
-def big_random(min,max):
+def random_range(min,max):
 
     return long(random.random() * (max-min)) + min
+
+def random(z):
+    return long(random.random() * z)
