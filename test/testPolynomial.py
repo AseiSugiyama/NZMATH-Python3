@@ -116,6 +116,8 @@ class IntegerPolynomialTest(unittest.TestCase):
 
     def testContent(self):
         assert 1 == self.a.content()
+        assert 2 == (2*self.a).content()
+        assert 1 == self.k.content()
 
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):

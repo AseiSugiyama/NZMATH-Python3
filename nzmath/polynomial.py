@@ -817,6 +817,28 @@ class OneVariableSparsePolynomial:
                 ring = ring * cring
         return PolynomialRing(ring, self.variable[0])
 
+    def content(self):
+        """
+
+        Return content of the polynomial.
+
+        """
+        coefring = self.getRing().getCoefficientRing()
+        if coefring.isfield():
+            if isinstance(coefring, ring.QuotientField):
+                num, den = 0, 1
+                for c in self.coefficient.values():
+                    num = c.numerator.getRing().gcd(num, c.numerator)
+                    den = c.denominator.getRing().lcm(den, c.denominator)
+                return coefring.createElement(num,den)
+            else:
+                raise NotImplementedError
+        else:
+            cont = 0
+            for c in self.coefficient.values():
+                cont = coefring.gcd(cont, c)
+            return cont
+
 class MultiVariableDensePolynomial:
 
     def __init__(self, coefficient, variable):
