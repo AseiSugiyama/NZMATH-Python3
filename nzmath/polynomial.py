@@ -82,8 +82,99 @@ class Polynomial:
     def __rpow__(self, other):
         raise ValueError, "You must input [Polynomial**index.]" 
 
+    def __floordiv__(self, other):
+        if isinstance(other, int) or isinstance(other, long):
+            if other == 0:
+                raise ZeroDivisionError, "integer division or modulo by zero."
+            floordiv_coefficient = []
+            for i in range(len(self.coefficient)):
+#    MATHEMATICA
+#                floordiv_coefficient += [(self.coefficient[i] - (self.coefficient[i] % other)) / other]
+#    MATHEMATICA
+                floordiv_coefficient += [self.coefficient[i] / other]
+            floordiv_polynomial = Polynomial(floordiv_coefficient, self.variable)
+            return floordiv_polynomial.adjust()
+        elif isinstance(other, FlatPolynomial):
+            return Polynomial.toFlatPolynomial(self) // other
+        elif isinstance(other, Polynomial):
+            other_adjust = other.adjust()
+            if isinstance(other_adjust,int) or isinstance(other_adjust,long):
+                return self // other_adjust
+            else:
+                self_adjust = self.adjust()
+                if isinstance(self_adjust,int) or isinstance(self_adjust,long) or self_adjust.variable != other_adjust.variable:
+                    return 0
+                else:
+                    floordiv_polynomial = 0
+                    while isinstance(self_adjust, Polynomial) and len(self_adjust.coefficient) >= len(other_adjust.coefficient):
+                        old_length = len(self_adjust.coefficient)
+                        quotient_position = len(self_adjust.coefficient) - len(other_adjust.coefficient)
+                        quotient_value = self_adjust.coefficient[-1] // other_adjust.coefficient[-1]
+#    MATHEMATICA
+#                        if abs((self_adjust.coefficient[-1] % other_adjust.coefficient[-1]) * 2) == abs(other_adjust.coefficient[-1]):
+#                            quotient_value = (self_adjust.coefficient[-1] - abs(other_adjust.coefficient[-1] / 2)) / other_adjust.coefficient[-1]
+#                        else:
+#                            quotient_value =  self_adjust.coefficient[-1]*1.0 / other_adjust.coefficient[-1]
+#                            quotient_value = int(quotient_value + 0.5 * abs(quotient_value) / quotient_value)
+#    MATHEMATICA
+                        quotient_polynomial = Polynomial([0]*(quotient_position+1), self.variable)
+                        quotient_polynomial.coefficient[quotient_position] = quotient_value
+                        floordiv_polynomial += quotient_polynomial
+                        self_adjust -= other_adjust * quotient_polynomial
+                        if isinstance(self_adjust,int) or isinstance(self_adjust,long):
+                            return floordiv_polynomial
+                        elif len(self_adjust.coefficient) == old_length:
+                            new_coefficient = self_adjust.coefficient[:]
+                            del(new_coefficient[-1])
+                            self_adjust = Polynomial(new_coefficient,self.variable).adjust()
+                    return floordiv_polynomial
+        else:
+            raise ValueError, "You must input Polynomial or integer."
+
+    def __rfloordiv__(self, other):
+        self_adjust = self.adjust()
+        if isinstance(self_adjust,int) or isinstance(self_adjust,long):
+            return other // self_adjust
+        elif isinstance(other,int) or isinstance(other,long):
+            return 0
+        elif isinstance(other,FlatPolynomial):
+            return other // self_adjust.toFlatPolynomial()
+        else:
+            raise ValueError, "Not Defined."
+
+#    def __div__(self, other):
+
+#    __truediv__=__div__
+
+    def __mod__(self, other):
+        return self - (self // other) * other
+
+    def __rmod__(self, other):
+        return other - (other // self) * self
+
+    def __divmod__(self, other):
+        return (self // other, self % other)
+
+    def __rdivmod__(self, other):
+        return (other // self, other % self)
+
     def __eq__(self, other):
-        return self - other == 0
+        sub_polynomial = self - other
+        if (isinstance(sub_polynomial,int) or isinstance(sub_polynomial,long)) and sub_polynomial == 0:
+            return 1
+        return 0
+
+    def __call__(self,other):
+        if isinstance(other,str):
+            result_coefficient = self.coefficient[:]
+            return Polynomial(result_coefficient, other).adjust()
+        elif isinstance(other, int) or isinstance(other, long):
+            return_value = 0
+            for i in range(len(self.coefficient)):
+                return_value += self.coefficient[i] * (other ** i)
+            return return_value
+        else:
+            raise ValueError, "You must input Polynomial and [variable or integer]."
 
     def __repr__(self):
         self = Polynomial.adjust(self)
@@ -328,12 +419,66 @@ class FlatPolynomial:
     def __rpow__(self, other):
         raise ValueError, "You must input integer for index."
 
+#    def __floordiv__(self, other):
+
+#    def __div__(self, other):
+
+#    __truediv__=__div__
+
+#    def __rfloordiv__(self, other):
+
+#    def __rdiv__(self, other):
+
+#    __rtruediv__=__rdiv__
+
+#    def __mod__(self, other):
+
+#    def __rmod__(self, other):
+
+#    def __divmod__(self, other):
+#        return (self // other, self % other)
+
+#    def __rdivmod__(self, other):
+#        return (other // self, other % self)
+
     def __eq__(self, other):
         sub_polynomial = self - other
         if (isinstance(sub_polynomial,int) or isinstance(sub_polynomial,long)) and sub_polynomial == 0:
             return 1
         return 0
         
+    def __call__(self,**other):
+        adjust_polynomial = self.adjust()
+        if isinstance(adjust_polynomial,int) or isinstance(adjust_polynomial, long):
+            return adjust_polynomial
+        substitutions = other
+        for i in adjust_polynomial.variables:            
+            if i in substitutions and (isinstance(substitutions[i],int) or isinstance(substitutions[i],long)):
+                variable_position = adjust_polynomial.variables.index(i)
+                new_coefficients = {}
+                for j in adjust_polynomial.coefficients:
+                    new_value = adjust_polynomial.coefficients[j]
+                    new_key = list(j)
+                    new_key[variable_position] = 0
+                    new_value *= substitutions[i]**j[variable_position]
+                    new_key = tuple(new_key)
+                    if new_key in new_coefficients:
+                        new_coefficients[new_key] += new_value
+                    else:
+                        new_coefficients[new_key] = new_value
+                adjust_polynomial.coefficients = new_coefficients
+        adjust_polynomial = adjust_polynomial.adjust()
+        if isinstance(adjust_polynomial,int) or isinstance(adjust_polynomial, long):
+            return adjust_polynomial
+        new_variables = adjust_polynomial.variables[:]
+        for i in adjust_polynomial.variables:
+            variable_position = adjust_polynomial.variables.index(i)
+            if i in substitutions and isinstance(substitutions[i],str):
+                new_variables[variable_position] = substitutions[i]
+        adjust_polynomial.variables = new_variables
+        result_polynomial = adjust_polynomial.adjust()
+        return result_polynomial
+
     def __repr__(self):
         self = FlatPolynomial.adjust(self)
         if (type(self) == int) or (type(self) == long) :
@@ -391,7 +536,7 @@ class FlatPolynomial:
                         if result_coefficients[i][- 1 - j] != index_total:
                             return_str += ')'
             if return_str[1] != '+':
-                return return_str
+                return return_str[1:]
             else:
                 return return_str[3:]
 
