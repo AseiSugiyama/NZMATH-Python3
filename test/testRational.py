@@ -104,6 +104,9 @@ class IntegerTest(unittest.TestCase):
     def testTruediv(self):
         assert Rational(1,3) == 1 / self.three
 
+    def testGetRing(self):
+        assert theIntegerRing == self.three.getRing()
+
 class IntegerRingTest(unittest.TestCase):
     def testContains(self):
         assert 1 in theIntegerRing
@@ -122,11 +125,31 @@ class IntegerRingTest(unittest.TestCase):
         assert not theIntegerRing.issuperring(theRationalField)
         assert theIntegerRing.issuperring(theIntegerRing)
 
+class RationalFieldTest(unittest.TestCase):
+    def testContains(self):
+        assert 1 in theRationalField
+        assert 1L in theRationalField
+        assert Integer(1) in theRationalField
+        assert Rational(1,2) in theRationalField
+        assert 3.14 not in theRationalField
+
+    def testGetQuotientField(self):
+        assert theRationalField is theRationalField.getQuotientField()
+
+    def testIssubring(self):
+        assert theRationalField.issubring(theRationalField)
+        assert not theRationalField.issubring(theIntegerRing)
+
+    def testIssuperring(self):
+        assert theRationalField.issuperring(theRationalField)
+        assert theRationalField.issuperring(theIntegerRing)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RationalTest, 'test'))
     suite.addTest(unittest.makeSuite(IntegerTest, 'test'))
     suite.addTest(unittest.makeSuite(IntegerRingTest, 'test'))
+    suite.addTest(unittest.makeSuite(RationalFieldTest, 'test'))
     return suite
 
 if __name__ == '__main__':
