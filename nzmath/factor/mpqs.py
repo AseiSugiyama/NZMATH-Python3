@@ -7,9 +7,174 @@ import nzmath.gcd as gcd
 import trialdivision
 import nzmath.prime as prime
 
-class MPQS:
-    def __init__(self,n,sieverange=0,factorbase=0):
+class QS:
+    def __init__(self,n,sieverange,factorbase):
         self.number=n
+        self.sqrt_n=int(math.sqrt(n))
+        for i in [2,3,5,7,11,17,19]:
+            if n%i == 0:
+                print "This number is divided by ",i
+                raise ValueError ;
+        i=1
+        while 1:
+            if self.number > 10**i:
+                i+=1
+            else :
+                self.disit=i
+                break
+
+        self.Srange=sieverange
+        self.FBN=factorbase
+
+        self.move_range = range(self.sqrt_n-self.Srange,self.sqrt_n+self.Srange+1)
+
+        i=0
+        k=0
+        factor_base =[-1]
+        FB_log =[0]
+        while 1:
+            ii = primes_table[i]
+            if arith1.legendre(self.number,ii) == 1:
+                factor_base.append(ii)
+                FB_log.append(primes_log_table[i])
+                k += 1
+                i += 1
+                if k==self.FBN:
+                    break
+            else:
+                i += 1
+
+        self.FB =factor_base
+        self.FB_log = FB_log
+        self.maxFB = factor_base[-1]
+        N_sqrt_list =[]
+        for i in self.FB:
+            if i != 2 and i != -1:
+                e = int(math.log(2*self.Srange,i))
+                N_sqrt_modp = sqroot_power(self.number,i,e)
+                N_sqrt_list.append(N_sqrt_modp)
+        self.solution = N_sqrt_list  #This is square roots of N on Z/pZ, p in factor base.
+        
+        poly_table = [] 
+        log_poly = []
+        minus_val =[]
+        for j in self.move_range:
+            jj=(j**2)-self.number
+            if jj < 0 :
+                jj = -jj
+                minus_val.append(j-self.sqrt_n+self.Srange)
+            elif jj == 0:
+                jj=1
+            lj=int((math.log(jj)*30)*0.97)  # 0.97 is an erroe
+            poly_table.append(jj)
+            log_poly.append(lj)
+        self.poly_table =poly_table  # This is Q(x) value , x in [-M+sqrt_n,M+sqrt_n]. 
+        self.log_poly =log_poly      # This is log(Q(x)) value.
+        self.minus_check = minus_val # This is "x" that Q(x) is minus value.
+
+    def run_sieve(self):
+        import pysco
+        pysco.full()
+        T=time.time()
+        M=self.Srange
+        start_location=[]
+        logp = [0]*(2*M+1)
+        j=2
+        for i in self.solution:
+            k=0
+            start_p =[]
+            while k < len(i): 
+                q = int((self.sqrt_n)/(self.FB[j]**(k+1)))
+                s_1=q*(self.FB[j]**(k+1))+i[k][0]
+                s_2=q*(self.FB[j]**(k+1))+i[k][1]
+                while 1:
+                    if s_1 < self.sqrt_n-M :
+                        s_1 = s_1+(self.FB[j]**(k+1))
+                        break
+                    else:
+                        s_1 = s_1-(self.FB[j]**(k+1))
+                while 1:
+                    if s_2 < self.sqrt_n-M :
+                        s_2 = s_2+(self.FB[j]**(k+1))
+                        break
+                    else:
+                        s_2 = s_2-(self.FB[j]**(k+1))        
+                start_p.append([s_1-self.sqrt_n+M,s_2-self.sqrt_n+M])
+
+                k += 1
+            start_location.append(start_p)
+            j +=1
+        self.start_location=start_location
+    
+        if self.poly_table[0]%2 == 0:
+            i=0
+            while i <= 2*M:
+                j=1
+                while 1:
+                    if self.poly_table[i]%(2**(j+1)) == 0:                   
+                        j+=1
+                    else:
+                        break
+                logp[i] += self.FB_log[1]*j
+                i += 2
+        else:
+            i=1
+            while i <= 2*M:
+                j=1
+                while 1:
+                    if self.poly_table[i]%(2**(j+1)) == 0:                   
+                        j+=1
+                    else:
+                        break
+                logp[i] += self.FB_log[1]*j
+                i += 2
+        L=2
+        for j in self.start_location:
+            k=0
+            while k < len(j):
+                s_1=j[k][0]
+                s_2=j[k][1]
+                h_1=0
+                h_2=0
+                while s_1+h_1 <= 2*M:
+                    logp[s_1+h_1] += self.FB_log[L]
+                    h_1 += self.FB[L]**(k+1)     
+                while s_2+h_2 <= 2*M:
+                    logp[s_2+h_2] += self.FB_log[L]
+                    h_2 += self.FB[L]**(k+1)
+                k += 1
+            L += 1
+        
+        self.logp =logp 
+        smooth=[]
+        for t in range(0,2*M+1):
+            if logp[t] >= self.log_poly[t]:
+                poly_val=self.poly_table[t]
+                index_vector=[]
+                for p in self.FB:
+                    if p == -1:
+                        if t in self.minus_check:
+                            index_vector.append(1)
+                        else:
+                            index_vector.append(0)
+                    else:
+                        r=0
+                        while poly_val%(p**(r+1)) == 0:
+                            r+=1
+                        v = r%2
+                        index_vector.append(v)
+                smooth.append([index_vector,(poly_val,t+self.sqrt_n-M)])
+        print " Sieve time is",time.time()-T,"sec"
+        print " Found smooth numbers are ", len(smooth),"/",len(self.FB)
+        self.smooth=smooth
+        return smooth
+
+
+class MPQS:
+    def __init__(self,n,sieverange=0,factorbase=0,multiplier=0):
+        self.number=n
+        print "The number is ",n, "MPQS starting"
+
         if prime.primeq(self.number)==1:
             print "This number is Prime Number"
             raise ValueError
@@ -60,55 +225,62 @@ class MPQS:
             self.Srange=parameters_for_mpqs[self.disit-9][0]
             self.FBN=parameters_for_mpqs[self.disit-9][1]
         
-
         self.move_range = range(-self.Srange,self.Srange+1) 
-
 
         """
         Decide k such that k*n = 1 (mod4) and k*n has many factor base
         """
-        sqrt_state=[]
-        for i in [3,5,7,11,13]:
-            s=arith1.legendre(self.number,i)
-            sqrt_state.append(s)
-        self.sqrt_state=sqrt_state
-        if self.number%8 == 1 :
-            j=0
-            while 1:
-                if self.sqrt_state == prime_8[0][j][1]:
-                    k=prime_8[0][j][0]
-                    break
+        if multiplier == 0:
+            sqrt_state=[]
+            for i in [3,5,7,11,13]:
+                s=arith1.legendre(self.number,i)
+                sqrt_state.append(s)
+            self.sqrt_state=sqrt_state
+            if self.number%8 == 1 :
+                j=0
+                while 1:
+                    if self.sqrt_state == prime_8[0][j][1]:
+                        k=prime_8[0][j][0]
+                        break
+                    else:
+                        j+=1
+            elif self.number%8 == 3 :
+                j=0
+                while 1:
+                    if self.sqrt_state == prime_8[1][j][1]:
+                        k=prime_8[1][j][0]
+                        break
+                    else:
+                        j+=1
+            elif self.number%8 == 5 :
+                j=0
+                while 1:
+                    if self.sqrt_state == prime_8[2][j][1]:
+                        k=prime_8[2][j][0]
+                        break
+                    else:
+                        j+=1
+            elif self.number%8 == 7 :
+                j=0
+                while 1:
+                    if self.sqrt_state == prime_8[3][j][1]:
+                        k=prime_8[3][j][0]
+                        break
+                    else:
+                        j+=1
+        else:
+            if n %4 ==1:
+                k=1
+            else:
+                if multiplier == 1:
+                    print "This number is 3 mod 4 "
+                    raise ValueError
                 else:
-                    j+=1
-        elif self.number%8 == 3 :
-            j=0
-            while 1:
-                if self.sqrt_state == prime_8[1][j][1]:
-                    k=prime_8[1][j][0]
-                    break
-                else:
-                    j+=1
-        elif self.number%8 == 5 :
-            j=0
-            while 1:
-                if self.sqrt_state == prime_8[2][j][1]:
-                    k=prime_8[2][j][0]
-                    break
-                else:
-                    j+=1
-        elif self.number%8 == 7 :
-            j=0
-            while 1:
-                if self.sqrt_state == prime_8[3][j][1]:
-                    k=prime_8[3][j][0]
-                    break
-                else:
-                    j+=1
+                    k= multiplier
         self.number = k*self.number
         self.multiplier = k
        
-        print "The number is ",self.number
-        print self.disit,"- disits Numnber"
+        print self.disit,"- disits Number"
         print "Multiplier is",self.multiplier
 
         """
@@ -135,7 +307,7 @@ class MPQS:
         self.maxFB = factor_base[-1]
 
         """
-        Solve x^2 = n (mod p) 
+        Solve x^2 = n (mod p^e) 
         """
         N_sqrt_list =[]
         for i in self.FB:
@@ -144,15 +316,14 @@ class MPQS:
                 N_sqrt_modp = sqroot_power(self.number,i,e)
                 N_sqrt_list.append(N_sqrt_modp)
         self.Nsqrt = N_sqrt_list 
-        
-        
+                
     def make_poly(self):
         T=time.time()
         """
         Make coefficients of f(x)= ax^2+b*x+c
         """
         if self.d_list==[]:
-            d=int(math.sqrt((math.sqrt(self.number)/(math.sqrt(2)*self.Srange))))            
+            d=int(math.sqrt((math.sqrt(self.number)/(math.sqrt(2)*self.Srange))))    
             if d%2 == 0:
                 if (d+1)%4 == 1: #case d=0 mod4
                     d=d+3
@@ -160,13 +331,14 @@ class MPQS:
                     d=d+1        #case d=2 mod4
             elif d%4 == 1:       #case d=1 mod4
                 d = d+2
-        #case d=3 mod4
+                                 #case d=3 mod4
         else:
             d=self.d_list[-1]
             
         i=0
         while 1:
-            if d+i not in self.d_list and prime.primeq(d+i) == 1 and arith1.legendre(self.number,d+i)==1 and d+i not in self.FB :
+            if d+i not in self.d_list and prime.primeq(d+i) == 1 and arith1.legendre\
+                   (self.number,d+i)==1 and d+i not in self.FB :
                 break
             else:
                 i+= 4
@@ -184,7 +356,7 @@ class MPQS:
         self.b_list.append(b)
 
         """
-        Get solution of  f(x) = 0 (mod p^i)
+        Get solution of  F(x) = 0 (mod p^i)
 
         """
         solution = []
@@ -202,8 +374,7 @@ class MPQS:
             solution.append(p_solution)
         self.solution = solution
         self.coefficienttime +=time.time()-T
-        #print "Dicide poly time ",time.time()-T,"sec",
-        
+                
     def run_sieve(self):
         self.make_poly()
         T=time.time()
@@ -228,7 +399,7 @@ class MPQS:
             log_poly.append(lj)
         self.poly_table=poly_table  # This is F(x) value , x in [-M,M]. 
         self.log_poly=log_poly      # This is log(F(x)) value.
-        self.minus_check=minus_val # This is "x" that F(x) is minus value.M=self.Srange
+        self.minus_check=minus_val  # This is "x" that F(x) is minus value.M=self.Srange
         
         y=arith1.inverse(2*d,self.number)
         start_location = []
@@ -319,7 +490,6 @@ class MPQS:
                         index_vector.append(v)
                 smooth.append([index_vector,(poly_val,H)])
         self.sievingtime += time.time()-T
-        #print "Doing sieve time is",time.time()-T,"sec",
         return smooth
     
     def get_vector(self):
@@ -328,24 +498,26 @@ class MPQS:
         V=0
         smooth=[]
         i=0
-        while P*1.03 > V:
+        while P*1 > V:
             n=self.run_sieve()
             V+=len(n)
             smooth+=n
             i+=1
-            if i%30==0:
-                if i==30:
-                    print "*/","Per 30 times changing poly report","/* "
-                print "Time of deciding coefficient =",self.coefficienttime
-                print "Sieving Time = ",self.sievingtime
+            if i%50==0:
+                if i==50:
+                    print "*/","Per 50 times changing poly report","/* "
+                print "Time of deciding coefficient =",self.coefficienttime,"sec"
+                print "Sieving Time = ",self.sievingtime ,"sec" 
                 print "Find smooth numbers are",V,"/",P
+                
         self.smooth=smooth
         print "*/","Total",i,"times changing poly report","/*"
-        print "Time of deciding coefficient =",self.coefficienttime
-        print "Sieving Time = ",self.sievingtime
-        print "Find smooth numbers are",V,"/",P
-        print "Total time of getting enough smooth numbers is ",time.time()-a,"sec"
+        print "Time of deciding coefficient =",self.coefficienttime, "sec"
+        print "Sieving Time = ",self.sievingtime ,"sec"
+        print "Found smooth numbers are",V,"/",P
+        print "Total time of getting enough smooth numbers = ",time.time()-a,"sec"
         return smooth
+
 
 class Elimination:
     def __init__(self,smooth):
@@ -358,6 +530,7 @@ class Elimination:
             i+=1
         self.vector=vector
         self.FB_number=len(vector[0])
+        self.row_size=len(vector)
         self.history=history
         self.historytime=0
     def vector_add(self,i,j):
@@ -371,6 +544,19 @@ class Elimination:
                 else:
                     V_j[k]=1
             k+=1
+
+    def transpose(self):
+        Transe_vector = []
+        i=0
+        while i <self.FB_number:
+            j=0
+            vector = []
+            while j < self.row_size:
+                vector.append(self.vector[j][i])
+                j+=1
+            Transe_vector.append(vector)
+            i+=1
+        self.Transe=Transe_vector
 
     def history_add(self,i,j):
         T=time.time()
@@ -432,21 +618,65 @@ class Elimination:
                 check+=1
             else:
                 check+=1
-        print "Time of Gaussian Elimination is ",time.time()-a,"sec"
-        #print "History time ",self.historytime
+        print "Time of Gaussian Elimination = ",time.time()-a,"sec"
         return zero_vector
 
-def mpqs(n,s=0,f=0):
+def qs(n,s,f):
+    """
+    This is main function of QS
+    Arguments are (composite_number, sieve_range, factorbase_size)
+    You must input these 3 arguments.
+    
+    """
     a=time.time()
-    M=MPQS(n,s,f)
-    print "Sieve range is","[",M.move_range[0],",",M.move_range[-1],"]",",","Factorbase size =",len(M.FB),",","Max Factorbase",M.maxFB
+    Q=QS(n,s,f)
+    print "Sieve range is","[",Q.move_range[0],",",Q.move_range[-1],\
+    "]",",","Factorbase size =",len(Q.FB),",","Max Factorbase",Q.maxFB
+    Q.run_sieve() 
+    V=Elimination(Q.smooth)
+    A=V.gaussian()
+    print "Found",len(A),"liner dependent relations"
+    answerX_Y = []
+    N_factors = []
+    for i in A:
+        B=V.history[i].keys()
+        X=1
+        Y=1
+        for j in B:
+            X*=Q.smooth[j][1][0]
+            Y*=Q.smooth[j][1][1]
+            Y=Y%Q.number
+        X=sqrt_modn(X,Q.number)
+        answerX_Y.append(X-Y)
+    for k in answerX_Y:
+        if k != 0:
+            factor=gcd.gcd(k,Q.number)
+            if factor not in N_factors and factor != 1 and factor != Q.number \
+            and prime.primeq(factor) == 1:
+                N_factors.append(factor)
+    N_factors.sort()
+    print "Total time =",time.time()-a,"sec"
+    print N_factors
+
+def mpqs(n,s=0,f=0,m=0):
+    """
+    This is main function of MPQS.
+    Arguments are (composite_number, sieve_range, factorbase_size, multiplier) 
+    You must input composite_number at least.
+    
+    """
+    a=time.time()
+    M=MPQS(n,s,f,m)
+    print "Sieve range is","[",M.move_range[0],",",M.move_range[-1],\
+    "]",",","Factorbase size =",len(M.FB),",","Max Factorbase",M.maxFB
     M.get_vector() 
     N=M.number/M.multiplier
     V=Elimination(M.smooth)
     A=V.gaussian()
-    print len(A),"liner dependent relations"
+    print "Found",len(A),"liner dependent relations"
     answerX_Y = []
-    N_factors = []
+    N_prime_factors = []
+    N_factors=[]
     for i in A:
         B=V.history[i].keys()
         X=1
@@ -457,19 +687,42 @@ def mpqs(n,s=0,f=0):
             Y=Y%M.number
         X=sqrt_modn(X,M.number)
         answerX_Y.append(X-Y)
+    NN=1
     for k in answerX_Y:
         if k != 0:
             factor=gcd.gcd(k,N)
-            if factor not in N_factors and factor != 1 and factor != N and prime.primeq(factor) == 1:
-                N_factors.append(factor)
-    N_factors.sort()
-    print "Total time is",time.time()-a,"sec"
-    return N_factors
-
-##########################################
-##########################################
-
+            if factor not in N_factors and factor != 1 and factor != N \
+                   and factor not in N_prime_factors:
+                if prime.primeq(factor) == 1:
+                    NN=NN*factor
+                    N_prime_factors.append(factor)
+                else:
+                    N_factors.append(factor)
     
+    print "Total time =",time.time()-a,"sec"
+    if NN == N:
+        print  "Factored completely !" 
+        N_prime_factors.sort()
+        return N_prime_factors
+    elif NN != 1:
+        f=N/NN
+        if prime.primeq(f) == 1:
+            N_prime_factors.append(f)
+            print  "Factored completely!" 
+            N_prime_factors.sort()
+            return N_prime_factors
+        N_factors.append(f)
+    N_prime_factors.sort()
+    N_factors.sort()
+    return N_prime_factors , N_factors 
+
+
+########################################################
+#                                                      #
+# Following functions are subfunction for main progrum #
+#                                                      #
+########################################################
+
 def eratosthenes(n):
     if n<2:
         raise ValueError,"Input value must be bigger than 1  "
@@ -598,6 +851,7 @@ def sqroot(a,p): # p is a prime
             return [x,p-x]
 
 def sqroot_power(a,p,n):
+
     """
     return squareroot of a mod p^n 
     """
@@ -618,44 +872,44 @@ def sqroot_power(a,p,n):
         i+=1
     return answer
 
-
-#Initial items
+#################
+# Initial items #
+#################
 primes_table=eratosthenes(10**5)
 primes_log_table=eratosthenes_log(10**5)
 prime_8=prime_mod8(8090)
-
-parameters_for_mpqs = [[900,20], #9
-                      [900,21], #10
-                      [920,22], #11
-                      [960,24], #12
-                      [1020,26], #13
-                      [1400,29], #14
-                      [1200,32], #15
-                      [1400,35], #16
-                      [3000,40], #17
-                      [3000,60], #18
-                      [3600,80], #19
-                      [4000,100], #20
-                      [4300,100], #21
-                      [4500,120], #22
-                      [4800,140], #23
-                      [5000,160], #24
-                      [5000,180], #25
-                      [6000,200], #26
-                      [6000,220], #27
-                      [6500,240], #28
-                      [6500,260], #29
-                      [7000,325], #30
-                      [7000,355], #31 
-                      [7500,375], #32
-                      [7500,400], #33
-                      [7500,425], #34
-                      [7500,550], #35
-                      [8000,650], #36
-                      [10000,750], #37
-                      [10000,850], #38
-                      [11000,950], #39
-                      [14000,1000], #40
+parameters_for_mpqs = [[100,20], #9 -disits 
+                      [100,21], #10
+                      [100,22], #11
+                      [100,24], #12
+                      [100,26], #13
+                      [100,29], #14
+                      [100,32], #15
+                      [200,35], #16
+                      [300,40], #17
+                      [300,60], #18
+                      [300,80], #19
+                      [300,100], #20
+                      [300,100], #21
+                      [300,120], #22
+                      [300,140], #23
+                      [600,160], #24
+                      [900,180], #25
+                      [1200,200], #26
+                      [1000,220], #27
+                      [2000,240], #28
+                      [2000,260], #29
+                      [2000,325], #30
+                      [2000,355], #31 
+                      [2000,375], #32
+                      [3000,400], #33
+                      [2000,425], #34
+                      [2000,550], #35
+                      [3000,650], #36
+                      [5000,750], #37
+                      [4000,850], #38
+                      [4000,950], #39
+                      [5000,1000], #40
                       [14000,1150], #41
                       [15000,1300], #42
                       [15000,1600], #43
@@ -669,3 +923,5 @@ parameters_for_mpqs = [[900,20], #9
                       [40000,3000], #51 
                       [50000,3200], #52
                       [50000,3500]] #53
+
+
