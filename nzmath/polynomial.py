@@ -720,13 +720,8 @@ class OneVariableSparsePolynomial:
     def adjust(self):
         return_coefficient = {}
         for i in self.coefficient:
-            if self.coefficient[i] != 0:
+            if self.coefficient[i]:
                 return_coefficient[i] = self.coefficient[i]
-        if len(return_coefficient) == 0:
-            return 0
-        zero_test = (0,)
-        if (len(return_coefficient) == 1) and (zero_test in return_coefficient):
-            return return_coefficient[zero_test]
         return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
 
     def differentiate(self, var):
