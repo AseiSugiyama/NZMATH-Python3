@@ -105,42 +105,44 @@ class RationalPolynomialTest(unittest.TestCase):
         Qxy = PolynomialRing(rational.theRationalField, ["x","y"])
         assert Qx == i.getRing()
         assert Qy == j.getRing()
-        assert Qxy == (i*j).getRing()
+        assert Qxy == (i*j).getRing(), (i*j).getRing()
 
 class PolynomialRingTest(unittest.TestCase):
+    def setUp(self):
+        self.Q = rational.theRationalField
+        self.Z = rational.theIntegerRing
+        self.Qx = PolynomialRing(self.Q, "x")
+        self.Zx = PolynomialRing(self.Z, "x")
+        self.Zxz = PolynomialRing(self.Z, ("x", "z"))
+
+    def testEquals(self):
+        QwithXandY = PolynomialRing(self.Q, ("x", "y"))
+        QwithXwithY = PolynomialRing(self.Qx, "y")
+        assert QwithXandY == QwithXwithY
+
     def testGetCoefficientRing(self):
-        Qx = PolynomialRing(rational.theRationalField, "x")
-        Zx = PolynomialRing(rational.theIntegerRing, "x")
-        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
-        assert rational.theRationalField == Qx.getCoefficientRing()
-        assert rational.theIntegerRing == Zxz.getCoefficientRing(("x","z"))
-        assert Zx == Zxz.getCoefficientRing("z")
+        assert self.Q == self.Qx.getCoefficientRing()
+        assert self.Z == self.Zxz.getCoefficientRing(("x","z"))
+        assert self.Zx == self.Zxz.getCoefficientRing("z")
 
     def testIssubring(self):
-        Zx = PolynomialRing(rational.theIntegerRing, "x")
-        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
-        assert Zx.issubring(Zxz)
-        assert rational.theIntegerRing.issubring(Zx)
-        assert rational.theIntegerRing.issubring(Zxz)
-        assert not rational.theRationalField.issubring(Zxz)
+        assert self.Zx.issubring(self.Zxz)
+        assert self.Z.issubring(self.Zx)
+        assert self.Z.issubring(self.Zxz)
+        assert not self.Q.issubring(self.Zxz)
 
     def testIssuperring(self):
-        Zx = PolynomialRing(rational.theIntegerRing, "x")
-        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
-        assert not Zx.issuperring(Zxz)
-        assert Zxz.issuperring(Zx)
-        assert Zxz.issuperring(Zxz)
-        assert not Zxz.issuperring(rational.theRationalField)
+        assert not self.Zx.issuperring(self.Zxz)
+        assert self.Zxz.issuperring(self.Zx)
+        assert self.Zxz.issuperring(self.Zxz)
+        assert not self.Zxz.issuperring(self.Q)
 
     def testContains(self):
-        Zx = PolynomialRing(rational.theIntegerRing, "x")
-        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
-        Qx = PolynomialRing(rational.theRationalField, "x")
-        assert a in Zx
-        assert a in Zxz
-        assert i not in Zx
-        assert a in Qx
-        assert 1 in Zx
+        assert a in self.Zx
+        assert a in self.Zxz
+        assert i not in self.Zx
+        assert a in self.Qx
+        assert 1 in self.Zx
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):

@@ -1099,7 +1099,17 @@ class MultiVariableDensePolynomial:
                 return result_polynomial.adjust()
 
     def getRing(self):
-        return PolynomialRing(rational.theRationalField, self.variable)
+        ring = None
+        for c in self.coefficient:
+            if rational.isIntegerObject(c):
+                cring = rational.theIntegerRing
+            else:
+                cring = c.getRing()
+            if not ring or ring != cring and ring.issubring(cring):
+                ring = cring
+            elif not cring.issubring(ring):
+                ring = ring * cring
+        return PolynomialRing(ring, self.variable)
 
 class MultiVariableSparsePolynomial:
 
@@ -1639,7 +1649,17 @@ class MultiVariableSparsePolynomial:
             return return_polynomial
 
     def getRing(self):
-        return PolynomialRing(rational.theRationalField, self.variable)
+        ring = None
+        for c in self.coefficient.values():
+            if rational.isIntegerObject(c):
+                cring = rational.theIntegerRing
+            else:
+                cring = c.getRing()
+            if not ring or ring != cring and ring.issubring(cring):
+                ring = cring
+            elif not cring.issubring(ring):
+                ring = ring * cring
+        return PolynomialRing(ring, self.variable)
 
 class PolynomialRing:
     """
@@ -1655,7 +1675,7 @@ class PolynomialRing:
             self.vars = sets.Set(vars)
 
     def getVars(self):
-        return self.vars
+        return self.vars.copy()
 
     def getCoefficientRing(self, var = None):
         """
@@ -1701,10 +1721,14 @@ class PolynomialRing:
             raise
 
     def __eq__(self, other):
-        if isinstance(other, PolynomialRing) and \
-               self.coefficientRing == other.coefficientRing and \
-               self.vars == other.vars:
+        if not isinstance(other, PolynomialRing):
+            return False
+        if self.coefficientRing == other.coefficientRing and self.vars == other.vars:
             return True
+        elif isinstance(self.coefficientRing, PolynomialRing):
+            return self.unnest() == other
+        elif isinstance(other.coefficientRing, PolynomialRing):
+            return self == other.unnest()
         return False
 
     def __str__(self):
@@ -1763,6 +1787,22 @@ class PolynomialRing:
             else:
                 return False
         return False
+
+    def unnest(self):
+        """
+
+        if self is a nested PolynomialRing i.e. its coefficientRing is
+        also a PolynomialRing, then the function returns one level
+        unnested PolynomialRing.
+
+        For example:
+        PolynomialRing(PolynomialRing(Q, "x"), "y").unnest()
+        returns
+        PolynomialRing(Q, sets.Set(["x","y"])).
+
+        """
+        return PolynomialRing(self.coefficientRing.coefficientRing, self.coefficientRing.vars | self.vars)
+
 
 import re
 
