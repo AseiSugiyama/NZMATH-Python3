@@ -119,7 +119,7 @@ class EC:
                     else:
                         raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                 else:
-                    raise ValueError "characteristic must be 0 or prime (-_-;)"
+                    raise ValueError, "characteristic must be 0 or prime (-_-;)"
         else:
             raise ValueError, "you must input (coefficient,list) m(__)m"
            
