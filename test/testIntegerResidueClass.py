@@ -133,6 +133,10 @@ class IntegerResidueClassRingTest(unittest.TestCase):
         assert isinstance(aRing.createElement(Rational(2, 3)), IntegerResidueClass)
         self.assertRaises(ValueError, aRing.createElement, Rational(2, 21))
 
+    def testContains(self):
+        aRing = IntegerResidueClassRing.getInstance(7)
+        assert IntegerResidueClass(1,7) in aRing
+
     def testProperties(self):
         Zmod3 = IntegerResidueClassRing.getInstance(3)
         assert Zmod3.isfield()
