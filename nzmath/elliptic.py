@@ -8,20 +8,15 @@ import random
 import rational 
         
 class EC:
-
     """
     Elliptic curves over Q and Fp.
     # If you wanna use over other fields, just a moment please :-)
-
     """
-
     def __init__(self,coefficient,character):
         """
-
         Initialize an elliptic curve. If coefficient has 5 elements,
         it represents E:y**2+a1*x*y+a3*y=x**3+a2*x**2+a4*x+a6 or 2
         elements, E:y*2=x*3+a*x+b.
-
         """
         if isinstance(coefficient,list):
             self.coefficient=coefficient
@@ -136,42 +131,38 @@ class EC:
         return str(polynomial.MultiVariableSparsePolynomial({(0,2):1,(1,1):self.a1,(0,1):self.a3,(3,0):-1,(2,0):-self.a2,(1,0):-self.a4,(0,0):-self.a6},["x","y"]))
 
     def simple(self):
-
         """
         this transforms E:y^2+a1*x*y+a3*y=x^3+a2*x^2+a4*x+a6 to E':Y^2=X^3+(-27*c4)*X+(-54*c6),
         if ch is not 2 or 3
-        
         """
         if len(self)==2 or (self.a1==self.a2==self.a3==0):
-            raise "no need to simplyfy (^o^)"
+            return self
         else:
             if self.ch==0:
-                F=EC([-27*self.c4,-54*self.c6],self.ch)
-                return F   
+                other=EC([-27*self.c4,-54*self.c6],self.ch)
+                return other   
             elif self.ch==3:
                 raise NotImplementedError, "Now making (>_<)"
             elif self.ch==2:
                 raise NotImplementedError, "Now making (>_<)"
             else:
-                F=EC([(-27*self.c4)%self.ch,(-54*self.c6)%self.ch],self.ch)
-                return F
+                other=EC([(-27*self.c4)%self.ch,(-54*self.c6)%self.ch],self.ch)
+                return other
 
     def changeCurve(self,V):
-        
         """
         this transforms E to E' by V=[u,r,s,t] ; x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t 
-        
         """
         if isinstance(V,list): 
             if len(V)==4:
                 if V[0]!=0:
                     if self.ch==0:
-                        F=EC([rational.Rational(self.a1+2*V[2],V[0])*1,
+                        other=EC([rational.Rational(self.a1+2*V[2],V[0])*1,
                               rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2)*1,
                               rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3)*1,
                               rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4)*1,
                               rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)*1],0) 
-                        return F
+                        return other
                     else: #self.ch!=0
                         for v in V:
                             if not isinstance(v,(int,long)):
@@ -191,12 +182,12 @@ class EC:
                                 ad=1
                                 an=A[i]
                                 B.append((arith1.inverse(ad,self.ch),an))
-                        F=EC([(B[0][0]*B[0][1])%self.ch,
+                        other=EC([(B[0][0]*B[0][1])%self.ch,
                               (B[1][0]*B[1][1])%self.ch,
                               (B[2][0]*B[2][1])%self.ch,
                               (B[3][0]*B[3][1])%self.ch,
                               (B[4][0]*B[4][1])%self.ch],self.ch)
-                        return F
+                        return other
                 else: # u==0
                     raise ValueError, "you must input nonzero u (-_-;)"
             else:        
@@ -205,10 +196,8 @@ class EC:
             raise ValueError, "you must input (,list) m(__)m"
 
     def changePoint(self,P,V):
-        
         """
         this transforms P to P' by V=[u,r,s,t] ; x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t
-        
         """
         if isinstance(P,list) and isinstance(V,list):
             if len(P)==2 and len(V)==4 and V[0]!=0:
@@ -240,10 +229,8 @@ class EC:
             raise ValueError, "m(__)m"
 
     def point(self): # E(ch>3):y^2=x^3+a*x+b use change!!     
-
         """
         this returns a random point on eliiptic curve over ch(field)>3
-        
         """
         if self.ch!=0:
             if len(self)==2 or (self.a1==self.a2==self.a3==0):    
@@ -253,11 +240,11 @@ class EC:
                     t=s**3+self.a4*s+self.a6
                 return [s,arith1.sqroot(t,self.ch)]
             elif self.ch!=2 or self.ch!=3:#len==5
-                F=self.simple()
+                other=self.simple()
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch) #random??
-                    t=s**3+F.a*s+F.b
+                    t=s**3+other.a*s+other.b
                 x=rational.Rational(s-3*self.b2,36)*1
                 if isinstance(x,rational.Rational):
                     xd=x.denominator
@@ -278,6 +265,29 @@ class EC:
         else: #self.ch==0
             raise NotImplementedError, "I don't know (?_?)"
 
+    def coordinateX(self,x):
+        """ 
+        this returns the y(P)>0,x(P)==x
+        """
+        y1=self.a1*x+self.a3
+        y2=x**3+self.a2*x**2+self.a4*x+self.a6
+        if self.ch!=0:
+            if len(self)==2 or (self.a1==self.a2==self.a3==0):
+                if arith1.legendre(y2,self.ch)>=0:
+                    return arith1.sqroot(y2,self.ch)
+                else:
+                    raise ValueError, "(-_-;)"
+            else:
+                if y1**2+4*y2>=0:
+                    d=arith1.sqroot(y1**2+4*y2,self.ch)
+                    return (((-1)*y1+d)*(arith1.inverse(2,self.ch)))%self.ch
+                else:
+                    raise ValueError, "(-_-;)" 
+        else: #self.ch==0
+            if y1**2+4*y2>=0:
+                return rational.Rational((-1)*y1+math.sqrt(y1**2-4*y2),2)*1
+            else:
+                raise ValueError, "(-_-;)"
     def whetherOn(self,P): # E(ch>3):y^2=x^3+a*x+b
 
         """
@@ -421,74 +431,79 @@ class EC:
             return self.sub([0],Q)
 
     def divPoly(self,m):
-            f=[]
-            f.append(0)
-            if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
-                for i in range(1,m+1):
-                    if i==1:
-                        f.append(1)
-                    elif i==2:
-                        f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
-                    elif i==3:
-                        f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
-                    elif i==4:
-                        f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
+        f=[]
+        f.append(0)
+        if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
+            for i in range(1,m+1):
+                if i==1:
+                    f.append(1)
+                elif i==2:
+                    f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
+                elif i==3:
+                    f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
+                elif i==4:
+                    f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
+                else:
+                    if i%2!=0:
+                        j=(i-1)//2
+                        g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                        f.append(g)
                     else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                            f.append(g)
-                        else:
-                            j=i//2
-                            g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] #div 2y??
-                            f.append(g)
+                        j=i//2
+                        g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] #div 2y??
+                        f.append(g)
                         #h=f[m]#->f'
-                return f[m] #->f'
-            else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
-                for i in range(1,m+1):
-                    if i==1:
-                        f.append(1)
-                    elif i==2:
-                        f.append(OneVariableSparsePolynomial({(1,):1},["x"]))
-                    elif i==3:
-                        f.append(OneVariableSparsePolynomial({(0,):a6,(3,):1,(4,):1},["x"]))
-                    elif i==4:
-                        f.append(OneVariableSparsePolynomial({(2,):a6,(6,):1},["x"]))
+            return f[m] #->f'
+        else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
+            for i in range(1,m+1):
+                if i==1:
+                    f.append(1)
+                elif i==2:
+                    f.append(OneVariableSparsePolynomial({(1,):1},["x"]))
+                elif i==3:
+                    f.append(OneVariableSparsePolynomial({(0,):a6,(3,):1,(4,):1},["x"]))
+                elif i==4:
+                    f.append(OneVariableSparsePolynomial({(2,):a6,(6,):1},["x"]))
+                else:
+                    if i%2!=0:
+                        j=(i-1)//2
+                        g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
+                        f.append(g)
                     else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                            f.append(g)
-                        else:
-                            j=i//2
-                            g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(OneVariableSparsePolynomial({(1,):1},["x"])) 
-                            f.append(g)
+                        j=i//2
+                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(OneVariableSparsePolynomial({(1,):1},["x"])) 
+                        f.append(g)
                         #h=f[m]
-                return f[m]
+            return f[m]
+
     def order(self): # =#E(Fp)
-        def divPoly(self,m):
-            f=[]
-            f.append(0)
-            if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
-                for i in range(1,m+1):
-                    if i==1:
-                        f.append(1)
-                    elif i==2:
-                        f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
-                    elif i==3:
-                        f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
-                    elif i==4:
-                        f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
-                    else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            g=f[j+2]*f[j]*f[j]*f[j]-f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                            f.append(g)
+        """
+        this returns #E(Fp)
+        """
+        def schoof(self):
+            def divPoly(self,m):
+                f=[]
+                f.append(0)
+                if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
+                    for i in range(1,m+1):
+                        if i==1:
+                            f.append(1)
+                        elif i==2:
+                            f.append(polynomial.OneVariableSparsePolynomial({(1,):1},["y"]))
+                        elif i==3:
+                            f.append(polynomial.OneVariableSparsePolynomial({(0,):-self.a**2,(1,):12*self.b,(2,):6*self.a,(4,):3},["x"]))
+                        elif i==4:
+                            f.append(4*f[2]*polynomial.OneVariableSparsePolynomial({(0,):-self.a**3-8*self.b**2,(1,):-4*self.a*self.b,(2,):-5*self.a**2,(3,):20*self.b,(4,):5*self.a,(6,):1},["x"]))
                         else:
-                            j=i//2
-                            g=(f[j+2]*f[j-1]*f[j-1]-f[j-2]*f[j+1]*f[j+1])*f[j] #div 2y??
-                            f.append(g)
-                            h=f[m]#->f'
+                            if i%2!=0:
+                                j=(i-1)//2
+                                g=f[j+2]*f[j]*f[j]*f[j]-f[j-1]*f[j+1]*f[j+1]*f[j+1]
+                                f.append(g)
+                            else:
+                                j=i//2
+                                g=(f[j+2]*f[j-1]*f[j-1]-f[j-2]*f[j+1]*f[j+1])*f[j] #div 2y??
+                                f.append(g)
+                                h=f[m]#->f'
                     return h
                 else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
                     for i in range(1,m+1):
@@ -509,43 +524,88 @@ class EC:
                                 j=rational.Rational(i,2)
                                 g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/(OneVariableSparsePolynomial({(1,):1},["x"])) 
                                 f.append(g)
-                        h=f[m]
+                    h=f[m]
                     return h
-        
-                
-        """
-        this returns #E(Fp)
 
-        """
-        if self.ch!=0:
-            if self.ch<=229:
-                if len(self)!=2:
-                    other=self.simple()
-                else:
-                    other=self
-                k=0
-                for i in range(0,other.ch):
-                    k=k+arith1.legendre(i*(i**2+other.a)+other.b,other.ch)
-                return other.ch+1+k
-            else: #E.ch>229
-                if len(self)!=2:
-                    other=self.simple()
-                else:
-                    other=self
-                g=0
-                while arith1.legendre(g,other.ch)!=-1:
-                    g=random.randint(2,other.ch)
-                W=math.floor(math.sqrt(math.sqrt(p))*math.sqrt(2))+1
-                c,d=g**2*other.a,g**3*other.b
-                cg=0
-                f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"x")
-                while arith1.legendre(f(cg),other.ch)==0:
-                    cg=random.randint(0,other.ch-1)
+        def Shanks_Mestre(self):
+            if self.ch!=0:
+                if self.ch<=229:
+                    if len(self)!=2:
+                        other=self.simple()
+                    else:
+                        other=self
+                    k=0
+                    for i in range(0,other.ch):
+                        k=k+arith1.legendre(i*(i**2+other.a)+other.b,other.ch)
+                    return other.ch+1+k
+                else: #E.ch>229
+                    def BSGS(E,P,W):
+                        """
+                        len(E.coefficient)==2,x(P)==x
+                        """
+                        L=[]
+                        A=[]
+                        B=[]
+                        i=0
+                        while i<W:
+                            Q=E.mul(E.ch+1+i,P)
+                            A.append(Q[0])
+                            i=i+1
+                        j=0
+                        while j<=W:
+                            Q=E.mul(j*W,P)
+                            B.append(Q[0])
+                            j=j+1
+                        L.append(A)
+                        L.append(B)
+                        L.append(intersectionOfTwoLists(A,B))
+                        return L
                     
-                
-        else:
-            raise "now making m(__)m"
+                    if len(self)!=2:
+                        other=self.simple()
+                    else:
+                        other=self
+                    g=0
+                    while arith1.legendre(g,other.ch)!=-1:
+                        g=random.randint(2,other.ch)
+                    W=math.floor(math.sqrt(math.sqrt(self.ch))*math.sqrt(2))+1
+                    c,d=g**2*other.a,g**3*other.b
+                    f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X")
+                    k=0
+                    while k==0:
+                        x=0
+                        while arith1.legendre(f(x),other.ch)==0:
+                            x=random.randint(0,other.ch-1)
+                        if arith1.legendre(f(x),other.ch)==1:
+                            E=other
+                            rho=1
+                        else: #arith1.legendre(f(cg),other.ch)==-1
+                            E=EC([c,d],other.ch)
+                            rho=-1
+                            x=g*x
+                        P=[x,E.coordinateX(x)]
+                        L=BSGS(E,P,W)
+                        A=L[0]
+                        B=L[1]
+                        S=L[2]
+                        if len(S)>1:
+                            k=1
+                    i=random.randrange(0,len(S))
+                    s=S[i]
+                    aa=A.index(s)
+                    bb=B.index(s)
+                    t=aa+bb*W
+                    if E.mul(t,P)==[0]:
+                        return E.ch+1+rho*t
+                    else:
+                        t=aa-bb*W
+                        return E.ch+1+rho*t
+            else:
+                raise "now making m(__)m"
 
+        #def SEA(self):
+            
+        return Shanks_Mestre(self)
 # t=imaginary.Complex(a,b)
 
 def q(t):
@@ -553,7 +613,6 @@ def q(t):
     """
     this returns exp(2*pi*j*t)
     t is complex and h.imag>0
-    
     """
     return imaginary.exp(2*imaginary.pi*imaginary.j*t)
 
@@ -605,3 +664,22 @@ def nu(t,x):
        i=i+1
     return qq*(1+b)
 
+
+def intersectionOfTwoLists(list1,list2):
+    list1.sort()
+    list2.sort()
+    L=[]
+    i,j=0,0
+    while i<len(list1) and j<len(list2):
+        if list1[i]<=list2[j]:
+            if list1[i]==list2[j]:
+                L.append(list1[i])
+            i=i+1
+            while i<len(list1)-1 and list1[i]==list1[i-1]:
+                i=i+1
+        else:
+            j=j+1
+            while j<len(list2)-1 and list2[j]==list2[j-1]:
+                j=j+1
+    return L
+                
