@@ -4,6 +4,7 @@ import math
 import itertools
 from prime import vp as _vp
 import rational
+import arith1
 
 """
 
@@ -256,15 +257,14 @@ def sqrt(x, err=defaultError):
     sqrt(x [,err]) returns the positive square root of real number x.
 
     """
-    import prime
     rx = rational.Rational(x)
     if rx.numerator < 0:
         raise ValueError, "negative number is passed to sqrt"
     if rx.numerator == 0:
         return rational.Integer(0)
     if err <= defaultError:
-        rt = rational.Rational(prime.sqrt(rx.denominator * rx.numerator), rx.denominator)
-        newrt = (rt + reduced / rt) / 2
+        rt = rational.Rational(arith1.floorsqrt(rx.denominator * rx.numerator), rx.denominator)
+        newrt = (rt + rx / rt) / 2
         while not err.nearlyEqual(rt, newrt):
             rt = newrt
             newrt = (rt + rx / rt) / 2

@@ -3,6 +3,7 @@ from __future__ import generators
 
 import math
 import gcd
+from arith1 import floorsqrt as sqrt
 
 def trialDivision(n, bound = 0):
     """
@@ -150,21 +151,6 @@ def primeq(n):
 # defs for APR algorithm
 from factor import trialDivision as factor
 import operator
-
-def sqrt(a):
-    """
-
-    Return the floor of square root of the given integer.
-
-    """
-    if a < 2 ** 59:
-        return long(math.sqrt(a))
-    else:
-        b_old = a
-        b = pow(10,(len(str(long(a)))+1)//2)
-        while b_old>b:
-            b_old, b = b, (b+a//b)//2
-        return b_old
 
 def _isprime(n):
     if gcd.gcd(n, 510510) > 1:
@@ -660,7 +646,7 @@ def apr(n):
     Assuming n is spsp for several bases.
 
     """
-    L=Status()
+    L = Status()
 
     rb = sqrt(n)+1
     el = TestPrime()

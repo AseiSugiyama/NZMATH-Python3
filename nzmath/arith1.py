@@ -1,7 +1,23 @@
-import factor
-import gcd
 import math
+
+def floorsqrt(a):
+    """
+
+    Return the floor of square root of the given integer.
+
+    """
+    if a < 2 ** 59:
+        return long(math.sqrt(a))
+    else:
+        b_old = a
+        b = pow(10,(len(str(long(a)))+1)//2)
+        while b_old>b:
+            b_old, b = b, (b+a//b)//2
+        return b_old
+
 import random
+import gcd
+import factor
 
 def euler(n):                    
     """
@@ -151,3 +167,28 @@ def AGM(a,b):
         x=(x+y)/2.0
         y=math.sqrt(x*y)
     return x
+
+def _BhaskaraBrouncker(n):
+    """
+
+    _BhaskaraBrouncker returns the minimum tuple (p,q) such that:
+        p ** 2 - n * q ** 2 = 1 or -1,
+    for positive integer n, which is not a square.
+
+    A good approximation for square root of n is given by the ratio
+    p/q; the error is at most 1/2*q**2.
+
+    """
+    floorOfSqrt = floorsqrt(n)
+    a = floorOfSqrt
+    b0, b1 = 0, floorOfSqrt
+    c0, c1 = 1, n - floorOfSqrt * floorOfSqrt
+    p0, p1 = 1, floorOfSqrt
+    q0, q1 = 0, 1
+    while c1 != 1:
+        a = (floorOfSqrt + b1)//c1
+        b0, b1 = b1, a * c1 - b1
+        c0, c1 = c1, c0 + a * (b0 - b1)
+        p0, p1 = p1, p0 + a * p1
+        q0, q1 = q1, q0 + a * q1
+    return (p1, q1)
