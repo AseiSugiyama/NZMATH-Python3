@@ -29,7 +29,7 @@ def suite():
     suite.addTest(testGcd.suite())
     suite.addTest(testImaginary.suite())
     suite.addTest(testIntegerResidueClass.suite())
-    suite.addTest(testlattice.suite())
+    suite.addTest(testLattice.suite())
     suite.addTest(testMatrix.suite())
     suite.addTest(testPolynomial.suite())
     suite.addTest(testPrime.suite())
