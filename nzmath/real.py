@@ -892,3 +892,22 @@ def hypot(x, y, precision=doubleprecision):
 
 pi = FloatConstant(piGaussLegendre)
 e = FloatConstant(lambda precision: exp(1, precision))
+
+
+class RealField:
+    """
+
+    RealField is a class of the field of real numbers.
+    The class has the single instance 'theRealField'.
+
+    """
+
+    def __contains__(self, element):
+        reduced = +element
+        if reduced in rational.RationalField:
+            return 1
+        if isinstance(reduced, Float):
+            return 1
+        return 0  ## How to know a number is real ?
+
+theRealField = RealField()
