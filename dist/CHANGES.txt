@@ -1,3 +1,7 @@
+version 0.3.0 to 0.3.1
+----------------------
+* fix import problem, and include finitefield.py mistakenly missing in 0.3.0.
+
 version 0.2.1 to 0.3.0
 ----------------------
 * create a new module multiplicative.py with euler and moebius
