@@ -1,4 +1,4 @@
-from __future__ import division
+from __future__ import division, generators
 import operator
 import math
 from prime import vp as _vp
@@ -579,6 +579,11 @@ def rationalToFloat(aRational, precision):
     return Float(mantissa, exponent, precision)
 
 def sqrt(aFloat, precision=doubleprecision):
+    """
+
+    sqrt(x [,precision]) returns the positive square root of real number x.
+
+    """
     def _isCloseEnough(x, y, prec):
         xrat = x.toRational()
         yrat = y.toRational()
@@ -699,28 +704,72 @@ def piGaussLegendre(precision):
         x += x
     return (a + b) ** 2 / (t * 4)
 
+def sum(iter, precision):
+    """
+
+    sum(iter, precision) returns the sum of the series given by iter,
+    which must be an iterator instance.
+
+    The implementation assumes that too small term does not appear
+    in the sequence until the sum converges.
+
+    """
+    about = Float(0.0)
+    termList = []
+    for term in iter:
+        about = about + term
+        termList.append(term)
+        if abs(term) < abs(about) / 2**(2*precision):
+            break
+    termList.sort()
+    return reduce(operator.add, termList, 0)
+
 def exp(x, precision=doubleprecision):
+    """
+
+    exp(x [,precision]) returns e raised to the power of x.  If
+    precision is not specified, the obtained value is as accurate as
+    one obtained with math.exp.
+
+    """
+    def exp_iter(xx, pp):
+        """
+
+        exp_iter is a generator. exp_iter(x, precision) generates the
+        terms of Taylor expansion series with x.
+
+        """
+        yield 1
+        y = Float(xx, 0, pp)
+        f = i = 1
+        yield y
+        while 1:
+            i += 1
+            f *= i
+            y *= xx
+            yield (y / f)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x == 0:
         return Float(1, 0, None)
     if x < 0:
+        print x
         return exp(-x, precision).inverse()
-    y = Float(x, 0, precision)
-    eps = Float(1, -2*precision)
-    f = i = 1
-    series = [1, y]
-    while abs(series[-1]) > eps:
-        i += 1
-        f *= i
-        y *= x
-        series.append(y / f)
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
-    return retval
+    t = 0
+    while x > 1:
+        x /= 2
+        t += 1
+    if t > 0:
+        return sum(exp_iter(x, precision), precision) ** (2 ** t)
+    return sum(exp_iter(x, precision), precision)
 
 def sin(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    sin(x [,precision]) returns the sine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     twopi = pi(2*precision) * 2
     y = x.copy()
@@ -750,7 +799,12 @@ def sin(x, precision=doubleprecision):
     return retval
 
 def cos(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    cos(x [,precision]) returns the cosine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     twopi = pi(2*precision) * 2
     y = x.copy()
@@ -781,12 +835,22 @@ def cos(x, precision=doubleprecision):
     return retval
 
 def tan(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    tan(x [,precision]) returns the tangent of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     return sin(x, precision) / cos(x, precision)
 
 def log(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    log(x [,precision]) returns the logarithm of positive real number x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x == 1:
         return Float(0, 0, precision)
@@ -809,7 +873,12 @@ def log(x, precision=doubleprecision):
     return -retval
 
 def sinh(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    sinh(x [,precision]) returns the hyperbolic sine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     y = x.copy()
     y.setDefaultPrecision(2*precision)
@@ -827,7 +896,12 @@ def sinh(x, precision=doubleprecision):
     return retval
 
 def cosh(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    cosh(x [,precision]) returns the hyperbolic cosine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     t = x.copy()
     t.setDefaultPrecision(2*precision)
@@ -846,12 +920,22 @@ def cosh(x, precision=doubleprecision):
     return retval
 
 def tanh(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    tanh(x [,precision]) returns the hyperbolic tangent of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     return sinh(x, precision) / cosh(x, precision)
 
 def asin(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    asin(x [,precision]) returns arc sine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x > 1 or x < -1:
         raise ValueError, "%s is not in the range [-1, 1]." % str(x)
@@ -874,7 +958,12 @@ def asin(x, precision=doubleprecision):
     return retval
 
 def acos(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    acos(x [,precision]) returns arc cosine of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x > 1 or x < -1:
         raise ValueError, "%s is not in the range [-1, 1]." % str(x)
@@ -887,7 +976,12 @@ def acos(x, precision=doubleprecision):
         return pi(precision) + asin(-y)
 
 def atan(x, precision=doubleprecision):
-    if precision < x.precision:
+    """
+
+    atan(x [,precision]) returns arc tangent of x.
+
+    """
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x < 0:
         # atan(x) = -atan(-x)
@@ -914,6 +1008,14 @@ def atan(x, precision=doubleprecision):
     return retval
 
 def atan2(x, y, precision=doubleprecision):
+    """
+
+    atan2(x, y [,precision]) returns the arc tangent of y/x.
+    Unlike atan(y/x), the signs of both x and y are considered.
+
+    It is unrecomended to obtain the value of pi with atan2(1,1).
+
+    """
     if x > 0 and y > 0:
         return atan(x/y)
     elif x > 0 and y < 0:
@@ -923,10 +1025,12 @@ def atan2(x, y, precision=doubleprecision):
     return Float(0, 0, precision)
 
 def hypot(x, y, precision=doubleprecision):
-    return sqrt(x**2 + y**2, precision)
+    """
 
-pi = FloatConstant(piGaussLegendre)
-e = FloatConstant(lambda precision: exp(1, precision))
+    hypot(x, y [,precision]) returns sqrt(x**2 + y**2).
+
+    """
+    return sqrt(x**2 + y**2, precision)
 
 
 class RealField:
@@ -946,3 +1050,6 @@ class RealField:
         return 0  ## How to know a number is real ?
 
 theRealField = RealField()
+
+pi = FloatConstant(piGaussLegendre)
+e = FloatConstant(lambda precision: exp(1, precision))
