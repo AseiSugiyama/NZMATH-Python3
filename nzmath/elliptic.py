@@ -280,7 +280,7 @@ class EC:
             else:
                 if y1**2+4*y2>=0:
                     d=arith1.sqroot(y1**2+4*y2,self.ch)
-                    return (((-1)*y1+d)*(arith1.inverse(2,self.ch)))%self.ch
+                    return (-y1-d)*arith1.inverse(2,self.ch)%self.ch
                 else:
                     raise ValueError, "(-_-;)" 
         else: #self.ch==0
@@ -528,6 +528,11 @@ class EC:
                     return h
 
         def Shanks_Mestre(self):
+            """
+            This program is using
+            Algorithm 7.5.3(Shanks-Mestre assessment of curve order)
+            Crandall & Pomerance ,PRIME NUMBERS
+            """
             if self.ch!=0:
                 if self.ch<=229:
                     if len(self)!=2:
@@ -544,19 +549,35 @@ class EC:
                         len(E.coefficient)==2,x(P)==x
                         """
                         L=[]
+                        M=[]
                         A=[]
                         B=[]
                         i=0
                         while i<W:
                             Q=E.mul(E.ch+1+i,P)
+
+                            if Q==[0]:
+                                L.append(E.ch+1+i)
+                                return L
+                            elif Q[1]==0:
+                                L.append(2*(E.ch+1+i))
+                                return L
                             A.append(Q[0])
                             i=i+1
-                        j=0
+                        L.append(A)
+                        j=1
                         while j<=W:
                             Q=E.mul(j*W,P)
+                            if Q==[0]:
+                                del L[0]
+                                L.append(j*W)
+                                return L
+                            elif Q[1]==0:
+                                del L[0]
+                                L.append(2*j*W)
+                                return L
                             B.append(Q[0])
                             j=j+1
-                        L.append(A)
                         L.append(B)
                         L.append(intersectionOfTwoLists(A,B))
                         return L
@@ -567,33 +588,43 @@ class EC:
                         other=self
                     g=0
                     while arith1.legendre(g,other.ch)!=-1:
-                        g=random.randint(2,other.ch)
+                        g=random.randint(2,other.ch-1)
                     W=math.floor(math.sqrt(math.sqrt(self.ch))*math.sqrt(2))+1
                     c,d=g**2*other.a,g**3*other.b
                     f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X")
+                    BOX=[]
+                    i=0
+                    while i<other.ch:
+                        BOX.append(1)
+                        i=i+1
                     k=0
                     while k==0:
-                        x=0
-                        while arith1.legendre(f(x),other.ch)==0:
+                        x=random.randint(0,other.ch-1)
+                        while BOX[x]==0 or arith1.legendre(f(x),other.ch)==0:
+                            BOX[x]=0
                             x=random.randint(0,other.ch-1)
+                        BOX[x]=0
                         if arith1.legendre(f(x),other.ch)==1:
                             E=other
                             rho=1
                         else: #arith1.legendre(f(cg),other.ch)==-1
                             E=EC([c,d],other.ch)
                             rho=-1
-                            x=g*x
+                            x=g*x%E.ch
                         P=[x,E.coordinateX(x)]
                         L=BSGS(E,P,W)
-                        A=L[0]
-                        B=L[1]
-                        S=L[2]
-                        if len(S)>1:
-                            k=1
-                    i=random.randrange(0,len(S))
-                    s=S[i]
+                        if len(L)==1:
+                            return L[0]
+                        else:
+                            A=L[0]
+                            B=L[1]
+                            S=L[2]
+                            print S,x
+                            if len(S)==1:
+                                k=1
+                    s=S[1]
                     aa=A.index(s)
-                    bb=B.index(s)
+                    bb=B.index(s)+1
                     t=aa+bb*W
                     if E.mul(t,P)==[0]:
                         return E.ch+1+rho*t
