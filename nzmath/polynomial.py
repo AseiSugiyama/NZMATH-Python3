@@ -955,7 +955,7 @@ class RationalPolynomial:
 
     def __eq__(self, other):
         sub_polynomial = self - other
-        if rational.isIntegerObject(sub_polynomial) and sub_polynomial == 0:
+        if (rational.isIntegerObject(sub_polynomial) or isintance(sub_polynomial,rational.Rational)) and sub_polynomial == 0:
             return 1
         return 0
 
@@ -1262,7 +1262,7 @@ class FlatRationalPolynomial:
 
     def __eq__(self, other):
         sub_polynomial = self - other
-        if rational.isIntegerObject(sub_polynomial) and sub_polynomial == 0:
+        if (rational.isIntegerObject(sub_polynomial) or isinstance(rational.Rational)) and sub_polynomial == 0:
             return 1
         return 0
 
