@@ -17,7 +17,7 @@ class IntegerPolynomial:
         if rational.isIntegerObject(other):
             sum = IntegerPolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
-            return sum.adjust() 
+            return sum.adjust()
         elif isinstance(other, FlatIntegerPolynomial):
             return other + self
         elif self.variable == other.variable:
@@ -31,7 +31,7 @@ class IntegerPolynomial:
             for i in range(min(len(self.coefficient),len(other.coefficient))):
                 sum.coefficient[i] = 0
                 sum.coefficient[i] = self.coefficient[i] + other.coefficient[i]
-            return sum.adjust() 
+            return sum.adjust()
         else:
             return self.toFlatIntegerPolynomial() + other.toFlatIntegerPolynomial()
 
@@ -100,7 +100,7 @@ class IntegerPolynomial:
         raise ValueError, "You must input positive integer for index."
 
     def __rpow__(self, other):
-        raise ValueError, "You must input [IntegerPolynomial**index.]" 
+        raise ValueError, "You must input [IntegerPolynomial**index.]"
 
     def __floordiv__(self, other):
         if rational.isIntegerObject(other):
@@ -219,7 +219,7 @@ class IntegerPolynomial:
             return_str += str(self.coefficient[0])
         elif self.coefficient[first] == 1:
             return_str += self.variable
-            if first != 1: 
+            if first != 1:
                 return_str += "**"
                 return_str += str(first)
         elif self.coefficient[first] == -1:
@@ -252,7 +252,7 @@ class IntegerPolynomial:
                 return_str += self.variable
                 if i != 1:
                     return_str += "**"
-                    return_str += str(i) 
+                    return_str += str(i)
         return return_str
 
     def adjust(self):
@@ -279,7 +279,7 @@ class IntegerPolynomial:
             else:
                 return 0
         else:
-            raise ValueError, "You must input differentiate(polynomial,string)." 
+            raise ValueError, "You must input differentiate(polynomial,string)."
 
     def change_variable(self, other):
         if isinstance(other, str):
@@ -333,7 +333,7 @@ class IntegerPolynomial:
 
 class FlatIntegerPolynomial:
 
-    def __init__(self, coefficients, variables):   
+    def __init__(self, coefficients, variables):
         "FlatIntegerPolynomial(coefficients, variables)"
         if isinstance(variables, list) and isinstance(coefficients, dict):
             self.coefficients = coefficients
@@ -500,7 +500,7 @@ class FlatIntegerPolynomial:
         if rational.isIntegerObject(adjust_polynomial):
             return adjust_polynomial
         substitutions = other
-        for i in adjust_polynomial.variables:  
+        for i in adjust_polynomial.variables:
             if i in substitutions and rational.isIntegerObject(substitutions[i]):
                 variable_position = adjust_polynomial.variables.index(i)
                 new_coefficients = {}
@@ -747,7 +747,7 @@ class FlatIntegerPolynomial:
             max_index = 0
             for i in origin_polynomial.coefficients:
                 if i[-1] > max_index:
-                    max_index = i[-1]            
+                    max_index = i[-1]
             return_polynomial = IntegerPolynomial([0]*(max_index+1),origin_polynomial.variables[-1])
             sum_polynomial_list = [0]*(max_index + 1)
             for i in origin_polynomial.coefficients:
@@ -815,7 +815,7 @@ class RationalPolynomial:
             for i in range(min(len(self.coefficient),len(other.coefficient))):
                 sum.coefficient[i] = 0
                 sum.coefficient[i] = self.coefficient[i] + other.coefficient[i]
-            return sum.adjust() 
+            return sum.adjust()
         else:
             return self.toFlatRationalPolynomial() + other.toFlatRationalPolynomial()
 
@@ -886,7 +886,7 @@ class RationalPolynomial:
         raise ValueError, "You must input positive integer for index."
 
     def __rpow__(self, other):
-        raise ValueError, "You must input [RationalPolynomial**index.]" 
+        raise ValueError, "You must input [RationalPolynomial**index.]"
 
     def __floordiv__(self, other):
         if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
@@ -997,7 +997,7 @@ class RationalPolynomial:
             return_str += str(self.coefficient[0])
         elif self.coefficient[first] == 1:
             return_str += self.variable
-            if first != 1: 
+            if first != 1:
                 return_str += "**"
                 return_str += str(first)
         elif self.coefficient[first] == -1:
@@ -1030,7 +1030,7 @@ class RationalPolynomial:
                 return_str += self.variable
                 if i != 1:
                     return_str += "**"
-                    return_str += str(i) 
+                    return_str += str(i)
         return return_str
 
     def adjust(self):
@@ -1057,7 +1057,7 @@ class RationalPolynomial:
             else:
                 return 0
         else:
-            raise ValueError, "You must input differentiate(polynomial,string)." 
+            raise ValueError, "You must input differentiate(polynomial,string)."
 
     def change_variable(self, other):
         if isinstance(other, str):
@@ -1096,10 +1096,12 @@ class RationalPolynomial:
                 result_polynomial = FlatRationalPolynomial(result_coefficients, [self.variable])
                 return result_polynomial.adjust()
 
+    def getRing(self):
+        return PolynomialRing(rational.theRationalField, self.variable)
 
 class FlatRationalPolynomial:
 
-    def __init__(self, coefficients, variables):   
+    def __init__(self, coefficients, variables):
         "FlatRationalPolynomial(coefficients, variables)"
         if isinstance(variables, list) and isinstance(coefficients, dict):
             self.coefficients = coefficients
@@ -1274,7 +1276,7 @@ class FlatRationalPolynomial:
         if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
             return adjust_polynomial
         substitutions = other
-        for i in adjust_polynomial.variables:  
+        for i in adjust_polynomial.variables:
             if i in substitutions and rational.isIntegerObject(substitutions[i]):
                 variable_position = adjust_polynomial.variables.index(i)
                 new_coefficients = {}
@@ -1521,7 +1523,7 @@ class FlatRationalPolynomial:
             max_index = 0
             for i in origin_polynomial.coefficients:
                 if i[-1] > max_index:
-                    max_index = i[-1]            
+                    max_index = i[-1]
             return_polynomial = RationalPolynomial([0]*(max_index+1),origin_polynomial.variables[-1])
             sum_polynomial_list = [0]*(max_index + 1)
             for i in origin_polynomial.coefficients:
@@ -1542,10 +1544,13 @@ class FlatRationalPolynomial:
                     return_polynomial.coefficient[i] = sum_polynomial_list[i]
             return return_polynomial
 
+    def getRing(self):
+        return PolynomialRing(rational.theRationalField, self.variables)
+
 class PolynomialRing:
     """
 
-    The class of polynomial ring. 
+    The class of polynomial ring.
 
     """
     def __init__(self, ring, vars):
