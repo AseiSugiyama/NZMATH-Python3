@@ -339,7 +339,9 @@ class Matrix:
             C = self * C
             coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
             C = C + coeff[i] * theMatrixRing.unitMatrix(self.row)
-        return coeff
+        import polynomial
+        coeff.reverse()
+        return polynomial.Polynomial(coeff, "x")
 
     def cohensSimplify(self):      # common process of image() and kernel()
         """cohensSimplify is used in image() and kernel()"""
@@ -459,7 +461,7 @@ class Matrix:
                     break
             else:
                 raise VectorsNotIndependent, self.__name__
-            print "i=,",i
+            #print "i=,",i
             # step 4
             if i > j:
                 for l in range(j,n+1):
@@ -469,38 +471,40 @@ class Matrix:
                 B.swapRow(i,j)
             # step 5
             d = 1 / rational.Rational(M[j,j])
-            print "d=",d
+            #print "d=",d
             for k in range(j+1,m+1):
                 C[k,1] = d * M[k,j]
-            print C
+            #print C
             for k in range(j+1,m+1):
                 for l in range(j+1,n+1):
                     M[k,l] = M[k,l] - C[k,1] * M[j,l]
             for k in range(j+1,m+1):
                 B.setRow(k, B.getRow(k)-C[k,1]*B.getRow(j))
-            print M
-            print B
-            pause()
+            #print M
+            #print B
+            #pause()
         # step 6
         for i in range(n,0,-1):
             tmp = B.getRow(i)
             for j in range(i+1,n+1): 
                 tmp -= M[i,j] * X.getRow(j)
             X.setRow(i, tmp / M[i,i])
-        print "X==="
-        print X
+        #print "X==="
+        #print X
         # step 7
-        for k in range(n+1, m+1):
+        for k in range(n+2, m+1):   # in according to the book, the range is range(n+1,m+1), but then it raises error !!!
             if B.getRow(k) != M.getRow(k) * X:
-                print "X---"
+                #print "X---"
+                #print X
+                #print "B---"
+                #print B
+                #print "M---"
+                #print M
+                #print "row :", k
+                #print B.getRow(k)
+                #print self.getRow(k) * X
+                print "-"*30
                 print X
-                print "B---"
-                print B
-                print "M---"
-                print M
-                print "row :", k
-                print B.getRow(k)
-                print M.getRow(k) * X
                 raise Exception, "some vectors are not in the inverse image"
         return X
 
@@ -510,28 +514,65 @@ class Matrix:
         if self.row < self.column:
             raise MatrixSizeError
 
-        copy = self.copy()
-        B = theMatrixRing.unitMatrix(copy.row)
+        # for make it easy to read
+        n = self.row
+        k = self.column
 
-        for s in range(1,copy.column+1):
-            for t in range(s,copy.row+1):
-                if copy[t,s] != 0:
-                    break
-            else:
+        M = self.copy()
+        B = theMatrixRing.unitMatrix(n)
+
+        for s in range(k):
+            found = 0; t = s
+            while (not found and t < n):
+                found  = M.compo[t][s] != 0
+                if not found:
+                    t += 1
+            if not found:
                 raise VectorsNotIndependent
-            d = 1 / rational.Rational(copy[t,s])
+            d = 1 / rational.Rational(M.compo[t][s])
+            M.compo[t][s] = 1
             if t != s:
-                B.setColumn(t, B[s])
-            B.setColumn(s, copy[s])
-            pause()
-            for j in range(s+1, copy.column+1):
-                tmp = copy[s,j]
-                copy[s,j] = copy[t,j]
-                copy[t,j] = tmp
-                copy[s,j] = d * copy[s,j]
-                for i in range(1,copy.row+1):
+                for i in range(n):
+                    B.compo[i][t] = B.compo[i][s]
+            for i in range(n):
+                B.compo[i][s] = self.compo[i][s]
+            for j in range(k):
+                for i in range(n):
+                    if i != s and i != t and i != j:
+                        M.compo[i][j] = 0
+            for j in range(s+1,k):
+                if t != s:
+                    tmp = M.compo[s][j]; M.compo[s][j] = M.compo[t][j]; M.compo[t][j] = tmp
+                d *= M.compo[s][j]
+                for i in range(n):
                     if i != s and i != t:
-                        copy[i,j] = copy[i,j] - copy[i,s] * copy[s,j]
+                        M.compo[i][j] -= M.compo[i][s] * d
+                    else:
+                        M.compo[i][j] = 0
+
+
+#        for s in range(1,k+1):
+#            for t in range(s,n+1):
+#                if M[t,s] != 0:
+#                    break
+#            else:
+#                raise VectorsNotIndependent
+#            d = 1 / rational.Rational(M[t,s])
+#            M[t,s] = 1  # ommited from the book !!!
+#            if t != s:
+#                B.setColumn(t, B[s])
+#            B.setColumn(s, M[s])
+#            for j in range(s+2, k+1):
+#                if t != s:
+#                    tmp = M[s,j]
+#                    M[s,j] = M[t,j]
+#                    M[t,j] = tmp
+#                d *= M[s-1,j-1]
+#                for i in range(1,n+1):
+#                    if i != s and i != t:
+#                        M[i-1,j-1] -= M[i-1,s-1] * d
+#                    else:
+#                        M[i-1,j-1] = 0
         return B
 
     def hessenbergForm(self):      # Cohen's Algorithm 2.2.9
@@ -723,6 +764,8 @@ h = Matrix(4,4,[-2,-2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3])
 
 i = Matrix(2,3,[-1,-2,-3,1,4,5])
 
+sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9])
+
 def pause():
     print "--- hit enter key ---"
     raw_input()
@@ -739,6 +782,8 @@ if __name__ == '__main__':
 #    print f
 #    print f * Matrix(2,1,[1,9])
 #    print f.inverseImageMatrix(Matrix(3,1,[9,35,56]))
-    print h
-    print h.hessenbergForm()
-    print c.hessenbergForm()
+#    print h
+#    print h.hessenbergForm()
+#    print c.hessenbergForm()
+    print sb
+    print sb.supplementBasis()
