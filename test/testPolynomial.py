@@ -333,10 +333,10 @@ class SquareFreeDecompositionChar0Test(unittest.TestCase):
         assert self.pow1pow2.squareFreeDecomposition()
         assert self.pow1pow3.squareFreeDecomposition()
         result1 = {1: self.pow1}
-        result2 = {1: OneVariableDensePolynomial([1,0,1],"x"),
-                   2: OneVariableDensePolynomial([1,1],"x")}
-        result3 = {1: OneVariableDensePolynomial([1,1],"x"),
-                   3: OneVariableDensePolynomial([2,1],"x")}
+        result2 = {1: OneVariableDensePolynomial([1,0,1],"x", rational.theRationalField),
+                   2: OneVariableDensePolynomial([1,1],"x", rational.theRationalField)}
+        result3 = {1: OneVariableDensePolynomial([1,1],"x", rational.theRationalField),
+                   3: OneVariableDensePolynomial([2,1],"x", rational.theRationalField)}
         assert result1 == self.pow1.squareFreeDecomposition()
         assert result2 == self.pow1pow2.squareFreeDecomposition(), self.pow1pow2.squareFreeDecomposition()
         assert result3 == self.pow1pow3.squareFreeDecomposition(), self.pow1pow3.squareFreeDecomposition()
@@ -353,7 +353,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
         assert result == self.f + self.g
         assert self.f.getRing() == (self.f + self.g).getRing()
-        assert 0 == self.f + self.f
+        assert not (self.f + self.f)
 
     def testSub(self):
         result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
@@ -376,8 +376,8 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
     def testDifferentiate(self):
         import finitefield
         result = finitefield.FinitePrimeFieldElement(1,2)
-        assert result == self.f.differentiate(self.f.variable)
-        assert 0 == self.g.differentiate(self.g.variable)
+        assert result == +self.f.differentiate(self.f.variable)
+        assert not self.g.differentiate(self.g.variable)
 
     def testGcd(self):
         assert self.f == self.f.getRing().gcd(self.f, self.g)

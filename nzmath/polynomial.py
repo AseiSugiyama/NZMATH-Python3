@@ -11,14 +11,23 @@ from rationalFunction import RationalFunctionField
 
 class OneVariableDensePolynomial:
 
-    def __init__(self, coefficient, variable):
-        "OneVariableDensePolynomial(coefficient, variable)"
-        if isinstance(variable, str) and isinstance(coefficient, list):
-            self.coefficient = coefficient
+    def __init__(self, coefficient, variable, coeffring=None):
+        """
+        
+        OneVariableDensePolynomial(coefficient, variable [,coeffring])
+
+        coefficient must be a sequence of coefficients.
+        variable must be a character string.
+        coeffring must be, if specified, an object inheriting ring.Ring.
+        """
+        if not coeffring:
+            self.coefficient = list(coefficient)
             self.variable = variable
             self.ring = self.initRing()
         else:
-            raise ValueError, "You must input (list, string)."
+            self.variable = variable
+            self.ring = PolynomialRing(coeffring, self.variable)
+            self.coefficient = [coeffring.createElement(c) for c in coefficient]
 
     def __setitem__(self, index, value):
         """
@@ -72,7 +81,8 @@ class OneVariableDensePolynomial:
                         sum[i] = self.coefficient[i]
                 for i in range(min(len(self.coefficient),len(other.coefficient))):
                     sum[i] = self.coefficient[i] + other.coefficient[i]
-                return OneVariableDensePolynomial(sum, self.variable).adjust()
+                commonRing = self.ring.getCommonSuperring(other.getRing())
+                return OneVariableDensePolynomial(sum, self.variable, commonRing.getCoefficientRing()).adjust()
             else:
                 return (self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()).toMultiVariableDensePolynomial()
         elif isinstance(other, OneVariableSparsePolynomial):
@@ -113,7 +123,8 @@ class OneVariableDensePolynomial:
                 for l in range(len(self.coefficient)):
                     for r in range(len(other.coefficient)):
                         product[l + r] += self.coefficient[l] * other.coefficient[r]
-                return OneVariableDensePolynomial(product, self.variable).adjust()
+                commonRing = self.ring.getCommonSuperring(other.getRing())
+                return OneVariableDensePolynomial(product, self.variable, commonRing.getCoefficientRing()).adjust()
             else:
                 return (self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()\
                         ).toMultiVariableDensePolynomial()
@@ -125,7 +136,8 @@ class OneVariableDensePolynomial:
             return self.toMultiVariableSparsePolynomial() * other
         elif other in self.getRing().getCoefficientRing():
             product = [c * other for c in self.coefficient]
-            return OneVariableDensePolynomial(product, self.variable).adjust()
+            commonRing = self.getRing().getCoefficientRing()
+            return OneVariableDensePolynomial(product, self.variable, commonRing).adjust()
         elif rational.isIntegerObject(other):
             return rational.Integer(other).actAdditive(self)
         else:
@@ -320,7 +332,18 @@ class OneVariableDensePolynomial:
             return return_value
 
     def __pos__(self):
-        return self.adjust()
+        retval = self.adjust()
+        if retval.degree() == 0:
+            retval = retval[0]
+        elif retval.degree() < 0:
+            retval = 0
+        return retval
+
+    def __nonzero__(self):
+        if self.degree() >= 0:
+            return True
+        else:
+            return False
 
     def __repr__(self):
         self_adjust = self.adjust()
@@ -380,11 +403,9 @@ class OneVariableDensePolynomial:
 
     def adjust(self):#Use this method in case of leading term of coefffidcient = 0 
         length = len(self.coefficient)
-        while (length != 1) and (self.coefficient[length-1] == 0):
+        while length and not self.coefficient[length-1]:
             length -= 1
-        if length == 1:
-            return self.coefficient[0]
-        result = OneVariableDensePolynomial(self.coefficient[:length],self.variable)
+        result = OneVariableDensePolynomial(self.coefficient[:length],self.variable, self.ring.getCoefficientRing())
         return result
 
     def differentiate(self, other):
@@ -392,7 +413,7 @@ class OneVariableDensePolynomial:
             if self.variable == other:
                 if len(self.coefficient) == 1:
                     return 0
-                diff = OneVariableDensePolynomial([0]*(len(self.coefficient)-1),self.variable)
+                diff = OneVariableDensePolynomial([0]*(len(self.coefficient)-1),self.variable, self.ring.getCoefficientRing())
                 for i in range(len(diff.coefficient)):
                     diff.coefficient[i] = (self.coefficient[i+1]) * (i+1)
                 return diff.adjust()
@@ -520,12 +541,12 @@ class OneVariableDensePolynomial:
         b = rx.gcd(self, self.differentiate(self.variable))
         a = self / b
         i = 1
-        while isinstance(b, OneVariableDensePolynomial):
+        while b.degree() > 0:
             c = rx.gcd(a, b)
             b /= c
             if a != c:
                 r = a / c
-                if isinstance(r, OneVariableDensePolynomial):
+                if r.degree() > 0:
                     result[i] = r
                 a = c
             i += 1
@@ -2201,7 +2222,7 @@ def subResultantGCD(A, B):
     # step 1
     if B.degree() > A.degree():
         A, B = B, A
-    if B == 0:
+    if not B:
         return A
     a = A.content()
     b = B.content()
@@ -2223,7 +2244,7 @@ def subResultantGCD(A, B):
             degB = 0
         delta = degA - degB
         Q, R = pseudoDivision(A, B)
-        if R == 0:
+        if not R:
             return d * B.primitivePart()
         if isinstance(R, OneVariableDensePolynomial):
             degR = R.degree()
@@ -2241,38 +2262,38 @@ def subResultantGCD(A, B):
         else:
             h = h ** (delta - 1) * g ** delta
 
+if __name__ == '__main__':
+    a = OneVariableDensePolynomial([1,1],"x")
 
-a = OneVariableDensePolynomial([1,1],"x")
+    b = OneVariableDensePolynomial([1,-2,3,-4],"x")
 
-b = OneVariableDensePolynomial([1,-2,3,-4],"x")
+    c = OneVariableDensePolynomial([1,-1,-2],"y")
 
-c = OneVariableDensePolynomial([1,-1,-2],"y")
+    d = OneVariableDensePolynomial([1,1,2],"y")
 
-d = OneVariableDensePolynomial([1,1,2],"y")
+    e = OneVariableDensePolynomial([0,1,2,3,4],"z")
 
-e = OneVariableDensePolynomial([0,1,2,3,4],"z")
+    f = MultiVariableSparsePolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},["x","z"])
 
-f = MultiVariableSparsePolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},["x","z"])
+    g = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},["y","z","x"])
 
-g = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},["y","z","x"])
+    h = OneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)],"x")
 
-h = OneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)],"x")
+    i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)],"x")
 
-i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)],"x")
+    j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")
 
-j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")
+    k = OneVariableSparsePolynomial({(1,):1},["x"])
 
-k = OneVariableSparsePolynomial({(1,):1},["x"])
+    l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)],"y")
 
-l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)],"y")
+    p = OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])
+    pp = OneVariableDensePolynomial([-1,0,0,0,0,0,0,1],"x")
+    pr =  OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])*rational.Rational(2,3)
 
-p = OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])
-pp = OneVariableDensePolynomial([-1,0,0,0,0,0,0,1],"x")
-pr =  OneVariableSparsePolynomial({(7,):1,(0,):-1},["x"])*rational.Rational(2,3)
+    q = OneVariableDensePolynomial([1,1,1,1,1,1,1],"x")
+    qq = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])
+    qr = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])*rational.Rational(3,5)
+    r = OneVariableSparsePolynomial({(0,):-1,(1,):1},["x"])
 
-q = OneVariableDensePolynomial([1,1,1,1,1,1,1],"x")
-qq = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])
-qr = OneVariableSparsePolynomial({(6,):1,(5,):1,(4,):1,(3,):1,(2,):1,(1,):1,(0,):1},["x"])*rational.Rational(3,5)
-r = OneVariableSparsePolynomial({(0,):-1,(1,):1},["x"])
-
-s = OneVariableDensePolynomial([-1,1],"x")
+    s = OneVariableDensePolynomial([-1,1],"x")
