@@ -16,7 +16,6 @@ g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,( 4,):
 h=polynomial.OneVariableSparsePolynomial({0:1,2:17,3:1,4:13,5:71,6:36,7:59,8:46,9:12,10:51,11:52,12:50},["x"])
 
 """
-
 def Element_p(a,p):
     """
     a is (rational,int,long) number
@@ -90,6 +89,9 @@ def Evaluate(poly,t):
     return v
 
 def Mul(f,g):
+    """
+    all coefficient are nonnegative integer
+    """
     if isinstance(f,(int,long)) or isinstance(g,(int,long)):
         return f*g
     elif f.degree()<1 or g.degree()<1:
@@ -98,7 +100,7 @@ def Mul(f,g):
         pass
     F=f.toOneVariableDensePolynomial()
     G=g.toOneVariableDensePolynomial()
-    if len(F.coefficient.getAsDict())<f.degree()+1 or len(G.coefficient.getAsDict())<g.degree()+1:
+    if len(F.coefficient.getAsDict())*len(G.coefficient.getAsDict())<f.degree()+g.degree():
         return f*g
     f=f.toOneVariableSparsePolynomial()
     g=g.toOneVariableSparsePolynomial()
@@ -115,9 +117,9 @@ def Mul(f,g):
     j=0
     k=1
     while j<F+G+1:
-        print j,F+G+1
-        L.append(int(u/k)%i)
-        k=k*i
+        u=int(u/k)
+        L.append(u%i)
+        k=i
         j=j+1
     return polynomial.OneVariableDensePolynomial(L,"x").toOneVariableSparsePolynomial()
 
@@ -140,9 +142,9 @@ def Inver_p(poly,d,p):
         if n>d+1:
             n=d+1
         g=Mod(poly,n)%p
-        g=Mod(Mul(f,g)%p,n)%p #
-        f=Mod(Mul(f,2-g)%p,n)%p # 
-        print n,d+1
+        g=Mod(f*g%p,n)%p #
+        f=Mod(f*(2-g)%p,n)%p #
+        print n ,d+1,"*" ###
     if L[0]==1:
         return f%p
     else:
@@ -197,8 +199,8 @@ def PolyMod_p(f,g,p):
         F=rev(f,f.degree())
         G=rev(g,g.degree())
         q=Inver_p(G,d,p)# time wastes 
-        q=Mod(Mul(q,F)%p,d+1)
-        r=(F-Mul(q,G))%p
+        q=Mod(q*F%p,d+1) #
+        r=(F-q*G)%p #
         i=ind(r,d+1)
         r=Div(r,i)
         return rev(r,f.degree()-i)
@@ -229,11 +231,9 @@ def GCD(f,g,p):
                     f,g=g,f
             while g:
                 f,g=g,PolyMod_p(f,g,p)
-                if isinstance(g,(int,long)):
+                if isinstance(g,(int,long)) and g!=0:
                     return 1
-                elif isinstance(g,polynomial.OneVariableDensePolynomial) and len(g.coefficient.getAsList())==1:
-                    return 1
-                elif isinstance(g,polynomial.OneVariableSparsePolynomial) and len(g.coefficient)==1:
+                elif isinstance(g,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)) and g.degree()==1:
                     return 1
                 else:
                     pass
@@ -921,53 +921,50 @@ class EC:
                 while i<len(L):
                     j=L[i]
                     k=self.ch%j
-                    print i,k,"i,k" ###
                     if k%2==0:
-                        BOO=PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j)
-                        P=GCD(BOO,D[j],j)
-                        #poly=f*E*D[k]**2+D[k-1]*D[k+1]
-                        #P=GCD(poly,D[j],j)
+                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
                         if P==1:
                             F=0 
                         else:
                             F=1
-                            #P=solve(P) # P is X(point),solve is now making
+                            P=equation.solve_Fp(P,j) #now making
+                            P=(P,other.coordinateX(P))# P in E[j]
                     else:
-                        """
-                        E=polynomial.OneVariableSparsePolynomial({0:4,1:3,3:1},["x"])
-                        BOO5=polynomial.OneVariavleSparsePolynomial({1:3,2:1,3:2,5:3,6:2},["x"])
-                        g
-                        BOO7=polynomial.OneVariableSparsePolynomial({0:696,1:604,2:242,3:442,4:605,5:409,6:67,7:146,8:4,9:14,10:1,11:3,13:6,14:1,15:5,16:1,17:4,18:1,19:6,20:4,21:1},["x"])
-                        
-                        """
-                        #poly=f*D[k]**2+E*D[k+1]*D[k-1]
-                        #P=GCD(poly,D[j],j)
-                        BOO=PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j)
-                        P=GCD(BOO,D[j],j)
+                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),D[j],j)
                         if P==1:
                             F=0
                         else:
                             F=1
-                            #P=solve(P)
+                            P=equation.solve_Fp(P,j) #now making
+                            P=(P,other.coordinateX(P))# P in E[j]
                     if F==1: #GCD!=1
                         if arith1.legendre(other.ch,j)==-1:
                             T.append((0,j))
+                            #print T,"@" ### 
                         else:
-                            pass
-                            #print P "@@@"
+                            w=arith1.sqroot(k,j)
+                            #print P ###
+#                            if : #
+#                                T.append((2*w,j))
+#                            elif : #
+#                                T.append((-2*w,j))
+#                            else: #
+#                                T.append((0,j))
                             #T.append(P)###
-                            #pass
+                            pass
                     else: #GCD==1
                         l=1
                         while l<k:
                             #P=GCD(,,)#
-                            #if P==1:
-                            #    T.append((0,j))
-                            #else:
-                            #    T.append((l,j))
-                            break
+                            if P==1:
+                                T.append((0,j))
+                                print T,"@@"
+                            else:
+                                T.append((l,j))
+                                print T,"@@@"
+                            l=l+1
                     i=i+1
-                    print i,len(L),"@@@"
+                    print i,len(L),"#"###
                 return T
             else:
                 raise NotImplementedError, "Now making (>_<)"
