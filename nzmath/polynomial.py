@@ -523,9 +523,9 @@ class OneVariableSparsePolynomial:
                 return_variable = self.variable[:]
                 for i in other.coefficient:
                     if i in return_coefficient:
-                        return_coefficient[i] += other[i]
+                        return_coefficient[i] += other.coefficient[i]
                     else:
-                        return_coefficient[i] = other[i]
+                        return_coefficient[i] = other.coefficient[i]
                 return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
             else:
                 return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
