@@ -1,6 +1,9 @@
-# written by Aoyama
+# matrix.py
+# written by Aoyama (aoyama-shotaro@c.comp.metro-u.ac.jp)
+
 # This file may be modified without notice.
-# Don't edit this for the present, please.
+# Don't edit this for the present
+# and if you have an advice, mail me please.
 # 06/18
 
 class Matrix:
@@ -21,11 +24,15 @@ class Matrix:
             rtnstr += "\n"
         return rtnstr
 
-    def display(self):
+    def __eq__(self, other):
+        if (self.row != other.row) or (self.column != other.column):
+            return 0
+
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
-                print self.compo[(i,j)],
-            print
+                if self.compo[(i, j)] != other.compo[(i, j)]:
+                    return 0
+        return 1
 
     def __add__(self, other):
         if (self.row != other.row) or (self.column != other.column): 
@@ -59,15 +66,15 @@ class Matrix:
             for j in range(1, self.column+1):
                 self.compo[(i,j)] = list[self.column * (i-1) + (j-1)]
     
-    def getrow(self, m):
+    def get_row(self, m):
        row_m = []
-       for i in range(1, self.row+1):
+       for i in range(1, self.column+1):
            row_m += [self.compo[(m, i)]]
        return row_m
 
-    def getcolumn(self, n):
+    def get_column(self, n):
         column_n = []
-        for j in range(1, self.column+1):
-            column_n += [self.compo[(j, n)]
+        for j in range(1, self.row+1):
+            column_n += [self.compo[(j, n)]]
         return column_n
 
