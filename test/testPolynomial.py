@@ -125,9 +125,6 @@ class IntegerOneVariableSparsePolynomialTest (unittest.TestCase):
     def testPow(self):
         assert self.k * self.k == self.k ** 2
 
-    def testToMultiVariableDensePolynomial(self):
-        assert self.k.toMultiVariableDensePolynomial()
-
 class IntegerOneVariablePolynomialsTest(unittest.TestCase):
     def setUp(self):
         self.a = OneVariableDensePolynomial([1,1], x, Z)
@@ -214,10 +211,6 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert self.f(x = -2,z = y) == call_4
         assert self.f(x = self.a) == call_6
         assert self.f(z = self.a) == call_7
-
-    def testToOneVariableDensePolynomial(self):
-        fyz = MultiVariableDensePolynomial([1,OneVariableDensePolynomial([1,2],y)],z)
-        self.assertRaises(ValueError, fyz.toOneVariableDensePolynomial)
 
 class RationalPolynomialTest(unittest.TestCase):
     def setUp(self):
