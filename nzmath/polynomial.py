@@ -106,7 +106,7 @@ class OneVariableDensePolynomial:
     def __mul__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
             if self.variable == other.variable:
-                product = [0]*(len(self.coefficient) + len(other.coefficient))
+                product = map(self.getRing().getCoefficientRing(self.variable).createElement, [0]*(len(self.coefficient) + len(other.coefficient)))
                 for l in range(len(self.coefficient)):
                     for r in range(len(other.coefficient)):
                         product[l + r] += self.coefficient[l] * other.coefficient[r]

@@ -327,6 +327,29 @@ class SquareFreeDecompositionChar0Test(unittest.TestCase):
         assert result2 == self.pow1pow2.squareFreeDecomposition(), self.pow1pow2.squareFreeDecomposition()
         assert result3 == self.pow1pow3.squareFreeDecomposition(), self.pow1pow3.squareFreeDecomposition()
 
+class FiniteFieldPolynomialTest(unittest.TestCase):
+    def setUp(self):
+        import finitefield
+        F2 = lambda x: finitefield.FinitePrimeFieldElement(x, 2)
+        self.mapF2 = lambda seq: map(F2,seq)
+        self.f = OneVariableDensePolynomial(self.mapF2([1,1]),"x")
+        self.g = OneVariableDensePolynomial(self.mapF2([1,0,1]),"x")
+
+    def testAdd(self):
+        result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
+        assert result == self.f + self.g
+        assert self.f.getRing() == (self.f + self.g).getRing()
+
+    def testSub(self):
+        result = OneVariableDensePolynomial(self.mapF2([0,1,1]),"x")
+        assert result == self.f - self.g
+        assert self.f.getRing() == (self.f - self.g).getRing()
+
+    def testMul(self):
+        result = OneVariableDensePolynomial(self.mapF2([1,1,1,1]),"x")
+        assert result == self.f * self.g
+        assert self.f.getRing() == (self.f * self.g).getRing()
+
 def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
@@ -336,6 +359,7 @@ def suite():
     suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialGCDTest, "test"))
     suite.addTest(unittest.makeSuite(SquareFreeDecompositionChar0Test, "test"))
+    suite.addTest(unittest.makeSuite(FiniteFieldPolynomialTest, "test"))
     return suite
 
 if __name__== '__main__':
