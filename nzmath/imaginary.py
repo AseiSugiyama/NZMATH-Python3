@@ -389,7 +389,7 @@ def log(x, err=defaultError):
                 return real.log(x, err=_err)
             elif x < 0:
                 return Complex(real.log(abs(x), _err), real.pi(_err))
-        return Complex(real.log(abs(x), _err), real.atan2(x.real, x.imag, _err))
+        return Complex(real.log(abs(x), err=_err), real.atan2(x.real, x.imag, _err))
     else:
         return Complex(cmath.log(complex(x.real,x.imag)))
 
@@ -485,3 +485,6 @@ def tanh(z, err=defaultError):
 def atanh(z, err=defaultError):
     return log((1+z)/(1-z), err=err) / 2
 
+
+def sqrt(z, err=defaultError):
+    return real.sqrt(abs(z))*expi(z.arg()/2)
