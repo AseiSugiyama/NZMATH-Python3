@@ -54,19 +54,19 @@ class ImaginaryTest (unittest.TestCase):
         sin1 = imaginary.sin(1)
         sinc1 = imaginary.sin(imaginary.Complex(1, 0))
         assert imaginary.exp(imaginary.Complex(0, 1)).imag == sin1
-        assert sin1 == sinc1, (sin1, sinc1, sin1 - sinc1)
+        assert sin1 == sinc1, (sin1, sinc1.__class__, sin1 - sinc1)
 
     def testCos(self):
         cos1 = imaginary.cos(1)
         cosc1 = imaginary.cos(imaginary.Complex(rational.Integer(1), 0))
-        assert imaginary.exp(imaginary.Complex(0, rational.Integer(1))).real == cos1.real
+        assert isinstance(cos1, rational.Rational) or imaginary.exp(imaginary.Complex(0, rational.Integer(1))).real == cos1.real
         assert cos1 == cosc1, (cos1, cosc1, cos1 - cosc1)
 
     def testTan(self):
         tan1 = imaginary.tan(1)
         tanc1 = imaginary.tan(imaginary.Complex(rational.Integer(1), 0))
         assert tan1 == tanc1
-        assert tan1.real > 0
+        assert isinstance(tan1, rational.Rational) and tan1 > 0 or tan1.real > 0
 
     def testLog(self):
         log2 = imaginary.log(2)

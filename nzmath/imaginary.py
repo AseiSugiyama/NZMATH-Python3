@@ -1,5 +1,8 @@
 from __future__ import division, generators
+# standard modules
 import operator
+import itertools
+# NZMATH modules
 import real
 import rational
 
@@ -147,6 +150,9 @@ class Complex:
 
     def __neg__(self):
         return self.__class__(-self.real, -self.imag)
+
+    def __nonzero__(self):
+        return self.real or self.imag
 
     def __repr__(self):
         return "Complex(" + repr(self.real) + ", " + repr(self.imag) + ")"
@@ -337,7 +343,7 @@ class ExponentialPowerSeries:
         if x == 0:
             yield self.iterator.next()
         else:
-            f = 1
+            f = rational.Integer(1)
             i = 0
             y = rational.Integer(1)
             for an in self.iterator:
@@ -360,19 +366,27 @@ class ExponentialPowerSeries:
             oldvalue = +value
 
 def sin(z, err=defaultError):
-    pass
+    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+    return series(z, err)
 
 def cos(z, err=defaultError):
-    pass
+    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+    return series(z, err)
 
 def tan(z, err=defaultError):
     return sin(z, err) / cos(z,err)
 
 def sinh(z, err=defaultError):
-    pass
+    if z == 0:
+        return rational.Integer(0)
+    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
+    return series(z, err)
 
 def cosh(z, err=defaultError):
-    pass
+    if z == 0:
+        return rational.Integer(1)
+    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
+    return series(z, err)
 
 def tanh(z, err=defaultError):
-    pass
+    return sinh(z, err) / cosh(z, err)
