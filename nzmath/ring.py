@@ -1,7 +1,7 @@
 ### abstract classes
 ###
-### There is no need to actually inherit these but only to implement
-### the methods of same names.
+### There is no need to actually inherit these but only need to
+### implement the methods of same names.
 
 class Ring:
     """Ring is an abstract class which expresses that
@@ -36,6 +36,10 @@ class Field (CommutativeRing):
         """This class is abstract and cannot be instanciated."""
         raise NotImplementedError
 
+    def createElement(self, numerator, denominator):
+        """createElement returns an element of the field."""
+        raise NotImplementedError
+
 class PolynomialRing (CommutativeRing):
     """PolynomialRing is an abstract class which expresses that
     the derived classes are polynomial rings."""
@@ -61,7 +65,6 @@ class RingElement:
         to which the element belongs."""
         raise NotImplementedError
 
-
 ###  concrete classes
 
 class _IntegerRing:
@@ -80,7 +83,8 @@ class _IntegerRing:
         return theRationalField
 
     def createElement(self, seed):
-        """createElement returns an Integer object with seed."""
+        """createElement returns an Integer object with seed,
+        which must be an integer."""
         return Integer(seed)
 
 theIntegerRing = _IntegerRing()
@@ -106,9 +110,12 @@ class _RationalField:
         """getQuotientField returns the rational field itself."""
         return self
 
-    def createElement(self, seed):
-        """createElement returns a Rational object with seed."""
-        return rational.Rational(seed)
+    def createElement(self, numerator, denominator=1):
+        """createElement
+        returns a Rational object.
+        If the number of arguments is one, it must be an integer or a rational.
+        If the number of arguments is two, they must be integers."""
+        return rational.Rational(numerator, denominator)
 
 theRationalField = _RationalField()
 
@@ -118,9 +125,68 @@ class Integer(long):
 
     def __div__(self, other):
         if other in theIntegerRing:
-            return rational.Rational(self, other)
+            return +rational.Rational(self, +other)
         else:
             return NotImplemented
+
+    def __rdiv__(self, other):
+        if other in theIntegerRing:
+            return +rational.Rational(+other, self)
+        else:
+            return NotImplemented
+
+    __truediv__ = __div__
+
+    __rtruediv__ = __rdiv__
+
+    def __floordiv__(self, other):
+        return Integer(long(self)//other)
+
+    def __rfloordiv__(self, other):
+        return Integer(other//long(self))
+
+    def __mod__(self, other):
+        return Integer(long(self)%other)
+
+    def __rmod__(self, other):
+        return Integer(other%long(self))
+
+    def __divmod__(self, other):
+        return tuple(map(Integer, divmod(long(self), other)))
+
+    def __rdivmod__(self, other):
+        return tuple(map(Integer, divmod(other, long(self))))
+
+    def __add__(self, other):
+        return Integer(long(self)+other)
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        return Integer(long(self)-other)
+
+    def __rsub__(self, other):
+        return Integer(other-long(self))
+
+    def __mul__(self, other):
+        return Integer(long(self)*other)
+
+    __rmul__ = __mul__
+
+    def __pow__(self, other, modulo=None):
+        return Integer(pow(long(self), other, modulo))
+
+    def __rpow__(self, other, modulo=None):
+        return Integer(pow(other, long(self), modulo))
+
+    def __pos__(self):
+        return Integer(self)
+
+    def __neg__(self):
+        return Integr(-long(self))
+
+    def __abs__(self):
+        return Integer(abs(long(self)))
 
     def getRing(self):
         return theIntegerRing
