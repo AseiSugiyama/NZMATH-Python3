@@ -13,6 +13,44 @@ class IntegerPolynomial:
         else:
             raise ValueError, "You must input (list,string)."
 
+    def __setitem__(self, index, value):
+        if rational.isIntegerObject(index) and rational.isIntegerObject(value):
+            origin_polynomial = self.adjust()
+            if rational.isIntegerObject(origin_polynomil):
+                if index == 0:
+                    return value
+                elif index > 0:
+                    return_coefficient = [0]*(index+1)
+                    return_variable = self.variable[:]
+                    return_coefficient[index] = value
+                    return_coefficient[0] = origin_polynomial
+                    return_polynomial = IntegerPolynomial(return_coefficient, return_variable)
+                    return return_polynomial.adjust()
+                else raise ValueError, "You must input non-negative integer for index."
+            elif len(origin_polynomial.coefficient - 1) >= index and index >= 0:
+                return_coefficient = origin_polynomial.coefficient[:]
+                return_variable = origin_polynomial.variable[:]
+                return_coefficient[index] = value
+                return_polynomil = IntegerPolynomial(return_coefficient, return_variable)
+                return return_polynomial.adjust()
+            elif len(origin_polynomial.coefficient - 1) < index:
+                add_coefficient = [0]*(index+1)
+                add_variable = origin_polynomial.variable[:]
+                add_polynomial = IntegerPolynomial(add_coefficient, add_variable)
+                return (origin_polynomial + add_polynomial).adjust()
+            else raise ValueError, "You must input non-negative integer for index."
+        elif rational.isIntegerObject(index) and isinstance(value, rational.Rational):
+            return self.toRationalPolynomial().__setitem__(index, value)
+        else raise ValueError, "You must input polynomial[index, value]."
+
+    def __getitem__(self, index):
+        if rational.isIntegerObject(index):
+            if len(self.coefficient - 1) >= index and index >= 0:
+                return self.coefficient[index]
+            elif len(self.coefficient - 1) < index
+                return 0
+        else raise ValueError, "You must input non-negative integer for index."
+
     def __add__(self, other):
         if rational.isIntegerObject(other):
             sum = IntegerPolynomial(self.coefficient[:],self.variable)
@@ -333,6 +371,12 @@ class IntegerPolynomial:
 
     def getRing(self):
         return PolynomialRing(rational.theIntegerRing, self.variable)
+
+    def degree(self):
+        adjust_polynomial = self.adjust()
+        if rational.isINtegerObject(adjust_polynomial):
+            return 0
+        else return len(self.coefficient) - 1
 
 class FlatIntegerPolynomial:
 
@@ -799,6 +843,42 @@ class RationalPolynomial:
         else:
             raise ValueError, "You must input (list,string)."
 
+    def __setitem__(self, index, value):
+        if rational.isIntegerObject(index) and (rational.isIntegerObject(value) or isinstance(value, rational.Rational)):
+            origin_polynomial = self.adjust()
+            if rational.isIntegerObject(origin_polynomil) or isinstance(origin_polynomial, rational.Rational)):
+                if index == 0:
+                    return value
+                elif index > 0:
+                    return_coefficient = [0]*(index+1)
+                    return_variable = self.variable[:]
+                    return_coefficient[index] = value
+                    return_coefficient[0] = origin_polynomial
+                    return_polynomial = IntegerPolynomial(return_coefficient, return_variable)
+                    return return_polynomial.adjust()
+                else raise ValueError, "You must input non-negative integer for index."
+            elif len(origin_polynomial.coefficient - 1) >= index and index >= 0:
+                return_coefficient = origin_polynomial.coefficient[:]
+                return_variable = origin_polynomial.variable[:]
+                return_coefficient[index] = value
+                return_polynomil = IntegerPolynomial(return_coefficient, return_variable)
+                return return_polynomial.adjust()
+            elif len(origin_polynomial.coefficient - 1) < index:
+                add_coefficient = [0]*(index+1)
+                add_variable = origin_polynomial.variable[:]
+                add_polynomial = IntegerPolynomial(add_coefficient, add_variable)
+                return (origin_polynomial + add_polynomial).adjust()
+            else raise ValueError, "You must input non-negative integer for index."
+        else raise ValueError, "You must input polynomial[index, value]."
+
+    def __getitem__(self, index):
+        if rational.isIntegerObject(index):
+            if len(self.coefficient - 1) >= index and index >= 0:
+                return self.coefficient[index]
+            elif len(self.coefficient - 1) < index
+                return 0
+        else raise ValueError, "You must input non-negative integer for index."
+
     def __add__(self, other):
         if rational.isIntegerObject(other) or isinstance(other,rational.Rational):
             sum = RationalPolynomial(self.coefficient[:],self.variable)
@@ -1126,6 +1206,12 @@ class RationalPolynomial:
 
     def getRing(self):
         return PolynomialRing(rational.theRationalField, self.variable)
+
+    def degree(self):
+        adjust_polynomial = self.adjust()
+        if rational.isINtegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
+            return 0
+        else return len(self.coefficient) - 1
 
 class FlatRationalPolynomial:
 
