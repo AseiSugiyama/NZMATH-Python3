@@ -431,164 +431,173 @@ class EC:
                     Q=self.add(Q,P)
             return self.sub([0],Q)
 
-    def divPoly(self,m):
-        x=polynomial.MultiVariableSparsePolynomial({(1,0):1},['x','y'])
-        y=polynomial.MultiVariableSparsePolynomial({(0,1):1},['x','y'])
+    def divPoly(self):
+        x=polynomial.OneVariableSparsePolynomial({(1,):1},['x'])
+        y=polynomial.OneVariableSparsePolynomial({(1,):1},['y'])
+        def heart(q):
+            l=[]
+            i=3
+            j=1
+            while j<=4*int(math.sqrt(q)):
+                if prime.primeq(i):
+                    l.append(i)
+                    j=j*i
+                i=i+1
+            return l
+        def CoefficientReduction(poly,p): #Z[x]->(Z/p)[x]
+            L=poly.coefficient.items()
+            t=0
+            dict={}
+            while t<len(L):
+                dict[L[t][0]]=L[t][1]%p
+                t=t+1
+            poly.coefficient=dict
+            return poly
+        def change(poly,i,e,p):#y^2->e=x^3+a*x+b and if i%2,div y
+            L=poly.coefficient.items()
+            if i%2==0:
+                t=0
+                poly=0
+                while t<len(L):
+                    k=L[t][0][1]
+                    if k%2==0:
+                        k=k//2
+                        poly=poly+e**k*L[t][1]*x**L[t][0][0]
+                    else:
+                        k=(k-1)//2
+                        poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
+                    t=t+1
+                poly=CoefficientReduction(poly,p)
+                L=poly.coefficient.items()
+                t=0
+                dict={}
+                while t<len(L): #div y
+                    dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]
+                    t=t+1
+                poly.coefficient=dict
+            else: #y^2->e
+                t=0
+                poly=0
+                while t<len(L):
+                    k=L[t][0][1]//2
+                    poly=poly+e**k*L[t][1]*x**L[t][0][0]
+                    t=t+1
+                poly=CoefficientReduction(poly,p)
+            return poly
         f=[]
+        M=[]
         f.append(0)
+        M.append(0)
+        H=heart(self.ch)
         if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
             e=x**3+E.a*x+E.b
-            for i in range(1,m+1):
+            for i in range(1,H[-1]+1):
                 if i==1:
                     f.append(1)
+                    M.append(1)
                 elif i==2:
                     f.append(2*y)
+                    M.append(2)
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    L=g.coefficient.items()
-                    j=0
-                    dict={}
-                    while j<len(L):
-                        dict[L[j][0]]=L[j][1]%E.ch
-                        j=j+1
-                    g.coefficient=dict
+                    g=CoefficientReduction(g,E.ch)
                     f.append(g)
+                    M.append(g)
                 elif i==4:
                     g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    L=g.coefficient.items()
-                    j=0
-                    dict={}
-                    while j<len(L):
-                        dict[L[j][0]]=L[j][1]%E.ch
-                        j=j+1
-                    g.coefficient=dict
+                    g=CoefficientReduction(g,E.ch)
                     f.append(g)
+                    M.append(change(g,i,e,E.ch))#div y
                 else:
                     if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        L=g.coefficient.items()
-                        j=0
-                        h=0
-                        while j<len(L):
-                            if L[j][0][1]%2==0:
-                                k=L[j][0][1]//2
-                                h=h+e**k*(L[j][1]%E.ch)*x**L[j][0][0]
-                            else:
-                                k=(L[j][0][1]-1)//2
-                                h=h+y*e**k*(L[j][1]%E.ch)*x**L[j][0][0]
-                            j=j+1
-                        L=h.coefficient.items()
-                        j=0
-                        dict={}
-                        while j<len(L):
-                            dict[L[j][0]]=L[j][1]%E.ch
-                            j=j+1
-                        h.coefficient=dict
-                        f.append(h)
+                        g=CoefficientReduction(g,E.ch)
+                        f.append(g)
+                        M.append(change(g,i,e,E.ch)) # y^2->e
                     else: 
                         j=i//2
-                        g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] 
+                        g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
                         L=g.coefficient.items()
-                        j=0
+                        t=0
                         dict={}
-                        while j<len(L): #div 2y
-                            dict[(L[j][0][0],L[j][0][1]-1)]=L[j][1]%E.ch//2
-                            j=j+1
+                        while t<len(L): #div 2y
+                            dict[(L[t][0][0],L[t][0][1]-1)]=(L[t][1]%E.ch)//2
+                            t=t+1
                         g.coefficient=dict
-                        L=g.coefficient.items()
-                        j=0
-                        h=0
-                        while j<len(L):
-                            if L[j][0][1]%2==0:
-                                k=L[j][0][1]//2
-                                h=h+e**k*(L[j][1]%E.ch)*x**L[j][0][0]
-                            else:
-                                k=(L[j][0][1]-1)//2
-                                h=h+y*e**k*(L[j][1]%E.ch)*x**L[j][0][0]
-                            j=j+1
-                        L=h.coefficient.items()
-                        dict={}
-                        j=0
-                        while j<len(L):
-                            dict[L[j][0]]=(L[j][1]%E.ch)
-                            j=j+1
-                        h.coefficient=dict
-                        f.append(h)
-            if m%2==0:
-                L=f[m].coefficient.items()
-                dict={}
-                j=0
-                while j<len(L):
-                    dict[(L[j][0][0],L[j][0][1]-1)]=L[j][1]
-                    j=j+1
-                f[m].coefficient=dict
-                return f[m]
-            else:
-                return f[m]
+                        f.append(g)
+                        M.append(change(g,i,e,E.ch)) # y^2->e and div y
         else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
-            for i in range(1,m+1):
+            for i in range(1,H[-1]+1):
                 if i==1:
                     f.append(1)
+                    M.append(1)
                 elif i==2:
                     f.append(x)
+                    M.append(x)
                 elif i==3:
                     g=x**4+x**3+self.a6
                     G=g.coefficient
                     L=G.items()
-                    j=0
+                    t=0
                     dict={}
-                    while j<len(L):
-                        dict[L[j][0]]=L[j][1]%2
-                        j=j+1
+                    while t<len(L):
+                        dict[L[t][0]]=L[t][1]%2
+                        t=t+1
                     g.coefficient=dict
                     f.append(g)
+                    M.append(g)
                 elif i==4:
                     g=x**6+self.a6*x**2
-                    G=g.coefficient
-                    L=G.items()
-                    j=0
+                    L=g.coefficient.items()
+                    t=0
                     dict={}
-                    while j<len(L):
-                        dict[L[j][0]]=L[j][1]%2
-                        j=j+1
+                    while t<len(L):
+                        dict[L[t][0]]=L[t][1]%2
+                        t=t+1
                     g.coefficient=dict
                     f.append(g)
+                    M.append(g)
                 else:
                     if i%2!=0:
                         j=(i-1)//2
                         g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                        G=g.coefficient
-                        L=G.items()
-                        j=0
+                        L=g.coefficient.items()
+                        t=0
                         dict={}
-                        while j<len(L):
-                            dict[L[j][0]]=L[j][1]%2
-                            j=j+1
+                        while t<len(L):
+                            dict[L[t][0]]=L[t][1]%2
+                            t=t+1
                         g.coefficient=dict
                         f.append(g)
+                        M.append(g)
                     else:
                         j=i//2
-                        g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/x
-                        print g,"***"
-                        G=g.coefficient
-                        L=G.items()
-                        j=0
+                        g=(f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j]
+                        L=g.coefficient.items()
+                        t=0
                         dict={}
-                        while j<len(L):
-                            dict[L[j][0]]=L[j][1]%2
-                            j=j+1
+                        while t<len(L): # div x
+                            dict[(L[t][0][0]-1,)]=L[t][1]%2
+                            t=t+1
                         g.coefficient=dict
                         f.append(g)
-            return f[m]
+                        M.append(g)
+        return M,H
 
     def order(self): # =#E(Fp)
         """
         this returns #E(Fp)
         """
-        #def schoof(self):
-
+        def schoof(self):
+            D=self.divPoly()
+            L=D[1]
+            i=0
+            while i<0:
+                return 0
+                
+            
         def Shanks_Mestre(self):
             import sets
             """
