@@ -13,7 +13,11 @@ class Rational (ring.QuotientFieldElement):
     """
 
     def __init__(self, numerator, denominator=1):
-        if denominator < 0:
+        if isinstance(numerator, Rational) and isinstance(denominator, Rational):
+            t = numerator / denominator
+            self.numerator = t.numerator
+            self.denominator = t.denominator
+        elif denominator < 0:
             self.numerator = Integer(-numerator)
             self.denominator = Integer(-denominator)
         elif denominator == 1 and isinstance(numerator, Rational):
