@@ -5,6 +5,7 @@ import ring
 
 MatrixSizeError = "MatrixSizeError"
 NoInverse = "NoInverse"
+VectorsNotIndependent = "VectorsNotIndependent"
 
 class Matrix:
 
@@ -17,9 +18,14 @@ class Matrix:
 
     def __repr__(self):
         return_str = ""
+        maxlen = [1] * self.column      # width of each column
+        for j in range(self.column):
+            for i in range(self.row):
+                if len(`self.compo[i][j]`) > maxlen[j]:
+                    maxlen[j] = len(`self.compo[i][j]`)
         for i in range(self.row):
             for j in range(self.column):
-                return_str += `self.compo[i][j]` + " "
+                return_str += (("%" + `maxlen[j]` + "s") % `self.compo[i][j]`) + " "
             return_str += "\n"
         return return_str[:-1]
 
@@ -113,28 +119,61 @@ class Matrix:
             for j in range( self.column):
                 self.compo[i][j] = list[self.column * i + j]
 
-    def set_row(self, m, row_vector):
-        """set_row(m, list) : substitute list for m-th row"""
-        self.compo[m-1] = row_vector[:]
+    def set_row(self, m, arg):
+        """set_row(m, arg) : 2nd argument can be a list or a row vector(Matrix)"""
+        if isinstance(arg, list):
+            self.compo[m-1] = arg[:]
+        elif isinstance(arg, Matrix):
+            if arg.row == 1 and arg.column == self.column: # case that the argument is a row vector
+                for i in range(self.column):
+                    self.compo[m-1][i] = arg.compo[0][i]
+        else:
+            raise NotImplementedError
     
-    def set_column(self, n, column_vector):
-        """set_column(n, list) : substitute list for n-th column"""
-        for i in range(self.row):
-            self.compo[i][n-1] = column_vector[i]
+    def set_column(self, n, arg):
+        """set_column(n, list) : 2nd argument can be a list or a column vector(Matrix)"""
+        if isinstance(arg, list):
+            for i in range(self.row):
+                self.compo[i][n-1] = arg[i]
+        elif isinstance(arg, Matrix):
+            if arg.row == self.row and arg.column == 1: # case that the argument is a column vector
+                for j in range(self.row):
+                    self.compo[j][n-1] = arg.compo[j][0]
+        else:
+            raise NotImplementedError
+
 
     def set_compo(self, m, n, value):
+        """set_compo(m, n, value) : set value for (m,n)-component"""
         self.compo[m-1][n-1] = value
 
     def get_compo(self, m, n):
+        """get_compo(m, n) : returns (m,n)-component"""
         return self.compo[m-1][n-1]
 
     def get_row(self, m):
+        """get_row(m) : returns m-th row in form of list"""
         return self.compo[m-1]
 
     def get_column(self, n):
+        """get_column(n) : returns n-th column in form of list"""
         column_n = []
         for j in range( self.row):
             column_n += [self.compo[j][n-1]]
+        return column_n
+
+    def get_row_vector(self, m):
+        """get_row_vector(m) : returns m-th row in form of a Matrix"""
+        row_m = Matrix(1, self.column)
+        for i in range(self.column):
+            row_m.compo[0][i] = self.compo[m-1][i]
+        return row_m
+
+    def get_column_vector(self, n):
+        """get_column_vector(n) : returns n-th column in form of a Matrix"""
+        column_n = Matrix(self.row, 1)
+        for j in range(self.row):
+            column_n.compo[j][0] = self.compo[j][n-1]
         return column_n
 
     def swap_row(self, m1, m2):
@@ -193,6 +232,28 @@ class Matrix:
             det *= triangle.compo[i][i]
         return det
 
+    def insert_row(self, i, list):
+        inserted = Matrix(self.row+1, self.column)
+        for k in range(1, inserted.row+1):
+            if k < i:
+                inserted.set_row(k, self.get_row(k))
+            elif k == i:
+                inserted.set_row(k, list)
+            elif k > i:
+                inserted.set_row(k, self.get_row(k-1))
+        return inserted
+
+    def insert_column(self, j, list):
+        inserted = Matrix(self.row, self.column+1)
+        for l in range(1, inserted.column+1):
+            if l < j:
+                inserted.set_column(l, self.get_column(l))
+            elif l == j:
+                inserted.set_column(l, list)
+            elif l > j:
+                inserted.set_column(l, self.get_column(l-1))
+        return inserted
+
     def delete_row(self, i):
         deleted = Matrix(self.row-1, self.column)
         isover_i = 0
@@ -242,7 +303,7 @@ class Matrix:
             C = C + coeff[i] * unit_matrix(self.row)
         return coeff
 
-    def cohens_simplify(self):      # common processes of image() and kernel()
+    def cohens_simplify(self):      # common process of image() and kernel()
         """cohens_simplify is used in image() and kernel()"""
         M = self.copy()
         c = [0] * (M.row + 1)
@@ -272,12 +333,11 @@ class Matrix:
         return [M,c,d]
 
     def kernel(self):       # using Cohen's Algorithm 2.3.1
-        """returns a basis of self's Kernel in form of a list of vectors"""
+        """returns a Matrix which column vectors are one basis of self's Kernel"""
         tmp = self.cohens_simplify()
         M = tmp[0]
         c = tmp[1]
         d = tmp[2]
-        # output
         basis = []
         vector = [0] * (M.column+1)
         for k in range(1, M.column+1):
@@ -291,34 +351,182 @@ class Matrix:
                 else:
                     vector[i] = 0
             basis.append(vector[1:])
-        return basis
+        output = Matrix(self.column, len(basis))
+        for j in range(1, output.column + 1):
+            output.set_column(j, basis[j-1])
+        return output
 
     def image(self):        # using Cohen's Algorithm 2.3.2
-        """returns basis of self's Image in form of a list of vectors"""
+        """returns a Matrix which column vectors are one basis of self's Image"""
         tmp = self.cohens_simplify()
         M = tmp[0]
         c = tmp[1]
-       # output
         basis = []
         for j in range(1, M.row+1):
             if c[j] != 0:
                 basis.append(self.get_column(c[j]))
-        return basis
+        output = Matrix(self.row, len(basis))
+        for j in range(1, output.column + 1):
+            output.set_column(j, basis[j-1])
+        return output
 
+    def rank(self):
+        return len(self.image())
 
+    def inverse_image(self, arg):      # using Cohen's Algorithm 2.3.4
+        """inverse_image(arg) : argument can be a list or a column vector(Matrix)
+        It's return value is a vector contained in arg's inverse image"""
+        if isinstance(arg, list):
+            B = arg[:]
+        elif isinstance(arg, Matrix):
+            if arg.row == self.row and arg.column == 1:
+                for i in range(self.row):
+                    B = arg.get_column(1)
+        else:
+            raise NotImplementedError
+        M1 = self.insert_column(self.column+1, B)
+        print M1
+        V = M1.kernel()
+        r = V.column
+        print V
+        for j in range(1, r+1):
+            if V.get_compo(self.column+1, j) != 0:
+                break
+        else:
+            raise NoSolution
+        d = (-1)/toRational(V.get_compo(self.column+1,j))
+        x = []
+        for i in range(1, self.column+1):
+            x.append(d*V.get_compo(i,j))
+        inverse_image = Matrix(self.column, 1)
+        inverse_image.set_column(1, x)
+        return inverse_image
         
-# the belows are not methods
+    
+#    def solution(self, vector):
+#        if self.row != len(vector):
+#            raise MatrixSizeError
+#        M = self.insert_column(self.column+1, vector)
+#        M = M.cohens_simplify()[0]
+#        print M
+#        x = [0]*self.column
+#        rows = range(self.row)
+#        rows.reverse()
+#        for i in rows:
+#            for j in range(self.column):
+#                if M.compo[i][j] != 0:
+#                    x[j] = (-1) * M.compo[i][M.column-1]
+#                    for k in range(j+1, M.column-1):
+#                        x[j] -= M.compo[i][k] * x[k]
+#        return x
+# 
+
+    # does not work well ???
+    def supplement_basis(self):     # using Cohen's Algorithm 2.3.6
+        """returns a basis of full space, which including self's column vectors"""
+        if self.row < self.column:
+            raise MatrixSizeError
+
+        copy = self.copy()
+        B = unit_matrix(copy.row)
+
+        for s in range(1,copy.column+1):
+            for t in range(s,copy.row+1):
+                if copy.get_compo(t,s) != 0:
+                    break
+            else:
+                raise VectorsNotIndependent
+            d = 1 / toRational(copy.get_compo(t,s))
+            if t != s:
+                B.set_column(t, B.get_column(s))
+            B.set_column(s, copy.get_column(s))
+            print B
+            pause()
+            for j in range(s+1, copy.column+1):
+                tmp = copy.get_compo(s,j)
+                copy.set_compo(s,j, copy.get_compo(t,j))
+                copy.set_compo(t,j,tmp)
+                copy.set_compo(s,j, d * copy.get_compo(s,j))
+                for i in range(1,copy.row+1):
+                    if i != s and i != t:
+                        copy.set_compo(i,j,copy.get_compo(i,j) - copy.get_compo(i,s)*copy.get_compo(s,j))
+        return B
+
+    # does not work well ???
+    def hessenberg_form(self):      # using Cohen's Algorithm 2.2.9
+        if self.row != self.column:
+            raise MatrixSizeError
+        H = self.copy()
+        for m in range(2, H.row):
+            for i in range(m+1, self.row+1):
+                if H.get_compo(i,m-1) != 0:
+                    break
+            else:
+                continue
+            if H.get_compo(m,m-1) != 0:
+                i = m
+            t = H.get_compo(i,m-1)
+            if i > m:
+                for j in range(m-1, H.row+1):
+                    tmp = H.get_compo(i,j)
+                    H.set_compo(i,j,H.get_compo(m,j))
+                    H.set_compo(m,j,tmp)
+                    tmpvector = H.get_column(i)
+                    H.set_column(i,H.get_column(m))
+                    H.set_column(m,tmpvector)
+            for i in range(m+1,H.row+1):
+                if H.get_compo(i,m-1) != 0:
+                    u = H.get_compo(i,m-1) / toRational(t)
+                    for j in range(m,H.row+1):
+                        H.set_compo(i,j,H.get_compo(i,j)-u*H.get_compo(m,j))
+                    H.set_column( m, (H.get_column_vector(m) + u*H.get_column_vector(i)) )
+        return H
+
+# the belows are not class methods
 def unit_matrix(size):
-    """returns unit matrix whose size is the given argument"""
+    """unit_matrix(n) : returns unit matrix whose size is n * n"""
     unit_matrix = Matrix(size, size)
     for i in range(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
 
+def intersection_of_subspaces(M, M_):    # using Cohen's Algorithm 2.3.9
+    if M.row != M_.row:
+        raise MatrixSizeError
+    M1 = Matrix(M.row, M.column + M_.column)
+    for j in range(1, M.column+1):
+        M1.set_column(j, M.get_column(j))
+    for j in range(1, M_.column+1):
+        M1.set_column(M.column + j, M_.get_column(j))
+    N = M1.kernel()
+    N1 = Matrix(M.column , N.column)    # N.column is dimension of kernel(M1)
+    for j in range(1, M.column + 1):
+        N1.set_row(j, N.get_row(j))
+    M2 = M * N1
+    return M2.image()
+    
 # data for debugging
-a=Matrix(2,2)
-a.set([1,2,3,3])
+a=Matrix(5,3)
+a.set([0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0])
+
+b = Matrix(2,2)
+b.set([1,2,5,10])
+
+c = Matrix(3,3)
+c.set([0,1,1,-1,1,0,2,2,3])
+
+d = Matrix(4,2)
+d.set([0,1,0,1]+[2,0,0,3])
+
+e = Matrix(3,2)
+e.set([1,0]+[2,1]+[1,1])
+
+f = Matrix(3,2)
+f.set([0,1]+[-1,4]+[2,6])
+
+def pause():
+    print "--- hit enter key ---"
+    raw_input()
 
 if __name__ == '__main__':
-    print a.kernel()
-    print a.image()
+    print intersection_of_subspaces(e,f)
