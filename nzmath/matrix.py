@@ -1,65 +1,73 @@
+# written by Aoyama
+# This file may be modified without notice.
+# Don't edit this for the present, please.
+# 06/18
+
 class Matrix:
 
-	def __init__(self, m, n):
-		self.m = m
-		self.n = n
-		self.compo = {}
-		for i in range(self.m):
-			for j in range(self.n):
-				self.compo[(i,j)] = 0
+    def __init__(self, row, column):
+        self.row = row
+        self.column = column
+        self.compo = {}
+        for i in range(1, self.row+1):
+            for j in range(1, self.column+1):
+                self.compo[(i,j)] = 0
 
-	def __add__(self, other):
-		if (self.m != other.m) or (self.n != other.n): 
-			raise "Matrix size error"
+    def __repr__(self):
+        rtnstr = ""
+        for i in range(1, self.row+1):
+            for j in range(1, self.column+1):
+                rtnstr += `self.compo[(i,j)]` + " "
+            rtnstr += "\n"
+        return rtnstr
 
-		sum = Matrix(self.m, self.n)
+    def display(self):
+        for i in range(1, self.row+1):
+            for j in range(1, self.column+1):
+                print self.compo[(i,j)],
+            print
 
-		for i in range(self.m):
-			for j in range(self.n):
-				sum.compo[(i,j)] = self.compo[(i,j)] + other.compo[(i,j)]
+    def __add__(self, other):
+        if (self.row != other.row) or (self.column != other.column): 
+            raise "Matrix size error"
+            return
 
-		return sum
+        sum = Matrix(self.row, self.column)
 
-	def __mul__(self, other):
-		if self.n != other.m:
-			raise "Matrix size error"
+        for i in range(1, self.row+1):
+            for j in range(1, self.column+1):
+                sum.compo[(i,j)] = self.compo[(i,j)] + other.compo[(i,j)]
 
-		product = Matrix(self.m, other.n)
+        return sum
 
-		for i in range(self.m):
-			for j in range(other.n):
-				for k in range(self.n):
-					product.compo[(i,j)] += self.compo[(i,k)] * other.compo[(k,j)]
+    def __mul__(self, other):
+        if self.column != other.row:
+            raise "Matrix size error"
+            return
 
-		return product
+        product = Matrix(self.row, other.column)
 
-	def set(self, list):
-		for i in range(self.m):
-			for j in range(self.n):
-				self.compo[(i,j)] = list[self.n * i + j]
+        for i in range(1, self.row+1):
+            for j in range(1, other.column+1):
+                for k in range(1, self.column+1):
+                    product.compo[(i,j)] += self.compo[(i,k)] * other.compo[(k,j)]
 
-	def __str__(self):
-		result = ""
-		for i in range(self.m):
-			for j in range(self.n):
-				result += str(self.compo[(i,j)]) + " "
-			result = result[:-1] + "\n"
-		return result
+        return product
 
-	def __getitem__(self, ij):
-		return self.compo[ij]
+    def set(self, list):
+        for i in range(1, self.row+1):
+            for j in range(1, self.column+1):
+                self.compo[(i,j)] = list[self.column * (i-1) + (j-1)]
+    
+    def getrow(self, m):
+       row_m = []
+       for i in range(1, self.row+1):
+           row_m += [self.compo[(m, i)]]
+       return row_m
 
-if __name__ == "__main__":
-	a = Matrix(2,2)
-	b = Matrix(2,2)
-	a.set([1,2,3,4])
-	b.set([-3,2,0,1])
-	print a
-	print b
-	c = a+b
-	print c
-	d = a*b
-	# below is the same with "print d"
-	print d[0,0], d[0,1]
-	print d[1,0], d[1,1]
+    def getcolumn(self, n):
+        column_n = []
+        for j in range(1, self.column+1):
+            column_n += [self.compo[(j, n)]
+        return column_n
 
