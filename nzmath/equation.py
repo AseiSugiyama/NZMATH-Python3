@@ -71,7 +71,7 @@ def e3_Fp(x,p): # p is prime
         i=i+1
     equ=[]
     i=0
-    while :
+    while i<p:
         if (coeff[0]*i**3+coeff[1]*i**2+coeff[2]*i+coeff[3])%p==0:
             equ.append(i)
             break
