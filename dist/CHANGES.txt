@@ -1,6 +1,6 @@
 Version 0.0.1 to 0.1.0
 ----------------------
-* add elliptic module for elliptic curve operations.
+* add new module elliptic for elliptic curve operations.
 * remove optional argument for generator in prime.py. Condition may
   be specified with itertools instead.
 * add new module finitefield for finite field.  It only includes
