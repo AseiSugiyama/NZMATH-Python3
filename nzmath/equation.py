@@ -1,13 +1,19 @@
 from __future__ import division
-import cmath
-import math
-import gcd
 import arith1
+import cmath
+import finitefield
+import gcd
+import math
+import prime
 import random
 import rational
-import prime
 
+
+# x is (list,tuple) 
 def e2(x):
+    """
+    f=x[0]*t**2+x[1]*t+x[2]
+    """
     a = x[0]
     b = x[1]
     c = x[2]
@@ -17,7 +23,11 @@ def e2(x):
         sqrtd = cmath.sqrt(b**2 - 4*a*c)
     return ((-b + sqrtd)/(2*a), (-b - sqrtd)/(2*a))
 
-def e2Fp(x,p): # p is prime
+def e2_Fp(x,p):
+    """
+    p is prime
+    f=x[0]*t**2+x[1]*t+x[2]
+    """
     a=x[0]%p    
     b=x[1]%p
     c=x[2]%p
@@ -26,6 +36,9 @@ def e2Fp(x,p): # p is prime
     return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
 
 def e3(x):
+    """
+    f=x[0]*t**3+x[1]*t**2+x[2]*t+x[3]
+    """
     a = x[1]/x[0]
     b = x[2]/x[0]
     c = x[3]/x[0]
@@ -46,32 +59,28 @@ def e3(x):
         equ.append(x)
     return equ
 
-def e3Fp(x,p): # p is prime
-    a0=arith1.inverse(x[0],p)
-    a=x[1]*a0%p
-    b=x[2]*a0%p
-    c=x[3]*a0%p
-    p=(b-(a**2)*arith1.inverse(3,p))%p
-    q=(2*(a**3)*arith1.inverse(27,p)-a*b*arith1.inverse(3,p)+c)%p
-    raise NotImplementedError,"now making"
-
-    w=(-1+cmath.sqrt(3)*1j)/2
-    k=-q/2+math.sqrt((q**2)/4+(p**3)/27)
-    l=-q/2-math.sqrt((q**2)/4+(p**3)/27)
-    if k<0:
-        m=-math.pow(abs(k),1/3)
-    else:
-        m=math.pow(k,1/3)
-    n=-math.pow(abs(l),1/3)
-    equ=[]
-
-    i=0
-    while i<=2:
-        x=(w**i)*m +(w**(3-i))*n-a/3
-        equ.append(x)
+def e3_Fp(x,p): # p is prime
+    """
+    p is prime
+    f=x[0]*t**3+x[1]*t**2+x[2]*t+x[3]
+    """
+    coeff=[]
+    i=1
+    while i<len(x):
+        coeff[1]=int(finitefield.FinitePrimeField(p).createElement(rational.Rational(x[i],x[0])).n)
         i=i+1
+    equ=[]
+    i=0
+    while :
+        if (coeff[0]*i**3+coeff[1]*i**2+coeff[2]*i+coeff[3])%p==0:
+            equ.append(i)
+            break
+        else:
+            i=i+1
+    X=e2_Fp([1,coeff[0]+equ[0],coeff[1]+coeff[0]*equ[0]+equ[0]**2],p)
+    equ.append(X[0])
+    equ.append(X[1])
     return equ
-
 
 def EA(f,m): # f is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n => [a_0, a_1, ... , a_n] (a_0 != 0 and a_i is complex number))
     if f[0] == 0 :
@@ -252,14 +261,4 @@ def EAr(f,m): # f is list , m is the number of approximation steps: ( = a_0*x^n 
 
     return z
 
-
-def e(p,n):
-    if prime.primeq(p):
-        i=0
-        while i<p:
-            #print i
-            if pow(i,3,p)==n:
-                return i
-            i=i+1
-    return 0
 
