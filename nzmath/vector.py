@@ -19,14 +19,11 @@ class Vector:
     def __setitem__(self, *arg):
         self.compo[arg[0]-1] = arg[1]
 
-    def __len__(self):
-        return len(self.compo)
-
     def __eq__(self, other):
         return self.compo == other.compo
 
     def __add__(self, other): 
-        if len(self) != len(other):
+        if self.size != other.size:
             raise VectorSizeError
         tmp = []
         for i in range(self.size):
@@ -34,7 +31,7 @@ class Vector:
         return Vector(tmp)
 
     def __sub__(self, other):
-        if len(self) != len(other):
+        if self.size != other.size:
             raise VectorSizeError
         tmp = []
         for i in range(self.size):
@@ -59,8 +56,10 @@ class Vector:
     def __repr__(self):
         return repr(self.compo)
 
-    __str__ = __repr__
+    def __str__(self):
+        return str(self.compo)
 
+# utility methods ----------------------------------------------------
     def copy(self):
         return Vector(self.compo)
 
@@ -71,6 +70,13 @@ class Vector:
         else:
             raise ValueError
 
+    def indexNoneZero(self):
+        for i in range(self.size):
+            if self.compo[i] != 0:
+                return i + 1
+        raise ValueError, "all zero"
+
+# Mathematical functions ---------------------------------------------
     def innerProduct(self, other):
         if self.size != other.size:
             raise VectorSizeError
@@ -79,15 +85,23 @@ class Vector:
             x += self.compo[i] * other.compo[i]
         return x
 
+    def norm(self):
+        import math
+        norm = 0
+        for x in self.compo:
+            norm += abs(x)**2
+        return math.sqrt(norm)
+
+
 class VectorSizeError(Exception):
     pass
 
 if __name__ == '__main__':
     v = Vector(3)
     u = Vector([1,2,3])
+    w = Vector([0,0,0])
     print v
     print u
-    print len(v)
     print v+u
     v.set([-1,-9,-8])
     print v
@@ -98,3 +112,5 @@ if __name__ == '__main__':
     print u.copy()
     print -v
     print u == Vector([1,2,3])
+    print u.indexNoneZero()
+    print u.norm()

@@ -242,12 +242,18 @@ class Integer(long):
         return tuple(map(Integer, divmod(other, long(self))))
 
     def __add__(self, other):
-        return Integer(long(self)+other)
+        if isIntegerObject(other):
+            return Integer(long(self)+other)
+        else:
+            return NotImplemented
 
     __radd__ = __add__
 
     def __sub__(self, other):
-        return Integer(long(self)-other)
+        if isIntegerObject(other):
+            return Integer(long(self)-other)
+        else:
+            return NotImplemented
 
     def __rsub__(self, other):
         return Integer(other-long(self))
@@ -267,7 +273,7 @@ class Integer(long):
         return Integer(self)
 
     def __neg__(self):
-        return Integr(-long(self))
+        return Integer(-long(self))
 
     def __abs__(self):
         return Integer(abs(long(self)))

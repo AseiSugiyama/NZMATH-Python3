@@ -534,34 +534,38 @@ class Matrix:
                         copy[i,j] = copy[i,j] - copy[i,s] * copy[s,j]
         return B
 
-    # does not work well ???
     def hessenbergForm(self):      # Cohen's Algorithm 2.2.9
         if self.row != self.column:
             raise MatrixSizeError
+        n = self.row
+
+        # step 1
         H = self.copy()
         for m in range(2, H.row):
-            for i in range(m+1, self.row+1):
+            # step 2
+            for i in range(m+1, n+1):
                 if H[i,m-1] != 0:
                     break
             else:
                 continue
-            if H[m,m-1] != 0:
-                i = m
             t = H[i,m-1]
             if i > m:
-                for j in range(m-1, H.row+1):
-                    tmp = H[i,j]
-                    H[i,j] = H[m,j]
-                    H[m,j] = tmp
-                    tmpvector = H[i]
-                    H[i] = H[m]
-                    H[m] = tmpvector
-            for i in range(m+1,H.row+1):
+                for j in range(m-1, n+1):
+                    tmp = H[i,j] ; H[i,j] = H[m,j] ; H[m,j] = tmp
+                #print "line90----------------- m=%d" % m
+                #print H
+                H.swapColumn(i,m)
+            #print "end of step 2------------- m=%d" % m
+            #print H
+            # step 3
+            for i in range(m+1,n+1):
                 if H[i,m-1] != 0:
                     u = H[i,m-1] / rational.Rational(t)
-                    for j in range(m,H.row+1):
-                        H[i,j] = H[i,j] - u * H[m,j]
-                    H.setColumn( m, H[m] + u * H[i] )
+                    for j in range(m,n+1):
+                        H[i,j] -= u * H[m,j]
+                        H[i,m-1] = 0    # ommited from the book !!!
+                    H.setColumn(m, H[m] + u * H[i] )
+            #print "end of step 3-------------"
         return H
 
     def columnEchelonForm(self):  # Cohen's Algorithm 2.3.11
@@ -715,7 +719,7 @@ e.set([1,0]+[2,1]+[1,1])
 f = Matrix(3,2)
 f.set([0,1]+[-1,4]+[2,6])
 
-h = Matrix(4,4,[-2,2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3])
+h = Matrix(4,4,[-2,-2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3])
 
 i = Matrix(2,3,[-1,-2,-3,1,4,5])
 
@@ -732,6 +736,9 @@ if __name__ == '__main__':
 
 #    print c
 #    print c.inverseImageMatrix(Matrix(3,2,[2,2,-1,-2,8,11]))
-    print f
-    print f * Matrix(2,1,[1,9])
-    print f.inverseImageMatrix(Matrix(3,1,[9,35,56]))
+#    print f
+#    print f * Matrix(2,1,[1,9])
+#    print f.inverseImageMatrix(Matrix(3,1,[9,35,56]))
+    print h
+    print h.hessenbergForm()
+    print c.hessenbergForm()
