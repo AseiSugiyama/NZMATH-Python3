@@ -1,10 +1,10 @@
 import unittest
-import elliptic
+import ec.elliptic
 import rational
 
-a = elliptic.EC([0,-1,1,0,0], 0)
-b = elliptic.EC([1,0], 0)
-c = elliptic.EC([0,17], 0)
+a = ec.elliptic.EC([0,-1,1,0,0], 0)
+b = ec.elliptic.EC([1,0], 0)
+c = ec.elliptic.EC([0,17], 0)
 
 P1 = [-2,3]
 P2 = [-1,4]
@@ -53,28 +53,28 @@ class EllipticTest(unittest.TestCase):
         assert c.mul(-2, P1) == P5
 
     def testOrder(self):
-        d = elliptic.EC([2,6], 7)
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([11,3], 13)
+        d = ec.elliptic.EC([2,6], 7)
+        e = ec.elliptic.EC([1,3], 7)
+        f = ec.elliptic.EC([11,3], 13)
 
         assert d.order() == 11
         assert e.order() == 6
         assert f.order() == 13
 
     def testPoint(self):
-        d = elliptic.EC([2,6], 7)
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([11,3], 13)
+        d = ec.elliptic.EC([2,6], 7)
+        e = ec.elliptic.EC([1,3], 7)
+        f = ec.elliptic.EC([11,3], 13)
 
         assert d.whetherOn(d.point())
         assert e.whetherOn(e.point())
         assert f.whetherOn(f.point())
 
     def testChangeCurve(self):
-        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '10/1x + 3/1x**2 - x**3 + 8/1y + 6/1xy + y**2'
+        assert str(ec.elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '10/1x + 3/1x**2 - x**3 + 8/1y + 6/1xy + y**2'
 
     def testPoint(self):
-        assert elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
+        assert ec.elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
 
 
 def suite():
