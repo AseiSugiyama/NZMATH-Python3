@@ -290,7 +290,7 @@ class OneVariablePolynomial:
         if index < 0:
             raise ValueError, "index must be a non-negative integer."
         if mod == None:
-            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
+            power_product = self.getRing().one
             power_of_2 = self.copy()
             while index > 0:
                 if index % 2 == 1:
@@ -299,7 +299,7 @@ class OneVariablePolynomial:
                 index = index // 2
             return power_product.copy()
         else:
-            power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
+            power_product = self.getRing().one
             power_of_2 = self.copy()
             while index > 0:
                 if index % 2 == 1:
@@ -644,11 +644,10 @@ class MultiVariableSparsePolynomial:
         if isinstance(other, (int,long)):
             if mod == None:
                 if other == 0:
-                    return 1
+                    return self.getRing().one
                 elif other > 0:
                     index = other
-                    zero_tuple = (0,) * len(self.variable)
-                    power_product = MultiVariableSparsePolynomial({zero_tuple:1},self.variable)
+                    power_product = self.getRing().one
                     power_of_2 = MultiVariableSparsePolynomial(self.coefficient,self.variable)
                     while index > 0:
                         if index % 2 == 1:
@@ -658,11 +657,10 @@ class MultiVariableSparsePolynomial:
                     return power_product.adjust()
             else:
                 if other == 0:
-                    return 1
+                    return self.getRing().one
                 elif other > 0:
                     index = other
-                    zero_tuple = (0,) * len(self.variable)
-                    power_product = MultiVariableSparsePolynomial({zero_tuple:1},self.variable)
+                    power_product = self.getRing().one
                     power_of_2 = MultiVariableSparsePolynomial(self.coefficient,self.variable)
                     while index > 0:
                         if index % 2 == 1:
@@ -1273,7 +1271,7 @@ def pseudoDivision(A, B):
 
     # step 1
     R = copy.deepcopy(A)
-    Q = OneVariableDensePolynomial([], A.getVariable(), A.getCoefficientRing())
+    Q = A.getRing().zero
     e = m-n+1
     while 1:
         # step 2
@@ -1532,10 +1530,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
                 return powered
             else:
                 return powered % mod
-        power_product = OneVariableDensePolynomial(
-            [1],
-            self.getVariable(),
-            self.getCoefficientRing())
+        power_product = self.getRing().one
         if index == 0:
             return power_product
         if mod == None:
@@ -1572,7 +1567,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         if df:
             if f.degree() == 1:
                 result = {1: f}
-                f = self.__class__([1], self.getVariable(), self.getCoefficientRing())
+                f = self.getRing().one
             else:
                 b = rx.gcd(f, df)
                 a = f / b
@@ -1658,7 +1653,6 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         FqX = self.getRing()
         q = len(Fq)
         p = Fq.getCharacteristic()
-        one = self.__class__([1], self.getVariable(), Fq)
         while len(result) < r:
             # g is a random polynomial
             randPolyCoeff = OneVariablePolynomialCoefficients()
@@ -1672,7 +1666,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
                 for j in range(degree*r):
                     G = G + pow(randPoly, 2**j, self)
             else:
-                G = pow(randPoly, (q**degree - 1)//2, self) - one
+                G = pow(randPoly, (q**degree - 1)//2, self) - FqX.one
             subresult = []
             while result:
                 h = result.pop()
@@ -1875,7 +1869,7 @@ class OneVariablePolynomialCoefficients:
         retval.setDict(self.getAsDict())
         return retval
 
-class PolynomialRing (ring.CommutativeRing):
+class PolynomialRing (ring.CommutativeRing, object):
     """
 
     The class of polynomial ring.
@@ -1901,6 +1895,7 @@ class PolynomialRing (ring.CommutativeRing):
                 self.properties.setIsdomain(True)
             elif False == self.coefficientRing.isdomain():
                 self.properties.setIsdomain(False)
+        self._one = self._zero = None
 
     def getVars(self):
         return self.vars.copy()
@@ -1958,6 +1953,9 @@ class PolynomialRing (ring.CommutativeRing):
         elif isinstance(other.coefficientRing, PolynomialRing):
             return self == other.unnest()
         return False
+
+    def __repr__(self):
+        return "PolynomialRing(" + repr(self.coefficientRing) + ", " + repr(self.vars) + ")"
 
     def __str__(self):
         retval = str(self.coefficientRing)
@@ -2074,6 +2072,26 @@ class PolynomialRing (ring.CommutativeRing):
                 return MultiVariableSparsePolynomial(new_coef, listvars)
         # seed cannot be a multi-variable polynomial now
         raise NotImplementedError
+
+    def getOne(self):
+        if not self._one:
+            if len(self.vars) == 1:
+                variable = [v for v in self.vars][0]
+                self._one = OneVariableDensePolynomial([1], variable, self.coefficientRing)
+            else:
+                self._one = MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(1)}, list(self.vars))
+        return self._one
+
+    one = property(getOne, None, None, "multiplicative unit")
+
+    def getZero(self):
+        if len(self.vars) == 1:
+            variable = [v for v in self.vars][0]
+            return OneVariableDensePolynomial([], variable, self.coefficientRing)
+        else:
+            return MultiVariableSparsePolynomial({}, list(self.vars))
+
+    zero = property(getZero, None, None, "additive unit")
 
     def gcd(self, a, b):
         if self.coefficientRing.isfield():
