@@ -1908,21 +1908,17 @@ class PolynomialRing (ring.CommutativeRing):
             variable = [v for v in self.vars][0]
             if seed in self.coefficientRing:
                 return OneVariableDensePolynomial([self.coefficientRing.createElement(seed)], variable, self.coefficientRing)
-            if isinstance(seed, OneVariableSparsePolynomial):
-                seed = seed.toOneVariableDensePolynomial()
-            if isinstance(seed, OneVariableDensePolynomial):
-                return OneVariableDensePolynomial([self.coefficientRing.createElement(c) for c in seed.coefficient], variable)
+            if isinstance(seed, OneVariablePolynomial):
+                return OneVariableDensePolynomial([self.coefficientRing.createElement(c) for c in seed.coefficient.getAsList()], variable)
             raise TypeError, "larger ring element cannot be a seed."
         else:
             if seed in self.coefficientRing:
                 return MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(seed)}, list(self.vars))
             listvars = list(self.vars)
-            if isinstance(seed, OneVariableSparsePolynomial):
-                seed = seed.toOneVariableDensePolynomial()
-            if isinstance(seed, OneVariableDensePolynomial):
-                position = listvars.index(seed.variable)
+            if isinstance(seed, OneVariablePolynomial):
+                position = listvars.index(seed.getVariable())
                 new_coef = {}
-                for i,c in enumerate(seed.coefficient):
+                for i,c in seed.coefficient.iteritems():
                     index = [0]*len(listvars)
                     index[position] = i
                     new_coef[tuple(index)] = self.coefficientRing.createElement(c)
@@ -2004,11 +2000,11 @@ def pseudoDivision(A, B):
     where d is the leading coefficient of B.
 
     """
-    if isinstance(A, OneVariableDensePolynomial):
+    if isinstance(A, OneVariablePolynomial):
         m = A.degree()
     else:
         m = 0
-    if isinstance(B, OneVariableDensePolynomial):
+    if isinstance(B, OneVariablePolynomial):
         n = B.degree()
         d = B[n]
     else:
@@ -2021,11 +2017,11 @@ def pseudoDivision(A, B):
     e = m-n+1
     while 1:
         # step 2
-        if isinstance(R, OneVariableDensePolynomial):
+        if isinstance(R, OneVariablePolynomial):
             degR = R.degree()
         else:
             degR = 0
-        if isinstance(B, OneVariableDensePolynomial):
+        if isinstance(B, OneVariablePolynomial):
             degB = B.degree()
         else:
             degB = 0
@@ -2036,17 +2032,17 @@ def pseudoDivision(A, B):
             R = q * R
             return (Q,R)
         # step 3
-        if isinstance(R, OneVariableDensePolynomial):
+        if isinstance(R, OneVariablePolynomial):
             degR = R.degree()
         else:
             degR = 0
 
-        if isinstance(B, OneVariableDensePolynomial):
+        if isinstance(B, OneVariablePolynomial):
             degB = B.degree()
         else:
             degB = 0
 
-        if isinstance(R, OneVariableDensePolynomial):
+        if isinstance(R, OneVariablePolynomial):
             lR = R[degR]
         else:
             lR = R
@@ -2080,11 +2076,11 @@ def subResultantGCD(A, B):
 
     while 1:
         # step 2
-        if isinstance(A, OneVariableDensePolynomial):
+        if isinstance(A, OneVariablePolynomial):
             degA = A.degree()
         else:
             degA = 0
-        if isinstance(B, OneVariableDensePolynomial):
+        if isinstance(B, OneVariablePolynomial):
             degB = B.degree()
         else:
             degB = 0
@@ -2092,7 +2088,7 @@ def subResultantGCD(A, B):
         Q, R = pseudoDivision(A, B)
         if not R:
             return d * B.primitivePart()
-        if isinstance(R, OneVariableDensePolynomial):
+        if isinstance(R, OneVariablePolynomial):
             degR = R.degree()
         else:
             degR = 0
