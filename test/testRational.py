@@ -99,6 +99,8 @@ class RationalTest (unittest.TestCase):
 
     def testTrim(self):
         assert Rational(1,3) == Rational(333,1000).trim(5)
+        assert Rational(13,21) == Rational(34,55).trim(33)
+        assert Rational(21,34) == Rational(34,55).trim(34)
 
 class IntegerTest(unittest.TestCase):
     def setUp(self):
