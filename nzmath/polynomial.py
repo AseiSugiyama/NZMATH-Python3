@@ -554,7 +554,7 @@ class OneVariableSparsePolynomial:
     def __getitem__(self, index):
         """
 
-        aOneVariableDensePolynomial[n]
+        aOneVariableSparsePolynomial[n]
         returns the coefficient at degree n.
 
         TypeError will be raised if n is not an integer.
