@@ -43,7 +43,7 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert self.c == (self.c * self.d) // self.d
 
     def testMod(self):
-        assert self.a == self.a % 2
+        assert self.a == self.a % 2, (self.a % 2).__class__
 
     def testGetitem(self):
         assert 1 == self.a[0]
@@ -138,6 +138,39 @@ class IntegerOneVariablePolynomialsTest(unittest.TestCase):
         assert OneVariableSparsePolynomial({(1,):1},[x]) == OneVariableDensePolynomial([0,1],x)
         assert OneVariableDensePolynomial([0,1],x) == OneVariableSparsePolynomial({(1,):1},[x])
 
+class IntegerMultiVariableSparsePolynomialTest (unittest.TestCase):
+    def setUp(self):
+        self.f = MultiVariableSparsePolynomial({(0,0):1,(1,0):2,(2,0):3,(1,1):4,(0,3):5},[x,z])
+        self.g = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):-2,(1,0,3):3,(1,1,1):-4,(0,2,1):5,(2,2,2):-6},[y,z,x])
+        
+    def testScalarMul(self):
+        mul_2 = MultiVariableSparsePolynomial({(0,0,0):-5,(0,1,0):10,(3,1,0):-15,(1,1,1):20,(1,0,2):-25,(2,2,2):30},[x,y,z])
+        assert self.g * (-5) == mul_2
+
+    def testFloordiv(self):
+        assert MultiVariableSparsePolynomial({(0, 2): 266240}, [x, y]) == MultiVariableSparsePolynomial({(2, 0): -479232, (0, 4): 266240}, [x, y]) // MultiVariableSparsePolynomial({(0, 2):1}, [x, y])
+        assert 0 == MultiVariableSparsePolynomial({(0, 0): -4096, (2, 0): -479232}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
+        assert MultiVariableSparsePolynomial({(0, 2): 266240}, [x, y]) == MultiVariableSparsePolynomial({(0, 0): -4096, (2, 0): -479232, (0, 4): 266240}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x,y])
+        assert 0 == OneVariableSparsePolynomial({(0,): -4096, (2,): -479232, }, [x]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
+        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
+
+    def testMod(self):
+        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) % MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
+
+    def testTrueDiv(self):
+        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) / MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
+
+    def testDifferentiate(self):
+        deff_2 = MultiVariableSparsePolynomial({(2,1,0):9,(0,1,1):-4,(0,0,2):5,(1,2,2):-12},[x, y, z])
+        assert deff_2 == self.g.differentiate(x)
+
+    def testGetRing(self):
+        Zxz = PolynomialRing(Z, (x, z))
+        assert Zxz == self.f.getRing(), self.f.getRing()
+
+    def testEquals(self):
+        assert MultiVariableSparsePolynomial({}, [x, y]) == 0
+
 class IntegerPolynomialTest(unittest.TestCase):
     def setUp(self):
         self.a = OneVariableDensePolynomial([1,1],x)
@@ -158,27 +191,8 @@ class IntegerPolynomialTest(unittest.TestCase):
         c = OneVariableDensePolynomial([1,-1,-2], y)
         assert c * self.f == mul_2
 
-    def testScalarMul(self):
-        mul_2 = MultiVariableSparsePolynomial({(0,0,0):-5,(0,1,0):10,(3,1,0):-15,(1,1,1):20,(1,0,2):-25,(2,2,2):30},[x,y,z])
-        assert self.g * (-5) == mul_2
-
-    def testFloordiv(self):
-        assert MultiVariableSparsePolynomial({(0, 2): 266240}, [x, y]) == MultiVariableSparsePolynomial({(2, 0): -479232, (0, 4): 266240}, [x, y]) // MultiVariableSparsePolynomial({(0, 2):1}, [x, y])
-        assert 0 == MultiVariableSparsePolynomial({(0, 0): -4096, (2, 0): -479232}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
-        assert MultiVariableSparsePolynomial({(0, 2): 266240}, [x, y]) == MultiVariableSparsePolynomial({(0, 0): -4096, (2, 0): -479232, (0, 4): 266240}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x,y])
-        assert 0 == OneVariableSparsePolynomial({(0,): -4096, (2,): -479232, }, [x]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
-        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) // MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
-
-    def testMod(self):
-        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) % MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
-
     def testTrueDiv(self):
         assert MultiVariableSparsePolynomial({(0, 2): 1, (8, 0): -3}, [x, y]) ==  MultiVariableSparsePolynomial({(0, 4): 1, (8, 2): -3}, [x, y]) / OneVariableSparsePolynomial({(2,):1}, [y])
-        assert MultiVariableSparsePolynomial({(5, 4): -2903040, (3, 0): 1105920, (5, 0): -7575552, (3, 4): 129024, (7, 4): -715776, (7, 0): 20238336, (10, 4): -155904, (8, 0): 4112640, (10, 0): -22851072, (8, 4): 1707648, (17, 0): -2682720, (12, 4): -6496, (12, 0): -33744384, (14, 0): -16920576, (19, 0): -349920, (14, 4): 192, (21, 0): -17496, (2, 4): 1240064, (0, 0): -4096, (2, 0): -479232, (0, 4): 266240, (4, 4): -39424, (4, 0): 1124352, (6, 0): 608256, (6, 4): -1637888, (24, 0): -729, (9, 0): -18994176, (9, 4): 1311616, (18, 4): 44, (13, 4): -26880, (16, 0): -4685040, (11, 0): -32845824, (18, 0): -991440, (13, 0): -22705920, (16, 4): 456, (11, 4): -19968, (15, 4): -384, (20, 0): -169128, (15, 0): -10264320, (22, 0): -17496, (1, 0): 73728, (1, 4): 358400}, [x, y]) / MultiVariableSparsePolynomial({(0, 2): 1}, [x, y])
-
-    def testDifferentiate(self):
-        deff_2 = MultiVariableSparsePolynomial({(2,1,0):9,(0,1,1):-4,(0,0,2):5,(1,2,2):-12},[x, y, z])
-        assert deff_2 == self.g.differentiate(x)
 
     def testCall(self):
         call_4 = OneVariableSparsePolynomial({(0,):9,(1,):-8,(3,):5},[y])
@@ -189,28 +203,21 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert self.f(x = self.a) == call_6
         assert self.f(z = self.a) == call_7
 
-    def testGetRing(self):
-        Zxz = PolynomialRing(Z, (x, z))
-        assert Zxz == self.f.getRing(), self.f.getRing()
-
-    def testEquals(self):
-        assert MultiVariableSparsePolynomial({}, [x, y]) == 0
-
     def testToOneVariableDensePolynomial(self):
         fyz = MultiVariableDensePolynomial([1,OneVariableDensePolynomial([1,2],y)],z)
         self.assertRaises(ValueError, fyz.toOneVariableDensePolynomial)
 
 class RationalPolynomialTest(unittest.TestCase):
     def setUp(self):
-        self.h = OneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)], x)
-        self.i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)], x)
-        self.j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)] ,y)
-        self.l = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)], y)
+        self.h = RationalOneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)], x)
+        self.i = RationalOneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)], x)
+        self.j = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)] ,y)
+        self.l = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)], y)
 
     def testAdd(self):
-        sum_1 = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],x)
+        sum_1 = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],x)
         sum_2 = MultiVariableSparsePolynomial({(0,0):2,(1,0):rational.Rational(7,8),(0,1):rational.Rational(9,4),(2,0):rational.Rational(1,13)},[x, y])
-        sum_3 = OneVariableDensePolynomial([rational.Rational(3,2), 1], x)
+        sum_3 = RationalOneVariableDensePolynomial([rational.Rational(3,2), 1], x)
         a = OneVariableDensePolynomial([1,1], x)
         assert self.h + self.i == sum_1
         assert self.h + self.j == sum_2
@@ -230,12 +237,12 @@ class RationalPolynomialTest(unittest.TestCase):
 
     def testFloordiv(self):
         assert 2 == self.j // self.l
-        assert rational.Rational(73, 104) == OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) // OneVariableDensePolynomial([rational.Rational(1,1), rational.Rational(1,1)], x)
+        assert rational.Rational(73, 104) == RationalOneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) // RationalOneVariableDensePolynomial([rational.Rational(1,1), rational.Rational(1,1)], x)
 
     def testMod(self):
         assert rational.Rational(-3,2) == (self.j % self.l).coefficient[0]
         a = OneVariableDensePolynomial([1,1], x)
-        assert rational.Rational(-21, 104) == (OneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) % a).coefficient[0]
+        assert rational.Rational(-21, 104) == (RationalOneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) % a).coefficient[0]
                                                
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, x)
@@ -442,6 +449,7 @@ def suite():
     suite.addTest(unittest.makeSuite(IntegerOneVariableDensePolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(IntegerOneVariableSparsePolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(IntegerOneVariablePolynomialsTest, "test"))
+    suite.addTest(unittest.makeSuite(IntegerMultiVariableSparsePolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(RationalPolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(IntegerResidueClassPolynomialTest, "test"))
