@@ -362,7 +362,7 @@ class Matrix:
             raise MatrixSizeError
         return self.inverseImage(unitMatrix(self.row))
 
-    def characteristicPolynomial(self):        # Cohen's Algorithm 2.2.7
+    def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
         """characteristicPolynomial() -> Polynomial"""
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
@@ -406,7 +406,7 @@ class Matrix:
             d[k] = j
         return (c,d)
 
-    def kernel(self):       # Cohen's Algorithm 2.3.1
+    def kernel(self):       # Algorithm 2.3.1 of Cohen's book
         """Return a Matrix which column vectors are one basis of self's kernel,
         or return None if self's kernel is 0."""
         M = self.copy()
@@ -433,7 +433,7 @@ class Matrix:
             output.setColumn(j, basis[j-1])
         return output
 
-    def image(self):        # Cohen's Algorithm 2.3.2
+    def image(self):        # Algorithm 2.3.2 of Cohen's book
         """Return a Matrix which column vectors are one basis of self's image,
         or return None if self's image is 0."""
         M = self.copy()
@@ -452,7 +452,7 @@ class Matrix:
         """Rerutn self's rank."""
         return len(self.image())
 
-#    def inverseImage(self, B):      # Cohen's Algorithm 2.3.4
+#    def inverseImage(self, B):      # Algorithm 2.3.4 of Cohen's book
 #        """inverseImage(B) : B can be a list or a column vector(Matrix)
 #
 #        Return a vector belongs to the inverse image of B if exist,
@@ -478,7 +478,7 @@ class Matrix:
 #        inverseImage.setColumn(1, x)
 #        return inverseImage
 
-#    def inverseImage(self, V):    # Cohen's Algorithm 2.3.5
+#    def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
 #        """M.inverseImage(V) -> X such that MX=V
 #        It raises NoInverseImage exception if inverse image of it is not exist."""
 #        M = self.copy()
@@ -530,7 +530,7 @@ class Matrix:
 #                raise NoInverseImage, "some vectors are not in the inverse image"
 #        return X
 
-    def inverseImage(self, V):    # Cohen's Algorithm 2.3.5
+    def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
         M = self.copy()
         m = M.row; n = M.column; r = V.column
         X = Matrix(n,r)
@@ -578,7 +578,11 @@ class Matrix:
 
         return X
 
-    def hessenbergForm(self):      # Cohen's Algorithm 2.2.9 if self.row != self.column: raise MatrixSizeError n = self.row # step 1 H = self.copy()
+    def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
+        if self.row != self.column:
+            raise MatrixSizeError n = self.row
+        # step 1 
+        H = self.copy()
         for m in range(2, H.row):
             # step 2
             for i in range(m+1, n+1):
@@ -601,7 +605,7 @@ class Matrix:
                     H.setColumn(m, H[m] + u * H[i] )
         return H
 
-    def columnEchelonForm(self):  # Cohen's Algorithm 2.3.11
+    def columnEchelonForm(self):  # Algorithm 2.3.11 of Cohen's book
         """Return a Matrix in column echelon form whose image is equal to the image of self."""
         M = self.copy()
         k = M.column
@@ -632,7 +636,7 @@ class Matrix:
 
 class IntegerMatrix(Matrix):
 
-    def hermiteNormalForm(self):  # Cohen's Algorithm 2.4.4
+    def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
         A = self.copy()
         # step 1 [Initialize]
@@ -716,7 +720,7 @@ class MatrixRing:
 class Subspace(Matrix):
     """A subspace formed by the column vectors."""
 
-    def supplementBasis(self):     # Cohen's Algorithm 2.3.6
+    def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
         """Return a basis of full space, which including self's column vectors."""
         if self.row < self.column:
             raise MatrixSizeError
@@ -765,7 +769,7 @@ def unitMatrix(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
 
-def sumOfSubspaces(L, M):             # Cohen's Algorithm 2.3.8
+def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     if L.row != M.row:
         raise MatrixSizeError
     N = L.copy()
@@ -773,7 +777,7 @@ def sumOfSubspaces(L, M):             # Cohen's Algorithm 2.3.8
         N.insertColumn(L.column+j, M[j])
     return N.image()
 
-def intersectionOfSubspaces(M, M_):    # Cohen's Algorithm 2.3.9
+def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
     if M.row != M_.row:
         raise MatrixSizeError
     M1 = Matrix(M.row, M.column + M_.column)
