@@ -215,15 +215,15 @@ class IntegerPolynomialTest(unittest.TestCase):
 
 class RationalPolynomialTest(unittest.TestCase):
     def setUp(self):
-        self.h = RationalOneVariableDensePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)], x)
-        self.i = RationalOneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)], x)
-        self.j = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)] ,y)
-        self.l = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,8)], y)
+        self.h = RationalOneVariablePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)], x)
+        self.i = RationalOneVariablePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)], x)
+        self.j = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(9,4)] ,y)
+        self.l = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(9,8)], y)
 
     def testAdd(self):
-        sum_1 = RationalOneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],x)
+        sum_1 = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],x)
         sum_2 = MultiVariableSparsePolynomial({(0,0):2,(1,0):rational.Rational(7,8),(0,1):rational.Rational(9,4),(2,0):rational.Rational(1,13)},[x, y])
-        sum_3 = RationalOneVariableDensePolynomial([rational.Rational(3,2), 1], x)
+        sum_3 = RationalOneVariablePolynomial([rational.Rational(3,2), 1], x)
         a = OneVariableDensePolynomial([1,1], x)
         assert self.h + self.i == sum_1
         assert self.h + self.j == sum_2
@@ -243,12 +243,12 @@ class RationalPolynomialTest(unittest.TestCase):
 
     def testFloordiv(self):
         assert 2 == self.j // self.l
-        assert rational.Rational(73, 104) == RationalOneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) // RationalOneVariableDensePolynomial([rational.Rational(1,1), rational.Rational(1,1)], x)
+        assert rational.Rational(73, 104) == RationalOneVariablePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) // RationalOneVariablePolynomial([rational.Rational(1,1), rational.Rational(1,1)], x)
 
     def testMod(self):
         assert rational.Rational(-3,2) == (self.j % self.l).coefficient[0]
         a = OneVariableDensePolynomial([1,1], x)
-        assert rational.Rational(-21, 104) == (RationalOneVariableDensePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) % a).coefficient[0]
+        assert rational.Rational(-21, 104) == (RationalOneVariablePolynomial([rational.Rational(1,2), rational.Rational(73, 104)], x) % a).coefficient[0]
                                                
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, x)
@@ -394,9 +394,9 @@ class PolynomialGCDTest(unittest.TestCase):
 
 class SquareFreeDecompositionChar0Test(unittest.TestCase):
     def setUp(self):
-        self.pow1 = OneVariableDensePolynomial([1,1],x)
-        self.pow1pow2 = OneVariableDensePolynomial([1,2,2,2,1],x)
-        self.pow1pow3 = OneVariableDensePolynomial([8,20,18,7,1],x)
+        self.pow1 = OneVariablePolynomialChar0([1,1],x,Q)
+        self.pow1pow2 = OneVariablePolynomialChar0([1,2,2,2,1],x,Q)
+        self.pow1pow3 = OneVariablePolynomialChar0([8,20,18,7,1],x,Q)
 
     def testSuccess(self):
         assert self.pow1.squareFreeDecomposition()
