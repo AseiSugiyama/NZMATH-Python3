@@ -300,6 +300,21 @@ class OneVariablePolynomial:
     def degree(self):
         return self.coefficient.degree()
 
+    def differentiate(self, var):
+        if isinstance(var, str):
+            if self.degree() < 1 or var != self.getVariable():
+                return 0
+            else:
+                return_coefficient = {}
+                for i, c in self.coefficient.iteritems():
+                    if i:
+                        return_coefficient[i - 1] = c * i
+                return OneVariableSparsePolynomial(return_coefficient,
+                                                   self.getVariableList(),
+                                                   self.getCoefficientRing())
+        else:
+            raise ValueError, "You must specify a variable."
+
     def getRing(self):
         return self.ring
 
@@ -404,20 +419,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
     def copy(self):
         "Copy the structure"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
-
-    def differentiate(self, other):
-        if isinstance(other, str):
-            if self.getVariable() == other:
-                if len(self.coefficient) == 1:
-                    return 0
-                diff = OneVariablePolynomialCoefficients()
-                for i in range(self.degree()):
-                    diff[i] = (self.coefficient[i+1]) * (i+1)
-                return OneVariableDensePolynomial(diff.getAsList(), self.getVariable(), self.getCoefficientRing())
-            else:
-                return 0
-        else:
-            raise ValueError, "You must input differentiate(polynomial,string)."
 
     def integrate(self, other = None, min = None, max = None):
         if min == None and max == None and other != None and isinstance(other, str):
@@ -526,21 +527,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
     def copy(self):
         "Copy the structure"
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-
-    def differentiate(self, var):
-        if isinstance(var, str):
-            if self.degree() < 1 or var not in self.getVariableList():
-                return 0
-            else:
-                origin_polynomial = self.copy()
-                return_variable = self.getVariableList()
-                return_coefficient = {}
-                for i in origin_polynomial.coefficient:
-                    if i:
-                        return_coefficient[i - 1] = origin_polynomial.coefficient[i] * i
-                return OneVariableSparsePolynomial(return_coefficient, return_variable)
-        else:
-            raise ValueError, "You must input variable for var."
 
     def integrate(self, other=None, min=None, max=None):
         if min == None and max == None and other != None and isinstance(other, str):
