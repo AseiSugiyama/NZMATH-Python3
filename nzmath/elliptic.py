@@ -1,4 +1,6 @@
+from __future__ import division
 import arith1
+import imaginary
 import math
 import polynomial 
 import prime
@@ -417,3 +419,100 @@ def mul(E,k,P):
             if l[j]==1:
                 Q=E.add(Q,P)
         return sub(E,[0],Q)
+
+# t=imaginary.Complex(a,b)
+
+def q(t):
+
+    """
+    this returns exp(2*pi*j*t)
+    t is complex and h.imag>0
+    
+    """
+    return imaginary.exp(2*imaginary.pi*imaginary.j*t)
+
+def delta(t,x):
+
+    """
+    """
+    qt=q(t)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x:
+       b=a(i)+b
+       print i
+       i=i+1
+    return qt*(1+b)**24
+
+def h(t,x):
+
+    """
+    """
+    return delta(2*t,x)/delta(t,x)
+
+def j(t,x):
+
+    """
+    """
+    return (256*h(t,x)+1)**3/h(t,x)
+    
+def nu(t,x):
+
+    """
+    """
+    qt=q(t)
+    qq=imaginary.exp(imaginary.pi*imaginary.j/12)
+    def a(i):
+        if i%2==0:
+            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
+        else:
+            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
+    i=1
+    b=0
+    while abs(a(i+1))>x:
+       b=a(k)+b
+       i=i+1
+    return qq*(1+b)
+
+def order(E): # =#E(Fp)
+
+    """
+    this returns #E(Fp)
+    by using Shanks-Mestre method
+    
+    """
+    if E.ch!=0:
+        if E.ch<=229:
+            if len(E)!=2:
+                F=simple(E)
+            else:
+                F=E
+            k=0
+            for i in range(0,F.ch):
+                k=k+arith1.legendre(i*(i**2+F.a)+F.b,F.ch)
+            return F.ch+1+k
+        else: #E.ch>229
+            if len(E)!=2:
+                F=simple(E)
+            else:
+                F=E
+            g=0
+            while arith1.legendre(g,F.ch)!=-1:
+                g=random.randint(2,F.ch)
+            W=math.floor(math.sqrt(math.sqrt(p))*math.sqrt(2))+1
+            c,d=g**2*F.a,g**3*F.b
+            cg=0
+            f=polynomial.OneVariableDensePolynomial([F.b,F.a,0,1],"x")
+            while arith1.legendre(f(cg),F.ch)==0:
+                cg=random.randint(0,F.ch-1)
+                
+                
+    else:
+        raise "now making m(__)m"
+
+def shanks(P,E):

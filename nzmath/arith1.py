@@ -152,3 +152,14 @@ def CRT(list):
         i = i+1
     n = n%M
     return n
+
+# def dio(p,d): #p is odd prime,d!=0 mod p
+#
+#    """
+#    this returns a solution (x,y) :p=x^2+d*y^2
+#    or no solution
+#
+#    """
+
+
+
