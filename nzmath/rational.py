@@ -389,13 +389,28 @@ class IntegerRing (ring.CommutativeRing):
         return True
 
     def isfield(self):
+        """The integer ring is not a field."""
         return False
 
     def gcd(self, n, m):
+        """
+
+        gcd returns the greatest common divisor of given 2 integers.
+
+        """
         a, b = abs(n), abs(m)
         while b:
             a, b = b, a%b
         return Integer(a)
+
+    def lcm(self, a, b):
+        """
+
+        lcm returns the lowest common multiple of given 2 integers.
+        If both are zero, it raises an exception.
+
+        """
+        return a // self.gcd(a, b) * b 
 
 theIntegerRing = IntegerRing()
 theRationalField = RationalField()

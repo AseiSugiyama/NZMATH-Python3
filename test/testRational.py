@@ -140,6 +140,13 @@ class IntegerRingTest(unittest.TestCase):
         assert theIntegerRing.gcd(10, 0) == 10
         assert theIntegerRing.gcd(13, 21) == 1
 
+    def testLcm(self):
+        assert theIntegerRing.lcm(1, 2) == 2
+        assert theIntegerRing.lcm(2, 4) == 4
+        assert theIntegerRing.lcm(0, 10) == 0
+        assert theIntegerRing.lcm(10, 0) == 0
+        assert theIntegerRing.lcm(13, 21) == 273
+
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
         assert 1 in theRationalField
