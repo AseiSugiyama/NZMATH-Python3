@@ -3,7 +3,7 @@ import unittest
 import prime
 
 class PrimeTest(unittest.TestCase):
-    def testComposite(self):
+    def testPrimeqComposite(self):
         assert not prime.primeq(1)
         assert not prime.primeq(2 ** 2)
         assert not prime.primeq(2 * 7)
@@ -11,9 +11,11 @@ class PrimeTest(unittest.TestCase):
         assert not prime.primeq(11 * 31)
         assert not prime.primeq(1111111111111111111 * 11111111111111111111111)
 
-    def testPrime(self):
+    def testPrimeqPrime(self):
         assert prime.primeq(2)
         assert prime.primeq(3)
+        assert prime.primeq(23)
+        assert prime.primeq(1662803)
         assert prime.primeq(1111111111111111111)
         assert prime.primeq(9127065170209166627512577049835050786319879175417462565489372634726057)
 
@@ -30,17 +32,19 @@ class PrimeTest(unittest.TestCase):
         assert 29 == g2.next()
 
     def testTrialDivision(self):
-        assert prime.trialDivision(2)
         assert prime.trialDivision(3)
-        assert not prime.trialDivision(4)
-        assert prime.trialDivision(5)
-        assert not prime.trialDivision(91)
+        assert prime.trialDivision(23)
+        assert not prime.trialDivision(7 * 13)
         assert prime.trialDivision(97)
-        assert not prime.trialDivision(143)
+        assert not prime.trialDivision(11 * 13)
+
+    def testPrime(self):
+        assert prime.prime(100) == 541
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(PrimeTest("testComposite"))
+    suite.addTest(PrimeTest("testPrimeqComposite"))
+    suite.addTest(PrimeTest("testPrimeqPrime"))
     suite.addTest(PrimeTest("testBigprimeq"))
     suite.addTest(PrimeTest("testPrime"))
     suite.addTest(PrimeTest("testGenerator"))

@@ -19,11 +19,11 @@ def trialDivision(n, bound = 0):
         m = min((bound, sqrt(n)))
     else:
         m = sqrt(n)
-    for p in generator():
-        if p > m:
-            break
+    p = 3
+    while p <= m:
         if n % p == 0:
             return 0
+        p += 2
     return 1
 
 def spsp(n, base, s=None, t=None):
@@ -64,16 +64,14 @@ def millerRabin(n, times = 20):
             return 0
     return 1
 
-def primeqTemplate(testFunction, z):
+def bigprimeq(z):
     if long(z) != z:
         raise ValueError, "non-integer for primeq()"
     elif z <= 1:
         return 0
     elif gcd.gcd(z, 510510) > 1:
         return (z in (2, 3, 5, 7, 11, 13, 17))
-    return testFunction(z)
-
-bigprimeq = lambda n: primeqTemplate(millerRabin, n)
+    return millerRabin(z)
 
 def prime(s):
     """prime(n) returns the n-th prime number."""
@@ -125,7 +123,16 @@ def smallSpsp(n):
     return 1
 
 def primeq(n):
-    if not primeqTemplate(smallSpsp, n):
+    if long(n) != n:
+        raise ValueError, "non-integer for primeq()"
+    if n <= 1:
+        return 0
+
+    if gcd.gcd(n, 510510) > 1:
+        return (n in (2, 3, 5, 7, 11, 13, 17))
+    if n < 2000000:
+        return trialDivision(n)
+    if not smallSpsp(n):
         return 0
     if n < 10000000000000:
         return 1
