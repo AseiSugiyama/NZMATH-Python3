@@ -64,6 +64,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
             return  +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return self + Rational(other)
         else:
             return NotImplemented
 
@@ -75,7 +77,9 @@ class Rational (ring.QuotientFieldElement):
         elif isIntegerObject(other):
             numerator = self.numerator - self.denominator*other
             denominator = self.denominator            
-            return +Rational(numerator,denominator) 
+            return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return self - Rational(other)
         else:
             return NotImplemented
 
@@ -87,7 +91,9 @@ class Rational (ring.QuotientFieldElement):
         elif isIntegerObject(other):
             numerator = self.numerator*other
             denominator = self.denominator
-            return +Rational(numerator,denominator) 
+            return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return self * Rational(other)
         else:
             return NotImplemented
 
@@ -103,6 +109,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator
             denominator = self.denominator*other
             return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return self / Rational(other)
         else:
             return NotImplemented
 
@@ -114,6 +122,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
             return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return Rational(other) + self
         else:
             return NotImplemented
 
@@ -122,6 +132,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.denominator*other - self.numerator
             denominator = self.denominator
             return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return Rational(other) - self
         else:
             return NotImplemented
 
@@ -130,6 +142,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator*other
             denominator = self.denominator
             return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return Rational(other) * self
         else:
             return NotImplemented
 
@@ -140,6 +154,8 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.denominator*other
             denominator = self.numerator
             return +Rational(numerator,denominator)
+        elif isinstance(other, float):
+            return Rational(other) / self
         else:
             return NotImplemented
 
@@ -280,6 +296,8 @@ class Rational (ring.QuotientFieldElement):
     def compare(self, other):
         if isIntegerObject(other):
             return self.numerator - self.denominator * other
+        if isinstance(other, float):
+            return self.compare(Rational(float))
         return self.numerator*other.denominator - self.denominator*other.numerator
 
     def getRing(self):

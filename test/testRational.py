@@ -29,6 +29,8 @@ class RationalTest (unittest.TestCase):
         assert Rational(13,18) + 1 == Rational(31,18)
         assert 1000000000000000000000000000000000000000 + Rational(1,2) == Rational(2000000000000000000000000000000000000001,2)
         assert Rational(1,2) + Rational(1,3) + Rational(1,6) == 1
+        assert Rational(1,2) + 0.5 == 1
+        assert 0.5 + Rational(1,2) == 1
 
     def testIadd(self):
         a = Rational(1,2)
@@ -40,6 +42,8 @@ class RationalTest (unittest.TestCase):
         assert Rational(13,18) - 1 == Rational(-5,18)
         assert 1000000000000000000000000000000000000000 - Rational(1,2) == Rational(1999999999999999999999999999999999999999,2)
         assert Rational(1,2) - Rational(1,3) - Rational(1,6) == 0
+        assert Rational(1,2) - 0.5 == 0
+        assert 0.5 - Rational(1,2) == 0
 
     def testIsub(self):
         a = Rational(1,2)
@@ -51,6 +55,8 @@ class RationalTest (unittest.TestCase):
         assert Rational(13,18) * 2 == Rational(26,18)
         assert 1000000000000000000000000000000000000000 * Rational(1,2) == 500000000000000000000000000000000000000
         assert Rational(1,2) * Rational(1,3) * Rational(1,6) == Rational(1, 36)
+        assert Rational(1,2) * 0.5 == Rational(1,4)
+        assert 0.5 * Rational(1,2) == Rational(1,4)
 
     def testImul(self):
         a = Rational(1,2)
@@ -62,6 +68,8 @@ class RationalTest (unittest.TestCase):
         assert Rational(13,18) / 2 == Rational(13,36)
         assert 1000000000000000000000000000000000000000 / Rational(1,2) == 2000000000000000000000000000000000000000
         assert Rational(1,2) / Rational(1,3) / Rational(1,6) == 9
+        assert Rational(1,2) / 0.5 == 1
+        assert 0.5 / Rational(1,2) == 1
 
     def testIdiv(self):
         a = Rational(1,2)
