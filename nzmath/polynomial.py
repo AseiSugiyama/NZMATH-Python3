@@ -1293,14 +1293,59 @@ class MultiVariableSparsePolynomial:
         adjust_polynomial = adjust_polynomial.adjust()
         if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, rational.Rational):
             return adjust_polynomial
+        variable_to_variable_back_dict = {}
+        variable_to_polynomial_back_dict = {}
+        new_variable_parameter = 0
+        new_variable_parameter_of_polynomial = 0
         new_variable = adjust_polynomial.variable[:]
         for i in adjust_polynomial.variable:
             variable_position = adjust_polynomial.variable.index(i)
             if i in substitutions and isinstance(substitutions[i],str):
-                new_variable[variable_position] = substitutions[i]
+                key = '__new_variable__' + str(new_variable_parameter)
+                variable_to_variable_back_dict[key] = substitutions[i]
+                new_variable[variable_position] = key
+                new_variable_parameter += 1
+            elif i in substitutions and (isinstance(substitutions[i],OneVariableDensePolynomial) or isinstance(substitutions[i],OneVariableSparsePolynomial) or isinstance(substitutions[i],MultiVariableDensePolynomial) or isinstance(substitutions[i],MultiVariableSparsePolynomial)):
+                key = '__new_polynomial__' + str(new_variable_parameter_of_polynomial)
+                variable_to_polynomial_back_dict[key] = substitutions[i]
+                new_variable[variable_position] = key
+                new_variable_parameter_of_polynomial += 1
         adjust_polynomial.variable = new_variable
-        result_polynomial = adjust_polynomial.adjust()
-        return result_polynomial
+        test_key = 0
+        for i in variable_to_variable_back_dict:
+            if i in new_variable:
+                test_key += 1
+                variable_position = adjust_polynomial.variable.index(i)
+                new_variable[variable_position] = variable_to_variable_back_dict[i]
+        if test_key > 0:
+            adjust_polynomial.variable = new_variable
+            adjust_polynomial = adjust_polynomial.adjust()
+        new_polynomial = 0
+        test_key = 0
+        for i in variable_to_polynomial_back_dict:
+            if i in adjust_polynomial.variable:
+                test_key += 1
+                variable_position = adjust_polynomial.variable.index(i)
+                for j in adjust_polynomial.coefficient:
+                    if j[variable_position] >= 1:
+                        add_polynomial_coefficient = {}
+                        add_polynomial_variable = adjust_polynomial.variable[:]
+                        new_key = list(j)
+                        new_key[variable_position] = 0
+                        new_key = tuple(new_key)
+                        add_polynomial_coefficient[new_key] = adjust_polynomial.coefficient[j]
+                        add_polynomial = MultiVariableSparsePolynomial(add_polynomial_coefficient, add_polynomial_variable) * (variable_to_polynomial_back_dict[i] ** j[variable_position])
+                        new_polynomial += add_polynomial
+                    else:
+                        add_polynomial_coefficient = {}
+                        add_polynomial_coefficient[j] = adjust_polynomial.coefficient[j]
+                        add_polynomial_variable = adjust_polynomial.variable[:]
+                        add_polynomial = MultiVariableSparsePolynomial(add_polynomial_coefficient, add_polynomial_variable)
+                        new_polynomial += add_polynomial
+        if test_key == 0:
+            return adjust_polynomial
+        else:
+            return new_polynomial.adjust()
 
     def __repr__(self):
         self_adjust = self.adjust()
