@@ -1,23 +1,17 @@
 import unittest
 from matrix import *
 
-a = Matrix(2,2)
-a.set([1,2,3,4])
+a = Matrix(2,2,[1,2,3,4])
 
-b = Matrix(2,2)
-b.set([0,-1,1,-2])
+b = Matrix(2,2,[0,-1,1,-2])
 
-c = Matrix(3,3)
-c.set([1,2,3]+[0,5,-2]+[7,1,9])
+c = Matrix(3,3,[1,2,3]+[0,5,-2]+[7,1,9])
 
-d = Matrix(6,6)
-d.set([4,2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
+d = Matrix(6,6,[4,2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
 
-e = Matrix(1,2)
-e.set([3,2])
+e = Matrix(1,2,[3,2])
 
-f = Matrix(4,4)
-f.set([1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
+f = Matrix(4,4,[1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
 
 g = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
 
@@ -60,8 +54,7 @@ class MatrixTest(unittest.TestCase):
         assert e.transpose() == trans
 
     def testTriangulate(self):
-        triangle = Matrix(3,3)
-        triangle.set([1,2,3]+[0,5,-2]+[0,0,rational.Rational(-86,5)])
+        triangle = Matrix(3,3, [1,2,3]+[0,5,-2]+[0,0,rational.Rational(-86,5)])
         assert c.triangulate() == triangle
 
     def testTrace(self):
@@ -74,6 +67,24 @@ class MatrixTest(unittest.TestCase):
         M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
         V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
         assert M * M.inverseImage(V) == V 
+
+    def testIsUpperTriangularMatrix(self):
+        UT = Matrix(4,4,[1,2,3,4]
+                       +[0,5,6,7]
+                       +[0,0,8,9]
+                       +[0,0,0,1])
+        notUT = Matrix(4,4,[1,2,3,4]
+                          +[0,5,6,7]
+                          +[0,0,8,9]
+                          +[0,0,1,1])
+        assert isUpperTriangularMatrix(UT)
+        assert not isUpperTriangularMatrix(notUT)
+
+    def testLUDecomposition(self):
+        L, U = d.LUDecomposition()
+        assert L * U == d
+        assert isLowerTriangularMatrix(L)
+        assert isUpperTriangularMatrix(U)
 
 class SubspaceTest(unittest.TestCase):
     def testSupplementBasis(self):
