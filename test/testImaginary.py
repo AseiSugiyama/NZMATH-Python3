@@ -85,6 +85,10 @@ class ImaginaryTest (unittest.TestCase):
         assert imaginary.cosh(1)
         assert imaginary.tanh(1)
 
+    def testConstants(self):
+        assert imaginary.pi ==real.pi
+        assert (0,1) == (imaginary.j.real, imaginary.j.imag)
+
 def suite():
     suite = unittest.makeSuite(ImaginaryTest, 'test')
     return suite

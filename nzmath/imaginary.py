@@ -417,3 +417,4 @@ def tanh(x, precision=real.doubleprecision):
             precision = x.imag.precision
     return sinh(x, precision) / cosh(x, precision)
 
+j = Complex(0,1)
