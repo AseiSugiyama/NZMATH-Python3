@@ -181,25 +181,37 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
 
     """
     def __init__(self, representative, modulus=None):
+        """
+
+        FiniteExtendedFieldElement(representative [,modulus]) creates
+        an element of the finite extended field.
+
+        Argument representative must be an instance of ResidueClass,
+        whose original ring must be a polynomial ring with
+        coefficients in a finite prime field, if modulus is not given.
+
+        If modulus is povided, it must be a polynomial with
+        coefficients in a finite prime field and with degree greater
+        than 1.  Then, representative must be a polynomial of the same
+        ring with modulus.
+
+        """
         if modulus == None:
-            if not (isinstance(representative, ring.ResidueClass), 
-                    isinstance(representative.getRing().ring,
-                               polynomial.PolynomialRing),
-                    isinstance(representative.getRing().ring.getCoefficientRing(),
-                               FinitePrimeField)):
+            if not isinstance(representative, ring.ResidueClass) or \
+               not isinstance(representative.getRing().ring, polynomial.PolynomialRing) or \
+               not isinstance(representative.getRing().ring.getCoefficientRing(), FinitePrimeField):
                 raise TypeError, "wrong type argument for representative."
             self.rep = representative
             self.field = FiniteExtendedField(
                 representative.getRing().ring.getCoefficientRing().getCharacteristic(),
                 representative.ideal.generators[0])
         else:
-            if not (isinstance(representative,polynomial.OneVariablePolynomial), 
-                    isinstance(representative.getCoefficientRing(),
-                               FinitePrimeField)):
+            if not isinstance(representative, polynomial.OneVariablePolynomial) or \
+               not isinstance(representative.getCoefficientRing(), FinitePrimeField):
                 raise TypeError, "wrong type argument for representative."
-            if not (isinstance(modulus, polynomial.OneVariablePolynomial), 
-                    isinstance(modulus.getCoefficientRing(), FinitePrimeField), 
-                    modulus.degree() <= 1):
+            if not isinstance(modulus, polynomial.OneVariablePolynomial) or \
+               not isinstance(modulus.getCoefficientRing(), FinitePrimeField) or \
+               modulus.degree() <= 1:
                 raise TypeError, "wrong type argument for modulus."
             self.rep = ring.ResidueClass(
                 representative,
