@@ -9,7 +9,6 @@ import polynomial
 import prime
 import random
 import rational
-import subec
 
 def Element(a,p):
     """
@@ -17,73 +16,74 @@ def Element(a,p):
     this returns a in F_p
     """
     return int(finitefield.FinitePrimeField(p).createElement(a).n)
-def Simple(obj):
-    print obj,"*"
-    if isinstance(obj,list):
-        while obj[-1]==0:
-            if len(obj)!=1:
-                obj.pop(-1)
-            else:
-                return [0]
-        return obj
-    if isinstance(obj,dict):
-        obj=obj.items()
-        F=1
-        i=0
-        while i<len(obj):
-            if obj[i][1]==0:
-                if len(obj)>1:
-                    del obj[i]
-                else:
-                    F=0
-                    break
-            else:
-                i=i+1
-        D={}
-        if F==0:
-            D[(0,0)]=0
-            return D
-        else: 
-            i=0
-            while i<len(obj):
-                D[obj[i][0]]=obj[i][1]
-                i=i+1
-            return D
-    else:
-        raise NotImplementedError,"you must input (obj,list)"
+
+#def Simple(obj):
+#    print obj,"*"
+#    if isinstance(obj,list):
+#        while obj[-1]==0:
+#            if len(obj)!=1:
+#                obj.pop(-1)
+#            else:
+#                return [0]
+#        return obj
+#    if isinstance(obj,dict):
+#        obj=obj.items()
+#        F=1
+#        i=0
+#        while i<len(obj):
+#            if obj[i][1]==0:
+#                if len(obj)>1:
+#                    del obj[i]
+#                else:
+#                    F=0
+#                    break
+#            else:
+#                i=i+1
+#        D={}
+#        if F==0:
+#            D[(0,0)]=0
+#            return D
+#        else: 
+#            i=0
+#            while i<len(obj):
+#                D[obj[i][0]]=obj[i][1]
+#                i=i+1
+#            return D
+#    else:
+#        raise NotImplementedError,"you must input (obj,list)"
     
-def mod_p(poly,p): #Z[x]->(Z/p)[x] or Z[x,y]->(Z/p)[x,y]
-    print poly.coefficient
-    if isinstance(poly,polynomial.OneVariableDensePolynomial) and len(poly.coefficient)==1:
-        poly=int(poly.coefficient[0])
-    if isinstance(poly,(int,long)):
-        return polynomial.OneVariableDensePolynomial([Element(poly,p)],"x")### 
-    else:
-        if isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
-            poly=poly.toOneVariableDensePolynomial()### raise
-            L=poly.coefficient
-            i=0
-            while i<len(L):
-                L[i]=Element(L[i],p)
-                i=i+1
-            L=Simple(L)
-            poly.coefficient=L
-            if len(L)==1:
-                return polynomial.OneVariableSparsePolynomial({(0,):L[0]},["x"])
-            else:
-                return poly.toOneVariableSparsePolynomial()
-        else:
-            if isinstance(poly,polynomial.MultiVariableDensePolynomial):
-                poly=poly.toMultiVariableSparsePolynomial()
-            P=poly.coefficient.items()
-            i=0
-            dict={}
-            while i<len(P):
-                dict[P[i][0]]=Element(P[i][1],p)
-                i=i+1
-            dict=Simple(dict)
-            poly.coefficient=dict
-            return poly 
+#def mod_p(poly,p): #Z[x]->(Z/p)[x] or Z[x,y]->(Z/p)[x,y]
+#    print poly.coefficient
+#    if isinstance(poly,polynomial.OneVariableDensePolynomial) and len(poly.coefficient)==1:
+#        poly=int(poly.coefficient[0])
+#    if isinstance(poly,(int,long)):
+#        return polynomial.OneVariableDensePolynomial([Element(poly,p)],"x")### 
+#    else:
+#        if isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
+#            poly=poly.toOneVariableDensePolynomial()### raise
+#            L=poly.coefficient
+#            i=0
+#            while i<len(L):
+#                L[i]=Element(L[i],p)
+#                i=i+1
+#            L=Simple(L)
+#            poly.coefficient=L
+#            if len(L)==1:
+#                return polynomial.OneVariableSparsePolynomial({(0,):L[0]},["x"])
+#            else:
+#                return poly.toOneVariableSparsePolynomial()
+#        else:
+#            if isinstance(poly,polynomial.MultiVariableDensePolynomial):
+#                poly=poly.toMultiVariableSparsePolynomial()
+#            P=poly.coefficient.items()
+#            i=0
+#            dict={}
+#            while i<len(P):
+#                dict[P[i][0]]=Element(P[i][1],p)
+#                i=i+1
+#            dict=Simple(dict)
+#            poly.coefficient=dict
+#            return poly 
 
 def Mod(poly,d):
     """
@@ -416,7 +416,7 @@ class EC:
                         self.disc=Element(-self.a2**3*self.a6,3)
                         if self.disc!=0:
                             j=rational.Rational(-self.a2**3,self.a6)
-                            self.j=subec.Elemant(j,3)
+                            self.j=Elemant(j,3)
                     elif coefficient[0]==coefficient[1]==coefficient[2]==0:
                         self.a1=0
                         self.a2=0
@@ -772,6 +772,9 @@ class EC:
                 i=i+1
             return l
         def change(poly,i,e,p):#y^2->e=x^3+a*x+b and if i%2,div y
+            """
+            poly is multi 
+            """
             L=poly.coefficient.items()
             if i%2==0:
                 t=0
@@ -785,7 +788,7 @@ class EC:
                         k=(k-1)//2
                         poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=subec.mod_p(poly,p)#%
+                poly=poly%p #%@@@
                 L=poly.coefficient.items()
                 t=0
                 dict={}
@@ -800,7 +803,7 @@ class EC:
                     k=L[t][0][1]//2
                     poly=poly+e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=subec.mod_p(poly,p)#%
+                poly=poly%p #%@@@
             return poly
         f=[]
         M=[]
@@ -820,20 +823,19 @@ class EC:
                     M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))#
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    print g.__class__
-                    g=subec.mod_p(g,E.ch)#%
+                    g=g%E.ch #%@@@
                     f.append(g)
                     M.append(g)
                 elif i==4:
                     g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    g=subec.mod_p(g,E.ch)#%
+                    g=g%E.ch #%@@@
                     f.append(g)
                     M.append(change(g,i,e,E.ch))#div y
                 else:
                     if i%2!=0: 
                         j=(i-1)//2
                         g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        g=subec.mod_p(g,E.ch)#%
+                        g=g%E.ch#%@@@
                         f.append(g)
                         M.append(change(g,i,e,E.ch)) # y^2->e
                     else: 
@@ -843,7 +845,7 @@ class EC:
                         t=0
                         dict={}
                         while t<len(L): #div 2y
-                            dict[(L[t][0][0],L[t][0][1]-1)]=(L[t][1]%E.ch)//2#%
+                            dict[(L[t][0][0],L[t][0][1]-1)]=(L[t][1]%E.ch)//2
                             t=t+1
                         g.coefficient=dict
                         f.append(g)
@@ -863,7 +865,7 @@ class EC:
                     t=0
                     dict={}
                     while t<len(L):
-                        dict[L[t][0]]=L[t][1]%2#%
+                        dict[L[t][0]]=Element(L[t][1],2)#%
                         t=t+1
                     g.coefficient=dict
                     f.append(g)
@@ -874,7 +876,7 @@ class EC:
                     t=0
                     dict={}
                     while t<len(L):
-                        dict[L[t][0]]=L[t][1]%2#%
+                        dict[L[t][0]]=Element(L[t][1],2)#%
                         t=t+1
                     g.coefficient=dict
                     f.append(g)
@@ -887,7 +889,7 @@ class EC:
                         t=0
                         dict={}
                         while t<len(L):
-                            dict[L[t][0]]=L[t][1]%2#%
+                            dict[L[t][0]]=Element(L[t][1],2)#%
                             t=t+1
                         g.coefficient=dict
                         f.append(g)
@@ -899,7 +901,7 @@ class EC:
                         t=0
                         dict={}
                         while t<len(L): # div x
-                            dict[(L[t][0][0]-1,)]=L[t][1]%2#%
+                            dict[(L[t][0][0]-1,)]=Element(L[t][1],2)#%
                             t=t+1
                         g.coefficient=dict
                         f.append(g)
@@ -929,7 +931,7 @@ class EC:
                     j=L[i]
                     k=self.ch%j
                     if k%2==0:
-                        P=subec.GCD(subec.PolyMulRed([f,E,D[k],D[k]],D[j],j)+subec.PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
+                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)#%@@@
                         if P==1:
                             F=0 
                         else:
@@ -943,9 +945,9 @@ class EC:
                         x=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])*f 
                         y=g
                         """
-#                        print subec.PolyMulRed([f,D[k],D[k]],D[j],j)+subec.PolyMulRed([D[k-1],D[k+1],E],D[j],j),"*"
+#                        print PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),"*"#%@@@
 #                        print D[j],j,"**"
-                        P=subec.GCD(subec.PolyMulRed([f,D[k],D[k]],D[j],j)+subec.PolyMulRed([D[k-1],D[k+1],E],D[j],j),D[j],j)
+                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),D[j],j)#%@@@
                         if P==1:
                             F=0
                         else:
