@@ -16,27 +16,29 @@ P6 = [43,282]
 P7 = [52,375]
 P8 = [5234,378661]
 
-F1 = polynomial.OneVariableSparsePolynomial({(0,):2},["x"])
-F2 = polynomial.OneVariableSparsePolynomial({(1,):1,(0,):1,(2,):1,(3,):4},["x"])
-F3 = polynomial.OneVariableSparsePolynomial({(1,):10,(0,):87,(3,):17,(2,):22,(4,):60,(6,):4},["x"])
-F4 = polynomial.OneVariableSparsePolynomial({(9,):5,(8,):65,(10,):85,(12,):5,(1,):58,(0,):48,(3,):60,(2,):53,(5,):93,(4,):28,(7,):52,(6,):79},["x"])
+F1 = polynomial.OneVariableSparsePolynomial({0:2},["x"])
+F2 = polynomial.OneVariableSparsePolynomial({1:1,0:1,2:1,3:4},["x"])
+F3 = polynomial.OneVariableSparsePolynomial({1:10,0:87,3:17,2:22,4:60,6:4},["x"])
+F4 = polynomial.OneVariableSparsePolynomial({9:5,8:65,10:85,12:5,1:58,0:48,3:60,2:53,5:93,4:28,7:52,6:79},["x"])
+F5 = polynomial.OneVariableSparsePolynomial({3:10,4:2,13:65,7:1},["x"])
 
 class EllipticTest(unittest.TestCase):
-#    def testMod(self):
-#        assert str(elliptic.Mod(F3,3))==
+    def testMod(self):
+        assert elliptic.Mod(F3,3)==polynomial.OneVariableSparsePolynomial({1:10,0:87,2:22},["x"])
 
-#    def testDiv(self):
-#        assert str(elliptic.Div(F3,3))==
+    def testDiv(self):
+        assert elliptic.Div(F5,3)==polynomial.OneVariableSparsePolynomial({0:10,1:2,10:65,4:1},["x"])
 
-#    def testInver_p(self):
-#        assert str(elliptic.Inver_p(F2,8,101))==
+    def testInver_p(self):
+        assert elliptic.Inver_p(F2,8,101)==polynomial.OneVariableSparsePolynomial({0:1,1:100,3:98,4:7,5:97,6:9,7:68,8:40},["x"])
 
-#    def testPolyMod_p(self):
-#        assert str(elliptic.PolyMod_p(F1+F2,F2,))==
-#        assert str(elliptic.PolyMod_p(F4,F2,))==
+    def testPolyMod_p(self):
+        assert elliptic.PolyMod_p(F1+F2,F2,103)==F1
+        assert elliptic.PolyMod_p(F4,F2,103)==polynomial.OneVariableSparsePolynomial({0:95,1:86,2:59},["x"])
 
-#    def testGCD():
-#        assert
+    def testGCD(self):
+        assert elliptic.GCD(F3*F2*F1,F3,97)==F3.getRing().gcd(F3*F2*F1,F3)%97
+        assert elliptic.GCD(F4,F5,97)==F4.getRing().gcd(F4,F5)%97
         
     def testInit(self):
         assert a.c4 == 16
@@ -99,8 +101,8 @@ class EllipticTest(unittest.TestCase):
 
     def testDivPoly(self):
         E=elliptic.EC([3,4],101)
-        D=([0, 1, 2, OneVariableSparsePolynomial({(1,): 48, (0,): 92, (2,): 18, (4,): 3}, ['x']), OneVariableSparsePolynomial({(1,): 10, (0,): 87, (3,): 17, (2,): 22, (4,): 60, (6,): 4}, ['x']), OneVariableSparsePolynomial({(9,): 5, (8,): 65, (10,): 85, (12,): 5, (1,): 58, (0,): 48, (3,): 60, (2,): 53, (5,): 93, (4,): 28, (7,): 52, (6,): 79}, ['x']), OneVariableSparsePolynomial({(9,): 24, (8,): 68, (11,): 34, (10,): 57, (13,): 69, (12,): 55, (14,): 24, (1,): 62, (0,): 60, (3,): 58, (2,): 25, (5,): 23, (4,): 50, (7,): 37, (6,): 81, (16,): 56}, ['x']), OneVariableSparsePolynomial({(9,): 76, (8,): 44, (11,): 49, (10,): 5, (13,): 74, (12,): 49, (15,): 53, (14,): 76, (1,): 77, (0,): 94, (3,): 65, (2,): 87, (5,): 45, (4,): 97, (7,): 22, (6,): 80, (24,): 7, (17,): 47, (16,): 69, (19,): 70, (18,): 63, (21,): 20, (20,): 78, (22,): 15}, ['x'])], [3, 5, 7])
-        assert str(E.devPoly())==D
+        D=([0,1,2,polynomial.OneVariableSparsePolynomial({1:48,0:92,2:18,4:3},['x']),polynomial.OneVariableSparsePolynomial({1:10,0:87,3:17,2:22,4:60,6:4},['x']),polynomial.OneVariableSparsePolynomial({9:5,8:65,10:85,12:5,1:58,0:48,3:60,2:53,5:93,4:28,7:52,6:79},['x']),polynomial.OneVariableSparsePolynomial({9:24,8:68,11:34,10:57,13:69,12:55,14:24,1:62,0:60,3:58,2:25,5:23,4:50,7:37,6:81,16:56},['x']),polynomial.OneVariableSparsePolynomial({9:76,8:44,11:49,10:5,13:74,12:49,15:53,14:76,1:77,0:94,3:65,2:87,5:45,4:97,7:22,6:80,24:7,17:47,16:69,19:70,18:63,21:20,20:78,22:15},['x'])],[3,5,7])
+        assert E.divPoly()==D
 
 def suite():
     suite = unittest.makeSuite(EllipticTest, 'test') 

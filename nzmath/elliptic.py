@@ -10,80 +10,13 @@ import prime
 import random
 import rational
 
-def boo(f,a,b):
-    i=a
-    while i<b:
-        print i
-        print (f%i).coefficient
-        i=i+1
-    return 0
 """
->>> g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,(  4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5}, ['x'])
-#i=>94
-#raise error
-Traceback (most recent call last):
-  File "<stdin>", line 1, in ?
-  File "<stdin>", line 5, in boo
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 668, in __mod__
-    return self - (self // other) * other
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 643, in __floordiv__
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
-    self.ring = self.initRing()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
-    return PolynomialRing(ring, self.getVariable())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
-    if self.coefficientRing.isfield() and len(self.vars) == 1:
-AttributeError: 'NoneType' object has no attribute 'isfield'
+f=polynomial.OneVariableSparsePolynomial({1:-1,10201:1}, ['x']) 
+g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,( 4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5}, ['x']) 
+h=polynomial.OneVariableSparsePolynomial({0:1,2:17,3:1,4:13,5:71,6:36,7:59,8:46,9:12,10:51,11:52,12:50},["x"])
 
-f=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
->>> f+f
-Traceback (most recent call last):
-  File "<stdin>", line 1, in ?
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 528, in __add__
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList()).adjust()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
-    self.ring = self.initRing()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
-    return PolynomialRing(ring, self.getVariable())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
-    if self.coefficientRing.isfield() and len(self.vars) == 1:
-AttributeError: 'NoneType' object has no attribute 'isfield'
->>> f*2
-Traceback (most recent call last):
-  File "<stdin>", line 1, in ?
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 584, in __mul__
-    return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
-    self.ring = self.initRing()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
-    return PolynomialRing(ring, self.getVariable())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
-    if self.coefficientRing.isfield() and len(self.vars) == 1:
-AttributeError: 'NoneType' object has no attribute 'isfield'
->>> f**2
-Traceback (most recent call last):
-  File "<stdin>", line 1, in ?
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 605, in __pow__
-    power_of_2 = power_of_2 * power_of_2
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 578, in __mul__
-    return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 725, in adjust
-    return OneVariableSparsePolynomial(return_coefficient, self.getVariableList())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 470, in __init__
-    self.ring = self.initRing()
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 821, in initRing
-    return PolynomialRing(ring, self.getVariable())
-  File "/home/hiroaki/cvspy/nmath/polynomial.py", line 1806, in __init__
-    if self.coefficientRing.isfield() and len(self.vars) == 1:
-AttributeError: 'NoneType' object has no attribute 'isfield'
 """
+
 def Element_p(a,p):
     """
     a is (rational,int,long) number
@@ -96,51 +29,59 @@ def Mod(poly,d):
     this returns poly%(x^d)
     """
     if isinstance(poly,(int,long)):
-        return polynomial.OneVariableSparsePolynomial({(0,):int(poly)},["x"])
+        return polynomial.OneVariableDensePolynomial([int(poly)],"x").toOneVariableSparsePolynomial()
     elif isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
         if poly.degree()>=d:
-            if isinstance(poly,polynomial.OneVariableDensePolynomial):
-                poly=poly.toOneVariableSparsePolynomial()
-            P=poly.coefficient.items()
+            if isinstance(poly,polynomial.OneVariableSparsePolynomial):
+                poly=poly.toOneVariableDensePolynomial()
+            P=poly.coefficient.getAsDict().items()
             dict={}
             i=0
             while i<len(P):
-                if P[i][0][0]<d:
+                if P[i][0]<d:
                     dict[P[i][0]]=P[i][1]
                 i=i+1
             if len(dict)!=0:
                 return polynomial.OneVariableSparsePolynomial(dict,["x"])
             else:
-                return polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
+                return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
         else:
             return poly.toOneVariableSparsePolynomial()
     else:
-        raise ValueError,"you must imput (poly,OneVariable(Dense,Sparese)Polynomial)"
+        raise ValueError,"you must imput (poly,OneVariable{Dense,Sparese}Polynomial)"
 
 def Div(poly,d):
     """
     this returns poly//(x^d)
     """
-    if isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
-        if isinstance(poly,polynomial.OneVariableDensePolynomial):
-            poly=poly.toOneVariableSparsePolynomial()
-        P=poly.coefficient
-        if min(P)[0]>=d:
+    if d==0:
+        return poly.toOneVariableSparsePolynomial()
+    elif isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
+        if isinstance(poly,polynomial.OneVariableSparsePolynomial):
+            poly=poly.toOneVariableDensePolynomial()
+        P=poly.coefficient.getAsDict()
+        if min(P)>=d:
             P=P.items()
             i=0
             dict={}
             while i<len(P):
-                dict[(P[i][0][0]-d,)]=P[i][1]
+                dict[P[i][0]-d]=P[i][1]
                 i=i+1
             return polynomial.OneVariableSparsePolynomial(dict,["x"])
         else:
             raise ValueError,"*/x^"
     else:
-        raise ValueError,""
+        raise ValueError,"*/x^"
 
-def Inver_p(poly,d,p): #poly \in Z[x]
+def Evalu(poly,t):
+    return 0
+
+def Mul(f,g):
+    return 0
+
+def Inver_p(poly,d,p):
     """
-    this returns poly inversion mod x^d /F_p   
+    this returns poly inversion mod x^d /F_p
     """
     poly=poly%p
     poly=poly.toOneVariableDensePolynomial()
@@ -150,15 +91,16 @@ def Inver_p(poly,d,p): #poly \in Z[x]
     if L[0]!=1:
         poly=poly*Element_p(rational.Rational(1,L[0]),p)%p
     poly=poly.toOneVariableSparsePolynomial()
-    f=polynomial.OneVariableSparsePolynomial({(0,):1},["x"])
+    f=polynomial.OneVariableSparsePolynomial({0:1},["x"])
     n=1
     while n<d+1:
         n=2*n
         if n>d+1:
             n=d+1
         g=Mod(poly,n)%p
-        g=Mod(g*f%p,n)%p
-        f=Mod(f*(2-g)%p,n)
+        g=Mod(f*g%p,n)%p ## make this more fast
+        f=Mod(f*(2-g)%p,n)%p ## make this more fast
+        print n,d+1
     if L[0]==1:
         return f%p
     else:
@@ -176,10 +118,11 @@ def PolyMod_p(f,g,p):
             while len(L)<=d:
                 L.append(0)
                 i=i+1
-        f=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
+        f=polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
         i=0
         while i<=d:
-            f=f+polynomial.OneVariableSparsePolynomial({(i,):L[d-i]},["x"])
+            if L[d-i]!=0:
+                f=f+polynomial.OneVariableSparsePolynomial({i:L[d-i]},["x"])
             i=i+1
         return f
     def ind(poly,d):
@@ -200,18 +143,18 @@ def PolyMod_p(f,g,p):
     g=g%p
     f=f.toOneVariableSparsePolynomial()
     g=g.toOneVariableSparsePolynomial()
-    a=g.coefficient[max(g.coefficient)]
+    a=g.coefficient[g.degree()]
     if a!=1:
         g=g*Element_p(rational.Rational(1,a),p)%p
     d=f.degree()-g.degree()
-    if g.degree()==0:
+    if g.degree()<=0:
         return 0
     elif d<0:
         return f
     else:
         F=rev(f,f.degree())
         G=rev(g,g.degree())
-        q=Inver_p(G,d,p) 
+        q=Inver_p(G,d,p)# time wastes because of multiple
         q=Mod(q*F%p,d+1)
         r=(F-q*G)%p
         i=ind(r,d+1)
@@ -219,13 +162,15 @@ def PolyMod_p(f,g,p):
         return rev(r,f.degree()-i)
 
 def GCD(f,g,p):
-    f=f.toOneVariableSparsePolynomial()%p
-    g=g.toOneVariableSparsePolynomial()%p
+    f=f%p
+    g=g%p
     if isinstance(f,(int,long)):
         return 1
     elif isinstance(g,(int,long)):
         return 1
     else:
+        f=f.toOneVariableSparsePolynomial()
+        g=g.toOneVariableSparsePolynomial()
         if f.degree()<1 or g.degree()<1:
             return 1
         else:
@@ -233,10 +178,10 @@ def GCD(f,g,p):
                 f,g=f,g
             elif f.degree()<g.degree():
                 f,g=g,f
-            else: #f.deg==g.deg
+            else: 
                 F=f.coefficient
                 G=g.coefficient
-                if F[max(F)]>=G[max(G)]:
+                if F[f.degree()]>=G[g.degree()]:
                     f,g=f,g
                 else:
                     f,g=g,f
@@ -246,7 +191,7 @@ def GCD(f,g,p):
                     return 1
                 elif isinstance(g,polynomial.OneVariableDensePolynomial) and len(g.coefficient.getAsList())==1:
                     return 1
-                elif isinstance(g,polynomial.OneVariableSparsePolynomial) and max(g.coefficient)[0]==0:
+                elif isinstance(g,polynomial.OneVariableSparsePolynomial) and len(g.coefficient)==1:
                     return 1
                 else:
                     pass
@@ -258,14 +203,16 @@ def PolyMulRed(list,poly,p):
     poly is OneSparsePoly
     """
     poly=poly%p
-    if max(poly.coefficient)[0]==0:
-        return polynomial.OneVariableSparsePolynomial({(0,):0},["x"])
+    if len(poly.coefficient)==1: 
+        return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
     i=0
     while i<len(list):
-        if list[i].degree()>=poly.degree():
+        if list[i]==0:
+            return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
+        elif list[i].degree()>=poly.degree():
             list[i]=PolyMod_p(list[i],poly,p)
         i=i+1
-    POLY=polynomial.OneVariableSparsePolynomial({(0,): 1},['x'])
+    POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'])
     i=0
     while i<len(list):
         POLY=POLY*list[i]
@@ -280,7 +227,6 @@ def PolyMulRed(list,poly,p):
 # t=imaginary.Complex(a,b)
 
 def q(t):
-
     """
     this returns exp(2*pi*j*t)
     t is complex and h.imag>0
@@ -300,7 +246,7 @@ def delta(t,x):
     b=0
     while abs(a(i+1))>x: #syuusoku
        b=a(i)+b
-       print i
+       print i #
        i=i+1
     return qt*(1+b)**24
 
@@ -530,7 +476,7 @@ class EC:
                               rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4),
                               rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)],0) 
                         return other
-                    else: #self.ch!=0
+                    else:
                         for v in V:
                             if not isinstance(v,(int,long)):
                                 raise ValueError, "you must input integer m(__)m"
@@ -545,7 +491,7 @@ class EC:
                                   Element_p(A[3],self.ch),
                                   Element_p(A[4],self.ch),],self.ch)
                         return other
-                else: # u==0
+                else: 
                     raise ValueError, "you must input nonzero u (-_-;)"
             else:        
                 raise ValueError, "you must input (-_-;)"
@@ -562,7 +508,6 @@ class EC:
                     Q0=rational.IntegerIfIntOrLong(P[0]-V[1])/rational.IntegerIfIntOrLong(V[0]**2)
                     Q1=rational.IntegerIfIntOrLong(P[1]-V[2]*(P[0]-V[1])-V[3])/rational.IntegerIfIntOrLong(V[0]**3)
                 else:
-
                     qx=rational.Rational(P[0]-V[1],V[0]**2)
                     Q0=Element_p(qx,self.ch)
                     qy=rational.Rational(P[1]-V[2]*(P[0]-V[1])-V[3],V[0]**3)
@@ -574,7 +519,7 @@ class EC:
         else:
             raise ValueError, "m(__)m"
 
-    def point(self): # E(ch>3):y^2=x^3+a*x+b use change!!     
+    def point(self): 
         """
         this returns a random point on eliiptic curve over ch(field)>3
         """
@@ -585,7 +530,7 @@ class EC:
                     s=random.randrange(0,self.ch) 
                     t=s**3+self.a4*s+self.a6
                 return [s,arith1.sqroot(t,self.ch)]
-            elif self.ch!=2 and self.ch!=3:#len==5
+            elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
@@ -602,12 +547,12 @@ class EC:
                     s=random.randrange(0,self.ch) 
                     t=s**3+self.a2*s**2+self.a4*s+self.a6
                 return [s,arith1.sqroot(t,self.ch)]
-            else: #self.ch==2
+            else: 
                 s=0
                 while self.coordinateX(s) is ValueError:
                     s=random.randrange(0,self.ch)
                 return [s,self.coordinateX(s)]
-        else: #self.ch==0
+        else: 
             w=int(random.random()*10**3)
             s=random.randrange(1,w)
             return [s,self.coordinateX(s)]
@@ -632,7 +577,7 @@ class EC:
                     raise ValueError, "(-_-;)" 
         elif self.ch==2:
             raise NotImplementedError, "Now making (>_<)"
-        else: #self.ch==0
+        else: 
             if y1**2+4*y2>=0:
                 return rational.Rational((-1)*y1+math.sqrt(y1**2+4*y2),2)
             else:
@@ -644,8 +589,6 @@ class EC:
         """
         if isinstance(P,list):
             if len(P)==2:
-#                if P[0]=="x" and P[1]=="y":
-#                    return True
                 if self.ch==0:
                     if P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]==P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6:
                         return True
@@ -674,10 +617,10 @@ class EC:
                         if P[0]==Q[0]:
                             if P[1]+Q[1]+self.a1*Q[0]+self.a3==0:
                                 return [0]
-                            else: # P=Q
+                            else: 
                                 s=rational.IntegerIfIntOrLong(3*P[0]**2+2*self.a2*P[0]+self.a4-self.a1*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
                                 t=rational.IntegerIfIntOrLong(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
-                        else: # P!=Q
+                        else: 
                             s=rational.IntegerIfIntOrLong(Q[1]-P[1])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                             t=rational.IntegerIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
@@ -688,10 +631,10 @@ class EC:
                         if P[0]==Q[0]:
                             if (P[1]+Q[1]+self.a1*Q[0]+self.a3)%self.ch==0:
                                 return [0]
-                            else: # P=Q
+                            else:
                                 s=rational.Rational(3*P[0]**2+2*self.a2*P[0]+self.a4-self.a1*P[1],2*P[1]+self.a1*P[0]+self.a3)
                                 t=rational.Rational(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1],2*P[1]+self.a1*P[0]+self.a3)
-                        else: # P!=Q
+                        else: 
                             s=rational.Rational(Q[1]-P[1],Q[0]-P[0])
                             t=rational.Rational(P[1]*Q[0]-Q[1]*P[0],Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
@@ -713,7 +656,7 @@ class EC:
         else:
             raise ValueError, "you must input (point,list) m(__)m"
 
-    def sub(self,P,Q): # P-Q
+    def sub(self,P,Q): 
         """
         this retuens P-Q
         """
@@ -722,7 +665,7 @@ class EC:
                 if len(P)==len(Q)==2:
                     x=Q[0]
                     y=-Q[1]-self.a1*Q[0]-self.a3
-                    R=[x,y] # R=-Q
+                    R=[x,y] 
                     return self.add(P,R) 
                 elif (P==[0]) and (Q!=[0]):
                     x=Q[0]
@@ -741,10 +684,8 @@ class EC:
             raise ValueError, "you must input (point,list) m(__)m"
             
     def mul(self,k,P):
-        
         """
         this returns [k]*P
-        
         """
         if k>=0:
             l=arith1.expand(k,2)
@@ -816,19 +757,19 @@ class EC:
         f=[]
         M=[]
         f.append(0)
-        M.append(0)#polynomial.OneVariableSparsePolynomial({(0,): 0}, ['x'])
+        M.append(0) #
         H=heart(self.ch)
-        if self.ch!=2 and self.ch!=3: # E(ch>3):y^2=x^3+a*x+b
+        if self.ch!=2 and self.ch!=3: 
             E=self.simple()
             e=x**3+E.a*x+E.b
             i=1
             for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
-                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 1}, ['x']))
+                    M.append(polynomial.OneVariableSparsePolynomial({0:1},['x']))
                 elif i==2:
                     f.append(2*y)
-                    M.append(polynomial.OneVariableSparsePolynomial({(0,): 2}, ['x']))
+                    M.append(polynomial.OneVariableSparsePolynomial({0:2},['x']))
                 elif i==3:
                     g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
                     g=g%E.ch
@@ -918,7 +859,7 @@ class EC:
             raise NotImplementedError, "Now making (>_<)"
         return M,H
 
-    def order(self): # ==#E(Fp)
+    def order(self): 
         """
         this returns #E(Fp)
         """
@@ -932,44 +873,46 @@ class EC:
                 D=other.divPoly()
                 L=D[1]
                 D=D[0]
-                E=polynomial.OneVariableSparsePolynomial({(0,):other.b,(1,):other.a,(3,):1},['x'])
-                f=polynomial.OneVariableSparsePolynomial({(1,):-1,(other.ch**2,):1},['x'])
+                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'])
+                f=polynomial.OneVariableSparsePolynomial({1:-1,other.ch**2:1},['x'])
                 i=0
                 while i<len(L):
-#                    print i,"@"
                     j=L[i]
                     k=self.ch%j
+                    print i,k,"i,k" ###
                     if k%2==0:
-#                        print PolyMulRed([f,E,D[k],D[k]],D[j],j),"@"
-#                        print PolyMulRed([D[k-1],D[k+1]],D[j],j),"@@"
-#                        print D[j].coefficient,j,"@@@"
-                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j),D[j],j)
+                        BOO=PolyMulRed([f,E,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1]],D[j],j)
+                        P=GCD(BOO,D[j],j)
+                        #poly=f*E*D[k]**2+D[k-1]*D[k+1]
+                        #P=GCD(poly,D[j],j)
                         if P==1:
                             F=0 
                         else:
                             F=1
-                        #    P=solve(P) # P is X(point),solve is now making
+                            #P=solve(P) # P is X(point),solve is now making
                     else:
                         """
-                        f=polynomial.OneVariableSparsePolynomial({(1,): -1, (10201,): 1}, ['x'])
-                        g=polynomial.OneVariableSparsePolynomial({(0,):48,(1,):58,(2,):53,(3,):60,( 4,):28,(5,):93,(6,):79,(7,):52,(8,):65,(9,):5,(10,):85,(12,):5}, ['x'])
-
-                        x=polynomial.OneVariableSparsePolynomial({(0,):0},["x"])*f 
-                        y=g
+                        E=polynomial.OneVariableSparsePolynomial({0:4,1:3,3:1},["x"])
+                        BOO5=polynomial.OneVariavleSparsePolynomial({1:3,2:1,3:2,5:3,6:2},["x"])
+                        g
+                        BOO7=polynomial.OneVariableSparsePolynomial({0:696,1:604,2:242,3:442,4:605,5:409,6:67,7:146,8:4,9:14,10:1,11:3,13:6,14:1,15:5,16:1,17:4,18:1,19:6,20:4,21:1},["x"])
+                        
                         """
-#                        print PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),"*"#%@@@
-#                        print D[j],j,"**"
-                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j),D[j],j)#%@@@
+                        #poly=f*D[k]**2+E*D[k+1]*D[k-1]
+                        #P=GCD(poly,D[j],j)
+                        BOO=PolyMulRed([f,D[k],D[k]],D[j],j)+PolyMulRed([D[k-1],D[k+1],E],D[j],j)
+                        P=GCD(BOO,D[j],j)
                         if P==1:
                             F=0
                         else:
                             F=1
-                        #    P=solve(P)
+                            #P=solve(P)
                     if F==1: #GCD!=1
                         if arith1.legendre(other.ch,j)==-1:
                             T.append((0,j))
                         else:
-                            print P
+                            pass
+                            #print P "@@@"
                             #T.append(P)###
                             #pass
                     else: #GCD==1
@@ -982,7 +925,7 @@ class EC:
                             #    T.append((l,j))
                             break
                     i=i+1
-                    print i,len(L),"#"
+                    print i,len(L),"@@@"
                 return T
             else:
                 raise NotImplementedError, "Now making (>_<)"
