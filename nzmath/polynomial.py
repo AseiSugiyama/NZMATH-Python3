@@ -23,9 +23,10 @@ class OneVariableDensePolynomial:
         if not coeffring:
             self.coefficient = list(coefficient)
             self.variable = variable
-            self.ring = self.initRing()
+            self.coeffcientRing, self.ring = self.initRing()
         else:
             self.variable = variable
+            self.coeffcientRing = coeffring
             self.ring = PolynomialRing(coeffring, self.variable)
             self.coefficient = [coeffring.createElement(c) for c in coefficient]
 
@@ -41,7 +42,7 @@ class OneVariableDensePolynomial:
         ValueError will be raised if n is negative.
 
         """
-        if value in self.ring.getCoefficientRing():
+        if value in self.getCoefficientRing():
             if len(self.coefficient) - 1 >= index >= 0:
                 self.coefficient[index] = value
             elif len(self.coefficient) - 1 < index:
@@ -91,7 +92,7 @@ class OneVariableDensePolynomial:
             return self.toMultiVariableDensePolynomial() + other
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
-        elif other in self.getRing().getCoefficientRing():
+        elif other in self.getCoefficientRing():
             sum = OneVariableDensePolynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
             return sum.adjust()
@@ -118,7 +119,7 @@ class OneVariableDensePolynomial:
     def __mul__(self, other):
         if isinstance(other, OneVariableDensePolynomial):
             if self.variable == other.variable:
-                product = map(self.getRing().getCoefficientRing(self.variable).createElement,\
+                product = map(self.getCoefficientRing().createElement,
                               [0]*(len(self.coefficient) + len(other.coefficient)))
                 for l in range(len(self.coefficient)):
                     for r in range(len(other.coefficient)):
@@ -134,9 +135,9 @@ class OneVariableDensePolynomial:
             return self.toMultiVariableDensePolynomial() * other
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() * other
-        elif other in self.getRing().getCoefficientRing():
+        elif other in self.getCoefficientRing():
             product = [c * other for c in self.coefficient]
-            commonRing = self.getRing().getCoefficientRing()
+            commonRing = self.getCoefficientRing()
             return OneVariableDensePolynomial(product, self.variable, commonRing).adjust()
         elif rational.isIntegerObject(other):
             return rational.Integer(other).actAdditive(self)
@@ -248,7 +249,7 @@ class OneVariableDensePolynomial:
                 new_coeff.append(rational.Rational(j,1)//other)
             return OneVariableDensePolynomial(new_coeff,self.variable),0
 
-        elif other in self.getRing().getCoefficientRing():
+        elif other in self.getCoefficientRing():
             return 0,self
 
         else:     #???
@@ -269,7 +270,7 @@ class OneVariableDensePolynomial:
             return other.toMultiVariableSparsePolynomial() // self.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableSparsePolynomial):
             return other // self.toMultiVariableSparsePolynomial()
-        elif other in self.getRing().getCoefficientRing() or other.degree() < self.degree():
+        elif other in self.getCoefficientRing() or other.degree() < self.degree():
             return 0
         else:
             self,other = other,self
@@ -284,8 +285,8 @@ class OneVariableDensePolynomial:
         else:
             raise NotImplementedError
 
-
     __div__=__truediv__
+
     def __mod__(self, other):
         return self.__divmod__(other)[1]
 
@@ -309,7 +310,7 @@ class OneVariableDensePolynomial:
                         return False
                 return True
             return False
-        elif other in self.getRing().getCoefficientRing():
+        elif other in self.getCoefficientRing():
             if self.degree() < 1 and self[0] == other:
                 return True
             return False
@@ -405,7 +406,7 @@ class OneVariableDensePolynomial:
         length = len(self.coefficient)
         while length and not self.coefficient[length-1]:
             length -= 1
-        result = OneVariableDensePolynomial(self.coefficient[:length],self.variable, self.ring.getCoefficientRing())
+        result = OneVariableDensePolynomial(self.coefficient[:length],self.variable, self.getCoefficientRing())
         return result
 
     def differentiate(self, other):
@@ -413,7 +414,7 @@ class OneVariableDensePolynomial:
             if self.variable == other:
                 if len(self.coefficient) == 1:
                     return 0
-                diff = OneVariableDensePolynomial([0]*(len(self.coefficient)-1),self.variable, self.ring.getCoefficientRing())
+                diff = OneVariableDensePolynomial([0]*(len(self.coefficient)-1),self.variable, self.getCoefficientRing())
                 for i in range(len(diff.coefficient)):
                     diff.coefficient[i] = (self.coefficient[i+1]) * (i+1)
                 return diff.adjust()
@@ -475,18 +476,21 @@ class OneVariableDensePolynomial:
     def getRing(self):
         return self.ring
 
+    def getCoefficientRing(self):
+        return self.coeffcientRing
+
     def initRing(self):
-        ring = None
+        myRing = None
         for c in self.coefficient:
             if rational.isIntegerObject(c):
                 cring = rational.theIntegerRing
             else:
                 cring = c.getRing()
-            if not ring or ring != cring and ring.issubring(cring):
-                ring = cring
-            elif not cring.issubring(ring):
-                ring = ring * cring
-        return PolynomialRing(ring, self.variable)
+            if not myRing or myRing != cring and myRing.issubring(cring):
+                myRing = cring
+            elif not cring.issubring(myRing):
+                myRing = myRing * cring
+        return myRing, PolynomialRing(myRing, self.variable)
 
     def degree(self):
         for i in range(len(self.coefficient)-1, -1, -1):
@@ -500,7 +504,7 @@ class OneVariableDensePolynomial:
         Return content of the polynomial.
 
         """
-        coefring = self.getRing().getCoefficientRing()
+        coefring = self.getCoefficientRing()
         if coefring.isfield():
             if isinstance(coefring, ring.QuotientField):
                 num, den = 0, 1
