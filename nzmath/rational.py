@@ -146,6 +146,11 @@ class Rational (ring.QuotientFieldElement):
     def __abs__(self):
         return +Rational(abs(self.numerator), self.denominator)
 
+    def __long__(self):
+        return self.numerator // self.denominator
+
+    __int__ = __long__
+
     def __str__(self):
         return str(self.numerator) + "/" + str(self.denominator)
 

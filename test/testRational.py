@@ -84,6 +84,16 @@ class RationalTest (unittest.TestCase):
         assert Rational(-11,12) >= -1L
         assert 1 <= Rational(134,133)
 
+    def testLong(self):
+        assert 1 == long(Rational(13,12))
+        assert 0 == long(Rational(12,13))
+        assert -1 == long(Rational(-1,14))
+
+    def testInt(self):
+        assert 1 == int(Rational(13,12))
+        assert 0 == int(Rational(12,13))
+        assert -1 == int(Rational(-1,14))
+
 class IntegerTest(unittest.TestCase):
     def setUp(self):
         self.three = Integer(3)
