@@ -522,14 +522,18 @@ class OneVariableDensePolynomial:
 
 class OneVariableSparsePolynomial:
 
-    def __init__(self, coefficient, variable):
+    def __init__(self, coefficient, variable, coeffring=None):
         "OneVariableSparsePolynomial(coefficient, variable)"
-        if isinstance(variable, list) and isinstance(coefficient, dict):
+        if not coeffring:
             self.coefficient = coefficient
             self.variable = variable
             self.ring = self.initRing()
         else:
-            raise ValueError, "You must input (dict, list)."
+            self.variable = variable
+            self.coeffcientRing = coeffring
+            self.ring = PolynomialRing(coeffring, self.variable)
+            for i, c in coefficient.iteritems():
+                self.coefficient[i] = coeffring.createElement(c)
 
     def __setitem__(self, index, value):
         """
