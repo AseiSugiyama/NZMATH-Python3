@@ -704,6 +704,28 @@ def radians(deg, err=defaultError):
     """
     return deg * pi(err) / 180
 
+def fabs(x):
+    """
+
+    returns absolute value of x.
+
+    """
+    return abs(rational.Rational(x))
+
+def fmod(x, y):
+    """
+
+    returns x - n * y, where n is the quotient of x / y, rounded
+    towards zero to an integer.
+
+    """
+    fquot = rational.Rational(x) / y
+    if fquot < 0:
+        n = -floor(-fquot)
+    else:
+        n = floor(fquot)
+    return x - n * y
+
 def EulerTransform(iterator):
     """
 

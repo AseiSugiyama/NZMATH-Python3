@@ -139,6 +139,14 @@ class NewFunctionTest (unittest.TestCase):
     def testRadians(self):
         assert real.defaultError.nearlyEqual(real.radians(90), real.pi / 2)
 
+    def testFabs(self):
+        assert rational.Rational(3,2) == real.fabs(-1.5)
+
+    def testFmod(self):
+        assert 0 == real.fmod(2 * real.pi, real.pi)
+        assert real.defaultError.nearlyEqual(real.pi / 6, real.fmod(real.pi / 2, real.pi / 3))
+        assert real.defaultError.nearlyEqual(- real.pi / 6, real.fmod(-real.pi / 2, real.pi / 3))
+
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
         assert isinstance(real.pi.toRational(), rational.Rational)
