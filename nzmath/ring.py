@@ -35,19 +35,6 @@ class Field (CommutativeRing):
         """createElement returns an element of the field."""
         raise NotImplementedError
 
-class PolynomialRing (CommutativeRing):
-    """PolynomialRing is an abstract class which expresses that
-    the derived classes are polynomial rings."""
-
-    def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""
-        raise NotImplementedError
-
-    def getCoefficientRing(self):
-        """getCoefficientRing returns the ring to which
-        all coefficients of polynomials belong."""
-        raise NotImplementedError
-
 class RingElement:
     """RingElement is an abstract class for elements of rings."""
 
