@@ -31,7 +31,7 @@ def e2_Fp(x,p):
     a=x[0]%p    
     b=x[1]%p
     c=x[2]%p
-    if arith1.legendre(,p)!=1:
+    if arith1.legendre(a,p)!=1:
         return []
     else:
         sqrtd = arith1.sqroot(b**2-4*a*c,p)
@@ -111,90 +111,62 @@ def EA(f,m): # f is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)
         i = i - 1
     df.reverse()
     
-    i = 0
     x = 0 # the number of "a_i != 0"
     ai = []
-    while i < n :
+    for i in range(n) :
         if f[i] != 0 : 
             x = x + 1
             ai.append(i)
-        i = i + 1
     
     i = 2
     r = math.pow(abs(ai[1]/f[0])*x, 1/ai[1]) 
-    while i < len(ai) :
+    for i in range(2,len(ai)) :
         r0 = math.pow(abs(ai[i]/f[0])*x, 1/ai[i])
         if r < r0 :
             r = r0
-        i = i + 1
 
     b = -ai[1]/((n-1)*f[0])
 
     z = []
-    i = 1
-    while i < n :
+    for i in range(1,n) :
         z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i-1)/(n-1)+3/(2*(n-1)))))
-        i = i + 1
-
-    loop = 0
     
-    while loop < m :
+    for loop in range(m) :
         fz = 0
         fzi = []
-        i = 1
-        j = 0
-        while j < len(z) :
-            while i <= n :
+        for j in range(len(z)) :
+            for i in range(1,n+1) :
                 fz = fz + f[-i]*(z[j]**(i-1))
-                i = i + 1
             fzi.append(fz)
-            j = j + 1
 
         dfz = 0
         dfzi = []
-        i = 1
-        j = 0
-        while j < len(z) :
-            while i <= n - 1 :
+        for j in range(len(z)) :
+            for i in range(1,n) :
                 dfz = dfz + df[-i]*(z[j]**(i-1))
-                i = i + 1
             dfzi.append(dfz)
-            j = j + 1
 
         divz = []
-        i = 0
-        while i < len(z) :
+        for i in range(len(z)) :
             divz.append(fzi[i]/dfzi[i])
-            i = i + 1
     
         sigma = 0
         sigmai = []
-        i = 0
-        j = 0
-        while i < len(z) :
-            while j < len(z) :
+        for i in range(len(z)) :
+            for j in range(len(z)) :
                 if j != i :
                     sigma = sigma + 1/(z[i] - z[j])
-                j = j + 1
             sigmai.append(sigma)
-            i = i + 1
 
-        i = 0
         div = []
-        while i < len(z) :
+        for i in range(len(z)) :
             div.append(divz[i]/(1-(divz[i]*sigmai[i])))
-            i = i + 1
 
         zi = []
-        i = 0
-        while i < len(z) :
+        for i in range(len(z)) :
             zi.append(z[i]+div[i])
-            i = i + 1
-
-        print z
-
+            
         z = zi
-        loop = loop + 1
         
     return z
 
@@ -212,68 +184,47 @@ def EAr(f,m): # f is list , m is the number of approximation steps: ( = a_0*x^n 
     df.reverse()
 
     z = []
-    i = 1
-    while i < n :
+    for i in range(1,n) :
         z.append(random.random())
-        i = i + 1
-
-    loop = 0
     
-    while loop < m :
+    for loop in range(m) :
         fz = 0
         fzi = []
-        i = 1
-        j = 0
-        while j < len(z) :
-            while i <= n :
+        for j in range(len(z)) :
+            for i in range(1,n+1) :
                 fz = fz + f[-i]*(z[j]**(i-1))
-                i = i + 1
             fzi.append(fz)
-            j = j + 1
+        print fzi
+
 
         dfz = 0
         dfzi = []
-        i = 1
-        j = 0
-        while j < len(z) :
-            while i <= n - 1 :
-                dfz = dfz + df[-i]*(z[j]**(i-1))
-                i = i + 1
+        for j in range(len(z)) :
+            for i in range(1,n-1) :
+                dfz = dfz + df[-i]*pow(z[j],(i-1))
             dfzi.append(dfz)
-            j = j + 1
-
+            
         divz = []
-        i = 0
-        while i < len(z) :
-            divz.append(rational.Rational(fzi[i],dfzi[i]))
-            i = i + 1
+        for i in range(len(z)) :
+            divz.append(fzi[i]/dfzi[i])
     
         sigma = 0
         sigmai = []
-        i = 0
-        j = 0
-        while i < len(z) :
-            while j < len(z) :
+        for i in range(len(z)) :
+            for j in range(len(z)) :
                 if j != i :
                     sigma = sigma + 1/(z[i] - z[j])
-                j = j + 1
             sigmai.append(sigma)
-            i = i + 1
 
-        i = 0
         div = []
-        while i < len(z) :
+        for i in range(len(z)) :
             div.append(divz[i]/(1-(divz[i]*sigmai[i])))
-            i = i + 1
 
         zi = []
-        i = 0
-        while i < len(z) :
+        for i in range(len(z)) :
             zi.append(z[i]+div[i])
-            i = i + 1
             
         z = zi
-        loop = loop + 1
 
     return z
 
