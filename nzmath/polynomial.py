@@ -4,7 +4,6 @@ import sets
 import rational
 
 class IntegerPolynomial:
-
     def __init__(self, coefficient, variable):
         "IntegerPolynomial(coefficient, variable)"
         if isinstance(variable, str) and isinstance(coefficient, list):
@@ -1666,7 +1665,7 @@ class FlatRationalPolynomial:
                 integrate_dict_min = {}
                 integrate_dict_max[integrate_variables[variable_position]] = max
                 integrate_dict_min[integrate_variables[variable_position]] = min
-                return (integrate_polynomial.__call__(**integrate_dict_max) - integrate_polynomial.__call__(**integrate_dict_min)).adjust()
+                return integrate_polynomial.__call__(**integrate_dict_max) - integrate_polynomial.__call__(**integrate_dict_min)
                 return 0
             else:
                 return self * (RationalPolynomial([0,1],other).__call__(max) - RationalPolynomial([0,1],other).__call__(min))
