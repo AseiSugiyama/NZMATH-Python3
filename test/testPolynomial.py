@@ -440,6 +440,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
 
     def testFloordiv(self):
         assert 0 == self.f // self.g
+        assert 0 == 0 // self.g
 
     def testDifferentiate(self):
         import finitefield
@@ -452,6 +453,14 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
 
     def testPow(self):
         assert self.f ** 2
+
+    def testEquality(self):
+        assert self.f == self.f
+        one_poly = OneVariableSparsePolynomial({0:1}, x, self.F2)
+        one_field = self.F2.createElement(1)
+        assert one_poly == one_field
+        assert not one_poly != one_field
+        
 
 def suite():
     suite=unittest.TestSuite()
