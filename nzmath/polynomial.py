@@ -1806,18 +1806,25 @@ class PolynomialRing:
 
 import re
 
-def compile(*args):
+def construct(polynomial, kwd={}):
     """
 
-    compile compiles a string to a polynomial.  Argument should be a
-    valid python code string representing a polynomial.
+    construct compiles a string to a polynomial.  The first argument
+    should be a valid python code string representing a polynomial.
+    The second optional argument is a dictionary which maps names to
+    their values.
 
     """
-    env = {}
     id = re.compile("[A-Za-z_][A-Za-z0-9_]*")
-    m = id.search(args[0])
-    if m:
-        for v in m.group():
-            env[v] = OneVariableDensePolynomial([0,rational.Integer(1)], v)
-    r = eval(args[0], env)
+    start = 0
+    while 1:
+        m = id.search(polynomial[start:])
+        if m:
+            v = m.group()
+            if v not in kwd:
+                kwd[v] = OneVariableDensePolynomial([0,rational.Integer(1)], v)
+            start += m.end()
+        else:
+            break
+    r = eval(polynomial, kwd)
     return r

@@ -149,14 +149,16 @@ class PolynomialCompilerTest(unittest.TestCase):
         self.x = OneVariableDensePolynomial([0,1],"x")
         self.y = OneVariableDensePolynomial([0,1],"y")
         self.s = OneVariableDensePolynomial([1,1],"x")
+        self.multi = MultiVariableSparsePolynomial({(0,0):rational.Rational(3,4),(1,0):rational.Rational(21,16),(0,1):rational.Rational(9,8)},["x","y"])
 
     def testOneVariableInteger(self):
-        assert self.x == compile("x")
-        assert self.x != compile("y")
-        assert self.y == compile("y")
-        assert self.x != compile("1 + x")
-        assert self.s == compile("1 + x")
-        assert self.x**2 + 1 == compile("1 + x**2")
+        assert self.x == construct("x")
+        assert self.x != construct("y")
+        assert self.y == construct("y")
+        assert self.x != construct("1 + x")
+        assert self.s == construct("1 + x")
+        assert self.x**2 + 1 == construct("1 + x**2")
+        assert self.multi == construct("Q(3,4) + Q(21,16) * x + Q(9,8) * y", {"Q": rational.Rational})
 
 def suite():
     suite=unittest.TestSuite()
