@@ -4,7 +4,6 @@ import cmath
 import factor
 import finitefield
 import gcd
-#import imaginary
 import integerResidueClass
 import math
 import polynomial 
@@ -13,11 +12,33 @@ import random
 import rational
 import sets
 
-def lcm(a,b):
-    p=gcd.gcd(a,b)
-    a=a//p
-    b=b//p
-    return p*a*b
+def divi(n):
+    D=factor.rhomethod(n)
+    N=[]
+    i=0
+    while i<len(D):
+        j=0
+        list=[]
+        while j<=D[i][1]:
+            list.append(D[i][0]**j)
+            j=j+1
+        if i==0:
+            l=0
+            while l<len(list):
+                N.append(list[l])
+                l=l+1
+        else:
+            x=len(N)
+            k=0
+            while k<x:
+                l=1
+                while l<len(list):
+                    N.append(N[k]*list[l])
+                    l=l+1
+                k=k+1
+        i=i+1
+    N.sort()
+    return N
 
 def Element_p(a,p):
     """
@@ -175,59 +196,6 @@ def powOrd(x,y,z):
         C[-1],C[-2]=C[0],C[-1]
         i=i+1
     return C[0]
-
-# t=imaginary.Complex(a,b)
-#
-#def q(t):
-#    """
-#    this returns exp(2*pi*j*t)
-#    t is complex and h.imag>0
-#    """
-#    Return cmath.exp(2*cmath.pi*1j*t)
-#
-#def delta(t,x):
-#    """
-#    """
-#    qt=q(t)
-#    def a(i):
-#        if i%2==0:
-#            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-#        else:
-#            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-#    i=1
-#    b=0
-#    while abs(a(i+1))>x: #syuusoku
-#       b=a(i)+b
-#       print i #
-#       i=i+1
-#    return qt*(1+b)**24
-#
-#def h(t,x):
-#    """
-#    """
-#    return delta(2*t,x)/delta(t,x)
-#
-#def j(t,x):
-#    """
-#    """
-#    return (256*h(t,x)+1)**3/h(t,x)
-#    
-#def nu(t,x):
-#    """
-#    """
-#    qt=q(t)
-#    qq=cmath.exp(cmath.pi*1j/12)
-#    def a(i):
-#        if i%2==0:
-#            return qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2)
-#        else:
-#            return (-1)*(qt**((3*i**2-i)/2)+qt**((3*i**2-i)/2))
-#    i=1
-#    b=0
-#    while abs(a(i+1))>x: # one time we caluculate a(i+1),so waste more time??
-#       b=a(k)+b #### miss ,if k==i !
-#       i=i+1
-#    return qq*(1+b)
     
 class EC:
     """
@@ -243,11 +211,10 @@ class EC:
         if isinstance(coefficient,list):
             self.coefficient=coefficient
             self.ch=character 
-            if self.ch==0: #complex
+            if self.ch==0:
                 pass
-                #self.coeffField=
             else:
-                if not index: #field=F_p
+                if not index:
                     self.coeffField=finitefield.FinitePrimeField(character)
                     self.index=1
                 elif index==0:
@@ -255,8 +222,8 @@ class EC:
                 elif index==1:
                     self.coeffField=finitefield.FinitePrimeField(character)
                     self.index=1
-                else: #field=F_q,q=p^r
-                    self.coeffField=finitefield.FinitePrimeField(character) ##
+                else: 
+                    self.coeffField=finitefield.FinitePrimeField(character)
                     self.index=index
             self.PointAtInfinity=[0] 
             if self.ch==0:
@@ -295,7 +262,7 @@ class EC:
                 self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
             elif self.ch==1:
                 raise ValueError, "characteristic must be 0 or prime (-_-;)"
-            elif self.ch==2: # y^2+x*y=x^3+a2*x^2+a6 or y^2+a3*y=x^3+a4*x+a6
+            elif self.ch==2: 
                 for i in range(0,len(self)):
                     if not isinstance(coefficient[i],(int,long)):
                         raise ValueError, "you must input integer coefficients. m(__)m"
@@ -323,7 +290,7 @@ class EC:
                         raise ValueError, "singular curve (@_@)"
                 else:
                     raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
-            elif self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
+            elif self.ch==3: 
                 for i in range(0,len(self)):
                     if not isinstance(coefficient[i],(int,long)):
                         raise ValueError, "you must input integer coefficients. m(__)m"
@@ -787,7 +754,7 @@ class EC:
                             L=g.coefficient.items()
                             t=0
                             dict={}
-                            while t<len(L): #div2*y
+                            while t<len(L): 
                                 dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]*finitefield.FinitePrimeFieldElement(2,E.ch).inverse()
                                 t=t+1
                             g.coefficient=dict
@@ -822,13 +789,13 @@ class EC:
                     elif i%2!=0:
                         j=(i-1)//2
                         f[i]=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                    else: #i%2==0
+                    else: 
                         j=i//2
                         g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
                         L=g.coefficient.items()
                         t=0
                         dict={}
-                        while t<len(L): #div2*y
+                        while t<len(L): 
                             dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]//2
                             t=t+1
                         g.coefficient=dict
@@ -904,7 +871,7 @@ class EC:
                             L=g.coefficient.items()
                             t=0
                             dict={}
-                            while t<len(L): #div2*y
+                            while t<len(L): 
                                 dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]*finitefield.FinitePrimeFieldElement(2,E.ch).inverse()
                                 t=t+1
                             g.coefficient=dict
@@ -940,9 +907,9 @@ class EC:
             while i<len(L):
                 j=L[i]
                 M=M*j
-                u=PolyPow(x,other.ch,D[j]) #u=x^q
-                v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
-                g0=PolyPow(E,int((other.ch-1)/2),D[j])#y^(q-1) ###
+                u=PolyPow(x,other.ch,D[j]) 
+                v=PolyPow(u,other.ch,D[j]) 
+                g0=PolyPow(E,int((other.ch-1)/2),D[j])
                 k=other.ch%j
                 f0=PolyMulRed([D[k-1],D[k+1]],D[j])
                 f3=PolyMulRed([D[k],D[k]],D[j])
@@ -955,7 +922,6 @@ class EC:
                 if P!=1:
                     if arith1.legendre(other.ch,j)==-1:
                         T.append((0,j))
-                        print T,"$"
                     else:
                         w=arith1.sqroot(k,j)
                         if w%2==0:
@@ -969,20 +935,17 @@ class EC:
                                 P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
                             if P!=1:
                                 T.append((2*w,j))
-                                print T,"$$"
                             else:
                                 T.append((-2*w,j))
-                                print T,"$$$"
                         else:
                             T.append((0,j))
-                            print T,"$$$$"
                 else:
                     X=v+u+x
                     Y=x-v
                     Z=-2*v-x
                     f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
                     f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
-                    g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1) ###
+                    g1=PolyPow(g0,int(other.ch+1),D[j])
                     if k%2==0:
                         g2=PolyMulRed([g1,E,E],D[j])
                         f=f1-f2-4*PolyMulRed([g2,f3,D[k]],D[j])
@@ -1035,16 +998,13 @@ class EC:
                             Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
                             if Q==0:
                                 T.append((t,j))
-                                print T,"@"
                                 break
                             else:
                                 T.append((j-t,j))
-                                print T,"@@"
                                 break
                         t=t+1
                         if t>(j-1)/2:
                             T.append((0,j))
-                            print T,"@@@"
                 i=i+1
             tau=arith1.CRT(T)
             if tau>M/2:
@@ -1099,7 +1059,7 @@ class EC:
                 for i in range(0,other.ch):
                     k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
                 return -k
-            else: #E.ch>229
+            else: 
                 if len(self)!=2:
                     other=self.simple()
                 else:
@@ -1107,7 +1067,7 @@ class EC:
                 g=0
                 while arith1.legendre(g,other.ch)!=-1:
                     g=random.randint(2,other.ch-1)
-                W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1 ###
+                W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1 
                 c,d=g**2*other.a,g**3*other.b
                 f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",finitefield.FinitePrimeField(other.ch))
                 BOX=[]
@@ -1125,7 +1085,7 @@ class EC:
                     if arith1.legendre(f(x).n,other.ch)==1:
                         E=other
                         cg=1
-                    else: #arith1.legendre(f(cg),other.ch)==-1
+                    else: 
                         E=EC([c.n,d.n],other.ch)
                         cg=-1
                         x=g*x%E.ch
@@ -1163,7 +1123,7 @@ class EC:
                 return pow(self.ch,self.index)+1-powOrd(self.Shanks_Mestre(),self.index,self.ch)
             else:
                 return self.ch+1-self.Shanks_Mestre()
-        else: # self.ch>=10**10
+        else: 
             if self.index!=1:
                 if default==0:
                     raise  self.ch**self.index+1-powOrd(self.schoof(),self.index,self.ch)
@@ -1171,47 +1131,6 @@ class EC:
                     return self.ch+1-self.schoof(default)
             else:
                 return self.ch+1-self.schoof()
-
-    def stracture(self):
-        N=self.order()
-        if prime.primeq(N):
-            return (1,N)
-        N0=gcd.gcd(self.ch-1,N)
-        if N0==N:
-            return (1,N)
-        N1,N2=N0,N//N0
-        print N1,N2 #####
-        P1=0
-        P2=0
-        while P1==P2:
-            P1,P2=self.point(),self.point()
-        print P1,P2 #####
-        P1,P2=self.mul(N2,P1),self.mul(N2,P2)
-        print P1,P2 #####
-        if P1==P2==[0]:
-            ord1=1
-            ord2=1
-        elif P1==[0] and P2!=[0]:
-            ord1=1
-            F=factor.rhomethod(N1)
-            P3=P2
-            #while P3!=[0]:
-            #    P3=self.mul(,P3)
-            print F,"F1" #####
-            ord2=2 ##
-        elif P1!=[0] and P2==[0]:
-            F=factor.rhomethod(N1)
-            print F,"F2" #####
-            ord1=2 ##
-            ord2=1
-        else:
-            F=factor.rhomethod(N1)
-            print F,"F3" #####
-            ord1=2 ##
-            ord2=2 ##
-        r=lcm(ord1,ord2)
-        print ord1,ord2,r #####
-        return "*"
         
     # Cremona's book p.66
     def tatesAlgorithm(self):
