@@ -1,6 +1,5 @@
 from __future__ import generators
 # This future import is needed for Python 2.2.x
-
 import math
 import gcd
 from arith1 import floorsqrt as sqrt
