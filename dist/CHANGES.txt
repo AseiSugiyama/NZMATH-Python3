@@ -1,9 +1,10 @@
 Version 0.0.1 to 0.1.0
 ----------------------
+* add elliptic module for elliptic curve operations.
 * remove optional argument for generator in prime.py. Condition may
   be specified with itertools instead.
-* add new module finitefield for finite field.  It now only includes
-  finite prime field.
+* add new module finitefield for finite field.  It only includes
+  finite prime field at the present moment.
 * add new module combinatrial including binomial and factorial.
 * add issubring and issuperring to Ring in ring.py.
 * add mpqs function (multi-polynomial quadratic sieve) in factor.py.
