@@ -305,20 +305,22 @@ class Integer(long, ring.CommutativeRingElement):
         return Integer(other-long(self))
 
     def __mul__(self, other):
-        if isinstance(other, list) or isinstance(other, tuple) or isinstance(other, Rational):
-            return long(self) * other
+        if isinstance(other, (int, long)):
+            return self.__class__(long(self) * other)
         try:
-            return Integer(long(self)*other)
-        except:
-            return NotImplemented
+            retval = other.__rmul__(self)
+            if retval and retval is not NotImplemented:
+                return retval
+        except Exception, e:
+            pass
+        return self.actAdditive(other)
 
     def __rmul__(self, other):
-        if isinstance(other, list) or isinstance(other, tuple):
-            return other * long(self)
-        try:
-            return Integer(other*long(self))
-        except:
-            return NotImplemented
+        if isinstance(other, (int, long)):
+            return self.__class__(other * long(self))
+        elif other.__class__ in __builtins__.values():
+            return other.__mul__(long(self))
+        return self.actAdditive(other)
 
     def __pow__(self, other, modulo=None):
         return Integer(pow(long(self), other, modulo))
@@ -334,6 +336,27 @@ class Integer(long, ring.CommutativeRingElement):
 
     def getRing(self):
         return theIntegerRing
+
+    def actAdditive(self, other):
+        """
+
+        Act on other additively, i.e. n is expanded to n time
+        additions of other.  Naively, it is:
+          return sum([+other for _ in xrange(self)])
+        but, here we use a binary addition chain.
+
+        """
+        nonneg, absVal = (self >= 0), abs(self)
+        result = 0
+        doubling = +other
+        while absVal:
+            if absVal& 1:
+                result += doubling
+            doubling += doubling
+            absVal >>= 1
+        if not nonneg:
+            result = -result
+        return result
 
 class IntegerRing (ring.CommutativeRing):
     """
