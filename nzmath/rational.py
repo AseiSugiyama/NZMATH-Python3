@@ -1,5 +1,7 @@
 #rationalnumber add,sub,mul,div,comp
 def GCD(a,b):
+    if b == 0:
+        return a
     while 1:
         r = a%b
         if r == 0:
@@ -217,11 +219,21 @@ class Rational:
             return 0
 
     def __eq__(self,other):
+        if isinstance(other, int):
+            if self.numerator == other and self.denominator == 1: 
+                return 1
+            else:
+                return 0
         if self.numerator*other.denominator == self.denominator*other.numerator:
             return 1
         else:
             return 0
     def __ne__(self,other):
+        if isinstance(other, int):
+            if self.__eq__(other):
+                return 1
+            else:
+                return 0
         if self.numerator*other.denominator != self.denominator*other.numerator:
             return 1
         else:
