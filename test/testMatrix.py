@@ -47,6 +47,13 @@ class MatrixTest(unittest.TestCase):
         div.set([1,rational.Rational(2,3)])
         assert e / 3 == div
 
+    def testPow(self):
+        square = Matrix(2,2, [7,10,15,22])
+        assert square == a ** 2
+
+    def testCharacteristicPolynomial(self):
+        assert a.characteristicPolynomial()
+
     def testTranspose(self):
         trans = Matrix(2,1)
         trans.set([3,2])
@@ -66,29 +73,16 @@ class MatrixTest(unittest.TestCase):
     def testInverseImage(self):
         M = Matrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
         V = Matrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
-#        print "\nM is as follows:"
-#        print M
-#        print "\nV is as follows:"
-#        print V
-#        print "\nX is as follows:"
-#        print M.inverseImage(V)
-#        print "\nM * X is as follows:"
-#        print M * M.inverseImage(V)
         assert M * M.inverseImage(V) == V 
 
+class SubspaceTest(unittest.TestCase):
+    def testSupplementBasis(self):
+        b = Subspace(3, 2, [1,2,3,4,5,7])
+        b.supplementBasis()
+
 def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(MatrixTest("testAdd"))
-    suite.addTest(MatrixTest("testSub"))
-    suite.addTest(MatrixTest("testMul"))
-    suite.addTest(MatrixTest("testSub"))
-    suite.addTest(MatrixTest("testScalarMul"))
-    suite.addTest(MatrixTest("testDiv"))
-    suite.addTest(MatrixTest("testTranspose"))
-    suite.addTest(MatrixTest("testTriangulate"))
-    suite.addTest(MatrixTest("testTrace"))
-    suite.addTest(MatrixTest("testDeterminant"))
-    suite.addTest(MatrixTest("testInverseImage"))
+    suite = unittest.makeSuite(MatrixTest, "test")
+    suite.addTest(unittest.makeSuite(SubspaceTest, "test"))
     return suite
 
 if __name__ == '__main__':

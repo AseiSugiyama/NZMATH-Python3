@@ -149,7 +149,7 @@ class Matrix:
         if self.row != self.column:
             raise MatrixSizeError
 
-        power = theMatrixRing.unitMatrix(self.row) 
+        power = unitMatrix(self.row)
         if n == 0:
             return power
         if n > 0:
@@ -367,13 +367,13 @@ class Matrix:
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
         i = 0
-        C = theMatrixRing.unitMatrix(self.row)
+        C = unitMatrix(self.row)
         coeff = [0] * (self.row+1)
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
             coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
-            C = C + coeff[i] * theMatrixRing.unitMatrix(self.row)
+            C = C + coeff[i] * unitMatrix(self.row)
         import polynomial
         coeff.reverse()
         return polynomial.OneVariableDensePolynomial(coeff, "x")
@@ -731,7 +731,7 @@ class Subspace(Matrix):
         k = self.column
 
         M = self.copy()
-        B = theMatrixRing.unitMatrix(n)
+        B = unitMatrix(n)
 
         for s in range(k):
             found = 0; t = s
