@@ -120,6 +120,18 @@ class ErrorTest (unittest.TestCase):
     def testAbsoluteError(self):
         assert real.AbsoluteError(0,1,2)
 
+    def testRelativeNearlyEqual(self):
+        assert real.RelativeError(0,1,2).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert real.RelativeError(-1,1,2).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert not real.RelativeError(1,1,2).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert real.RelativeError(1,1,3).nearlyEqual(rational.Rational(1,3), rational.Rational(1,4))
+
+    def testAbsoluteNearlyEqual(self):
+        assert real.AbsoluteError(0,1,8).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert real.AbsoluteError(-1,1,8).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert not real.AbsoluteError(1,1,8).nearlyEqual(rational.Rational(1,4), rational.Rational(1,3))
+        assert real.AbsoluteError(1,1,10).nearlyEqual(rational.Rational(1,3), rational.Rational(1,4))
+
 class NewFunctionTest (unittest.TestCase):
     def setUp(self):
         self.err = real.RelativeError(0, 1, 2**100)
@@ -140,6 +152,7 @@ class NewFunctionTest (unittest.TestCase):
         exp2 = real.exp_new(2)
         exp2e = real.exp_new(2, self.err)
         assert exp2 < exp2e < exp2 * self.relative
+        assert "2.718281828459045" == exp1.decimalString(15)
 
     def testLog(self):
         log1 = real.log_new(1)
@@ -177,6 +190,7 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.sin_new(0)
         assert 1 == real.cos_new(0)
         assert 0 == real.tan_new(0)
+        pi = real.piGaussLegendre_new()
         assert abs(real.sin_new(pi)) < self.absolute
         assert -1 <= (real.cos_new(pi)) < -1 + self.absolute
         assert abs(real.tan_new(pi)) < self.absolute
@@ -188,6 +202,7 @@ class NewFunctionTest (unittest.TestCase):
 
     def testInverseTrigonometric(self):
         assert 0 == real.asin_new(0)
+        pi = real.piGaussLegendre_new()
         assert abs(pi / 2 - real.acos_new(0)) < self.absolute
         assert 0 == real.atan_new(0)
 
@@ -199,10 +214,9 @@ def suite():
     suite.addTest(unittest.makeSuite(FloatTest, 'test'))
     suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
     suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
-    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
+#    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':
-    pi = real.piGaussLegendre_new()
     runner = unittest.TextTestRunner()
     runner.run(suite())

@@ -1170,9 +1170,9 @@ class AbsoluteError:
 
         """
         if self.issmall():
-            return y - x < self.absoluteerrorrange
+            return 0 <= y - x < self.absoluteerrorrange
         elif self.islarge():
-            return x - y < self.absoluteerrorrange
+            return 0 <= x - y < self.absoluteerrorrange
         else:
             return abs(x-y) < self.absoluteerrorrange
 
@@ -1210,30 +1210,30 @@ class ExponentialPowerSeries:
         Generator of terms of series with assigned x value.
 
         """
-        f = 1
-        i = 0
-        y = x
-        for an in self.iterator:
-            yield an * y / f
-            y *= x
-            i += 1
-            f *= i
+        if x == 0:
+            yield self.iterator.next()
+        else:
+            f = 1
+            i = 0
+            y = rational.Integer(1)
+            for an in self.iterator:
+                yield an * y / f
+                y *= x
+                i += 1
+                f *= i
 
     def __call__(self, x, maxerror):
         if self.dirtyflag:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
-        if isinstance(maxerror, AbsoluteError):
-            _err = maxerror
-        value = 0
+        value = oldvalue = 0
         for t in self.terms(x):
             if not t:
                 continue
             value += t
-            if isinstance(maxerror, RelativeError):
-                _err = maxerror.absoluteerror(value)
-            if _err.nearlyEqual(t,0):
+            if maxerror.nearlyEqual(value, oldvalue):
                 return value
+            oldvalue = +value
 
 defaultError = RelativeError(0, 1, 2 ** 53)
 
