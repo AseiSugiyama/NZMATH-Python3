@@ -2,8 +2,10 @@
 import math
 import sets
 import rational
+from rationalFunction import RationalFunctionField
 
 class OneVariableDensePolynomial:
+
     def __init__(self, coefficient, variable):
         "IntegerPolynomial(coefficient, variable)"
         if isinstance(variable, str) and isinstance(coefficient, list):
