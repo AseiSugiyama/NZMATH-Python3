@@ -35,9 +35,9 @@ class RationalFunctionField:
         if self.coefficientField == other.coefficientField and self.vars == other.vars:
             return True
         elif isinstance(self.coefficientField, RationalFunctionField):
-            return self.strip() == other
+            return self.unnest() == other
         elif isinstance(other.coefficientField, RationalFunctionField):
-            return self == other.strip()
+            return self == other.unnest()
         return False
 
     def __contains__(self, element):
@@ -70,7 +70,10 @@ class RationalFunctionField:
                 pass
         return False
 
-    def strip(self):
+    def createElement(self, *seedarg, **seedkwd):
+        return RationalFunction(*seedarg, **seedkwd)
+
+    def unnest(self):
         """
 
         if self is a nested RationalFunctionField i.e. its
@@ -78,7 +81,7 @@ class RationalFunctionField:
         function returns one level unnested RationalFunctionField.
 
         For example:
-        RationalFunctionField(RationalFunctionField(Q, "x"), "y").strip()
+        RationalFunctionField(RationalFunctionField(Q, "x"), "y").unnest()
         returns
         RationalFunctionField(Q, sets.Set(["x","y"])).
 
@@ -92,4 +95,27 @@ class RationalFunction:
 
     """
     def __init__(self, *arg, **kwd):
-        pass
+        if len(arg) == 1:
+            if isinstance(arg[0], RationalFunction):
+                self.numerator = arg[0].numerator
+                self.denominator = arg[0].denominator
+            else:
+                self.numerator = arg[0]
+                if "denominator" in kwd:
+                    self.denominator = kwd["denominator"]
+                else:
+                    self.denominator = rational.Integer(1)
+        elif len(arg) == 2:
+            self.numerator = arg[0]
+            self.denominator = arg[1]
+        elif len(kwd) > 0:
+            try:
+                self.numerator = kwd["numerator"]
+            except:
+                raise ValueError, "numerator must be specified."
+            try:
+                self.denominator = kwd["denominator"]
+            except:
+                self.denominator = rational.Integer(1)
+        else:
+            raise ValueError, "numerator must be specified."
