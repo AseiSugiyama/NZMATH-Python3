@@ -26,20 +26,24 @@ j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],
 k = OneVariableSparsePolynomial({(1,):1},["x"])
 
 class IntegerPolynomialTest(unittest.TestCase):
+    def setUp(self):
+        self.a = OneVariableDensePolynomial([1,1],"x")
+        self.k = OneVariableSparsePolynomial({(1,):1},["x"])
+
     def testAdd(self):
         sx = OneVariableSparsePolynomial({(1,):1},["x"])
         sum_1 = OneVariableDensePolynomial([2,-1,3,-4],"x")
         sum_2 = MultiVariableSparsePolynomial({(0,0,0):2,(1,0,0):1,(0,1,0):-2,(3,1,0):3,(0,0,1):1,(1,1,1):-4,(0,0,2):2,(1,0,2):5,(2,2,2):-6,(0,0,3):3,(0,0,4):4},["x","y","z"])
         sum_3 = OneVariableSparsePolynomial({(1,):2},["x"])
-        assert a + b == sum_1
-        assert a + e + g == sum_2
+        assert self.a + b == sum_1
+        assert self.a + e + g == sum_2
         assert sum_3 == sx + sx
 
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([0,2,4],"y")
         sub_2 = MultiVariableSparsePolynomial({(0,0,0):-1,(1,0,0):1,(2,0,0):3,(0,1,0):2,(3,1,0):-3,(1,0,1):4,(1,1,1):4,(1,0,2):-5,(2,2,2):6,(0,0,3):5},["x","y","z"])
         assert d - c == sub_1
-        assert f - g - a == sub_2
+        assert f - g - self.a == sub_2
 
     def testMul(self):
         mul_1 = OneVariableDensePolynomial([1,0,-1,-4,-4],"y")
@@ -47,7 +51,7 @@ class IntegerPolynomialTest(unittest.TestCase):
         mul_3 = OneVariableDensePolynomial([0,1,1],"x")
         assert c * d == mul_1
         assert c * f == mul_2
-        assert k * a == mul_3 #local variable 'return_variable' referenced before assignment
+        assert self.k * self.a == mul_3 #local variable 'return_variable' referenced before assignment
 
     def testScalarMul(self):
         mul_1 = OneVariableDensePolynomial([0,3,6,9,12],"z")
@@ -85,12 +89,24 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert OneVariableDensePolynomial([0,1],"x") == OneVariableSparsePolynomial({(1,):1},["x"])
 
     def testGetitem(self):
-        assert 1 == a[0]
+        assert 1 == self.a[0]
+        assert 1 == k[1]
 
     def testSetitem(self):
-        a[0] = 2
-        assert 2 == a[0]
-        a[0] = 1
+        self.a[0] = 2
+        assert 2 == self.a[0]
+        self.a[4] = 4
+        assert OneVariableDensePolynomial([2,1,0,0,4],"x") == self.a
+        self.a[0] = 1
+        self.a[4] = 0
+        self.a = self.a.adjust()
+        self.k[0] = 3
+        assert 3 == self.k[0]
+        self.k[5] = 4
+        assert OneVariableSparsePolynomial({(0,):3,(1,):1,(5,):4},["x"]) == self.k
+        self.k[0] = 0
+        self.k[5] = 0
+        self.k = self.k.adjust()
 
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):

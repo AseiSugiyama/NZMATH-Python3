@@ -21,30 +21,10 @@ class OneVariableDensePolynomial:
 
     def __setitem__(self, index, value):
         if rational.isIntegerObject(index) and (rational.isIntegerObject(value) or isinstance(value, rational.Rational)):
-            origin_polynomial = self.adjust()
-            if rational.isIntegerObject(origin_polynomial):
-                if index == 0:
-                    return value
-                elif index > 0:
-                    return_coefficient = [0]*(index+1)
-                    return_variable = self.variable
-                    return_coefficient[index] = value
-                    return_coefficient[0] = origin_polynomial
-                    return_polynomial = OneVariableDensePolynomial(return_coefficient, return_variable)
-                    return return_polynomial.adjust()
-                else:
-                    raise ValueError, "You must input non-negative integer for index."
-            elif len(origin_polynomial.coefficient - 1) >= index and index >= 0:
-                return_coefficient = origin_polynomial.coefficient[:]
-                return_variable = origin_polynomial.variable
-                return_coefficient[index] = value
-                return_polynomial = OneVariableDensePolynomial(return_coefficient, return_variable)
-                return return_polynomial.adjust()
-            elif len(origin_polynomial.coefficient - 1) < index:
-                add_coefficient = [0]*(index+1)
-                add_variable = origin_polynomial.variable
-                add_polynomial = OneVariableDensePolynomial(add_coefficient, add_variable)
-                return (origin_polynomial + add_polynomial).adjust()
+            if len(self.coefficient) - 1 >= index and index >= 0:
+                self.coefficient[index] = value
+            elif len(self.coefficient) - 1 < index:
+                self.coefficient += [0]*(index - len(self.coefficient)) + [value]
             else:
                 raise ValueError, "You must input non-negative integer for index."
         else:
@@ -52,7 +32,7 @@ class OneVariableDensePolynomial:
 
     def __getitem__(self, index):
         if rational.isIntegerObject(index):
-            if len(self.coefficient - 1) >= index and index >= 0:
+            if len(self.coefficient) - 1 >= index and index >= 0:
                 return self.coefficient[index]
             elif len(self.coefficient - 1) < index:
                 return 0
@@ -468,24 +448,8 @@ class OneVariableSparsePolynomial:
 
     def __setitem__(self, index, value):
         if rational.isIntegerObject(index) and (rational.isIntegerObject(value) or isinstance(value, rational.Rational)):
-            adjust_polynomial = self.adjust()
-            if rational.isIntegerObject(adjust_polynomial) or isinstance(adjust_polynomial, ratioanl.Rational):
-                if index == 0:
-                    return value
-                elif index > 0:
-                    return_coefficient = {}
-                    return_variable = self.variable[:]
-                    return_coefficient[(0,)] = adjust_polynomial
-                    return_coefficient[(index,)] = value
-                    return OneVariableSparsePolynomial(return_coefficient, return_variable)
-                else:
-                    raise ValueError, "You must input non-negative integer for index."
-            elif index >= 0:
-                return_coefficient = {}
-                return_variable = adjust_polynomial.variable[:]
-                return_coefficient.update(adjust_polynomial)
-                return_coefficient[(index,)] = value
-                return OneVariableSparsePolynomial(return_coefficient, return_variable)
+            if index >= 0:
+                self.coefficient[(index,)] = value
             else:
                 raise ValueError, "You must input non-negative integer for index."
         else:
@@ -568,6 +532,7 @@ class OneVariableSparsePolynomial:
                 return self.toMultiVariableSparsePolynomial() * other.toMultiVariableSparsePolynomial()
             else:
                 return_coefficient = {}
+                return_variable = self.variable[:]
                 for i in self.coefficient:
                     for j in other.coefficient:
                         if (i[0] + j[0],) in return_coefficient:
