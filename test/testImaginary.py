@@ -50,6 +50,8 @@ class ImaginaryTest (unittest.TestCase):
     def testNonzero(self):
         a = imaginary.Complex(8.4, 5)
         assert a
+        b = imaginary.Complex(rational.Rational(0), rational.Rational(0))
+        assert not b
 
     def testExp(self):
         exp1 = imaginary.exp(1)
@@ -62,7 +64,7 @@ class ImaginaryTest (unittest.TestCase):
     def testSin(self):
         sin1 = imaginary.sin(1)
         sinc1 = imaginary.sin(imaginary.Complex(1, 0))
-        assert imaginary.exp(imaginary.j).imag == sin1
+        assert imaginary.defaultError.nearlyEqual(imaginary.exp(imaginary.j).imag, sin1)
         assert sin1 == sinc1, (sin1, sinc1, sin1 - sinc1)
 
     def testCos(self):
