@@ -24,9 +24,11 @@ class Rational (ring.QuotientFieldElement):
         methods.  Otherwise raise TypeError.
 
         """
-        if denominator == 0:
+        if not denominator:
             raise ZeroDivisionError
         # numerator
+        if not isinstance(numerator, (Rational, float, int, long)):
+            numerator = +numerator
         if isinstance(numerator, Rational):
             self.numerator = numerator.numerator
             self.denominator = numerator.denominator
@@ -45,6 +47,8 @@ class Rational (ring.QuotientFieldElement):
         else:
             raise TypeError, "Rational cannot be created with %s(%s)." % (numerator, numerator.__class__)
         # denominator
+        if not isinstance(denominator, (Rational, float, int, long)):
+            denominator = +denominator
         if isinstance(denominator, Rational):
             self.numerator *= denominator.denominator
             self.denominator *= denominator.numerator
@@ -448,9 +452,9 @@ class RationalField (ring.QuotientField):
         issuperring method.
 
         """
-        if other == self:
+        if isinstance(other, RationalField):
             return True
-        elif other == theIntegerRing:
+        elif isinstance(other, IntegerRing):
             return False
         return other.issuperring(self)
 
@@ -465,7 +469,7 @@ class RationalField (ring.QuotientField):
         implementation of another ring's issubring method.
 
         """
-        if other == self or other == theIntegerRing:
+        if isinstance(other, (RationalField, IntegerRing)):
             return True
         return other.issubring(self)
 
@@ -633,7 +637,7 @@ class IntegerRing (ring.CommutativeRing):
         issuperring method.
 
         """
-        if other == self:
+        if isinstance(other, IntegerRing):
             return True
         return other.issuperring(self)
 
@@ -648,7 +652,7 @@ class IntegerRing (ring.CommutativeRing):
         issubring method.
 
         """
-        if other == self:
+        if isinstance(other, IntegerRing):
             return True
         return other.issubring(self)
 
