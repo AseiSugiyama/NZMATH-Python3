@@ -129,19 +129,19 @@ class Polynomial:
         elif self.coefficient[first] == 1:
             return_str += self.variable
             if first != 1: 
-                return_str += "^"
+                return_str += "**"
                 return_str += str(first)
         elif self.coefficient[first] == -1:
             return_str += "-"
             return_str += self.variable
             if first != 1:
-                return_str += "^"
+                return_str += "**"
                 return_str += str(first)
         else:
             return_str += str(self.coefficient[first])
             return_str += self.variable
             if first != 1:
-                return_str += "^"
+                return_str += "**"
                 return_str += str(first)
         if first+1 == len(self.coefficient):
             return return_str
@@ -152,7 +152,7 @@ class Polynomial:
                     return_str += str(self.coefficient[i])
                 return_str += self.variable
                 if i != 1:
-                    return_str += "^"
+                    return_str += "**"
                     return_str += str(i)
             elif self.coefficient[i] < 0:
                 return_str += " - "
@@ -160,7 +160,7 @@ class Polynomial:
                     return_str += str(abs(self.coefficient[i]))
                 return_str += self.variable
                 if i != 1:
-                    return_str += "^"
+                    return_str += "**"
                     return_str += str(i) 
         return return_str
         
