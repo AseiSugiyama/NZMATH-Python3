@@ -1358,6 +1358,14 @@ def _log2_new(err=defaultError):
         if _err.nearlyEqual(term, 0):
             return value
 
+def hypot_new(x, y, err=defaultError):
+    """
+
+    hypot(x, y [,err]) returns sqrt(x**2 + y**2).
+
+    """
+    return sqrt_new(x**2 + y**2, err)
+
 def EulerTransform(iterator):
     """
 

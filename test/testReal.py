@@ -124,12 +124,13 @@ class NewFunctionTest (unittest.TestCase):
     def setUp(self):
         self.err = real.RelativeError(0, 1, 2**100)
         self.relative = rational.Rational(1 + 2**53, 2**53)
+        self.absolute = rational.Rational(1, 2**53)
 
     def testSqrt(self):
         sqrt0 = real.sqrt_new(0)
         assert sqrt0 == 0
         sqrt2 = real.sqrt_new(2)
-        assert abs(sqrt2 ** 2 - 2) < rational.Rational(1, 2**53)
+        assert abs(sqrt2 ** 2 - 2) < self.absolute
 
     def testExp(self):
         exp1 = real.exp_new(1)
@@ -144,9 +145,12 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == log1
         log2inverse = real.log_new(.5)
         assert log2inverse < 0
-        assert abs(real.log_new(2) + log2inverse) <= rational.Rational(1, 2**53)
-        assert abs(real.log_new(real.exp_new(1)) - 1)  <= rational.Rational(1, 2**52)
-        assert abs(real.log_new(real.exp_new(1).trim(2**53)) - 1)  <= rational.Rational(1, 2**52)
+        assert abs(real.log_new(2) + log2inverse) < self.absolute
+        assert abs(real.log_new(real.exp_new(1)) - 1)  < 2 * self.absolute
+        assert abs(real.log_new(real.exp_new(1).trim(2**53)) - 1) < 2 * self.absolute
+
+    def testHypot(self):
+        assert abs(real.hypot_new(3,4) - 5) < self.absolute
 
 def suite():
     suite = unittest.TestSuite()
