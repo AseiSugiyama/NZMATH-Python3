@@ -22,9 +22,9 @@ def trialDivision(n, bound = 0):
     p = 3
     while p <= m:
         if n % p == 0:
-            return 0
+            return False
         p += 2
-    return 1
+    return True
 
 def spsp(n, base, s=None, t=None):
     """
@@ -44,8 +44,8 @@ def spsp(n, base, s=None, t=None):
             if z == n-1:
                 break
         else:
-            return 0
-    return 1
+            return False
+    return True
 
 def millerRabin(n, times = 20):
     """
@@ -61,14 +61,14 @@ def millerRabin(n, times = 20):
     for i in range(times):
         b = bigrandom.randrange(2, n-1)
         if not spsp(n, b, s, t):
-            return 0
-    return 1
+            return False
+    return True
 
 def bigprimeq(z):
     if long(z) != z:
         raise ValueError, "non-integer for primeq()"
     elif z <= 1:
-        return 0
+        return False
     elif gcd.gcd(z, 510510) > 1:
         return (z in (2, 3, 5, 7, 11, 13, 17))
     return millerRabin(z)
@@ -87,36 +87,22 @@ def prime(s):
     # The following line should not be reached:
     raise ValueError, "Too big number %d for prime(i)." % s
 
-def generator(condition=None):
+def generator():
     """
 
-    generates primes. If optional argument condition is given, the
-    only primes satisfying condition are generated.
+    Generate primes from 2 to infinity.
 
     """
-    def _generator():
-        """
-
-        The inner generator function _generator generates all primes.
-
-        """
-        yield 2
-        yield 3
-        yield 5
-        coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
-        times30 = 0
-        while 1:
-            for i in coprimeTo30:
-                if primeq(i + times30):
-                    yield i + times30
-            times30 += 30
-    if condition:
-        for p in _generator():
-            if condition(p):
-                yield p
-    else:
-        for p in _generator():
-            yield p
+    yield 2
+    yield 3
+    yield 5
+    coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
+    times30 = 0
+    while 1:
+        for i in coprimeTo30:
+            if primeq(i + times30):
+                yield i + times30
+        times30 += 30
 
 def nextPrime(n):
     """
@@ -142,23 +128,23 @@ def smallSpsp(n):
     """
     for p in [2, 13, 23, 1662803]:
         if not spsp(n,p):
-            return 0
-    return 1
+            return False
+    return True
 
 def primeq(n):
     if long(n) != n:
         raise ValueError, "non-integer for primeq()"
     if n <= 1:
-        return 0
+        return False
 
     if gcd.gcd(n, 510510) > 1:
         return (n in (2, 3, 5, 7, 11, 13, 17))
     if n < 2000000:
         return trialDivision(n)
     if not smallSpsp(n):
-        return 0
+        return False
     if n < 10000000000000:
-        return 1
+        return True
     return apr(n)
 
 # defs for APR algorithm
@@ -180,8 +166,8 @@ def _isprime(n):
         return (n in (2, 3, 5, 7, 11, 13, 17))
     for p in [2, 13, 23, 1662803]:
         if not spsp(n,p):
-            return 0
-    return 1
+            return False
+    return True
 
 def vp(n,p,k=0):
     while not n%p:
@@ -333,8 +319,8 @@ class Zeta:
     def __eq__(self, other):
         for i in range(self.size):
             if self.z[i] != other.z[i]:
-                return 0
-        return 1
+                return False
+        return True
 
     def weight(self):
         return len(filter(None,self.z))
@@ -473,8 +459,8 @@ class Status:
             for i in range(1,m):
                 if gcd.gcd(m,s.z.index(1)) == 1:
                     self.done(p)
-                return 1
-        return 0
+                return True
+        return False
 
     def sub8(self,q,k,n,J):
         s = J.get(3,q)
@@ -516,12 +502,12 @@ class Status:
         if s.weight() == 1 and s.mass() == 1:
             if gcd.gcd(m,s.z.index(1)) == 1 and pow(q,(n-1)//2,n) == n-1:
                 self.done(2)
-            return 1
+            return True
         elif s.weight() == 1 and s.mass() == n-1:
             if gcd.gcd(m,s.z.index(n-1)) == 1 and pow(q,(n-1)//2,n) == n-1:
                 self.done(2)
-            return 1
-        return 0
+            return True
+        return False
 
     def sub4(self,q,n,J):
         j2=J.get(1,2,q)**2
@@ -534,8 +520,8 @@ class Status:
             i=s.z.index(1)
             if (i==1 or i==3) and pow(q,(n-1)//2,n)==n-1:
                 self.done(2)
-            return 1
-        return 0
+            return True
+        return False
 
     def sub2(self,q,n):
         s=pow(n-q,(n-1)//2,n)
@@ -543,8 +529,8 @@ class Status:
             if n%4==1:
                 self.done(2)
         elif s!=1:
-            return 0
-        return 1
+            return False
+        return True
 
     def subrest(self,p,n,et,J,ub=200):
         if p==2:
@@ -556,19 +542,19 @@ class Status:
                     continue
                 if n%q==0:
                     sys.stderr.write("%s divides %s.\n" % (q,n))
-                    return 0
+                    return False
                 k=vp(q-1,2)[0]
                 if k==1:
                     if n%4==1 and not self.sub2(q,n):
-                        return 0
+                        return False
                 elif k==2:
                     if not self.sub4(q,n,J):
-                        return 0
+                        return False
                 else:
                     if not self.sub8(q,k,n,J):
-                        return 0
+                        return False
                 if self.isDone(p):
-                    return 1
+                    return True
                 c+=1
             else:
                 raise ImplementLimit
@@ -583,11 +569,11 @@ class Status:
                 if n % q == 0:
                     import sys
                     sys.stderr.write("%s divides %s.\n" % (q,n))
-                    return 0
+                    return False
                 if not self.subodd(p,q,n,J):
-                    return 0
+                    return False
                 if self.isDone(p):
-                    return 1
+                    return True
                 c += 1
             else:
                 raise ImplementLimit
@@ -713,6 +699,6 @@ def apr(n):
         if n % r == 0 and r != 1 and r != n:
             import sys
             sys.stderr.write("%s divide %s.\n" %(r,n))
-            return 0
+            return False
         i += 1
-    return 1
+    return True

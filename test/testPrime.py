@@ -27,7 +27,9 @@ class PrimeTest(unittest.TestCase):
         g = prime.generator()
         assert 2 == g.next()
         assert 3 == g.next()
-        g2 = prime.generator(lambda x: x % 5 == 4)
+##         g2 = prime.generator(lambda x: x % 5 == 4) # old fashioned
+        import itertools
+        g2 = itertools.ifilter(lambda x: x % 5 == 4, prime.generator())
         assert 19 == g2.next()
         assert 29 == g2.next()
 
