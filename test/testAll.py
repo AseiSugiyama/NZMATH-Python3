@@ -2,7 +2,9 @@ import unittest
 import testArith1
 import testBigrandom
 import testCombinatorial
+import testElliptic
 import testFactor
+import testFiniteField
 import testGcd
 import testImaginary
 import testIntegerResidueClass
@@ -20,7 +22,9 @@ def suite():
     suite.addTest(testArith1.suite())
     suite.addTest(testBigrandom.suite())
     suite.addTest(testCombinatorial.suite())
+    suite.addTest(testElliptic.suite())
     suite.addTest(testFactor.suite())
+    suite.addTest(testFiniteField.suite())
     suite.addTest(testGcd.suite())
     suite.addTest(testImaginary.suite())
     suite.addTest(testIntegerResidueClass.suite())
