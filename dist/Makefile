@@ -1,6 +1,8 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
 HTMLPY = /home/tetsushi/work/docutils/tools/rst2html.py
+PREV_VER = 0.3.0
+NEW_VER = 0.3.1
 
 all: html sdist
 
@@ -21,3 +23,10 @@ files: clean
 
 clean:
 	rm -fr $(TMPDIR)
+
+tag:
+	for i in `cat target.files`; do \
+		cvs tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
+	done
+# cvs tag -rrelease-0_3_0 release-0_3_1 ../elliptic.py
+## equation should be ignored
