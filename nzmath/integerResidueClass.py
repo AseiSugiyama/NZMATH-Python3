@@ -11,9 +11,9 @@ class IntegerResidueClass:
         self.m = modulus
         if isinstance(representative, Rational):
             t = extgcd(representative.denominator, self.m)
-            if t[0] != 1:
+            if t[2] != 1:
                 raise ValueError, "No inverse of %s." % representative
-            self.n = (representative.numerator * t[1][0]) % self.m
+            self.n = (representative.numerator * t[0]) % self.m
         else:
             self.n = representative % self.m
 
@@ -105,9 +105,9 @@ class IntegerResidueClass:
 
     def inverse(self):
         t = extgcd(self.n, self.m)
-        if t[0] != 1:
+        if t[2] != 1:
             raise ValueError, "No inverse of %s." % self
-        return IntegerResidueClass(t[1][0], self.m)
+        return IntegerResidueClass(t[0], self.m)
 
     def getModulus(self):
         return self.m
