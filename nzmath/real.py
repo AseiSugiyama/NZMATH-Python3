@@ -1,4 +1,7 @@
-from prime import vp
+from __future__ import division
+import operator
+import math
+from prime import vp as _vp
 import rational
 
 """
@@ -19,21 +22,29 @@ class Float:
     infinite precision.
 
     """
-    def __init__(self, mantissa, exponent, precision=None):
+    def __init__(self, mantissa, exponent=0, precision=None):
         if isinstance(mantissa, rational.Rational):
             aRational = mantissa
             if not precision:
                 if mantissa == 0:
                     mantissa, exponent, precision = 0,0,None
-                v, t = vp(aRational.denominator,2)
+                v, t = _vp(aRational.denominator,2)
                 if t != 1:
                     raise ValueError, "precision must be a positive integer."
                 mantissa, exponent, precision = aRational.numerator, -v, None
-            bits = getNumberOfBits(aRational.denominator)
-            mantissa = (aRational.numerator * 2**(bits + precision)) // aRational.denominator
-            exponent = -(bits + precision)
+                bits = getNumberOfBits(aRational.denominator)
+                mantissa = (aRational.numerator * 2 ** bits) // aRational.denominator
+                exponent = -bits
+            else:
+                bits = getNumberOfBits(aRational.denominator)
+                mantissa = (aRational.numerator * 2**(bits + precision)) // aRational.denominator
+                exponent = -(bits + precision)
+        if isinstance(mantissa, float):
+            mantissa, exponent = long(math.flexp(mantissa)[0] * 2 ** doubleprecision), math.flexp(mantissa)[1] - doubleprecision
+            if not precision:
+                precision = doubleprecision
         if mantissa != 0:
-            k, odd = vp(mantissa,2)
+            k, odd = _vp(mantissa,2)
             self.mantissa, self.exponent = odd, exponent + k
         else:
             self.mantissa, self.exponent = 0, 0
@@ -44,8 +55,8 @@ class Float:
             self.defaultPrecision = self.precision
 
     def __add__(self, other):
-        if rational.isIntegerObject(other):
-            return self + self.__class__(other, 0, None)
+        if not isinstance(other, Float):
+            return self + self.__class__(other, 0, self.precision)
         # adjust with precision
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -87,21 +98,19 @@ class Float:
             elif exponent <= 0 and bits < precision: # underflow
                 precision = bits
         if mantissa != 0:
-            k, odd = vp(mantissa,2)
+            k, odd = _vp(mantissa,2)
             mantissa, exponent = odd, exponent + k
         else:
             exponent = 0
         return self.__class__(mantissa, exponent, precision)
 
     def __radd__(self, other):
-        if rational.isIntegerObject(other):
-            return self.__class__(other, 0, None) + self
-        elif isinstance(other, rational.Rational):
-            return self.__class__(other, 0, None) + self
+        if not isinstance(other, Float):
+            return self.__class__(other, 0, self.precision) + self
 
     def __sub__(self, other):
-        if rational.isIntegerObject(other):
-            return self - self.__class__(other, 0, None)
+        if not isinstance(other, Float):
+            return self - self.__class__(other, 0, self.precision)
         # adjust with precision
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -143,26 +152,24 @@ class Float:
             elif exponent <= 0 and bits < precision: # underflow
                 precision = bits
         if mantissa != 0:
-            k, odd = vp(mantissa,2)
+            k, odd = _vp(mantissa,2)
             mantissa, exponent = odd, exponent + k
         else:
             exponent = 0
         return self.__class__(mantissa, exponent, precision)
 
     def __rsub__(self, other):
-        if rational.isIntegerObject(other):
-            return self.__class__(other, 0, None) - self
-        elif isinstance(other, rational.Rational):
-            return self.__class__(other, 0, None) - self
+        if not isinstance(other, Float):
+            return self.__class__(other, 0, self.precision) - self
 
     def __mul__(self, other):
         if rational.isIntegerObject(other):
-            v2, c2 = vp(other, 2)
+            v2, c2 = _vp(other, 2)
             return self.__class__(self.mantissa * c2,
                                   self.exponent + v2,
                                   self.precision)
-        elif isinstance(other, rational.Rational):
-            return self * self.__class__(other, 0)
+        elif not isinstance(other, Float):
+            return self * self.__class__(other, 0, self.precision)
         mantissa = self.mantissa * other.mantissa
         exponent = self.exponent + other.exponent
         if self.precision or other.precision:
@@ -176,7 +183,7 @@ class Float:
                 mantissa >>= (bits - precision)
                 exponent += (bits - precision)
         if mantissa != 0:
-            k, odd = vp(mantissa,2)
+            k, odd = _vp(mantissa,2)
             mantissa, exponent = odd, exponent + k
         else:
             exponent = 0
@@ -184,8 +191,11 @@ class Float:
 
     def __rmul__(self, other):
         if rational.isIntegerObject(other):
-            return self.__class__(other, 0, None) * self
-        elif isinstance(other, rational.Rational):
+            v2, c2 = _vp(other, 2)
+            return self.__class__(self.mantissa * c2,
+                                  self.exponent + v2,
+                                  self.precision)
+        elif not isinstance(other, Float):
             return self.__class__(other, 0, None) * self
 
     def __div__(self, other):
@@ -195,13 +205,18 @@ class Float:
         quotient as absolute value.
         
         """
+        if other == 0:
+            raise ZeroDivisionError, "Float division by zero"
         if rational.isIntegerObject(other):
-            v2, c2 = vp(other, 2)
+            v2, c2 = _vp(other, 2)
             retval = self.__class__(self.mantissa,
                                     self.exponent - v2,
                                     self.precision)
-            return retval / self.__class__(c2, 0, self.precision)
-        elif isinstance(other, rational.Rational):
+            if c2 > 1:
+                return retval / self.__class__(c2, 0, self.precision)
+            else:
+                return retval
+        elif not isinstance(other, Float):
             return self / self.__class__(other, 0, self.precision)
         exponent = self.exponent - other.exponent
         if self.precision or other.precision:
@@ -231,7 +246,7 @@ class Float:
                 quotient >>= (bits - precision)
                 exponent += (bits - precision)
         if quotient != 0:
-            k, mantissa = vp(quotient,2)
+            k, mantissa = _vp(quotient,2)
             exponent += k
         else:
             mantissa = 0
@@ -244,10 +259,8 @@ class Float:
     __truediv__ = __div__
 
     def __rdiv__(self, other):
-        if rational.isIntegerObject(other):
-            return self.__class__(other, 0, None) / self
-        elif isinstance(other, rational.Rational):
-            return self.__class__(other, 0, None) / self
+        if not isinstance(other, Float):
+            return self.__class__(other, 0, self.precision) / self
 
     __rtruediv__ = __rdiv__
 
@@ -279,6 +292,9 @@ class Float:
 
     def __pos__(self):
         return self.__class__(+self.mantissa, self.exponent, self.precision)
+
+    def __abs__(self):
+        return self.__class__(abs(self.mantissa), self.exponent, self.precision)
 
     def __eq__(self, other):
         try:
@@ -329,8 +345,16 @@ class Float:
             else:
                 q,r = divmod(-self.mantissa, 2**(-self.exponent))
                 retval = "-" + str(q) + "."
-            for i in range(20):
-                q,r = divmod(r*10, 2**(-self.exponent))
+            if self.precision > 80:
+                digits = self.precision // 4
+            else:
+                digits = 20
+            if -self.exponent-1 > digits:
+                end = -self.exponent-1 -digits
+            else:
+                end = 0
+            for i in range(-self.exponent-1, end, -1):
+                q,r = divmod(r*5, 2**i)
                 retval += str(q)
             return retval
 
@@ -382,7 +406,7 @@ def rationalToFloat(aRational, precision):
     if not precision:
         if aRational == 0:
             return Float(0,0,None)
-        v, t = vp(aRational.denominator,2)
+        v, t = _vp(aRational.denominator,2)
         if t != 1:
             raise ValueError, "precision must be a positive integer."
         return (aRational.numerator, -v, None)
@@ -520,14 +544,16 @@ def exp(x, precision=doubleprecision):
     retval = Float(1, 0, precision)
     y = x.copy()
     y.setDefaultPrecision(precision)
+    eps = Float(1, -2*precision)
     f = i = 1
-    oldretval = None
-    while oldretval != retval:
-        oldretval = retval.copy()
-        retval += y / f
+    series = [y]
+    while abs(series[-1]) > eps:
         i += 1
         f *= i
         y *= x
+        series.append(y / f)
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     return retval
 
 def sin(x, precision=doubleprecision):
@@ -540,26 +566,24 @@ def sin(x, precision=doubleprecision):
         y -= floor(y / twopi) * twopi
     elif y < -twopi:
         y += ceil(-y / twopi) * twopi
-    retval = Float(0,0,2*precision)
     y2 = y ** 2
+    eps = Float(1, -2*precision)
     i = f = 1
-    sign = -1
-    oldretval = None
-    while oldretval != retval:
-        oldretval = retval.copy()
-        if sign == -1:
-            retval += y / f
-            sign = 1
-        else:
-            retval -= y / f
-            sign = -1
+    series = [y]
+    while abs(series[-1]) > eps:
         f *= (i+1)*(i+2)
         i += 2
         y *= y2
+        if i&3 == 1:
+            series.append(y / f)
+        else:
+            series.append(-y / f)
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     if retval > 1:
-        retval = 1
+        retval = Float(1, 0, precision)
     elif retval < -1:
-        retval = -1
+        retval = Float(-1, 0, precision)
     return retval
 
 def cos(x, precision=doubleprecision):
@@ -572,27 +596,25 @@ def cos(x, precision=doubleprecision):
         y -= floor(y / twopi) * twopi
     elif y < -twopi:
         y += ceil(-y / twopi) * twopi
-    retval = Float(0,0,2*precision)
     y2 = y ** 2
-    y = Float(1,0,2*precision)
+    t = Float(1, 0, 2*precision)
+    eps = Float(1, -2*precision)
     i = f = 1
-    sign = -1
-    oldretval = None
-    while oldretval != retval:
-        oldretval = retval.copy()
-        if sign == -1:
-            retval += y / f
-            sign = 1
-        else:
-            retval -= y / f
-            sign = -1
+    series = [t]
+    while abs(series[-1]) > eps:
         f *= i*(i+1)
         i += 2
-        y *= y2
+        t *= y2
+        if i&3 == 1:
+            series.append(t / f)
+        else:
+            series.append(-t / f)
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     if retval > 1:
-        retval = 1
+        retval = Float(1, 0, precision)
     elif retval < -1:
-        retval = -1
+        retval = Float(-1, 0, precision)
     return retval
 
 def tan(x, precision=doubleprecision):
@@ -608,17 +630,19 @@ def log(x, precision=doubleprecision):
     if x <= 0:
         raise ValueError, "log(%s) is not defined." % str(x)
     if x > 1:
+        # log(x) = - log(1/x)
         return -log(x.inverse(), precision)
     y1 = 1 - x
     y = y1.copy()
-    retval = Float(0,0,2*precision)
+    eps = Float(1, -2*precision)
     i = 1
-    oldretval = None
-    while retval != oldretval:
-        oldretval = retval
-        retval += y / i
+    series = [y]
+    while series[-1] > eps:
         y *= y1
         i += 1
+        series.append(y / i)
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     return -retval
 
 def sinh(x, precision=doubleprecision):
@@ -626,37 +650,114 @@ def sinh(x, precision=doubleprecision):
         precision = x.precision
     y = x.copy()
     y.setDefaultPrecision(2*precision)
-    retval = Float(0,0,2*precision)
+    eps = Float(1, -2*precision)
     y2 = y ** 2
     i = f = 1
-    oldretval = None
-    while oldretval != retval:
-        oldretval = retval.copy()
-        retval += y / f
+    series = [y]
+    while abs(series[-1]) > eps:
         f *= (i+1)*(i+2)
-        i += 2
         y *= y2
+        series.append(y / f)
+        i += 2
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     return retval
 
 def cosh(x, precision=doubleprecision):
     if precision < x.precision:
         precision = x.precision
-    y = x.copy()
-    y.setDefaultPrecision(2*precision)
-    retval = Float(0, 0, precision)
-    y2 = y ** 2
-    y = Float(1,0,2*precision)
+    t = x.copy()
+    t.setDefaultPrecision(2*precision)
+    eps = Float(1, -2*precision)
+    x2 = t ** 2
+    y = Float(1, 0 ,2*precision)
     i = f = 1
-    oldretval = None
-    while oldretval != retval:
-        oldretval = retval.copy()
-        retval += y / f
+    series = [y]
+    while series[-1] > eps:
         f *= i*(i+1)
+        y *= x2
+        series.append(y / f)
         i += 2
-        y *= y2
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
     return retval
 
 def tanh(x, precision=doubleprecision):
     if precision < x.precision:
         precision = x.precision
     return sinh(x, precision) / cosh(x, precision)
+
+def asin(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    if x > 1 or x < -1:
+        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+    if x < 0:
+        return -asin(-x)
+    u = sqrt(Float(1, -1, precision), precision)
+    if x > u:
+        return piGaussLegendre(precision) / 2 - asin(sqrt(1-x**2))
+    y = x.copy()
+    y2 = y ** 2
+    i = 2
+    series = [y]
+    eps = Float(1, -2*precision)
+    while series[-1] > eps:
+        y *= y2
+        i += 2
+        series.append(y * rational.Rational(reduce(operator.mul, range(1, i-1, 2), 1), reduce(operator.mul, range(2, i, 2), i-1)))
+    series.reverse()
+    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
+    return retval
+
+def acos(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    if x > 1 or x < -1:
+        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+    if x == 0:
+        return piGaussLegendre(precision) / 2
+    y = sqrt(1 - x ** 2)
+    if x > 0:
+        return asin(y)
+    else:
+        return piGaussLegendre(precision) + asin(-y)
+
+def atan(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    if x < 0:
+        # atan(x) = -atan(-x)
+        return -atan(-x, precision)
+    elif x > 1:
+        # atan(x) = pi/2 - atan(1/x)
+        return piGaussLegendre(2*precision) / 2 - atan(x.inverse(), precision)
+    elif x == 1:
+        return piGaussLegendre(precision) / 4
+    i = 1
+    y = x.copy()
+    y2 = y ** 2
+    series = [y]
+    eps = Float(1, -2*precision)
+    while abs(series[-1]) > eps:
+        i += 2
+        y *= y2
+        if i&3 == 1:
+            series.append(y / i)
+        else:
+            series.append(-y / i)
+    series.reverse()
+    retval = reduce(operator.add, series, 0)
+    return retval
+
+def atan2(x, y, precision=doubleprecision):
+    if x > 0 and y > 0:
+        return atan(x/y)
+    elif x > 0 and y < 0:
+        return piGaussLegendre(2*precision) * 2 + atan(x/y)
+    elif x < 0:
+        return piGaussLegendre(2*precision) + atan(x/y)
+    return Float(0, 0, precision)
+
+def hypot(x, y, precision=doubleprecision):
+    return sqrt(x**2 + y**2, precision)
