@@ -153,7 +153,7 @@ class RationalPolynomialTest(unittest.TestCase):
         assert h * j == mul_2
 
     def testFloordiv(self):
-        assert rational.Rational(-3,2) ==  j - 2 * l # AttributeError: Rational instance has no attribute 'coefficient'
+        assert rational.Rational(-3,2) == j // l # AttributeError: Rational instance has no attribute 'coefficient'
 
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, "x")
