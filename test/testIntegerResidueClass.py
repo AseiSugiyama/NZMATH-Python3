@@ -101,6 +101,12 @@ class IntegerResidueClassTest(unittest.TestCase):
         residue = IntegerResidueClass(8, 15)
         assert isinstance(residue.getRing(), IntegerResidueClassRing)
 
+    def testEquals(self):
+        residue = IntegerResidueClass(0, 15)
+        assert residue == IntegerResidueClass(0, 15)
+        assert 0 == residue
+        assert 1 != IntegerResidueClass(1,15)
+
 class IntegerResidueClassRingTest(unittest.TestCase):
     def testInit(self):
         aRing = IntegerResidueClassRing(73)

@@ -104,6 +104,19 @@ class IntegerResidueClass:
     def __pos__(self):
         return IntegerResidueClass(+self.n, self.m)
 
+    def __eq__(self, other):
+        if other == 0 and self.n == 0:
+            return True
+        try:
+            if other.m == self.m and other.n == self.n:
+                return True
+        except:
+            pass
+        return False
+
+    def __ne__(self, other):
+        return not (self == other)
+
     def inverse(self):
         t = extgcd(self.n, self.m)
         if t[2] != 1:
