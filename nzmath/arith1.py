@@ -1,12 +1,11 @@
-import random
-import gcd
 import factor
+import gcd
+import math
+import random
 
 def euler(n):                    
-
     """
     This program returns Eulernumber for n
-    
     """
     f = factor.trialDivision(n)
     p = 1
@@ -15,10 +14,8 @@ def euler(n):
     return p
 
 def moebius(n):
-
     """
     This program returns Moebius function for n
-    
     """
     f = factor.trialDivision(n)
     i=0
@@ -31,11 +28,9 @@ def moebius(n):
 
 
 def legendre(a,m): 
-
     """
     This program returns Legendre symbol (a/m)
     If m is a odd composite then this is Jacobi symbol
-    
     """
     a=a%m
     t=1
@@ -54,10 +49,8 @@ def legendre(a,m):
 
 
 def sqroot(a,p): # p is a prime
-
     """
     This program returns squareroot of 'a' for mod'p'
-    
     """
     if legendre(a,p)==1:
         if p%8==3 or p%8==5 or p%8==7:
@@ -94,10 +87,8 @@ def sqroot(a,p): # p is a prime
 
 
 def expand(n,m):#n>m>0
-
     """
     This program returns m-adic expansion for n
-    
     """
     k=[]
     while n/m!=0:
@@ -108,10 +99,8 @@ def expand(n,m):#n>m>0
     return k
 
 def inverse(x,p): #x>0 
-
     """
     This program returns inverse of x for modulo p
-    
     """
     if x<0:
         while x<0:
@@ -125,11 +114,9 @@ def inverse(x,p): #x>0
 
 
 def CRT(list): 
-
     """
     This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
-
     """
     r=len(list)
     product=[]
@@ -153,5 +140,10 @@ def CRT(list):
     n = n%M
     return n
 
-
-
+def AGM(a,b):
+    x=(a+b)/2.0
+    y=math.sqrt(a*b)
+    while abs(x-y)>y*1e-15:
+        x=(x+y)/2.0
+        y=math.sqrt(x*y)
+    return x
