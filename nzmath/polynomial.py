@@ -5,6 +5,8 @@ Class definitions of polynomials.
 """
 import math
 import sets
+import re
+
 import rational
 import ring
 from rationalFunction import RationalFunctionField
@@ -295,55 +297,24 @@ class OneVariableDensePolynomial:
         if not isinstance(self_adjust, OneVariableDensePolynomial):
             return repr(self_adjust)
         return_str = 'OneVariableDensePolynomial(' + repr(self.coefficient) + ', "'
-        return_str += self.variable + '")'
+        return_str += repr(self.variable) + '", '
+        return_str += repr(self.getCoefficientRing()) + ','
+        return_str += ')'
         return return_str
 
     def __str__(self):
         if self.degree() < 1:
             return str(self[0])
-        self = self.adjust()
-        return_str = ""
-        first = 0
-        while self.coefficient[first] == 0:
-            first += 1
-        if first == 0:
-            return_str += str(self.coefficient[0])
-        elif self.coefficient[first] == 1:
-            return_str += self.variable
-            if first != 1:
-                return_str += "**"
-                return_str += str(first)
-        elif self.coefficient[first] == -1:
-            return_str += "-"
-            return_str += self.variable
-            if first != 1:
-                return_str += "**"
-                return_str += str(first)
-        else:
-            return_str += str(self.coefficient[first])
-            return_str += self.variable
-            if first != 1:
-                return_str += "**"
-                return_str += str(first)
-        if first+1 == len(self.coefficient):
-            return return_str
-        for i in range(first+1,len(self.coefficient)):
-            if self.coefficient[i] > 0:
-                return_str += " + "
-                if self.coefficient[i] != 1:
-                    return_str += str(self.coefficient[i])
-                return_str += self.variable
-                if i != 1:
-                    return_str += "**"
-                    return_str += str(i)
-            elif self.coefficient[i] < 0:
-                return_str += " - "
-                if self.coefficient[i] != -1:
-                    return_str += str(abs(self.coefficient[i]))
-                return_str += self.variable
-                if i != 1:
-                    return_str += "**"
-                    return_str += str(i)
+        coeffs = self.coefficient.getAsList()
+        termlist = []
+        for i in range(self.degree() + 1):
+            if self[i]:
+                termlist.append("%s * %s ** %d" % (str(self[i]),self.variable,i))
+        return_str = " + ".join(termlist)
+        w_sign = re.compile(r"+ -")
+        return_str = w_sign.sub("- ", return_str)
+        one_coeff = re.compile(" 1(?= \*)")
+        return_str = one_coeff(" ", return_str)
         return return_str
 
     def adjust(self):
@@ -2038,8 +2009,6 @@ class PolynomialRing (ring.CommutativeRing):
             return subResultantGCD(a,b)
         else:
             raise NotImplementedError
-
-import re
 
 def construct(polynomial, kwd={}):
     """
