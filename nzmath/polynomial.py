@@ -31,6 +31,9 @@ class OneVariablePolynomial:
                 myRing = myRing * cring
         return myRing, PolynomialRing(myRing, self.getVariable())
 
+    def degree(self):
+        return self.coefficient.degree()
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -396,9 +399,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                 if self.coefficient[i] != 0:
                     return_coefficient[(i,)] = self.coefficient[i]
             return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
-
-    def degree(self):
-        return self.coefficient.degree()
 
     def content(self):
         """
@@ -846,9 +846,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
         """
         return self / self.content()
-
-    def degree(self):
-        return self.coefficient.degree()
 
     def getVariable(self):
         if isinstance(self.variable, list):
