@@ -147,11 +147,11 @@ class FiniteExtendedField (FiniteField):
             self.degree = n_or_modulus
             # randomly chosen irreducible polynomial
             seed = bigrandom.randrange(self.char ** self.degree)
-            cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char), "#1", FinitePrimeField(self.char))
-            while not cand.isIrreducible():
+            cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField(self.char))
+            while cand.degree() < self.degree and not cand.isIrreducible():
                 seed = bigrandom.randrange(self.char ** self.degree)
-                cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char), "#1", FinitePrimeField(self.char))
-            self.modulus = cand
+                cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField(self.char))
+            self.modulus = polynomial.OneVariablePolynomialIdeal(cand, cand.getRing())
         elif isinstance(n_or_modulus, polynomial.OneVariablePolynomial):
             if isinstance(n_or_modulus.getCoefficientRing(), FinitePrimeField):
                 if n_or_modulus.degree() > 1 and n_or_modulus.isIrreducible():
@@ -200,6 +200,12 @@ class FiniteExtendedField (FiniteField):
                 self)
         elif isinstance(seed, polynomial.OneVariablePolynomial):
             return FiniteExtendedFieldElement(seed("#1"), self)
+
+    def __repr__(self):
+        return "%s(%d, %s)" % (self.__class__.__name__, self.char, repr(self.modulus))
+
+    def __str__(self):
+        return "F_%d @(%s)" % (len(self), str(self.modulus.generators[0]))
 
 class FiniteExtendedFieldElement (FiniteFieldElement):
     """
@@ -260,7 +266,8 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
     def __pow__(self, index):
         while index < 0:
             index += self.field.getCharacteristic()
-        return self.field.modulus.reduce(self.rep ** index) # slow
+        pow = self.field.modulus.reduce(self.rep ** index) # slow
+        return self.__class__(pow, self.field)
 
     def __eq__(self, other):
         if self.field == other.field:
@@ -273,3 +280,7 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
 
     def __nonzero__(self):
         return self.rep.__nonzero__()
+
+    def __repr__(self):
+        return "%s(%s, %s)" % (self.__class__.__name__, repr(self.rep), repr(self.field))
+
