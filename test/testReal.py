@@ -147,6 +147,16 @@ class NewFunctionTest (unittest.TestCase):
         assert real.defaultError.nearlyEqual(real.pi / 6, real.fmod(real.pi / 2, real.pi / 3))
         assert real.defaultError.nearlyEqual(- real.pi / 6, real.fmod(-real.pi / 2, real.pi / 3))
 
+    def testFrexp(self):
+        assert (rational.Rational(0), 0) == real.frexp(0)
+        assert (rational.Rational(1,2), 2) == real.frexp(2)
+        assert (rational.Rational(-5, 8), 2) == real.frexp(rational.Rational(-5, 2))
+
+    def testLdexp(self):
+        assert rational.Rational(0) == real.ldexp(rational.Rational(0), 0)
+        assert rational.Rational(2) == real.ldexp(rational.Rational(1,2), 2)
+        assert rational.Rational(-5, 2) == real.ldexp(rational.Rational(-5, 8), 2)
+
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
         assert isinstance(real.pi.toRational(), rational.Rational)

@@ -273,17 +273,22 @@ def sqrt(x, err=defaultError):
         newrt = rational.Rational(math.sqrt(x))
     return newrt
 
-def log(x, err=defaultError):
+def log(x, base=None, err=defaultError):
     """
 
-    Return logarithm of a positive number x.
+    log(x) returns logarithm of a positive number x.  If an additional
+    argument base is given, it returns logarithm of x to the base.
 
     """
     if isinstance(x, complex):
         raise TypeError, "real.log is not for complex numbers."
-    if x < 0:
+    if x <= 0:
         raise ValueError, "log is not defined for %s" % str(x)
     if err <= defaultError:
+        if base:
+            d = log(base, err=err)
+        else:
+            d = 1
         rx = rational.Rational(x)
         upper = rational.Rational(4, 3)
         lower = rational.Rational(2, 3)
@@ -295,7 +300,7 @@ def log(x, err=defaultError):
             rx *= 2
             shift -= 1
         if rx == 1:
-            return shift * _log2(err)
+            return shift * _log2(err) / d
         value = oldvalue = 0
         for term in log1piter(rx - 1):
             value += term
@@ -303,10 +308,13 @@ def log(x, err=defaultError):
                 break
             oldvalue = +value
         if shift != 0:
-            return value + shift * _log2(err)
+            return (value + shift * _log2(err)) / d
     else:
-        value = rational.Rational(math.log(x))
-    return value
+        if base:
+            value = rational.Rational(math.log(x, base))
+        else:
+            value = rational.Rational(math.log(x))
+        return value
 
 def log1piter(xx):
     " iterator for log(1+x)."
@@ -686,7 +694,7 @@ def pow(x, y, err=defaultError):
     """
     if isinstance(y, (int, long)):
         return rational.Rational(x) ** y
-    return exp(y * log(x, err), err)
+    return exp(y * log(x, err=err), err)
 
 def degrees(rad, err=defaultError):
     """
@@ -725,6 +733,43 @@ def fmod(x, y):
     else:
         n = floor(fquot)
     return x - n * y
+
+def frexp(x):
+    """
+
+    returns a tuple (m, e) where x = m * 2 ** e, 1/2 <= abs(m) < 1 and
+    e is an integer.
+    This function is provided as the counter-part of math.frexp, but it
+    might not be useful.
+
+    """
+    if x == 0:
+        return (rational.Rational(0), 0)
+    m = rational.Rational(x)
+    e = 0
+    if x > 0:
+        while m >= 1:
+            m /= 2
+            e += 1
+        while m < rational.Rational(1, 2):
+            m *= 2
+            e -= 1
+    else:
+        while m <= -1:
+            m /= 2
+            e += 1
+        while m > rational.Rational(-1, 2):
+            m *= 2
+            e -= 1
+    return (m, e)
+
+def ldexp(x, i):
+    """
+
+    returns x * 2 ** i.
+
+    """
+    return x * 2 ** i
 
 def EulerTransform(iterator):
     """
