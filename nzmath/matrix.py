@@ -44,7 +44,7 @@ class Matrix:
         elif isinstance(arg[0], int) or isinstance(arg[0], long): 
             return self.getColumn(arg[0])
         else:
-            raise IndexError, self.__getitem__.__doc__
+            raise IndexError, "Matrix invalid index:", arg[0]
 
     def __setitem__(self, *arg):
         """
@@ -629,7 +629,7 @@ class Matrix:
                 if M.compo[i][j] != 0:
                     break
             else:
-                raise VectorsNotIndependent, self.__name__
+                raise VectorsNotIndependent
             # step 4
             if i > j:
                 for l in range(n):
@@ -699,12 +699,8 @@ class Matrix:
         """
         M = self.copy()
         k = M.column
-        i_range = range(1, M.row+1)
-        i_range.reverse()
-        for i in i_range:
-            search_range = range(1, k+1)
-            search_range.reverse()
-            for j in search_range:
+        for i in range(M.row, 0, -1):
+            for j in range(k, 0, -1):
                 if M[i,j] != 0:
                     break
             else:
@@ -915,45 +911,28 @@ class NoRing(Exception):
 
 
 #--------------------------------------------------------------------
-#   data for debugging 
+# for debugging
 #--------------------------------------------------------------------
 
-a=Matrix(5,3)
-a.set([0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0])
-
-b = Matrix(2,2)
-b.set([1,2,5,10])
-
-c = Matrix(3,3)
-c.set([0,1,1,-1,1,0,2,2,3])
-
-d = Matrix(4,2)
-d.set([0,1,0,1]+[2,0,0,3])
-
-e = Matrix(3,2)
-e.set([1,0]+[2,1]+[1,1])
-
-f = Matrix(3,2)
-f.set([0,1]+[-1,4]+[2,6])
-
-h = Matrix(4,4,[-2,-2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3])
-
-i = Matrix(2,3,[-1,-2,-3,1,4,5])
-
-sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9])
-
-j = Matrix(2,2,[3,4,5,6])
-
-k = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
-
-def pause():
-    print "--- hit enter key ---"
-    raw_input()
-
-
 if __name__ == '__main__':
-    pass
+
+    def pause():
+        print "--- hit enter key ---"
+        raw_input()
+
+    a = Matrix(5,3, [0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0]) 
+    b = Matrix(2,2, [1,2,5,10]) 
+    c = Matrix(3,3, [0,1,1,-1,1,0,2,2,3]) 
+    d = Matrix(4,2, [0,1,0,1]+[2,0,0,3]) 
+    e = Matrix(3,2, [1,0]+[2,1]+[1,1]) 
+    f = Matrix(3,2, [0,1]+[-1,4]+[2,6]) 
+    h = Matrix(4,4,[-2,-2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3]) 
+    i = Matrix(2,3,[-1,-2,-3,1,4,5]) 
+    sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9]) 
+    j = Matrix(2,2,[3,4,5,6]) 
+    k = Matrix(3,3,[7,2,8,0,5,-2,0,1,9]) 
     A = Matrix(4,4,[1,1,0,3]+[2,1,-1,1]+[3,-1,-1,2]+[-1,2,3,-1])
+
     L, U = A.LUDecomposition()
     print A
     print L
