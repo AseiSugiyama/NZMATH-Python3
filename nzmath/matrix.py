@@ -231,55 +231,50 @@ class Matrix:
             C = C + coeff[i] * unit_matrix(self.row)
         return coeff
 
-# This function does not work well.
-#
-#    def kernel(self):       # using Cohen's Algorithm 2.3.1
-#        copy = self.copy()
-#        copy.rational()
-#        r = 0
-#        c = [0] * copy.row
-#        d = [0] * copy.column
-#        for k in range(copy.column):
-#            j = 0
-#            while j < copy.row:
-#                if copy.compo[j][k] != 0 and c[j] == 0:
-#                    break
-#                j = j+1
-#            else:
-#                r = r+1
-#                d[k] = -1
-#                continue
-#            D = (-1) / copy.compo[j][k]
-#            copy.compo[j][k] = -1
-#            for s in range(k+1, copy.column):
-#                copy.compo[j][s] = D * copy.compo[j][s]
-#            for i in range(copy.row):
-#                if i == j:
-#                    continue
-#                D = copy.compo[i][k]
-#                copy.compo[i][k] = 0
-#                for s in range(k+1, copy.column):
-#                    copy.compo[i][s] = copy.compo[i][s] + D * copy.compo[j][s]
-#            c[j] = 1
-#            d[k] = j
-#            #print copy
-#
-#        # output
-#        besis = []
-#        vector = [0] * copy.column
-#        for k in range(copy.column):
-#            if d[k] != -1:
-#                continue
-#            for i in range(copy.column):
-#                if d[i] >= 0:
-#                    vector[i] = copy.compo[d[i]][k]
-#                elif i == k:
-#                    vector[i] = 1
-#                else:
-#                    vector[i] = 0
-#            besis.append(vector)
-#        return besis
-#
+    def kernel(self):       # using Cohen's Algorithm 2.3.1
+        copy = self.copy()
+        r = 0               # r: dimension of Kernel
+        c = [0] * (copy.row + 1)
+        d = [-1] * (copy.column + 1)
+        for k in range(1, copy.column+1):
+            j = 1
+            while j <= copy.row:
+                if copy.get_compo(j,k) != 0 and c[j] == 0:
+                    break
+                j = j+1
+            else:           # not found j such that m(j,k)!=0 and c[j]==0
+                r = r+1
+                d[k] = 0
+                continue
+            top = (-1) / toRational(copy.get_compo(j,k))
+            copy.set_compo(j,k,-1)
+            for s in range(k+1, copy.column+1):
+                copy.set_compo(j,s, top*copy.get_compo(j,s) )
+            for i in range(1, copy.row+1):
+                if i == j:
+                    continue
+                top = copy.get_compo(i,k)
+                copy.set_compo(i,k,0)
+                for s in range(k+1, copy.column+1):
+                    copy.set_compo(i,s, copy.get_compo(i,s) + top * copy.get_compo(j,s))
+            c[j] = k
+            d[k] = j
+
+        # output
+        besis = []
+        vector = [0] * (copy.column+1)
+        for k in range(1, copy.column+1):
+            if d[k] != 0:
+                continue
+            for i in range(1, copy.column+1):
+                if d[i] > 0:
+                    vector[i] = copy.get_compo(d[i],k)
+                elif i == k:
+                    vector[i] = 1
+                else:
+                    vector[i] = 0
+            besis.append(vector[1:])
+        return besis
 
 # the belows are not methods
 def unit_matrix(size):
@@ -287,8 +282,4 @@ def unit_matrix(size):
     for i in range(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
-
-if __name__ == "__main__":
-    print "Matrix test ==============================\n"
-    matrix_test()
 
