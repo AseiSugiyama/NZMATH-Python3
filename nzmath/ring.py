@@ -23,6 +23,67 @@ class CommutativeRing (Ring):
         if available, otherwise raises exception."""
         raise NotImplementedError
 
+    def isdomain(self):
+        """isdomain returns True if the ring is actually a domain,
+        False if not, or None if uncertain."""
+        if self.isufd():
+            return True
+        else:
+            return None
+
+    def isnoetherian(self):
+        """
+
+        isnoetherian returns True if the ring is actually a Noetherian
+        domain, False if not, or None if uncertain.
+
+        """
+        if self.ispid():
+            return True
+        else:
+            return None
+
+    def isufd(self):
+        """
+
+        isufd returns True if the ring is actually a unique
+        factorization domain, False if not, or None if uncertain.
+
+        """
+        if self.ispid():
+            return True
+        else:
+            return None
+
+    def ispid(self):
+        """
+
+        ispid returns True if the ring is actually a principal
+        ideal domain, False if not, or None if uncertain.
+
+        """
+        if self.iseuclidean():
+            return True
+        else:
+            return None
+
+    def iseuclidean(self):
+        """
+
+        iseuclidean returns True if the ring is actually a Euclidean
+        domain, False if not, or None if uncertain.
+
+        """
+        if self.isfield():
+            return True
+        else:
+            return None
+
+    def isfield(self):
+        """isfield returns True if the ring is actually a field,
+        False if not, or None if uncertain."""
+        return None
+
 class Field (CommutativeRing):
     """Field is an abstract class which expresses that
     the derived classes are (in mathematical meaning) fields."""
@@ -31,8 +92,19 @@ class Field (CommutativeRing):
         """This class is abstract and cannot be instanciated."""
         raise NotImplementedError
 
-    def createElement(self, numerator, denominator):
+    def createElement(self, *args):
         """createElement returns an element of the field."""
+        raise NotImplementedError
+
+    def isfield(self):
+        """Field overrides isfield of CommutativeRing."""
+        return True
+
+class QuotientField (Field):
+    """QuotientField is a class of quotient field."""
+
+    def __init__(self, domain):
+        """creates quotient field from given domain."""
         raise NotImplementedError
 
 class RingElement:
@@ -97,5 +169,3 @@ class QuotientFieldElement (FieldElement):
 
     def __eq__(self,other):
         return self.numerator*other.denominator == self.denominator*other.numerator
-
-from rational import theIntegerRing, theRationalField
