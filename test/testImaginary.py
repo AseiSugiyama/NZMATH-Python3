@@ -1,4 +1,5 @@
 import unittest
+import time
 import imaginary
 import real, rational
 
@@ -52,7 +53,8 @@ class ImaginaryTest (unittest.TestCase):
         exp1 = imaginary.exp(1)
         expc1 = imaginary.exp(imaginary.Complex(1, 0))
         rexp1 = real.exp(rational.Integer(1))
-        assert -1 < imaginary.exp(imaginary.Complex(0, 1)).imag < 1
+        assert 0 < imaginary.exp(imaginary.Complex(0, 1)).real < 1
+        assert 0 < imaginary.exp(imaginary.Complex(0, 1)).imag < 1
         assert isinstance(imaginary.exp(imaginary.j), imaginary.Complex)
 
     def testSin(self):
