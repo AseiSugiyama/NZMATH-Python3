@@ -432,13 +432,13 @@ class EC:
             return self.sub([0],Q)
 
     def divPoly(self,m):
-        E=self.simple()
-        x=polynomial.OneVariableSparsePolynomial({(1,):1},["x"])
-        y=polynomial.OneVariableSparsePolynomial({(1,):1},["y"])
-        e=x**3+E.a*x+E.b
+        x=polynomial.MultiVariableSparsePolynomial({(1,0):1},['x','y'])
+        y=polynomial.MultiVariableSparsePolynomial({(0,1):1},['x','y'])
         f=[]
         f.append(0)
         if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
+            E=self.simple()
+            e=x**3+E.a*x+E.b
             for i in range(1,m+1):
                 if i==1:
                     f.append(1)
@@ -487,9 +487,16 @@ class EC:
                             j=j+1
                         h.coefficient=dict
                         f.append(h)
-                    else: #div y
+                    else: 
                         j=i//2
                         g=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j] 
+                        L=g.coefficient.items()
+                        j=0
+                        dict={}
+                        while j<len(L): #div 2y
+                            dict[(L[j][0][0],L[j][0][1]-1)]=L[j][1]%E.ch//2
+                            j=j+1
+                        g.coefficient=dict
                         L=g.coefficient.items()
                         j=0
                         h=0
@@ -505,11 +512,21 @@ class EC:
                         dict={}
                         j=0
                         while j<len(L):
-                            dict[L[j][0]]=(L[j][1]%E.ch)//2
+                            dict[L[j][0]]=(L[j][1]%E.ch)
                             j=j+1
                         h.coefficient=dict
                         f.append(h)
-            return f[m] #->f'
+            if m%2==0:
+                L=f[m].coefficient.items()
+                dict={}
+                j=0
+                while j<len(L):
+                    dict[(L[j][0][0],L[j][0][1]-1)]=L[j][1]
+                    j=j+1
+                f[m].coefficient=dict
+                return f[m]
+            else:
+                return f[m]
         else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
             for i in range(1,m+1):
                 if i==1:
@@ -554,6 +571,7 @@ class EC:
                     else:
                         j=i//2
                         g=((f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j])/x
+                        print g,"***"
                         G=g.coefficient
                         L=G.items()
                         j=0
