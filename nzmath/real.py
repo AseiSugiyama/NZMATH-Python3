@@ -1187,6 +1187,8 @@ e = FloatConstant(lambda precision: exp(1, precision))
 Log2 = FloatConstant(lambda precision: _log2(precision))
 
 ### function rewrite
+import itertools
+
 class ExponentialPowerSeries:
     """
 
@@ -1241,7 +1243,6 @@ class ExponentialPowerSeries:
 defaultError = RelativeError(0, 1, 2 ** 53)
 
 def exp_new(x, err=defaultError):
-    import itertools
     series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
     reduced = rational.Rational(x)
     if reduced < 0:
@@ -1379,6 +1380,119 @@ def piGaussLegendre_new(err=defaultError):
         t -= x * c
         x *= 2
     return (a + b) ** 2 / (t * 4)
+
+def floor_new(x):
+    """
+
+    floor(x) returns the integer; if x is an integer then x itself,
+    otherwise the biggest integer less than x.
+
+    """
+    rx = rational.Rational(x)
+    if rx.denominator == 1:
+        return rational.Integer(rx.numerator)
+    return rx.numerator // rx.denominator
+
+def ceil_new(x):
+    """
+
+    ceil(x) returns the integer; if x is an integer then x itself,
+    otherwise the smallest integer greater than x.
+
+    """
+    rx = rational.Rational(x)
+    if rx.denominator == 1:
+        return rational.Integer(rx.numerator)
+    return rx.numerator // rx.denominator + 1
+
+def tranc_new(x):
+    """
+
+    tranc(x) returns the integer; if x is an integer then x itself,
+    otherwise the nearest integer to x.  If x has the fraction part
+    1/2, then bigger one will be chosen.
+
+    """
+    rx = rational.Rational(x)
+    if rx.denominator == 1:
+        return rational.Integer(rx.numerator)
+    return floor_new(x + rational.Rational(1,2))
+
+def sin_new(x, err=defaultError):
+    """
+
+    sin(x [,err]) returns the sine of x.
+
+    """
+    series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+    rx = rational.Rational(x)
+    pi = piGaussLegendre_new(err)
+    sign = rational.Rational(1)
+    # sin(-x) = -sin(x)
+    if rx < 0:
+        sign = -sign
+        rx = -rx
+    # sin(x + 2 * pi) = sin(x)
+    if rx > 2 * pi:
+        rx -= floor_new(rx / (pi * 2)) * (pi * 2)
+    # sin(x + pi) = -sin(x)
+    if rx > pi:
+        rx -= pi
+        sign = -sign
+    # sin(x) = sin(pi - x)
+    if rx > pi / 2:
+        rx = pi - rx
+    # sin(0) = 0 is a special case which must not be computed with series.
+    if rx == 0:
+        return 0
+    retval = series(rx, err) * sign
+    if retval > 1:
+        retval = rational.Integer(1)
+    elif retval < -1:
+        retval = rational.Integer(-1)
+    return retval
+
+def cos_new(x, err=defaultError):
+    """
+
+    cos(x [,err]) returns the cosine of x.
+
+    """
+    series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+    rx = rational.Rational(x)
+    pi = piGaussLegendre_new(err)
+    sign = rational.Rational(1)
+    # cos(-x) = cos(x)
+    if rx < 0:
+        rx = -rx
+    # cos(x + 2 * pi) = cos(x)
+    if rx > 2 * pi:
+        rx -= floor_new(rx / (pi * 2)) * (pi * 2)
+    # cos(x + pi) = -cos(x)
+    if rx > pi:
+        rx -= pi
+        sign = -sign
+    # cos(x) = -cos(pi - x)
+    if rx > pi / 2:
+        rx = pi - rx
+        sign = -sign
+    # cos(0) = 1 is a special case which must not be computed with series.
+    if rx == 0:
+        return sign
+    retval = series(rx, err) * sign
+    if retval > 1:
+        retval = rational.Integer(1)
+    elif retval < -1:
+        retval = rational.Integer(-1)
+    return retval
+
+def tan_new(x, err=defaultError):
+    """
+
+    tan(x [,err]) returns the tangent of x.
+
+    """
+    return sin_new(x, err) / cos_new(x, err)
 
 def hypot_new(x, y, err=defaultError):
     """

@@ -154,6 +154,33 @@ class NewFunctionTest (unittest.TestCase):
         assert rational.Rational(355,113) == pi.trim(365)
         assert abs(pi - real.piGaussLegendre_new(self.err)) < self.absolute
 
+    def testFloor(self):
+        assert 3 == real.floor_new(3)
+        assert -3 == real.floor_new(-3)
+        assert 3 == real.floor_new(3.5)
+        assert -3 == real.floor_new(-2.5)
+
+    def testCeil(self):
+        assert 3 == real.ceil_new(3)
+        assert -3 == real.ceil_new(-3)
+        assert 4 == real.ceil_new(3.5)
+        assert -2 == real.ceil_new(-2.5)
+
+    def testTranc(self):
+        assert 3 == real.tranc_new(3)
+        assert -3 == real.tranc_new(-3)
+        assert 3 == real.tranc_new(3.3)
+        assert -3 == real.tranc_new(-2.7)
+
+    def testTrigonometric(self):
+        assert 0 == real.sin_new(0)
+        assert 1 == real.cos_new(0)
+        assert 0 == real.tan_new(0)
+        pi = real.piGaussLegendre_new()
+        assert abs(real.sin_new(pi)) < self.absolute
+        assert -1 <= (real.cos_new(pi)) < -1 + self.absolute
+        assert abs(real.tan_new(pi)) < self.absolute
+
     def testHypot(self):
         assert abs(real.hypot_new(3,4) - 5) < self.absolute
 
