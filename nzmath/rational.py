@@ -393,6 +393,9 @@ class Rational (ring.QuotientFieldElement):
         n = self.numerator
         d = self.denominator
         L = []
+        if n < 0:
+            L.append('-')
+            n = -n
         i = 1
         L.append(str(n//d))
         L.append('.')
