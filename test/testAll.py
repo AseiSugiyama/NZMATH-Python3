@@ -17,6 +17,7 @@ import testRationalFunction
 import testReal
 import testRing
 import testVector
+import testMultiplicative
 
 def suite():
     suite = unittest.TestSuite()
@@ -30,6 +31,7 @@ def suite():
     suite.addTest(testImaginary.suite())
     suite.addTest(testIntegerResidueClass.suite())
     suite.addTest(testLattice.suite())
+    suite.addTest(testMultiplicative.suite())
     suite.addTest(testMatrix.suite())
     suite.addTest(testPolynomial.suite())
     suite.addTest(testPrime.suite())
