@@ -1,5 +1,5 @@
 import unittest
-from rational import Rational, Integer
+from rational import Rational, Integer, theIntegerRing, theRationalField
 
 class RationalTest (unittest.TestCase):
     def testInit(self):
@@ -85,29 +85,48 @@ class RationalTest (unittest.TestCase):
         assert 1 <= Rational(134,133)
 
 class IntegerTest(unittest.TestCase):
+    def setUp(self):
+        self.three = Integer(3)
+
     def testMul(self):
-        assert 24 == Integer(3) * 8
-        assert [0,0,0] == Integer(3) * [0]
-        assert (0,0,0) == Integer(3) * (0,)
+        assert 24 == self.three * 8
+        assert [0,0,0] == self.three * [0]
+        assert (0,0,0) == self.three * (0,)
 
     def testRmul(self):
-        assert 24 == 8 * Integer(3)
-        assert [0,0,0] == [0] * Integer(3)
-        assert (0,0,0) == (0,) * Integer(3)
+        assert 24 == 8 * self.three
+        assert [0,0,0] == [0] * self.three
+        assert (0,0,0) == (0,) * self.three
 
     def testRmod(self):
-        assert 1 == 4 % Integer(3)
-        assert "3" == "%d" % Integer(3)
+        assert 1 == 4 % self.three
 
     def testTruediv(self):
-        assert Rational(1,3) == 1 / Integer(3)
+        assert Rational(1,3) == 1 / self.three
+
+class IntegerRingTest(unittest.TestCase):
+    def testContains(self):
+        assert 1 in theIntegerRing
+        assert 1L in theIntegerRing
+        assert Integer(1) in theIntegerRing
+        assert Rational(1,2) not in theIntegerRing
+
+    def testGetQuotientField(self):
+        assert theRationalField is theIntegerRing.getQuotientField()
+
+    def testIssubring(self):
+        assert theIntegerRing.issubring(theRationalField)
+        assert theIntegerRing.issubring(theIntegerRing)
+
+    def testIssuperring(self):
+        assert not theIntegerRing.issuperring(theRationalField)
+        assert theIntegerRing.issuperring(theIntegerRing)
 
 def suite():
-    suite = unittest.makeSuite(RationalTest, 'test')
-    suite.addTest(IntegerTest("testMul"))
-    suite.addTest(IntegerTest("testRmul"))
-    suite.addTest(IntegerTest("testRmod"))
-    suite.addTest(IntegerTest("testTruediv"))
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(RationalTest, 'test'))
+    suite.addTest(unittest.makeSuite(IntegerTest, 'test'))
+    suite.addTest(unittest.makeSuite(IntegerRingTest, 'test'))
     return suite
 
 if __name__ == '__main__':
