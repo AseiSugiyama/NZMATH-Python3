@@ -856,7 +856,7 @@ class MultiVariableSparsePolynomial:
     def __repr__(self):
         self_adjust = self.adjust()
         if not isinstance(self_adjust, MultiVariableSparsePolynomial):
-            return repr(self)
+            return repr(self_adjust)
         return_str = "MultiVariableSparsePolynomial(" + repr(self.coefficient) + ", "
         return_str += repr(self.variable) + ")"
         return return_str
@@ -1244,6 +1244,8 @@ class PolynomialRing (ring.CommutativeRing):
         ring.
 
         """
+        if element in self.coefficientRing:
+            return True
         try:
             ring = element.getRing()
             if ring.issubring(self):
