@@ -8,6 +8,14 @@ class GcdTest (unittest.TestCase):
         assert gcd.gcd(0, 10) == 10
         assert gcd.gcd(10, 0) == 10
         assert gcd.gcd(13, 21) == 1
+
+    def testBinaryGcd(self):
+        assert gcd.binarygcd(1, 2) == 1
+        assert gcd.binarygcd(2, 4) == 2
+        assert gcd.binarygcd(0, 10) == 10
+        assert gcd.binarygcd(10, 0) == 10
+        assert gcd.binarygcd(13, 21) == 1
+
     def testLcm(self):
         assert gcd.lcm(1, 2) == 2
         assert gcd.lcm(2, 4) == 4
