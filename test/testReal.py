@@ -120,11 +120,40 @@ class ErrorTest (unittest.TestCase):
     def testAbsoluteError(self):
         assert real.AbsoluteError(0,1,2)
 
+class NewFunctionTest (unittest.TestCase):
+    def setUp(self):
+        self.err = real.RelativeError(0, 1, 2**100)
+        self.relative = rational.Rational(1 + 2**53, 2**53)
+
+    def testSqrt(self):
+        sqrt0 = real.sqrt_new(0)
+        assert sqrt0 == 0
+        sqrt2 = real.sqrt_new(2)
+        assert abs(sqrt2 ** 2 - 2) < rational.Rational(1, 2**53)
+
+    def testExp(self):
+        exp1 = real.exp_new(1)
+        exp1e = real.exp_new(1, self.err)
+        assert exp1 < exp1e < exp1 * self.relative
+        exp2 = real.exp_new(2)
+        exp2e = real.exp_new(2, self.err)
+        assert exp2 < exp2e < exp2 * self.relative
+
+    def testLog(self):
+        log1 = real.log_new(1)
+        assert 0 == log1
+        log2inverse = real.log_new(.5)
+        assert log2inverse < 0
+        assert abs(real.log_new(2) + log2inverse) <= rational.Rational(1, 2**53)
+        assert abs(real.log_new(real.exp_new(1)) - 1)  <= rational.Rational(1, 2**52)
+        assert abs(real.log_new(real.exp_new(1).trim(2**53)) - 1)  <= rational.Rational(1, 2**52)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FloatTest, 'test'))
     suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
     suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
+    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':
