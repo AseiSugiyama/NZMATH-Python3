@@ -103,7 +103,7 @@ class Matrix:
 
     def __div__(self, other):
         """division by a scalar"""
-        return self * (1 / rational.toRational(other)) 
+        return self * (1 / rational.Rational(other)) 
 
     def __rmul__(self, other):
         product = Matrix(self.row, self.column)
@@ -141,12 +141,15 @@ class Matrix:
 
     __str__ = __repr__ 
 
+
+# utility methods ----------------------------------------------------
+
     def copy(self):
         """Create a copy of the instance."""
         copy = Matrix(self.row, self.column)
         copy.row = self.row
         copy.column = self.column
-        for i in range(1, self.row+1):
+        for i in range(1, self.column+1):
             copy[i] = self[i]
         return copy
 
@@ -235,6 +238,8 @@ class Matrix:
         for k in range(self.row):
             del self.compo[k][j-1]
 
+# Mathematical functions ---------------------------------------------
+
     def transpose(self):
         """Return transposed matrix of self"""
         trans = Matrix(self.column, self.row)
@@ -257,9 +262,9 @@ class Matrix:
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                ratio = triangle.compo[k][i] / rational.toRational(triangle.compo[i][i])
+                ratio = triangle.compo[k][i] / rational.Rational(triangle.compo[i][i])
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] -= rational.toRational(triangle.compo[i][l] * ratio)
+                    triangle.compo[k][l] -= rational.Rational(triangle.compo[i][l] * ratio)
             
         return triangle
 
@@ -274,7 +279,7 @@ class Matrix:
         """Return determinant of self."""
         det = 1
         if self.row != self.column:
-            raise MatrixSizeError, "not square Matrix"
+            raise MatrixSizeError, "not square matrix"
         triangle = self.triangulate()
         for i in range(self.row):
             det *= triangle.compo[i][i]
@@ -295,15 +300,17 @@ class Matrix:
         return cofactors
 
     def inverse(self):
-        """Return inverse matrix of self."""
-        if self.determinant == 0:
-            raise NoInverse
+        """Return inverse matrix of self,
+        or return None if inverse is not exist."""
+        det = self.determinant()
+        if det == 0:
+            return None
         else:
-            return self.cofactors() / self.determinant()
+            return self.cofactors() / det 
 
     def characteristic_polynomial(self):        # using Cohen's Algorithm 2.2.7
         if self.row != self.column:
-            raise MatrixSizeError, "not square Matrix"
+            raise MatrixSizeError, "not square matrix"
         i = 0
         C = unit_matrix(self.row)
         coeff = [0] * (self.row+1)
@@ -316,39 +323,39 @@ class Matrix:
 
     def cohens_simplify(self):      # common process of image() and kernel()
         """cohens_simplify is used in image() and kernel()"""
-        M = self.copy()
-        c = [0] * (M.row + 1)
-        d = [-1] * (M.column + 1)
-        for k in range(1, M.column+1):
+        c = [0] * (self.row + 1)
+        d = [-1] * (self.column + 1)
+        for k in range(1, self.column+1):
             j = 1
-            while j <= M.row:
-                if M[j,k] != 0 and c[j] == 0:
+            while j <= self.row:
+                if self[j,k] != 0 and c[j] == 0:
                     break
                 j = j+1
             else:           # not found j such that m(j,k)!=0 and c[j]==0
                 d[k] = 0
                 continue
-            top = (-1) / rational.toRational(M[j,k])
-            M[j,k] = -1
-            for s in range(k+1, M.column+1):
-                M[j,s] = top * M[j,s] 
-            for i in range(1, M.row+1):
+            top = (-1) / rational.Rational(self[j,k])
+            self[j,k] = -1
+            for s in range(k+1, self.column+1):
+                self[j,s] = top * self[j,s] 
+            for i in range(1, self.row+1):
                 if i == j:
                     continue
-                top = M[i,k]
-                M[i,k] = 0
-                for s in range(k+1, M.column+1):
-                    M[i,s] = M[i,s] + top * M[j,s]
+                top = self[i,k]
+                self[i,k] = 0
+                for s in range(k+1, self.column+1):
+                    self[i,s] = self[i,s] + top * self[j,s]
             c[j] = k
             d[k] = j
-        return [M,c,d]
+        return (c,d)
 
     def kernel(self):       # using Cohen's Algorithm 2.3.1
-        """Return a Matrix which column vectors are one basis of self's Kernel."""
-        tmp = self.cohens_simplify()
-        M = tmp[0]
-        c = tmp[1]
-        d = tmp[2]
+        """Return a Matrix which column vectors are one basis of self's kernel,
+        or return None if self's kernel is 0."""
+        M = self.copy()
+        tmp = M.cohens_simplify()
+        c = tmp[0]
+        d = tmp[1]
         basis = []
         vector = [0] * (M.column+1)
         for k in range(1, M.column+1):
@@ -370,10 +377,11 @@ class Matrix:
         return output
 
     def image(self):        # using Cohen's Algorithm 2.3.2
-        """Return a Matrix which column vectors are one basis of self's Image."""
-        tmp = self.cohens_simplify()
-        M = tmp[0]
-        c = tmp[1]
+        """Return a Matrix which column vectors are one basis of self's image,
+        or return None if self's image is 0."""
+        M = self.copy()
+        tmp = M.cohens_simplify()
+        c = tmp[0]
         basis = []
         for j in range(1, M.row+1):
             if c[j] != 0:
@@ -389,7 +397,8 @@ class Matrix:
 
     def inverse_image(self, B):      # using Cohen's Algorithm 2.3.4
         """inverse_image(B) : B can be a list or a column vector(Matrix)
-        Return a vector belongs to the inverse image of B."""
+        Return a vector belongs to the inverse image of B,
+        or return None if inverse image is not exist."""
         M1 = self.copy()
         M1.insert_column(self.column+1, B)
         V = M1.kernel()
@@ -398,8 +407,8 @@ class Matrix:
             if V[self.column+1, j] != 0:
                 break
         else:
-            raise NoSolution
-        d = (-1)/rational.toRational(V[self.column+1,j])
+            return None
+        d = (-1)/rational.Rational(V[self.column+1,j])
         x = []
         for i in range(1, self.column+1):
             x.append(d*V[i,j])
@@ -422,7 +431,7 @@ class Matrix:
                     break
             else:
                 raise VectorsNotIndependent
-            d = 1 / rational.toRational(copy[t,s])
+            d = 1 / rational.Rational(copy[t,s])
             if t != s:
                 B.set_column(t, B[s])
             B.set_column(s, copy[s])
@@ -462,16 +471,15 @@ class Matrix:
                     H[m] = tmpvector
             for i in range(m+1,H.row+1):
                 if H[i,m-1] != 0:
-                    u = H[i,m-1] / rational.toRational(t)
+                    u = H[i,m-1] / rational.Rational(t)
                     for j in range(m,H.row+1):
                         H[i,j] = H[i,j] - u * H[m,j]
-                    H.set_column( m, (H[m] + u*H[i]) )
+                    H.set_column( m, H[m] + u * H[i] )
         return H
 
     def column_echelon_form(self):  # using Cohen's Algorithm 2.3.11
         """Return a Matrix in column echelon form whose image is equal to the image of self."""
         M = self.copy()
-        # i = M.row
         k = M.column
         i_range = range(1, M.row+1)
         i_range.reverse()
@@ -483,7 +491,7 @@ class Matrix:
                     break
             else:
                 continue
-            d = 1 / rational.toRational(M[i,j])
+            d = 1 / rational.Rational(M[i,j])
             for l in range(1, i+1):
                 t = d * M[l,j]
                 M[l,j] = M[l,k]
@@ -495,19 +503,6 @@ class Matrix:
                     M[l,j] = M[l,j] - M[l,k] * M[i,j]
             k = k-1
         return M 
-
-# define exceptions --------------------------------------------------
-class MatrixSizeError:
-    pass
-
-class NoInverse:
-    pass
-
-class NoSolution:
-    pass
-
-class VectorsNotIndependent:
-    pass
 
 # the belows are not class methods -----------------------------------
 def unit_matrix(size):
@@ -531,7 +526,14 @@ def intersection_of_subspaces(M, M_):    # using Cohen's Algorithm 2.3.9
         N1.set_row(j, N.get_row(j))
     M2 = M * N1
     return M2.image()
-    
+
+# define exceptions --------------------------------------------------
+class MatrixSizeError(Exception):
+    pass
+
+class VectorsNotIndependent(Exception):
+    pass
+
 # data for debugging -------------------------------------------------
 a=Matrix(5,3)
 a.set([0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0])
@@ -556,4 +558,7 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
-    pass
+    import testMatrix
+    runner = testMatrix.unittest.TextTestRunner()
+    runner.run(testMatrix.suite())
+

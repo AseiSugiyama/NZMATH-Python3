@@ -3,12 +3,6 @@
 import ring
 from gcd import gcd
 
-def toRational(value):
-    if isinstance(value, int) or isinstance(value, long):
-        return Rational(value, 1)
-    elif isinstance(value, Rational):
-        return value
-
 class Rational:
 
     def __init__(self, numerator, denominator=1):
@@ -149,7 +143,7 @@ class Rational:
         return Rational(-self.numerator, self.denominator)
 
     def __abs__(self):
-        return Rational(abs(self.numerator), self.denominator)
+        return +Rational(abs(self.numerator), self.denominator)
 
     def __str__(self):
         return str(self.numerator)+"/"+str(self.denominator)
