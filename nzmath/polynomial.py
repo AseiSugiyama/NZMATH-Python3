@@ -185,6 +185,16 @@ class OneVariablePolynomial:
         return_str = one_coeff.sub(" ", return_str)
         return return_str
 
+    def getVariable(self):
+        if isinstance(self.variable, list):
+            return self.variable[0]
+        return self.variable
+
+    def getVariableList(self):
+        if not isinstance(self.variable, list):
+            return [self.variable]
+        return self.variable[:]
+
 class OneVariableDensePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -526,12 +536,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         # except char > 0 case, result is the answer.
         return result
 
-    def getVariable(self):
-        return self.variable
-
-    def getVariableList(self):
-        return [self.variable]
-
 class OneVariableSparsePolynomial (OneVariablePolynomial):
 
     def __init__(self, coefficient, variable, coeffring=None):
@@ -555,13 +559,7 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                 self.coefficient[i] = coeffring.createElement(c)
 
     def __add__(self, other):
-        if isinstance(other, OneVariableDensePolynomial):
-            return self + other.toOneVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableDensePolynomial):
-            return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
-        elif isinstance(other, MultiVariableSparsePolynomial):
-            return self.toMultiVariableSparsePolynomial() + other
-        elif isinstance(other, OneVariableSparsePolynomial):
+        if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
                 return_coefficient = OneVariablePolynomialCoefficients()
                 for i,c in self.coefficient.iteritems():
@@ -571,6 +569,10 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
                 return OneVariableSparsePolynomial(return_coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
             else:
                 return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableDensePolynomial):
+            return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
+        elif isinstance(other, MultiVariableSparsePolynomial):
+            return self.toMultiVariableSparsePolynomial() + other
         elif other:
             #in self.getCoefficientRing():
             return_coefficient = OneVariablePolynomialCoefficients()
@@ -799,18 +801,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
         """
         return self / self.content()
-
-    def getVariable(self):
-        if isinstance(self.variable, list):
-            return self.variable[0]
-        else:
-            return self.variable
-
-    def getVariableList(self):
-        if isinstance(self.variable, list):
-            return self.variable[:]
-        else:
-            return [self.variable]
 
 class MultiVariableDensePolynomial:
 
