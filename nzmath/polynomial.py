@@ -315,6 +315,29 @@ class OneVariablePolynomial:
         else:
             raise ValueError, "You must specify a variable."
 
+    def integrate(self, var = None, min = None, max = None):
+        if min == None and max == None and other != None and isinstance(other, str):
+            if self.degree() == 0:
+                return OneVariableDensePolynomial([0,self[0]], var, self.getCoefficientRing())
+            elif self.degree() < 0:
+                return self(var)
+            elif var != self.getVariable():
+                return self * OneVariableDensePolynomial([0,1], var, self.getCoefficientRing())
+            else:
+                integrate_coefficient = {}
+                for i, c in self.coefficient.iteritems():
+                    integrate_coefficient[i+1] = c / (i+1)
+                return OneVariableSparsePolynomial(integrate_coefficient,
+                                                   var,
+                                                   self.getCoefficientRing())
+        elif min != None and max != None and other != None and isinstance(var, str):
+            if var != self.getVariable():
+                return self * (max - min)
+            primitive_function = self.integrate(var)
+            return primitive_function(max) - primitive_function(min)
+        else:
+            raise ValueErroe, "You must call integrate with variable or with variable, min and max."
+
     def getRing(self):
         return self.ring
 
@@ -420,28 +443,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         "Copy the structure"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
-    def integrate(self, other = None, min = None, max = None):
-        if min == None and max == None and other != None and isinstance(other, str):
-             integrate_coefficient = [0] * ( len(self.coefficient) + 1)
-             integrate_variable = other
-             if integrate_variable != self.getVariable():
-                 return MultiVariableDensePolynomial([0,self],integrate_variable).adjust()
-             else:
-                 for i in range(len(self.coefficient)):
-                     integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1,i+1)
-                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy()
-        elif min != None and max != None and other != None and isinstance(other, str):
-             integrate_coefficient = [0] *(  len(self.coefficient) + 1)
-             integrate_variable = other
-             if integrate_variable != self.getVariable():
-                 return self * (max - min)
-             else:
-                 for i in range(len(self.coefficient)):
-                     integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1, i+1)
-                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy().__call__(max) - OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy().__call__(min)
-        else:
-            raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
-
     def content(self):
         """
 
@@ -527,38 +528,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
     def copy(self):
         "Copy the structure"
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
-
-    def integrate(self, other=None, min=None, max=None):
-        if min == None and max == None and other != None and isinstance(other, str):
-            if self.degree() < 1:
-                return OneVariableSparsePolynomial({(1,):self[0]}, [other])
-            copy_polynomial = self.copy()
-            if copy_polynomial.getVariable() == other:
-                return_coefficient = OneVariablePolynomialCoefficients()
-                return_variable = copy_polynomial.getVariableList()
-                for i in copy_polynomial.coefficient.iterdegrees():
-                    return_coefficient[i + 1] = copy_polynomial.coefficient[i] / (i+1)
-                return OneVariableSparsePolynomial(return_coefficient.getAsDict(), self.getVariableList())
-            else:
-                other_polynomial = OneVariableSparsePolynomial({(1,):1}, [other])
-                return self * other_polynomial
-        elif min != None and max != None and isinstance(other, str):
-            if self.degree() < 1:
-                other_polynomial = OneVariableSparsePolynomial({(1,):self[0]}, [other])
-                return other_polynomial(max) - other_polynomial(min)
-            copy_polynomial = self.copy()
-            if copy_polynomial.getVariable() == other:
-                return_coefficient = OneVariablePolynomialCoefficients()
-                return_variable = copy_polynomial.getVariableList()
-                for i in copy_polynomial.coefficient:
-                    return_coefficient[i + 1] = copy_polynomial.coefficient[i] / (i+1)
-                return_polynomial = OneVariableSparsePolynomial(return_coefficient.getAsDict(), return_variable)
-                return return_polynomial(max) - return_polynomial(min)
-            else:
-                other_polynomial = OneVariableSparsePolynomial({(1,):1}, [other])
-                return self * (other_polynomial(max) - other_polynomial(min))
-        else:
-            raise ValueError, "You must input integrate(polynomial, variable (, min, max))."
 
     def content(self):
         """
