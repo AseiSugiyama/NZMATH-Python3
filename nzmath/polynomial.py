@@ -445,6 +445,46 @@ class OneVariableDensePolynomial:
         else:
             return len(self.coefficient) - 1
 
+    def sigma(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 0
+            if self.variable == variable:
+                for i in range(start, end + 1):
+                    return_polynomial += self.__call__(i)
+                return return_polynomial
+            else:
+                return self * (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 0
+            if self.variable == variable:
+                for i in start:
+                    return_polynomial += self.__call__(i)
+                return return_polynomial
+            else:
+                return self * (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
+    def pi(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 1
+            if self.variable == variable:
+                for i in range(start, end + 1):
+                    return_polynomial *= self.__call__(i)
+                return return_polynomial
+            else:
+                return self ** (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 1
+            if self.variable == variable:
+                for i in start:
+                    return_polynomial *= self.__call__(i)
+                return return_polynomial
+            else:
+                return self ** (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
     def content(self):
         """
 
@@ -466,6 +506,7 @@ class OneVariableDensePolynomial:
             for c in self.coefficient:
                 cont = coefring.gcd(cont, c)
             return cont
+
 
 class OneVariableSparsePolynomial:
 
@@ -851,6 +892,47 @@ class OneVariableSparsePolynomial:
                 cont = coefring.gcd(cont, c)
             return cont
 
+    def sigma(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 0
+            if variable in self.variable:
+                for i in range(start, end + 1):
+                    return_polynomial += self.__call__(i)
+                return return_polynomial
+            else:
+                return self * (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 0
+            if variable in self.variable:
+                for i in start:
+                    return_polynomial += self.__call__(i)
+                return return_polynomial
+            else:
+                return self * (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
+    def pi(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 1
+            if variable in self.variable:
+                for i in range(start, end + 1):
+                    return_polynomial *= self.__call__(i)
+                return return_polynomial
+            else:
+                return self ** (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 1
+            if variable in self.variable:
+                for i in start:
+                    return_polynomial *= self.__call__(i)
+                return return_polynomial
+            else:
+                return self ** (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
+
 class MultiVariableDensePolynomial:
 
     def __init__(self, coefficient, variable):
@@ -1135,6 +1217,12 @@ class MultiVariableDensePolynomial:
             elif not cring.issubring(ring):
                 ring = ring * cring
         return PolynomialRing(ring, self.variable)
+
+    def sigma(self, variable=None, start=None, end=None):
+        return self.toMultiVariableSparsePolynomial().sigma(variable, start, end)
+
+    def pi(self, variable=None, start=None, end=None):
+        return self.toMultiVariableSparsePolynomial().pi(variable, start, end)
 
 class MultiVariableSparsePolynomial:
 
@@ -1733,6 +1821,55 @@ class MultiVariableSparsePolynomial:
             elif not cring.issubring(ring):
                 ring = ring * cring
         return PolynomialRing(ring, self.variable)
+
+    def sigma(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 0
+            if variable in self.variable:
+                for i in range(start, end + 1):
+                    call_dict = {}
+                    call_dict[variable] = i
+                    return_polynomial += self.__call__(**call_dict)
+                return return_polynomial
+            else:
+                return self * (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 0
+            if variable in self.variable:
+                for i in start:
+                    call_dict = {}
+                    call_dict[variable] = i
+                    return_polynomial += self.__call__(**call_dict)
+                return return_polynomial
+            else:
+                return self * (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
+    def pi(self, variable=None, start=None, end=None):
+        if variable != None and start != None and end != None and rational.isIntegerObject(start) and rational.isIntegerObject(end) and end >= start and isinstance(variable, str):
+            return_polynomial = 1
+            if variable in self.variable:
+                for i in range(start, end + 1):
+                    call_dict = {}
+                    call_dict[variable] = i
+                    return_polynomial *= self.__call__(**call_dict)
+                return return_polynomial
+            else:
+                return self ** (end - start + 1)
+        elif variable != None and start != None and end == None and isinstance(start, list) and isinstance(variable, str):
+            return_polynomial = 1
+            if variable in self.variable:
+                for i in start:
+                    call_dict = {}
+                    call_dict[variable] = i
+                    return_polynomial *= self.__call__(**call_dict)
+                return return_polynomial
+            else:
+                return self ** (len(start))
+        else:
+            raise ValueError, "You must input poly, variable, [start and end] or [list]"
+
 
 class PolynomialRing (ring.CommutativeRing):
     """
