@@ -60,7 +60,10 @@ class Float:
 
     def __add__(self, other):
         if not isinstance(other, Float):
-            return self + self.__class__(other, 0, self.precision)
+            try:
+                return self + self.__class__(other, 0, self.precision)
+            except:
+                return NotImplemented
         # adjust with precision
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -110,11 +113,17 @@ class Float:
 
     def __radd__(self, other):
         if not isinstance(other, Float):
-            return self.__class__(other, 0, self.precision) + self
+            try:
+                return self.__class__(other, 0, self.precision) + self
+            except:
+                return NotImplemented
 
     def __sub__(self, other):
         if not isinstance(other, Float):
-            return self - self.__class__(other, 0, self.precision)
+            try:
+                return self - self.__class__(other, 0, self.precision)
+            except:
+                return NotImplemented
         # adjust with precision
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -164,7 +173,10 @@ class Float:
 
     def __rsub__(self, other):
         if not isinstance(other, Float):
-            return self.__class__(other, 0, self.precision) - self
+            try:
+                return self.__class__(other, 0, self.precision) - self
+            except:
+                return NotImplemented
 
     def __mul__(self, other):
         if rational.isIntegerObject(other):
@@ -173,7 +185,10 @@ class Float:
                                   self.exponent + v2,
                                   self.precision)
         elif not isinstance(other, Float):
-            return self * self.__class__(other, 0, self.precision)
+            try:
+                return self * self.__class__(other, 0, self.precision)
+            except:
+                return NotImplemented
         mantissa = self.mantissa * other.mantissa
         exponent = self.exponent + other.exponent
         if self.precision or other.precision:
@@ -200,7 +215,10 @@ class Float:
                                   self.exponent + v2,
                                   self.precision)
         elif not isinstance(other, Float):
-            return self.__class__(other, 0, None) * self
+            try:
+                return self.__class__(other, 0, None) * self
+            except:
+                return NotImplemented
 
     def __div__(self, other):
         """
@@ -221,7 +239,10 @@ class Float:
             else:
                 return retval
         elif not isinstance(other, Float):
-            return self / self.__class__(other, 0, self.precision)
+            try:
+                return self / self.__class__(other, 0, self.precision)
+            except:
+                return NotImplemented
         exponent = self.exponent - other.exponent
         if self.precision or other.precision:
             precision = min( filter(None, (self.precision, other.precision)) )
@@ -264,7 +285,10 @@ class Float:
 
     def __rdiv__(self, other):
         if not isinstance(other, Float):
-            return self.__class__(other, 0, self.precision) / self
+            try:
+                return self.__class__(other, 0, self.precision) / self
+            except:
+                return NotImplemented
 
     __rtruediv__ = __rdiv__
 
@@ -339,6 +363,12 @@ class Float:
             return (self - other).mantissa >= 0
         except AttributeError:
             return NotImplemented
+
+    def __lshift__(self, offset):
+        return self.__class__(self.mantissa, self.exponent + offset, self.precision)
+
+    def __rshift__(self, offset):
+        return self.__class__(self.mantissa, self.exponent - offset, self.precision)
 
     def __repr__(self):
         return "Float(" + repr(self.mantissa) + ", " + repr(self.exponent) + ", " + repr(self.precision) + ")"
@@ -505,7 +535,7 @@ class FloatConstant:
         return self.cache.__lt__(other)
 
     def __repr__(self):
-        return "FloatConstant(" + repr(self.getValue) + ", " + repr(self.precision) + ")"
+        return repr(self.cache)
 
     def __str__(self):
         return str(self.cache)
@@ -554,6 +584,8 @@ def sqrt(aFloat, precision=doubleprecision):
         yrat = y.toRational()
         prat = rational.Rational(1, 2**prec)
         return -prat < (xrat - yrat) / xrat < prat
+    if not isinstance(aFloat, Float):
+        return math.sqrt(aFloat)
     if precision < aFloat.precision:
         precision = aFloat.precision
     if aFloat.mantissa < 0:
