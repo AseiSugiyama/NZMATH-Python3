@@ -15,283 +15,81 @@ def Element_p(a,p):
     a is (rational,int,long) number
     this returns a in F_p
     """
-    return int(finitefield.FinitePrimeField(p).createElement(a).n)
+    return int(finitefield.FinitePrimeFieldElement(a,p).n)#.createElement(a).n
 
-def Evaluate_p(poly,t,p):
+def PolyMod(f,g):
     """
-    use Horner's rule
+    return f (mod g)
     """
-    if isinstance(poly,(int,long)):
-        return poly%p
-    poly=poly.toOneVariableSparsePolynomial()%p
-    d=poly.degree()
-    if poly.degree()<1:
-        return poly%p
-    P=poly.coefficient
-    v=(P[d]*t+P[d-1])%p
-    i=d-2
-    while i>=0:
-        v=(v*t+P[i])%p
-        i=i-1
-    return v
-
-def Evaluate(poly,t):
-    """
-    use Horner's rule
-    """
-    if poly.degree()<1:
-        return poly
-    poly=poly.toOneVariableSparsePolynomial()
-    d=poly.degree()
-    P=poly.coefficient
-    v=P[d]*t+P[d-1]
-    i=d-2
-    while i>=0:
-        v=v*t+P[i]
-        i=i-1
-    return v
-
-def Mod(poly,d):
-    """
-    this returns poly%(x^d)
-    """
-    if isinstance(poly,(int,long)):
-        return polynomial.OneVariableDensePolynomial([int(poly)],"x").toOneVariableSparsePolynomial()
-    elif isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
-        if poly.degree()>=d:
-            if isinstance(poly,polynomial.OneVariableSparsePolynomial):
-                poly=poly.toOneVariableDensePolynomial()
-            P=poly.coefficient.getAsDict().items()
-            dict={}
-            i=0
-            while i<len(P):
-                if P[i][0]<d:
-                    dict[P[i][0]]=P[i][1]
-                i=i+1
-            if len(dict)!=0:
-                return polynomial.OneVariableSparsePolynomial(dict,["x"])
-            else:
-                return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
-        else:
-            return poly.toOneVariableSparsePolynomial()
-    else:
-        raise ValueError,"you must imput (poly,OneVariable{Dense,Sparese}Polynomial)"
-
-def Div(poly,d):
-    """
-    this returns poly//(x^d)
-    """
-    if d==0:
-        return poly.toOneVariableSparsePolynomial()
-    elif isinstance(poly,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)):
-        if isinstance(poly,polynomial.OneVariableSparsePolynomial):
-            poly=poly.toOneVariableDensePolynomial()
-        P=poly.coefficient.getAsDict()
-        if min(P)>=d:
-            P=P.items()
-            i=0
-            dict={}
-            while i<len(P):
-                dict[P[i][0]-d]=P[i][1]
-                i=i+1
-            return polynomial.OneVariableSparsePolynomial(dict,["x"])
-        else:
-            raise ValueError,"*/x^"
-    else:
-        raise ValueError,"*/x^"
-
-def Mul(f,g):
-    """
-    all coefficient are nonnegative integer
-    """
-    if isinstance(f,(int,long)) or isinstance(g,(int,long)):
-        return f*g
-    elif f.degree()<1 or g.degree()<1:
-        return f*g
-    else:
-        pass
-    F=f.toOneVariableDensePolynomial()
-    G=g.toOneVariableDensePolynomial()
-    if len(F.coefficient.getAsDict())*len(G.coefficient.getAsDict())<f.degree()+g.degree():
-        return f*g
-    f=f.toOneVariableSparsePolynomial()
-    g=g.toOneVariableSparsePolynomial()
-    F=f.degree()
-    G=g.degree()
-    v=max(F+1,G+1)*max(f.coefficient)*max(g.coefficient)
-    i=2
-    while i<=v:
-        i=i*2
-    X=Evaluate(f,i)
-    Y=Evaluate(g,i)
-    u=X*Y
-    L=[]
-    j=0
-    k=1
-    while j<F+G+1:
-        u=int(u/k)
-        L.append(u%i)
-        k=i
-        j=j+1
-    return polynomial.OneVariableDensePolynomial(L,"x").toOneVariableSparsePolynomial()
-
-def Inver_p(poly,d,p):
-    """
-    this returns poly inversion mod x^d /F_p
-    """
-    poly=poly%p
-    poly=poly.toOneVariableDensePolynomial()
-    L=poly.coefficient.getAsList()
-    if len(L)==1:
-        return polynomial.OneVariableSparsePolynomial({(0,):Element_p(rational.Rational(1,L[0]),p)},["x"]) 
-    if L[0]!=1:
-        poly=poly*Element_p(rational.Rational(1,L[0]),p)%p
-    poly=poly.toOneVariableSparsePolynomial()
-    f=polynomial.OneVariableSparsePolynomial({0:1},["x"])
-    n=1
-    while n<d+1:
-        n=2*n
-        if n>d+1:
-            n=d+1
-        g=Mod(poly,n)%p
-        g=Mod(f*g%p,n)%p 
-        f=Mod(f*(2-g)%p,n)%p 
-    if L[0]==1:
-        return f%p
-    else:
-        return f*Element_p(rational.Rational(1,L[0]),p)%p
-
-def PolyMod_p(f,g,p):
-    """
-    return f (mod g)/F_p
-    """
-    def rev(poly,d):
-        poly=poly.toOneVariableDensePolynomial()
-        L=poly.coefficient.getAsList()
-        if len(L)<=d:
-            i=0
-            while len(L)<=d:
-                L.append(0)
-                i=i+1
-        f=0
-        i=0
-        while i<=d:
-            if L[d-i]!=0:
-                f=f+polynomial.OneVariableSparsePolynomial({i:L[d-i]},["x"])
-            i=i+1
-        return f
-    def ind(poly,d):
-        if isinstance(poly,(int,long)):
-            return 0
-        else:
-            if poly.degree()<d:
-                return 0
-            poly=poly.toOneVariableDensePolynomial()
-            L=poly.coefficient.getAsList()
-            i=d
-            while i<len(L):
-                if L[i]!=0:
-                    break
-                i=i+1
-            return i        
-    f=f%p
-    g=g%p
-    f=f.toOneVariableSparsePolynomial()
-    g=g.toOneVariableSparsePolynomial()
-    a=g.coefficient[g.degree()]
-    if a!=1:
-        g=g*Element_p(rational.Rational(1,a),p)%p
-    d=f.degree()-g.degree()
-    if g.degree()<=0:
+    if isinstance(g,(int,long,finitefield.FinitePrimeFieldElement)): ##
         return 0
-    elif d<0:
+    elif isinstance(f,(int,long,finitefield.FinitePrimeFieldElement)): ##
         return f
     else:
-        F=rev(f,f.degree())
-        G=rev(g,g.degree())
-        q=Inver_p(G,d,p)
-        q=Mod(q*F%p,d+1) 
-        r=(F-q*G)%p 
-        i=ind(r,d+1)
-        r=Div(r,i)
-        return rev(r,f.degree()-i)
+        return f%g
 
-def GCD(f,g,p):
-    f=f%p
-    g=g%p
-    if isinstance(f,(int,long)):
+def GCD(f,g):
+    if f==0 and g!=0:
+        return g
+    elif g==0 and f!=0:
+        return f
+    elif isinstance(f,(int,long,finitefield.FinitePrimeFieldElement)): ##
         return 1
-    elif isinstance(g,(int,long)):
+    elif isinstance(g,(int,long,finitefield.FinitePrimeFieldElement)): ##
         return 1
     else:
-        f=f.toOneVariableSparsePolynomial()
-        g=g.toOneVariableSparsePolynomial()
-        if f.degree()<1 or g.degree()<1:
+        p=f.getRing().gcd(f,g)
+        if p.degree()==0:
             return 1
         else:
-            if f.degree()>g.degree():
-                f,g=f,g
-            elif f.degree()<g.degree():
-                f,g=g,f
-            else: 
-                F=f.coefficient
-                G=g.coefficient
-                if F[f.degree()]>=G[g.degree()]:
-                    f,g=f,g
-                else:
-                    f,g=g,f
-            while g:
-                f,g=g,PolyMod_p(f,g,p)
-                if isinstance(g,(int,long)) and g!=0:
-                    return 1
-                elif isinstance(g,(polynomial.OneVariableDensePolynomial,polynomial.OneVariableSparsePolynomial)) and g.degree()==1:
-                    return 1
-                else:
-                    pass
-            return f
+            return p
 
-def PolyPow_p(f,d,g,p):
+def PolyPow(f,d,g):
     """
-    this returns (f^d)%g in F_p
+    this returns (f^d)%g
     """
+    l=arith1.expand(d,2)
     poly=1
-    i=0
-    while i<d:
-        poly=poly*f
-        poly=PolyMod_p(poly,g,p)
-        i=i+1
+    for i in range(len(l)-1,-1,-1):
+        poly=poly*poly
+        poly=PolyMod(poly,g)
+        if l[i]==1:
+            poly=poly*f
+            poly=PolyMod(poly,g)
     return poly
-    
-def PolyMulRed(list,poly,p):
+
+def PolyMulRed(list,poly):
     """
     list[*] is (OneSparsePoly,int,long)
     poly is OneSparsePoly
     """
-    poly=poly%p
     if poly.degree()<1:
         return 0 
     i=0
     while i<len(list):
         if list[i]==0:
             return 0 
-        elif isinstance(list[i],(int,long)):
+        elif isinstance(list[i],(int,long,finitefield.FinitePrimeFieldElement)): ##
             pass
         elif list[i].degree()>=poly.degree():
-            list[i]=PolyMod_p(list[i],poly,p)
+            list[i]=PolyMod(list[i],poly)
+            if list[i]==0:
+                return 0
         i=i+1
-    POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'])
+    POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'],poly.coefficientRing)
     i=0
     while i<len(list):
         POLY=POLY*list[i]
-        if isinstance(POLY,(int,long)):
+        if isinstance(POLY,(int,long,finitefield.FinitePrimeFieldElement)): ##
             pass
         else:
             if POLY.degree()>=poly.degree():
-                POLY=PolyMod_p(POLY,poly,p)
+                POLY=PolyMod(POLY,poly)
                 if POLY==0:
                     return 0
         i=i+1
     return POLY
+
 # t=imaginary.Complex(a,b)
 #
 #def q(t):
@@ -558,7 +356,7 @@ class EC:
                                   Element_p(A[1],self.ch),
                                   Element_p(A[2],self.ch),
                                   Element_p(A[3],self.ch),
-                                  Element_p(A[4],self.ch),],self.ch)
+                                  Element_p(A[4],self.ch)],self.ch)
                         return other
                 else: 
                     raise ValueError, "you must input nonzero u (-_-;)"
@@ -776,28 +574,25 @@ class EC:
     def lattice(self):
         raise NotImplementedError,"Now making (>_<)"
 
-    def divPoly(self):
-        x=polynomial.OneVariableSparsePolynomial({(1,):1},['x'])
-        y=polynomial.OneVariableSparsePolynomial({(1,):1},['y'])
-        def heart(q):
-            l=[]
-            i=3
-            j=1
-            while j<=4*int(math.sqrt(q)):
-                if prime.primeq(i):
-                    l.append(i)
-                    j=j*i
-                i=i+1
-            return l
-        def change(poly,i,e,p):#y^2->e=x^3+a*x+b and if i%2,div y
+    def divPoly(self,Number):
+        if self.ch==0:
+            x=polynomial.OneVariableSparsePolynomial({1:1},['x'])
+            y=polynomial.OneVariableSparsePolynomial({1:1},['y'])
+        else:
+            x=polynomial.OneVariableSparsePolynomial({1:1},['x'],finitefield.FinitePrimeField(self.ch))
+            y=polynomial.OneVariableSparsePolynomial({1:1},['y'],finitefield.FinitePrimeField(self.ch))
+        def change(poly,i,e,p):
             """
-            poly is multi 
+            poly is multi
             """
             L=poly.coefficient.items()
             if i%2==0:
                 t=0
-                poly=0
-                while t<len(L):
+                if self.ch==0:
+                    poly=0
+                else:
+                    poly=finitefield.FinitePrimeFieldElement(0,p)
+                while t<len(L): # y^2->e
                     k=L[t][0][1]
                     if k%2==0:
                         k=k//2
@@ -806,129 +601,187 @@ class EC:
                         k=(k-1)//2
                         poly=poly+y*e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=poly%p
                 L=poly.coefficient.items()
                 t=0
                 dict={}
-                while t<len(L): #div y
+                while t<len(L):
                     dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]
                     t=t+1
                 poly.coefficient=dict
             else: #y^2->e
                 t=0
-                poly=0
+                if self.ch==0:
+                    poly=0
+                else:
+                    poly=finitefield.FinitePrimeFieldElement(0,p)
                 while t<len(L):
                     k=L[t][0][1]//2
                     poly=poly+e**k*L[t][1]*x**L[t][0][0]
                     t=t+1
-                poly=poly%p 
             return poly.toOneVariableSparsePolynomial()
-        f={}
-        M={}
-        f[-1]=-1
-        M[-1]=-1
-        f[0]=0
-        M[0]=0
-        H=heart(self.ch)
-        if self.ch!=2 and self.ch!=3: 
-            E=self.simple()
-            e=x**3+E.a*x+E.b
-            i=1
-            for i in xrange(1,H[-1]+2):
-                if i==1:
-                    f[1]=1
-                    M[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'])
-                elif i==2:
-                    f[2]=2*y
-                    M[2]=polynomial.OneVariableSparsePolynomial({0:2},['x'])
-                elif i==3:
-                    g=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    g=g%E.ch
-                    f[3]=g
-                    M[3]=g
-                elif i==4:
-                    g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    g=g%E.ch
-                    f[4]=g
-                    M[4]=change(g,i,e,E.ch)
-                else:
-                    if i%2!=0: 
+        if Number==[]:
+            if self.ch==0 and self.ch==2 and self.ch==3:
+                raise ValueError,"You must imput (Nunber)"
+            else:
+                def heart(q):
+                    l=[]
+                    i=3
+                    j=1
+                    while j<=4*int(math.sqrt(q)):
+                        if prime.primeq(i):
+                            l.append(i)
+                            j=j*i
+                        i=i+1
+                    return l
+
+                f={}
+                M={}
+                f[-1]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(-1,self.ch)},["x","y"])
+                M[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],finitefield.FinitePrimeField(self.ch))
+                f[0]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(0,self.ch)},["x","y"])
+                M[0]=polynomial.OneVariableSparsePolynomial({},["x"],finitefield.FinitePrimeField(self.ch))
+                H=heart(self.ch)
+                E=self.simple()
+                e=x**3+E.a*x+finitefield.FinitePrimeFieldElement(E.b,E.ch)
+                i=1
+                while i<=H[-1]+1:
+                    if i==1:
+                        f[1]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(1,self.ch)},["x","y"])
+                        M[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(E.ch))
+                    elif i==2:
+                        f[2]=2*y
+                        M[2]=polynomial.OneVariableSparsePolynomial({0:2},['x'],finitefield.FinitePrimeField(E.ch))
+                    elif i==3:
+                        g=3*x**4+6*E.a*x**2+12*E.b*x-finitefield.FinitePrimeFieldElement(E.a,E.ch)**2
+                        f[3]=g
+                        M[3]=g.toOneVariableSparsePolynomial()
+                    elif i==4:
+                        g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-finitefield.FinitePrimeFieldElement(E.a,E.ch)**3-finitefield.FinitePrimeFieldElement(8,E.ch)*E.b**2)
+                        f[4]=g
+                        g=change(g,i,e,E.ch)
+                        M[4]=polynomial.OneVariableSparsePolynomial(g.coefficient.getAsDict(),["x"],finitefield.FinitePrimeField(E.ch))
+                    else:
+                        if i%2!=0: 
+                            j=(i-1)//2
+                            g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                            f[i]=g
+                            g=change(g,i,e,E.ch)
+                            M[i]=polynomial.OneVariableSparsePolynomial(g.coefficient.getAsDict(),["x"],finitefield.FinitePrimeField(E.ch))
+                        else: 
+                            j=i//2
+                            g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
+                            L=g.coefficient.items()
+                            t=0
+                            dict={}
+                            while t<len(L): #div2*y
+                                dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]*finitefield.FinitePrimeFieldElement(2,E.ch).inverse()
+                                t=t+1
+                            g.coefficient=dict
+                            f[i]=g
+                            g=change(g,i,e,E.ch)
+                            M[i]=polynomial.OneVariableSparsePolynomial(g.coefficient.getAsDict(),["x"],finitefield.FinitePrimeField(E.ch))
+                    i=i+1
+                return M,H
+        else: 
+            f={}
+            if self.ch==0:
+                f[-1]=-1
+                f[0]=0
+                E=self.simple()
+                e=x**3+E.a*x+E.b
+                i=1
+                while i<=Number:
+                    if i==1:
+                        f[1]=1
+                    elif i==2:
+                        f[2]=2*y
+                    elif i==3:
+                        f[3]=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
+                    elif i==4:
+                        f[4]=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
+                    elif i%2!=0:
                         j=(i-1)//2
-                        g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        g=g%E.ch
-                        f[i]=g
-                        M[i]=change(g,i,e,E.ch)
-                    else: 
+                        f[i]=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                    else: #i%2==0
                         j=i//2
                         g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
                         L=g.coefficient.items()
                         t=0
                         dict={}
-                        while t<len(L):
-                            dict[(L[t][0][0],L[t][0][1]-1)]=(L[t][1]%E.ch)//2
+                        while t<len(L): #div2*y
+                            dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]//2
                             t=t+1
                         g.coefficient=dict
                         f[i]=g
-                        M[i]=change(g,i,e,E.ch)
-        elif self.ch==2:#E(ch=2):y^2+x*y=x^3+a2*x^2+a6
-            for i in xrange(1,H[-1]+1):
-                if i==1:
-                    f[1]=1
-                    M[1]=1
-                elif i==2:
-                    f[2]=x
-                    M[2]=x
-                elif i==3:
-                    g=x**4+x**3+self.a6
-                    G=g.coefficient
-                    L=G.items()
-                    t=0
-                    dict={}
-                    while t<len(L):
-                        dict[L[t][0]]=Element_p(L[t][1],2)
-                        t=t+1
-                    g.coefficient=dict
-                    f[3]=g
-                    M[3]=g
-                elif i==4:
-                    g=x**6+self.a6*x**2
-                    L=g.coefficient.items()
-                    t=0
-                    dict={}
-                    while t<len(L):
-                        dict[L[t][0]]=Element_p(L[t][1],2)
-                        t=t+1
-                    g.coefficient=dict
-                    f[4]=g
-                    M[4]=g
-                else:
-                    if i%2!=0:
-                        j=(i-1)//2
-                        g=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
-                        L=g.coefficient.items()
-                        t=0
-                        dict={}
-                        while t<len(L):
-                            dict[L[t][0]]=Element_p(L[t][1],2)
-                            t=t+1
-                        g.coefficient=dict
-                        f[i]=g
-                        M[i]=g
+                    i=i+1
+                return change(f[Number],Number,e,0)
+            elif self.ch==2:
+                f[-1]=finitefield.FinitePrimeFieldElement(-1,2)
+                f[0]=finitefield.FinitePrimeFieldElement(0,2)
+                i=1
+                while i<=Number:
+                    if i==1:
+                        f[1]=finitefield.FinitePrimeFieldElement(1,2)
+                    elif i==2:
+                        f[2]=x
+                    elif i==3:
+                        f[3]=x**4+x**3+self.a6
+                    elif i==4:
+                        f[4]=x**6+self.a6*x**2
                     else:
-                        j=i//2
-                        g=(f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j]
-                        L=g.coefficient.items()
-                        t=0
-                        dict={}
-                        while t<len(L):
-                            dict[(L[t][0][0]-1,)]=Element_p(L[t][1],2)
-                            t=t+1
-                        g.coefficient=dict
-                        f[i]=g
-                        M[i]=g
-        else: #self.ch==3:
-            raise NotImplementedError, "Now making (>_<)"
-        return M,H
+                        if i%2!=0:
+                            j=(i-1)//2
+                            f[i]=f[j+2]*f[j]*f[j]*f[j]+f[j-1]*f[j+1]*f[j+1]*f[j+1]
+                        else:
+                            j=i//2
+                            g=(f[j+2]*f[j-1]*f[j-1]+f[j-2]*f[j+1]*f[j+1])*f[j]
+                            L=g.coefficient.getAsDict().items()
+                            t=0
+                            dict={}
+                            while t<len(L):
+                                dict[L[t][0][0]-1]=finitefield.FinitePrimeFieldElement(L[t][1],2)
+                                t=t+1
+                            g.coefficient=dict
+                            f[i]=g
+                    i=i+1
+                return f[Number]
+            elif self.ch==3:
+                raise NotImplementedError,"Now making (>_<)"
+            else:
+                f[-1]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(-1,self.ch)},["x","y"])
+                f[0]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(0,self.ch)},["x","y"])
+                E=self.simple()
+                e=x**3+E.a*x+finitefield.FinitePrimeFieldElement(E.b,E.ch)
+                i=1
+                while i<=Number:
+                    if i==1:
+                        f[1]=polynomial.MultiVariableSparsePolynomial({(0,0):finitefield.FinitePrimeFieldElement(1,self.ch)},["x","y"])
+                    elif i==2:
+                        f[2]=2*y
+                    elif i==3:
+                        g=3*x**4+6*E.a*x**2+12*E.b*x-finitefield.FinitePrimeFieldElement(E.a,E.ch)**2
+                        f[3]=g
+                    elif i==4:
+                        g=4*y*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-finitefield.FinitePrimeFieldElement(E.a,E.ch)**3-finitefield.FinitePrimeFieldElement(8,E.ch)*E.b**2)
+                        f[4]=g
+                    else:
+                        if i%2!=0: 
+                            j=(i-1)//2
+                            g=f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                            f[i]=g
+                        else: 
+                            j=i//2
+                            g=(f[j+2]*(f[j-1]**2)-f[j-2]*(f[j+1]**2))*f[j] 
+                            L=g.coefficient.items()
+                            t=0
+                            dict={}
+                            while t<len(L): #div2*y
+                                dict[(L[t][0][0],L[t][0][1]-1)]=L[t][1]*finitefield.FinitePrimeFieldElement(2,E.ch).inverse()
+                                t=t+1
+                            g.coefficient=dict
+                            f[i]=g
+                    i=i+1
+                return change(f[Number],Number,e,0)
     
     def order(self): 
         """
@@ -950,7 +803,7 @@ class EC:
                     j=L[i]
                     t=0
                     while t<other.ch:
-                        if Evaluate_p(D[j],t,other.ch)==0:
+                        if D[j](t)==0:
                             if other.coordinateX(t)!=0:
                                 P=[t,other.coordinateX(t)]
                                 break
@@ -982,7 +835,8 @@ class EC:
                     other=self.simple()
                 else:
                     other=self 
-                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'])
+                E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],finitefield.FinitePrimeField(other.ch))
+                x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch)) 
                 T=[]
                 D=other.divPoly()
                 L=D[1]
@@ -990,73 +844,143 @@ class EC:
                 i=0
                 while i<len(L):
                     j=L[i]
-                    u=PolyPow_p(polynomial.OneVariableSparsePolynomial({1:1},["x"]),other.ch,D[j],other.ch) #u=x^q
-                    v=PolyPow_p(u,other.ch,D[j],other.ch) #v=x^(q^2)
-                    k=self.ch%j
+                    if D[j].coefficient[D[j].degree()]!=finitefield.FinitePrimeFieldElement(1,other.ch).n:#
+                        D[j]=D[j]*D[j].coefficient[D[j].degree()].inverse()#
+                    u=PolyPow(x,other.ch,D[j]) #u=x^q
+                    v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
+                    k=other.ch%j
                     if k%2==0:
-                        f=v-polynomial.OneVariableSparsePolynomial({1:1},["x"])
-                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j],other.ch)+PolyMulRed([D[k-1],D[k+1]],D[j],other.ch),D[j],other.ch)
+                        f=v-x
+                        P=GCD(PolyMulRed([f,E,D[k],D[k]],D[j])+PolyMulRed([D[k-1],D[k+1]],D[j]),D[j])
                     else:
-                        f=v-polynomial.OneVariableSparsePolynomial({1:1},["x"])
-                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j],other.ch)+PolyMulRed([D[k-1],D[k+1],E],D[j],other.ch),D[j],other.ch)
-                    print P,j
+                        f=v-x
+                        P=GCD(PolyMulRed([f,D[k],D[k]],D[j])+PolyMulRed([D[k-1],D[k+1],E],D[j]),D[j])
                     if P!=1:
                         if arith1.legendre(other.ch,j)==-1:
                             T.append((0,j))
+                            print T,"$"
                         else:
                             w=arith1.sqroot(k,j)
                             if w%2==0:
-                                P=GCD(PolyMulRed([u-polynomial.OneVariableSparsePolynomial({1:1},["x"]),D[w],D[w],E],D[j],other.ch)+PolyMulRed([D[w-1],D[w+1]],D[j],other.ch),D[j],other.ch)
+                                P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
                             else:
-                                P=GCD(PolyMulred([u-polynomial.OneVariableSparsePolynomial({1:1},["x"]),D[w],D[w]],D[j],other.ch)+PolyMulRed([D[w-1],D[w+1],E],D[j],other.ch),D[j],other.ch)
+                                P=GCD(PolyMulRed([u-x,D[w],D[w]],D[j])+PolyMulRed([D[w-1],D[w+1],E],D[j]),D[j])
                             if P!=1:
                                 if w%2==0:
-                                    P=GCD(PolyMulRed([4,PolyPow_p(E,int((other.ch-1)/2),D[j],other.ch),PolyPow_p(D[w],3,D[j],other.ch)],D[j],other.ch)-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j],other.ch)+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j],other.ch),D[j],other.ch)
+                                    P=GCD(PolyMulRed([4,PolyPow(E,int((other.ch-1)/2),D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j])+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j]),D[j])
                                 else:
-                                    P=GCD(PolyMulRed([4,PolyPow_p(E,int((other.ch+3)/2),D[j],other.ch),PolyPow_p(D[w],3,D[j],other.ch)],D[j],other.ch)-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j],other.ch)+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j],other.ch),D[j],other.ch)
+                                    P=GCD(PolyMulRed([4,PolyPow(E,int((other.ch+3)/2),D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w+2],D[w+2],D[w-1]],D[j])+PolyMulRed([D[w-2],D[w-2],D[w+1]],D[j]),D[j])
                                 if P!=1:
                                     T.append((2*w,j))
+                                    print T,"$$"
                                 else:
                                     T.append((-2*w,j))
+                                    print T,"$$$"
                             else:
                                 T.append((0,j))
+                                print T,"$$$$"
                     else:
-                        i=i+1
-                        pass
-                        #--------------------------------------------------------
-                        # 
-#                        if k%2==0:
-#                            pass #compute (X,Y)_k
-#                        else:
-#                            pass
-#                        t=1
-#                        while t<k:
-#                            if t%2==0:
-#                                pass #compute X_t
-#                            else:
-#                                pass
-#                            P=GCD(,D[j],other.ch)
-#                            if P!=1:
-#                                if t%2==0:
-#                                    pass #compute Y_t
-#                                else:
-#                                    pass
-#                                P=GCD(,D[j],other.ch)
-#                                if P!=1:
-#                                    T.append((t,j))
-#                                    print T,"@"
-#                                    break
-#                            t=t+1
-#                            if t=k:
-#                                T.append((0,j))
-#                                print T,"@@"
-#                    i=i+1
-#                    print T,j
+                        #----------------------------------------------------
+                        X=v+u+x#PolyMod(v+u+x,D[j])
+                        Y=x-v#PolyMod(x-v,D[j])
+                        Z=-2*v-x#PolyMod(-2*v-x,D[j])
+                        f0=PolyMulRed([D[k-1],D[k+1]],D[j])
+                        f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
+                        f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
+                        f3=PolyMulRed([D[k],D[k]],D[j])
+                        g0=PolyPow(E,int((other.ch-1)/2),D[j])#y^(q-1)
+                        g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1)
+                        if k%2==0:
+                            g2=PolyMulRed([g1,E,E],D[j])
+                            f=f1-g2-4*PolyMulRed([g2,f3,D[k]],D[j])#PolyMod(f1-g2-PolyMulRed([4,g2,f3,D[k]],D[j]),D[j])
+                            g=4*(PolyMulRed([Y,E,f3],D[j])-f0)
+                            h0=PolyMulRed([g,g],D[j])
+                            h1=PolyMulRed([f,f],D[j])
+                            X_d=PolyMulRed([E,f3,h0],D[j])
+                            X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([f0,h0],D[j])-h1
+                            #============================
+                            h2=PolyMulRed([E,f3,h0],D[j])
+                            Y_d=PolyMulRed([E,D[k],g,h1],D[j])
+                            y0=PolyMulRed([Z,h2],D[j])+PolyMulRed([f0,h0],D[j])+h1
+                            Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                            #============================
+                            #h1=PolyMulRed([E,f3],D[j])
+                            #Y_d=PolyMulRed([h1,D[k],g],D[j])
+                            #Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,PolyMulRed([Z,h1],D[j])+f0],D[j])
+                            #============================
+                        else:
+                            f=PolyMod(f1-f2-4*PolyMulRed([g1,f3,D[k]],D[j]))
+                            g=4*(PolyMulRed([Y,f3],D[j])-PolyMulRed([E,f0],D[j]))
+                            h0=PolyMulRed([g,g],D[j])
+                            h1=PolyMulRed([f,f],D[j])
+                            X_d=PolyMulRed([f3,h0],D[j])
+                            X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([E,f0,h0],D[j])-PolyMulRed([E,h1],D[j])
+                            #============================
+                            h2=PolyMulRed([f3,h0],D[j])
+                            Y_d=PolyMulRed([D[k],g,h2],D[j])
+                            y0=PolyMulRed([Z,h2],D[j])+PolyMulRed([E,f0,h0],D[j])+PolyMulRed([E,h1],D[j])
+                            Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                            #============================
+                            #Y_d=PolyMulRed([f3,D[k],g],D[j])
+                            #Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,PolyMulRed([Z,f3],D[j])+PolyMulRed([E,f0],D[j])],D[j])
+                            #============================
+                        ##x1=X_d.getRing().gcd(X_d,X_n)
+                        ##ONE=polynomial.OneVariableSparsePolynomial({0:1},["x"],finitefield.FinitePrimeField(other.ch))
+                        ##if x1!=ONE:
+                        ##    X_d=X_d//x1
+                        ##    X_n=X_n//x1
+                        ##y1=Y_d.getRing().gcd(Y_d,Y_n)
+                        ##if y1!=ONE:
+                        ##    Y_d=Y_d//y1
+                        ##    Y_n=Y_n//y1
+                        t=1
+                        while t<j:
+                            print t,j,"#"
+                            if t%2==0:
+                                Z_d_x=PolyPow(PolyMulRed([E,D[t],D[t]],D[j]),other.ch,D[j])
+                                Z_n_x=PolyPow(PolyMulRed([D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+                            else:
+                                Z_d_x=PolyPow(D[t],2*other.ch,D[j])
+                                Z_n_x=PolyPow(PolyMulRed([E,D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+
+                            ##z1=Z_d_x.getRing().gcd(Z_d_x,Z_n_x)
+                            ##z2=Z_d_y.getRing().gcd(Z_d_y,Z_n_y)
+                            ##if z1!=ONE:
+                            ##    Z_d_x=Z_d_x//z1
+                            ##    Z_n_x=Z_n_x//z1
+                            ##if z2!=ONE:
+                            ##    Z_d_y=Z_d_y//z2
+                            ##    Z_n_y=Z_n_y//z2
+
+                            #P=GCD(PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j]),D[j])
+                            #Q=GCD(PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j]),D[j])
+                            #P=PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j])
+                            #Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
+                            P=PolyMod(X_n*Z_d_x-X_d*Z_n_x,D[j])
+                            Q=PolyMod(Y_n*Z_d_y-Y_d*Z_n_y,D[j])
+                            print P,"P"
+                            print Q,"Q"
+                            if P==0 and Q==0:
+                            #if P!=1 and Q!=1:
+                                T.append((t,j))
+                                print T,"@"
+                                break
+                            t=t+1
+                            if t==j:
+                                T.append((0,j))
+                                print T,"@@"
+                    i=i+1
                 return T
             else:
                 raise NotImplementedError, "Now making (>_<)"
         
-        return schoof(self)###
+        #return schoof(self)###
 
         def Shanks_Mestre(self):
             import sets
