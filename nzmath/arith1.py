@@ -64,39 +64,41 @@ def legendre(a,m):
     return 0
 
 
-def sqroot(a,p): # p is a prime
+def sqroot(a,p):
     """
-    This program returns squareroot of 'a' for mod'p'
+    This program returns squareroot of 'a' for mod 'p'.
+    'p' must be an odd prime.
     """
-    if legendre(a,p)==1:
-        if p%8==3 or p%8==5 or p%8==7:
-            a=a%p
-            if p%8==3 or p%8==7:
-                x=pow(a,((p+1)/4),p)
+    if legendre(a,p) == 1:
+        pmod8 = p % 8
+        if pmod8 != 1:
+            a = a % p
+            if pmod8 == 3 or pmod8 == 7:
+                x = pow(a, ((p+1)/4), p)
                 return x
             else: # p%8==5
-                x=pow(a,((p+3)/8),p)
-                c= (x**2)%p
-                if c%p!=a%p:
-                    x=x*(2**((p-1)/4))%p
+                x = pow(a, ((p+3)/8), p)
+                c = (x**2) % p
+                if c != a:
+                    x = x*(2**((p-1)/4)) % p
                 return x
         else: #p%8==1
-            d=random.randint(2,p-1)
-            while legendre(d,p)!=-1:
-                d=random.randint(2,p-1)
-            s=0
-            q=p-1
-            while q%2==0:
-                q=q/2
-                s=s+1
-            t=(p-1)/2**s
-            A=pow(a,t,p)
-            D=pow(d,t,p)
-            m=0
+            d = random.randint(2, p-1)
+            while legendre(d, p) != -1:
+                d = random.randint(2, p-1)
+            s = 0
+            q = p-1
+            while q%2 == 0:
+                q //= 2
+                s += 1
+            t = (p-1)/2**s
+            A = pow(a,t,p)
+            D = pow(d,t,p)
+            m = 0
             for i in range(1,s):
                 if pow((A*(D**m)),(2**(s-1-i)),p) == (p-1):
-                    m=m+2**i
-            x=(a**((t+1)/2))*(D**(m/2))%p
+                    m = m + 2**i
+            x = (a**((t+1)/2)) * (D**(m/2)) % p
             return x
     elif legendre(a,p)==0:
         return 0
@@ -104,36 +106,36 @@ def sqroot(a,p): # p is a prime
         raise ValueError,"There is no solution"
 
 
-def expand(n,m):#n>m>0
+def expand(n,m):
     """
-    This program returns m-adic expansion for n
+    This program returns m-adic expansion for n.
+    n and m should satisfy n > m > 0.
     """
-    k=[]
-    while n/m!=0:
-        i=n%m
-        k.append(i)
-        n=n/m
+    k = []
+    while n//m:
+        k.append(n % m)
+        n //= m
     k.append(n%m)
     return k
 
-def inverse(x,p): #x>0 
+def inverse(x,p):
     """
-    This program returns inverse of x for modulo p
+    This program returns inverse of x for modulo p.
     """
     if x<0:
         while x<0:
-            x=x+p
-    y=gcd.extgcd(p,x)
+            x += p
+    y = gcd.extgcd(p,x)
     if y[2]==1:
         if y[1]<0:
-            r=p+y[1]
+            r = p+y[1]
             return r
         else:
             return y[1]
     else:
         return False
 
-def CRT(list): 
+def CRT(list):
     """
     This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
