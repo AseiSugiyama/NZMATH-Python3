@@ -325,17 +325,24 @@ def tan(x, precision=real.doubleprecision):
     return sin(x, precision) / cos(x, precision)
 
 def log(x, precision=real.doubleprecision):
+    """
+
+    log(x [,precision]) returns the natural logarithm of x. There is
+    one branch cut, from 0 along the negative real axis to -infinity,
+    continuous from above.
+
+    """
     if isinstance(x, Complex):
         if isinstance(x.real, real.Float) and precision < x.real.precision:
             precision = x.real.precision
         if isinstance(x.imag, real.Float) and precision < x.imag.precision:
             precision = x.imag.precision
-        if x.imag == 0:
-            return real.log(x.real, precision)
-    elif x in real.theRealField:
-        return real.log(x, precision)
-    if x == 1:
-        return real.Float(0, 0, precision)
+    if x in real.theRealField:
+        x = +x
+        if x > 0:
+            return real.log(x, precision)
+        elif x < 0:
+            return Complex(real.log(abs(x)), pi)
     return Complex(real.log(abs(x)), real.atan2(x.real, x.imag))
 
 def sinh(x, precision=real.doubleprecision):
