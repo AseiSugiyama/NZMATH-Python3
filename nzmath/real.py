@@ -272,10 +272,6 @@ class Float:
                 if bits > precision:
                     mantissa >>= (bits - precision)
                     exponent += (bits - precision)
-                elif exponent > 0 and bits + exponent < precision: #underflow
-                    precision = bits + exponent
-                elif exponent <= 0 and bits < precision: # underflow
-                    precision = bits
             return self.__class__(mantissa, exponent, precision)
 
     def __neg__(self):
@@ -401,6 +397,8 @@ def sqrt(aFloat, precision=doubleprecision):
         yrat = y.toRational()
         prat = rational.Rational(1, 2**prec)
         return -prat < (xrat - yrat) / xrat < prat
+    if precision < aFloat.precision:
+        precision = aFloat.precision
     if aFloat.mantissa < 0:
         raise ValueError, "negative number is passed to sqrt"
     if aFloat.mantissa == 0:
@@ -513,6 +511,8 @@ def piGaussLegendre(precision):
     return (a + b) ** 2 / (t * 4)
 
 def exp(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
     if x < 0:
         return exp(-x, precision).inverse()
     if x == 0:
@@ -521,7 +521,7 @@ def exp(x, precision=doubleprecision):
     y = x.copy()
     y.setDefaultPrecision(precision)
     f = i = 1
-    oldretval = 0
+    oldretval = None
     while oldretval != retval:
         oldretval = retval.copy()
         retval += y / f
@@ -531,6 +531,8 @@ def exp(x, precision=doubleprecision):
     return retval
 
 def sin(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
     twopi = piGaussLegendre(2*precision) * 2
     y = x.copy()
     y.setDefaultPrecision(precision)
@@ -542,7 +544,7 @@ def sin(x, precision=doubleprecision):
     y2 = y ** 2
     i = f = 1
     sign = -1
-    oldretval = 1
+    oldretval = None
     while oldretval != retval:
         oldretval = retval.copy()
         if sign == -1:
@@ -561,6 +563,8 @@ def sin(x, precision=doubleprecision):
     return retval
 
 def cos(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
     twopi = piGaussLegendre(2*precision) * 2
     y = x.copy()
     y.setDefaultPrecision(precision)
@@ -573,7 +577,7 @@ def cos(x, precision=doubleprecision):
     y = Float(1,0,2*precision)
     i = f = 1
     sign = -1
-    oldretval = 1
+    oldretval = None
     while oldretval != retval:
         oldretval = retval.copy()
         if sign == -1:
@@ -592,9 +596,13 @@ def cos(x, precision=doubleprecision):
     return retval
 
 def tan(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
     return sin(x, precision) / cos(x, precision)
 
 def log(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
     if x == 1:
         return Float(0, 0, precision)
     if x <= 0:
@@ -604,11 +612,51 @@ def log(x, precision=doubleprecision):
     y1 = 1 - x
     y = y1.copy()
     retval = Float(0,0,2*precision)
-    oldretval = 1
     i = 1
+    oldretval = None
     while retval != oldretval:
         oldretval = retval
         retval += y / i
         y *= y1
         i += 1
     return -retval
+
+def sinh(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    y = x.copy()
+    y.setDefaultPrecision(2*precision)
+    retval = Float(0,0,2*precision)
+    y2 = y ** 2
+    i = f = 1
+    oldretval = None
+    while oldretval != retval:
+        oldretval = retval.copy()
+        retval += y / f
+        f *= (i+1)*(i+2)
+        i += 2
+        y *= y2
+    return retval
+
+def cosh(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    y = x.copy()
+    y.setDefaultPrecision(2*precision)
+    retval = Float(0, 0, precision)
+    y2 = y ** 2
+    y = Float(1,0,2*precision)
+    i = f = 1
+    oldretval = None
+    while oldretval != retval:
+        oldretval = retval.copy()
+        retval += y / f
+        f *= i*(i+1)
+        i += 2
+        y *= y2
+    return retval
+
+def tanh(x, precision=doubleprecision):
+    if precision < x.precision:
+        precision = x.precision
+    return sinh(x, precision) / cosh(x, precision)
