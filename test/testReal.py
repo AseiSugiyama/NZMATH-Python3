@@ -94,6 +94,7 @@ class FloatTest (unittest.TestCase):
         assert log2 == logf2
         log2inverse = real.log(.5)
         assert log2 == -log2inverse
+        assert "0.6931471805599452" == str(log2)[:18]
 
     def testAtan2(self):
         assert real.pi / 2 == real.atan2(1,0)

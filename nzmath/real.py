@@ -726,7 +726,7 @@ def sum(iter, precision):
         termList.append(term)
         if abs(term) < abs(about) / 2**(2*precision):
             break
-    termList.sort()
+    termList.reverse()
     return reduce(operator.add, termList, 0)
 
 def exp(x, precision=doubleprecision):
@@ -866,6 +866,20 @@ def log(x, precision=doubleprecision):
     log(x [,precision]) returns the logarithm of positive real number x.
 
     """
+    def log_iter(xx, pp):
+        """
+
+        log_iter is a generator. log_iter(x, precision) generates the
+        terms of Taylor expansion series of log with x.
+
+        """
+        y = Float(xx, 0, precision)
+        yield y
+        i = 1
+        while 1:
+            y *= xx
+            i += 1
+            yield (y / i)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x == 1:
@@ -878,16 +892,7 @@ def log(x, precision=doubleprecision):
             return -log(rational.Rational(1,x), precision)
         return -log(x.inverse(), precision)
     y1 = 1 - x
-    y = Float(y1, 0, precision)
-    eps = Float(1, -2*precision)
-    i = 1
-    series = [y]
-    while series[-1] > eps:
-        y *= y1
-        i += 1
-        series.append(y / i)
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
+    retval = sum(log_iter(y1, precision), precision)
     return -retval
 
 def sinh(x, precision=doubleprecision):
