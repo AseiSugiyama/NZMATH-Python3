@@ -1,4 +1,5 @@
 import unittest
+import testArith1
 import testBigrandom
 import testFactor
 import testGcd
@@ -15,6 +16,7 @@ import testVector
 
 def suite():
     suite = unittest.TestSuite()
+    suite.addTest(testArith1.suite())
     suite.addTest(testBigrandom.suite())
     suite.addTest(testFactor.suite())
     suite.addTest(testGcd.suite())
