@@ -1036,10 +1036,13 @@ def atan(x, precision=doubleprecision):
         return pi(2*precision) / 2 - atan(x.inverse(), precision)
     elif x == 1:
         return pi(precision) / 4
-    i = 1
-    y = x.copy()
+    if isinstance(x, Float):
+        y = x.copy()
+    else:
+        y = Float(x)
     y2 = y ** 2
     series = [y]
+    i = 1
     eps = Float(1, -2*precision)
     while abs(series[-1]) > eps:
         i += 2
