@@ -397,7 +397,7 @@ class OneVariableDensePolynomial:
             return OneVariableSparsePolynomial(return_coefficient, return_variable)
 
     def toMultiVariableDensePolynomial(self):
-        return MultiVariableDencePolynomial(self.coefficient, self.variable).adjust()
+        return MultiVariableDensePolynomial(self.coefficient, self.variable).adjust()
 
     def toMultiVariableSparsePolynomial(self):
         self = self.adjust()
