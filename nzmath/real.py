@@ -279,10 +279,10 @@ class Float:
             return self.__class__(mantissa, exponent, precision)
 
     def __neg__(self):
-        return self.__class__(-mantissa, exponent, precision)
+        return self.__class__(-self.mantissa, self.exponent, self.precision)
 
     def __pos__(self):
-        return self.__class__(+mantissa, exponent, precision)
+        return self.__class__(+self.mantissa, self.exponent, self.precision)
 
     def __eq__(self, other):
         try:
@@ -529,3 +529,68 @@ def exp(x, precision=doubleprecision):
         f *= i
         y *= x
     return retval
+
+def sin(x, precision=doubleprecision):
+    twopi = piGaussLegendre(2*precision) * 2
+    y = x.copy()
+    y.setDefaultPrecision(precision)
+    if y > twopi:
+        y -= floor(y / twopi) * twopi
+    elif y < -twopi:
+        y += ceil(-y / twopi) * twopi
+    retval = Float(0,0,2*precision)
+    y2 = y ** 2
+    i = f = 1
+    sign = -1
+    oldretval = 1
+    while oldretval != retval:
+        oldretval = retval.copy()
+        if sign == -1:
+            retval += y / f
+            sign = 1
+        else:
+            retval -= y / f
+            sign = -1
+        f *= (i+1)*(i+2)
+        i += 2
+        y *= y2
+    if retval > 1:
+        retval = 1
+    elif retval < -1:
+        retval = -1
+    return retval
+
+def cos(x, precision=doubleprecision):
+    twopi = piGaussLegendre(2*precision) * 2
+    y = x.copy()
+    y.setDefaultPrecision(precision)
+    if y > twopi:
+        y -= floor(y / twopi) * twopi
+    elif y < -twopi:
+        y += ceil(-y / twopi) * twopi
+    retval = Float(0,0,2*precision)
+    y2 = y ** 2
+    y = Float(1,0,2*precision)
+    i = f = 1
+    sign = -1
+    oldretval = 1
+    while oldretval != retval:
+        oldretval = retval.copy()
+        if sign == -1:
+            retval += y / f
+            sign = 1
+        else:
+            retval -= y / f
+            sign = -1
+        f *= i*(i+1)
+        i += 2
+        y *= y2
+    if retval > 1:
+        retval = 1
+    elif retval < -1:
+        retval = -1
+    return retval
+
+def tan(x, precision=doubleprecision):
+    return sin(x, precision) / cos(x, precision)
+

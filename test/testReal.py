@@ -65,6 +65,10 @@ class FloatTest (unittest.TestCase):
         assert sqrt2.mantissa == 23, sqrt2.mantissa
         assert sqrt2.exponent == -4, sqrt2.exponent
 
+    def testNeg(self):
+        zero = real.Float(0,0,None)
+        assert zero == -zero
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite
