@@ -15,6 +15,7 @@ def euler(n):
     return p
 
 def moebius(n):
+
     """
     This program returns Moebius function for n
     
@@ -30,6 +31,7 @@ def moebius(n):
 
 
 def legendre(a,m): 
+
     """
     This program returns Legendre symbol (a/m)
     If m is a odd composite then this is Jacobi symbol
@@ -52,11 +54,11 @@ def legendre(a,m):
 
 
 def sqroot(a,p): # p is a prime
+
     """
     This program returns squareroot of 'a' for mod'p'
     
     """
-
     if legendre(a,p)==1:
         if p%8==3 or p%8==5 or p%8==7:
             a=a%p
@@ -92,6 +94,7 @@ def sqroot(a,p): # p is a prime
 
 
 def expand(n,m):#n>m>0
+
     """
     This program returns m-adic expansion for n
     
@@ -105,6 +108,7 @@ def expand(n,m):#n>m>0
     return k
 
 def inverse(x,p): #x>0 
+
     """
     This program returns inverse of x for modulo p
     
@@ -121,6 +125,7 @@ def inverse(x,p): #x>0
 
 
 def CRT(list): 
+
     """
     This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
