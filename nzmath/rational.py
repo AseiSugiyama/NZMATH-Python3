@@ -97,6 +97,9 @@ class Rational (ring.QuotientFieldElement):
             denominator = self.denominator*other.numerator
             return +Rational(numerator,denominator)
         elif isIntegerObject(other):
+            q, r = divmod(self.numerator, other)
+            if r == 0:
+                return Rational(q, self.denominator)
             numerator = self.numerator
             denominator = self.denominator*other
             return +Rational(numerator,denominator)
@@ -221,10 +224,12 @@ class Rational (ring.QuotientFieldElement):
         if base == 0:
             return self.trim(limit)
         assert isIntegerObject(base) and base > 0
+        if self < 0:
+            return -(-self).expand(base, limit)
         numerator, rest = divmod(self.numerator, self.denominator)
         i = 0
         if base == 2:
-            while numerator < limit and rest:
+            while numerator*2 <= limit and rest:
                 numerator <<= 1
                 rest <<= 1
                 i += 1
@@ -234,7 +239,7 @@ class Rational (ring.QuotientFieldElement):
             if rest*2 > self.denominator:
                 numerator += 1
         else:
-            while numerator < limit and rest:
+            while numerator*base <= limit and rest:
                 numerator *= base
                 rest *= base
                 i += 1
@@ -281,6 +286,9 @@ class Rational (ring.QuotientFieldElement):
         return theRationalField
 
     def _reduce(self):
+        if self.denominator < 0:
+            self.numerator = -self.numerator
+            self.denominator = -self.denominator
         commonDivisor = theIntegerRing.gcd(self.numerator, self.denominator)
         if commonDivisor != 1:
             self.numerator //= commonDivisor
@@ -457,13 +465,12 @@ class Integer(long, ring.CommutativeRingElement):
             return NotImplemented
 
     def __mod__(self, other):
-        return Integer(long(self)%other)
+        if isinstance(other, (int,long)):
+            return Integer(long(self)%long(other))
+        return NotImplemented
 
     def __rmod__(self, other):
-        try:
-            return Integer(other%long(self))
-        except:
-            return NotImplemented
+        return Integer(other%long(self))
 
     def __divmod__(self, other):
         return tuple(map(Integer, divmod(long(self), other)))
