@@ -802,6 +802,8 @@ class MatrixRing:
 
     getInstance = classmethod(getInstance)
 
+    def unitMatrix(self):
+        return unitMatrix(self.size)
 
 class Subspace(Matrix):
     """
