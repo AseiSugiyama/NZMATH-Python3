@@ -418,3 +418,21 @@ def tanh(x, precision=real.doubleprecision):
     return sinh(x, precision) / cosh(x, precision)
 
 j = Complex(0,1)
+
+class RelativeError:
+    def __init__(self, numerator, denominator=1):
+
+        self.relativeerrorrange = rational.Rational(numerator, denominator)
+        #if self.relativeerrorange <= 0:
+        #    raise
+
+    def absoluteerror(self, re, im):
+        r = abs(Complex(re,im))*self.relativeerrorrange
+        return AbsoluteError(r)
+
+
+class AbsoluteError:
+    def __init__(self, numerator):
+
+        self.absoluteerrorrange = abs(numerator)
+        
