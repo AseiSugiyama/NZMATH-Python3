@@ -9,10 +9,7 @@ class Lattice:
     def createElement(self, compo):
         return LatticeElement(self, compo)
 
-    def q(self, v):
-        return self.b(v, v)
-
-    def b(self, v1, v2):
+    def bilinearForm(self, v1, v2):
         return v2.transpose() * self.quadraticForm * v1
 
 class LatticeElement(Matrix):

@@ -1,10 +1,10 @@
+from matrix import *
+
 class Vector:
 
     def __init__(self, compo):
         if isinstance(compo, list):
             self.compo = compo
-        elif rational.isIntegerObject(compo):
-            self.compo = [0] * compo 
         else:
             raise ValueError
 
@@ -38,23 +38,24 @@ class Vector:
     def __neg__(self):
         tmp = self.compo[:]
         for i in range(len(self)):
-            tmp[i] = self.compo[i] * -1
+            tmp[i] = -self.compo[i]
         return self.__class__(tmp)
 
     def __mul__(self, other):
-        if isinstance(other, Matrix):
-            if len(self) != other.row:
-                raise VectorSizeError
-            tmp = [0] * len(self)
-            for j in range(other.column):
-                for i in range(len(self)):
-                    tmp[j] += self.compo[i] * other.compo[i][j]
-            return self.__class__(tmp)
-        else:
-            tmp = []
-            for each in self.compo:
-                tmp.append(each * other)
-            return self.__class__(tmp)
+#        if isinstance(other, Matrix):
+#            if len(self) != other.row:
+#                raise VectorSizeError
+#            tmp = [0] * len(self)
+#            for j in range(other.column):
+#                for i in range(len(self)):
+#                    tmp[j] += self.compo[i] * other.compo[i][j]
+#            return self.__class__(tmp)
+#        else:
+#            tmp = []
+#            for each in self.compo:
+#                tmp.append(each * other)
+#            return self.__class__(tmp)
+            return NotImplemented
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -66,10 +67,11 @@ class Vector:
                     tmp[i] += other.compo[i][j] * self.compo[j]
             return self.__class__(tmp)
         else:
-            tmp = []
-            for each in self.compo:
-                tmp.append(each * other)
-            return self.__class__(tmp)
+#            tmp = []
+#            for each in self.compo:
+#                tmp.append(each * other)
+#            return self.__class__(tmp) 
+            return NotImplemented
 
     def __repr__(self):
         return "Vector " + repr(self.compo)
@@ -88,11 +90,13 @@ class Vector:
         else:
             raise ValueError
 
-    def indexNoneZero(self):
-        for i in range(self.size):
-            if self.compo[i] != 0:
-                return i + 1
-        raise ValueError, "all zero"
+    def indexOfNoneZero(self):
+        c = 1
+        for entry in self.compo:
+            if entry != 0:
+                return c
+            c += 1
+        raise Exception, "all zero"
 
 
 class VectorSizeError(Exception):
@@ -100,15 +104,15 @@ class VectorSizeError(Exception):
 
 
 if __name__ == '__main__':
-    u=Vector(3)
+    u=Vector([0]*3)
     v=Vector([3,5,2])
     w=Vector([-7,2,0])
-    print "u=",u
     print "v=",v
     print "w=",w
     print "v+w", v+w
     w = u-v
     print "w=u-v", w
+    c=2
     print c
     print v
     print v * c

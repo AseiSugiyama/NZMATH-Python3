@@ -1,5 +1,6 @@
 import rational
 import ring
+import vector
 
 class Matrix:
     """ Matrix is the class of matrices."""
@@ -98,7 +99,15 @@ class Matrix:
                     for k in range(self.column):
                         product[i,j] += self[i,k] * other[k,j]
             return product 
-        else:           # product with a scalar
+        elif isinstance(other, vector.Vector):
+            if self.column != len(other):
+                raise vector.VectorSizeError
+            tmp = [0] * self.row
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    tmp[i-1] += self[i,j] * other[j]
+            return vector.Vector(tmp) 
+        else: 
             product = self.__class__(self.row, self.column)
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
@@ -110,11 +119,27 @@ class Matrix:
         return self * (1 / rational.Rational(other)) 
 
     def __rmul__(self, other):
-        product = Matrix(self.row, self.column)
-        for i in range(1, self.row+1):
+        if isinstance(other, Matrix):
+            product = Matrix(self.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i,j] = self[i,j] * other
+            return product
+        elif isinstance(other, vector.Vector):
+            if self.row != len(other):
+                raise vector.VectorSizeError
+            tmp = [0] * self.column
             for j in range(1, self.column+1):
-                product[i,j] = self[i,j] * other
-        return product
+                for i in range(1, self.row+1):
+                    tmp[j-1] += other[i] * self[i,j]
+            return vector.Vector(tmp)
+        else:
+            product = self.__class__(self.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i,j] = self[i,j] * other
+            return product
+
 
     def __neg__(self):
         return (-1) * self
@@ -158,6 +183,9 @@ class Matrix:
         return return_str[:-1]
 
     __str__ = __repr__ 
+
+    def __call__(self, arg):
+        return self * arg
 
 
     # utility methods ----------------------------------------------------
