@@ -1,5 +1,6 @@
 import unittest
 from polynomial import *
+import integerResidueClass
 
 # data for debugging
 
@@ -169,6 +170,10 @@ class RationalPolynomialTest(unittest.TestCase):
     def testContent(self):
         assert rational.Rational(1,4) == i.content()
 
+class IntegerResidueClassPolynomialTest(unittest.TestCase):
+    def testInit(self):
+        assert OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(3,5), integerResidueClass.IntegerResidueClass(1,5)], "x")
+
 class PolynomialRingTest(unittest.TestCase):
     def setUp(self):
         self.Q = rational.theRationalField
@@ -250,6 +255,7 @@ def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(RationalPolynomialTest, "test"))
+    suite.addTest(unittest.makeSuite(IntegerResidueClassPolynomialTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialRingTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
     return suite
