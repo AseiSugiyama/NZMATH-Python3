@@ -17,7 +17,7 @@ class Complex:
         if im:
             self.real = re
             self.imag = im
-        elif isinstance(re, complex):
+        elif isinstance(re, complex) or isinstance(re, Complex):
             self.real = re.real
             self.imag = re.imag
         else:
@@ -152,7 +152,7 @@ class Complex:
         return self.__class__(-self.real, -self.imag)
 
     def __nonzero__(self):
-        return self.real or self.imag
+        return bool(self.real or self.imag)
 
     def __repr__(self):
         return "Complex(" + repr(self.real) + ", " + repr(self.imag) + ")"
