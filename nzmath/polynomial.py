@@ -519,7 +519,7 @@ class OneVariableSparsePolynomial:
             return self.toMultiVariableSparsePolynomial() + other
         elif isinstance(other, OneVariableSparsePolynomial):
             if self.variable == other.variable:
-                return_coefficient.update(self.coefficient)
+                return_coefficient = self.coefficient.copy()
                 return_variable = self.variable[:]
                 for i in other.coefficient:
                     if i in return_coefficient:
@@ -817,7 +817,17 @@ class OneVariableSparsePolynomial:
             return MultiVariableSparsePolynomial(return_coefficient, return_variable)
 
     def getRing(self):
-        return PolynomialRing(rational.theIntegerRing, self.variable)
+        ring = None
+        for c in self.coefficient.values():
+            if rational.isIntegerObject(c):
+                cring = rational.theIntegerRing
+            else:
+                cring = c.getRing()
+            if not ring or ring != cring and ring.issubring(cring):
+                ring = cring
+            elif not cring.issubring(ring):
+                ring = ring * cring
+        return PolynomialRing(ring, self.variable[0])
 
 class MultiVariableDensePolynomial:
 
@@ -1754,27 +1764,20 @@ class PolynomialRing:
                 return False
         return False
 
-class RationalFunctionField:
-    def __init__(self, field, vars):
-        self.coefficientField = field
-        if isinstance(vars, str):
-            self.vars = sets.Set((vars,))
-        else:
-            self.vars = sets.Set(vars)
+import re
 
-    def __str__(self):
-        retval = str(self.coefficientField)
-        retval += "("
-        for v in self.vars:
-            retval += str(v) + ", "
-        retval = retval[:-2] + ")"
-        return retval
+def compile(*args):
+    """
 
-    def getQuotientField(self):
-        return self
+    compile compiles a string to a polynomial.  Argument should be a
+    valid python code string representing a polynomial.
 
-    def issubring(self, other):
-        raise NotImplementedError
-
-    def issuperring(self, other):
-        raise NotImplementedError
+    """
+    env = {}
+    id = re.compile("[A-Za-z_][A-Za-z0-9_]*")
+    m = id.search(args[0])
+    if m:
+        for v in m.group():
+            env[v] = OneVariableDensePolynomial([0,rational.Integer(1)], v)
+    r = eval(args[0], env)
+    return r

@@ -25,10 +25,13 @@ j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],
 
 class IntegerPolynomialTest(unittest.TestCase):
     def testAdd(self):
+        sx = OneVariableSparsePolynomial({(1,):1},["x"])
         sum_1 = OneVariableDensePolynomial([2,-1,3,-4],"x")
         sum_2 = MultiVariableSparsePolynomial({(0,0,0):2,(1,0,0):1,(0,1,0):-2,(3,1,0):3,(0,0,1):1,(1,1,1):-4,(0,0,2):2,(1,0,2):5,(2,2,2):-6,(0,0,3):3,(0,0,4):4},["x","y","z"])
+        sum_3 = OneVariableSparsePolynomial({(1,):2},["x"])
         assert a + b == sum_1
         assert a + e + g == sum_2
+        assert sum_3 == sx + sx
 
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([0,2,4],"y")
@@ -72,6 +75,10 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert Zx == a.getRing(), a.getRing()
         assert Zy == c.getRing(), c.getRing()
         assert Zxz == f.getRing(), f.getRing()
+
+    def testEquals(self):
+        assert OneVariableSparsePolynomial({(1,):1},["x"]) == OneVariableDensePolynomial([0,1],"x")
+        assert OneVariableDensePolynomial([0,1],"x") == OneVariableSparsePolynomial({(1,):1},["x"])
 
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
@@ -135,23 +142,26 @@ class PolynomialRingTest(unittest.TestCase):
         assert a in Qx
         assert 1 in Zx
 
+class PolynomialCompilerTest(unittest.TestCase):
+    def setUp(self):
+        self.x = OneVariableDensePolynomial([0,1],"x")
+        self.y = OneVariableDensePolynomial([0,1],"y")
+        self.s = OneVariableDensePolynomial([1,1],"x")
+
+    def testOneVariableInteger(self):
+        assert self.x == compile("x")
+        assert self.x != compile("y")
+        assert self.y == compile("y")
+        assert self.x != compile("1 + x")
+        assert self.s == compile("1 + x")
+        assert self.x**2 + 1 == compile("1 + x**2")
+
 def suite():
     suite=unittest.TestSuite()
-    suite.addTest(IntegerPolynomialTest("testAdd"))
-    suite.addTest(IntegerPolynomialTest("testSub"))
-    suite.addTest(IntegerPolynomialTest("testMul"))
-    suite.addTest(IntegerPolynomialTest("testScalarMul"))
-    suite.addTest(IntegerPolynomialTest("testDifferentiate"))
-    suite.addTest(IntegerPolynomialTest("testCall"))
-    suite.addTest(IntegerPolynomialTest("testGetRing"))
-    suite.addTest(RationalPolynomialTest("testAdd"))
-    suite.addTest(RationalPolynomialTest("testSub"))
-    suite.addTest(RationalPolynomialTest("testMul"))
-    suite.addTest(RationalPolynomialTest("testGetRing"))
-    suite.addTest(PolynomialRingTest("testGetCoefficientRing"))
-    suite.addTest(PolynomialRingTest("testIssubring"))
-    suite.addTest(PolynomialRingTest("testIssuperring"))
-    suite.addTest(PolynomialRingTest("testContains"))
+    suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
+    suite.addTest(unittest.makeSuite(RationalPolynomialTest, "test"))
+    suite.addTest(unittest.makeSuite(PolynomialRingTest, "test"))
+    suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
     return suite
 
 if __name__== '__main__':
