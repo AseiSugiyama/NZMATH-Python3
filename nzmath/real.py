@@ -594,3 +594,21 @@ def cos(x, precision=doubleprecision):
 def tan(x, precision=doubleprecision):
     return sin(x, precision) / cos(x, precision)
 
+def log(x, precision=doubleprecision):
+    if x == 1:
+        return Float(0, 0, precision)
+    if x <= 0:
+        raise ValueError, "log(%s) is not defined." % str(x)
+    if x > 1:
+        return -log(x.inverse(), precision)
+    y1 = 1 - x
+    y = y1.copy()
+    retval = Float(0,0,2*precision)
+    oldretval = 1
+    i = 1
+    while retval != oldretval:
+        oldretval = retval
+        retval += y / i
+        y *= y1
+        i += 1
+    return -retval
