@@ -1,6 +1,6 @@
 #polynomial.py
 import math
-import string
+import sets
 import rational
 
 class IntegerPolynomial:
@@ -58,7 +58,7 @@ class IntegerPolynomial:
         elif isinstance(other, FlatIntegerPolynomial):
             return other * self
         elif self.variable == other.variable:
-            product = IntegerPolynomial([0]*(len(self.coefficient) + len(other.coefficient)),self.variable)
+            product = IntegerPolynomial([0]*(len(self.coefficient) + len(other.coefficient)), self.variable)
             for l in range(len(self.coefficient)):
                 for r in range(len(other.coefficient)):
                     product.coefficient[l + r] += self.coefficient[l] * other.coefficient[r]
@@ -328,6 +328,8 @@ class IntegerPolynomial:
             result_polynomial = RationalPolynomial(result_coefficient, result_variable)
             return result_polynomial
 
+    def getRing(self):
+        return PolynomialRing(rational.theIntegerRing, self.variable)
 
 class FlatIntegerPolynomial:
 
@@ -772,13 +774,14 @@ class FlatIntegerPolynomial:
             return origin_polynomial
         else:
             return_coefficients = {}
-            return_variables = []
             return_variables = origin_polynomial.variables[:]
             for i in range(origin_polynomial.coefficients):
                 return_coefficients[i] = origin_polynomial.coefficients[i]
             return_polynomial = FlatRationalPolynomial(return_coefficients,  return_variables)
             return return_polynomial
 
+    def getRing(self):
+        return PolynomialRing(rational.theIntegerRing, self.variables)
 
 class RationalPolynomial:
 
@@ -1538,3 +1541,85 @@ class FlatRationalPolynomial:
                 else:
                     return_polynomial.coefficient[i] = sum_polynomial_list[i]
             return return_polynomial
+
+class PolynomialRing:
+    """
+
+    The class of polynomial ring. 
+
+    """
+    def __init__(self, ring, vars):
+        self.coefficientRing = ring
+        if isinstance(vars, str):
+            self.vars = sets.Set((vars,))
+        else:
+            self.vars = sets.Set(vars)
+
+    def getCoefficientRing(self, var = None):
+        """
+
+        returns coefficient ring corresponding to given variable(s).
+        If variable is not given or irrelevant, only univariate
+        polynomial ring can return the answer.  In other cases,
+        TypeError will be raised.
+
+        """
+        if not var:
+            vars = sets.Set()
+        elif isinstance(var, str):
+            vars = sets.Set((var,))
+        else:
+            vars = sets.Set(var)
+        vars &= self.vars
+        varsInRing = self.vars - vars
+        if vars and varsInRing:
+            return PolynomialRing(self.coefficientRing, varsInRing)
+        elif vars:
+            return self.coefficientRing
+        elif varsInRing:
+            if len(varsInRing) == 1:
+                return self.coefficientRing
+            raise TypeError, "The meaning of `coefficient ring' is ambiguous."
+        else:
+            # never happen
+            pass
+
+    def getQuotientField(self):
+        """
+
+        getQuotientField returns the quotient field of the ring
+        if coefficient ring has its quotient field.  Otherwise,
+        an exception will be raised.
+
+        """
+        try:
+            coefficientField = self.coefficientRing.getQuotientField()
+            return RationalFunctionField(coefficientField, self.vars)
+        except:
+            raise
+
+    def __eq__(self, other):
+        if isinstance(other, PolynomialRing) and \
+               self.coefficientRing == other.coefficientRing and \
+               self.vars == other.vars:
+            return True
+        return False
+
+    def __str__(self):
+        retval = str(self.coefficientRing)
+        retval += "["
+        for v in self.vars:
+            retval += str(v) + ", "
+        retval = retval[:-2] + "]"
+        return retval
+
+class RationalFunctionField:
+    def __init__(self, field, vars):
+        self.coefficientField = field
+        if isinstance(vars, str):
+            self.vars = sets.Set((vars,))
+        else:
+            self.vars = sets.Set(vars)
+
+    def getQuotientField(self):
+        return self

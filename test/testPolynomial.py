@@ -64,6 +64,15 @@ class IntegerPolynomialTest(unittest.TestCase):
         assert f(x = 2,z = -1) == call_3
         assert f(x = -2,z = "y") == call_4
 
+    def testGetRing(self):
+        Zx = PolynomialRing(rational.theIntegerRing, "x")
+        Zy = PolynomialRing(rational.theIntegerRing, "y")
+        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
+        assert Zx == b.getRing()
+        assert Zx == a.getRing()
+        assert Zy == c.getRing()
+        assert Zxz == f.getRing()
+
 class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = RationalPolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
@@ -91,6 +100,7 @@ def suite():
     suite.addTest(IntegerPolynomialTest("testScalarMul"))
     suite.addTest(IntegerPolynomialTest("testDifferentiate"))
     suite.addTest(IntegerPolynomialTest("testCall"))
+    suite.addTest(IntegerPolynomialTest("testGetRing"))
     suite.addTest(RationalPolynomialTest("testAdd"))
     suite.addTest(RationalPolynomialTest("testSub"))
     suite.addTest(RationalPolynomialTest("testMul"))
