@@ -120,6 +120,29 @@ def nextPrime(n):
         n += 2
     return n
 
+def randPrime(n):
+    """
+    returns a random n-digits prime
+
+    """
+    import bigrandom
+    
+    if n <= 0 :
+        raise ValueError,"input number must be natural number"
+    else:
+        p = bigrandom.randrange(10**(n-1),(10**n)-1)
+        if p%2 == 0:
+            p = p+1
+        i=0
+        while 1:
+            if primeq(p+i) == 1:
+                break
+            else:
+                i+=2
+    if p+i >= 10**n:
+        return randPrime(n) # very rare case or n is too small case
+    return p+i
+
 def smallSpsp(n):
     """
 
