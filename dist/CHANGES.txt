@@ -1,3 +1,8 @@
+version 0.3.1 to 0.3.2
+----------------------
+* fix some bugs in polynomial.
+* add a method to culculate Mordel-Weil group structure of elliptic curve over finite fields. 
+
 version 0.3.0 to 0.3.1
 ----------------------
 * fix import problem, and include finitefield.py mistakenly missing in 0.3.0.
