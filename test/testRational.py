@@ -130,6 +130,7 @@ class IntegerRingTest(unittest.TestCase):
         assert theIntegerRing.isnoetherian()
         assert theIntegerRing.iseuclidean()
         assert theIntegerRing.isufd()
+        assert theIntegerRing.ispid()
         assert not theIntegerRing.isfield()
 
 class RationalFieldTest(unittest.TestCase):
@@ -150,6 +151,10 @@ class RationalFieldTest(unittest.TestCase):
     def testIssuperring(self):
         assert theRationalField.issuperring(theRationalField)
         assert theRationalField.issuperring(theIntegerRing)
+
+    def testProperties(self):
+        assert theRationalField.isfield()
+        assert theRationalField.isdomain()
 
 def suite():
     suite = unittest.TestSuite()
