@@ -63,4 +63,4 @@ send it to nzmath-user.
 Copyright
 ---------
 
-&copy; 2003 NZMATH development group, all right reserved.
+&copy; 2003-2004 NZMATH development group, all right reserved.
