@@ -552,6 +552,192 @@ class EC:
         #def SEA(self):
             
         return Shanks_Mestre(self)
+
+    # Cremona's book p.66
+    def tatesAlgorithm(self):
+        """
+        tatesAlgorithm()
+
+        returns [Kp, fp, cp]
+
+        Kp : Kodaira symbol
+        fp : Exponent of p in conductor
+        cp : Local index
+        """
+
+        p = self.ch
+        c4 = self.c4
+        c6 = self.c6
+        b2 = self.b2
+        b8 = self.b8
+        a1 = self.a1
+        a2 = self.a2
+        a3 = self.a3
+        a4 = self.a4
+        a6 = self.a6
+
+        n = factor.ord(self.ch, self.disc)
+
+        if n == 0:
+            Kp = "IO"
+            fp = 0
+            cp = 1
+
+        if p == 2:
+            if b2 % p == 0:
+                r = a4 % p
+                t = (r * (1+a2+a4) + a6) % p
+            else:
+                r= a3 % p
+                t = (r+a4) % p
+        elif p == 3:
+            if b2 % p == 0:
+                r = -b6 % p
+            else:
+                r = -b2*b4 % p
+            t = (a1*r+a3) % p
+        else:
+            if c4 % p == 0:
+                r = -inv(12, p) * b2
+            else:
+                r = -inv(12*c4, p) * (c6+b2*c4)
+            t = -inv(12, p)*(a1*r+a3)
+            r = r % p
+            t = t % p
+
+        self.changeCurve([r, 0, t, 1])
+
+        if c4 % p != 0:
+            if quadroots(1, a1, -a2, p):
+                cp = n
+            elif n % 2 == 0:
+                cp = 2
+            else:
+                cp = 1
+        if a6 % (p**2) != 0:
+            Kp = "II"
+            fp = n
+            cp = 1
+            return [Kp, fp, cp]
+        if b8 % (p**3) != 0:
+            Kp = "III"
+            fp = n-1
+            cp = 2
+            return [Kp, fp, cp]
+        if b6 % (p**3) != 0:
+            if quadroots(1, a3/p, -a6/(p**2), p):
+                cp = 3
+            else:
+                cp = 1
+            Kp = "IV"
+            fp = n-2
+            return [Kp, fp, cp]
+        if p == 2:
+            s = a2 % 2
+            t = 2*(a6/4 % 2)
+        else:
+            s = -a1*inv(2,p)
+            t = -a3*inv(2, p)
+        changeCurve(0, s, t, 1)
+        b = a2/p
+        c = a4/(p**2)
+        d = a6/(p**3)
+        w = 27*(d**2) - (b**2)*(c**2) + 4*(b**3)*d - 18*b*c*d + 4*(c**3)
+        x = 3*c - b**2
+        if w % p != 0:
+            Kp = "I*O"
+            fp = n-4
+            cp = 1 + nrootscubic(b, c, d, p)
+            return [Kp, fp, cp]
+        elif x % p != 0:
+            if p == 2:
+                r = c
+            elif p == 3:
+                r = b*c
+            else:
+                r = (b*c-9*d)*inv(2*x, p)
+            r = p*(r % p -p/2+1)
+            changeCurve(r, 0, 0, 1)
+            m = 1
+            mx = p*p
+            my = p*p
+            cp = 0 
+            while cp == 0:
+                xa2 = a2/p
+                xa3 = a3/my
+                xa4 = a4/(p*mx)
+                xa6 = a6/(my*my)
+                if (xa3**2+4*xa6) % p != 0:
+                    if quadroots(1, xa3, -xa6, p):
+                        cp = 4
+                    else:
+                        cp = 2
+                else:
+                    if p == 2:
+                        t = my*xa6
+                    else:
+                        t = my*((-xa3*inv(2, p)) % p -p/2+1)
+                    changeCurve(0, 0, t, 1)
+                    my = my*p
+                    m = m + 1
+                    xa2 = a2/p
+                    xa3 = a3/my
+                    xa4 = a4/(p*mx)
+                    xa6 = a6(mx*my)
+                    if (xa4**2-4*xa2*xa6) % p != 0:
+                        if quadroots(xa2, xa4, xa6, p):
+                            cp = 4
+                        else:
+                            cp = 2
+                    else:
+                        if p == 2:
+                            r = mx*(xa6*xa2 % 2)
+                        else:
+                            r = mx*(-xa4*inv(2*xa2, p) % p -p/2+1)
+                        changeCurve(r, 0, 0, 1)
+                        mx = mx*p
+                        m = m + 1
+
+            fp = n-m-4
+            Kp = "I*m"
+            return [Kp, fp, cp]
+        else:
+            if p == 3:
+                rp = -d
+            else:
+                rp = -b*inv(3, p)
+            r = p*(rp % p -p/2+1)
+            changeCurve(r, 0, 0, 1)
+            x3 = a3/(p*p)
+            x6 = a6/(p**4)
+            if (x3**2+4*x6) % p != 0:
+                if quadroots(1, x3, -x6, p):
+                    cp = 3
+                else:
+                    cp = 1
+                Kp = "IV*"
+                fp = n-6
+                return [Kp, fp, cp]
+            else:
+                if p == 2:
+                    t = x6
+                else:
+                    t = x3*inv(2, p)
+                t = -(p**2)*(t % p -p/2+1)
+                changeCurve(0, 0, t, 1)
+                if a4 % (p**4) != 0:
+                    Kp = "III*"
+                    fp = n-7
+                    cp = 2
+                    return [Kp, fp, cp]
+                elif a6 % (p**6) != 0:
+                    Lp = "II*"
+                    fp = n-8
+                    cp = 1
+                    return [Kp, fp, cp]
+                else:
+                    self.changeCurve(0, 0, 0, p)
+                    self.tatesAlgorithm()
 # t=imaginary.Complex(a,b)
 
 def q(t):
@@ -629,3 +815,45 @@ def intersectionOfTwoLists(list1,list2):
                 j=j+1
     return L
                 
+# necessary for tatesAlgorithm ---------------------------------------
+
+def quadroots(a, b, c, p):
+    """
+
+    returns True if the congruence ax**2+bx+c = 0 (mod p)
+    has a solution.
+    else False.
+    """
+
+    if len(roots(polynomial.OneVariableDensePolynomial([1, b, a], "x"), p)) == 0:
+        return True
+    else:
+        return False
+
+def roots(f, mod):
+    """
+    f.roots(m) 
+
+    returns a list of f's roots in modulus m
+    """
+
+    result = []
+
+    for i in range(mod):
+        if f(i) % mod == 0:
+            result.append(i)
+    return result
+
+def nrootscubic(b, c, d, p):
+    f = roots(polynomial.OneVariableDensePolynomial([d, c, b, 1], "x"), p)
+    print polynomial.OneVariableDensePolynomial([d, c, b, 1], "x")
+    return len(f)
+
+
+import integerResidueClass 
+def inv(a, p):
+    c = integerResidueClass.IntegerResidueClass(a, p)
+    return c.inverse().n
+
+# --------------------------------------------------------------------
+
