@@ -785,6 +785,8 @@ sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9])
 
 j = Matrix(2,2,[3,4,5,6])
 
+k = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
+
 def pause():
     print "--- hit enter key ---"
     raw_input()
@@ -805,6 +807,6 @@ if __name__ == '__main__':
 #    print h
 #    print h.hessenbergForm()
 #    print c.hessenbergForm()
-    print c
-    print c.determinant()
-    print c.inverseImage(Matrix(3,1,[8,4,5]))
+    print k
+    print k.determinant()
+    print k.inverseImage(Matrix(3,1,[8,4,5]))

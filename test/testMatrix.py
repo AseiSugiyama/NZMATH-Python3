@@ -21,6 +21,8 @@ e.set([3,2])
 f = Matrix(4,4)
 f.set([1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
 
+g = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
+
 class MatrixTest(unittest.TestCase):
     def testAdd(self):
         sum = Matrix(2,2)
@@ -70,6 +72,13 @@ class MatrixTest(unittest.TestCase):
     def testDeterminant(self):
         assert a.determinant() == -2 
 
+    def testInverseImage(self):
+        gInv = g.inverseImage(Matrix(3,1,[5,5,5]))   
+        print g
+        print gInv
+        print g * gInv
+        assert g * gInv == Matrix(3,1,[5,5,5])
+
 
 def suite():
     suite = unittest.TestSuite()
@@ -85,6 +94,7 @@ def suite():
     suite.addTest(MatrixTest("testTriangulate"))
     suite.addTest(MatrixTest("testTrace"))
     suite.addTest(MatrixTest("testDeterminant"))
+    suite.addTest(MatrixTest("testInverseImage"))
     return suite
 
 if __name__ == '__main__':
