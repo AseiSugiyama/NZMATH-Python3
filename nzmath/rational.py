@@ -116,7 +116,13 @@ class Rational (ring.QuotientFieldElement):
     __rfloordiv__ = __rtruediv__
 
     def __pow__(self, index):
-        return +Rational(self.numerator ** index, self.denominator ** index)
+        assert isIntegerObject(index)
+        if index > 0:
+            return +Rational(self.numerator ** index, self.denominator ** index)
+        elif index < 0:
+            return +Rational(self.denominator ** (-index), self.numerator ** (-index))
+        else:
+            return Integer(1)
 
     def __lt__(self,other):
         return self.compare(other) < 0
@@ -161,7 +167,7 @@ class Rational (ring.QuotientFieldElement):
         return str(self.numerator) + "/" + str(self.denominator)
 
     def __repr__(self):
-        return "Rational(%s, %s)" % (str(self.numerator),str(self.denominator))
+        return "%s(%d, %d)" % (self.__class__.__name__, self.numerator, self.denominator)
 
     def expand(self, base, limit):
         """
@@ -233,6 +239,78 @@ class Rational (ring.QuotientFieldElement):
 
     def getRing(self):
         return theRationalField
+
+    def _reduce(self):
+        commonDivisor = theIntegerRing.gcd(self.numerator, self.denominator)
+        if commonDivisor != 1:
+            self.numerator //= commonDivisor
+            self.denominator //= commonDivisor
+
+    def __iadd__(self, other):
+        if isinstance(other, Rational):
+            self.numerator = self.numerator*other.denominator + self.denominator*other.numerator
+            self.denominator = self.denominator*other.denominator
+        elif isIntegerObject(other):
+            self.numerator += self.denominator*other
+        else:
+            return NotImplemented
+        self._reduce()
+        if self.denominator == 1:
+            self = Integer(self.numerator)
+        return self
+
+    def __isub__(self, other):
+        if isinstance(other, Rational):
+            self.numerator = self.numerator*other.denominator - self.denominator*other.numerator
+            self.denominator = self.denominator*other.denominator
+        elif isIntegerObject(other):
+            self.numerator -= self.denominator*other
+        else:
+            return NotImplemented
+        self._reduce()
+        if self.denominator == 1:
+            self = Integer(self.numerator)
+        return self
+
+    def __imul__(self,other):
+        if isinstance(other, Rational):
+            self.numerator *= other.numerator
+            self.denominator *= other.denominator
+        elif isIntegerObject(other):
+            self.numerator *= other
+        else:
+            return NotImplemented
+        self._reduce()
+        if self.denominator == 1:
+            self = Integer(self.numerator)
+        return self
+
+    def __itruediv__(self,other):
+        if isinstance(other, Rational):
+            self.numerator *= other.denominator
+            self.denominator *= other.numerator
+        elif isIntegerObject(other):
+            self.denominator *= other
+        else:
+            return NotImplemented
+        self._reduce()
+        if self.denominator == 1:
+            self = Integer(self.numerator)
+        return self
+
+    __idiv__ = __itruediv__
+    __ifloordiv__ = __itruediv__
+
+    def __ipow__(self, index):
+        assert isIntegerObject(index)
+        if index > 0:
+            self.numerator **= index
+            self.denominator **= index
+        elif index < 0:
+            self.numerator, self.denominator = self.denominator ** (-index), self.numerator ** (-index)
+        else:
+            self = Integer(1)
+        return self
 
 class RationalField (ring.QuotientField):
     """

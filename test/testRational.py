@@ -25,11 +25,21 @@ class RationalTest (unittest.TestCase):
         assert 1000000000000000000000000000000000000000 + Rational(1,2) == Rational(2000000000000000000000000000000000000001,2)
         assert Rational(1,2) + Rational(1,3) + Rational(1,6) == 1
 
+    def testIadd(self):
+        a = Rational(1,2)
+        a += Rational(1,3)
+        assert Rational(5,6) == a
+
     def testSub(self):
         assert Rational(2,3) - Rational(3,2) == Rational(-5,6)
         assert Rational(13,18) - 1 == Rational(-5,18)
         assert 1000000000000000000000000000000000000000 - Rational(1,2) == Rational(1999999999999999999999999999999999999999,2)
         assert Rational(1,2) - Rational(1,3) - Rational(1,6) == 0
+
+    def testIsub(self):
+        a = Rational(1,2)
+        a -= Rational(1,3)
+        assert Rational(1,6) == a
 
     def testMul(self):
         assert Rational(2,3) * Rational(3,2) == 1
@@ -37,11 +47,32 @@ class RationalTest (unittest.TestCase):
         assert 1000000000000000000000000000000000000000 * Rational(1,2) == 500000000000000000000000000000000000000
         assert Rational(1,2) * Rational(1,3) * Rational(1,6) == Rational(1, 36)
 
+    def testImul(self):
+        a = Rational(1,2)
+        a *= Rational(1,3)
+        assert Rational(1,6) == a
+
     def testDiv(self):
         assert Rational(2,3) / Rational(3,2) == Rational(4,9)
         assert Rational(13,18) / 2 == Rational(13,36)
         assert 1000000000000000000000000000000000000000 / Rational(1,2) == 2000000000000000000000000000000000000000
         assert Rational(1,2) / Rational(1,3) / Rational(1,6) == 9
+
+    def testIdiv(self):
+        a = Rational(1,2)
+        a /= Rational(1,3)
+        assert Rational(3,2) == a
+
+    def testPow(self):
+        assert Rational(2,3) ** 4 == Rational(2**4, 3**4)
+        assert Rational(2,3) ** (-1) == Rational(3,2)
+
+    def testIpow(self):
+        a = Rational(1,2)
+        a **= 3
+        assert Rational(1,8) == a
+        a **= -1
+        assert 8 == a
 
     def testLt(self):
         assert Rational(5,7) < Rational(3,4)
