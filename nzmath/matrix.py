@@ -11,6 +11,7 @@ VectorsNotIndependent = "VectorsNotIndependent"
 class Matrix:
 
     def __init__(self, row, column):
+        "Matrix(row, column)"
         if isinstance(row, int) and isinstance(column, int) and row > 0 and column > 0:
             self.row = row
             self.column = column
@@ -18,7 +19,7 @@ class Matrix:
             for i in range(self.row):
                 self.compo.append([0] * self.column)
         else:
-            raise ValueError
+            raise ValueError, self.__init__.__doc__
 
     def __repr__(self):
         return_str = ""
@@ -58,7 +59,7 @@ class Matrix:
 
     def __add__(self, other):
         if (self.row != other.row) or (self.column != other.column): 
-            raise MatrixSizeError
+            raise MatrixSizeError, "The two Matrices must be same size"
             return
 
         sum = Matrix(self.row, self.column)
@@ -71,7 +72,7 @@ class Matrix:
 
     def __sub__(self, other):
         if (self.row != other.row) or (self.column != other.column): 
-            raise MatrixSizeError
+            raise MatrixSizeError, "The two Matrices must be same size"
             return
 
         diff = Matrix(self.row, self.column)
@@ -86,7 +87,7 @@ class Matrix:
         """multiplication with a Matrix of a scalar"""
         if isinstance(other, Matrix):
             if self.column != other.row:
-                raise MatrixSizeError
+                raise MatrixSizeError, "Number of left side's columns and number of right side's rows must be equal" 
                 return
             product = Matrix(self.row, other.column) 
             for i in range(self.row):
@@ -122,13 +123,13 @@ class Matrix:
             return product
 
     def __pow__(self, other):
-        if isinstance(other, int):
+        if isinstance(other, int) and other >= 0:
             power = unit_matrix(self.row)
             for i in range(other):
                 power *= self
             return power
         else:
-            raise TypeError
+            raise TypeError, "power must be integer >= 0"
 
     def copy(self):
         """create a copy of instance"""
@@ -141,7 +142,7 @@ class Matrix:
 
     def set(self, list):
         """set(list) : substitute list for components"""
-        for i in range( self.row):
+        for i in range(self.row):
             for j in range( self.column):
                 self.compo[i][j] = list[self.column * i + j]
 
@@ -153,7 +154,7 @@ class Matrix:
             for i in range(self.column):
                 self.compo[m-1][i] = arg.compo[0][i]
         else:
-            raise NotImplementedError
+            raise TypeError, self.set_row.__doc__
     
     def set_column(self, n, arg):
         """set_column(n, new_column) : new_column can be a list or a column vector(Matrix)"""
@@ -164,27 +165,39 @@ class Matrix:
             for j in range(self.row):
                 self.compo[j][n-1] = arg.compo[j][0]
         else:
-            raise TypeError
+            raise TypeError, self.set_column.__doc__
 
 
     def set_compo(self, m, n, value):
         """set_compo(m, n, value) : set value for (m,n)-component"""
-        self.compo[m-1][n-1] = value
+        if 1 <= m <= self.row and 1<= n <= self.column:
+            self.compo[m-1][n-1] = value
+        else:
+            raise IndexError, self.set_compo.__doc__
 
     def get_compo(self, m, n):
         """get_compo(m, n) : Return (m,n)-component"""
-        return self.compo[m-1][n-1]
+        if 1 <= m <= self.row and 1 <= n <= self.column:
+            return self.compo[m-1][n-1]
+        else:
+            raise IndexError, self.get_compo.__doc__
 
     def get_row(self, m):
         """get_row(m) : Return m-th row in form of list"""
-        return self.compo[m-1]
+        if 1 <= m <= self.row:
+            return self.compo[m-1]
+        else:
+            raise IndexError, self.get_row.__doc__
 
     def get_column(self, n):
         """get_column(n) : Return n-th column in form of list"""
-        column_n = []
-        for j in range( self.row):
-            column_n += [self.compo[j][n-1]]
-        return column_n
+        if 1 <= n <= self.column:
+            column_n = []
+            for j in range( self.row):
+                column_n += [self.compo[j][n-1]]
+            return column_n
+        else:
+            raise IndexError, self.get_column.__doc__
 
     def get_row_vector(self, m):
         """get_row_vector(m) : Return m-th row in form of a Matrix"""
@@ -210,7 +223,7 @@ class Matrix:
         elif isinstance(key[0], int):
             return self.get_column_vector(key[0])
         else:
-            raise TypeError
+            raise TypeError, self.__getitem__.__doc__
 
     def __setitem__(self, *args):
         """M[i,j] = a <==> M.set_compo(i, j, a)
@@ -222,7 +235,7 @@ class Matrix:
         elif isinstance(key, int):
             self.set_column(key, value)
         else:
-            raise TypeError
+            raise TypeError, self.__setitem__.__doc__
 
     def swap_row(self, m1, m2):
         tmp = self.compo[m1-1][:]
@@ -274,7 +287,7 @@ class Matrix:
         """Return determinant of self."""
         det = 1
         if self.row != self.column:
-            raise MatrixSizeError
+            raise MatrixSizeError, "self must be a square Matrix"
         triangle = self.triangulate()
         for i in range(self.row):
             det *= triangle.compo[i][i]
@@ -331,7 +344,7 @@ class Matrix:
 
     def characteristic_polynomial(self):        # using Cohen's Algorithm 2.2.7
         if self.row != self.column:
-            raise MatrixSizeError
+            raise MatrixSizeError, "self must be a square Matrix"
         i = 0
         C = unit_matrix(self.row)
         coeff = [0] * (self.row+1)
