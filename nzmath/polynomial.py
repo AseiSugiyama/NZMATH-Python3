@@ -540,13 +540,17 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
                 _coefficient[key] = c
         _variable = variable
         _coefficientRing = initCoefficientRing(_coefficient)
-        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
     else:
         _variable = variable
         _coefficientRing = coeffring
         for i,c in coefficient.iteritems():
             _coefficient[i] = coeffring.createElement(c)
-        return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+    try:
+        if _coefficientRing.getCharacteristic() > 0:
+            return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
+    except AttributeError, e:
+        pass
+    return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
 class MultiVariableSparsePolynomial:
 
@@ -1617,6 +1621,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
         """
         Fq = self.getCoefficientRing()
+        FqX = self.getRing()
         q = len(Fq)
         f = self.copy()
         x = f.__class__([0,1], f.getVariable(), Fq)
@@ -1625,11 +1630,15 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         result = {}
         while i*2 <= f.degree():
             w = pow(w, q, f)
-            result[i] = f.getRing().gcd(f, w-x)
+            result[i] = FqX.gcd(f, w-x)
             if result[i].degree() > 0:
                 f = f / result[i]
                 w = w % f
-        result[f.degree()] = f
+            else:
+                del result[i]
+            i += 1
+        if f.degree() != 0:
+            result[f.degree()] = f
         return result
 
     def splitSameDegrees(self, degree):
@@ -1655,12 +1664,14 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
             for i in range(2 * degree):
                 randPolyCoeff[i] = Fq.createElement(bigrandom.randrange(q))
             randPoly = self.__class__(randPolyCoeff, self.getVariable(), Fq)
-            G = 0
+            if randPoly.degree() < 1:
+                continue
             if p == 2:
+                G = 0
                 for j in range(degree*r):
-                    G = G + pow(randPoly, 2**i, f)
+                    G = G + pow(randPoly, 2**j, self)
             else:
-                G = pow(randPoly, (q**degree - 1)//2, f) - one
+                G = pow(randPoly, (q**degree - 1)//2, self) - one
             subresult = []
             while result:
                 h = result.pop()
@@ -1691,7 +1702,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
                     for i in range(m):
                         result.append(g)
                 else:
-                    for irred in g.splitSameDegrees():
+                    for irred in g.splitSameDegrees(d):
                         for i in range(m):
                             result.append(irred)
         return result
@@ -1699,7 +1710,9 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
     def isIrreducible(self):
         """
 
-        Factor the polynomial.
+        f.isIrreducible() -> bool
+
+        If f is irreducible return True, otherwise False.
 
         """
         result =[]
