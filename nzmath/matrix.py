@@ -580,7 +580,9 @@ class Matrix:
 
     def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
         if self.row != self.column:
-            raise MatrixSizeError n = self.row
+            raise MatrixSizeError 
+        n = self.row
+
         # step 1 
         H = self.copy()
         for m in range(2, H.row):
