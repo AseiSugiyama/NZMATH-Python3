@@ -6,6 +6,7 @@ Class definitions of polynomials.
 import math
 import sets
 import rational
+import ring
 from rationalFunction import RationalFunctionField
 
 class OneVariableDensePolynomial:
@@ -1661,7 +1662,7 @@ class MultiVariableSparsePolynomial:
                 ring = ring * cring
         return PolynomialRing(ring, self.variable)
 
-class PolynomialRing:
+class PolynomialRing (ring.CommutativeRing):
     """
 
     The class of polynomial ring.
@@ -1787,6 +1788,20 @@ class PolynomialRing:
             else:
                 return False
         return False
+
+    def isufd(self):
+        if self.ispid():
+            return True
+        elif self.coefficientRing.isufd():
+            return True
+        else:
+            return None
+
+    def iseuclidean(self):
+        if self.coefficientRing.isfield() and len(self.vars) == 1:
+            return True
+        else:
+            return None
 
     def unnest(self):
         """

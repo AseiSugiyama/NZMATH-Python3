@@ -122,11 +122,11 @@ class PolynomialRingTest(unittest.TestCase):
         self.Qx = PolynomialRing(self.Q, "x")
         self.Zx = PolynomialRing(self.Z, "x")
         self.Zxz = PolynomialRing(self.Z, ("x", "z"))
+        self.QwithXwithY = PolynomialRing(self.Qx, "y")
 
     def testEquals(self):
         QwithXandY = PolynomialRing(self.Q, ("x", "y"))
-        QwithXwithY = PolynomialRing(self.Qx, "y")
-        assert QwithXandY == QwithXwithY
+        assert QwithXandY == self.QwithXwithY
 
     def testGetCoefficientRing(self):
         assert self.Q == self.Qx.getCoefficientRing()
@@ -151,6 +151,15 @@ class PolynomialRingTest(unittest.TestCase):
         assert i not in self.Zx
         assert a in self.Qx
         assert 1 in self.Zx
+
+    def testProperties(self):
+        assert self.Qx.isufd()
+        assert self.Qx.ispid()
+        assert self.Qx.iseuclidean()
+        assert self.Zx.isufd()
+        assert not self.Zx.ispid()
+        assert self.QwithXwithY.isufd()
+        assert not self.QwithXwithY.ispid()
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
