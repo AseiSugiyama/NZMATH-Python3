@@ -19,6 +19,8 @@ class FloatTest (unittest.TestCase):
         assert sum4.mantissa == -1
         assert sum4.exponent == 0
         assert sum4.precision == 31
+        sum5 = real.Float(1,0, 100) + real.Float(1,1, 100)
+        assert sum5.mantissa == 3
 
     def testMul(self):
         prod1 = real.Float(3,0,None) * real.Float(125,2,None)
