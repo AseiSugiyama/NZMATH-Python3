@@ -237,6 +237,19 @@ class OneVariablePolynomial:
         commonSuperring = self.getRing().getCommonSuperring(other.getRing())
         return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
 
+    def __rdivmod__(self, other):
+        if not self:
+            raise ZeroDivisionError, "polynomial division or modulo by zero."
+        if not other:
+            return (OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()),
+                    OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()))
+        if other in self.getCoefficientRing():
+            if self.degree() == 0:
+                return divmod(other, self[0])
+            else:
+                return (OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()),
+                        +other)
+
     def __truediv__(self, other):
         quot, rem = divmod(self, other)
         if not rem:
@@ -248,11 +261,42 @@ class OneVariablePolynomial:
 
     __div__=__truediv__
 
+    def __rtruediv__(self, other):
+        quot, rem = divmod(other, self)
+        if not rem:
+            return quot
+        else:
+            return rationalFunction.RationalFunction(other, self)
+
+    __rdiv__ = __rtruediv__
+
     def __floordiv__(self, other):
         return divmod(self, other)[0]
 
+    def __rfloordiv__(self, other):
+        if not self:
+            raise ZeroDivisionError, "polynomial division or modulo by zero."
+        if not other:
+            return OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
+        if other in self.getCoefficientRing():
+            if self.degree() == 0:
+                return other // self[0]
+            else:
+                return OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
+
     def __mod__(self, other):
         return divmod(self, other)[1]
+
+    def __rmod__(self, other):
+        if not self:
+            raise ZeroDivisionError, "polynomial division or modulo by zero."
+        if not other:
+            return OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
+        if other in self.getCoefficientRing():
+            if self.degree() == 0:
+                return other % self[0]
+            else:
+                return +other
 
     def __pow__(self, index, mod = None):
         if not isinstance(index, (int,long)):
