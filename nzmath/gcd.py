@@ -33,7 +33,7 @@ def binarygcd(a, b):
         else:
             b = -t
         t = (a - b)/2
-            return (2**k)*a
+    return (2**k)*a
 
 def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
     a,b,g,u,v,w = 1,0,abs(x),0,1,abs(y)
