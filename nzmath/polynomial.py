@@ -1048,25 +1048,35 @@ class MultiVariableDensePolynomial:
             return OneVariableDensePolynomial(return_coefficient, return_variable).toOneVariableSparsePolynomial()
 
     def toMultiVariableSparsePolynomial(self):
-        for i in self.coefficient:
-            if isinstance(i,MultiVariableDensePolynomial):
-                result_polynomial = MultiVariableSparsePolynomial({}, [self.variable])
-                x = OneVariableDensePolynomial([0,1],self.variable)
-                for i in range(len(self.coefficient)):
-                    coeff = self.coefficient[i]
-                    if rational.isIntegerObject(coeff) or isinstance(coeff, rational.Rational):
-                        result_polynomial += coeff * x**i
-                    else:
-                        result_polynomial += coeff.toMultiVariableSparsePolynomial() * x**i
+        length = len(self.coefficient)
+        while (length != 1) and (self.coefficient[length-1] == 0):
+            length -= 1
+        if length == 1:
+            return self.coefficient[0]
+        self_adjust = MultiVariableDensePolynomial(self.coefficient[:length],self.variable)
+        if rational.isIntegerObject(self_adjust) or isinstance(self_adjust, rational.Rational):
+            return self_adjust
+        else:
+            for i in self_adjust.coefficient:
+                if isinstance(i,MultiVariableDensePolynomial) or isinstance(i, OneVariableDensePolynomial):
+                    result_polynomial = MultiVariableSparsePolynomial({}, [self_adjust.variable])
+                    x = OneVariableDensePolynomial([0,1],self_adjust.variable)
+                    for i in range(len(self_adjust.coefficient)):
+                        coeff = self_adjust.coefficient[i]
+                        if rational.isIntegerObject(coeff) or isinstance(coeff, rational.Rational):
+                            result_polynomial += coeff * x**i
+                        else:
+                            result_polynomial += coeff.toMultiVariableSparsePolynomial() * x**i
+                    return result_polynomial.adjust()
+            else:
+                for coeff in self_adjust.coefficient:
+                    if not (rational.isIntegerObject(coeff) or isinstance(coeff,rational.Rational)):
+                        raise ValueError, "You must input MultiVariableDensePolynomial for self."
+                result_coefficient = {}
+                for i in range(len(self_adjust.coefficient)):
+                    result_coefficient[(i,)] = self_adjust.coefficient[i]
+                result_polynomial = MultiVariableSparsePolynomial(result_coefficient, [self_adjust.variable])
                 return result_polynomial.adjust()
-            for coeff in self.coefficient:
-                if not (rational.isIntegerObject(coeff) or isinstance(coeff,rational.Rational)):
-                    raise ValueError, "You must input MultiVariableDensePolynomial for self."
-            result_coefficient = {}
-            for i in range(len(self.coefficient)):
-                result_coefficient[(i,)] = self.coefficient[i]
-            result_polynomial = MultiVariableSparsePolynomial(result_coefficient, [self.variable])
-            return result_polynomial.adjust()
 
     def getRing(self):
         return PolynomialRing(rational.theRationalField, self.variable)
