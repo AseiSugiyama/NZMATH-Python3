@@ -5,7 +5,7 @@ import ring
 
 class Matrix:
 
-    def __init__(self, row, column, components = []):
+    def __init__(self, row, column, compo = 0):
         "Matrix(row, column)"
         if (    ( isinstance(row, int) or isinstance(row, long) )
             and ( isinstance(column, int) or isinstance(column, long) )
@@ -13,12 +13,14 @@ class Matrix:
             self.row = row
             self.column = column
             self.compo = []
-            if components == []: 
+            if compo == 0 :
                 for i in range(self.row):
                     self.compo.append([0] * self.column)
             else:
+                if (len(compo) < self.row * self.column):
+                    compo += [0] * (self.row * self.column - len(compo))
                 for i in range(self.row):
-                    self.compo.append(components[self.column*i : self.column*(i+1)])
+                    self.compo.append(compo[self.column*i : self.column*(i+1)])
         else:
             raise ValueError, "Arguments are not integers > 0."
 
@@ -120,16 +122,29 @@ class Matrix:
         return (-1) * self
 
     def __pow__(self, other):
-        other = +other
-        if other in ring.theIntegerRing and other >= 0:
-            power = unitMatrix(self.row)
-            for i in range(other):
-                power *= self
+        n = +other
+        if not n in ring.theIntegerRing:
+            raise ValueError 
+        if self.row != self.column:
+            raise MatrixSizeError
+
+        power = unitMatrix(self.row) 
+        if n == 0:
             return power
-        elif other in ring.theIntegerRing and other < 0:
-            return pow(self.inverse(), abs(other))
+        if n > 0:
+            z = self.copy()
         else:
-            raise TypeError
+            n = abs(n)
+            z = self.inverse() 
+
+        while 1:
+            if n % 2 == 1:
+                power *= z
+            n //= 2
+            if n == 0:
+                return power
+            z = z*z
+
 
     def __repr__(self):
         return_str = ""
@@ -426,35 +441,28 @@ class Matrix:
         if self.row < self.column:
             raise MatrixSizeError
 
-        M = self.copy()
-        # step 1
-        s = 0
-        B = unitMatrix(M.row)
+        copy = self.copy()
+        B = unitMatrix(copy.row)
 
-        # step 2
-        while s != self.column:
-            # step 3
-            s += 1
-            for t in range(s,M.row+1):
-                if M[t,s] != 0:
+        for s in range(1,copy.column+1):
+            for t in range(s,copy.row+1):
+                if copy[t,s] != 0:
                     break
             else:
                 raise VectorsNotIndependent
-            print M
-            print "t=", t
-            d = 1 / rational.Rational(M[t,s])
-            # step 4
+            d = 1 / rational.Rational(copy[t,s])
             if t != s:
-                B[t] = B[s]
-            B[s] = M[s]
-            for j in range(s+1, M.column+1):
-                tmp = M[s,j]
-                M[s,j] = M[t,j]
-                M[t,j] = tmp
-                M[s,j] = d * M[s,j]
-                for i in range(1,M.row+1):
+                B.setColumn(t, B[s])
+            B.setColumn(s, copy[s])
+            pause()
+            for j in range(s+1, copy.column+1):
+                tmp = copy[s,j]
+                copy[s,j] = copy[t,j]
+                copy[t,j] = tmp
+                copy[s,j] = d * copy[s,j]
+                for i in range(1,copy.row+1):
                     if i != s and i != t:
-                        M[i,j] = M[i,j] - M[i,s] * M[s,j]
+                        copy[i,j] = copy[i,j] - copy[i,s] * copy[s,j]
         return B
 
     # does not work well ???
@@ -628,6 +636,10 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
-    print f
-    print f.supplementBasis()
+#    import testMatrix
+#    runner = testMatrix.unittest.TextTestRunner()
+#    runner.run(testMatrix.suite())
+#    print c
+#    print c.hermiteNormalForm()
+    assert pow(b,12) == b*b*b*b*b*b*b*b*b*b*b*b
 
