@@ -423,16 +423,21 @@ class RelativeError:
     def __init__(self, numerator, denominator=1):
 
         self.relativeerrorrange = rational.Rational(numerator, denominator)
-        #if self.relativeerrorange <= 0:
-        #    raise
 
-    def absoluteerror(self, re, im):
-        r = abs(Complex(re,im))*self.relativeerrorrange
+    def absoluteerror(self, complexnumeric):
+        #r = abs(Complex(re,im))*self.relativeerrorrange
+        r = abs(complexnumeric)*self.relativeerrorrange
         return AbsoluteError(r)
 
 
 class AbsoluteError:
-    def __init__(self, numerator):
+    def __init__(self, numeric):
+        """
 
-        self.absoluteerrorrange = abs(numerator)
+        AbsoluteError(x) defines absolute error number attribute
+        .absoluteerrorrange from x. x is must be a positive value.
+
+        """
+
+        self.absoluteerrorrange = abs(numeric)
         
