@@ -41,14 +41,14 @@ class PrimeTest(unittest.TestCase):
     def testPrime(self):
         assert prime.prime(100) == 541
 
+    def testNextPrime(self):
+        assert prime.nextPrime(0) == 2
+        assert prime.nextPrime(2) == 3
+        assert prime.nextPrime(541) == 547
+        assert prime.nextPrime(542) == 547
+
 def suite():
-    suite = unittest.TestSuite()
-    suite.addTest(PrimeTest("testPrimeqComposite"))
-    suite.addTest(PrimeTest("testPrimeqPrime"))
-    suite.addTest(PrimeTest("testBigprimeq"))
-    suite.addTest(PrimeTest("testPrime"))
-    suite.addTest(PrimeTest("testGenerator"))
-    suite.addTest(PrimeTest("testTrialDivision"))
+    suite = unittest.makeSuite(PrimeTest, 'test')
     return suite
 
 if __name__ == '__main__':
