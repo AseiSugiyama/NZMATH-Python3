@@ -15,6 +15,41 @@ def floorsqrt(a):
             b_old, b = b, (b+a//b)//2
         return b_old
 
+def floorpowerroot(n, k):
+    """
+    Return the floor of k-th power root of the given integer n.
+    """
+    if k == 1:
+        return n
+    elif k == 2:
+        return floorsqrt(n)
+    if n < 0:
+        if k&1 == 0:
+            raise ValueError, "%d has no real %d-th root." % (n, k)
+        else:
+            sign = -1
+            n = -n
+    else:
+        sign = 1
+
+    a = floorsqrt(n)
+    b = 0
+    while a > b:
+        c = (a + b) // 2
+        if c**k > n:
+            a = c
+        else:
+            if b == c:
+                a = b
+                break
+            b = c
+    while (a+1)**k <= n: # needed when floorsqrt(n) is already small.
+        a += 1
+
+    if sign < 0:
+        a = -a
+    return a
+
 def legendre(a,m): 
     """
     This program returns Legendre symbol (a/m)
