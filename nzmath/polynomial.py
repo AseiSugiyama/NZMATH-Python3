@@ -79,6 +79,14 @@ class OneVariablePolynomial:
         else:
             return NotImplemented
 
+    def __pos__(self):
+        retval = self.copy()
+        if retval.degree() == 0:
+            retval = retval[0]
+        elif retval.degree() < 0:
+            retval = 0
+        return retval
+
     def degree(self):
         return self.coefficient.degree()
 
@@ -143,6 +151,13 @@ class OneVariablePolynomial:
         for i,c in self.coefficient.iteritems():
             return_coefficient[(i,)] = c
         return MultiVariableSparsePolynomial(return_coefficient, self.getVariableList())
+
+    def __long__(self):
+        if self.degree() < 1:
+            if isinstance(self[0], (int, long)):
+                return self[0]
+            return long(self[0])
+        raise ValueError, 'non-constant polynomial cannot be converted to long'
 
     def __repr__(self):
         return_str = '%s(%s, %s, %s)' % (self.__class__.__name__,
@@ -270,7 +285,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                     power_product *= power_of_2
                 power_of_2 = power_of_2 * power_of_2
                 index = index // 2
-            return power_product.adjust()
+            return power_product.copy()
         else:
             index = other
             power_product = OneVariableDensePolynomial([1], self.getVariable(), self.getCoefficientRing())
@@ -281,7 +296,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                     power_product %= mod
                 power_of_2 = (power_of_2 * power_of_2) % mod
                 index = index // 2
-            return power_product.adjust()
+            return power_product.copy()
 
     def __divmod__(self, other):
         if not other:
@@ -299,7 +314,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                     mod_coeff = [c %  other for c in self.coefficient]
                     return OneVariableDensePolynomial(div_coeff, self.getVariable(), self.getCoefficientRing()), OneVariableDensePolynomial(mod_coeff, self.getVariable(), self.getCoefficientRing())
             elif self.getVariable() != other.getVariable() or self.degree() < other.degree():
-                return  OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()), self.adjust()
+                return  OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()), self.copy()
             elif self.getCoefficientRing().isfield():
                 div_poly = OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
                 mod_poly = self
@@ -328,7 +343,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
                     deg -= 1
                     while deg >= 0 and not mod_poly[deg]:
                         deg -= 1
-                return div_poly.adjust(), mod_poly
+                return div_poly.copy(), mod_poly
         elif isinstance(other, OneVariableSparsePolynomial):
             return divmod(self, other.toOneVariableDensePolynomial())
         elif isinstance(other, (int,long)):
@@ -374,22 +389,14 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
             return_polynomial = 0
             for i in range(len(self.coefficient)):
                 return_polynomial += self.coefficient[i] * (other**i)
-            return return_polynomial.adjust()
+            return return_polynomial.copy()
         else:
             return_value = 0
             for i in range(self.degree() + 1):
                 return_value = return_value * other + self.coefficient[self.degree()-i]
             return return_value
 
-    def __pos__(self):
-        retval = self.adjust()
-        if retval.degree() == 0:
-            retval = retval[0]
-        elif retval.degree() < 0:
-            retval = 0
-        return retval
-
-    def adjust(self):
+    def copy(self):
         "Use this method in case of leading term of coefficient = 0"
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
@@ -416,7 +423,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
              else:
                  for i in range(len(self.coefficient)):
                      integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1,i+1)
-                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust()
+                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy()
         elif min != None and max != None and other != None and isinstance(other, str):
              integrate_coefficient = [0] *(  len(self.coefficient) + 1)
              integrate_variable = other
@@ -425,7 +432,7 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
              else:
                  for i in range(len(self.coefficient)):
                      integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1, i+1)
-                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(max) - OneVariableDensePolynomial(integrate_coefficient, integrate_variable).adjust().__call__(min)
+                 return OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy().__call__(max) - OneVariableDensePolynomial(integrate_coefficient, integrate_variable).copy().__call__(min)
         else:
             raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
 
@@ -676,17 +683,14 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             return_polynomial = 0
             for i in self.coefficient:
                 return_polynomial += self.coefficient[i] * (other**i[0])
-            return return_polynomial.adjust()
+            return return_polynomial
         else:
             return_value = 0
             for i in self.coefficient:
                 return_value += (other**i[0]) * self.coefficient[i]
             return return_value
 
-    def __pos__(self):
-        return self.adjust()
-
-    def adjust(self):
+    def copy(self):
         return OneVariableSparsePolynomial(self.coefficient.getAsDict(), self.getVariableList(), self.getCoefficientRing())
 
     def differentiate(self, var):
@@ -694,12 +698,12 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             if self.degree() < 1 or var not in self.getVariableList():
                 return 0
             else:
-                origin_polynomial = self.adjust()
+                origin_polynomial = self.copy()
                 return_variable = self.getVariableList()
                 return_coefficient = {}
                 for i in origin_polynomial.coefficient:
-                    if i[0] != 0:
-                        return_coefficient[(i[0] - 1,)] = origin_polynomial.coefficient[i] * i[0]
+                    if i:
+                        return_coefficient[i - 1] = origin_polynomial.coefficient[i] * i
                 return OneVariableSparsePolynomial(return_coefficient, return_variable)
         else:
             raise ValueError, "You must input variable for var."
@@ -708,13 +712,13 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
         if min == None and max == None and other != None and isinstance(other, str):
             if self.degree() < 1:
                 return OneVariableSparsePolynomial({(1,):self[0]}, [other])
-            adjust_polynomial = self.adjust()
-            if adjust_polynomial.getVariable() == other:
-                return_coefficient = {}
-                return_variable = adjust_polynomial.getVariableList()
-                for i in adjust_polynomial.coefficient:
-                    return_coefficient[(i[0]+1,)] = adjust_polynomial.coefficient[i] * rational.Rational(1,i[0]+1)
-                return OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
+            copy_polynomial = self.copy()
+            if copy_polynomial.getVariable() == other:
+                return_coefficient = OneVariablePolynomialCoefficients()
+                return_variable = copy_polynomial.getVariableList()
+                for i in copy_polynomial.coefficient.iterdegrees():
+                    return_coefficient[i + 1] = copy_polynomial.coefficient[i] / (i+1)
+                return OneVariableSparsePolynomial(return_coefficient.getAsDict(), self.getVariableList())
             else:
                 other_polynomial = OneVariableSparsePolynomial({(1,):1}, [other])
                 return self * other_polynomial
@@ -722,13 +726,13 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
             if self.degree() < 1:
                 other_polynomial = OneVariableSparsePolynomial({(1,):self[0]}, [other])
                 return other_polynomial(max) - other_polynomial(min)
-            adjust_polynomial = self.adjust()
-            if adjust_polynomial.getVariable() == other:
-                return_coefficient = {}
-                return_variable = adjust_polynomial.getVariableList()
-                for i in adjust_polynomial.coefficient:
-                    return_coefficient[(i[0]+1,)] = adjust_polynomial.coefficient[i] * rational.Rational(1, i[0]+1)
-                return_polynomial = OneVariableSparsePolynomial(return_coefficient, return_variable).adjust()
+            copy_polynomial = self.copy()
+            if copy_polynomial.getVariable() == other:
+                return_coefficient = OneVariablePolynomialCoefficients()
+                return_variable = copy_polynomial.getVariableList()
+                for i in copy_polynomial.coefficient:
+                    return_coefficient[i + 1] = copy_polynomial.coefficient[i] / (i+1)
+                return_polynomial = OneVariableSparsePolynomial(return_coefficient.getAsDict(), return_variable)
                 return return_polynomial(max) - return_polynomial(min)
             else:
                 other_polynomial = OneVariableSparsePolynomial({(1,):1}, [other])
