@@ -495,7 +495,10 @@ class MPQS:
     def get_vector(self):
         a=time.time()
         P=len(self.FB)
-        V=0
+        if P < 100:
+            V=-5
+        else:
+            V=0
         smooth=[]
         i=0
         while P*1 > V:
@@ -509,7 +512,8 @@ class MPQS:
                 print "Time of deciding coefficient =",self.coefficienttime,"sec"
                 print "Sieving Time = ",self.sievingtime ,"sec" 
                 print "Find smooth numbers are",V,"/",P
-                
+        if P<100:
+            V+=5
         self.smooth=smooth
         print "*/","Total",i,"times changing poly report","/*"
         print "Time of deciding coefficient =",self.coefficienttime, "sec"
@@ -677,6 +681,7 @@ def mpqs(n,s=0,f=0,m=0):
     answerX_Y = []
     N_prime_factors = []
     N_factors=[]
+    output=[]
     for i in A:
         B=V.history[i].keys()
         X=1
@@ -700,21 +705,75 @@ def mpqs(n,s=0,f=0,m=0):
                     N_factors.append(factor)
     
     print "Total time =",time.time()-a,"sec"
+
     if NN == N:
-        print  "Factored completely !" 
+        print  "Factored completely!" 
         N_prime_factors.sort()
-        return N_prime_factors
+        for P in N_prime_factors:
+            N=N/P
+            i=1
+            while N%P == 0:
+                i+=1
+            output.append((P,i))
+        return output
+
     elif NN != 1:
         f=N/NN
         if prime.primeq(f) == 1:
             N_prime_factors.append(f)
-            print  "Factored completely!" 
-            N_prime_factors.sort()
-            return N_prime_factors
-        N_factors.append(f)
-    N_prime_factors.sort()
-    N_factors.sort()
-    return N_prime_factors , N_factors 
+            print  "Factored completely !" 
+            N_prime_factors.sort()        
+            for P in N_prime_factors:
+                N=N/P
+                i=1
+                while N%P == 0:
+                    i+=1
+                output.append((P,i))
+            return output
+
+    for F in N_factors:
+        for FF in N_factors:
+            if F != FF:
+                Q=gcd.gcd(F,FF)
+                if prime.primeq(Q)==1 and Q not in N_prime_factors:
+                    N_prime_factors.append(Q)
+                    NN=NN*Q
+
+    N_prime_factors.sort()        
+    for P in N_prime_factors:
+        N=N/P
+        i=1
+        while N%P == 0:
+            N=N/P        
+            i+=1
+        output.append((P,i))
+
+    if  N == 1:
+        print  "Factored completely!! " 
+        return output
+        
+    else:
+        for F in N_factors:
+            g=gcd.gcd(N,F)
+            if prime.primeq(g)==1:
+                N_prime_factors.append(g)
+                N=N/g
+                i=1
+                while N%g == 0:
+                    i+=1
+                output.append((g,i))
+        if N==1 :
+            print  "Factored completely !! " 
+            return output
+        elif prime.primeq(N)==1:
+            output.append((N,1))
+            print  "Factored completely!!! " 
+            return output
+        else:
+            N_factors.sort()
+            print "Sorry, not factored completely"
+            return output,N_factors
+
 
 
 ########################################################
