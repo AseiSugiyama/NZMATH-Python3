@@ -705,8 +705,8 @@ def piGaussLegendre(precision):
     while not _isCloseEnough(a, b, precision):
         olda = a
         a, b = (a + b) / 2, sqrt(a * b, precision*2)
-        t = t - (x * (olda - a) * (olda - a))
-        x += x
+        t -= (x * (olda - a) * (olda - a))
+        x *= 2
     return (a + b) ** 2 / (t * 4)
 
 def sum(iter, precision):
@@ -758,7 +758,6 @@ def exp(x, precision=doubleprecision):
     if x == 0:
         return Float(1, 0, None)
     if x < 0:
-        print x
         return exp(-x, precision).inverse()
     t = 0
     while x > 1:
@@ -870,7 +869,7 @@ def log(x, precision=doubleprecision):
         """
 
         log_iter is a generator. log_iter(x, precision) generates the
-        terms of Taylor expansion series of log with x.
+        terms of Taylor expansion series of log with x, but all negated.
 
         """
         y = Float(xx, 0, precision)
@@ -882,20 +881,48 @@ def log(x, precision=doubleprecision):
             yield (y / i)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
-    if x == 1:
-        return Float(0, 0, precision)
     if x <= 0:
         raise ValueError, "log(%s) is not defined." % str(x)
+    x = Float(x)
+    shift = 0
+    if x >= 2:
+        while x >= 2:
+            x /= 2
+            shift += 1
+    elif x <= Float(1, -1):
+        while x <= Float(1, -1):
+            x *= 2
+            shift -= 1
+    if x == 1:
+        return shift * Log2(precision)
     if x > 1:
-        # log(x) = - log(1/x)
-        if rational.isIntegerObject(x):
-            return -log(rational.Rational(1,x), precision)
-        if isinstance(x, float):
-            x = Float(x)
-        return -log(x.inverse(), precision)
+        return -log(x.inverse(), precision) + shift * Log2(precision)
     y1 = 1 - x
     retval = sum(log_iter(y1, precision), precision)
-    return -retval
+    return -retval + shift * Log2(precision)
+
+def _log2(precision=doubleprecision):
+    """
+
+    _log2([precision]) returns the logarithm of 2.
+
+    """
+    def log_iter2(pp):
+        """
+
+        log_iter_half is a generator. log_iter_half(precision)
+        generates the terms of Taylor expansion series of logarithm of
+        2.
+
+        """
+        y = Float(1,-1,2*pp)
+        yield y
+        i = 1
+        while 1:
+            y /= 2
+            i += 1
+            yield (y / i)
+    return sum(log_iter2(precision), precision)
 
 def sinh(x, precision=doubleprecision):
     """
@@ -1075,3 +1102,4 @@ theRealField = RealField()
 
 pi = FloatConstant(piGaussLegendre)
 e = FloatConstant(lambda precision: exp(1, precision))
+Log2 = FloatConstant(lambda precision: _log2(precision))

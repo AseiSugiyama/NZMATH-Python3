@@ -78,7 +78,7 @@ class ImaginaryTest (unittest.TestCase):
         logc2 = imaginary.log(imaginary.Complex(2,0))
         assert log2 == logf2 == logc2
         log2inverse = real.log(.5)
-        assert log2 == -log2inverse
+        assert abs(imaginary.log(2,53) + log2inverse) <= real.Float(1, -53)
 
     def testHyperbolic(self):
         assert imaginary.sinh(1)

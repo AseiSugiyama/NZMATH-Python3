@@ -89,13 +89,13 @@ class FloatTest (unittest.TestCase):
         assert 1 >= cos1 >= -1
 
     def testLog(self):
-        log2 = real.log(2)
-        logF2 = real.log(real.Float(2,0))
-        logf2 = real.log(2.0)
-        assert log2 == logF2 == logf2
+        log3 = real.log(3)
+        logF3 = real.log(real.Float(3,0))
+        logf3 = real.log(3.0)
+        assert log3 == logF3 == logf3
         log2inverse = real.log(.5)
-        assert log2 == -log2inverse
-        assert "0.6931471805599452" == str(log2)[:18]
+        assert abs(real.log(2,53) + log2inverse) <= real.Float(1, -53)
+        assert "0.69314718055994530" == str(real.Log2)[:19], str(real.Log2)
 
     def testAtan2(self):
         assert real.pi / 2 == real.atan2(1,0)
