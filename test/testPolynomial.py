@@ -57,7 +57,6 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert OneVariableDensePolynomial([2,1,0,0,4],x) == self.a
         self.a[0] = 1
         self.a[4] = 0
-        self.a.adjust()
 
     def testCall(self):
         call_1 = 49
@@ -105,7 +104,7 @@ class IntegerOneVariableSparsePolynomialTest (unittest.TestCase):
         assert OneVariableSparsePolynomial({(0,):3,(1,):1,(5,):4},[x]) == self.k
         self.k[0] = 0
         self.k[5] = 0
-        self.k = self.k.adjust()
+        self.k = self.k.copy()
 
     def testGetitem(self):
         assert 1 == self.k[1]
