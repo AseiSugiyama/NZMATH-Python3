@@ -435,9 +435,55 @@ class AbsoluteError:
         """
 
         AbsoluteError(x) defines absolute error number attribute
-        .absoluteerrorrange from x. x is must be a positive value.
+        absoluteerrorrange from x. x must be a positive value.
 
         """
 
         self.absoluteerrorrange = abs(numeric)
         
+### function rewrite
+defaultError = RelativeError(1, 2 ** 53)
+
+def exp_new(x, err=defaultError):
+    """
+
+    exp(x [,err]) is the exponential function.
+
+    """
+    try:
+        rx = rational.Rational(x)
+        if isinstance(err, RelativeError):
+            _err = real.RelativeError(0, err.relativeerrorrange)
+        elif isinstance(err, AbsoluteError):
+            _err = real.AbsoluteError(0, err.absoluteerrorrange)
+        return real.exp_new(x, _err)
+    except TypeError:
+        pass
+    # divide real part and imaginary part?
+    if isinstance(err, RelativeError):
+        _err = real.RelativeError(0, err.relativeerrorrange, 2)
+    elif isinstance(err, AbsoluteError):
+        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
+    radius = real.exp_new(x.real, _err)
+    if isinstance(err, RelativeError):
+        _err = RelativeError(err.relativeerrorrange, 2)
+    elif isinstance(err, AbsoluteError):
+        _err = AbsoluteError(err.absoluteerrorrange, 2)
+    arg = expi(x.imag, _err)
+    return radius * arg
+
+def expi(x, err=defaultError):
+    """
+
+    expi(x [,err]) returns exp(i * x) where i is the imaginary unit
+    and x must be a real number.
+
+    """
+    # err shoud be converted somehow
+    if isinstance(err, RelativeError):
+        _err = real.RelativeError(0, err.relativeerrorrange, 2)
+    elif isinstance(err, AbsoluteError):
+        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
+    re = real.cos_new(x, _err)
+    im = real.sin_new(x, _err)
+    return Complex(re, im)

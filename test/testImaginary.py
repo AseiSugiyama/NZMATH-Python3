@@ -97,9 +97,14 @@ class ErrorTest (unittest.TestCase):
     def testAbsoluteError(self):
         assert imaginary.AbsoluteError(rational.Rational(1,2))
 
+class NewFunctionTest (unittest.TestCase):
+    def testExp(self):
+        assert isinstance(imaginary.exp_new(imaginary.j), imaginary.Complex)
 
 def suite():
-    suite = unittest.makeSuite(ImaginaryTest, 'test')
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(ImaginaryTest, 'test'))
+    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
     return suite
 
 if __name__ == '__main__':
