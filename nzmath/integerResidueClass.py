@@ -45,7 +45,7 @@ class IntegerResidueClass:
         except ValueError:
             return NotImplemented
 
-    __truediv__ = __div__
+    __floordiv__ = __truediv__ = __div__
 
     def __add__(self, other):
         if isinstance(other, IntegerResidueClass):
