@@ -102,6 +102,9 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.sinh(0)
         assert 1 == real.cosh(0)
         assert 0 == real.tanh(0)
+        assert real.cosh(2) == real.cosh(-2)
+        assert real.sinh(2) == -real.sinh(-2)
+        assert real.sinh(4) == -real.sinh(-4)
 
     def testInverseTrigonometric(self):
         assert 0 == real.asin(0)
@@ -114,6 +117,16 @@ class NewFunctionTest (unittest.TestCase):
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
         assert isinstance(real.pi.toRational(), rational.Rational)
+
+    def testRadd(self):
+        assert 4 + real.pi
+        assert rational.Integer(4) + real.pi
+        assert rational.Rational(4, 3) + real.pi
+
+    def testRmul(self):
+        assert 4 * real.pi
+        assert rational.Integer(4) * real.pi
+        assert rational.Rational(4, 3) * real.pi
 
 def suite():
     suite = unittest.TestSuite()
