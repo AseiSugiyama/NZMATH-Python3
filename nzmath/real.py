@@ -1018,13 +1018,13 @@ def atan(x, precision=doubleprecision):
     retval = reduce(operator.add, series, 0)
     return retval
 
-def atan2(x, y, precision=doubleprecision):
+def atan2(y, x, precision=doubleprecision):
     """
 
     atan2(x, y [,precision]) returns the arc tangent of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
 
-    It is unrecomended to obtain the value of pi with atan2(1,1).
+    It is unrecomended to obtain the value of pi with atan2(0,1).
 
     """
     if x > 0 and y > 0:
