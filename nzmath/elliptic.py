@@ -1,5 +1,6 @@
 from __future__ import division
 import arith1
+import factor
 import imaginary
 import math
 import polynomial 
@@ -529,10 +530,12 @@ class EC:
                     return h
 
         def Shanks_Mestre(self):
+            import sets
             """
             This program is using
             Algorithm 7.5.3(Shanks-Mestre assessment of curve order)
             Crandall & Pomerance ,PRIME NUMBERS
+            self.ch<=10**5+o(1)
             """
             if self.ch!=0:
                 if self.ch<=229:
@@ -545,8 +548,73 @@ class EC:
                         k=k+arith1.legendre(i*(i**2+other.a)+other.b,other.ch)
                     return other.ch+1+k
                 else: #E.ch>229
-                    #def BSGS(E,P,W):
-                    pass
+                    def BSGS(E,P,W):
+                        L=[]
+                        A=[]
+                        B=[]
+                        i=0
+                        Q=E.mul(E.ch+1,P)
+                        while i<W:
+                            A.append(Q[0])
+                            Q=E.add(Q,P)
+                            i=i+1
+                        L.append(A)
+                        j=0
+                        Q=[0]
+                        R=E.mul(W,P)
+                        while j<=W:
+                            B.append(Q[0])
+                            Q=E.add(Q,R)
+                            j=j+1
+                        L.append(B)
+                        L.append(sets.Set(A).intersection(sets.Set(B)))
+                        return L
+                    
+                    if len(self)!=2:
+                        other=self.simple()
+                    else:
+                        other=self
+                    g=0
+                    while arith1.legendre(g,other.ch)!=-1:
+                        g=random.randint(2,other.ch-1)
+                    W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
+                    c,d=g**2*other.a,g**3*other.b
+                    f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X")
+                    BOX=[]
+                    i=0
+                    while i<other.ch:
+                        BOX.append(1)
+                        i=i+1
+                    k=0
+                    while k==0:
+                        x=random.randint(0,other.ch-1)
+                        while BOX[x]==0 or arith1.legendre(f(x),other.ch)==0:
+                            BOX[x]=0
+                            x=random.randint(0,other.ch-1)
+                        BOX[x]=0
+                        if arith1.legendre(f(x),other.ch)==1:
+                            E=other
+                            cg=1
+                        else: #arith1.legendre(f(cg),other.ch)==-1
+                            E=EC([c,d],other.ch)
+                            cg=-1
+                            x=g*x%E.ch
+                        P=[x,E.coordinateX(x)]
+                        L=BSGS(E,P,W)
+                        A=L[0]
+                        B=L[1]
+                        S=L[2]
+                        if len(S)==1:
+                            k=1
+                    s=S.pop()
+                    aa=A.index(s)
+                    bb=B.index(s)
+                    t=aa-bb*W
+                    if E.mul(E.ch+1+t,P)==[0]:
+                        return E.ch+1+cg*t
+                    else:
+                        t=aa+bb*W
+                        return E.ch+1+cg*t
             else:
                 raise "now making m(__)m"
 
@@ -810,11 +878,11 @@ def intersectionOfTwoLists(list1,list2):
             if list1[i]==list2[j]:
                 L.append(list1[i])
             i=i+1
-            while i<len(list1)-1 and list1[i]==list1[i-1]:
+            while i<len(list1) and list1[i]==list1[i-1]:
                 i=i+1
         else:
             j=j+1
-            while j<len(list2)-1 and list2[j]==list2[j-1]:
+            while j<len(list2) and list2[j]==list2[j-1]:
                 j=j+1
     return L
                 
