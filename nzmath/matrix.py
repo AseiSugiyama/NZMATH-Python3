@@ -203,17 +203,20 @@ class Matrix:
             self.compo[i] = list[self.column*i : self.column*(i+1)]
 
     def setRow(self, m, arg):
-        """setRow(m, new_row) : new_row can be a list or a row vector(Matrix)"""
+        """setRow(m, new_row) : new_row should be a list/Vector/Matrix"""
         if isinstance(arg, list):
             self.compo[m-1] = arg[:]
         elif isinstance(arg, Matrix):
             for i in range(self.column):
                 self.compo[m-1][i] = arg.compo[0][i]
+        elif isinstance(arg, vector.Vector):
+            for i in range(self.column):
+                self.compo[m-1][i] = arg.compo[i]
         else:
             raise TypeError, self.setRow.__doc__
     
     def setColumn(self, n, arg):
-        """setColumn(n, new_column) : new_column can be a list or a column vector(Matrix)"""
+        """setColumn(n, new_column) : new_column should be a list/Vector/Matrix"""
         if isinstance(arg, list):
             for i in range(self.row):
                 self.compo[i][n-1] = arg[i]
@@ -229,7 +232,7 @@ class Matrix:
     def getRow(self, i):
         """getRow(i) : Return i-th row in form of Matrix"""
         row = []
-        for k in range(row.column):
+        for k in range(self.column):
             row.append(self.compo[i-1][k])
         return vector.Vector(row)
 
@@ -802,5 +805,6 @@ if __name__ == '__main__':
 #    print h
 #    print h.hessenbergForm()
 #    print c.hessenbergForm()
-    print j
-    print j.inverse()
+    print c
+    print c.determinant()
+    print c.inverseImage(Matrix(3,1,[8,4,5]))
