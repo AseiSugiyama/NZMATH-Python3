@@ -194,7 +194,7 @@ class RationalPolynomialTest(unittest.TestCase):
         assert Qxy == (i*j).getRing(), (i*j).getRing()
 
     def testContent(self):
-        assert rational.Rational(1,4) == i.content()
+        assert rational.Rational(1,2) == i.content()
 
 class IntegerResidueClassPolynomialTest(unittest.TestCase):
     def setUp(self):
