@@ -492,7 +492,8 @@ class EC:
         if self.ch!=2: # E(ch>3):y^2=x^3+a*x+b
             E=self.simple()
             e=x**3+E.a*x+E.b
-            for i in range(1,H[-1]+1):
+            i=1
+            for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
                     M.append(1)
@@ -529,7 +530,7 @@ class EC:
                         f.append(g)
                         M.append(change(g,i,e,E.ch)) # y^2->e and div y
         else: #E(ch=2):y^2+x*y=x^3+a2*x^2+a6
-            for i in range(1,H[-1]+1):
+            for i in xrange(1,H[-1]+1):
                 if i==1:
                     f.append(1)
                     M.append(1)
