@@ -1,11 +1,11 @@
 import math
 import bigrandom
 import random
-import prime
 import time
 import arith1
 import gcd
 import trialdivision
+import prime
 
 class MPQS:
     def __init__(self,n,sieverange=0,factorbase=0):
