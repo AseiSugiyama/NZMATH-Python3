@@ -89,6 +89,15 @@ class ImaginaryTest (unittest.TestCase):
         assert imaginary.pi ==real.pi
         assert (0,1) == (imaginary.j.real, imaginary.j.imag)
 
+class ErrorTest (unittest.TestCase):
+    def testRelativeError(self):
+        assert imaginary.RelativeError(1,2)
+        assert isinstance(real.RelativeError(1,2).absoluteerror(imaginary.Complex(3,4)), real.AbsoluteError)
+
+    def testAbsoluteError(self):
+        assert imaginary.AbsoluteError(rational.Rational(1,2))
+
+
 def suite():
     suite = unittest.makeSuite(ImaginaryTest, 'test')
     return suite
