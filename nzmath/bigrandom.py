@@ -1,8 +1,15 @@
 #bigrandom.py
 import random
 
-def random_range(min,max):
-    return long(random.random() * (max-min)) + min
+def randrange(start,stop = 0,step = 1):
+    if start > stop :
+        v = stop
+        stop = start
+        start = v
+    if step <= 0:
+        return 0
+    else:
+        return long(random.random() * (stop - start) / step) * step + start
 
-def random(z):
-    return long(random.random() * z)
+def random():
+    return random.random()
