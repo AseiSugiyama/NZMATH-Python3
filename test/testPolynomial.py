@@ -23,6 +23,8 @@ i =  OneVariableDensePolynomial([rational.Rational(1,1),rational.Rational(0,4),r
 
 j =  OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(9,4)],"y")
 
+k = OneVariableSparsePolynomial({(1,):1},["x"])
+
 class IntegerPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sx = OneVariableSparsePolynomial({(1,):1},["x"])
@@ -42,8 +44,10 @@ class IntegerPolynomialTest(unittest.TestCase):
     def testMul(self):
         mul_1 = OneVariableDensePolynomial([1,0,-1,-4,-4],"y")
         mul_2 = MultiVariableSparsePolynomial({(0,0,0):1,(1,0,0):2,(2,0,0):3,(0,1,0):-1,(1,1,0):-2,(2,1,0):-3,(0,2,0):-2,(1,2,0):-4,(2,2,0):-6,(1,0,1):4,(1,1,1):-4,(1,2,1):-8,(0,0,3):5,(0,1,3):-5,(0,2,3):-10},["x","y","z"])
+        mul_3 = OneVariableDensePolynomial([0,1,1],"x")
         assert c * d == mul_1
         assert c * f == mul_2
+        assert k * a == mul_3 #local variable 'return_variable' referenced before assignment
 
     def testScalarMul(self):
         mul_1 = OneVariableDensePolynomial([0,3,6,9,12],"z")
