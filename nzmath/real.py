@@ -736,7 +736,7 @@ def exp(x, precision=doubleprecision):
         """
 
         exp_iter is a generator. exp_iter(x, precision) generates the
-        terms of Taylor expansion series with x.
+        terms of Taylor expansion series of exp with x.
 
         """
         yield 1
@@ -769,29 +769,35 @@ def sin(x, precision=doubleprecision):
     sin(x [,precision]) returns the sine of x.
 
     """
+    def sin_iter(xx, pp):
+        """
+
+        sin_iter is a generator. sin_iter(x, precision) generates the
+        terms of Taylor expansion series of sine with x.
+
+        """
+        yield xx
+        y = xx
+        y2 = xx ** 2
+        i = f = 1
+        while 1:
+            f *= (i+1)*(i+2)
+            i += 2
+            y *= y2
+            yield (-y / f)
+            f *= (i+1)*(i+2)
+            i += 2
+            y *= y2
+            yield (y / f)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     twopi = pi(2*precision) * 2
-    y = x.copy()
-    y.setDefaultPrecision(precision)
+    y = Float(x, 0, precision)
     if y > twopi:
         y -= floor(y / twopi) * twopi
     elif y < -twopi:
         y += ceil(-y / twopi) * twopi
-    y2 = y ** 2
-    eps = Float(1, -2*precision)
-    i = f = 1
-    series = [y]
-    while abs(series[-1]) > eps:
-        f *= (i+1)*(i+2)
-        i += 2
-        y *= y2
-        if i&3 == 1:
-            series.append(y / f)
-        else:
-            series.append(-y / f)
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
+    retval = sum(sin_iter(y, precision), precision)
     if retval > 1:
         retval = Float(1, 0, precision)
     elif retval < -1:
@@ -804,30 +810,35 @@ def cos(x, precision=doubleprecision):
     cos(x [,precision]) returns the cosine of x.
 
     """
+    def cos_iter(xx, pp):
+        """
+
+        cos_iter is a generator. cos_iter(x, precision) generates the
+        terms of Taylor expansion series of cosine with x.
+
+        """
+        yield 1
+        y2 = xx ** 2
+        t = Float(1, 0, precision)
+        i = f = 1
+        while 1:
+            f *= i*(i+1)
+            i += 2
+            t *= y2
+            yield (-t / f)
+            f *= i*(i+1)
+            i += 2
+            t *= y2
+            yield (t / f)
     if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     twopi = pi(2*precision) * 2
-    y = x.copy()
-    y.setDefaultPrecision(precision)
+    y = Float(x, 0, precision)
     if y > twopi:
         y -= floor(y / twopi) * twopi
     elif y < -twopi:
         y += ceil(-y / twopi) * twopi
-    y2 = y ** 2
-    t = Float(1, 0, 2*precision)
-    eps = Float(1, -2*precision)
-    i = f = 1
-    series = [t]
-    while abs(series[-1]) > eps:
-        f *= i*(i+1)
-        i += 2
-        t *= y2
-        if i&3 == 1:
-            series.append(t / f)
-        else:
-            series.append(-t / f)
-    series.reverse()
-    retval = reduce(operator.add, series, Float(0, 0, 2*precision))
+    retval = sum(cos_iter(y, precision), precision)
     if retval > 1:
         retval = Float(1, 0, precision)
     elif retval < -1:
@@ -858,9 +869,11 @@ def log(x, precision=doubleprecision):
         raise ValueError, "log(%s) is not defined." % str(x)
     if x > 1:
         # log(x) = - log(1/x)
+        if rational.isIntegerObject(x):
+            return -log(rational.Rational(1,x), precision)
         return -log(x.inverse(), precision)
     y1 = 1 - x
-    y = y1.copy()
+    y = Float(y1, 0, precision)
     eps = Float(1, -2*precision)
     i = 1
     series = [y]
