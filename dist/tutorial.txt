@@ -28,7 +28,38 @@ from the website_.  There are also some documents there.
 _website: http://www.python.org/
 
 
-2.1.1. User Interfaces
+2.1.2 Installation of NZMATH
+----------------------------
+
+To install NZMATH you should have privilege which lets you install
+some files under the standard python script path,
+/usr/lib/python2.3/site-packages or
+/usr/local/lib/python2.3/site-packages depending on the Python
+installation path.
+
+We denote the privileged user's prompt # and ordinary user's %.
+
+First of all, please download the distribution file from
+tnt.math.metro-u.ac.jp/nzmath/. It is named as NZMATH-x.y.z.tar.gz,
+where x, y, z are non-negative integers.
+
+Second, expand it.
+
+ % tar zxf NZMATH-x.y.z.tar.gz
+
+Then, you have a child directory named NZMATH-x.y.z.
+
+ % cd NZMATH-x.y.z
+ % su
+ # python setup.py install
+
+The last command install NZMATH into the python script path described
+above.
+
+2.2. Quick Start
+================
+
+2.2.1. User Interfaces
 ----------------------
 
 At the time of writing this tutorial, NZMATH is on an early stage of
@@ -37,8 +68,8 @@ Users have to use with the raw Python interpreter.  Though the
 interpreter is designed well, but, of course, it is not specialized
 for mathematical computation.  Please be patient about it.
 
-2.2. Quick Start
-================
+2.2.2 Sample Session
+--------------------
 
 Start your Python interpreter:
 
@@ -112,6 +143,22 @@ instead of a float.
 NZMATH provides Rational (nzmath.rational.Rational) class representing
 a rational number.
 
+4.3 Polynomials
+===============
+
+There are several polynomial classes.
+
+4.4 Rings
+=========
+
+Integers are in the integer ring, A polynomial in a certain polynomial
+ring, etc..  They are obtained from elements of them by getRing
+method.  For example, rational.Integer(1).getRing() returns a
+rational.IntegerRing object.
+
+This is a convention in NZMATH and does not apply to the object
+provided by Python itself such as int or long.
+
 --------------
 5. Development
 --------------
@@ -152,8 +199,8 @@ it to nzmath-user.
 
 
 ----------
-7. Lisence
+7. License
 ----------
 
-NZMATH is distributed under the BSD lisence.  Please read LISENCE.txt
+NZMATH is distributed under the BSD license.  Please read LICENSE.txt
 in the distribution tar ball for detail.
