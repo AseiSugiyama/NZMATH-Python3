@@ -833,7 +833,7 @@ class MultiVariableSparsePolynomial:
         substitutions = other
         basecoefficientring = self.getRing().getCoefficientRing(self.getRing().getVars())
         for i in adjust_polynomial.variable:
-            if i in substitutions and not isinstance(substitutions[i], str) and substitutions[i] in basecoefficientring:
+            if i in substitutions and not isinstance(substitutions[i], str) and not isinstance(substitutions[i], (OneVariablePolynomial, MultiVariableSparsePolynomial)):
                 variable_position = adjust_polynomial.variable.index(i)
                 new_coefficient = {}
                 for j in adjust_polynomial.coefficient:
