@@ -141,8 +141,10 @@ class RationalPolynomialTest(unittest.TestCase):
     def testAdd(self):
         sum_1 = OneVariableDensePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],"x")
         sum_2 = MultiVariableSparsePolynomial({(0,0):2,(1,0):rational.Rational(7,8),(0,1):rational.Rational(9,4),(2,0):rational.Rational(1,13)},["x","y"])
+        sum_3 = OneVariableDensePolynomial([rational.Rational(3,2), 1], "x")
         assert h + i == sum_1
         assert h + j == sum_2
+        assert a + rational.Rational(1,2) == sum_3
 
     def testSub(self):
         sub_1 = OneVariableDensePolynomial([rational.Rational(-1,2),rational.Rational(7,8),rational.Rational(-11,26),rational.Rational(-5,2)],"x")
@@ -174,8 +176,16 @@ class RationalPolynomialTest(unittest.TestCase):
         assert rational.Rational(1,4) == i.content()
 
 class IntegerResidueClassPolynomialTest(unittest.TestCase):
-    def testInit(self):
-        assert OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(3,5), integerResidueClass.IntegerResidueClass(1,5)], "x")
+    def setUp(self):
+        self.f1 = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(3,5), integerResidueClass.IntegerResidueClass(1,5)], "x")
+        self.f2 = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(4,5), integerResidueClass.IntegerResidueClass(1,5), integerResidueClass.IntegerResidueClass(1,5)], "x")
+
+    def testAdd(self):
+        sum = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(2,5), integerResidueClass.IntegerResidueClass(2,5), integerResidueClass.IntegerResidueClass(1,5)], "x")
+        assert sum == (self.f1 + self.f2)
+
+    def testEquals(self):
+        assert self.f1 == self.f1
 
 class PolynomialRingTest(unittest.TestCase):
     def setUp(self):
