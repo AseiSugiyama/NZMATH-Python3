@@ -498,21 +498,17 @@ class Matrix:
 
 # define exceptions --------------------------------------------------
 class MatrixSizeError:
-    def __init__(self):
-        pass
+    pass
 
 class NoInverse:
-    def __init__(self):
-        pass
+    pass
 
 class NoSolution:
-    def __init__(self):
-        pass
+    pass
 
 class VectorsNotIndependent:
-    def __init__(self):
-        pass
-    
+    pass
+
 # the belows are not class methods -----------------------------------
 def unit_matrix(size):
     """unit_matrix(n) : Return unit matrix whose size is n * n"""
@@ -528,7 +524,7 @@ def intersection_of_subspaces(M, M_):    # using Cohen's Algorithm 2.3.9
     for j in range(1, M.column+1):
         M1.set_column(j, M[j])
     for j in range(1, M_.column+1):
-        M1.set_column(M.column + j, M_.[j])
+        M1.set_column(M.column + j, M_[j])
     N = M1.kernel()
     N1 = Matrix(M.column , N.column)    # N.column is dimension of kernel(M1)
     for j in range(1, M.column + 1):
@@ -560,3 +556,4 @@ def pause():
     raw_input()
 
 if __name__ == '__main__':
+    pass
