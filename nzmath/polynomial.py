@@ -104,6 +104,12 @@ class OneVariablePolynomial:
         quotient = other // self
         return (quotient, other - quotient * self)
 
+    def __nonzero__(self):
+        if self.degree() >= 0:
+            return True
+        else:
+            return False
+
     def toOneVariableDensePolynomial(self):
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
 
@@ -363,12 +369,6 @@ class OneVariableDensePolynomial (OneVariablePolynomial):
         elif retval.degree() < 0:
             retval = 0
         return retval
-
-    def __nonzero__(self):
-        if self.degree() >= 0:
-            return True
-        else:
-            return False
 
     def __str__(self):
         if self.degree() < 1:
@@ -703,12 +703,6 @@ class OneVariableSparsePolynomial (OneVariablePolynomial):
 
     def __pos__(self):
         return self.adjust()
-
-    def __nonzero__(self):
-        if self.degree() >= 0:
-            return True
-        else:
-            return False
 
     def __str__(self):
         return str(self.toOneVariableDensePolynomial())
