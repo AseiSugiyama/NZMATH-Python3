@@ -308,6 +308,25 @@ class PolynomialGCDTest(unittest.TestCase):
     def testSubResultantGCD(self):
         assert subResultantGCD(self.f2, self.g2) == OneVariableDensePolynomial([-1,0,1], "x")
 
+class SquareFreeDecompositionChar0Test(unittest.TestCase):
+    def setUp(self):
+        self.pow1 = OneVariableDensePolynomial([1,1],"x")
+        self.pow1pow2 = OneVariableDensePolynomial([1,2,2,2,1],"x")
+        self.pow1pow3 = OneVariableDensePolynomial([8,20,18,7,1],"x")
+
+    def testSuccess(self):
+        assert self.pow1.squareFreeDecomposition()
+        assert self.pow1pow2.squareFreeDecomposition()
+        assert self.pow1pow3.squareFreeDecomposition()
+        result1 = {1: self.pow1}
+        result2 = {1: OneVariableDensePolynomial([1,0,1],"x"),
+                   2: OneVariableDensePolynomial([1,1],"x")}
+        result3 = {1: OneVariableDensePolynomial([1,1],"x"),
+                   3: OneVariableDensePolynomial([2,1],"x")}
+        assert result1 == self.pow1.squareFreeDecomposition()
+        assert result2 == self.pow1pow2.squareFreeDecomposition(), self.pow1pow2.squareFreeDecomposition()
+        assert result3 == self.pow1pow3.squareFreeDecomposition(), self.pow1pow3.squareFreeDecomposition()
+
 def suite():
     suite=unittest.TestSuite()
     suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
@@ -316,6 +335,7 @@ def suite():
     suite.addTest(unittest.makeSuite(PolynomialRingTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
     suite.addTest(unittest.makeSuite(PolynomialGCDTest, "test"))
+    suite.addTest(unittest.makeSuite(SquareFreeDecompositionChar0Test, "test"))
     return suite
 
 if __name__== '__main__':

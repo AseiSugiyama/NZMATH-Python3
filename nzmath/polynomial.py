@@ -456,6 +456,36 @@ class OneVariableDensePolynomial:
         """
         return self / self.content()
 
+    def squareFreeDecomposition(self):
+        """
+
+        Return the square free decomposition of the polynomial.  The
+        return value is a dict whose keys are integers and values are
+        corresponding powered factors.  For example, if
+        A = A1 * A2**2,
+        the result is {1: A1, 2: A2}.
+
+        """
+        result = {}
+        if self.degree() == 1:
+            return {1: self.__class__(self.coefficient, self.variable)}
+        rx = self.getRing()
+        b = rx.gcd(self, self.differentiate(self.variable))
+        a = self / b
+        i = 1
+        while isinstance(b, OneVariableDensePolynomial):
+            c = rx.gcd(a, b)
+            b /= c
+            if a != c:
+                r = a / c
+                if isinstance(r, OneVariableDensePolynomial):
+                    result[i] = r
+                a = c
+            i += 1
+        result[i] = a
+        # except char > 0 case, result is the answer.
+        return result
+
 class OneVariableSparsePolynomial:
 
     def __init__(self, coefficient, variable):
