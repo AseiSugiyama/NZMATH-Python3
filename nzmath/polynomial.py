@@ -281,6 +281,9 @@ class IntegerPolynomial:
         else:
             raise ValueError, "You must input differentiate(polynomial,string)."
 
+    def integrate(self, other = None, min = None, max = None):
+        return self.toRationalPolynomial().integrate(other, min, max)
+
     def change_variable(self, other):
         if isinstance(other, str):
             result_polynomial = IntegerPolynomial(self.coefficient, other)
@@ -730,6 +733,9 @@ class FlatIntegerPolynomial:
         else:
             raise ValueError, "You input [FlatIntegerPolynomial, string]."
 
+    def integrate(self, other=None, min=None, max=None):
+        return self.toFlatRationalPolynomial().integrate(other,min,max)
+
     def toIntegerPolynomial(self):
         origin_polynomial = self.adjust()
         if rational.isIntegerObject(origin_polynomial):
@@ -958,7 +964,7 @@ class RationalPolynomial:
 
     def __eq__(self, other):
         sub_polynomial = self - other
-        if (rational.isIntegerObject(sub_polynomial) or isintance(sub_polynomial,rational.Rational)) and sub_polynomial == 0:
+        if (rational.isIntegerObject(sub_polynomial) or isinstance(sub_polynomial,rational.Rational)) and sub_polynomial == 0:
             return 1
         return 0
 
@@ -1058,6 +1064,28 @@ class RationalPolynomial:
                 return 0
         else:
             raise ValueError, "You must input differentiate(polynomial,string)."
+
+    def integrate(self, other = None, min = None, max = None):
+        if min == None and max == None and other != None and isinstance(other, str):
+             integrate_coefficient = [0] * ( len(self.coefficient) + 1)
+             integrate_variable = other
+             if integrate_variable != self.variable:
+                 return RationalPolynomial([0,self],integrate_variable).adjust()
+             else:
+                 for i in range(len(self.coefficient)):
+                     integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1,i+1)
+                 return RationalPolynomial(integrate_coefficient, integrate_variable).adjust()
+        elif min != None and max != None and other != None and isinstance(other, str):
+             integrate_coefficient = [0] *(  len(self.coefficient) + 1)
+             integrate_variable = other
+             if integrate_variable != self.variable:
+                 return self * (max - min)
+             else:
+                 for i in range(len(self.coefficient)):
+                     integrate_coefficient[i+1] = self.coefficient[i] * rational.Rational(1, i+1)
+                 return RationalPolynomial(integrate_coefficient, integrate_variable).adjust().__call__(max) - RationalPolynomial(integrate_coefficient, integrate_variable).adjust().__call__(min)
+        else:
+            raise ValueErroe, "You must imput integrate(polynomial, variable) or integrate(polynomial, variable, min, max)."
 
     def change_variable(self, other):
         if isinstance(other, str):
@@ -1505,6 +1533,45 @@ class FlatRationalPolynomial:
                 return 0
         else:
             raise ValueError, "You input [FlatRationalPolynomial, string]."
+
+    def integrate(self, other = None, min = None, max = None):
+        if min == None and max == None and other != None and isinstance(other, str):
+            before_polynomial = self.adjust()
+            if other in before_polynomial.variables:
+                integrate_variables = before_polynomial.variables[:]
+                variable_position = integrate_variables.index(other)
+                integrate_coefficients = {}
+                for i in before_polynomial.coefficients:
+                    new_coefficients_key = list(i)
+                    new_index = new_coefficients_key[variable_position] + 1
+                    new_coefficients_value = before_polynomial.coefficients[i] * rational.Rational(1, new_index)
+                    new_coefficients_key[variable_position] = new_index
+                    new_coefficients_key = tuple(new_coefficients_key)
+                    integrate_coefficients[new_coefficients_key] = new_coefficients_value
+                integrate_polynomial = FlatRationalPolynomial(integrate_coefficients, integrate_variables)
+                return integrate_polynomial.adjust()
+            else:
+                return (self * RationalPolynomial([0,1], other).toFlatRationalPolynomial()).adjust()
+        elif min != None and max != None and other != None and isinstance(other, str):
+            before_polynomial = self.adjust()
+            if other in before_polynomial.variables:
+                integrate_variables = before_polynomial.variables[:]
+                variable_position = integrate_variables.index(other)
+                integrate_coefficients = {}
+                for i in before_polynomial.coefficients:
+                    new_coefficients_key = list(i)
+                    new_index = new_coefficients_key[variable_position] + 1
+                    new_coefficients_value = before_polynomial.coefficients[i] * rational.Rational(1, new_index)
+                    new_coefficients_key[variable_position] = new_index
+                    new_coefficients_key = tuple(new_coefficients_key)
+                    integrate_coefficients[new_coefficients_key] = new_coefficients_value
+                integrate_polynomial = FlatRationalPolynomial(integrate_coefficients, integrate_variables)
+#                return (integrate_polynomial.__call__(integrate_variables[variable_position] = max) - integrate_polynomial.__call__(integrate_variables[variable_position] = min)).adjust()
+                return 0
+            else:
+                return self * (RationalPolynomial([0,1],other).__call__(max) - RationalPolynomial([0,1],other).__call__(min))
+        else:
+            raise ValueError, "You must input integrate(polynomial,variable) or integrate(polynomial,variable,min,max)."
 
     def toRationalPolynomial(self):
         origin_polynomial = self.adjust()
