@@ -180,6 +180,8 @@ class Float:
 
     def __mul__(self, other):
         if rational.isIntegerObject(other):
+            if other == 0:
+                return 0
             v2, c2 = _vp(other, 2)
             return self.__class__(self.mantissa * c2,
                                   self.exponent + v2,
@@ -210,6 +212,8 @@ class Float:
 
     def __rmul__(self, other):
         if rational.isIntegerObject(other):
+            if other == 0:
+                return 0
             v2, c2 = _vp(other, 2)
             return self.__class__(self.mantissa * c2,
                                   self.exponent + v2,
@@ -590,7 +594,7 @@ def sqrt(aFloat, precision=doubleprecision):
         prat = rational.Rational(1, 2**prec)
         return -prat < (xrat - yrat) / xrat < prat
     if not isinstance(aFloat, Float):
-        return math.sqrt(aFloat)
+        aFloat = Float(aFloat)
     if precision < aFloat.precision:
         precision = aFloat.precision
     if aFloat.mantissa < 0:
@@ -1032,9 +1036,13 @@ def atan2(x, y, precision=doubleprecision):
     if x > 0 and y > 0:
         return atan(x/y)
     elif x > 0 and y < 0:
-        return pi(2*precision) * 2 + atan(x/y)
+        return pi(precision) * 2 + atan(x/y)
     elif x < 0:
-        return pi(2*precision) + atan(x/y)
+        return pi(precision) + atan(x/y)
+    elif x == 0 and y > 0:
+        return pi(precision) / 2
+    elif x == 0 and y < 0:
+        return -pi(precision) / 2
     return Float(0, 0, precision)
 
 def hypot(x, y, precision=doubleprecision):
