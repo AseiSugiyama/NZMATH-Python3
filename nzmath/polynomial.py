@@ -13,9 +13,7 @@ class Polynomial:
 
     def __add__(self, other):
         if (type(other) == int) or (type(other) == long):
-            sum = Polynomial([0]*len(self.coefficient),self.variable)
-            for i in range(len(self.coefficient)):
-                sum.coefficient[i] = self.coefficient[i]
+            sum = Polynomial(self.coefficient[:],self.variable)
             sum.coefficient[0] += other
             return Polynomial.adjust(sum) 
         elif isinstance(other, FlatPolynomial):
@@ -86,8 +84,6 @@ class Polynomial:
 
     def __eq__(self, other):
         return self - other == 0
-
-    __call__=__mul__
 
     def __repr__(self):
         self = Polynomial.adjust(self)
@@ -169,7 +165,6 @@ class Polynomial:
                 return 0
         else:
             raise ValueError, "You must input differentiate(polynomial,string)." 
-
     def change_variable(self, other):
         if isinstance(other) == str:
             result_polynomial = Polynomial(self.coefficient, other)
@@ -189,18 +184,18 @@ class Polynomial:
         else:
             for i in range(len(self.coefficient)):
                 if (type(self.coefficient[i]) != int) and (type(self.coefficient[i]) != long):
-                    raise ValueError, "You input pure polynomial of single variable."
+                    raise ValueError, "You must input pure polynomial of single variable."
             result_variable = [self.variable]
             result_coefficients = {}
             for i in range(len(self.coefficient)):
-                key = tuple([i])
+                key = (i,)
                 result_coefficients[key] = self.coefficient[i]                 
             result_polynomial = FlatPolynomial(result_coefficients, result_variable)
             return FlatPolynomial.adjust(result_polynomial)
 
 
 class FlatPolynomial:
-    
+
     def __init__(self, coefficients, variables):   
         "FlatPolynomial(coefficients, variables)"
         if isinstance(variables, list) and isinstance(coefficients, dict):
@@ -269,11 +264,11 @@ class FlatPolynomial:
         return result_polynomial
 
     def __mul__(self, other):
-        if(type(other) == int) or (type(other) == long):
-            result_polynomial = FlatPolynomial({},self.variables)
-            for i in range(len(self.coefficients)):
-                result_polynomial.coefficients[self.coefficients.keys()[i]] = other * self.coefficients.values()[i]
-            return FlatPolynomial.adjust(result_polynomial)
+        if (type(other) == int) or (type(other) == long):
+            result_polynomial = {}
+            for i in self.coefficients:
+                result_polynomial[i] = other * self.coefficients[i]
+            return FlatPolynomial(result_polynomial, self.variables).adjust()
         elif isinstance(other, Polynomial):
             return self * Polynomial.toFlatPolynomial(other)
         elif self.variables == other.variables:
@@ -293,21 +288,19 @@ class FlatPolynomial:
                     else:
                         result_coefficients[index_list] = mul_value
             result_polynomial = FlatPolynomial(result_coefficients, result_variables)
-            return FlatPolynomial.adjust(result_polynomial)
+            return result_polynomial.adjust()
         else:
-            self_adjust = FlatPolynomial.adjust(self)
-            other_adjust = FlatPolynomial.adjust(other)
+            self_adjust = self.adjust()
+            other_adjust = other.adjust()
             if (type(self_adjust) == int) or (type(self_adjust) == long):
                 return other_adjust * self_adjust
             elif (type(other_adjust) == int) or (type(other_adjust) == long):
                 return self_adjust * other_adjust
             if self_adjust.variables == other_adjust.variables:
                 return self_adjust * other_adjust
-            sum_variables = []
-            for i in self_adjust.variables:
-                sum_variables += [i]
+            sum_variables = self_adjust.variables[:]
             for i in other_adjust.variables:
-                if (i in sum_variables) != 1:
+                if i not in sum_variables:
                     sum_variables += [i]
             sum_variables.sort()
             return FlatPolynomial.arrange_variables(self_adjust, sum_variables) * FlatPolynomial.arrange_variables(other_adjust, sum_variables)
@@ -319,9 +312,7 @@ class FlatPolynomial:
             if other == 0:
                 return 1
             elif other > 0:
-                result_variables = []
-                for i in range(len(self.variables)):
-                    result_variables += [self.variables[i]]
+                result_variables = self.variables[:]
                 result_coefficients = {}
                 one_key = (0,)*len(self.variables)
                 result_coefficients[one_key] = 1
@@ -333,15 +324,16 @@ class FlatPolynomial:
                 raise ValueError, "You must input positive integer for index."
         else:
             raise ValueError, "You must input integer for index."
-    
+
     def __rpow__(self, other):
         raise ValueError, "You must input integer for index."
 
     def __eq__(self, other):
-        return self - other == 0
-
-    __call__=__mul__
-
+        sub_polynomial = self - other
+        if (isinstance(sub_polynomial,int) or isinstance(sub_polynomial,long)) and sub_polynomial == 0:
+            return 1
+        return 0
+        
     def __repr__(self):
         self = FlatPolynomial.adjust(self)
         if (type(self) == int) or (type(self) == long) :
@@ -352,33 +344,28 @@ class FlatPolynomial:
         return return_str
 
     def __str__(self):
-        self = FlatPolynomial.adjust(self)
-        if (type(self) == int) or (type(self) == long) :
-            return str(self)
-        elif len(self.variables) == 1:
+        disp_polynomial = FlatPolynomial.adjust(self)
+        if (type(disp_polynomial) == int) or (type(disp_polynomial) == long) :
+            return str(disp_polynomial)
+        elif len(disp_polynomial.variables) == 1:
             max_index = 0
-            for i in range(len(self.coefficients)):
-                if self.coefficients.keys()[i][0] > max_index:
-                    max_index = self.coefficients.keys()[i][0]
-            return_polynomial = Polynomial([0]*(max_index + 1),self.variables[0])
-            for i in range(len(self.coefficients)):
-                return_polynomial.coefficient[self.coefficients.keys()[i][0]] += self.coefficients.values()[i]
-            return Polynomial.__str__(return_polynomial)
+            for i in disp_polynomial.coefficients:
+                if i[0] > max_index:
+                    max_index = i[0]
+            return_coefficients = [0]*(max_index + 1)
+            for i in disp_polynomial.coefficients:
+                return_coefficients[i[0]] += disp_polynomial.coefficients[i]
+            return str(Polynomial(return_coefficients, disp_polynomial.variables[0]))
         else:
-            old_variables = []
-            for i in range(len(self.variables)):
-                old_variables += [self.variables[i]]
-            reverse_coefficients = {}
-            for i in range(len(self.coefficients)):
-                reverse_coefficients[self.coefficients.keys()[i]] = self.coefficients.values()[i]
-            reverse_variables = []
-            for i in range(len(old_variables)):
-                reverse_variables += [old_variables[len(old_variables) - 1 - i]]
+            old_variables = disp_polynomial.variables[:]
+            reverse_coefficients = disp_polynomial.coefficients.copy()
+            reverse_variables = old_variables[:]
+            reverse_variables.reverse()
             reverse_polynomial = FlatPolynomial(reverse_coefficients, reverse_variables)
-            reverse_polynomial = FlatPolynomial.sort_variables(reverse_polynomial)
+            reverse_polynomial = reverse_polynomial.sort_variables()
             result_coefficients = reverse_polynomial.coefficients.keys()
             result_coefficients.sort()
-            test_key = (0,) * len(self.variables)
+            test_key = (0,) * len(disp_polynomial.variables)
             return_str = ""
             for i in range(len(result_coefficients)):
                 if reverse_polynomial.coefficients[result_coefficients[i]] >= 1:
@@ -393,24 +380,20 @@ class FlatPolynomial:
                 for k in range(len(result_coefficients[i])):
                     index_total += result_coefficients[i][k]
                 for j in range(len(result_coefficients[i])):
-                    if result_coefficients[i][len(result_coefficients[i]) - 1 - j] == 1:
+                    if result_coefficients[i][- 1 - j] == 1:
                         return_str += old_variables[j]
-                    elif result_coefficients[i][len(result_coefficients[i]) - 1 - j] > 1:
-                        if result_coefficients[i][len(result_coefficients[i]) - 1 - j] != index_total:
+                    elif result_coefficients[i][- 1 - j] > 1:
+                        if result_coefficients[i][- 1 - j] != index_total:
                             return_str += '('
                         return_str += old_variables[j]
                         return_str += '**'
-                        return_str += str(result_coefficients[i][len(result_coefficients[i]) - 1 - j])
-                        if result_coefficients[i][len(result_coefficients[i]) - 1 - j] != index_total:
+                        return_str += str(result_coefficients[i][- 1 - j])
+                        if result_coefficients[i][- 1 - j] != index_total:
                             return_str += ')'
-            test_return_str = string.split(return_str)
-            if test_return_str[0] != '+':
+            if return_str[1] != '+':
                 return return_str
             else:
-                del(test_return_str[0])
-                for i in range(len(test_return_str)):
-                    print test_return_str[i],
-                return ""
+                return return_str[3:]
 
     def arrange_variables(self, other):
         if type(other) != list:
@@ -429,14 +412,14 @@ class FlatPolynomial:
                     key[(position_infomation[j])] = index_list[i][j]
                 result_polynomial.coefficients[tuple(key)] = values_list[i]
             return result_polynomial
-                    
+
     def adjust(self):
         if (len(self.variables) == 0) or (len(self.coefficients.keys()) == 0):
             return 0
-        result_polynomial = FlatPolynomial.sort_variables(self)
-        result_polynomial = FlatPolynomial.merge_variables(result_polynomial)
-        result_polynomial = FlatPolynomial.delete_zero_value(result_polynomial)
-        result_polynomial = FlatPolynomial.delete_zero_variable(result_polynomial)
+        result_polynomial = self.sort_variables()
+        result_polynomial = result_polynomial.merge_variables()
+        result_polynomial = result_polynomial.delete_zero_value()
+        result_polynomial = result_polynomial.delete_zero_variable()
         result_coefficient = result_polynomial.coefficients
         if len(result_coefficient) == 0:
             return 0
@@ -452,17 +435,13 @@ class FlatPolynomial:
                 positions[self.variables[i]] = tuple(list(positions[self.variables[i]]) + [i])
             else:
                 positions[self.variables[i]] = (i,)
-        result_variables = []
-        for i in range(len(self.variables)):
-            result_variables += [self.variables[i]]
+        result_variables = self.variables[:]
         result_polynomial = FlatPolynomial({},result_variables)
         result_polynomial.variables.sort()
         for i in self.coefficients.keys():
             new_index_list = []
             old_index_list = list(i)
-            old_position_keys = {}
-            for l in range(len(positions)):
-                old_position_keys[positions.keys()[l]] = positions.values()[l]
+            old_position_keys = positions.copy()
             for j in range(len(old_index_list)):
                 if len(positions[result_polynomial.variables[j]]) == 1:
                     new_index_list += [old_index_list[positions[result_polynomial.variables[j]][0]]]
@@ -476,8 +455,8 @@ class FlatPolynomial:
                 result_polynomial.coefficients[tuple(new_index_list)] += self.coefficients[i]
             else:
                 result_polynomial.coefficients[tuple(new_index_list)] = self.coefficients[i]
-            for l in range(len(old_position_keys)):
-                positions[old_position_keys.keys()[l]] = old_position_keys.values()[l]
+            for l in old_position_keys:
+                positions[l] = old_position_keys[l]
         return result_polynomial
 
     def merge_variables(self):
@@ -511,9 +490,9 @@ class FlatPolynomial:
 
     def delete_zero_value(self):
         result_coefficient = {}
-        for i in range(len(self.coefficients.keys())):
-            if self.coefficients.values()[i] != 0:
-                result_coefficient[self.coefficients.keys()[i]] = self.coefficients.values()[i]
+        for i in self.coefficients:
+            if self.coefficients[i] != 0:
+                result_coefficient[i] = self.coefficients[i]
         result_polynomial = FlatPolynomial(result_coefficient, self.variables)
         return result_polynomial
 
@@ -527,9 +506,7 @@ class FlatPolynomial:
                 if old_coefficients_keys[j][i] != 0:
                     exist_position_list += [i]
                     break
-        new_variables = []
-        for i in range(len(exist_position_list)):
-            new_variables += old_variables[exist_position_list[i]]
+        new_variables = [old_variables[position] for position in exist_position_list]
         new_coefficients = {}
         for i in range(len(old_coefficients_keys)):
             new_coefficients_key = []
@@ -541,19 +518,16 @@ class FlatPolynomial:
 
     def differentiate(self, other):
         if type(other) == str:
-            self = FlatPolynomial.adjust(self)
-            if other in self.variables:
-                result_variables = []
-                for i in range(len(self.variables)):
-                    result_variables += self.variables[i]
-                    if self.variables[i] == other:
-                        variable_position = i
+            origin_polynomial = FlatPolynomial.adjust(self)
+            if other in origin_polynomial.variables:
+                result_variables = origin_polynomial.variables[:]
+                variable_position = result_variables.index(other)
                 result_coefficients = {}
-                for i in range(len(self.coefficients)):
-                    if self.coefficients.keys()[i][variable_position] > 0:
-                        new_coefficients_key = list(self.coefficients.keys()[i])
+                for i in origin_polynomial.coefficients:
+                    if i[variable_position] > 0:
+                        new_coefficients_key = list(i)
                         new_index = new_coefficients_key[variable_position] - 1
-                        new_coefficients_value = self.coefficients.values()[i] * (new_index + 1)
+                        new_coefficients_value = origin_polynomial.coefficients[i] * (new_index + 1)
                         new_coefficients_key[variable_position] = new_index
                         new_coefficients_key = tuple(new_coefficients_key)
                         result_coefficients[new_coefficients_key] = new_coefficients_value
@@ -565,17 +539,17 @@ class FlatPolynomial:
             raise ValueError, "You input [FlatPolynomial, string]."
 
     def toPolynomial(self):
-        self = FlatPolynomial.adjust(self)
-        if (type(self) == int) or (type(self) == long):
-            return self
-        elif len(self.variables) == 1:
+        origin_polynomial = FlatPolynomial.adjust(self)
+        if (type(origin_polynomial) == int) or (type(origin_polynomial) == long):
+            return origin_polynomial
+        elif len(origin_polynomial.variables) == 1:
             max_index = 0
-            for i in range(len(self.coefficients)):
-                if self.coefficients.keys()[i][0] > max_index:
-                    max_index = self.coefficients.keys()[i][0]
-            return_polynomial = Polynomial([0]*(max_index + 1),self.variables[0])
-            for i in range(len(self.coefficients)):
-                return_polynomial.coefficient[self.coefficients.keys()[i][0]] += self.coefficients.values()[i]
-            return Polynomial.adjust(return_polynomial)
+            for i in origin_polynomial.coefficients:
+                if i[0] > max_index:
+                    max_index = i[0]
+            return_polynomial = [0]*(max_index + 1)
+            for i in origin_polynomial.coefficients:
+                return_polynomial[i[0]] += origin_polynomial.coefficients[i]
+            return Polynomial(return_polynomial, origin_polynomial.variables[0]).adjust()
         else:
             raise ValueError, "You input FlatPolynomial with single variable."
