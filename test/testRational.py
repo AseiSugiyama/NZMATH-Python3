@@ -7,6 +7,7 @@ class RationalTest (unittest.TestCase):
         assert str(Rational(2)) == "2/1"
         assert str(Rational(2L)) == "2/1"
         assert str(Rational(Rational(1,2))) == "1/2"
+        assert str(Rational(Rational(7,13),Rational(2,3))) == "21/26"
 
     def testPos(self):
         assert str(+Rational(2,4)) == "1/2"
