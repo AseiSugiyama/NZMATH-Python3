@@ -1226,17 +1226,21 @@ class ExponentialPowerSeries:
         if self.dirtyflag:
             raise Exception, 'ExponentialPowerSeries cannot be called more than once'
         self.dirtyflag = True
+        if isinstance(maxerror, AbsoluteError):
+            _err = maxerror
         value = 0
         for t in self.terms(x):
             if not t:
                 continue
             value += t
-            if maxerror.nearlyEqual(t,0):
+            if isinstance(maxerror, RelativeError):
+                _err = maxerror.absoluteerror(value)
+            if _err.nearlyEqual(t,0):
                 return value
 
 defaultError = RelativeError(0, 1, 2 ** 53)
 
-def exp2(x, err=defaultError):
+def exp_new(x, err=defaultError):
     import itertools
     series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),)))
     reduced = rational.Rational(x)
@@ -1256,7 +1260,7 @@ def exp2(x, err=defaultError):
         retval = 1 / retval
     return retval
 
-def sqrt2(x, err=defaultError):
+def sqrt_new(x, err=defaultError):
     """
 
     sqrt(x [,err]) returns the positive square root of real number x.
@@ -1274,39 +1278,6 @@ def sqrt2(x, err=defaultError):
         rt = newrt
         newrt = (rt + reduced / rt) / 2
     return newrt
-
-def EulerTransform(iterator):
-    """
-
-    Return an iterator which yields terms of Euler transform of the
-    given iterator.
-
-    """
-    stock = []
-    b = rational.Rational(1,2)
-    l = -1
-    for term in iterator:
-        stock.append(term)
-        for i in xrange(l, -1, -1):
-            stock[i] += stock[i+1]
-        yield b * stock[0]
-        b /= 2
-        l += 1
-
-def log1piter(xx):
-    " iterator for log(1+x)."
-    d = 1
-    positive = True
-    t = rational.Rational(xx)
-    yield t
-    while True:
-        d += 1
-        positive = not positive
-        t *= xx
-        if positive:
-            yield (t / d)
-        else:
-            yield (-t / d)
 
 def log_new(x, err=defaultError):
     """
@@ -1342,6 +1313,21 @@ def log_new(x, err=defaultError):
         return value + shift * _log2_new(err)
     return value
 
+def log1piter(xx):
+    " iterator for log(1+x)."
+    d = 1
+    positive = True
+    t = rational.Rational(xx)
+    yield t
+    while True:
+        d += 1
+        positive = not positive
+        t *= xx
+        if positive:
+            yield (t / d)
+        else:
+            yield (-t / d)
+
 def _log2_new(err=defaultError):
     """
 
@@ -1371,3 +1357,21 @@ def _log2_new(err=defaultError):
             _err = err.absoluteerror(value)
         if _err.nearlyEqual(term, 0):
             return value
+
+def EulerTransform(iterator):
+    """
+
+    Return an iterator which yields terms of Euler transform of the
+    given iterator.
+
+    """
+    stock = []
+    b = rational.Rational(1,2)
+    l = -1
+    for term in iterator:
+        stock.append(term)
+        for i in xrange(l, -1, -1):
+            stock[i] += stock[i+1]
+        yield b * stock[0]
+        b /= 2
+        l += 1
