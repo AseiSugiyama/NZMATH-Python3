@@ -126,6 +126,12 @@ class IntegerResidueClass:
         return self.n
 
     def toInteger(self):
+        """
+
+        Return the smallest non-negative representative element of the
+        residue class.
+
+        """
         return Integer(self.n % self.m)
 
     def getRing(self):
