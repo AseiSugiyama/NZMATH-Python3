@@ -1215,7 +1215,7 @@ class EC:
                 P2=[0]
                 k=1
                 while k:
-                    while P1==P2 or P1==[0] or P2==[0]:
+                    while P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
                     if P1==P2==[0]:
