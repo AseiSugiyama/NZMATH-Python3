@@ -94,6 +94,7 @@ class RationalTest (unittest.TestCase):
         assert Rational(132,133) < 1
         assert Rational(-13,12) < -1L
         assert 1 > Rational(132,133)
+        assert Rational(132,133) < 1.000001
 
     def testLe(self):
         assert Rational(5,7) <= Rational(3,4)

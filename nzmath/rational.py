@@ -306,7 +306,7 @@ class Rational (ring.QuotientFieldElement):
         if isIntegerObject(other):
             return self.numerator - self.denominator * other
         if isinstance(other, float):
-            return self.compare(Rational(float))
+            return self.compare(Rational(other))
         return self.numerator*other.denominator - self.denominator*other.numerator
 
     def getRing(self):
