@@ -420,24 +420,23 @@ class SquareFreeDecompositionChar0Test(unittest.TestCase):
 class FiniteFieldPolynomialTest(unittest.TestCase):
     def setUp(self):
         import finitefield
-        F2 = lambda x: finitefield.FinitePrimeFieldElement(x, 2)
-        self.mapF2 = lambda seq: map(F2,seq)
-        self.f = OneVariableDensePolynomial(self.mapF2([1,1]),x)
-        self.g = OneVariableDensePolynomial(self.mapF2([1,0,1]),x)
+        self.F2 = finitefield.FinitePrimeField(2)
+        self.f = OneVariableDensePolynomial([1,1],x,self.F2)
+        self.g = OneVariableDensePolynomial([1,0,1],x,self.F2)
 
     def testAdd(self):
-        result = OneVariableDensePolynomial(self.mapF2([0,1,1]),x)
+        result = OneVariableDensePolynomial([0,1,1],x,self.F2)
         assert result == self.f + self.g
         assert self.f.getRing() == (self.f + self.g).getRing()
         assert not (self.f + self.f)
 
     def testSub(self):
-        result = OneVariableDensePolynomial(self.mapF2([0,1,1]),x)
+        result = OneVariableDensePolynomial([0,1,1],x,self.F2)
         assert result == self.f - self.g
         assert self.f.getRing() == (self.f - self.g).getRing()
 
     def testMul(self):
-        result = OneVariableDensePolynomial(self.mapF2([1,1,1,1]),x)
+        result = OneVariableDensePolynomial([1,1,1,1],x,self.F2)
         assert result == self.f * self.g
         assert self.f.getRing() == (self.f * self.g).getRing()
         assert self.f == 1 * self.f
