@@ -99,7 +99,7 @@ class Complex:
     def __pow__(self, other):
         if rational.isIntegerObject(other):
             if other == 0:
-                return self.__class__(1,0,None)
+                return rational.Integer(1)
             elif other == 1:
                 return +self
             elif other < 0:
