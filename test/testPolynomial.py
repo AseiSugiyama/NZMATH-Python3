@@ -94,7 +94,46 @@ class RationalPolynomialTest(unittest.TestCase):
 
     def testGetRing(self):
         Qx = PolynomialRing(rational.theRationalField, "x")
+        Qy = PolynomialRing(rational.theRationalField, "y")
+        Qxy = PolynomialRing(rational.theRationalField, ["x","y"])
         assert Qx == i.getRing()
+        assert Qy == j.getRing()
+        assert Qxy == (i*j).getRing()
+
+class PolynomialRingTest(unittest.TestCase):
+    def testGetCoefficientRing(self):
+        Qx = PolynomialRing(rational.theRationalField, "x")
+        Zx = PolynomialRing(rational.theIntegerRing, "x")
+        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
+        assert rational.theRationalField == Qx.getCoefficientRing()
+        assert rational.theIntegerRing == Zxz.getCoefficientRing(("x","z"))
+        assert Zx == Zxz.getCoefficientRing("z")
+
+    def testIssubring(self):
+        Zx = PolynomialRing(rational.theIntegerRing, "x")
+        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
+        assert Zx.issubring(Zxz)
+        assert rational.theIntegerRing.issubring(Zx)
+        assert rational.theIntegerRing.issubring(Zxz)
+        assert not rational.theRationalField.issubring(Zxz)
+
+    def testIssuperring(self):
+        Zx = PolynomialRing(rational.theIntegerRing, "x")
+        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
+        assert not Zx.issuperring(Zxz)
+        assert Zxz.issuperring(Zx)
+        assert Zxz.issuperring(Zxz)
+        assert not Zxz.issuperring(rational.theRationalField)
+
+    def testContains(self):
+        Zx = PolynomialRing(rational.theIntegerRing, "x")
+        Zxz = PolynomialRing(rational.theIntegerRing, ("x", "z"))
+        Qx = PolynomialRing(rational.theRationalField, "x")
+        assert a in Zx
+        assert a in Zxz
+        assert i not in Zx
+        assert a in Qx
+        assert 1 in Zx
 
 def suite():
     suite=unittest.TestSuite()
@@ -109,6 +148,10 @@ def suite():
     suite.addTest(RationalPolynomialTest("testSub"))
     suite.addTest(RationalPolynomialTest("testMul"))
     suite.addTest(RationalPolynomialTest("testGetRing"))
+    suite.addTest(PolynomialRingTest("testGetCoefficientRing"))
+    suite.addTest(PolynomialRingTest("testIssubring"))
+    suite.addTest(PolynomialRingTest("testIssuperring"))
+    suite.addTest(PolynomialRingTest("testContains"))
     return suite
 
 if __name__== '__main__':

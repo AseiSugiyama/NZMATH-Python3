@@ -1727,6 +1727,9 @@ class PolynomialRing:
         else:
             self.vars = sets.Set(vars)
 
+    def getVars(self):
+        return self.vars
+
     def getCoefficientRing(self, var = None):
         """
 
@@ -1785,6 +1788,55 @@ class PolynomialRing:
         retval = retval[:-2] + "]"
         return retval
 
+    def __contains__(self, element):
+        """
+
+        `in' operator is provided for checking the element be in the
+        ring.
+
+        """
+        try:
+            ring = element.getRing()
+            if ring.issubring(self):
+                return True
+            return False
+        except AttributeError:
+            if rational.isIntegerObject(element):
+                return rational.theIntegerRing.issubring(self)
+
+    def issubring(self, other):
+        """
+
+        reports whether another ring contains this polynomial ring.
+
+        """
+        if isinstance(other, PolynomialRing):
+            if self.coefficientRing.issubring(other.getCoefficientRing(other.getVars())) and \
+                   self.vars.issubset(other.getVars()):
+                return True
+            else:
+                return False
+        elif isinstance(other, RationalFunctionField):
+            return other.issuperring(self)
+        else:
+            return False
+
+    def issuperring(self, other):
+        """
+
+        reports whether this polynomial ring contains another ring.
+
+        """
+        if self.coefficientRing.issuperring(other):
+            return True
+        if isinstance(other, PolynomialRing):
+            if self.coefficientRing.issuperring(other.getCoefficientRing(other.getVars())) and \
+                   self.vars.issuperset(other.getVars()):
+                return True
+            else:
+                return False
+        return False
+
 class RationalFunctionField:
     def __init__(self, field, vars):
         self.coefficientField = field
@@ -1793,5 +1845,19 @@ class RationalFunctionField:
         else:
             self.vars = sets.Set(vars)
 
+    def __str__(self):
+        retval = str(self.coefficientField)
+        retval += "("
+        for v in self.vars:
+            retval += str(v) + ", "
+        retval = retval[:-2] + ")"
+        return retval
+
     def getQuotientField(self):
         return self
+
+    def issubring(self, other):
+        raise NotImplementedError
+
+    def issuperring(self, other):
+        raise NotImplementedError
