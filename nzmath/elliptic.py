@@ -118,7 +118,7 @@ def PolyMod_p(f,g,p):
             while len(L)<=d:
                 L.append(0)
                 i=i+1
-        f=polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
+        f=0
         i=0
         while i<=d:
             if L[d-i]!=0:
@@ -204,11 +204,11 @@ def PolyMulRed(list,poly,p):
     """
     poly=poly%p
     if len(poly.coefficient)==1: 
-        return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
+        return 0 
     i=0
     while i<len(list):
         if list[i]==0:
-            return polynomial.OneVariableDensePolynomial([0],"x").toOneVariableSparsePolynomial()
+            return 0 
         elif list[i].degree()>=poly.degree():
             list[i]=PolyMod_p(list[i],poly,p)
         i=i+1
