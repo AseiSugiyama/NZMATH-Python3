@@ -250,18 +250,29 @@ class Float:
         self.defaultPrecision = newPrecision
 
 def getNumberOfBits(anInteger):
-    """returns the number of binary digits of a given integer."""
-    absInteger = abs(anInteger)
-    if absInteger == 0:
+    """
+
+    returns the number of binary digits of a given integer ignoring the sign.
+
+    """
+    if anInteger == 0:
         return 0
+    absInteger = abs(anInteger)
     if absInteger == 1:
         return 1
-    bits = 1
-    scale = 2L # 2L can be replaced by 2 someday...
-    while scale <= absInteger:
-        bits += 1
-        scale <<= 1
-    return bits
+    squaring, log2 = 2, 1
+    while squaring <= absInteger:
+        squaring *= squaring
+        log2 *= 2
+    log2 //= 2
+    bits = log2
+    approximation = 1L << bits  # 1L can be replaced by 1 someday...
+    while not (approximation <= absInteger < approximation * 2):
+        log2 //= 2
+        if (approximation << log2) <= absInteger:
+            approximation <<= log2
+            bits += log2
+    return bits + 1
 
 def rationalToFloat(aRational, precision):
     if not precision:
