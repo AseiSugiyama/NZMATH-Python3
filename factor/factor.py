@@ -1,6 +1,6 @@
 import math
-import gcd
-import bigrandom
+import nzmath.gcd as gcd
+import nzmath.bigrandom as bigrandom
 import trialdivision
 
 def sort_factor(list):
@@ -143,7 +143,7 @@ def ord(p, n):
         result += 1
     return result
 
-import prime
+import nzmath.prime as prime
 
 def pmom(nn):
     f = []
@@ -316,7 +316,7 @@ class F2MatrixWithTwoVectors:
                     x.append(k)
             confirm(x,self.u,self.v,n)
 
-import arith1
+import nzmath.arith1 as arith1
 
 class QuadraticPolynomial:
     def __init__(self,a,b,c):
@@ -437,7 +437,7 @@ class MPQS:
         self.mat.kernel(self.N)
         # failed to factor if this line is reached
 
-import rational
+import nzmath.rational as rational
 
 def confirm(dep,u,v,n):
     r1 = r2 = 1L
