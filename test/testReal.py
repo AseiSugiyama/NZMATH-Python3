@@ -94,6 +94,10 @@ class FloatTest (unittest.TestCase):
         log2inverse = real.log(.5)
         assert log2 == -log2inverse
 
+    def testAtan2(self):
+        assert 0 == real.atan2(1,0)
+        assert real.pi / 2 == real.atan2(0, 1)
+
 def suite():
     suite = unittest.makeSuite(FloatTest, 'test')
     return suite
