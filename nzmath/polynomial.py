@@ -781,7 +781,7 @@ class FlatIntegerPolynomial:
         else:
             return_coefficients = {}
             return_variables = origin_polynomial.variables[:]
-            for i in range(origin_polynomial.coefficients):
+            for i in origin_polynomial.coefficients:
                 return_coefficients[i] = origin_polynomial.coefficients[i]
             return_polynomial = FlatRationalPolynomial(return_coefficients,  return_variables)
             return return_polynomial
