@@ -43,6 +43,10 @@ class Float:
             mantissa, exponent = long(math.flexp(mantissa)[0] * 2 ** doubleprecision), math.flexp(mantissa)[1] - doubleprecision
             if not precision:
                 precision = doubleprecision
+        if isinstance(mantissa, Float):
+            mantissa, exponent, precision = mantissa.mantissa, mantissa.exponent, mantissa.precision
+        if isinstance(mantissa, FloatConstant):
+            mantissa, exponent, precision = mantissa.cache.mantissa, mantissa.cache.exponent, mantissa.precision
         if mantissa != 0:
             k, odd = _vp(mantissa,2)
             self.mantissa, self.exponent = odd, exponent + k
@@ -377,6 +381,131 @@ class Float:
         retval.setDefaultPrecision(self.defaultPrecision)
         return retval
 
+class FloatConstant:
+    """
+
+    FloatConstant provides constant-like behavior for Float
+    calculation context.  It caches the constant value and re-computes
+    for more precision by request.
+
+    example:
+    >>> pi = FloatConstant(piGaussLegendre)
+    >>> print pi
+    3.14159265358979
+    >>> pi + 1
+    4.14159265358979
+    >>> pi(100) # for 100 bit precision
+    3.1415926535897932384626433832795
+
+    """
+    def __init__(self, getValue, precision=doubleprecision):
+        """
+
+        The first argument must be a function which computes the
+        constant with an argument specifies precision.
+        The second argument can be used to set the default precision.
+
+        """
+        self.getValue = getValue
+        self.precision = precision
+        self.cache = self.getValue(self.precision)
+
+    def __call__(self, precision):
+        """
+
+        Return the value with precision at least the given precision.
+
+        """
+        if self.precision < precision:
+            self.cache = self.getValue(precision)
+            self.precision = precision
+        return self.cache
+
+    # delegations
+    def __add__(self, other):
+        return self.cache.__add__(other)
+
+    def __radd__(self, other):
+        return self.cache.__radd__(other)
+
+    def __sub__(self, other):
+        return self.cache.__sub__(other)
+
+    def __rsub__(self, other):
+        return self.cache.__rsub__(other)
+
+    def __mul__(self, other):
+        return self.cache.__mul__.other
+
+    def __rmul__(self, other):
+        return self.cache.__rmul__(other)
+
+    def __div__(self, other):
+        return self.cache.__div__(other)
+
+    def __rdiv__(self, other):
+        return self.cache.__rdiv__(other)
+
+    def __truediv__(self, other):
+        return self.cache.__truediv__(other)
+
+    def __rtruediv__(self, other):
+        return self.cache.__rtruediv__(other)
+
+    def __divmod__(self, other):
+        return self.cache.__divmod__(other)
+
+    def __rdivmod__(self, other):
+        return self.cache.__rdivmod__(other)
+
+    def __mod__(self, other):
+        return self.cache.__mod__(other)
+
+    def __rmod__(self, other):
+        return self.cache.__rmod__(other)
+
+    def __pos__(self):
+        return self.cache.__pos__()
+
+    def __neg__(self):
+        return self.cache.__neg__()
+
+    def __abs__(self):
+        return self.cache.__neg__()
+
+    def toRational(self):
+        return self.cache.toRational()
+
+    def inverse(self):
+        return self.cache.__rdiv__(Float(1,0,None))
+
+    def __pow__(self, other, dummy=None):
+        return self.cache.__pow__(other)
+
+    def __gt__(self, other):
+        return self.cache.__gt__(other)
+
+    def __ge__(self, other):
+        return self.cache.__ge__(other)
+
+    def __eq__(self, other):
+        return self.cache.__eq__(other)
+
+    def __ne__(self, other):
+        return self.cache.__ne__(other)
+
+    def __le__(self, other):
+        return self.cache.__le__(other)
+
+    def __lt__(self, other):
+        return self.cache.__lt__(other)
+
+    def __repr__(self):
+        return "FloatConstant(" + repr(self.getValue) + ", " + repr(self.precision) + ")"
+
+    def __str__(self):
+        return str(self.cache)
+
 def getNumberOfBits(anInteger):
     """
 
@@ -535,15 +664,14 @@ def piGaussLegendre(precision):
     return (a + b) ** 2 / (t * 4)
 
 def exp(x, precision=doubleprecision):
-    if precision < x.precision:
+    if isinstance(x, Float) and precision < x.precision:
         precision = x.precision
     if x < 0:
         return exp(-x, precision).inverse()
     if x == 0:
         return Float(1, 0, None)
     retval = Float(1, 0, precision)
-    y = x.copy()
-    y.setDefaultPrecision(precision)
+    y = Float(x, 0, precision)
     eps = Float(1, -2*precision)
     f = i = 1
     series = [y]
@@ -559,7 +687,7 @@ def exp(x, precision=doubleprecision):
 def sin(x, precision=doubleprecision):
     if precision < x.precision:
         precision = x.precision
-    twopi = piGaussLegendre(2*precision) * 2
+    twopi = pi(2*precision) * 2
     y = x.copy()
     y.setDefaultPrecision(precision)
     if y > twopi:
@@ -589,7 +717,7 @@ def sin(x, precision=doubleprecision):
 def cos(x, precision=doubleprecision):
     if precision < x.precision:
         precision = x.precision
-    twopi = piGaussLegendre(2*precision) * 2
+    twopi = pi(2*precision) * 2
     y = x.copy()
     y.setDefaultPrecision(precision)
     if y > twopi:
@@ -696,7 +824,7 @@ def asin(x, precision=doubleprecision):
         return -asin(-x)
     u = sqrt(Float(1, -1, precision), precision)
     if x > u:
-        return piGaussLegendre(precision) / 2 - asin(sqrt(1-x**2))
+        return pi(precision) / 2 - asin(sqrt(1-x**2))
     y = x.copy()
     y2 = y ** 2
     i = 2
@@ -716,12 +844,12 @@ def acos(x, precision=doubleprecision):
     if x > 1 or x < -1:
         raise ValueError, "%s is not in the range [-1, 1]." % str(x)
     if x == 0:
-        return piGaussLegendre(precision) / 2
+        return pi(precision) / 2
     y = sqrt(1 - x ** 2)
     if x > 0:
         return asin(y)
     else:
-        return piGaussLegendre(precision) + asin(-y)
+        return pi(precision) + asin(-y)
 
 def atan(x, precision=doubleprecision):
     if precision < x.precision:
@@ -731,9 +859,9 @@ def atan(x, precision=doubleprecision):
         return -atan(-x, precision)
     elif x > 1:
         # atan(x) = pi/2 - atan(1/x)
-        return piGaussLegendre(2*precision) / 2 - atan(x.inverse(), precision)
+        return pi(2*precision) / 2 - atan(x.inverse(), precision)
     elif x == 1:
-        return piGaussLegendre(precision) / 4
+        return pi(precision) / 4
     i = 1
     y = x.copy()
     y2 = y ** 2
@@ -754,10 +882,13 @@ def atan2(x, y, precision=doubleprecision):
     if x > 0 and y > 0:
         return atan(x/y)
     elif x > 0 and y < 0:
-        return piGaussLegendre(2*precision) * 2 + atan(x/y)
+        return pi(2*precision) * 2 + atan(x/y)
     elif x < 0:
-        return piGaussLegendre(2*precision) + atan(x/y)
+        return pi(2*precision) + atan(x/y)
     return Float(0, 0, precision)
 
 def hypot(x, y, precision=doubleprecision):
     return sqrt(x**2 + y**2, precision)
+
+pi = FloatConstant(piGaussLegendre)
+e = FloatConstant(lambda precision: exp(1, precision))
