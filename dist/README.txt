@@ -62,5 +62,7 @@ send it to nzmath-user.
 
 Copyright
 ---------
+NZMATH is distributed under the BSD license.  See LICENSE.txt for
+detail.
 
-&copy; 2003-2004 NZMATH development group, all right reserved.
+Copyright (c) 2003-2004, NZMATH development group, all right reserved.

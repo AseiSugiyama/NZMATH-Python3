@@ -8,7 +8,8 @@ sdist: files
 	(cd $(TMPDIR); $(PYTHON) setup.py sdist)
 
 html: files
-	(cd $(TMPDIR); $(HTMLPY) README.txt | sed 's/&amp;copy;/\&copy;/' > README.html)
+	(cd $(TMPDIR); $(HTMLPY) README.txt | \
+	 awk '/\(c\)/ {sub(/\(c\)/,"\\&copy;"); sub(/NZMATH/,"<font color=\"#FF0000\">N</font><font color=\"#FF8000\">Z</font><font color=\"#FFFF00\">M</font><font color=\"#00FF00\">A</font><font color=\"#0000FF\">T</font><font color=\"#FF00FF\">H</font>")} 1' > README.html)
 
 files: clean
 	mkdir -p $(TMPDIR)/nzmath

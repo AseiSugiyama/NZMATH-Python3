@@ -1,3 +1,8 @@
+2004-05-13
+----------
+The version 0.1.1 has been released.
+NZMATH is distributed under the BSD license from this version.
+
 2004-03-26
 ----------
 The version 0.1.0 has been released.
