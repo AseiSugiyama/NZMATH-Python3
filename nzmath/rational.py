@@ -159,12 +159,71 @@ class Rational (ring.QuotientFieldElement):
         return str(self.numerator) + "/" + str(self.denominator)
 
     def __repr__(self):
-        return "Rational(" + str(self.numerator) + ", " + str(self.denominator) + ")"
+        return "Rational(%s, %s)" % (str(self.numerator),str(self.denominator))
+
+    def expand(self, base, limit):
+        """
+
+        r.expand(k, limit) returns the nearest rational number whose
+        denominator is a power of k and at most limit, if k > 0.  if
+        k==0, it returns the nearest rational number whose denominator
+        is at most limit, i.e. r.expand(0, limit) == r.trim(limit).
+
+        """
+        if base == 0:
+            return self.trim(limit)
+        assert isIntegerObject(base) and base > 0
+        numerator, rest = divmod(self.numerator, self.denominator)
+        i = 0
+        if base == 2:
+            while numerator < limit and rest:
+                numerator <<= 1
+                rest <<= 1
+                i += 1
+                if rest >= self.denominator:
+                    numerator += 1
+                    rest -= self.denominator
+            if rest*2 > self.denominator:
+                numerator += 1
+        else:
+            while numerator < limit and rest:
+                numerator *= base
+                rest *= base
+                i += 1
+                while rest >= self.denominator:
+                    numerator += 1
+                    rest -= self.denominator
+            if rest*2 > self.denominator:
+                numerator += 1
+        return Rational(numerator, base ** i)
+
+    def trim(self, max_denominator):
+        quotient, remainder = divmod(self.numerator, self.denominator)
+        approximant0 = Rational(quotient, 1)
+        if remainder == 0:
+            return approximant0
+        rest = Rational(remainder, self.denominator)
+        quotient, remainder = divmod(rest.denominator, rest.numerator)
+        if quotient > max_denominator:
+            return approximant0
+        approximant1 = Rational(quotient * approximant0.numerator + 1, quotient)
+        if remainder == 0:
+            return approximant1
+        rest = Rational(remainder, rest.numerator)
+        while remainder:
+            quotient, remainder = divmod(rest.denominator, rest.numerator)
+            approximant = Rational(quotient * approximant1.numerator + approximant0.numerator, quotient * approximant1.denominator + approximant0.denominator)
+            if approximant.denominator > max_denominator:
+                break
+            approximant0, approximant1 = approximant1, approximant
+            rest = Rational(remainder, rest.numerator)
+        return approximant1
 
     def compare(self, other):
         if isIntegerObject(other):
             return self.numerator - self.denominator * other
         return self.numerator*other.denominator - self.denominator*other.numerator
+
     def getRing(self):
         return theRationalField
 
