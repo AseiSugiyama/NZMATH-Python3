@@ -92,7 +92,7 @@ class Matrix:
             copy.set_row(i, self.get_row(i))
         return copy
 
-    def rational(self):
+    def toRational(self):
         for i in range(self.row):
             for j in range(self.column):
                 if self.compo[i][j] in ring.theIntegerRing:
@@ -145,8 +145,6 @@ class Matrix:
     def triangulate(self):
         triangle = self.copy()
 
-        triangle.rational()
-
         for i in range(triangle.row):
             if triangle.compo[i][i] == 0:
                 for k in range(i+1, triangle.row):
@@ -158,9 +156,9 @@ class Matrix:
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                ratio = triangle.compo[k][i] / rational(triangle.compo[i][i])
+                ratio = triangle.compo[k][i] / toRational(triangle.compo[i][i])
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] -= rational(triangle.compo[i][l] * ratio)
+                    triangle.compo[k][l] -= toRational(triangle.compo[i][l] * ratio)
             
         return triangle
 
