@@ -564,7 +564,7 @@ def atan(x, err=defaultError):
         oldvalue = 0
         term = rational.Rational(x)
         i = 1
-        while err.nearlyEquals(retval, oldvalue):
+        while err.nearlyEqual(retval, oldvalue):
             oldvalue = +retval
             i += 2
             term *= -y2 * (i-2) / i
