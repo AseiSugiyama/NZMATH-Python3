@@ -1,15 +1,20 @@
 import unittest
 from rational import *
+import finitefield
 # Rational, Integer, theIntegerRing, theRationalField
 
 class RationalTest (unittest.TestCase):
     def testInit(self):
-        assert str(Rational(1,2)) == "1/2"
         assert str(Rational(2)) == "2/1"
         assert str(Rational(2L)) == "2/1"
+        assert str(Rational(1,2)) == "1/2"
         assert str(Rational(Rational(1,2))) == "1/2"
         assert str(Rational(Rational(7,13),Rational(2,3))) == "21/26"
+        assert str(Rational(1.5)) == "3/2"
+        assert str(Rational(1.5, 2.0)) == "3/4"
         self.assertRaises(ZeroDivisionError, Rational, 1, 0)
+        self.assertRaises(TypeError, Rational, 1, finitefield.FinitePrimeFieldElement(1,7))
+        self.assertRaises(TypeError, Rational, finitefield.FinitePrimeFieldElement(1,7), 4)
 
     def testPos(self):
         assert str(+Rational(2,4)) == "1/2"

@@ -3,6 +3,7 @@
 rational module provides Rational, Integer, RationalField, and IntegerRing.
 
 """
+import math
 import ring
 
 class Rational (ring.QuotientFieldElement):
@@ -13,21 +14,46 @@ class Rational (ring.QuotientFieldElement):
     """
 
     def __init__(self, numerator, denominator=1):
-        if isinstance(numerator, Rational) and isinstance(denominator, Rational):
-            t = numerator / denominator
-            self.numerator = t.numerator
-            self.denominator = t.denominator
-        elif denominator < 0:
-            self.numerator = Integer(-numerator)
-            self.denominator = Integer(-denominator)
-        elif denominator == 1 and isinstance(numerator, Rational):
+        """
+
+        Create a rational from:
+          * integers,
+          * float, or
+          * Rational.
+        Other objects cannot be converted and raise TypeError.
+
+        """
+        if denominator == 0:
+            raise ZeroDivisionError
+        # numerator
+        if isinstance(numerator, Rational):
             self.numerator = numerator.numerator
             self.denominator = numerator.denominator
-        elif denominator == 0:
-            raise ZeroDivisionError
-        else:
+        elif isinstance(numerator, float):
+            doubleprecision = 53
+            frexp = math.frexp(numerator)
+            self.numerator = Integer(frexp[0] * 2 ** doubleprecision)
+            self.denominator = 2 ** (doubleprecision - frexp[1])
+        elif isinstance(numerator, (int, long)):
             self.numerator = Integer(numerator)
-            self.denominator = Integer(denominator)
+            self.denominator = Integer(1)
+        else:
+            raise TypeError, "Rational cannot be created with %s." % numerator
+        # denominator
+        if isinstance(denominator, Rational):
+            self.numerator *= denominator.denominator
+            self.denominator *= denominator.numerator
+        elif isinstance(denominator, float):
+            doubleprecision = 53
+            frexp = math.frexp(denominator)
+            self.numerator *= 2 ** (doubleprecision - frexp[1])
+            self.denominator *= Integer(frexp[0] * 2 ** doubleprecision)
+        elif isinstance(denominator, (int, long)):
+            if denominator != 1:
+                self.denominator *= denominator
+        else:
+            raise TypeError, "Rational cannot be created with %s." % denominator
+        self._reduce()
 
     def __add__(self,other):
         if isinstance(other, Rational):
@@ -106,6 +132,8 @@ class Rational (ring.QuotientFieldElement):
 
     def __rtruediv__(self,other):
         if isIntegerObject(other):
+            if other == 1:
+                return Rational(self.denominator, self.numerator)
             numerator = self.denominator*other
             denominator = self.numerator
             return +Rational(numerator,denominator)
@@ -120,6 +148,8 @@ class Rational (ring.QuotientFieldElement):
         if index > 0:
             return +Rational(self.numerator ** index, self.denominator ** index)
         elif index < 0:
+            if index == -1:
+                return Rational(self.denominator, self.numerator)
             return +Rational(self.denominator ** (-index), self.numerator ** (-index))
         else:
             return Integer(1)
@@ -131,7 +161,17 @@ class Rational (ring.QuotientFieldElement):
         return self.compare(other) <= 0
 
     def __eq__(self,other):
-        return self.compare(other) == 0
+        if isIntegerObject(other):
+            if self.denominator == 1:
+                return self.numerator == other
+            elif self.numerator % self.denominator == 0:
+                return self.numerator // self.denominator == other
+            else:
+                return False
+        elif hasattr(other, "denominator") and hasattr(other, "numerator"):
+            return self.compare(other) == 0
+        else:
+            return NotImplemented
 
     def __ne__(self,other):
         return self.compare(other) != 0
