@@ -357,7 +357,7 @@ class OneVariablePolynomial:
             raise ValueError, "You must specify a variable."
 
     def integrate(self, var = None, min = None, max = None):
-        if min == None and max == None and other != None and isinstance(other, str):
+        if min == None and max == None and var != None and isinstance(var, str):
             if self.degree() == 0:
                 return OneVariableDensePolynomial([0,self[0]], var, self.getCoefficientRing())
             elif self.degree() < 0:
@@ -371,7 +371,7 @@ class OneVariablePolynomial:
                 return OneVariableSparsePolynomial(integrate_coefficient,
                                                    var,
                                                    self.getCoefficientRing())
-        elif min != None and max != None and other != None and isinstance(var, str):
+        elif min != None and max != None and var != None and isinstance(var, str):
             if var != self.getVariable():
                 return self * (max - min)
             primitive_function = self.integrate(var)
