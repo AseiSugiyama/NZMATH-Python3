@@ -112,10 +112,19 @@ class FunctionTest (unittest.TestCase):
         assert real.cosh(1)
         assert real.tanh(1)
 
+class ErrorTest (unittest.TestCase):
+    def testRelativeError(self):
+        assert real.RelativeError(0,1,2)
+        assert isinstance(real.RelativeError(0,1,2).absoluteerror(3,4), real.AbsoluteError)
+
+    def testAbsoluteError(self):
+        assert real.AbsoluteError(0,1,2)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FloatTest, 'test'))
     suite.addTest(unittest.makeSuite(FunctionTest, 'test'))
+    suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
     return suite
 
 if __name__ == '__main__':
