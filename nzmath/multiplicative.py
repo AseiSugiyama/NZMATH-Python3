@@ -1,25 +1,62 @@
-import factor.trialdivision 
+"""
+Multiplicative number theoretic functions.
+"""
+
+import factor.trialdivision
+import prime
 
 def euler(n):                    
     """
-    This program returns Eulernumber for n
+    Euler totient function.
+    It returns the number of relatively prime numbers to n smaller than n.
     """
+    if n == 1:
+        return 1
+    if prime.primeq(n):
+        return n-1
     f = factor.trialdivision.trialDivision(n)
-    p = 1
-    for f0, f1 in f:
-        p *=pow(f0,f1-1)*(f0-1)
-    return p
+    t = 1
+    for p, e in f:
+        if e > 1:
+            t *= pow(p, e-1) * (p-1)
+        else:
+            t *= p-1
+    return t
 
 def moebius(n):
     """
-    This program returns Moebius function for n
+    Moebius function.
+    It returns:
+      -1  if n has odd distinct prime factors,
+       1  if n has even distinct prime factors, or
+       0  if n has a squared prime factor. 
     """
+    if n == 1:
+        return 1
+    if prime.primeq(n):
+        return -1
     f = factor.trialDivision(n)
-    i=0
-    while i < len(f):
-        g=f[i]
-        if g[1]>1:
+    m = 1
+    for p, e in f:
+        if e > 1:
             return 0
-        i=i+1
-    return pow(-1,len(f))
+        m = -m
+    return m
+
+def sigma(m, n):
+    """
+    Return the sum of m-th powers of the factors of n.
+    """
+    if n == 1:
+        return 1
+    if prime.primeq(n):
+        return 1 + n**m
+    f = factor.trialDivision(n)
+    s = 1
+    for p, e in f:
+        t = 1
+        for i in range(1,e+1):
+            t += (p**i)**m
+        s *= t
+    return s
 
