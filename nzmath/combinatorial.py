@@ -4,7 +4,7 @@ Combinatorial functions
 
 """
 
-from rational import Integer
+from rational import Integer, Rational
 
 def binomial(n, m):
     """
@@ -51,8 +51,25 @@ def factorial(n):
         raise ValueError, "argument must not be a negative integer."
     elif n == 0 or n == 1:
         return Integer(1)
-    l = range(1,n+1)
+    l = range(1, n+1)
     while len(l) > 1:
         for i in range(len(l)//2):
             l[i] *= l.pop()
     return Integer(l.pop())
+
+def bernoulli(n):
+    """
+
+    Return n-th Bernoulli number.
+
+    """
+    if n != 1 and n & 1:
+        return 0
+    B = {0:Integer(1),
+         1:Rational(-1, 2)}
+    for i in range(2, n+1, 2):
+        a = B[0] + (i+1)*B[1]
+        for j in range(2, i, 2):
+            a += binomial(i+1, j) * B[j]
+        B[i] = -a / (i+1)
+    return B[n]
