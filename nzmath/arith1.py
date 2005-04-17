@@ -10,8 +10,8 @@ def floorsqrt(a):
         return long(math.sqrt(a))
     else:
         b_old = a
-        b = pow(10,(len(str(long(a)))+1)//2)
-        while b_old>b:
+        b = pow(10, (len(str(long(a)))+1)//2)
+        while b_old > b:
             b_old, b = b, (b+a//b)//2
         return b_old
 
@@ -50,34 +50,34 @@ def floorpowerroot(n, k):
         a = -a
     return a
 
-def legendre(a,m): 
+def legendre(a, m): 
     """
     This program returns Legendre symbol (a/m)
     If m is a odd composite then this is Jacobi symbol
     """
-    a=a%m
-    t=1
-    while a!=0:
-        while a%2==0:
-            a=a/2
-            if m%8==3 or m%8==5:
-                t=-t
-        a,m=m,a
-        if a%4==3 and m%4==3:
-            t=-t
-        a=a%m
-    if m==1:
+    a = a % m
+    t = 1
+    while a != 0:
+        while a % 2 == 0:
+            a = a//2
+            if m % 8 == 3 or m % 8 == 5:
+                t = -t
+        a, m = m, a
+        if a % 4 == 3 and m % 4 == 3:
+            t = -t
+        a = a % m
+    if m == 1:
         return t
     return 0
 
 import random
 import gcd
-def sqroot(a,p):
+def sqroot(a, p):
     """
     This program returns squareroot of 'a' for mod 'p'.
     'p' must be an odd prime.
     """
-    if legendre(a,p) == 1:
+    if legendre(a, p) == 1:
         pmod8 = p % 8
         if pmod8 != 1:
             a = a % p
@@ -96,86 +96,84 @@ def sqroot(a,p):
                 d = random.randint(2, p-1)
             s = 0
             q = p-1
-            while q%2 == 0:
+            while q % 2 == 0:
                 q //= 2
                 s += 1
             t = (p-1)/2**s
-            A = pow(a,t,p)
-            D = pow(d,t,p)
+            A = pow(a, t, p)
+            D = pow(d, t, p)
             m = 0
-            for i in range(1,s):
-                if pow((A*(D**m)),(2**(s-1-i)),p) == (p-1):
+            for i in range(1, s):
+                if pow(A*(D**m), 2**(s-1-i), p) == (p-1):
                     m = m + 2**i
             x = (a**((t+1)/2)) * (D**(m/2)) % p
             return x
-    elif legendre(a,p)==0:
+    elif legendre(a, p) == 0:
         return 0
     else:
         raise ValueError,"There is no solution"
 
 
-def expand(n,m):
+def expand(n, m):
     """
     This program returns m-adic expansion for n.
     n and m should satisfy n > m > 0.
     """
     k = []
-    while n//m:
+    while n // m:
         k.append(n % m)
         n //= m
     k.append(n%m)
     return k
 
-def inverse(x,p):
+def inverse(x, p):
     """
     This program returns inverse of x for modulo p.
     """
-    if x<0:
-        while x<0:
+    if x < 0:
+        while x < 0:
             x += p
-    y = gcd.extgcd(p,x)
-    if y[2]==1:
-        if y[1]<0:
-            r = p+y[1]
+    y = gcd.extgcd(p, x)
+    if y[2] == 1:
+        if y[1] < 0:
+            r = p + y[1]
             return r
         else:
             return y[1]
     else:
         return False
 
-def CRT(list):
+def CRT(nlist):
     """
     This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
     """
-    r=len(list)
-    product=[]
-    prodinv=[]
-    m=1
-    i=1
-    while i < r:
-        m = m*list[i-1][1]
-        c = inverse(m,list[i][1])
+    r = len(nlist)
+    product = []
+    prodinv = []
+    m = 1
+    for i in range(1, r):
+        m = m*nlist[i-1][1]
+        c = inverse(m, nlist[i][1])
         product.append(m)
         prodinv.append(c)
-        i = i+1
 
-    M=product[r-2]*list[r-1][1]
-    n=list[0][0]
-    i=1
-    while i < r:
-        u = ((list[i][0]-n)*prodinv[i-1])%list[i][1]
-        n = n + u*product[i-1]
-        i = i+1
-    n = n%M
-    return n
+    M = product[r-2]*nlist[r-1][1]
+    n = nlist[0][0]
+    for i in range(1, r):
+        u = ((nlist[i][0]-n)*prodinv[i-1]) % nlist[i][1]
+        n += u*product[i-1]
+    return n % M
 
-def AGM(a,b):
-    x=(a+b)/2.0
-    y=math.sqrt(a*b)
-    while abs(x-y)>y*1e-15:
-        x=(x+y)/2.0
-        y=math.sqrt(x*y)
+def AGM(a, b):
+    """
+    Arithmetic-Geometric Mean.
+    """
+    x = (a+b) / 2.0
+    y = math.sqrt(a*b)
+    while abs(x-y) > y*1e-15:
+        x = (x+y) / 2.0
+        y = math.sqrt(x*y)
     return x
 
 def _BhaskaraBrouncker(n):
