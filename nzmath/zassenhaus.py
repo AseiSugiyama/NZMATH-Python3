@@ -57,15 +57,15 @@ def vanHoeij(f):
     Base = matrix.unitMatrix(n)
     s, d = 5, 5
     while True:
-        A = newMatrix(s,d)
+        A = newMatrix(s, d)
 
         # determine bound (and sometimes Hensel lift)
         B = [0] * s
         pa, pb = [], []
         for i in range(s):
             for j in range(d):
-                if A[i,j]:
-                    B[i] += A[i,j] * fp_degrees[j] * brt**j
+                if A[i, j]:
+                    B[i] += A[i, j] * fp_degrees[j] * brt**j
             while 2*p*B[i] > q:
                 # more Hensel lift
                 q *= p
@@ -81,23 +81,23 @@ def vanHoeij(f):
             preF.extend(tri(fp_factors[j]))
         F = matrix.Matrix(d, n, preF)
         C = (A * F).transpose()
-        c = arith1.floorsqrt(s * n) // 2
+        c = floorsqrt(s * n) // 2
         M = c ** 2 * n + s * n ** 2 // 4
         extBase = matrix.Matrix(Base.row + s, n + s)
         for i in range(Base.row):
             for j in range(n):
-                if Base[i,j]:
-                    extBase[i,j] = c * Base[i,j]
+                if Base[i, j]:
+                    extBase[i, j] = c * Base[i, j]
         BC = Base * C
         for i in range(Base.row):
             for j in range(s):
-                extBase[i, n + j] = BC[i,j]
+                extBase[i, n + j] = BC[i, j]
         for i in range(s):
             extBase[Base.row + i, n + i] = pa[i] // pb[i]
         extBase = extBase.transpose()
 
         # LLL
-        L = Lattice(extBase, matrix.unitMatrix(extBase.row))
+        L = lattice.Lattice(extBase, matrix.unitMatrix(extBase.row))
         transform = L.LLL()
         newBase = extBase * transform
         # Gram-Schmidt
@@ -114,7 +114,7 @@ def vanHoeij(f):
         Base = matrix.Matrix(n, len(V))
         for i in range(n):
             for j in range(len(V)):
-                Base[i,j] = newBase[i,j] / c
+                Base[i, j] = newBase[i, j] / c
         if Base.column == r:
             # dimension of bases is not decreased.
             q *= p
@@ -125,32 +125,32 @@ def vanHoeij(f):
         if Base.column == 1:
             # f is irreducible
             factors.append(f)
-            return factor
+            return factors
         echelonForm = Base.columnEchelonForm()
         Base = Base.transpose()
         # check whether problem is solved or not
         for i in range(echelonForm.row):
             weight = 0
             for j in range(echelonForm.column):
-                if echelonForm[i,j] < 0 or echelonForm[i,j] > 1:
+                if echelonForm[i, j] < 0 or echelonForm[i, j] > 1:
                     break
-                weight += echelonForm[i,j]
+                weight += echelonForm[i, j]
             else:
                 if weight != 1:
                     break
         else:
             ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
-            ZqZX = PolynomialRing(ZqZ, f.getVariable())
+            ZqZX = polynomial.PolynomialRing(ZqZ, f.getVariable())
             for j in range(echelonForm.column):
                 gj = 0
                 for i in range(echelonForm.row):
-                    if echelonForm[i,j]:
+                    if echelonForm[i, j]:
                         if gj:
                             gj = gj * fp_factors[i]
                         else:
                             gj = fp_factors[i]
                 gj = minimumAbsoluteInjection(ZqZX.createElement(gj))
-                if not dividing(gj, f):
+                if not divisibilityTest(gj, f):
                     factors.append(gj)
                 else:
                     break
@@ -229,7 +229,7 @@ def padicLiftList(f, factors, p, q):
     ZpZx = polynomial.PolynomialRing(
         integerResidueClass.IntegerResidueClassRing.getInstance(p),
         f.getVariable())
-    gg = reduce(lambda x,y: x*y, factors, 1)
+    gg = reduce(lambda x, y: x*y, factors, 1)
     h = ZpZx.createElement((f - gg) / q)
     lifted = []
     for g in factors:
@@ -237,7 +237,7 @@ def padicLiftList(f, factors, p, q):
         g_mod = ZpZx.createElement(g)
         if gg.degree() == 0:
             break
-        u,v,w = extgcdp(g, gg, p)
+        u, v, w = extgcdp(g, gg, p)
         if w.degree() > 0:
             raise ValueError, "factors must be pairwise coprime."
         v_mod = ZpZx.createElement(v)
@@ -260,11 +260,11 @@ def extgcdp(f, g, p):
     f_zpz = polynomial.OneVariableSparsePolynomial(f_coeff, "x", zpz)
     g_coeff = g.coefficient.getAsDict()
     g_zpz = polynomial.OneVariableSparsePolynomial(g_coeff, "x", zpz)
-    u,v,w,x,y,z = (zpz.createElement(1), zpz.createElement(0), f_zpz,
-                   zpz.createElement(0), zpz.createElement(1), g_zpz,)
+    u, v, w, x, y, z = (zpz.createElement(1), zpz.createElement(0), f_zpz,
+                        zpz.createElement(0), zpz.createElement(1), g_zpz,)
     while z:
         q = w // z
-        u,v,w,x,y,z = x, y, z, u - q*x, v - q*y, w - q*z
+        u, v, w, x, y, z = x, y, z, u - q*x, v - q*y, w - q*z
     if w.degree() == 0 and w != zpz.createElement(1):
         u = u / w
         v = v / w
@@ -275,7 +275,7 @@ def extgcdp(f, g, p):
         v = minimumAbsoluteInjection(v)
     if isinstance(w, polynomial.OneVariablePolynomial):
         w = minimumAbsoluteInjection(w)
-    return u,v,w
+    return u, v, w
 
 def minimumAbsoluteInjection(f):
     """
@@ -295,7 +295,7 @@ def minimumAbsoluteInjection(f):
         raise TypeError, "unknown ring (%s)" % repr(coefficientRing)
     half = p // 2
     g = polynomial.OneVariableSparsePolynomial({}, f.getVariable(), rational.theIntegerRing)
-    for i,c in f.coefficient.iteritems():
+    for i, c in f.coefficient.iteritems():
         if c.n > half:
             g[i] = c.n - p
         else:
@@ -346,11 +346,11 @@ def findCombination(f, d, factors, q):
         ZqZX = polynomial.PolynomialRing(ZqZ, f.getVariable())
         for idx in combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]
-            product = reduce(lambda x,y:x*y, picked, 1)
+            product = reduce(lambda x, y: x*y, picked, 1)
             product = minimumAbsoluteInjection(ZqZX.createElement(product))
             if divisibilityTest(f, product):
                 return (product, picked)
-    return 0,[] # nothing found
+    return 0, [] # nothing found
 
 def divisibilityTest(f, g):
     """
@@ -403,14 +403,14 @@ def complexRootAbsoluteUpperBound(f):
     (complex coefficient) polynomial f.
     """
     n = 0
-    for i,c in f.coefficient.iteritems():
+    for i, c in f.coefficient.iteritems():
         if i == f.degree():
             d = abs(c)
         elif n < abs(c):
             n = abs(c)
     return int(2 + n/d)
 
-def newMatrix(s,d):
+def newMatrix(s, d):
     """
     create a random s by d matrix.
     """
@@ -436,7 +436,7 @@ def tri(f):
     plist = [f[deg - 1]]
     for i in range(2, deg + 1):
         p = i*f[deg - i]
-        for k in range(1,i):
+        for k in range(1, i):
             p += plist[k] * f[deg - i + k]
         plist.append(p)
     return plist
