@@ -124,6 +124,7 @@ class NewFunctionTest (unittest.TestCase):
         assert 0 == real.asin(0)
         assert abs(real.pi / 2 - real.acos(0)) < self.absolute
         assert 0 == real.atan(0)
+        assert real.defaultError.nearlyEqual(real.pi/4, real.atan(1.0/2)+real.atan(1.0/3))
 
     def testHypot(self):
         assert abs(real.hypot(3,4) - 5) < self.absolute

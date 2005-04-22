@@ -1,11 +1,3 @@
-from __future__ import division, generators
-import operator
-import math
-import itertools
-from prime import vp as _vp
-import rational
-import arith1
-
 """
 
 The module `real' provides arbitrary precision real numbers and their
@@ -13,6 +5,14 @@ utilities.  The functions provided are corresponding to the `math'
 standard module.
 
 """
+
+from __future__ import division, generators
+import math
+import itertools
+
+import rational
+import arith1
+
 
 class RealField:
     """
@@ -30,27 +30,28 @@ class RealField:
             return True
         return False  ## How to know a number is real ?
 
+
 class RelativeError:
     def __init__(self, comparity, numerator, denominator=1):
         self.comparity = comparity
         self.relativeerrorrange = rational.Rational(numerator, denominator)
 
     def absoluteerror(self, numerator, denominator=1):
-        r = rational.Rational(numerator,denominator)*self.relativeerrorrange
+        r = rational.Rational(numerator, denominator) * self.relativeerrorrange
         return AbsoluteError(self.comparity, r.numerator, r.denominator)
 
     def islarge(self):
-        if (self.comparity > 0) :
+        if self.comparity > 0:
             return True
-        elif (self.comparity < 0) :
+        elif self.comparity < 0:
             return False
         else:
             return None
 
     def issmall(self):
-        if (self.comparity < 0) :
+        if self.comparity < 0:
             return True
-        elif (self.comparity > 0) :
+        elif self.comparity > 0:
             return False
         else:
             return None
@@ -92,6 +93,7 @@ class RelativeError:
         return self.__class__(self.comparity, self.relativeerrorrange, other)
 
     __truediv__ = __div__
+
 
 class AbsoluteError:
     def __init__(self, comparity, numerator, denominator=1):
@@ -143,6 +145,7 @@ class AbsoluteError:
 
     __truediv__ = __div__
 
+
 ### function rewrite
 class ExponentialPowerSeries:
     """
@@ -173,7 +176,7 @@ class ExponentialPowerSeries:
             yield rational.Rational(self.iterator.next())
         else:
             i = 0
-            r = rational.Rational(1,1)
+            r = rational.Rational(1, 1)
             for an in self.iterator:
                 yield an * r
                 i += 1
@@ -227,6 +230,9 @@ class ExponentialPowerSeries:
 defaultError = RelativeError(0, 1, 2 ** 53)
 
 def exp(x, err=defaultError):
+    """
+    Return exponential of x.
+    """
     if err <= defaultError:
         reduced = rational.Rational(x)
         if reduced < 0:
@@ -345,7 +351,7 @@ def _log2(err=defaultError):
 
         """
         d = 1
-        t = rational.Rational(1,2)
+        t = rational.Rational(1, 2)
         yield t
         while True:
             t /= 2
@@ -366,7 +372,7 @@ def piGaussLegendre(err=defaultError):
 
     """
     if isinstance(err, RelativeError):
-        _err = err.absoluteerror(3.1415)
+        _err = err.absoluteerror(math.pi)
     else:
         _err = err
     werr = AbsoluteError(0, _err.absoluteerrorrange ** 2)
@@ -375,11 +381,36 @@ def piGaussLegendre(err=defaultError):
     b = (1 / sqrt(rational.Rational(2), werr)).trim(maxdenom)
     t = rational.Rational(1, 4)
     x = 1
-    while not err.nearlyEqual(a, b):
+    while not _err.nearlyEqual(a, b):
         a, b, c = (a + b) / 2, sqrt(a * b, werr).trim(maxdenom), (b - a) ** 2 / 4
         t -= x * c
         x *= 2
     return (a + b) ** 2 / (t * 4)
+
+def eContinuedFraction(err=defaultError):
+    """
+    Compute the base of natural logarithm e by continued fraction expansion.
+    """
+    if isinstance(err, RelativeError):
+        _err = err.absoluteerror(math.e)
+    else:
+        _err = err
+    ipart = rational.Integer(2)
+    fpart_old = rational.Rational(1, 1)
+    fpart = rational.Rational(2, 3)
+    i = 4
+    while not _err.nearlyEqual(fpart_old, fpart):
+        fpart, fpart_old = rational.Rational(
+            fpart.numerator + fpart_old.numerator,
+            fpart.denominator + fpart_old.denominator), fpart
+        fpart, fpart_old = rational.Rational(
+            fpart.numerator + fpart_old.numerator,
+            fpart.denominator + fpart_old.denominator), fpart
+        fpart, fpart_old = rational.Rational(
+            fpart.numerator * i + fpart_old.numerator,
+            fpart.denominator * i + fpart_old.denominator), fpart
+        i += 2
+    return ipart + fpart
 
 def floor(x):
     """
@@ -416,7 +447,7 @@ def tranc(x):
     rx = rational.Rational(x)
     if rx.denominator == 1:
         return rational.Integer(rx.numerator)
-    return floor(x + rational.Rational(1,2))
+    return floor(x + rational.Rational(1, 2))
 
 def sin(x, err=defaultError):
     """
@@ -471,7 +502,7 @@ def _sinTaylor(x, err=defaultError):
 
     """
     rx = rational.Rational(x)
-    sinSeries = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
+    sinSeries = ExponentialPowerSeries(itertools.cycle((0, rational.Integer(1), 0, rational.Integer(-1))))
     return sinSeries(rx, err)
 
 def cos(x, err=defaultError):
@@ -500,7 +531,7 @@ def cos(x, err=defaultError):
         # cos(x) = sin(pi/2 - x) (pi/2 >= x > 4/pi)
         if rx > pi / 4:
             if rx == pi / 3:
-                retval = rational.Rational(1,2)
+                retval = rational.Rational(1, 2)
             else:
                 retval = _sinTaylor(pi / 2 - rx, err)
         elif rx == pi / 4:
@@ -523,7 +554,7 @@ def _cosTaylor(x, err=defaultError):
     It is recomended to use only for 0 <= x <= pi / 4.
 
     """
-    cosSeries = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
+    cosSeries = ExponentialPowerSeries(itertools.cycle((rational.Integer(1), 0, rational.Integer(-1), 0)))
     rx = rational.Rational(x)
     return cosSeries(rx, err)
 
@@ -542,7 +573,7 @@ def sinh(x, err=defaultError):
 
     """
     if not isinstance(err, defaultError.__class__) or err <= defaultError:
-        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
+        series = ExponentialPowerSeries(itertools.cycle((0, rational.Integer(1),)))
         rx = rational.Rational(x)
         if rx == 0:
             return rational.Rational(0)
@@ -557,7 +588,7 @@ def cosh(x, err=defaultError):
 
     """
     if err <= defaultError:
-        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
+        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1), 0,)))
         rx = rational.Rational(x)
         if rx == 0:
             return rational.Integer(1)
@@ -616,7 +647,7 @@ def asin(x, err=defaultError):
         retval = y
         term = rational.Rational(y)
         oldvalue = 0
-        while err.nearlyEqual(retval, oldvalue):
+        while not err.nearlyEqual(retval, oldvalue):
             oldvalue = +retval
             term *= y2 * (i-1) ** 2 / (i*(i+1))
             i += 2
@@ -631,7 +662,7 @@ def atan(x, err=defaultError):
     atan(x [,err]) returns arc tangent of x.
 
     """
-    if err <= defaultError:
+    if not isinstance(err, defaultError.__class__) or err <= defaultError:
         # atan(x) = -atan(-x)
         if x < 0:
             return -atan(-x, err)
@@ -648,7 +679,7 @@ def atan(x, err=defaultError):
         oldvalue = 0
         term = rational.Rational(x)
         i = 1
-        while err.nearlyEqual(retval, oldvalue):
+        while not err.nearlyEqual(retval, oldvalue):
             oldvalue = +retval
             i += 2
             term *= -y2 * (i-2) / i
@@ -779,7 +810,7 @@ def EulerTransform(iterator):
 
     """
     stock = []
-    b = rational.Rational(1,2)
+    b = rational.Rational(1, 2)
     l = -1
     for term in iterator:
         stock.append(term)
@@ -942,7 +973,7 @@ class Constant:
             raise
 
 pi = Constant(piGaussLegendre)
-e = Constant(lambda err: exp(1, err))
+e = Constant(eContinuedFraction)
 Log2 = Constant(lambda err: _log2(err))
 
 theRealField = RealField()
