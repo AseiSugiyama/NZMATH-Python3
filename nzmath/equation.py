@@ -7,17 +7,18 @@ import math
 import prime
 import random
 import rational
-
+import polynomial
 
 # x is (list,tuple) 
 # t is variable
 def e1(x):
     """
     f = x[0]*t + x[1]
-    """
+    """ 
     if x[0] == 0:
-        return 
-    return -x[1]/x[0]
+        raise ZeroDivisionError,"No Solution"
+    else:
+        return -x[1]/x[0]
 
 def e1_Zn(x,n):
     """
@@ -30,9 +31,9 @@ def e1_Zn(x,n):
         (m,a,e,b) = (a,d,b,e-c*b)
         (c,d) = (m//a,m%a)
     if x[1]%a != 0:
-        print "No Solution"
-        return
-    return b//a
+        raise ValueError, "No Solution"
+    else:
+        return b//a
     
 def e2(x):
     """
@@ -121,8 +122,8 @@ def solve_Fp(poly,p):
         return 0
     else:
         return 0
-
-def Newton(x,initial,repeat):
+    
+def Newton(x,initial=1,repeat=100):
     l = initial
     # differential of polynomial
     length = len(x)
@@ -152,138 +153,70 @@ def Newton(x,initial,repeat):
         # tangent in initial
         tangent = [dfcoeff,coeff-l*dfcoeff]
 
-        l = e1(tangent)
+        if dfcoeff == 0:
+            raise ValueError
+        else:
+            l = e1(tangent)
+        if coeff == dfcoeff:
+            break
 
     return l
-    
-def EA(f,m): # f is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n => [a_0, a_1, ... , a_n] (a_0 != 0 and a_i is complex number))
-    if f[0] == 0 :
-        raise ValueError, "Delate 0 of first"
-    
-    n = len(f) # size of f
 
-    i = -2
-    df=[] # differential (of polynomial)
-    while abs(i) <= n :
-        df.append(f[i]*(abs(i)-1))
-        i = i - 1
-    df.reverse()
-    
-    x = 0 # the number of "a_i != 0"
-    ai = []
-    for i in range(n) :
-        if f[i] != 0 : 
-            x = x + 1
-            ai.append(i)
-    
-    i = 2
-    r = math.pow(abs(ai[1]/f[0])*x, 1/ai[1]) 
-    for i in range(2,len(ai)) :
-        r0 = math.pow(abs(ai[i]/f[0])*x, 1/ai[i])
-        if r < r0 :
-            r = r0
+def pNewton(g,initial=1,repeat=100): # g = a_0 + ... + a_n * x**n <=> [a_0,...,a_n]
+    a = initial
+    f = polynomial.OneVariableDensePolynomial(g,'x')
+    df = f.differentiate('x')
 
-    b = -ai[1]/((n-1)*f[0])
+    for i in range(repeat):
+       if f(a) == 0:
+           return a
+       elif f(a) != 0 and df(a) == 0:
+           raise ValueError,"There is not solution or Choose different initial"
+       else:
+           b = f(a)/1
+           c = df(a)/1
+           a = a-(b/c)
+
+def SimMethod(g,repeat): # g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
+    
+    f = polynomial.OneVariableDensePolynomial(g,'x')
+    deg = f.degree()
+
+    q=[]
+    for i in range(0,deg-1):
+        q.append(-abs(f[i]))
+    q.append(abs(f[deg]))
+    q.reverse()
+       
+    df=f.differentiate('x')
+    
+    r = Newton(q,1,1000)
+    print r
+    b = -f[deg-1]/(deg*f[deg])
 
     z = []
-    for i in range(1,n) :
-        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i-1)/(n-1)+3/(2*(n-1)))))
+    for i in range(1,deg+1) :
+        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i-1)/(deg-1)+3/(2*(deg-1)))))
     
-    for loop in range(m) :
-        fz = 0
-        fzi = []
-        for j in range(len(z)) :
-            for i in range(1,n+1) :
-                fz = fz + f[-i]*(z[j]**(i-1))
-            fzi.append(fz)
-
-        dfz = 0
-        dfzi = []
-        for j in range(len(z)) :
-            for i in range(1,n) :
-                dfz = dfz + df[-i]*(z[j]**(i-1))
-            dfzi.append(dfz)
-
-        divz = []
-        for i in range(len(z)) :
-            divz.append(fzi[i]/dfzi[i])
-    
+    for loop in range(repeat) :
         sigma = 0
-        sigmai = []
+        sigma_i = []
         for i in range(len(z)) :
             for j in range(len(z)) :
                 if j != i :
                     sigma = sigma + 1/(z[i] - z[j])
-            sigmai.append(sigma)
+            sigma_i.append(sigma)
 
-        div = []
-        for i in range(len(z)) :
-            div.append(divz[i]/(1-(divz[i]*sigmai[i])))
+        k = []
+        for i in range(len(z)):
+            k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_i[i])))
 
-        zi = []
-        for i in range(len(z)) :
-            zi.append(z[i]+div[i])
-            
-        z = zi
+        root = []
+        for i in range(len(z)):
+            root.append(k[i]+z[i])
+                    
+        z = root
         
-    return z
-
-def EAr(f,m): # f is list , m is the number of approximation steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n => [a_0, a_1, ... , a_n] (a_0 != 0 and a_i is complex number))
-    if f[0] == 0 :
-        raise ValueError, "Delate 0 of first "
-    
-    n = len(f) # size of f
-
-    i = -2
-    df=[] # differential (of polynomial)
-    while abs(i) <= n :
-        df.append(f[i]*(abs(i)-1))
-        i = i - 1
-    df.reverse()
-
-    z = []
-    for i in range(1,n) :
-        z.append(random.random())
-    
-    for loop in range(m) :
-        fz = 0
-        fzi = []
-        for j in range(len(z)) :
-            for i in range(1,n+1) :
-                fz = fz + f[-i]*(z[j]**(i-1))
-            fzi.append(fz)
-        print fzi
-
-
-        dfz = 0
-        dfzi = []
-        for j in range(len(z)) :
-            for i in range(1,n-1) :
-                dfz = dfz + df[-i]*pow(z[j],(i-1))
-            dfzi.append(dfz)
-            
-        divz = []
-        for i in range(len(z)) :
-            divz.append(fzi[i]/dfzi[i])
-    
-        sigma = 0
-        sigmai = []
-        for i in range(len(z)) :
-            for j in range(len(z)) :
-                if j != i :
-                    sigma = sigma + 1/(z[i] - z[j])
-            sigmai.append(sigma)
-
-        div = []
-        for i in range(len(z)) :
-            div.append(divz[i]/(1-(divz[i]*sigmai[i])))
-
-        zi = []
-        for i in range(len(z)) :
-            zi.append(z[i]+div[i])
-            
-        z = zi
-
     return z
 
 
