@@ -136,7 +136,6 @@ def Newton(f,initial=1,repeat=100):
         i = i - 1
         j = j + 1
     df.reverse()
-
     l = initial
     for k in range(repeat):
         i = -1
@@ -149,9 +148,7 @@ def Newton(f,initial=1,repeat=100):
             i = i - 1
             j = j + 1
         coeff = coeff + f[i]*(l**j)
-
         tangent = [dfcoeff,coeff-l*dfcoeff]
-
         if coeff == 0:
             return l
         elif coeff != 0 and dfcoeff == 0:
@@ -168,18 +165,16 @@ def SimMethod(g,repeat=1000,NewtonInitial=1):
     """
     f = polynomial.OneVariableDensePolynomial(g,'x')
     deg = f.degree()
-
     q=[]
     for i in range(0,deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
-    q.reverse()
     df = f.differentiate('x')
     r = Newton(q,NewtonInitial)
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
-        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i)/(deg)+3/(2*(deg)))))
+        z.append(b+r*cmath.exp((1j)*(2*i*(math.pi)/(deg)+3/(2*(deg)))))
     
     for loop in range(repeat):
         sigma_list = []
@@ -195,13 +190,7 @@ def SimMethod(g,repeat=1000,NewtonInitial=1):
             k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_list[i])))
         
         for i in range(len(z)):
-            if k[i] != 0:
-                for i in range(len(z)):
-                    z[i] = k[i] + z[i]
-                    break
-            else:
-                if i == len(z) - 1:
-                    return z
+            z[i] = k[i] + z[i]
 
     return z
 
