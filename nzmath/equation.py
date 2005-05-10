@@ -173,8 +173,10 @@ def SimMethod(g,repeat=1000,NewtonInitial=1):
     for i in range(0,deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
+    q.reverse()
     df = f.differentiate('x')
     r = Newton(q,NewtonInitial)
+    print r,q
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
