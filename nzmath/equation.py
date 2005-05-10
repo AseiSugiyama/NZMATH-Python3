@@ -162,7 +162,7 @@ def Newton(f,initial=1,repeat=100):
             else:
                 l = e1(tangent) 
 
-def SimMethod(g,repeat=1000):
+def SimMethod(g,repeat=1000,NewtonInitial=1):
     """
      g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
     """
@@ -170,16 +170,15 @@ def SimMethod(g,repeat=1000):
     deg = f.degree()
 
     q=[]
-    for i in range(0,deg-1):
+    for i in range(0,deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
-    df=f.differentiate('x')
-    r = Newton(q,1,1000)
+    df = f.differentiate('x')
+    r = Newton(q,NewtonInitial)
     b = -f[deg-1]/(deg*f[deg])
-
     z = []
     for i in range(deg):
-        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i)/(deg-1)+3/(2*(deg-1)))))
+        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i)/(deg)+3/(2*(deg)))))
     
     for loop in range(repeat):
         sigma_list = []
@@ -194,17 +193,14 @@ def SimMethod(g,repeat=1000):
         for i in range(len(z)):
             k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_list[i])))
         
-        flag = 0
         for i in range(len(z)):
-            if k[i] == 0:
-                flag = flag + 1
-
-        if flag == len(z):
-            return z
-
-        else:
-            for i in range(len(z)):
-                z[i] = k[i]+z[i]
+            if k[i] != 0:
+                for i in range(len(z)):
+                    z[i] = k[i] + z[i]
+                    break
+            else:
+                if i == len(z) - 1:
+                    return z
 
     return z
 
