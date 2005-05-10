@@ -164,7 +164,7 @@ class FiniteExtendedField (FiniteField):
             else:
                 raise TypeError, "modulus must be F_p polynomial."
         elif isinstance(n_or_modulus, polynomial.OneVariablePolynomialIdeal):
-            if n_or_modulus.ring == polynomial.PolynomialRing(FinitePrimeField(self.characteristic), ["#1"]):
+            if n_or_modulus.ring == polynomial.PolynomialRing(FinitePrimeField(self.char), ["#1"]):
                 if n_or_modulus.generators[0].degree() > 1:
                     self.modulus = n_or_modulus
                     self.degree = self.modulus.generators[0].degree()
@@ -266,8 +266,8 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
     def __pow__(self, index):
         while index < 0:
             index += self.field.getCharacteristic()
-        pow = self.field.modulus.reduce(self.rep ** index) # slow
-        return self.__class__(pow, self.field)
+        power = self.field.modulus.reduce(self.rep ** index) # slow
+        return self.__class__(power, self.field)
 
     def __eq__(self, other):
         if self.field == other.field:
