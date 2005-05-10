@@ -5,8 +5,6 @@ import finitefield
 import gcd
 import math
 import prime
-import random
-import rational
 import polynomial
 
 # x is (list,tuple) 
@@ -123,62 +121,51 @@ def solve_Fp(poly,p):
     else:
         return 0
     
-def Newton(x,initial=1,repeat=100):
-    l = initial
-    # differential of polynomial
-    length = len(x)
+def Newton(f,initial=1,repeat=100):
+    """
+    f = a_n + a_(n-1) * x + ... + a_0 * x ** n
+    """
+    length = len(f)
+    f.reverse()
+
     df = []
     i = -2
     j = 1
     while i != -length - 1:
-        df.append(j*x[i])
+        df.append(j*f[i])
         i = i - 1
         j = j + 1
     df.reverse()
 
     l = initial
-    for k in range(0,repeat):
-        # coefficient of tangent
+    for k in range(repeat):
         i = -1
         j = 0
         coeff = 0
         dfcoeff = 0
         while i != -length :
-            coeff = coeff + x[i]*(l**j)
+            coeff = coeff + f[i]*(l**j)
             dfcoeff = dfcoeff + df[i]*(l**j)
             i = i - 1
             j = j + 1
-        coeff = coeff + x[i]*(l**j)
-        
-        # tangent in initial
+        coeff = coeff + f[i]*(l**j)
+
         tangent = [dfcoeff,coeff-l*dfcoeff]
 
-        if dfcoeff == 0:
-            raise ValueError
+        if coeff == 0:
+            return l
+        elif coeff != 0 and dfcoeff == 0:
+            raise ValueError,"There is not solution or Choose different initial"
         else:
-            l = e1(tangent)
-        if coeff == dfcoeff:
-            break
+            if l == e1(tangent):
+                return l
+            else:
+                l = e1(tangent) 
 
-    return l
-
-def pNewton(g,initial=1,repeat=100): # g = a_0 + ... + a_n * x**n <=> [a_0,...,a_n]
-    a = initial
-    f = polynomial.OneVariableDensePolynomial(g,'x')
-    df = f.differentiate('x')
-
-    for i in range(repeat):
-       if f(a) == 0:
-           return a
-       elif f(a) != 0 and df(a) == 0:
-           raise ValueError,"There is not solution or Choose different initial"
-       else:
-           b = f(a)/1
-           c = df(a)/1
-           a = a-(b/c)
-
-def SimMethod(g,repeat): # g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
-    
+def SimMethod(g,repeat=1000):
+    """
+     g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
+    """
     f = polynomial.OneVariableDensePolynomial(g,'x')
     deg = f.degree()
 
@@ -186,37 +173,38 @@ def SimMethod(g,repeat): # g is list , m is the number of steps: ( = a_0*x^n + .
     for i in range(0,deg-1):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
-    q.reverse()
-       
     df=f.differentiate('x')
-    
     r = Newton(q,1,1000)
-    print r
     b = -f[deg-1]/(deg*f[deg])
 
     z = []
-    for i in range(1,deg+1) :
-        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i-1)/(deg-1)+3/(2*(deg-1)))))
+    for i in range(deg):
+        z.append(b+r*cmath.exp((1j)*(2*(math.pi)*(i)/(deg-1)+3/(2*(deg-1)))))
     
-    for loop in range(repeat) :
-        sigma = 0
-        sigma_i = []
-        for i in range(len(z)) :
-            for j in range(len(z)) :
-                if j != i :
+    for loop in range(repeat):
+        sigma_list = []
+        for i in range(len(z)):
+            sigma = 0
+            for j in range(len(z)):
+                if j != i:
                     sigma = sigma + 1/(z[i] - z[j])
-            sigma_i.append(sigma)
+            sigma_list.append(sigma)
 
         k = []
         for i in range(len(z)):
-            k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_i[i])))
-
-        root = []
-        for i in range(len(z)):
-            root.append(k[i]+z[i])
-                    
-        z = root
+            k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_list[i])))
         
-    return z
+        flag = 0
+        for i in range(len(z)):
+            if k[i] == 0:
+                flag = flag + 1
 
+        if flag == len(z):
+            return z
+
+        else:
+            for i in range(len(z)):
+                z[i] = k[i]+z[i]
+
+    return z
 
