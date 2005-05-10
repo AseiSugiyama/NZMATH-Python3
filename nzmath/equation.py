@@ -176,7 +176,6 @@ def SimMethod(g,repeat=1000,NewtonInitial=1):
     q.reverse()
     df = f.differentiate('x')
     r = Newton(q,NewtonInitial)
-    print r,q
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
