@@ -9,7 +9,7 @@ from rational import Integer, Rational
 def binomial(n, m):
     """
 
-    The binomial function.
+    The binomial coefficient.
     binomial(n, m) returns n ! / ((n - m) ! * m !).
 
     n must be a positive integer and m must be a non-negative integer.
@@ -73,3 +73,11 @@ def bernoulli(n):
             a += binomial(i+1, j) * B[j]
         B[i] = -a / (i+1)
     return B[n]
+
+def catalan(n):
+    """
+
+    Return n-th Catalan number.
+
+    """
+    return binomial(2*n, n) // (n+1)

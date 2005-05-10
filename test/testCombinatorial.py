@@ -1,5 +1,5 @@
 import unittest
-from combinatorial import binomial, factorial, bernoulli
+from combinatorial import binomial, factorial, bernoulli, catalan
 
 class BinomialTest (unittest.TestCase):
     def testPositiveAndPositive(self):
@@ -54,11 +54,16 @@ class BernoulliTest (unittest.TestCase):
         assert rational.Rational(1, 42) == bernoulli(6)
 
 
+class CatalanTest (unittest.TestCase):
+    def testNormal(self):
+        assert [1, 1, 2, 5, 14] == [catalan(i) for i in range(5)]
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(BinomialTest, 'test'))
     suite.addTest(unittest.makeSuite(FactorialTest, 'test'))
     suite.addTest(unittest.makeSuite(BernoulliTest, 'test'))
+    suite.addTest(unittest.makeSuite(CatalanTest, 'test'))
     return suite
 
 if __name__ == '__main__':
