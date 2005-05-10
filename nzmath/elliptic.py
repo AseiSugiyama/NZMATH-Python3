@@ -1,17 +1,16 @@
 from __future__ import division
+import math
+import random
+import sets
+
 import arith1
-import cmath
 import factor
 import finitefield
 import gcd
 import integerResidueClass
-import math
 import polynomial 
 import prime
-import random
 import rational
-import sets
-import time
 
 def divi(n):
     """
@@ -245,7 +244,7 @@ class EC:
                         self.c6=finitefield.FinitePrimeFieldElement(1,2)
                         self.disc=self.a6
                         if self.disc.n!=0:
-                            self.j=a6.inverse()
+                            self.j=self.a6.inverse()
                     elif coefficient[0]%2==coefficient[1]%2==0:
                         self.a1=finitefield.FinitePrimeFieldElement(0,2)
                         self.a2=finitefield.FinitePrimeFieldElement(0,2)
@@ -554,7 +553,7 @@ class EC:
                         return False
                 else:
                     if self.index!=1:
-                        raise NotImplementError,"Now making (>_<)"
+                        raise NotImplementedError,"Now making (>_<)"
                     if P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]==P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6:
                         return True
                     else:
@@ -589,7 +588,7 @@ class EC:
                         return R
                     else:
                         if self.index!=1:
-                            raise NotImplementError,"Now making (>_<)"
+                            raise NotImplementedError,"Now making (>_<)"
                         if P[0]==Q[0]:
                             if P[1]+Q[1]+self.a1*Q[0]+self.a3==0:
                                 return [0]
@@ -1007,7 +1006,7 @@ class EC:
                 k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
             return -k
         else:
-            raise NotImplementError,"Now making m(__)m"
+            raise NotImplementedError,"Now making m(__)m"
 
     def order(self,flag=None):
         """
