@@ -594,6 +594,27 @@ class Integer(long, ring.CommutativeRingElement):
             result = -result
         return result
 
+    def actMultiplicative(self, other):
+        """
+
+        Act on other multiplicatively, i.e. n is expanded to n time
+        multiplications of other.  Naively, it is:
+          return reduce(lambda x,y:x*y, [+other for _ in xrange(self)])
+        but, here we use a binary addition chain.
+
+        """
+        nonneg, absVal = (self >= 0), abs(self)
+        result = 1
+        doubling = +other
+        while absVal:
+            if absVal& 1:
+                result *= doubling
+            doubling *= doubling
+            absVal >>= 1
+        if not nonneg:
+            result = result.inverse()
+        return result
+
 class IntegerRing (ring.CommutativeRing):
     """
 
