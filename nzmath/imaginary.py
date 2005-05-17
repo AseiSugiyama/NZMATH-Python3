@@ -191,13 +191,17 @@ class Complex:
         y = self.imag
         return real.atan2(y,x)
 
-class ComplexField:
+import ring
+class ComplexField(ring.Field):
     """
 
     ComplexField is a class of the field of real numbers.
     The class has the single instance 'theComplexField'.
 
     """
+
+    def __init__(self):
+        pass
 
     def __contains__(self, element):
         reduced = +element
@@ -206,6 +210,9 @@ class ComplexField:
         if isinstance(reduced, complex) or isinstance(reduced, Complex):
             return True
         return False  ## How to know an object be complex ?
+
+    def createElement(self, seed):
+        return Complex(seed)
 
 theComplexField = ComplexField()
 
