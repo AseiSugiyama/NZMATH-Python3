@@ -117,6 +117,8 @@ class Complex:
                 return (self**(-other)).inverse()
             elif other == 2:
                 return self.__class__(self.real ** 2 - self.imag ** 2, 2 * self.real * self.imag)
+            else:
+                return rational.Integer(other).actMultiplicative(self)
         return exp(other * log(self))
 
     def __eq__(self, other):
@@ -190,6 +192,9 @@ class Complex:
         x = self.real
         y = self.imag
         return real.atan2(y,x)
+
+    def __complex__(self):
+        return complex(float(self.real), float(self.imag))
 
 import ring
 class ComplexField(ring.Field):
