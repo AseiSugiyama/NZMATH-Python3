@@ -691,7 +691,7 @@ class IntegerRing (ring.CommutativeRing):
         """
         import gcd
         a, b = abs(n), abs(m)
-        return Integer(gcd.binarygcd(a, b))
+        return Integer(gcd.gcd(a, b))
 
     def lcm(self, a, b):
         """
