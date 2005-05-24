@@ -4,19 +4,20 @@ import cmath
 import finitefield
 import gcd
 import math
-import prime
 import polynomial
+import rational
+import imaginary
 
 # x is (list,tuple) 
 # t is variable
 def e1(x):
     """
-    f = x[0]*t + x[1]
+    0 = x[0] + x[1]*t
     """ 
-    if x[0] == 0:
+    if x[1] == 0:
         raise ZeroDivisionError,"No Solution"
     else:
-        return -x[1]/x[0]
+        return -x[0]/x[1]
 
 def e1_Zn(x,n):
     """
@@ -35,11 +36,11 @@ def e1_Zn(x,n):
     
 def e2(x):
     """
-    f=x[0]*t**2+x[1]*t+x[2]
+    0 = x[0] + x[1]*t + x[2]*t**2
     """
-    a = x[0]
+    a = x[2]
     b = x[1]
-    c = x[2]
+    c = x[0]
     if b**2 - 4*a*c >= 0:
         sqrtd = math.sqrt(b**2 - 4*a*c)
     else:
@@ -49,11 +50,11 @@ def e2(x):
 def e2_Fp(x,p):
     """
     p is prime
-    f=x[0]*t**2+x[1]*t+x[2]
+    f = x[0] + x[1]*t + x[2]*t**2
     """
-    a=x[0]%p    
+    a=x[2]%p    
     b=x[1]%p
-    c=x[2]%p
+    c=x[0]%p
     if arith1.legendre(a,p)!=1:
         return []
     else:
@@ -63,16 +64,16 @@ def e2_Fp(x,p):
 
 def e3(x):
     """
-    f=x[0]*t**3+x[1]*t**2+x[2]*t+x[3]
+    0 = x[0] + x[1]*t + x[2]*t**2 + x[3]*t**3
     """
-    a = x[1]/x[0]
-    b = x[2]/x[0]
-    c = x[3]/x[0]
+    a = x[2]/x[3]
+    b = x[1]/x[3]
+    c = x[0]/x[3]
     p = b - (a**2)/3
     q = 2*(a**3)/27 - a*b/3 + c
     w = ( -1 + cmath.sqrt(-3)) / 2
-    k = -q/2 + math.sqrt((q**2)/4 + (p**3)/27)
-    l = -q/2 - math.sqrt((q**2)/4 + (p**3)/27)
+    k = -q/2 + cmath.sqrt((q**2)/4 + (p**3)/27)
+    l = -q/2 - cmath.sqrt((q**2)/4 + (p**3)/27)
     if k < 0:
         m = -math.pow(abs(k), 1/3)
     else:
@@ -85,11 +86,12 @@ def e3(x):
         equ.append(x)
     return equ
 
-def e3_Fp(x,p): # p is prime
+def e3_Fp(x,p):
     """
     p is prime
-    f=x[0]*t**3+x[1]*t**2+x[2]*t+x[3]
+    0 = x[0] + x[1]*t + x[2]*t**2 + x[3]*t**3
     """
+    x.reverse()
     coeff=[]
     i=1
     while i<len(x):
@@ -111,6 +113,7 @@ def e3_Fp(x,p): # p is prime
         equ.append(X[1])
     return equ
 
+"""
 def solve_Fp(poly,p):
     if poly.degree()==1:
         return 0
@@ -120,6 +123,7 @@ def solve_Fp(poly,p):
         return 0
     else:
         return 0
+"""
     
 def Newton(f,initial=1,repeat=100):
     """
@@ -158,12 +162,13 @@ def Newton(f,initial=1,repeat=100):
                 return l
             else:
                 l = e1(tangent) 
+    return l
 
-def SimMethod(g,repeat=1000,NewtonInitial=1):
+def SimMethod(g,repeat=100,NewtonInitial=1):
     """
      g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
     """
-    f = polynomial.OneVariableDensePolynomial(g,'x')
+    f = polynomial.OneVariableDensePolynomial(g,'x',imaginary.theComplexField)
     deg = f.degree()
     q=[]
     for i in range(0,deg):
@@ -174,7 +179,7 @@ def SimMethod(g,repeat=1000,NewtonInitial=1):
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
-        z.append(b+r*cmath.exp((1j)*(2*i*(math.pi)/(deg)+3/(2*(deg)))))
+        z.append(b+r*cmath.exp((1j)*(2*i*(math.pi)/deg+3/(2*deg))))
     
     for loop in range(repeat):
         sigma_list = []

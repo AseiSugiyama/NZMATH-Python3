@@ -1359,6 +1359,11 @@ def subResultantGCD(A, B):
         else:
             h = h ** (delta - 1) * g ** delta
 
+def discriminant(f):
+    deg = f.degree()
+    df = f.differentiate('x')
+    return (-1)**(deg*(deg-1)/2)*resultant(f,df)/f[deg]
+
 class OneVariablePolynomialChar0 (OneVariablePolynomial):
     """
 
