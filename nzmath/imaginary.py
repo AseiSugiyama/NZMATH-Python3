@@ -16,13 +16,13 @@ class Complex:
     """
     def __init__(self, re, im=None):
         if im:
-            self.real = rational.Rational(re)
-            self.imag = rational.Rational(im)
+            self.real = re
+            self.imag = im
         elif isinstance(re, complex) or isinstance(re, Complex):
-            self.real = rational.Rational(re.real)
-            self.imag = rational.Rational(re.imag)
+            self.real = re.real
+            self.imag = re.imag
         else:
-            self.real = rational.Rational(re)
+            self.real = re
             self.imag = 0
 
     def __add__(self, other):

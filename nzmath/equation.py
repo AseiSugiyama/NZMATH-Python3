@@ -125,34 +125,31 @@ def solve_Fp(poly,p):
         return 0
 """
     
-def Newton(f,initial=1,repeat=100):
+def Newton(f,initial=1,repeat=250):
     """
     f = a_n + a_(n-1) * x + ... + a_0 * x ** n
     """
     length = len(f)
-    f.reverse()
-
     df = []
-    i = -2
+    i = 1
     j = 1
-    while i != -length - 1:
+    while i != length:
         df.append(j*f[i])
-        i = i - 1
+        i = i + 1
         j = j + 1
-    df.reverse()
     l = initial
     for k in range(repeat):
-        i = -1
+        i = 0
         j = 0
         coeff = 0
         dfcoeff = 0
-        while i != -length :
+        while i != length - 1:
             coeff = coeff + f[i]*(l**j)
             dfcoeff = dfcoeff + df[i]*(l**j)
-            i = i - 1
+            i = i + 1
             j = j + 1
         coeff = coeff + f[i]*(l**j)
-        tangent = [dfcoeff,coeff-l*dfcoeff]
+        tangent = [coeff-l*dfcoeff,dfcoeff]
         if coeff == 0:
             return l
         elif coeff != 0 and dfcoeff == 0:
@@ -163,19 +160,21 @@ def Newton(f,initial=1,repeat=100):
             else:
                 l = e1(tangent) 
     return l
-
-def SimMethod(g,repeat=100,NewtonInitial=1):
+    
+def SimMethod(g,NewtonInitial=1,repeat=250):
     """
      g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
     """
-    f = polynomial.OneVariableDensePolynomial(g,'x',imaginary.theComplexField)
+    f = polynomial.OneVariableDensePolynomial(g,'x')
     deg = f.degree()
     q=[]
     for i in range(0,deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
+    print q
     df = f.differentiate('x')
     r = Newton(q,NewtonInitial)
+    print r
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
