@@ -1650,12 +1650,24 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
         """
         import bigrandom
-        result = [self.copy()]
         r = self.degree() / degree
         Fq = self.getCoefficientRing()
         FqX = self.getRing()
         q = len(Fq)
         p = Fq.getCharacteristic()
+        if degree == 1:
+            result = []
+            X = OneVariableDensePolynomial([0,1],
+                                           self.getVariable(),
+                                           self.getCoefficientRing())
+            f = self.copy()
+            while not f[0]:
+                f = f // X
+                result.append(X)
+            if f.degree() >= 1:
+                result.append(f)
+        else:
+            result = [self.copy()]
         while len(result) < r:
             # g is a random polynomial
             randPolyCoeff = OneVariablePolynomialCoefficients()

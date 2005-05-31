@@ -420,6 +420,11 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         self.F2 = finitefield.FinitePrimeField(2)
         self.f = OneVariableDensePolynomial([1,1],x,self.F2)
         self.g = OneVariableDensePolynomial([1,0,1],x,self.F2)
+        self.h = OneVariableDensePolynomial([0,1,1], x, self.F2)
+
+    def testInit(self):
+        assert isinstance(self.f, OneVariablePolynomialCharNonZero)
+        assert isinstance(self.g, OneVariablePolynomialCharNonZero)
 
     def testAdd(self):
         result = OneVariableDensePolynomial([0,1,1],x,self.F2)
@@ -465,6 +470,31 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         assert one_poly == one_field
         assert not one_poly != one_field
 
+    def testIsIrreducible(self):
+        assert self.f.isIrreducible()
+        assert not self.g.isIrreducible()
+        assert not self.h.isIrreducible()
+
+    def testSquareFreeDecomposition(self):
+        g_decomp = self.g.squareFreeDecomposition()
+        assert 1 == len(g_decomp)
+        assert 2 == g_decomp.keys()[0]
+        h_decomp = self.h.squareFreeDecomposition()
+        assert 1 == len(h_decomp)
+        assert 1 == h_decomp.keys()[0]
+        assert h_decomp.values()[0] == self.h, str(h_decomp.items()[0])
+
+    def testDistinctDegreeFactorization(self):
+        h_ddf = self.h.distinctDegreeFactorization()
+        assert 1 == len(h_ddf)
+        q = OneVariableDensePolynomial([1,1,1], 'x', self.F2) * self.h
+        q_ddf = q.distinctDegreeFactorization()
+        assert 2 == len(q_ddf)
+
+    def testSplitSameDegrees(self):
+        h_ssd = self.h.splitSameDegrees(1)
+        assert self.h.degree() == len(h_ssd)
+
     def testFactor(self):
         import finitefield
         p = OneVariableDensePolynomial([1,2,3,0,0,3,2,1],
@@ -481,6 +511,13 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         for i in range(3):
             product = product * factored[i][0] ** factored[i][1]
         assert p == product
+
+        # F2 case
+        g_factor = self.g.factor()
+        assert 1 == len(g_factor), g_factor
+        assert 2 == g_factor[0][1]
+        h_factor = self.h.factor()
+        assert 2 == len(h_factor), h_factor
 
 def suite():
     suite=unittest.TestSuite()
