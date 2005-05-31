@@ -555,21 +555,21 @@ def PrimePowerTest(n):
     if n % 2 == 1:
         q = n
         while True:
-            if prime.millerRabin(q) == False:
+            if prime.primeq(q) == False:
                 a = 1
                 while True:
                     if prime.spsp(n,a) == False:
                         break
                     else:
                         a += 1
-                d = gcd.gcd(a**q-a,q)
+                d = gcd.gcd(pow(a,q,q)-a,q)
                 if d == 1 or d == q:
                     return n,0
                 else:
                     q = d
             else:
                 p = q
-                if prime.millerRabin(p) == True:
+                if prime.primeq(p) == True:
                     break
                 else:
                     q = p
