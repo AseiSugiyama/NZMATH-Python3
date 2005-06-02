@@ -1,13 +1,17 @@
+import polynomial
+
 class quadratic:
-    def __init__(self,valuelist,discriminant):
+    def __init__(self,valuelist,val):
         if len(valuelist) == 2:
-            self.dis = discriminant
+            self.dis = val
             self.quad = valuelist
             self.int = self.quad[0]
             self.alg = self.quad[1]
-            if discriminant%4 == 2 or 3:
+            if self.dis % 4 == 2:
                 self.type = 0
-            elif discriminant%4 == 1:
+            elif self.dis % 4 == 3:
+                self.type = 0
+            elif self.dis % 4 == 1:
                 self.type = 1
             else:
                 raise ValueError
@@ -19,7 +23,10 @@ class quadratic:
                                        repr(self.dis))
         return return_str
     def __str__(self):
-        return "%s+%s*sqrt(%s)" % (self.int,self.alg,self.dis)
+        if self.type == 0:
+            return "%s+%s*sqrt(%s)" % (self.int,self.alg,self.dis)
+        else:
+            return "%s+%s*(1+sqrt(%s))/2" % (self.int,self.alg,self.dis)
     def __add__(self,other):
         return quadratic([self.int+other[0],self.alg+other[1]],self.dis)
     def __sub__(self,other):
@@ -33,6 +40,11 @@ class quadratic:
         return self.quad[index]
     def __setitem__(self,index,value):
         self.quad[index] = value
-    def display(self):
-        print self.quad
-    
+    def Discriminant(self):
+        if self.type == 0:
+            return 4*self.dis
+        else:
+            return self.dis
+    def poly(self,variable):
+        x = '%s' % (variable)
+        return polynomial.OneVariableDensePolynomial([-self.dis,0,1],x)
