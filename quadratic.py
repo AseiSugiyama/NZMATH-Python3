@@ -1,4 +1,5 @@
 import polynomial
+import math
 
 class Quadratic:
     def __init__(self,valuelist,root):
@@ -38,6 +39,29 @@ class Quadratic:
         return self.quad[index]
     def __setitem__(self,index,value):
         self.quad[index] = value
+    def __pow__(self,exp,mod=0):
+        a = self.quad[0]
+        b = self.quad[1]
+        solution=[1,0]
+        binary=[]
+        bi = exp
+        s = int(math.log(bi,2))
+        for i in range(0,int(math.log(exp,2))+1):
+            binary.append(bi//(2**s))
+            if bi//(2**s) != 0 :
+                bi = bi - 2**s
+            s = s - 1
+        if self.type == 0:
+            for i in range(-1,-len(binary)-1,-1):
+                if binary[i] == 1:
+                    (solution[0],solution[1]) = (solution[0]*a + solution[1]*b*self.dis, solution[0]*b + solution[1]*a)
+                (a,b) = (a**2+(b**2)*self.dis,2*a*b)
+        else:
+            for i in range(-1,-len(binary)-1,-1):
+                if binary[i] == 1:
+                    (solution[0],solution[1]) = (solution[0]*a + solution[1]*b*(self.dis-1)/4, solution[1]*a + (solution[0]+solution[1])*b)
+                (a,b) = (a**2+(b**2)*(self.dis-1)/4,2*a*b+b**2)
+        return Quadratic(solution,self.dis)
     def Discriminant(self):
         if self.type == 0:
             return 4*self.dis
