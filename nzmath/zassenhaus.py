@@ -12,6 +12,8 @@ def zassenhaus(f):
     Berlekamp-Zassenhaus method.
     """
     p, fp_factors = padicFactorization(f)
+    if len(fp_factors) == 1:
+        return [f]
     # lift to Mignotte bound
     blm = upperBoundOfCoefficient(f)
     q = p
@@ -29,6 +31,8 @@ def vanHoeij(f):
     """
     # precomputations
     p, fp_factors = padicFactorization(f)
+    if len(fp_factors) == 1:
+        return [f]
     # lift to Mignotte bound
     blm = upperBoundOfCoefficient(f)
     q = p
@@ -186,7 +190,7 @@ def padicFactorization(f):
             if not stock or num_factors > len(fp_factors):
                 stock = (p, fp_factors)
                 if len(fp_factors) == 1:
-                    return [f]
+                    return stock
                 num_factors = len(fp_factors)
             else:
                 break
