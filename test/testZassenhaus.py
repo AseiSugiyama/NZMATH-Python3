@@ -4,15 +4,28 @@ import polynomial
 
 class ZassenhausTest (unittest.TestCase):
     def testRegular(self):
-        r = zassenhaus.zassenhaus(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        f = polynomial.OneVariableDensePolynomial([12,7,1],'X')
+        r = zassenhaus.zassenhaus(f)
         assert isinstance(r, list)
         assert 2 == len(r), r
+        assert f == r[0] * r[1]
+
+    def testIrreducible(self):
+        f = polynomial.OneVariableDensePolynomial([12,6,1],'X')
+        r = zassenhaus.zassenhaus(f)
+        assert isinstance(r, list), r
+        assert 1 == len(r)
+        assert f == r[0]
+
 
 class VanHoeijTest (unittest.TestCase):
     def testRegular(self):
-        r = zassenhaus.vanHoeij(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        f = polynomial.OneVariableDensePolynomial([12,7,1],'X')
+        r = zassenhaus.vanHoeij(f)
         assert isinstance(r, list)
         assert 2 == len(r), r
+        assert f == r[0] * r[1]
+
 
 class PadicFactorizationTest (unittest.TestCase):
     def testRegular(self):
@@ -23,6 +36,12 @@ class PadicFactorizationTest (unittest.TestCase):
         assert prime.primeq(r[0])
         assert isinstance(r[1], list)
         assert 2 == len(r[1])
+
+    def testIrreducible(self):
+        f = polynomial.OneVariableDensePolynomial([12,6,1],'X')
+        r = zassenhaus.padicFactorization(f)
+        assert isinstance(r, tuple), r
+
 
 def suite():
     suite = unittest.TestSuite()
