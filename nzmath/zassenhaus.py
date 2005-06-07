@@ -163,7 +163,7 @@ def vanHoeij(f):
 
 def padicFactorization(f):
     """
-    pAdicFactorization(f) -> p, factors
+    padicFactorization(f) -> p, factors
 
     Return a prime p and a p-adic factorization of given integer
     coefficient squarefree polynomial f. The result factors have
@@ -318,7 +318,7 @@ def upperBoundOfCoefficient(f):
     weight = floorsqrt(weight) + 1
     degree = f.degree()
     lc = f[degree]
-    m = degree // 2
+    m = degree // 2 + 1
     bound = 1
     for i in range(1, m):
         b = binomial(m - 1, i) * weight + binomial(m - 1, i - 1) * lc

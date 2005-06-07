@@ -4,15 +4,25 @@ import polynomial
 
 class ZassenhausTest (unittest.TestCase):
     def testRegular(self):
-        zassenhaus.zassenhaus(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        r = zassenhaus.zassenhaus(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        assert isinstance(r, list)
+        assert 2 == len(r), r
 
 class VanHoeijTest (unittest.TestCase):
     def testRegular(self):
-        zassenhaus.vanHoeij(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        r = zassenhaus.vanHoeij(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        assert isinstance(r, list)
+        assert 2 == len(r), r
 
 class PadicFactorizationTest (unittest.TestCase):
     def testRegular(self):
-        zassenhaus.padicFactorization(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        r = zassenhaus.padicFactorization(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
+        assert isinstance(r, tuple)
+        assert 2 == len(r)
+        import prime
+        assert prime.primeq(r[0])
+        assert isinstance(r[1], list)
+        assert 2 == len(r[1])
 
 def suite():
     suite = unittest.TestSuite()
