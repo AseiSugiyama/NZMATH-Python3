@@ -184,7 +184,6 @@ def padicFactorization(f):
         if g.degree() == 0:
             fp_factors = fmodp.factor()
             if not stock or num_factors > len(fp_factors):
-                print p, len(fp_factors)
                 stock = (p, fp_factors)
                 if len(fp_factors) == 1:
                     return [f]
@@ -356,7 +355,7 @@ def divisibilityTest(f, g):
     """
     Return boolean value whether f is divisible by g or not, for polynomials.
     """
-    if f[0] % g[0]:
+    if g[0] and f[0] % g[0]:
         return False
     if f % g:
         return False

@@ -3,10 +3,12 @@ import zassenhaus
 import polynomial
 
 class ZassenhausTest (unittest.TestCase):
-    pass
+    def testRegular(self):
+        zassenhaus.zassenhaus(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
 
 class VanHoeijTest (unittest.TestCase):
-    pass
+    def testRegular(self):
+        zassenhaus.vanHoeij(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
 
 class PadicFactorizationTest (unittest.TestCase):
     def testRegular(self):
