@@ -727,6 +727,17 @@ class IntegerMatrix(Matrix):
 
     """
 
+    def __div__(self, other):
+        """
+        
+        division by a scalar
+        
+        """
+        if (other == 1) or (other == -1) :
+            return self * other
+        else:
+            raise NoInverse
+
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
         A = self.copy()
