@@ -1,8 +1,8 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
 HTMLPY = /home/tetsushi/work/docutils/tools/rst2html.py
-OLD_VER = 0.3.0
-NEW_VER = 0.3.1
+OLD_VER = 0.3.1
+NEW_VER = 0.4.0
 
 all: html sdist
 
@@ -28,6 +28,3 @@ tag:
 	for i in `cat target.files`; do \
 		echo cvs tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
 	done
-	@echo "Do the following also (until release 0.4.0 at least):"
-	@echo "  cvs tag -rrelease-`echo $(OLD_VER) | sed -e 's/\./_/g'` release-`echo $(NEW_VER) | sed -e 's/\./_/g'` ../elliptic.py"
-## equation should be ignored
