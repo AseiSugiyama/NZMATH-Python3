@@ -1,7 +1,11 @@
-version 0.3.1 to 0.3.2
+version 0.3.1 to 0.4.0
 ----------------------
+* add new modules equation providing a root finding methods and zassenhaus providing factorization of integer coefficient polynomials.
 * fix some bugs in polynomial.
 * add a method to culculate Mordel-Weil group structure of elliptic curve over finite fields. 
+* add a function floorpowerroot in arith1.
+* add functions bernoulli and catalan in combinatrial.
+* add a function sigma in multiplicative.
 
 version 0.3.0 to 0.3.1
 ----------------------
