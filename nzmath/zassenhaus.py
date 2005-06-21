@@ -202,6 +202,13 @@ def padicFactorization(f):
     return (p, fp_factors)
 
 def bruteForceSearch(f, fp_factors, q):
+    """
+    bruteForceSearch(f, fp_factors, q) -> [factors]
+
+    Find the factorization of f by searching a factor which is a
+    product of some combination in fp_factors.  The combination is
+    searched by brute force.
+    """
     factors = []
     d, r = 1, len(fp_factors)
     while 2*d <= r:
