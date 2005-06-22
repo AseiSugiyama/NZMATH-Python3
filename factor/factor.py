@@ -114,7 +114,7 @@ def primeDivisors(n):
 
     """
     result = []
-    for i in factor.rhomethod(n):
+    for i in rhomethod(n):
         result.append(i[0])
     return result
 
@@ -125,7 +125,7 @@ def squarePart(n):
     square divides n.
 
     """
-    factors = factor.rhomethod(n)
+    factors = rhomethod(n)
     result = 1
     for i in factors:
         result *= i[0] ** (i[1]/2)
@@ -468,48 +468,48 @@ class Issquare:
 
 issquare=Issquare()
 
-def mod_sqrt(a,m):
-    if m<0:
-        raise NonNegativityError
+def mod_sqrt(a, m):
+    if m < 0:
+        raise ValueError, 'negative modulus.'
     if not m:
         raise ZeroDivisionError
-    if m==1:
+    if m == 1:
         return 0
 
-    am=a%m
-    if (not am) or am==1:
+    am = a % m
+    if (not am) or am == 1:
         return am
-    p=issquare(am)
+    p = issquare(am)
     if p:
         return p
     if prime.primeq(m):
-        return _modp_sqrt(am,m)
-    if m&3==0:
-        if am&3==2 or am&3==3:
+        return _modp_sqrt(am, m)
+    if m&3 == 0:
+        if am&3 == 2 or am&3 == 3:
             raise ValueError,"There is no square root of %s mod %s" % (a,m)
         else:
             t, step = am&3, 4
     else:
         t, step = 0, 1
-    p=3
-    while p<m:
-        if isprime(p) and m%p==0:
-            if am%p==0:
+    p = 3
+    while p < m:
+        if prime.isprime(p) and m%p == 0:
+            if am%p == 0:
                 while t%p:
                     t += step
                 step *= p
                 p += 2
                 continue
-            s=_modp_sqrt(am,p)
+            s = _modp_sqrt(am, p)
             if s:
-                while t%p!=s:
+                while t%p != s:
                     t += step
                 step *= p
             else:
                 raise ValueError,"There is no square root of %s mod %s" % (a,m)
         p += 2
-    for i in range(t,m,step):
-        if (i*i)%m==am:
+    for i in range(t, m, step):
+        if (i*i)%m == am:
             return i
     raise ValueError,"There is no square root of %s mod %s" % (a,m)
 
@@ -555,21 +555,21 @@ def PrimePowerTest(n):
     if n % 2 == 1:
         q = n
         while True:
-            if primeq(q) == False:
+            if prime.primeq(q) == False:
                 a = 1
                 while True:
-                    if spsp(n,a) == False:
+                    if prime.spsp(n,a) == False:
                         break
                     else:
                         a += 1
-                d = gcd.gcd(pow(a,q,q)-a,q)
+                d = gcd.gcd(pow(a,q,q) - a, q)
                 if d == 1 or d == q:
                     return n,0
                 else:
                     q = d
             else:
                 p = q
-                if primeq(p) == True:
+                if prime.primeq(p) == True:
                     break
                 else:
                     q = p
