@@ -544,7 +544,7 @@ def _modp_sqrt(a,p):
     else:
         raise ValueError,"There is no square root of %s mod %s" % (a,p)
 
-import prime
+import nzmath.prime as prime
 def PrimePowerTest(n):
     """
     This program using Algo. 1.7.5 in Cohen's book judges whether
@@ -555,10 +555,10 @@ def PrimePowerTest(n):
     if n % 2 == 1:
         q = n
         while True:
-            if prime.primeq(q) == False:
+            if primeq(q) == False:
                 a = 1
                 while True:
-                    if prime.spsp(n,a) == False:
+                    if spsp(n,a) == False:
                         break
                     else:
                         a += 1
@@ -569,7 +569,7 @@ def PrimePowerTest(n):
                     q = d
             else:
                 p = q
-                if prime.primeq(p) == True:
+                if primeq(p) == True:
                     break
                 else:
                     q = p
