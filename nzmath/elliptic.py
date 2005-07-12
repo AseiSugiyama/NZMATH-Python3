@@ -131,7 +131,7 @@ def heart(q):
     i=3
     j=1
     while j<=4*int(math.sqrt(q)):
-        if prime.primeq(i):
+        if i!=q and prime.primeq(i):
             l.append(i)
             j=j*i
         i=i+2
