@@ -1,6 +1,7 @@
-from __future__ import generators
-# This future import is needed for Python 2.2.x
-import math
+"""
+A module for generating primes and testing primality.
+"""
+
 import gcd
 from arith1 import floorsqrt as sqrt
 
@@ -35,12 +36,12 @@ def spsp(n, base, s=None, t=None):
     """
     if not s or not t:
         s, t = vp(n-1, 2)
-    z = pow(base,t,n)
+    z = pow(base, t, n)
     if z != 1 and z !=  n-1:
         j = 0
         while j < s:
             j += 1
-            z = pow(z,2,n)
+            z = pow(z, 2, n)
             if z == n-1:
                 break
         else:
@@ -129,15 +130,15 @@ def randPrime(n):
     if n <= 0 :
         raise ValueError,"input number must be natural number"
     else:
-        p = bigrandom.randrange(10**(n-1),(10**n)-1)
+        p = bigrandom.randrange(10**(n-1), (10**n)-1)
         if p%2 == 0:
             p = p+1
-        i=0
-        while 1:
+        i = 0
+        while True:
             if primeq(p+i) == 1:
                 break
             else:
-                i+=2
+                i += 2
     if p+i >= 10**n:
         return randPrime(n) # very rare case or n is too small case
     return p+i
@@ -150,7 +151,7 @@ def smallSpsp(n):
 
     """
     for p in [2, 13, 23, 1662803]:
-        if not spsp(n,p):
+        if not spsp(n, p):
             return False
     return True
 
@@ -172,17 +173,16 @@ def primeq(n):
 
 # defs for APR algorithm
 from factor import trialDivision as factor
-import operator
 
 def _isprime(n):
     if gcd.gcd(n, 510510) > 1:
         return (n in (2, 3, 5, 7, 11, 13, 17))
     for p in [2, 13, 23, 1662803]:
-        if not spsp(n,p):
+        if not spsp(n, p):
             return False
     return True
 
-def vp(n,p,k=0):
+def vp(n, p, k=0):
     while not n%p:
         n, k = n//p, k+1
     return (k, n)
@@ -202,17 +202,23 @@ def properDivisors(n):
         return l
 
 def primitive_root(p):
-    i=2
+    """
+    Return a primitive root of Z/pZ.
+    """
+    i = 2
     pd = properDivisors(p-1)
-    while i<p:
+    while i < p:
         for d in pd:
-            if pow(i,(p-1)//d,p)==1:
+            if pow(i, (p-1)//d, p) == 1:
                 break
         else:
             return i
-        i=i+1
+        i = i+1
 
 class Zeta:
+    """
+    Represent linear combinations of roots of unity.
+    """
     def __init__(self, size, pos=None, val=1):
         self.size = size
         self.z = [0]*self.size
@@ -241,7 +247,7 @@ class Zeta:
             for k in range(other.size):
                 if not other.z[k]:
                     continue
-                elif other.z[k]==1:
+                elif other.z[k] == 1:
                     zr_m = zr_m + (self<<k)
                 else:
                     zr_m = zr_m + (self<<k)*other.z[k]
@@ -250,7 +256,7 @@ class Zeta:
             m = gcd.lcm(self.size,other.size)
             return self.promote(m)*other.promote(m)
 
-    __rmul__=__mul__
+    __rmul__ = __mul__
 
     def __lshift__(self, offset):
         """The name is shift but the meaning of function is rotation."""
@@ -260,7 +266,7 @@ class Zeta:
 
     def __pow__(self, e, mod=0):
         r = Zeta(self.size, 0)
-        if e==0:
+        if e == 0:
             return r
         if mod:
             z = self % mod
@@ -299,7 +305,7 @@ class Zeta:
             mp = m//p
             for i in range(mp):
                 min = self.z[i]
-                for j in range(mp+i,m,mp):
+                for j in range(mp+i, m, mp):
                     if min > self.z[j]:
                         min = self.z[j]
                 for j in range(i,m,mp):
@@ -339,7 +345,7 @@ class Zeta:
         return len(filter(None,self.z))
 
     def mass(self):
-        return reduce(operator.add,self.z,0)
+        return sum(self.z)
 
 class FactoredInteger:
     def __init__(self, other):
@@ -349,20 +355,20 @@ class FactoredInteger:
         else:
             self.integer = long(other)
             self.factors = {}
-            for (p,e) in factor(self.integer):
+            for (p, e) in factor(self.integer):
                 self.factors[p] = e
 
     def __mul__(self, other):
         if isinstance(other, FactoredInteger):
             new = +self
             for p in other.factors:
-                new.factors[p] = new.factors.get(p,0) + other.factors[p]
+                new.factors[p] = new.factors.get(p, 0) + other.factors[p]
             new.integer *= other.integer
             return new
         else:
             return self * FactoredInteger(other)
 
-    __rmul__=__mul__
+    __rmul__ = __mul__
 
     def __pow__(self, other, mod=None):
         new = +self
@@ -381,20 +387,20 @@ class FactoredInteger:
         return self.integer%other
 
     def __cmp__(self, other):
-        return cmp(long(self),long(other))
+        return cmp(long(self), long(other))
 
     def __long__(self):
         return long(self.integer)
 
 class TestPrime:
-    primes=[2,3,5,7,11,13,17,19,23,29,31]
+    primes = [2,3,5,7,11,13,17,19,23,29,31]
 
     def __init__(self, t=12):
         self.t = FactoredInteger(t)
         self.et = FactoredInteger(4)*(2**self.t.factors[2])
-        smoothp=[1]
+        smoothp = [1]
         for p in self.t.factors:
-            temp=smoothp[:]
+            temp = smoothp[:]
             pp = 1
             for i in range(self.t.factors[p]):
                 pp *= p
@@ -407,7 +413,7 @@ class TestPrime:
         del smoothp
 
     def next(self):
-        eu=[]
+        eu = []
         for p in self.primes:
             if self.t.factors.has_key(p):
                 eu.append((p-1)*(p**(self.t.factors[p]-1)))
@@ -416,8 +422,11 @@ class TestPrime:
         return self.__class__(self.t*self.primes[eu.index(min(eu))])
 
 class Status:
+    """
+    status collector for apr.
+    """
     def __init__(self):
-        self.d={}
+        self.d = {}
 
     def yet(self, key):
         self.d[key] = 0
@@ -447,12 +456,12 @@ class Status:
                 i = (i+x)%m
                 j += 1
             sx[0] = Jpq[0]
-            sx = pow(sx,x,n)
+            sx = pow(sx, x, n)
             s = s*sx%n
-        s = pow(s,n//m,n)
+        s = pow(s, n//m, n)
         r = n%m
         t = 1
-        for x in range(1,m):
+        for x in range(1, m):
             if x % p == 0:
                 continue
             c = (r*x) // m
@@ -465,7 +474,7 @@ class Status:
                     i = (i+x)%m
                     j += 1
                 tx[0] = Jpq[0]
-                tx = pow(tx,c,n)
+                tx = pow(tx, c, n)
                 t = t*tx%n
         s = +(t*s%n)
         if s.weight() == 1 and s.mass() == 1:
@@ -492,11 +501,11 @@ class Status:
                 j += 1
             z_4b[0] = J3[0]
             sx_z[x] = z_4b
-            s = pow(sx_z[x],x,n)*s
-            step = 8-step
+            s = pow(sx_z[x], x, n) * s
+            step = 8 - step
             x += step
 
-        s = pow(s,n//m,n)
+        s = pow(s, n//m, n)
 
         r = n%m
         step = 2
@@ -504,63 +513,63 @@ class Status:
         while m > x:
             c = r*x
             if c > m:
-                s = pow(sx_z[x],c//m,n)*s
+                s = pow(sx_z[x], c//m, n) * s
             step = 8 - step
             x += step
         r = r%8
         if r == 5 or r == 7:
-            s = J.get(2,q).promote(m)*s
+            s = J.get(2,q).promote(m) * s
         s = +(s%n)
 
         if s.weight() == 1 and s.mass() == 1:
-            if gcd.gcd(m,s.z.index(1)) == 1 and pow(q,(n-1)//2,n) == n-1:
+            if gcd.gcd(m, s.z.index(1)) == 1 and pow(q, (n-1)//2, n) == n-1:
                 self.done(2)
             return True
         elif s.weight() == 1 and s.mass() == n-1:
-            if gcd.gcd(m,s.z.index(n-1)) == 1 and pow(q,(n-1)//2,n) == n-1:
+            if gcd.gcd(m, s.z.index(n-1)) == 1 and pow(q, (n-1)//2, n) == n-1:
                 self.done(2)
             return True
         return False
 
     def sub4(self,q,n,J):
-        j2=J.get(1,2,q)**2
-        s=q*j2%n
-        s=pow(s,n//4,n)
-        if n%4==3:
-            s=s*j2%n
-        s=+(s%n)
-        if s.weight()==1 and s.mass()==1:
-            i=s.z.index(1)
-            if (i==1 or i==3) and pow(q,(n-1)//2,n)==n-1:
+        j2 = J.get(1,2,q)**2
+        s = q*j2%n
+        s = pow(s, n//4, n)
+        if n%4 == 3:
+            s = s*j2%n
+        s = +(s%n)
+        if s.weight() == 1 and s.mass() == 1:
+            i = s.z.index(1)
+            if (i == 1 or i == 3) and pow(q, (n-1)//2, n) == n-1:
                 self.done(2)
             return True
         return False
 
     def sub2(self,q,n):
-        s=pow(n-q,(n-1)//2,n)
-        if s==n-1:
-            if n%4==1:
+        s = pow(n-q, (n-1)//2, n)
+        if s == n-1:
+            if n%4 == 1:
                 self.done(2)
-        elif s!=1:
+        elif s != 1:
             return False
         return True
 
     def subrest(self,p,n,et,J,ub=200):
-        if p==2:
-            q=5
-            c=0
-            while c<ub:
-                q+=2
-                if not _isprime(q) or et%q==0:
+        if p == 2:
+            q = 5
+            c = 0
+            while c < ub:
+                q += 2
+                if not _isprime(q) or et%q == 0:
                     continue
-                if n%q==0:
+                if n%q == 0:
                     sys.stderr.write("%s divides %s.\n" % (q,n))
                     return False
-                k=vp(q-1,2)[0]
-                if k==1:
-                    if n%4==1 and not self.sub2(q,n):
+                k = vp(q-1,2)[0]
+                if k == 1:
+                    if n%4 == 1 and not self.sub2(q,n):
                         return False
-                elif k==2:
+                elif k == 2:
                     if not self.sub4(q,n,J):
                         return False
                 else:
@@ -568,7 +577,7 @@ class Status:
                         return False
                 if self.isDone(p):
                     return True
-                c+=1
+                c += 1
             else:
                 raise ImplementLimit
         else:
@@ -593,15 +602,15 @@ class Status:
 
 class JacobiSum:
     def __init__(self):
-        self.shelve={}
+        self.shelve = {}
     def get(self, group, p, q=None):
         if q:
-            assert group==1
+            assert group == 1
             if not self.shelve.has_key(str((group,long(p),long(q)))):
                 self.make(q)
             return self.shelve[str((group,long(p),long(q)))]
         else:
-            assert group==2 or group==3
+            assert group == 2 or group == 3
             if not self.shelve.has_key(str((group,long(p)))):
                 self.make(p)
             return self.shelve[str((group,long(p)))]
@@ -610,7 +619,7 @@ class JacobiSum:
         fx = self.makefx(q)
         qpred = q-1
         qt = factor(qpred)
-        qt2 = [k for (p,k) in qt if p==2][0]
+        qt2 = [k for (p, k) in qt if p == 2][0]
         k, pk = qt2, 2**qt2
         if k >= 2:
             J2q = Zeta(pk, 1+fx[1])
@@ -628,7 +637,7 @@ class JacobiSum:
         else:
             self.shelve[str((1,2L,long(q)))] = 1
         for (p, k) in qt:
-            if p==2:
+            if p == 2:
                 continue
             pk = p**k
             Jpq = Zeta(pk,1+fx[1])
@@ -637,14 +646,14 @@ class JacobiSum:
             self.shelve[str((1,long(p),long(q)))] = +Jpq
         del fx
 
-    def makefx(dummy, q):
+    def makefx(self, q):
         g = primitive_root(q)
         qpred = q-1
         qd2 = qpred//2
         g_mf = [0,g]
         for i in range(2,qpred):
             g_mf.append((g_mf[-1]*g)%q)
-        fx={}
+        fx = {}
         for i in range(1,qpred):
             if fx.has_key(i):
                 continue
@@ -679,7 +688,7 @@ def apr(n):
     plist.remove(2)
     L.yet(2)
     for p in plist:
-        if pow(n,p-1,p*p) != 1:
+        if pow(n, p-1, p*p) != 1:
             L.done(p)
         else:
             L.yet(p)
@@ -691,20 +700,20 @@ def apr(n):
             if (q-1) % p != 0:
                 continue
             if not L.subodd(p,q,n,J):
-                return 0
+                return False
         k = vp(q-1,2)[0]
         if k == 1:
             if not L.sub2(q,n):
-                return 0
+                return False
         elif k == 2:
             if not L.sub4(q,n,J):
-                return 0
+                return False
         else:
             if not L.sub8(q,k,n,J):
-                return 0
+                return False
     for p in L.yet_keys():
         if not L.subrest(p,n,el.et,J):
-            return 0
+            return False
     r = long(n)
     i = 1
     while i < el.t.integer:
@@ -715,3 +724,9 @@ def apr(n):
             return False
         i += 1
     return True
+
+class ImplementLimit (Exception):
+    """
+    Exception throwed when the execution hits the implementation limit.
+    """
+    pass
