@@ -91,12 +91,26 @@ class EllipticTest(unittest.TestCase):
             8:polynomial.OneVariableSparsePolynomial({0:16,1:50,2:29,3:10,4:62,5:80,6:41,7:66,8:79,9:48,10:77,11:53,12:67,13:70,14:5,15:18,16:36,17:28,18:58,19:95,20:67,21:91,22:37,23:93,24:25,25:93,26:61,27:34,28:68,30:4},["x"],finitefield.FinitePrimeField(E.ch))*2},
            [3,5,7])
         assert E.divPoly([])==D
-        F=elliptic.EC([3,4],7,3)
-        D=F.divPoly(1)[0]
-        assert F.divPoly(1,7)==D[7]
+        ## NotImplemented
+        # F=elliptic.EC([3,4],7,3)
+        # D=F.divPoly(1)[0]
+        # assert F.divPoly(1,7)==D[7]
+
+class OrderTest (unittest.TestCase):
+    def testEqual(self):
+        e = elliptic.EC([1,4],5)
+        bySchoof = e.Schoof()
+        byNaive = e.naive()
+        assert bySchoof == byNaive
+        e = elliptic.EC([1,3,4,0,1],5)
+        bySchoof = e.Schoof()
+        byNaive = e.naive()
+        assert bySchoof == byNaive
 
 def suite():
-    suite = unittest.makeSuite(EllipticTest, 'test') 
+    suite  = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(EllipticTest, 'test'))
+    suite.addTest(unittest.makeSuite(OrderTest, 'test'))
     return suite
 
 if __name__ == '__main__':
