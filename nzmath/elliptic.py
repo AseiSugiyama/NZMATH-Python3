@@ -8,7 +8,7 @@ import factor
 import finitefield
 import gcd
 import integerResidueClass
-import polynomial 
+import polynomial
 import prime
 import rational
 
@@ -16,32 +16,15 @@ def divi(n):
     """
     this returns all factors divide n
     """
-    D=factor.rhomethod(n)
-    N=[]
-    i=0
-    while i<len(D):
-        j=0
-        list=[]
-        while j<=D[i][1]:
-            list.append(D[i][0]**j)
-            j=j+1
-        if i==0:
-            l=0
-            while l<len(list):
-                N.append(list[l])
-                l=l+1
+    divisors = []
+    for p, e in factor.rhomethod(n):
+        if not divisors:
+            divisors = [p**j for j in range(e+1)]
         else:
-            x=len(N)
-            k=0
-            while k<x:
-                l=1
-                while l<len(list):
-                    N.append(N[k]*list[l])
-                    l=l+1
-                k=k+1
-        i=i+1
-    N.sort()
-    return N
+            p_part = [p**j for j in range(1, e+1)]
+            divisors += [n*q for n in divisors for q in p_part]
+    divisors.sort()
+    return divisors
 
 def Element_p(a,p):
     """
@@ -97,11 +80,11 @@ def PolyMulRed(list,poly):
     poly is OneSparsePoly
     """
     if poly.degree()<1:
-        return 0 
+        return 0
     i=0
     while i<len(list):
         if list[i]==0:
-            return 0 
+            return 0
         elif isinstance(list[i],(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
             pass
         elif list[i].degree()>=poly.degree():
@@ -127,14 +110,15 @@ def heart(q):
     """
     this is for Schoof's
     """
-    l=[]
-    i=3
-    j=1
-    while j<=4*int(math.sqrt(q)):
-        if i!=q and prime.primeq(i):
+    l = []
+    i = 3
+    j = 1
+    bound = 4 * arith1.floorsqrt(q)
+    while j <= bound:
+        if i != q and prime.primeq(i):
             l.append(i)
-            j=j*i
-        i=i+2
+            j *= i
+        i += 2
     return l
 
 def powOrd(x,y,z):
@@ -171,9 +155,7 @@ class EC:
                 self.ch=0
             else:
                 self.ch=character
-            if self.ch==0: 
-                pass
-            else:
+            if self.ch != 0:
                 if not index: #field=F_p
                     self.coeffField=finitefield.FinitePrimeField(character)
                     self.index=1
@@ -188,7 +170,7 @@ class EC:
                     To add this, we must exchange field and element.
                     """
                     raise NotImplementedError,"Now making (>_<),now we can use only over finite prime fields"
-            self.PointAtInfinity=[0] 
+            self.PointAtInfinity=[0]
             if self.ch==0:
                 if len(self)==5:
                     self.a1=coefficient[0]
@@ -231,10 +213,10 @@ class EC:
                         raise ValueError, "you must input integer coefficients. m(__)m"
                 if len(self)==5:
                     if coefficient[0]%2==1 and coefficient[2]%2==coefficient[3]%2==0:
-                        self.a1=finitefield.FinitePrimeFieldElement(1,2) 
+                        self.a1=finitefield.FinitePrimeFieldElement(1,2)
                         self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],2)
-                        self.a3=finitefield.FinitePrimeFieldElement(0,2) 
-                        self.a4=finitefield.FinitePrimeFieldElement(0,2) 
+                        self.a3=finitefield.FinitePrimeFieldElement(0,2)
+                        self.a4=finitefield.FinitePrimeFieldElement(0,2)
                         self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],2)
                         self.b2=finitefield.FinitePrimeFieldElement(1,2)
                         self.b4=finitefield.FinitePrimeFieldElement(0,2)
@@ -350,16 +332,16 @@ class EC:
                     raise ValueError, "characteristic must be 0 or prime (-_-;)"
         else:
             raise ValueError, "you must input (coefficient,list) m(__)m"
-           
+
     def __len__(self):
         return len(self.coefficient)
 
     def __repr__(self):
         if self.ch==0:
             if len(self)==2 or self.a1==self.a2==self.a3==0:
-                return "EC(["+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")" 
+                return "EC(["+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")"
             else:
-                return "EC(["+repr(self.a1)+","+repr(self.a2)+","+repr(self.a3)+","+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")"   
+                return "EC(["+repr(self.a1)+","+repr(self.a2)+","+repr(self.a3)+","+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")"
         else:
             if len(self)==2 or self.a1.n==self.a2.n==self.a3.n==0:
                 return "EC(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
@@ -395,9 +377,9 @@ class EC:
 
     def changeCurve(self,V):
         """
-        this transforms E to E' by V=[u,r,s,t] ; x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t 
+        this transforms E to E' by V=[u,r,s,t] ; x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t
         """
-        if isinstance(V,list): 
+        if isinstance(V,list):
             if len(V)==4:
                 if V[0]!=0:
                     if self.ch==0:
@@ -405,7 +387,7 @@ class EC:
                               rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2,V[0]**2),
                               rational.Rational(self.a3+V[1]*self.a1+2*V[3],V[0]**3),
                               rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3],V[0]**4),
-                              rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)],0) 
+                              rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1,V[0]**6)],0)
                         return other
                     else:
                         for v in V:
@@ -418,9 +400,9 @@ class EC:
                                   ((self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3])*v**4).n,
                                   ((self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1)*v**6).n],self.ch)
                         return other
-                else: 
+                else:
                     raise ValueError, "you must input nonzero u (-_-;)"
-            else:        
+            else:
                 raise ValueError, "you must input (-_-;)"
         else:
             raise ValueError, "you must input (change,list) m(__)m"
@@ -447,24 +429,24 @@ class EC:
         else:
             raise ValueError, "m(__)m"
 
-    def point(self): 
+    def point(self):
         """
         this returns a random point on eliiptic curve over ch(field)>3
         """
         if self.ch!=0:
             if self.index!=1:
                 raise NotImplementedError,"Now making (>_<)"
-            if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):    
+            if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch) 
+                    s=random.randrange(0,self.ch)
                     t=(s**3+self.a4*s+self.a6).n
                 return [s,arith1.sqroot(t,self.ch)]
             elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch) 
+                    s=random.randrange(0,self.ch)
                     t=(s**3+other.a*s+other.b).n
                 x=(s-3*self.b2)/36
                 y=(rational.Rational(arith1.sqroot(t,self.ch),108)-self.a1*x-self.a3)/2
@@ -472,10 +454,10 @@ class EC:
             elif self.ch==3:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch) 
+                    s=random.randrange(0,self.ch)
                     t=(s**3+self.a2*s**2+self.a4*s+self.a6).n
                 return [s,arith1.sqroot(t,self.ch)]
-            else: 
+            else:
                 s=0
                 while self.coordinateY(s) is ValueError:
                     s=random.randrange(0,self.ch)
@@ -493,7 +475,7 @@ class EC:
             raise ValueError,"I can't find m(__)m"
 
     def coordinateY(self,x):
-        """ 
+        """
         this returns the y(P)>0,x(P)==x
         """
         if self.ch==0:
@@ -516,7 +498,7 @@ class EC:
                     return False
         elif self.ch==2:
             raise NotImplementedError, "Now making (>_<)"
-        else: 
+        else:
             Y=y1**2+4*y2
             if Y>=0:
                 if isinstance(Y,rational.Rational):
@@ -528,7 +510,7 @@ class EC:
                         return rational.Rational((-1)*y1+rational.Rational(yn,yd),2)
                     else:
                         return False
-                else: 
+                else:
                     Z=math.sqrt(Y)
                     if int(Z)==Z:
                         return rational.Rational((-1)*y1+int(Z),2)
@@ -576,10 +558,10 @@ class EC:
                         if P[0]==Q[0]:
                             if P[1]+Q[1]+self.a1*Q[0]+self.a3==0:
                                 return [0]
-                            else: 
+                            else:
                                 s=rational.IntegerIfIntOrLong(3*P[0]**2+2*self.a2*P[0]+self.a4-self.a1*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
                                 t=rational.IntegerIfIntOrLong(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/rational.IntegerIfIntOrLong(2*P[1]+self.a1*P[0]+self.a3)
-                        else: 
+                        else:
                             s=rational.IntegerIfIntOrLong(Q[1]-P[1])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                             t=rational.IntegerIfIntOrLong(P[1]*Q[0]-Q[1]*P[0])/rational.IntegerIfIntOrLong(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
@@ -615,7 +597,7 @@ class EC:
         else:
             raise ValueError, "you must input (point,list) m(__)m"
 
-    def sub(self,P,Q): 
+    def sub(self,P,Q):
         """
         this retuens P-Q
         """
@@ -627,8 +609,8 @@ class EC:
                         y=-Q[1]-self.a1*Q[0]-self.a3
                     else:
                         y=-Q[1]-self.a1.n*Q[0]-self.a3.n
-                    R=[x,y] 
-                    return self.add(P,R) 
+                    R=[x,y]
+                    return self.add(P,R)
                 elif (P==[0]) and (Q!=[0]):
                     x=Q[0]
                     if self.ch==0:
@@ -713,7 +695,7 @@ class EC:
                         f[i]=2*f[i]
                     i=i+1
                 return f,H
-        else: 
+        else:
             f={}
             if self.ch==0:
                 f[-1]=-1
@@ -777,9 +759,9 @@ class EC:
             if len(self)!=2:
                 other=self.simple()
             else:
-                other=self 
+                other=self
             E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],finitefield.FinitePrimeField(other.ch))
-            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch)) 
+            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch))
             T=[]
             D=other.divPoly()
             L=D[1]
@@ -814,7 +796,7 @@ class EC:
                         if P!=1:
                             if w%2==0:
                                 P=GCD(PolyMulRed([4,PolyMulRed([g0,E],D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
-                            else: 
+                            else:
                                 P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
                             if P!=1:
                                 T.append((2*w,j))
@@ -928,9 +910,8 @@ class EC:
         L.append(B)
         L.append(sets.Set(A).intersection(sets.Set(B)))
         return L
-            
+
     def Shanks_Mestre(self):
-        import sets
         """
         This program is using
         Algorithm 7.5.3(Shanks-Mestre assessment of curve order)
@@ -1152,9 +1133,9 @@ class EC:
             U=[0]
             A=[0]
             B=[0]
-            while T==[0] or U==[0] or A==[0] or B==[0]: 
+            while T==[0] or U==[0] or A==[0] or B==[0]:
                 T,U=self.point(),self.point()
-                A=self.add(P,T) 
+                A=self.add(P,T)
                 B=self.add(Q,U)
             g=self.Miller(P,m,B)
             if g!=False and g!=0:
@@ -1223,7 +1204,7 @@ class EC:
                 i=i+1
             L=max(L)
             return (L,O//L)
-    
+
     def structure(self):
         if self.ch>3:
             if self.index==1:
@@ -1271,7 +1252,7 @@ class EC:
                                 i=i+1
                                 j=pow(j,D[i])
                             s=D[i]
-                        if r*s==N1: 
+                        if r*s==N1:
                             return (r*N2,s)
                     k=k+1
                 return self.allPoint(N)
@@ -1279,4 +1260,4 @@ class EC:
                 raise NotImplementedError,"Now making m(__)m"
         else:
             raise NotImplementedError,"Now making m(__)m"
-        
+

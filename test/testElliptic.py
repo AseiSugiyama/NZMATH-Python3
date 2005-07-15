@@ -109,6 +109,9 @@ class OrderTest (unittest.TestCase):
 
 class DiviTest (unittest.TestCase):
     def testDivi(self):
+        assert [1] == elliptic.divi(1)
+        assert [1, 2] == elliptic.divi(2)
+        assert [1, 2, 4] == elliptic.divi(4)
         assert [1, 2, 3, 6] == elliptic.divi(6)
         assert [1, 2, 3, 4, 6, 12] == elliptic.divi(12)
         assert [1, 2, 3, 5, 6, 10, 15, 30] == elliptic.divi(30)
