@@ -16,13 +16,10 @@ def divi(n):
     """
     this returns all factors divide n
     """
-    divisors = []
+    divisors = [1]
     for p, e in factor.rhomethod(n):
-        if not divisors:
-            divisors = [p**j for j in range(e+1)]
-        else:
-            p_part = [p**j for j in range(1, e+1)]
-            divisors += [n*q for n in divisors for q in p_part]
+        p_part = [p**j for j in range(1, e+1)]
+        divisors += [n*q for n in divisors for q in p_part]
     divisors.sort()
     return divisors
 
