@@ -22,6 +22,20 @@ def sort_factor(list):
             real_factor += [(long(i),dict[i])]
         return real_factor
 
+def AllDivisors(n):
+    """
+    this returns all factors divide n
+    """
+    divisors = []
+    for p, e in rhomethod(n):
+        if not divisors:
+            divisors = [p**j for j in range(e+1)]
+        else:
+            p_part = [p**j for j in range(1, e+1)]
+            divisors += [n*q for n in divisors for q in p_part]
+    divisors.sort()
+    return divisors
+
 def subrhomethod(n):
 
     """
@@ -63,7 +77,8 @@ def rhomethod(n):
         n=n/2
         i=i+1
     if n == 1:
-        primefactor.append((2,i))
+        if i != 0:
+            primefactor.append((2,i))
         return primefactor        #then n is power of 2       
     else:
         if i >= 1:
