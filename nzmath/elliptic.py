@@ -12,17 +12,6 @@ import polynomial
 import prime
 import rational
 
-def divi(n):
-    """
-    this returns all factors divide n
-    """
-    divisors = [1]
-    for p, e in factor.rhomethod(n):
-        p_part = [p**j for j in range(1, e+1)]
-        divisors += [n*q for n in divisors for q in p_part]
-    divisors.sort()
-    return divisors
-
 def Element_p(a,p):
     """
     a is (rational,int,long) number
@@ -1241,7 +1230,7 @@ class EC:
                     else:
                         s=1
                         if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                            D=divi(self.ch-1)
+                            D=factor.AllDivisors(self.ch-1)
                             j=e
                             i=0
                             while j!=finitefield.FinitePrimeFieldElement(1,self.ch):
