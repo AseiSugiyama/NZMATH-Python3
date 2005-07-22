@@ -22,6 +22,14 @@ class FactorTest (unittest.TestCase):
     def testSquarePart(self):
         assert 1 == factor.squarePart(15)
         assert 17 == factor.squarePart(17**2 * 19)
+    def testAllDivisors(self):
+        assert [1] == factor.AllDivisors(1)
+        assert [1, 2] == factor.AllDivisors(2)
+        assert [1, 2, 4] == factor.AllDivisors(4)
+        assert [1, 2, 3, 6] == factor.AllDivisors(6)
+        assert [1, 2, 3, 4, 6, 12] == factor.AllDivisors(12)
+        assert [1, 2, 3, 5, 6, 10, 15, 30] == factor.AllDivisors(30)
+
 
 def suite():
     suite = unittest.makeSuite(FactorTest, 'test');
