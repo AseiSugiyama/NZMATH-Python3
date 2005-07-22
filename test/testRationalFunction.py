@@ -17,6 +17,10 @@ class RationalFunctionTest (unittest.TestCase):
         assert self.f == self.f2
         assert self.f == self.f3
 
+    def testGetRing(self):
+        assert isinstance(self.f.getRing(), RationalFunctionField)
+        assert self.f.getRing() == RationalFunctionField(Q, "x")
+
 class RationalFunctionFieldTest (unittest.TestCase):
     def setUp(self):
         self.Qx = RationalFunctionField(Q, "x")
