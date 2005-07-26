@@ -126,7 +126,7 @@ def randPrime(n):
 
     """
     import bigrandom
-    
+
     if n <= 0 :
         raise ValueError,"input number must be natural number"
     else:

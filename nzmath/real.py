@@ -99,7 +99,7 @@ class AbsoluteError:
     def __init__(self, comparity, numerator, denominator=1):
         self.comparity = comparity
         self.absoluteerrorrange = abs(rational.Rational(numerator, denominator))
-        
+
     def islarge(self):
         if (self.comparity > 0) :
             return True
@@ -152,7 +152,6 @@ class ExponentialPowerSeries:
 
     A class for exponential power serieses, whose n-th term has form:
       a_n * x ** n / n!
-    
 
     """
     def __init__(self, iterator):
@@ -225,7 +224,7 @@ class ExponentialPowerSeries:
                         break
                 oldvalue = +value
         return value
-            
+
 
 defaultError = RelativeError(0, 1, 2 ** 53)
 

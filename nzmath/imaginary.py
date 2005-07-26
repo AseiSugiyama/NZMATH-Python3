@@ -254,7 +254,7 @@ class RelativeError:
             ### to class AbsoluteError, however, methods are returned
             ### only Boolean, False.
             ###
-            
+
             #if isinstance(other, AbsoluteError):
             #    if self.absoluteerror(x).absoluteerrorrange == other.absoluteerrorrange :
             #        return True
@@ -309,7 +309,7 @@ class AbsoluteError:
 
         """
         self.absoluteerrorrange = abs(numeric)
-        
+
     def nearlyEqual(self, x, y):
         """
 
@@ -410,7 +410,6 @@ class ExponentialPowerSeries:
 
     A class for exponential power serieses, whose n-th term has form:
       a_n * x ** n / n!
-    
 
     """
     def __init__(self, iterator):
