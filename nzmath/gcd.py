@@ -1,9 +1,16 @@
 def gcd(a, b):
+    """
+    Return the greatest common divisor of 2 integers a and b.
+    """
     while b:
         a, b = b, a%b
     return a
 
 def binarygcd(a, b):
+    """
+    Return the greatest common divisor of 2 integers a and b
+    by binary gcd algorithm.
+    """
     if a < b:
         tmp = a
         a = b
@@ -35,7 +42,12 @@ def binarygcd(a, b):
         t = (a - b) >> 1
     return a << k
 
-def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
+def extgcd(x, y):
+    """
+    Return a tuple (u, v, d); they are the greatest common divisor d
+    of two integers x and y and u, v such that d = x * u + y * v.
+    """
+    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
     a,b,g,u,v,w = 1,0,abs(x),0,1,abs(y)
     while w > 0:
         q = g // w
@@ -44,6 +56,10 @@ def extgcd(x,y):    # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
     return (a,b,g)
 
 def gcd_of_list(integers):
+    """
+    Return a list [d, [c1, ..., cn]] for a list of integers [x1, ..., xn]
+    such that d = c1 * x1 + ... + cn * xn.
+    """
     the_gcd = 0
     coeff = []
     for next in integers:
@@ -62,16 +78,3 @@ def lcm(a, b):
 
     """
     return a // gcd(a, b) * b 
-
-if __name__ == "__main__":
-    doc = """calculate the G.C.D. of some integers
-usage: gcd integer1 integer2 [integer3 ...]"""
-
-    import sys
-    if len(sys.argv) < 3:
-        print doc
-        sys.exit()
-    integers = []
-    for i in sys.argv[1:]:
-        integers += [int(i)]
-    print gcd_of_list(integers)

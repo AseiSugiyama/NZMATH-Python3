@@ -25,11 +25,13 @@ class GcdTest (unittest.TestCase):
 
     def testExtgcd(self):
         assert (-4,3,1) == gcd.extgcd(8, 11)
+        extgcd = gcd.extgcd(8, 11)
+        assert 8 * extgcd[0] + 11 * extgcd[1] == extgcd[2]
         import rational
-        assert (-4,3,1) == gcd.extgcd(rational.Integer(8),11)
+        assert (-4,3,1) == gcd.extgcd(rational.Integer(8), 11)
 
     def testGcdOfList(self):
-        assert [1, [-4,3]] == gcd.gcd_of_list([8, 11])
+        assert [1, [-4, 3]] == gcd.gcd_of_list([8, 11])
 
 def suite():
     suite = unittest.makeSuite(GcdTest, "test")
