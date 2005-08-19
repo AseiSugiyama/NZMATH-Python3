@@ -4,6 +4,7 @@ A module for generating primes and testing primality.
 
 import gcd
 from arith1 import floorsqrt as sqrt
+from arith1 import vp
 
 def trialDivision(n, bound = 0):
     """
@@ -181,11 +182,6 @@ def _isprime(n):
         if not spsp(n, p):
             return False
     return True
-
-def vp(n, p, k=0):
-    while not n%p:
-        n, k = n//p, k+1
-    return (k, n)
 
 def properDivisors(n):
     if n in (2,3,5,7,11,13,17,19,23):

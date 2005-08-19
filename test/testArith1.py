@@ -3,7 +3,7 @@ import unittest
 import arith1
 
 class Arith1Test (unittest.TestCase):
-    def testLgendre(self):
+    def testLegendre(self):
         assert arith1.legendre(4,13) == 1
         assert arith1.legendre(396685310,2**31-1) == 1
         assert arith1.legendre(2,11**1293) == -1
@@ -48,6 +48,12 @@ class Arith1Test (unittest.TestCase):
             assert arith1.floorpowerroot(k, j) == 5
             assert arith1.floorpowerroot(k + 1, j) == 5
         assert arith1.floorpowerroot(400000000000000000000, 4) == arith1.floorsqrt(20000000000)
+
+    def testVp(self):
+        assert (3, 1) == arith1.vp(8, 2)
+        assert (0, 10) == arith1.vp(10, 3)
+        assert (1, 10) == arith1.vp(10, 3, 1)
+        assert (3, 10) == arith1.vp(270, 3)
 
 def suite():
     suite = unittest.makeSuite(Arith1Test, "test")

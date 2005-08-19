@@ -200,3 +200,20 @@ def _BhaskaraBrouncker(n):
         p0, p1 = p1, p0 + a * p1
         q0, q1 = q1, q0 + a * q1
     return (p1, q1)
+
+def vp(n, p, k=0):
+    """
+    Return p-adic valuation and indivisible part of given integer.
+
+    For example:
+    >>> vp(100, 2)
+    (2, 25)
+
+    That means, 100 is 2 times divisible by 2, and the factor 25 of
+    100 is indivisible by 2.
+
+    The optional argument k will be added to the valuation.
+    """
+    while n % p == 0:
+        n, k = n//p, k+1
+    return (k, n)
