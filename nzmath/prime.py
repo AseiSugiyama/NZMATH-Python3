@@ -38,7 +38,7 @@ def spsp(n, base, s=None, t=None):
     if not s or not t:
         s, t = vp(n-1, 2)
     z = pow(base, t, n)
-    if z != 1 and z !=  n-1:
+    if z != 1 and z != n-1:
         j = 0
         while j < s:
             j += 1
@@ -100,7 +100,7 @@ def generator():
     yield 5
     coprimeTo30 = (7, 11, 13, 17, 19, 23, 29, 31)
     times30 = 0
-    while 1:
+    while True:
         for i in coprimeTo30:
             if primeq(i + times30):
                 yield i + times30
@@ -268,7 +268,7 @@ class Zeta:
             z = self % mod
         else:
             z = +self
-        while 1:
+        while True:
             if e&1 == 1:
                 r = z*r
                 if mod:
