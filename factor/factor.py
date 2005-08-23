@@ -1,6 +1,7 @@
 import math
-import nzmath.gcd as gcd
+import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
+import nzmath.gcd as gcd
 import nzmath.prime as prime
 import trialdivision
 
@@ -117,8 +118,8 @@ def primeDivisors(n):
 
     """
     result = []
-    for i in rhomethod(n):
-        result.append(i[0])
+    for d,e in rhomethod(n):
+        result.append(d)
     return result
 
 def squarePart(n):
@@ -130,8 +131,9 @@ def squarePart(n):
     """
     factors = rhomethod(n)
     result = 1
-    for i in factors:
-        result *= i[0] ** (i[1]/2)
+    for d, e in factors:
+        if e >= 2:
+            result *= d ** (e//2)
     return result
 
 def ord(p, n):
@@ -317,8 +319,6 @@ class F2MatrixWithTwoVectors:
                     x.append(k)
             confirm(x,self.u,self.v,n)
 
-import nzmath.arith1 as arith1
-
 class QuadraticPolynomial:
     def __init__(self,a,b,c):
         assert b%2==0
@@ -438,19 +438,17 @@ class MPQS:
         self.mat.kernel(self.N)
         # failed to factor if this line is reached
 
-import nzmath.rational as rational
-
 def confirm(dep,u,v,n):
-    r1 = r2 = 1L
+    r1 = r2 = 1
     for i in dep:
         r1 *= u[i]
         r2 *= v[i]%n
-    assert (r1-r2**2)%n==0
-    r1 = prime.sqrt(r1)%n
-    sum,dif = (r1+r2)%n,(r1-r2)%n
-    if sum!=0 and dif!=0:
-        g = rational.theIntegerRing.gcd(sum,n)
-        if 1<g<n:
+    assert (r1-r2**2)%n == 0
+    r1 = arith1.floorsqrt(r1) % n
+    sum, dif = (r1+r2)%n, (r1-r2)%n
+    if sum != 0 and dif != 0:
+        g = gcd.gcd(sum,n)
+        if 1 < g < n:
             raise FactorFound({g:1, n//g:1})
 
 class Issquare:
@@ -470,6 +468,9 @@ class Issquare:
 issquare = Issquare()
 
 def mod_sqrt(a, m):
+    """
+    Return a square root of 'a' mod 'm'.
+    """
     if m < 0:
         raise ValueError, 'negative modulus.'
     if not m:
@@ -487,63 +488,67 @@ def mod_sqrt(a, m):
         return _modp_sqrt(am, m)
     if m&3 == 0:
         if am&3 == 2 or am&3 == 3:
-            raise ValueError,"There is no square root of %s mod %s" % (a,m)
+            raise ValueError, "There is no square root of %s mod %s" % (a, m)
         else:
             t, step = am&3, 4
     else:
         t, step = 0, 1
     p = 3
     while p < m:
-        if prime.isprime(p) and m%p == 0:
-            if am%p == 0:
-                while t%p:
+        if prime.isprime(p) and not (m % p):
+            if not (am % p):
+                while t % p:
                     t += step
                 step *= p
                 p += 2
                 continue
             s = _modp_sqrt(am, p)
             if s:
-                while t%p != s:
+                while t % p != s:
                     t += step
                 step *= p
             else:
-                raise ValueError,"There is no square root of %s mod %s" % (a,m)
+                raise ValueError, "There is no square root of %s mod %s" % (a, m)
         p += 2
     for i in range(t, m, step):
-        if (i*i)%m == am:
+        if (i*i) % m == am:
             return i
-    raise ValueError,"There is no square root of %s mod %s" % (a,m)
+    raise ValueError, "There is no square root of %s mod %s" % (a, m)
 
-def _modp_sqrt(a,p):
-    if arith1.legendre(a,p)==1:
-        if p&3==3:
-            return pow(a,(p+1)/4,p)
-        elif p&7==5:
-            if pow(a,(p-1)/4,p)==1:
-                return pow(a,(p+3)/8,p)
+def _modp_sqrt(a, p):
+    """
+    Return a square root of 'a' mod 'p' where 'p' is a prime.
+    This function is intended to be called from modp_sqrt only.
+    """
+    if arith1.legendre(a, p) == 1:
+        if p & 3 == 3:
+            return pow(a, (p+1)//4, p)
+        elif p & 7 == 5:
+            if pow(a, (p-1)//4, p) == 1:
+                return pow(a, (p+3)//8, p)
             else:
-                return (2*a*pow(4*a,(p-5)/8,p))%p
+                return (2*a*pow(4*a, (p-5)//8, p)) % p
         else:
-            r,q = prime.vp((p-1)/8,2,3)
-            n=2
-            while arith1.legendre(n,p)==1:
+            r, q = prime.vp((p-1)//8, 2, 3)
+            n = 2
+            while arith1.legendre(n, p) == 1:
                 n += 1
-            y=pow(n,q,p)
-            x=pow(a,(q-1)/2,p)
-            b=(a*x*x)%p
-            x=(a*x)%p
-            while b!=1:
+            y = pow(n, q, p)
+            x = pow(a, (q-1)//2, p)
+            b = (a*x*x) % p
+            x = (a*x) % p
+            while b != 1:
                 s, m = b, 0
-                while s!=1:
+                while s != 1:
                     s, m = (s*s)%p, m+1
-                y=pow(y,pow(2L,r-m-1,p-1),p)
-                r=m
-                x=(x*y)%p
-                y=(y**2)%p
-                b=(b*y)%p
+                y = pow(y, pow(2, r-m-1, p-1), p)
+                r = m
+                x = (x*y) % p
+                y = (y**2) % p
+                b = (b*y) % p
             return x
     else:
-        raise ValueError,"There is no square root of %s mod %s" % (a,p)
+        raise ValueError, "There is no square root of %s mod %s" % (a, p)
 
 def PrimePowerTest(n):
     """
@@ -555,13 +560,10 @@ def PrimePowerTest(n):
     if n % 2 == 1:
         q = n
         while True:
-            if prime.primeq(q) == False:
-                a = 1
-                while True:
-                    if prime.spsp(n,a) == False:
-                        break
-                    else:
-                        a += 1
+            if not prime.primeq(q):
+                a = 2
+                while prime.spsp(n, a):
+                    a += 1
                 d = gcd.gcd(pow(a,q,q) - a, q)
                 if d == 1 or d == q:
                     return n,0
@@ -569,25 +571,15 @@ def PrimePowerTest(n):
                     q = d
             else:
                 p = q
-                if prime.primeq(p) == True:
-                    break
-                else:
-                    q = p
+                break
     else:
         p = 2
 
-    q = n
-    k = 0
-    while True:
-        if q % p == 0:
-            q = q / p
-            k += 1
-        else:
-            if q == 1:
-                break
-            else:
-                return n,0
-    return p,k
+    k, q = arith1.vp(n, p)
+    if q == 1:
+        return (p, k)
+    else:
+        return (n, 0)
 
 def mpqs(N):
     return MPQS(N).run()
