@@ -1,26 +1,103 @@
 import math
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
+import nzmath.prime as prime
 import trialdivision
 
-def sort_factor(list):
-    n = len(list)
-    if n == 1 :
-        return list
-    else :
-        dict = {}
-        for i in range(n):
-            if list[i][0] in dict:
-                dict[list[i][0]] += list[i][1]
+class FactoringIntegerForRhoMethod:
+    """
+    An instance of the class has three attributes:
+      number -- the factoring integer,
+      factors -- list of tuples (composite,valuation) and
+      primefactors -- list of tuples (prime, valuation).
+
+    The target integer n, which is given as the argument of
+    constructor and the attributes keep satisfying:
+      n = number * product(factors) * product(primefactors)
+    where product() multiplies all tuples (d, e) as d**e.
+    """
+    def __init__(self, number):
+        self.number = number
+        self.factors = []
+        self.primefactors = []
+
+    def register(self, divisor, isprime=False):
+        """
+        Register a divisor of the number, if the divisor is a true
+        divisor of the number.  The number is divided by the divisor
+        as many times as possible.
+
+        If 'isprime' argument is True, then 'divisor' is registered
+        into primedivisors list, otherwise into factors list.
+        """
+        valuation = 0
+        while not (self.number % divisor):
+            self.number //= divisor
+            valuation += 1
+        if valuation:
+            if isprime:
+                self.primefactors.append((divisor, valuation))
             else:
-                dict[list[i][0]] = list[i][1]
-        factorlist = dict.keys()
-        copy = factorlist[:]
-        copy.sort()
-        real_factor = []
-        for i in copy:
-            real_factor += [(long(i),dict[i])]
-        return real_factor
+                self.factors.append((divisor, valuation))
+
+    def getPrimeFactors(self):
+        """
+        Return all prime factors.
+        Composite factors are factored by trial division.
+        """
+        if self.factors:
+            for (composite, exponent) in self.factors:
+                factorization = trialdivision.trialDivision(composite)
+                for (divisor, valuation) in factorization:
+                    self.primefactors.append((divisor, valuation * exponent))
+        return self.sortPrimefactors()
+
+    def sortPrimefactors(self):
+        """
+        Sort primefactors list and return it.
+        """
+        if len(self.primefactors) != 1:
+            self.primefactors.sort()
+        return self.primefactors
+
+def subrhomethod(n):
+    """
+
+    This function is to find a non-trivial factor of n using
+    algorithm of C.Pomerance's book.
+
+    """
+    if n <= 3:
+        return n
+    g = n
+    while g == n:
+        a = bigrandom.randrange(1, n-3)
+        s = bigrandom.randrange(0, n-1)
+        u = s
+        v = s
+        g = gcd.gcd((v**2+v+a)%n-u, n)
+        while g == 1:
+            u = (u**2+a)%n
+            v = (v**2+a)%n
+            v = (v**2+a)%n
+            g = gcd.gcd(v-u, n)
+    return g
+
+def rhomethod(n):
+    """
+
+    This function returns factorization of arbitrary natural numbers 
+
+    """
+    target = FactoringIntegerForRhoMethod(n)
+    if not (n % 2):
+        target.register(2, isprime = True)
+    while target.number != 1 and prime.primeq(target.number) == 0:
+        g = subrhomethod(target.number)
+        target.register(g, isprime = prime.primeq(g))
+    if target.number != 1:
+        target.register(target.number, isprime = True)
+    return target.getPrimeFactors()
 
 def AllDivisors(n):
     """
@@ -32,92 +109,6 @@ def AllDivisors(n):
         divisors += [n*q for n in divisors for q in p_part]
     divisors.sort()
     return divisors
-
-def subrhomethod(n):
-
-    """
-    
-    This program is to find a non-trivial factor of n using
-    algorithm of C.Pomerance's book
-
-    
-    """
-
-    if n <=3:
-        return n
-    a = bigrandom.randrange(1,n-3)
-    s = bigrandom.randrange(0,n-1)
-    u = s
-    v = s
-    g =gcd.gcd((v**2+v+a)%n-u,n)
-    while g == 1:
-        u = (u**2+a)%n
-        v = (v**2+a)%n
-        v = (v**2+a)%n
-        g = gcd.gcd(v-u,n)
-    if g == n:
-        return subrhomethod(n)
-    return g
-
-def rhomethod(n):
-
-    """
-    
-    This program returns factorization of arbitrary natural numbers 
-
-    
-    """
-    primefactor = []
-    factor = []
-    i = 0
-    while n%2 == 0 :
-        n=n/2
-        i=i+1
-    if n == 1:
-        if i != 0:
-            primefactor.append((2,i))
-        return primefactor        #then n is power of 2       
-    else:
-        if i >= 1:
-            primefactor.append((2,i))
-        while prime.primeq(n) == 0:
-            if n == 1:
-                break
-            g = subrhomethod(n)
-            if prime.primeq(g) ==1:
-                j = 0
-                while n%g == 0:
-                    n=n/g
-                    j=j+1
-                primefactor.append((g,j))
-            else:
-                factor.append(g)
-                n=n/g
-        if n == 1:
-            if factor == []:
-                primefactor = sort_factor(primefactor)
-                return primefactor
-            else:
-                factors_primefactor = []
-                for i in range(len(factor)):
-                    p = trialdivision.trialDivision(factor[i])
-                    factors_primefactor = factors_primefactor + p
-                primefactor = factors_primefactor + primefactor
-                primefactor = sort_factor(primefactor)
-                return primefactor
-        else:
-            primefactor.append((n,1))
-            if factor == []:
-                primefactor = sort_factor(primefactor)
-                return primefactor
-            else:
-                factors_primefactor = []
-                for i in range(len(factor)):
-                    p = trialdivision.trialDivision(factor[i])
-                    factors_primefactor = factors_primefactor + p
-                primefactor = factors_primefactor + primefactor
-                primefactor = sort_factor(primefactor)
-                return primefactor
 
 def primeDivisors(n):
     """
@@ -154,8 +145,6 @@ def ord(p, n):
         n /= p
         result += 1
     return result
-
-import nzmath.prime as prime
 
 def pmom(nn):
     f = []
@@ -465,20 +454,20 @@ def confirm(dep,u,v,n):
             raise FactorFound({g:1, n//g:1})
 
 class Issquare:
-    q64=[0, 1, 4, 9, 16, 17, 25, 33, 36, 41, 49, 57]
-    q63=[0, 1, 4, 7, 9, 16, 18, 22, 25, 28, 36, 37, 43, 46, 49, 58]
-    q65=[0, 1, 4, 9, 10, 14, 16, 25, 26, 29, 30, 35, 36, 39, 40, 49, 51, 55, 56, 61, 64]
-    q11=[0, 1, 3, 4, 5, 9]
+    q64 = [0, 1, 4, 9, 16, 17, 25, 33, 36, 41, 49, 57]
+    q63 = [0, 1, 4, 7, 9, 16, 18, 22, 25, 28, 36, 37, 43, 46, 49, 58]
+    q65 = [0, 1, 4, 9, 10, 14, 16, 25, 26, 29, 30, 35, 36, 39, 40, 49, 51, 55, 56, 61, 64]
+    q11 = [0, 1, 3, 4, 5, 9]
     def __call__(self, a):
-      if a&63 in self.q64:
-          r=a%45045
-          if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
-              q = prime.sqrt(a)
-              if q*q==a:
-                  return q
-      return 0
+        if a&63 in self.q64:
+            r = a%45045
+            if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
+                q = prime.sqrt(a)
+                if q*q == a:
+                    return q
+        return 0
 
-issquare=Issquare()
+issquare = Issquare()
 
 def mod_sqrt(a, m):
     if m < 0:
@@ -556,7 +545,6 @@ def _modp_sqrt(a,p):
     else:
         raise ValueError,"There is no square root of %s mod %s" % (a,p)
 
-import nzmath.prime as prime
 def PrimePowerTest(n):
     """
     This program using Algo. 1.7.5 in Cohen's book judges whether
