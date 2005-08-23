@@ -14,6 +14,7 @@ class FactorTest (unittest.TestCase):
         assert factor.rhomethod(128) == [(2,7)]
         assert factor.rhomethod(200819) == [(409,1),(491,1)]
         assert factor.rhomethod(1042387) ==  [(701,1),(1487,1)]
+        assert [(17,2), (19,1)] == factor.rhomethod(17**2 * 19)
 
     def testPMinusOneMethod(self):
         assert [(19,1), (101,1)] == factor.pmom(1919)
@@ -41,6 +42,15 @@ class FactorTest (unittest.TestCase):
         assert [1, 2, 3, 4, 6, 12] == factor.AllDivisors(12)
         assert [1, 2, 3, 5, 6, 10, 15, 30] == factor.AllDivisors(30)
 
+    def testPrimePowerTest(self):
+        # not a power
+        assert 12, 0 == factor.PrimePowerTest(12)
+        assert 53, 0 == factor.PrimePowerTest(53)
+        # powers
+        assert 7, 2 == factor.PrimePowerTest(49)
+        assert 3, 4 == factor.PrimePowerTest(81)
+        assert 5, 3 == factor.PrimePowerTest(125)
+        assert 2, 7 == factor.PrimePowerTest(128)
 
 def suite():
     suite = unittest.makeSuite(FactorTest, 'test');
