@@ -136,18 +136,6 @@ def squarePart(n):
             result *= d ** (e//2)
     return result
 
-def ord(p, n):
-    """
-
-    ord(p, n) returns the power of the prime p which divides the non-zero integer n.
-
-    """ 
-    result = 0
-    while n % p == 0:
-        n /= p
-        result += 1
-    return result
-
 def pmom(nn):
     f = []
     factors = []
