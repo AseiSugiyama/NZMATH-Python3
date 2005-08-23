@@ -1,48 +1,51 @@
+"""
+The module is for trial division factorization method.
+"""
+
+class FactoringInteger:
+    """
+    A class for factorization.
+    The class has two attributes: number and factors.
+    """
+    def __init__(self, number):
+        self.number = number
+        self.factors = []
+
+    def register(self, divisor):
+        """
+        Register a divisor of the number, if the divisor is a true
+        divisor of the number.  The number is divided by the divisor
+        as many times as possible.
+        """
+        valuation = 0
+        while not (self.number % divisor):
+            self.number //= divisor
+            valuation += 1
+        if valuation:
+            self.factors.append((divisor, valuation))
+
 def trialDivision(n):
-    factor =[]
-    i=2
-    if i**2 <= n:
-        if n % i == 0:
-            k=0
-            while n % i == 0:
-                n = n / i
-                k = k+1
-            factor.append((i,k))
-    i=3
-    while i**2 <= n:
-        if n % i == 0:
-            k=0
-            while n % i == 0:
-                n = n / i
-                k = k+1
-            factor.append((i,k))   
-        i=i+2    
-        if i>=7:
-            j=0
-            while i**2 <= n:
-                if n % i == 0:
-                    k=0
-                    while n % i == 0:
-                        n = n / i
-                        k = k+1
-                    factor.append((i,k))
-                j=j+1
-                if j%8==1:
-                    i=i+4
-                elif j%8==2:
-                    i=i+2
-                elif j%8==3:
-                    i=i+4
-                elif j%8==4:
-                    i=i+2
-                elif j%8==5:
-                    i=i+4
-                elif j%8==6:
-                    i=i+6
-                elif j%8==7:
-                    i=i+2
-                elif j%8==0:
-                    i=i+6
-    if n != 1:
-        factor.append((n,1))
-    return factor
+    """
+    Factor the given number by the trial division method.
+    """
+    target = FactoringInteger(n)
+    for d in (2, 3, 5):
+        if d**2 > target.number:
+            break
+        if not (target.number % d):
+            target.register(d)
+    d = 7
+    j = 0
+    # steps to make a sequence coprime to 30
+    steps = (4, 2, 4, 2, 4, 6, 2, 6)
+    while d**2 <= target.number:
+        if not (target.number % d):
+            target.register(d)
+        d += steps[j]
+        if j == 7:
+            j = 0
+        else:
+            j += 1
+    if target.number != 1:
+        target.register(target.number)
+    return target.factors
