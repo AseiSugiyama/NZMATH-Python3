@@ -877,7 +877,8 @@ def sqroot_power(a,p,n):
     """
     return squareroot of a mod p^n 
     """
-    x=arith1.modsqrt(a,p)
+    r = arith1.modsqrt(a,p)
+    x = (r, p-r)
     i=2
     answer=[x]
     while i <= n:
