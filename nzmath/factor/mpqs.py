@@ -872,49 +872,12 @@ def sqrt_modn(n,modn):
         N=N%modn
     return N
 
-def sqroot(a,p): # p is a prime
-
-    """
-    This returns squareroot of 'a' for mod'p'
-    
-    """
-    if arith1.legendre(a,p)==1:
-        if p%8==3 or p%8==5 or p%8==7:
-            a=a%p
-            if p%8==3 or p%8==7:
-                x=pow(a,((p+1)/4),p)
-                return [x,p-x]
-            else: # p%8==5
-                x=pow(a,((p+3)/8),p)
-                c= (x**2)%p
-                if c%p!=a%p:
-                    x=x*(2**((p-1)/4))%p
-                return [x,p-x]
-        else: #p%8==1
-            d=random.randint(2,p-1)
-            while arith1.legendre(d,p)!=-1:
-                d=random.randint(2,p-1)
-            s=0
-            q=p-1
-            while q%2==0:
-                q=q/2
-                s=s+1
-            t=(p-1)/2**s
-            A=pow(a,t,p)
-            D=pow(d,t,p)
-            m=0
-            for i in range(1,s):
-                if pow((A*(D**m)),(2**(s-1-i)),p) == (p-1):
-                    m=m+2**i
-            x=(a**((t+1)/2))*(D**(m/2))%p
-            return [x,p-x]
-
 def sqroot_power(a,p,n):
 
     """
     return squareroot of a mod p^n 
     """
-    x=sqroot(a,p)
+    x=arith1.modsqrt(a,p)
     i=2
     answer=[x]
     while i <= n:

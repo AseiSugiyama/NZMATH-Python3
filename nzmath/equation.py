@@ -58,7 +58,7 @@ def e2_Fp(x,p):
     if arith1.legendre(a,p)!=1:
         return []
     else:
-        sqrtd = arith1.sqroot(b**2-4*a*c,p)
+        sqrtd = arith1.modsqrt(b**2-4*a*c,p)
     a=arith1.inverse(2*a,p)
     return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
 

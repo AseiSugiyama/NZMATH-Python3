@@ -4,7 +4,7 @@ import equation
 
 class GlobalEquationTest (unittest.TestCase):
     def test_e1(self):
-        assert -2/3 == equation.e1([3, 2])
+        assert -3/2 == equation.e1([3, 2])
 
 def suite():
     suite=unittest.TestSuite()

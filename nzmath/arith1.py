@@ -72,7 +72,7 @@ def legendre(a, m):
 
 import random
 import gcd
-def sqroot(a, p):
+def modsqrt(a, p):
     """
     This program returns squareroot of 'a' for mod 'p'.
     'p' must be an odd prime.

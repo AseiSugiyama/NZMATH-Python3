@@ -343,7 +343,7 @@ class MPQS:
             while self.wanted>0:
                 while not prime.primeq(a) or arith1.legendre(self.N,a)!=1:
                     a += 2
-                b = arith1.sqroot(self.N,a)
+                b = arith1.modsqrt(self.N,a)
                 c = (b**2-self.N)/a
                 self.sieve(a,b+b,c,halfWidth)
                 a += 2
@@ -473,7 +473,7 @@ def mod_sqrt(a, m):
     if p:
         return p
     if prime.primeq(m):
-        return _modp_sqrt(am, m)
+        return arith1.modsqrt(am, m)
     if m&3 == 0:
         if am&3 == 2 or am&3 == 3:
             raise ValueError, "There is no square root of %s mod %s" % (a, m)
@@ -490,7 +490,7 @@ def mod_sqrt(a, m):
                 step *= p
                 p += 2
                 continue
-            s = _modp_sqrt(am, p)
+            s = arith1.modsqrt(am, p)
             if s:
                 while t % p != s:
                     t += step
@@ -503,40 +503,6 @@ def mod_sqrt(a, m):
             return i
     raise ValueError, "There is no square root of %s mod %s" % (a, m)
 
-def _modp_sqrt(a, p):
-    """
-    Return a square root of 'a' mod 'p' where 'p' is a prime.
-    This function is intended to be called from modp_sqrt only.
-    """
-    if arith1.legendre(a, p) == 1:
-        if p & 3 == 3:
-            return pow(a, (p+1)//4, p)
-        elif p & 7 == 5:
-            if pow(a, (p-1)//4, p) == 1:
-                return pow(a, (p+3)//8, p)
-            else:
-                return (2*a*pow(4*a, (p-5)//8, p)) % p
-        else:
-            r, q = prime.vp((p-1)//8, 2, 3)
-            n = 2
-            while arith1.legendre(n, p) == 1:
-                n += 1
-            y = pow(n, q, p)
-            x = pow(a, (q-1)//2, p)
-            b = (a*x*x) % p
-            x = (a*x) % p
-            while b != 1:
-                s, m = b, 0
-                while s != 1:
-                    s, m = (s*s)%p, m+1
-                y = pow(y, pow(2, r-m-1, p-1), p)
-                r = m
-                x = (x*y) % p
-                y = (y**2) % p
-                b = (b*y) % p
-            return x
-    else:
-        raise ValueError, "There is no square root of %s mod %s" % (a, p)
 
 def PrimePowerTest(n):
     """

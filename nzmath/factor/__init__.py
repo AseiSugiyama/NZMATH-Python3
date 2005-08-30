@@ -13,11 +13,9 @@ __all__ = [
            "subpmom",
            "confirm",
            "mod_sqrt",
-           "_modp_sqrt",
            "mpqs",
            "eratosthenes",
            "prime_mod8",
            "eratosthenes_log",
            "sqrt_modn",
-           "sqroot",
            "sqroot_power"]

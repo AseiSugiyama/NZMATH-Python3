@@ -427,7 +427,7 @@ class EC:
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch)
                     t=(s**3+self.a4*s+self.a6).n
-                return [s,arith1.sqroot(t,self.ch)]
+                return [s,arith1.modsqrt(t,self.ch)]
             elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
                 t=0
@@ -435,14 +435,14 @@ class EC:
                     s=random.randrange(0,self.ch)
                     t=(s**3+other.a*s+other.b).n
                 x=(s-3*self.b2)/36
-                y=(rational.Rational(arith1.sqroot(t,self.ch),108)-self.a1*x-self.a3)/2
+                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2
                 return [x.n,y.n]
             elif self.ch==3:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch)
                     t=(s**3+self.a2*s**2+self.a4*s+self.a6).n
-                return [s,arith1.sqroot(t,self.ch)]
+                return [s,arith1.modsqrt(t,self.ch)]
             else:
                 s=0
                 while self.coordinateY(s) is ValueError:
@@ -473,12 +473,12 @@ class EC:
         if self.ch!=0 and self.ch!=2:
             if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):
                 if arith1.legendre(y2,self.ch)>=0:
-                    return arith1.sqroot(y2,self.ch)
+                    return arith1.modsqrt(y2,self.ch)
                 else:
                     return False
             else:
                 if y1**2+4*y2>=0:
-                    d=arith1.sqroot(y1**2+4*y2,self.ch)
+                    d=arith1.modsqrt(y1**2+4*y2,self.ch)
                     return Element_p(rational.Rational(-y1-d,2),self.ch)
                 else:
                     return False
@@ -774,7 +774,7 @@ class EC:
                         T.append((0,j))
                         print T,"$"
                     else:
-                        w=arith1.sqroot(k,j)
+                        w=arith1.modsqrt(k,j)
                         if w%2==0:
                             P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
                         else:
@@ -1178,7 +1178,7 @@ class EC:
             while i<p:
                 y=Y(i).n
                 if arith1.legendre(y,p)==1:
-                    Q=[i,arith1.sqroot(y,p)]
+                    Q=[i,arith1.modsqrt(y,p)]
                     R=[i,p-Q[1]]
                     q=other.BSGS(O,Q,[0])
                     r=other.BSGS(O,R,[0])

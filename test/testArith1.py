@@ -10,10 +10,10 @@ class Arith1Test (unittest.TestCase):
         assert arith1.legendre(1,3) == 1
         assert arith1.legendre(13*(2**107-1),2**107-1) == 0
 
-    def testSqroot(self):
-        assert arith1.sqroot(2,17) in (6, 11)
-        assert arith1.sqroot(124413,2**17-1) in (3988, 127073)
-        assert arith1.sqroot(1,2**13-1) == 1 
+    def testModsqrt(self):
+        assert arith1.modsqrt(2,17) in (6, 11)
+        assert arith1.modsqrt(124413,2**17-1) in (3988, 127073)
+        assert arith1.modsqrt(1,2**13-1) == 1 
 
     def testExpand(self):
         assert arith1.expand(10**6,2) == [0,0,0,0,0,0,1,0,0,1,0,0,0,0,1,0,1,1,1,1]
