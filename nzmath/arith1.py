@@ -52,29 +52,29 @@ def floorpowerroot(n, k):
 
 def legendre(a, m): 
     """
-    This program returns Legendre symbol (a/m)
+    This function returns Legendre symbol (a/m)
     If m is a odd composite then this is Jacobi symbol
     """
     a = a % m
-    t = 1
+    symbol = 1
     while a != 0:
         while a % 2 == 0:
             a = a//2
             if m % 8 == 3 or m % 8 == 5:
-                t = -t
+                symbol = -symbol
         a, m = m, a
         if a % 4 == 3 and m % 4 == 3:
-            t = -t
+            symbol = -symbol
         a = a % m
     if m == 1:
-        return t
+        return symbol
     return 0
 
 import random
 import gcd
 def modsqrt(a, p):
     """
-    This program returns squareroot of 'a' for mod 'p'.
+    This function returns squareroot of 'a' for mod 'p'.
     'p' must be an odd prime.
     """
     if legendre(a, p) == 1:
@@ -116,7 +116,7 @@ def modsqrt(a, p):
 
 def expand(n, m):
     """
-    This program returns m-adic expansion for n.
+    This function returns m-adic expansion for n.
     n and m should satisfy n > m > 0.
     """
     k = []
@@ -128,7 +128,7 @@ def expand(n, m):
 
 def inverse(x, p):
     """
-    This program returns inverse of x for modulo p.
+    This function returns inverse of x for modulo p.
     """
     if x < 0:
         while x < 0:
@@ -145,7 +145,7 @@ def inverse(x, p):
 
 def CRT(nlist):
     """
-    This program is Chinese Rmainder Theorem using Algorithm 2.1.7 
+    This function is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
     """
     r = len(nlist)
@@ -214,6 +214,6 @@ def vp(n, p, k=0):
 
     The optional argument k will be added to the valuation.
     """
-    while n % p == 0:
+    while not (n % p):
         n, k = n//p, k+1
     return (k, n)
