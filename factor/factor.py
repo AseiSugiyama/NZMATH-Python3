@@ -336,7 +336,7 @@ class MPQS:
             self.make_factor_base(sizeofFB)
             self.bl = math.log(self.factor_base[-1]*C3)
             self.mat = F2MatrixWithTwoVectors()
-            a = prime.sqrt(2L*self.N)//halfWidth
+            a = arith1.floorsqrt(2L*self.N)//halfWidth
             if a&1 == 0:
                 a -= 1
             self.wanted = len(self.factor_base)+C4
@@ -446,9 +446,9 @@ class Issquare:
     q11 = [0, 1, 3, 4, 5, 9]
     def __call__(self, a):
         if a&63 in self.q64:
-            r = a%45045
+            r = a % 45045
             if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
-                q = prime.sqrt(a)
+                q = arith1.floorsqrt(a)
                 if q*q == a:
                     return q
         return 0
@@ -483,7 +483,7 @@ def mod_sqrt(a, m):
         t, step = 0, 1
     p = 3
     while p < m:
-        if prime.isprime(p) and not (m % p):
+        if prime.primeq(p) and not (m % p):
             if not (am % p):
                 while t % p:
                     t += step
