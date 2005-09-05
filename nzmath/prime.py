@@ -157,6 +157,10 @@ def smallSpsp(n):
     return True
 
 def primeq(n):
+    """
+    A convinient function for primatilty test. It uses one of
+    trialDivision, smallSpsp or apr depending on the size of n.
+    """
     if long(n) != n:
         raise ValueError, "non-integer for primeq()"
     if n <= 1:
