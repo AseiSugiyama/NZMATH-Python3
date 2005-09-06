@@ -3,16 +3,17 @@ from factor import *
 from mpqs import *
 __all__ = [
            "trialDivision",
-           "sort_factor",
+
            "subrhomethod",
            "rhomethod",
-           "primeDivisors",
-           "squarePart",
-           "ord",
            "pmom",
            "subpmom",
-           "confirm",
+           "primeDivisors",
+           "squarePart",
+           "PrimePowerTest",
+           "AllDivisors"
            "mod_sqrt",
+
            "mpqs",
            "eratosthenes",
            "prime_mod8",
