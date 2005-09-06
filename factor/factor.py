@@ -173,27 +173,6 @@ def subpmom(N):
             q1 *= q
 
 # misc functions
-class _Issquare:
-    """
-    A class for testing whether a number is square or not.
-    The function issquare is an instance of the class, indeed.
-    """
-    q64 = [0, 1, 4, 9, 16, 17, 25, 33, 36, 41, 49, 57]
-    q63 = [0, 1, 4, 7, 9, 16, 18, 22, 25, 28, 36, 37, 43, 46, 49, 58]
-    q65 = [0, 1, 4, 9, 10, 14, 16, 25, 26, 29, 30, 35, 36, 39, 40, 49, 51, 55, 56, 61, 64]
-    q11 = [0, 1, 3, 4, 5, 9]
-    def __call__(self, a):
-        if a&63 in self.q64:
-            r = a % 45045
-            if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
-                q = arith1.floorsqrt(a)
-                if q*q == a:
-                    return q
-        return 0
-
-# test whether a given number is a square number or not.
-issquare = _Issquare()
-
 def mod_sqrt(a, m):
     """
     Return a square root of 'a' mod 'm'.
@@ -208,7 +187,7 @@ def mod_sqrt(a, m):
     am = a % m
     if (not am) or am == 1:
         return am
-    p = issquare(am)
+    p = arith1.issquare(am)
     if p:
         return p
     if prime.primeq(m):
