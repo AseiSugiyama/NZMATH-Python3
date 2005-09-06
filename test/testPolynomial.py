@@ -81,6 +81,11 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert diff_1 == self.a.differentiate(x)
         assert 0 == self.a.differentiate(z)
 
+    def testIntegrate(self):
+        integrate_1 = OneVariableDensePolynomial([0, 1, 1], x, Z)
+        poly_1 = OneVariableDensePolynomial([1, 2], x, Z)
+        assert integrate_1 == poly_1.integrate(x)
+
     def testGetRing(self):
         Zx = PolynomialRing(Z, x)
         Zy = PolynomialRing(Z, y)
@@ -146,6 +151,12 @@ class IntegerOneVariablePolynomialsTest(unittest.TestCase):
     def testEquals(self):
         assert OneVariableSparsePolynomial({(1,):1},[x]) == OneVariableDensePolynomial([0,1],x)
         assert OneVariableDensePolynomial([0,1],x) == OneVariableSparsePolynomial({(1,):1},[x])
+
+    def testIntegrate(self):
+        integ = OneVariableDensePolynomial([0, 0, rational.Rational(1,2)], x)
+        ratk = OneVariableSparsePolynomial({(1,): rational.Integer(1)},[x])
+        assert integ == self.k.integrate(x), self.k.integrate(x)
+        assert integ == ratk.integrate(x), explicit.integrate(x)
 
 class IntegerMultiVariableSparsePolynomialTest (unittest.TestCase):
     def setUp(self):
@@ -214,10 +225,12 @@ class IntegerPolynomialTest(unittest.TestCase):
 
 class RationalPolynomialTest(unittest.TestCase):
     def setUp(self):
-        self.h = RationalOneVariablePolynomial([rational.Rational(1,2),rational.Rational(7,8),rational.Rational(1,13)], x)
-        self.i = RationalOneVariablePolynomial([rational.Rational(1,1),rational.Rational(0,4),rational.Rational(2,4),rational.Rational(5,2)], x)
-        self.j = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(9,4)] ,y)
-        self.l = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(9,8)], y)
+        rat = rational.Rational
+        poly = RationalOneVariablePolynomial
+        self.h = poly([rat(1,2),rat(7,8),rat(1,13)], x)
+        self.i = poly([rat(1,1),rat(0,4),rat(2,4),rat(5,2)], x)
+        self.j = poly([rat(3,2),rat(9,4)] ,y)
+        self.l = poly([rat(3,2),rat(9,8)], y)
 
     def testAdd(self):
         sum_1 = RationalOneVariablePolynomial([rational.Rational(3,2),rational.Rational(7,8),rational.Rational(15,26),rational.Rational(5,2)],x)
