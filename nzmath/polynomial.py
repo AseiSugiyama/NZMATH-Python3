@@ -3,6 +3,7 @@
 Class definitions of polynomials.
 
 """
+from __future__ import division
 import sets
 import re
 
@@ -354,9 +355,10 @@ class OneVariablePolynomial:
                 integrate_coefficient = {}
                 for i, c in self.coefficient.iteritems():
                     integrate_coefficient[i+1] = c / (i+1)
-                return OneVariableSparsePolynomial(integrate_coefficient,
-                                                   var,
-                                                   self.getCoefficientRing())
+                return OneVariableSparsePolynomial(
+                    integrate_coefficient,
+                    var,
+                    self.getCoefficientRing().getQuotientField())
         elif min != None and max != None and var != None and isinstance(var, str):
             if var != self.getVariable():
                 return self * (max - min)
@@ -424,7 +426,7 @@ class OneVariablePolynomial:
             if isinstance(self[0], (int, long)):
                 return self[0]
             return long(self[0])
-        raise ValueError, 'non-constant polynomial cannot be converted to long'
+        raise ValueError("non-constant polynomial cannot be converted to long")
 
     def __repr__(self):
         return_str = '%s(%s, %s, %s)' % (self.__class__.__name__,
@@ -1601,7 +1603,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
             ch = self.getCoefficientRing().getCharacteristic()
         rootcoeff = OneVariablePolynomialCoefficients()
         for i in self.coefficient.iterdegrees():
-            rootcoeff[i/ch] = self[i]
+            rootcoeff[i//ch] = self[i]
         return self.__class__(rootcoeff, self.getVariable(), self.getCoefficientRing())
 
     def distinctDegreeFactorization(self):
