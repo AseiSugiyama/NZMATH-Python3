@@ -49,12 +49,6 @@ class PrimeTest(unittest.TestCase):
         assert prime.nextPrime(541) == 547
         assert prime.nextPrime(542) == 547
 
-    def testSqrt(self):
-        assert prime.sqrt(2**60 - 1) ** 2 <= 2**60 - 1
-        assert prime.sqrt(2**59 - 1) ** 2 <= 2**59 - 1
-        assert prime.sqrt(10) == 3
-        assert prime.sqrt(4) == 2
-
 def suite():
     suite = unittest.makeSuite(PrimeTest, 'test')
     return suite

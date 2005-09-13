@@ -30,6 +30,9 @@ class Arith1Test (unittest.TestCase):
         assert arith1.floorsqrt(4) == 2
         assert arith1.floorsqrt(400000000000000000000) == 20000000000
         assert arith1.floorsqrt(400000000000000000000 - 1) == 19999999999
+        assert arith1.floorsqrt(2**60 - 1) ** 2 <= 2**60 - 1
+        assert arith1.floorsqrt(2**59 - 1) ** 2 <= 2**59 - 1
+        assert arith1.floorsqrt(10) == 3
 
     def testFloorpowerroot(self):
         assert arith1.floorpowerroot(0,1) == 0
