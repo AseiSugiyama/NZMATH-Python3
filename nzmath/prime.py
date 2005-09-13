@@ -3,8 +3,7 @@ A module for generating primes and testing primality.
 """
 
 import gcd
-from arith1 import floorsqrt as sqrt
-from arith1 import vp
+from arith1 import floorsqrt, vp
 
 def trialDivision(n, bound = 0):
     """
@@ -12,18 +11,18 @@ def trialDivision(n, bound = 0):
     Trial division primality test for an odd natural number.
     Optional second argument is a search bound of primes.
     If the bound is given and less than the sqaure root of n
-    and 1 is returned, it only means there is no prime factor
+    and True is returned, it only means there is no prime factor
     less than the bound.
 
     """
 
     if bound:
-        m = min((bound, sqrt(n)))
+        m = min((bound, floorsqrt(n)))
     else:
-        m = sqrt(n)
+        m = floorsqrt(n)
     p = 3
     while p <= m:
-        if n % p == 0:
+        if not (n % p):
             return False
         p += 2
     return True
@@ -106,6 +105,30 @@ def generator():
                 yield i + times30
         times30 += 30
 
+def generator_eratosthenes(n):
+    """
+    Generate primes up to n using Eratosthenes sieve.
+    """
+    if n < 2:
+        raise StopIteration
+    yield 2
+    sieve = [1]*(((n+1)//2)-1)
+    k = 3
+    i = 0
+    sieve_len = len(sieve)
+    while k*k <= n:
+        if sieve[i]:
+            yield k
+            j = i + k
+            while j < sieve_len:
+                sieve[j] = 0
+                j += k
+        k, i = k+2, i+1
+    while k <= n:
+        if sieve[i]:
+            yield k
+        k, i = k+2, i+1
+
 def nextPrime(n):
     """
 
@@ -116,7 +139,7 @@ def nextPrime(n):
         return 2
     if n == 2:
         return 3
-    n += (1 + (n & 1))
+    n += (1 + (n & 1)) # make n be odd.
     while not primeq(n):
         n += 2
     return n
@@ -124,7 +147,6 @@ def nextPrime(n):
 def randPrime(n):
     """
     returns a random n-digits prime
-
     """
     import bigrandom
 
@@ -132,11 +154,11 @@ def randPrime(n):
         raise ValueError,"input number must be natural number"
     else:
         p = bigrandom.randrange(10**(n-1), (10**n)-1)
-        if p%2 == 0:
-            p = p+1
+        if not (p % 2):
+            p += 1
         i = 0
         while True:
-            if primeq(p+i) == 1:
+            if primeq(p+i):
                 break
             else:
                 i += 2
@@ -177,7 +199,6 @@ def primeq(n):
     return apr(n)
 
 # defs for APR algorithm
-from factor import trialDivision as factor
 
 def _isprime(n):
     if gcd.gcd(n, 510510) > 1:
@@ -188,11 +209,16 @@ def _isprime(n):
     return True
 
 def properDivisors(n):
+    """
+    Return proper divisors of n (divisors of n excluding 1 and n).
+
+    It is only useful for a product of small primes.
+    """
     if n in (2,3,5,7,11,13,17,19,23):
         return []
     else:
         l = [1]
-        d = factor(n)
+        d = _factor(n)
         for (p,e) in d:
             for j in range(1, e+1):
                 l += [k*pow(p,j) for k in l if k % p != 0]
@@ -200,6 +226,37 @@ def properDivisors(n):
         l.remove(n)
         l.sort()
         return l
+
+def _factor(n, bound = 0):
+    """
+    Trial division factorization for a natural number.
+    Optional second argument is a search bound of primes.
+    If the bound is given and less than the sqaure root of n,
+    result is not proved to be a prime factorization.
+    """
+
+    factors = []
+    if not (n % 2):
+        v2, n = vp(n, 2)
+        factors.append((2, v2))
+    m = _calc_bound(n, bound)
+    p = 3
+    while p <= m:
+        if not (n % p):
+            v, n = vp(n, p)
+            factors.append((p, v))
+            m = _calc_bound(n, bound)
+        p += 2
+    if n > 1:
+        factors.append((n, 1))
+    return factors
+
+def _calc_bound(n, bound = 0):
+    if bound:
+        m = min((bound, floorsqrt(n)))
+    else:
+        m = floorsqrt(n)
+    return m
 
 def primitive_root(p):
     """
@@ -213,7 +270,7 @@ def primitive_root(p):
                 break
         else:
             return i
-        i = i+1
+        i += 1
 
 class Zeta:
     """
@@ -355,7 +412,7 @@ class FactoredInteger:
         else:
             self.integer = long(other)
             self.factors = {}
-            for (p, e) in factor(self.integer):
+            for (p, e) in _factor(self.integer):
                 self.factors[p] = e
 
     def __mul__(self, other):
@@ -618,7 +675,7 @@ class JacobiSum:
     def make(self,q):
         fx = self.makefx(q)
         qpred = q-1
-        qt = factor(qpred)
+        qt = _factor(qpred)
         qt2 = [k for (p, k) in qt if p == 2][0]
         k, pk = qt2, 2**qt2
         if k >= 2:
@@ -679,7 +736,7 @@ def apr(n):
     """
     L = Status()
 
-    rb = sqrt(n)+1
+    rb = floorsqrt(n) + 1
     el = TestPrime()
     while el.et <= rb:
         el = el.next()
