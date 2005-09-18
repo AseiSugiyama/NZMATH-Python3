@@ -1,4 +1,4 @@
-2005-06-**
+2005-06-28
 ----------
 The version 0.4.0 has been released.
 
