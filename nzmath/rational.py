@@ -12,7 +12,6 @@ class Rational (ring.QuotientFieldElement):
     Rational is the class of rational numbers.
 
     """
-
     def __init__(self, numerator, denominator=1):
         """
 
@@ -27,45 +26,34 @@ class Rational (ring.QuotientFieldElement):
         if not denominator:
             raise ZeroDivisionError
         # numerator
+        integer = (int, long)
+        initDispatcher = {
+            (Rational, Rational): Rational._init_by_Rational_Rational,
+            (float, Rational): Rational._init_by_float_Rational,
+            (integer, Rational): Rational._init_by_int_Rational,
+            (Rational, float): Rational._init_by_Rational_float,
+            (float, float): Rational._init_by_float_float,
+            (integer, float): Rational._init_by_int_float,
+            (Rational, integer): Rational._init_by_Rational_int,
+            (float, integer): Rational._init_by_float_int,
+            (integer, integer): Rational._init_by_int_int,
+            }
         if not isinstance(numerator, (Rational, float, int, long)):
-            numerator = +numerator
-        if isinstance(numerator, Rational):
-            self.numerator = numerator.numerator
-            self.denominator = numerator.denominator
-        elif isinstance(numerator, float):
-            doubleprecision = 53
-            frexp = math.frexp(numerator)
-            self.numerator = Integer(frexp[0] * 2 ** doubleprecision)
-            self.denominator = 2 ** (doubleprecision - frexp[1])
-        elif isinstance(numerator, (int, long)):
-            self.numerator = Integer(numerator)
-            self.denominator = Integer(1)
-        elif hasattr(numerator, "toRational"):
-            rationalized = numerator.toRational()
-            self.numerator = rationalized.numerator
-            self.denominator = rationalized.denominator
-        else:
-            raise TypeError, "Rational cannot be created with %s(%s)." % (numerator, numerator.__class__)
-        # denominator
+            if hasattr(numerator, "toRational"):
+                numerator = numerator.toRational()
+            elif hasattr(numerator, "__pos__"):
+                numerator = +numerator
         if not isinstance(denominator, (Rational, float, int, long)):
-            denominator = +denominator
-        if isinstance(denominator, Rational):
-            self.numerator *= denominator.denominator
-            self.denominator *= denominator.numerator
-        elif isinstance(denominator, float):
-            doubleprecision = 53
-            frexp = math.frexp(denominator)
-            self.numerator *= 2 ** (doubleprecision - frexp[1])
-            self.denominator *= Integer(frexp[0] * 2 ** doubleprecision)
-        elif isinstance(denominator, (int, long)):
-            if denominator != 1:
-                self.denominator *= denominator
-        elif hasattr(denominator, "toRational"):
-            rationalized = denominator.toRational()
-            self.numerator *= rationalized.denominator
-            self.denominator *= rationalized.numerator
+            if hasattr(denominator, "toRational"):
+                denominator = denominator.toRational()
+            elif hasattr(numerator, "__pos__"):
+                denominator = +denominator
+        for (t1, t2) in initDispatcher:
+            if isinstance(numerator, t1) and isinstance(denominator, t2):
+                initDispatcher[(t1, t2)](self, numerator, denominator)
+                break
         else:
-            raise TypeError, "Rational cannot be created with %s(%s)." % (denominator, denominator.__class__)
+            raise TypeError("Rational cannot be created with %s(%s) and %s(%s)." % (numerator, numerator.__class__, denominator, denominator.__class__))
         self._reduce()
 
     def __add__(self,other):
@@ -389,7 +377,7 @@ class Rational (ring.QuotientFieldElement):
     def __float__(self):
         return float(self.decimalString(17))
 
-    def decimalString(self,N):
+    def decimalString(self, N):
         n = self.numerator
         d = self.denominator
         L = []
@@ -404,6 +392,80 @@ class Rational (ring.QuotientFieldElement):
             L.append(str(n//d))
             i += 1
         return ''.join(L)
+
+    def _init_by_Rational_Rational(self, numerator, denominator):
+        """
+        Initialize by a rational numbers.
+        """
+        self.numerator = numerator.numerator * denominator.denominator
+        self.denominator = numerator.denominator * denominator.numerator
+
+    def _init_by_float_Rational(self, numerator, denominator):
+        """
+        Initialize by a float number and a rational number.
+        """
+        dp = 53
+        frexp = math.frexp(numerator)
+        self.numerator = denominator.denominator * (frexp[0] * 2 ** dp)
+        self.denominator = denominator.numerator * (2 ** (dp - frexp[1]))
+
+    def _init_by_int_Rational(self, numerator, denominator):
+        """
+        Initailize by an integer and a rational number.
+        """
+        self.numerator = denominator.denominator * numerator
+        self.denominator = denominator.numerator
+
+    def _init_by_Rational_float(self, numerator, denominator):
+        """
+        Initialize by a rational number and a float.
+        """
+        dp = 53
+        frexp = math.frexp(denominator)
+        self.numerator = numerator.numerator * (2 ** (dp - frexp[1]))
+        self.denominator = numerator.denominator * (frexp[0] * 2 ** dp)
+
+    def _init_by_float_float(self, numerator, denominator):
+        """
+        Initialize by a float numbers.
+        """
+        dp = 53
+        frexp_num = math.frexp(numerator)
+        frexp_den = math.frexp(denominator)
+        self.numerator = Integer(frexp_num[0] * 2 ** (2 * dp - frexp_den[1]))
+        self.denominator = Integer(frexp_den[0] * 2 ** (2 * dp - frexp_num[1]))
+
+    def _init_by_int_float(self, numerator, denominator):
+        """
+        Initailize by an integer and a float
+        """
+        dp = 53
+        frexp_den = math.frexp(denominator)
+        self.numerator = Integer(numerator * (2 ** (dp - frexp_den[1])))
+        self.denominator = Integer(frexp_den[0] * 2 ** dp)
+
+    def _init_by_Rational_int(self, numerator, denominator):
+        """
+        Initialize by a rational number and integer.
+        """
+        self.numerator = numerator.numerator
+        self.denominator = numerator.denominator * denominator
+
+    def _init_by_float_int(self, numerator, denominator):
+        """
+        Initialize by a float number and an integer.
+        """
+        dp = 53
+        frexp = math.frexp(numerator)
+        self.numerator = Integer(frexp[0] * 2 ** dp)
+        self.denominator = Integer(2 ** (dp - frexp[1]) * denominator)
+
+    def _init_by_int_int(self, numerator, denominator):
+        """
+        Initailize by an integers.
+        """
+        self.numerator = Integer(numerator)
+        self.denominator = Integer(denominator)
 
 class RationalField (ring.QuotientField):
     """

@@ -5,13 +5,13 @@ import finitefield
 
 class RationalTest (unittest.TestCase):
     def testInit(self):
-        assert str(Rational(2)) == "2/1"
-        assert str(Rational(2L)) == "2/1"
-        assert str(Rational(1,2)) == "1/2"
-        assert str(Rational(Rational(1,2))) == "1/2"
-        assert str(Rational(Rational(7,13),Rational(2,3))) == "21/26"
-        assert str(Rational(1.5)) == "3/2"
-        assert str(Rational(1.5, 2.0)) == "3/4"
+        self.assertEqual("2/1", str(Rational(2)))
+        self.assertEqual("2/1", str(Rational(2L)))
+        self.assertEqual("1/2", str(Rational(1,2)))
+        self.assertEqual("1/2", str(Rational(Rational(1,2))))
+        self.assertEqual("21/26", str(Rational(Rational(7,13),Rational(2,3))))
+        self.assertEqual("3/2", str(Rational(1.5)))
+        self.assertEqual("3/4", str(Rational(1.5, 2.0)))
         self.assertRaises(ZeroDivisionError, Rational, 1, 0)
         self.assertRaises(TypeError, Rational, 1, finitefield.FinitePrimeFieldElement(1,7))
         self.assertRaises(TypeError, Rational, finitefield.FinitePrimeFieldElement(1,7), 4)
