@@ -19,10 +19,10 @@ better.  If you don't have a copy of Python, please install it first.
 Python is available from http://www.python.org/ .
 
 The next step is to expand the NZMATH-0.4.0.tar.gz.  The way to do it
-depends on your operating system.  On the systems with GNU tar, you can
-do it with a single command::
+depends on your operating system.  On the systems with recent GNU tar,
+you can do it with a single command::
 
- % tar zxf NZMATH-0.4.0.tar.gz
+ % tar xf NZMATH-0.4.0.tar.gz
 
 where, % is the command line prompt.  Or with standard tar, you can do
 it as::
