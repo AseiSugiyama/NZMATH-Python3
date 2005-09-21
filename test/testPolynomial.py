@@ -532,20 +532,25 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         h_factor = self.h.factor()
         assert 2 == len(h_factor), h_factor
 
-def suite():
-    suite=unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(IntegerOneVariableDensePolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(IntegerOneVariableSparsePolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(IntegerOneVariablePolynomialsTest, "test"))
-    suite.addTest(unittest.makeSuite(IntegerMultiVariableSparsePolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(IntegerPolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(RationalPolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(IntegerResidueClassPolynomialTest, "test"))
-    suite.addTest(unittest.makeSuite(PolynomialRingTest, "test"))
-    suite.addTest(unittest.makeSuite(PolynomialCompilerTest, "test"))
-    suite.addTest(unittest.makeSuite(PolynomialGCDTest, "test"))
-    suite.addTest(unittest.makeSuite(SquareFreeDecompositionChar0Test, "test"))
-    suite.addTest(unittest.makeSuite(FiniteFieldPolynomialTest, "test"))
+class ResidueRingTest (unittest.TestCase):
+    def setUp(self):
+        Zx = PolynomialRing(Z, x)
+        I7 = OneVariablePolynomialIdeal(7, Zx)
+        self.Zx_I7 = PolynomialResidueRing(Zx, I7)
+
+    def testInit(self):
+        self.assertTrue(self.Zx_I7.isnoetherian())
+
+    def testCreateElement(self):
+        f = OneVariableDensePolynomial([1, 1], x)
+        self.assertTrue(isinstance(self.Zx_I7.createElement(f), ring.ResidueClass))
+
+def suite(suffix = "Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name[-4:] == suffix:
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__== '__main__':
