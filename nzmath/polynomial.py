@@ -2233,7 +2233,7 @@ class PolynomialResidueRing (ring.ResidueClassRing):
     ideal.
 
     """
-    def __init__(self, ring, ideal):
+    def __init__(self, aRing, ideal):
         """
 
         PolynomialResidueRing(ring, ideal) creates a resudue class
@@ -2243,7 +2243,7 @@ class PolynomialResidueRing (ring.ResidueClassRing):
         variables of the ring.
 
         """
-        self.ring = ring
+        self.ring = aRing
         self.ideal = ideal
         self.properties = ring.CommutativeRingProperties()
         if self.ring.isnoetherian():
