@@ -449,15 +449,14 @@ class EC:
                     s=random.randrange(0,self.ch)
                 return [s,self.coordinateY(s)]
         else:
-            i=0
-            while i<100:
-                w=int(random.random()*10**3)
-                s=random.randrange(1,w)
-                t=random.randrange(1,w)
+            i=9
+            while i<1000:
+                s=random.randrange(1,i)
+                t=random.randrange(1,i)
                 y=self.coordinateY(rational.Rational(s,t))
                 if y!=False:
                     return [s,self.coordinateY(s)]
-                i=i+1
+                i=i+10
             raise ValueError,"I can't find m(__)m"
 
     def coordinateY(self,x):
@@ -1068,7 +1067,8 @@ class EC:
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
             m=arith1.expand(m,2)
-            f=finitefield.FinitePrimeFieldElement(1,self.ch)
+            f_o=finitefield.FinitePrimeFieldElement(1,self.ch)
+            f=f_o
             V=P
             i=len(m)-1
             while i>=0:
@@ -1108,7 +1108,7 @@ class EC:
                         f_d=l[1](Q[0])
                     if f_d==0:
                         return False
-                    f=f*f_n/f_d
+                    f=f_o*f*f_n/f_d
                 i=i-1
             return f
 
