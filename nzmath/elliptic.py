@@ -427,7 +427,8 @@ class EC:
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch)
                     t=(s**3+self.a4*s+self.a6).n
-                return [s,arith1.modsqrt(t,self.ch)]
+                t=arith1.modsqrt(t,self.ch)*(-1)**random.randint(0,1)
+                return [s,t%self.ch]
             elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
                 t=0
@@ -435,8 +436,8 @@ class EC:
                     s=random.randrange(0,self.ch)
                     t=(s**3+other.a*s+other.b).n
                 x=(s-3*self.b2)/36
-                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2
-                return [x.n,y.n]
+                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2*(-1)**random.randint(0,1)
+                return [x.n,y.n%self.ch]
             elif self.ch==3:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
