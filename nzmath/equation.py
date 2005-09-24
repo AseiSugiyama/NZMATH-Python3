@@ -74,13 +74,10 @@ def e3(x):
     w = ( -1 + cmath.sqrt(-3)) / 2
     k = -q/2 + cmath.sqrt((q**2)/4 + (p**3)/27)
     l = -q/2 - cmath.sqrt((q**2)/4 + (p**3)/27)
-    if k < 0:
-        m = -math.pow(abs(k), 1/3)
-    else:
-        m = math.pow(k, 1/3)
-    n = -math.pow(abs(l), 1/3)
-    equ = []
+    m = k ** (1/3)
+    n = -(abs(l) ** (1/3))
 
+    equ = []
     for i in range(3):
         x = (w**i)*m +(w**(3-i))*n - a/3
         equ.append(x)
