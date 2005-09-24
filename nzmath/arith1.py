@@ -24,7 +24,7 @@ def floorpowerroot(n, k):
     elif k == 2:
         return floorsqrt(n)
     if n < 0:
-        if k&1 == 0:
+        if not (k & 1):
             raise ValueError, "%d has no real %d-th root." % (n, k)
         else:
             sign = -1
@@ -50,7 +50,7 @@ def floorpowerroot(n, k):
         a = -a
     return a
 
-def legendre(a, m): 
+def legendre(a, m):
     """
     This function returns Legendre symbol (a/m)
     If m is a odd composite then this is Jacobi symbol
@@ -74,45 +74,38 @@ import random
 import gcd
 def modsqrt(a, p):
     """
-    This function returns squareroot of 'a' for mod 'p'.
+    This function returns one of the square roots of 'a' for mod 'p'.
     'p' must be an odd prime.
     """
-    if legendre(a, p) == 1:
+    symbol = legendre(a, p)
+    if symbol == 1:
         pmod8 = p % 8
         if pmod8 != 1:
             a = a % p
             if pmod8 == 3 or pmod8 == 7:
-                x = pow(a, ((p+1)/4), p)
-                return x
+                x = pow(a, (p+1)//4, p)
             else: # p%8==5
-                x = pow(a, ((p+3)/8), p)
-                c = (x**2) % p
+                x = pow(a, (p+3)//8, p)
+                c = pow(x, 2, p)
                 if c != a:
-                    x = x*(2**((p-1)/4)) % p
-                return x
+                    x = (x * pow(2, (p-1)//4, p)) % p
         else: #p%8==1
-            d = random.randint(2, p-1)
+            d = 2
             while legendre(d, p) != -1:
-                d = random.randint(2, p-1)
-            s = 0
-            q = p-1
-            while q % 2 == 0:
-                q //= 2
-                s += 1
-            t = (p-1)/2**s
+                d = random.randrange(3, p)
+            s, t = vp(p-1, 2)
             A = pow(a, t, p)
             D = pow(d, t, p)
             m = 0
             for i in range(1, s):
                 if pow(A*(D**m), 2**(s-1-i), p) == (p-1):
-                    m = m + 2**i
-            x = (a**((t+1)/2)) * (D**(m/2)) % p
-            return x
-    elif legendre(a, p) == 0:
+                    m += 2**i
+            x = (a**((t+1)//2)) * (D**(m//2)) % p
+        return x
+    elif symbol == 0:
         return 0
     else:
         raise ValueError,"There is no solution"
-
 
 def expand(n, m):
     """
@@ -215,7 +208,8 @@ def vp(n, p, k=0):
     The optional argument k will be added to the valuation.
     """
     while not (n % p):
-        n, k = n//p, k+1
+        k += 1
+        n //= p
     return (k, n)
 
 class _Issquare:
