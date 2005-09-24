@@ -56,60 +56,60 @@ class Rational (ring.QuotientFieldElement):
             raise TypeError("Rational cannot be created with %s(%s) and %s(%s)." % (numerator, numerator.__class__, denominator, denominator.__class__))
         self._reduce()
 
-    def __add__(self,other):
+    def __add__(self, other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator + self.denominator*other.numerator
             denominator = self.denominator*other.denominator
-            return  +Rational(numerator,denominator)
+            return  +Rational(numerator, denominator)
         elif isIntegerObject(other):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
-            return  +Rational(numerator,denominator)
+            return  +Rational(numerator, denominator)
         elif isinstance(other, float):
             return self + Rational(other)
         else:
             return NotImplemented
 
-    def __sub__(self,other):
+    def __sub__(self, other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator - self.denominator*other.numerator
             denominator = self.denominator*other.denominator
-            return +Rational(numerator,denominator) 
+            return +Rational(numerator, denominator) 
         elif isIntegerObject(other):
             numerator = self.numerator - self.denominator*other
             denominator = self.denominator            
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return self - Rational(other)
         else:
             return NotImplemented
 
-    def __mul__(self,other):
+    def __mul__(self, other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.numerator
             denominator = self.denominator*other.denominator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isIntegerObject(other):
             numerator = self.numerator*other
             denominator = self.denominator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return self * Rational(other)
         else:
             return NotImplemented
 
-    def __truediv__(self,other):
+    def __truediv__(self, other):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator
             denominator = self.denominator*other.numerator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isIntegerObject(other):
             q, r = divmod(self.numerator, other)
             if r == 0:
                 return Rational(q, self.denominator)
             numerator = self.numerator
             denominator = self.denominator*other
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return self / Rational(other)
         else:
@@ -118,43 +118,43 @@ class Rational (ring.QuotientFieldElement):
     __div__ = __truediv__
     __floordiv__ = __truediv__
 
-    def __radd__(self,other):
+    def __radd__(self, other):
         if isIntegerObject(other):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return Rational(other) + self
         else:
             return NotImplemented
 
-    def __rsub__(self,other):
+    def __rsub__(self, other):
         if isIntegerObject(other):
             numerator = self.denominator*other - self.numerator
             denominator = self.denominator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return Rational(other) - self
         else:
             return NotImplemented
 
-    def __rmul__(self,other):
+    def __rmul__(self, other):
         if isIntegerObject(other):
             numerator = self.numerator*other
             denominator = self.denominator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return Rational(other) * self
         else:
             return NotImplemented
 
-    def __rtruediv__(self,other):
+    def __rtruediv__(self, other):
         if isIntegerObject(other):
             if other == 1:
                 return Rational(self.denominator, self.numerator)
             numerator = self.denominator*other
             denominator = self.numerator
-            return +Rational(numerator,denominator)
+            return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return Rational(other) / self
         else:
@@ -174,13 +174,13 @@ class Rational (ring.QuotientFieldElement):
         else:
             return Integer(1)
 
-    def __lt__(self,other):
+    def __lt__(self, other):
         return self.compare(other) < 0
 
-    def __le__(self,other):
+    def __le__(self, other):
         return self.compare(other) <= 0
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         if isIntegerObject(other):
             if self.denominator == 1:
                 return self.numerator == other
@@ -193,20 +193,20 @@ class Rational (ring.QuotientFieldElement):
         else:
             return NotImplemented
 
-    def __ne__(self,other):
+    def __ne__(self, other):
         return self.compare(other) != 0
 
-    def __gt__(self,other):
+    def __gt__(self, other):
         return self.compare(other) > 0
 
-    def __ge__(self,other):
+    def __ge__(self, other):
         return self.compare(other) >= 0
 
     def __pos__(self):
-        commonDivisor = theIntegerRing.gcd(self.numerator,self.denominator)
-        if commonDivisor != 1:
-            self.numerator //= commonDivisor
-            self.denominator //= commonDivisor
+        common_divisor = theIntegerRing.gcd(self.numerator, self.denominator)
+        if common_divisor != 1:
+            self.numerator //= common_divisor
+            self.denominator //= common_divisor
         return Rational(self.numerator, self.denominator)
 
     def __neg__(self):
@@ -287,9 +287,9 @@ class Rational (ring.QuotientFieldElement):
             if rest.numerator > 1:
                 quotient, remainder = divmod(rest.denominator, rest.numerator)
             elif rest.denominator > 1:
-                quotient, remainder = (rest.denominator-1,1)
+                quotient, remainder = (rest.denominator-1, 1)
             else:
-                quotient, remainder = (1,0)
+                quotient, remainder = (1, 0)
             approximant = Rational(quotient * approximant1.numerator + approximant0.numerator, quotient * approximant1.denominator + approximant0.denominator)
             if approximant.denominator > max_denominator:
                 break
@@ -311,10 +311,10 @@ class Rational (ring.QuotientFieldElement):
         if self.denominator < 0:
             self.numerator = -self.numerator
             self.denominator = -self.denominator
-        commonDivisor = theIntegerRing.gcd(self.numerator, self.denominator)
-        if commonDivisor != 1:
-            self.numerator //= commonDivisor
-            self.denominator //= commonDivisor
+        common_divisor = theIntegerRing.gcd(self.numerator, self.denominator)
+        if common_divisor != 1:
+            self.numerator //= common_divisor
+            self.denominator //= common_divisor
 
     def __iadd__(self, other):
         if isinstance(other, Rational):
@@ -338,7 +338,7 @@ class Rational (ring.QuotientFieldElement):
         self._reduce()
         return self
 
-    def __imul__(self,other):
+    def __imul__(self, other):
         if isinstance(other, Rational):
             self.numerator *= other.numerator
             self.denominator *= other.denominator
@@ -349,7 +349,7 @@ class Rational (ring.QuotientFieldElement):
         self._reduce()
         return self
 
-    def __itruediv__(self,other):
+    def __itruediv__(self, other):
         if isinstance(other, Rational):
             self.numerator *= other.denominator
             self.denominator *= other.numerator
@@ -388,7 +388,7 @@ class Rational (ring.QuotientFieldElement):
         L.append(str(n//d))
         L.append('.')
         while i <= N:
-            n = n%d*10
+            n = n % d * 10
             L.append(str(n//d))
             i += 1
         return ''.join(L)
@@ -479,6 +479,7 @@ class RationalField (ring.QuotientField):
         self.basedomain = theIntegerRing
         self.properties = ring.CommutativeRingProperties()
         self.properties.setIsfield(True)
+        self._one = self._zero = None
 
     def __contains__(self, element):
         reduced = +element
@@ -538,6 +539,22 @@ class RationalField (ring.QuotientField):
             return True
         return other.issubring(self)
 
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = Rational(1, 1)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = Rational(0, 1)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
+
 class Integer(long, ring.CommutativeRingElement):
     """
 
@@ -572,7 +589,7 @@ class Integer(long, ring.CommutativeRingElement):
             return NotImplemented
 
     def __mod__(self, other):
-        if isinstance(other, (int,long)):
+        if isinstance(other, (int, long)):
             return Integer(long(self)%long(other))
         return NotImplemented
 
@@ -609,7 +626,7 @@ class Integer(long, ring.CommutativeRingElement):
             retval = other.__rmul__(self)
             if retval and retval is not NotImplemented:
                 return retval
-        except Exception, e:
+        except Exception:
             pass
         return self.actAdditive(other)
 
@@ -648,7 +665,7 @@ class Integer(long, ring.CommutativeRingElement):
         result = 0
         doubling = +other
         while absVal:
-            if absVal& 1:
+            if absVal & 1:
                 result += doubling
             doubling += doubling
             absVal >>= 1
@@ -689,6 +706,7 @@ class IntegerRing (ring.CommutativeRing):
         self.properties = ring.CommutativeRingProperties()
         self.properties.setIseuclidean(True)
         self.properties.setIsfield(False)
+        self._one = self._zero = None
 
     def __contains__(self, element):
         """
@@ -763,6 +781,22 @@ class IntegerRing (ring.CommutativeRing):
 
         """
         return a // self.gcd(a, b) * b 
+
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = Integer(1)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = Integer(0)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
 
 theIntegerRing = IntegerRing()
 theRationalField = RationalField()

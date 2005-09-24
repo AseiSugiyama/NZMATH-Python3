@@ -158,8 +158,9 @@ class RationalTest (unittest.TestCase):
         assert "0.33333" == Rational(1,3).decimalString(5)
 
     def testNonzero(self):
-        assert Rational(1,1)
-        assert not Rational(0,1)
+        self.assertTrue(Rational(1,1))
+        self.assertFalse(Rational(0,1))
+
 
 class IntegerTest(unittest.TestCase):
     def setUp(self):
@@ -186,8 +187,9 @@ class IntegerTest(unittest.TestCase):
         assert theIntegerRing == self.three.getRing()
 
     def testNonzero(self):
-        assert Integer(1)
-        assert not Integer(0)
+        self.assertTrue(Integer(1))
+        self.assertFalse(Integer(0))
+
 
 class IntegerRingTest(unittest.TestCase):
     def testContains(self):
@@ -229,6 +231,13 @@ class IntegerRingTest(unittest.TestCase):
         assert theIntegerRing.lcm(10, 0) == 0
         assert theIntegerRing.lcm(13, 21) == 273
 
+    def testConstants(self):
+        self.assertEqual(1, theIntegerRing.one)
+        self.assertTrue(isinstance(theIntegerRing.one, Integer))
+        self.assertEqual(0, theIntegerRing.zero)
+        self.assertTrue(isinstance(theIntegerRing.zero, Integer))
+
+
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
         assert 1 in theRationalField
@@ -252,27 +261,38 @@ class RationalFieldTest(unittest.TestCase):
         assert theRationalField.isfield()
         assert theRationalField.isdomain()
 
+    def testConstants(self):
+        self.assertEqual(1, theRationalField.one)
+        self.assertTrue(isinstance(theRationalField.one, Rational))
+        self.assertEqual(0, theRationalField.zero)
+        self.assertTrue(isinstance(theRationalField.zero, Rational))
+
 class IntegerIfIntOrLongTest (unittest.TestCase):
     def testInt(self):
         b = IntegerIfIntOrLong(1)
         assert isinstance(b, Integer)
+
     def testLong(self):
         b = IntegerIfIntOrLong(1L)
         assert isinstance(b, Integer)
+
     def testRational(self):
         b = IntegerIfIntOrLong(Rational(1,2))
         assert not isinstance(b, Integer)
         assert isinstance(b, Rational)
+
     def testTuple(self):
         s = IntegerIfIntOrLong((1,1L))
         assert isinstance(s, tuple)
         for i in s:
             assert isinstance(i, Integer)
+
     def testList(self):
         s = IntegerIfIntOrLong([1,1L])
         assert isinstance(s, list)
         for i in s:
             assert isinstance(i, Integer)
+
     def testListOfTuple(self):
         ss = IntegerIfIntOrLong([(1,1L),(2L,2)])
         assert isinstance(ss, list)
@@ -281,13 +301,13 @@ class IntegerIfIntOrLongTest (unittest.TestCase):
             for i in s:
                 assert isinstance(i, Integer)
 
-def suite():
+
+def suite(suffix = "Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RationalTest, 'test'))
-    suite.addTest(unittest.makeSuite(IntegerTest, 'test'))
-    suite.addTest(unittest.makeSuite(IntegerRingTest, 'test'))
-    suite.addTest(unittest.makeSuite(RationalFieldTest, 'test'))
-    suite.addTest(unittest.makeSuite(IntegerIfIntOrLongTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name[-len(suffix):] == suffix:
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':

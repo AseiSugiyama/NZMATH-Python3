@@ -61,6 +61,7 @@ class FinitePrimeField (FiniteField):
         self.char = characteristic
         self.properties = ring.CommutativeRingProperties()
         self.properties.setIsfield(True)
+        self._one = self._zero = None
 
     def getCharacteristic(self):
         """
@@ -117,6 +118,22 @@ class FinitePrimeField (FiniteField):
     def __nonzero__(self):
         return True
 
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = FinitePrimeFieldElement(1, self.char)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = FinitePrimeFieldElement(0, self.char)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
+
 import arith1
 import bigrandom
 import polynomial
@@ -144,7 +161,7 @@ class FiniteExtendedField (FiniteField):
             self.char = characteristic
         else:
             raise ValueError, "characteristic must be a prime."
-        if isinstance(n_or_modulus, (int,long)):
+        if isinstance(n_or_modulus, (int, long)):
             if n_or_modulus <= 1:
                 raise ValueError, "degree of extension must be > 1."
             self.degree = n_or_modulus
@@ -177,6 +194,7 @@ class FiniteExtendedField (FiniteField):
                 raise TypeError, "modulus must be in F_p[#1]"
         else:
             raise TypeError, "degree or modulus must be supplied."
+        self._one = self._zero = None
 
     def getCharacteristic(self):
         """
@@ -209,6 +227,28 @@ class FiniteExtendedField (FiniteField):
 
     def __str__(self):
         return "F_%d @(%s)" % (len(self), str(self.modulus.generators[0]))
+
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = FiniteExtendedFieldElement(
+                polynomial.OneVariableDensePolynomial(
+                [1], "#1", FinitePrimeField(self.char)),
+                self)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = FiniteExtendedFieldElement(
+                polynomial.OneVariableDensePolynomial(
+                [], "#1", FinitePrimeField(self.char)),
+                self)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
 
 class FiniteExtendedFieldElement (FiniteFieldElement):
     """
