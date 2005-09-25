@@ -172,11 +172,23 @@ class ConstantTest (unittest.TestCase):
         assert rational.Integer(4) * real.pi
         assert rational.Rational(4, 3) * real.pi
 
-def suite():
+
+class RealFieldTest (unittest.TestCase):
+    def testConstants(self):
+        self.assertEqual(1, real.theRealField.one)
+        self.assertEqual(0, real.theRealField.zero)
+
+    def testStrings(self):
+        self.assertEqual("R", str(real.theRealField))
+        self.assertEqual("RealField()", repr(real.theRealField))
+
+
+def suite(suffix = "Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
-    suite.addTest(unittest.makeSuite(NewFunctionTest, 'test'))
-    suite.addTest(unittest.makeSuite(ConstantTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name[-len(suffix):] == suffix:
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
