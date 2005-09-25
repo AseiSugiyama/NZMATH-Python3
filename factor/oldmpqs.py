@@ -247,3 +247,51 @@ def confirm(dep, u, v, n):
 
 def mpqs(N):
     return MPQS(N).run()
+
+def mod_sqrt(a, m):
+    """
+    Return a square root of 'a' mod 'm'.
+    """
+    if m < 0:
+        raise ValueError, 'negative modulus.'
+    if not m:
+        raise ZeroDivisionError
+    if m == 1:
+        return 0
+
+    am = a % m
+    if (not am) or am == 1:
+        return am
+    p = arith1.issquare(am)
+    if p:
+        return p
+    if prime.primeq(m):
+        return arith1.modsqrt(am, m)
+    if m&3 == 0:
+        if am&3 == 2 or am&3 == 3:
+            raise ValueError, "There is no square root of %s mod %s" % (a, m)
+        else:
+            t, step = am&3, 4
+    else:
+        t, step = 0, 1
+    p = 3
+    while p < m:
+        if prime.primeq(p) and not (m % p):
+            if not (am % p):
+                while t % p:
+                    t += step
+                step *= p
+                p += 2
+                continue
+            s = arith1.modsqrt(am, p)
+            if s:
+                while t % p != s:
+                    t += step
+                step *= p
+            else:
+                raise ValueError, "There is no square root of %s mod %s" % (a, m)
+        p += 2
+    for i in range(t, m, step):
+        if (i*i) % m == am:
+            return i
+    raise ValueError, "There is no square root of %s mod %s" % (a, m)
