@@ -149,6 +149,11 @@ class IntegerResidueClassRingTest(unittest.TestCase):
         assert not Zmod4.isufd()
         assert not Zmod4.isdomain()
 
+    def testConstants(self):
+        Zmod4 = IntegerResidueClassRing.getInstance(4)
+        self.assertEqual(IntegerResidueClass(1, 4), Zmod4.one)
+        self.assertEqual(IntegerResidueClass(0, 4), Zmod4.zero)
+
 def suite():
     suite = unittest.TestSuite((
         unittest.makeSuite(IntegerResidueClassTest, 'test'),

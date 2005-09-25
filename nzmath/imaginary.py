@@ -1,4 +1,4 @@
-from __future__ import division, generators
+from __future__ import division
 # standard modules
 import operator
 import itertools
@@ -6,6 +6,7 @@ import cmath
 # NZMATH modules
 import real
 import rational
+import ring
 
 class Complex:
     """
@@ -196,7 +197,7 @@ class Complex:
     def __complex__(self):
         return complex(float(self.real), float(self.imag))
 
-import ring
+
 class ComplexField(ring.Field):
     """
 
@@ -206,7 +207,14 @@ class ComplexField(ring.Field):
     """
 
     def __init__(self):
-        pass
+        self._one = Complex(1)
+        self._zero = Complex(0)
+
+    def __str__(self):
+        return "C"
+
+    def __repr__(self):
+        return "%s()" % self.__class__.__name__
 
     def __contains__(self, element):
         reduced = +element
@@ -216,8 +224,25 @@ class ComplexField(ring.Field):
             return True
         return False  ## How to know an object be complex ?
 
+    def __eq__(self, other):
+        return isinstance(other, ComplexField)
+
+    def __ne__(self, other):
+        return not (self == other)
+
     def createElement(self, seed):
         return Complex(seed)
+
+    def _getOne(self):
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
+
 
 theComplexField = ComplexField()
 

@@ -158,6 +158,7 @@ class IntegerResidueClassRing (CommutativeRing):
         """The argument modulus m specifies an ideal mZ."""
         self.m = modulus
         self.properties = CommutativeRingProperties()
+        self._one = self._zero = None
 
     def __repr__(self):
         return "IntegerResidueClassRing(%d)" % self.m
@@ -222,6 +223,9 @@ class IntegerResidueClassRing (CommutativeRing):
             return True
         return False
 
+    def __ne__(self, other):
+        return not (self == other)
+
     def issubring(self, other):
         if self == other:
             return True
@@ -233,3 +237,19 @@ class IntegerResidueClassRing (CommutativeRing):
             return True
         else:
             return False
+
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = IntegerResidueClass(1, self.m)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = IntegerResidueClass(0, self.m)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")

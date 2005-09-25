@@ -12,15 +12,28 @@ import itertools
 
 import rational
 import arith1
+import ring
 
 
-class RealField:
+class RealField (ring.Field):
     """
 
     RealField is a class of the field of real numbers.
     The class has the single instance 'theRealField'.
 
     """
+
+    def __init__(self):
+        self.properties = ring.CommutativeRingProperties()
+        self.properties.setIsfield(True)
+        self._one = 1.0
+        self._zero = 0.0
+
+    def __str__(self):
+        return "R"
+
+    def __repr__(self):
+        return "%s()" % (self.__class__.__name__, )
 
     def __contains__(self, element):
         reduced = +element
@@ -29,6 +42,22 @@ class RealField:
         if isinstance(reduced, float):
             return True
         return False  ## How to know a number is real ?
+
+    def __eq__(self, other):
+        return isinstance(other, self.__class__)
+
+    def __ne__(self, other):
+        return not (self == other)
+
+    def _getOne(self):
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
 
 
 class RelativeError:

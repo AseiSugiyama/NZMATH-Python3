@@ -96,6 +96,7 @@ class ImaginaryTest (unittest.TestCase):
         assert imaginary.pi ==real.pi
         assert (0,1) == (imaginary.j.real, imaginary.j.imag)
 
+
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):
         assert imaginary.RelativeError(1,2)
@@ -110,10 +111,23 @@ class ErrorTest (unittest.TestCase):
         ae2 = imaginary.AbsoluteError(rational.Rational(1, 6)) / 5
         assert ae2.absoluteerrorrange == rational.Rational(1,30)
 
-def suite():
+
+class ComplexFieldTest (unittest.TestCase):
+    def testtConstants(self):
+        self.assertEqual(1, imaginary.theComplexField.one)
+        self.assertEqual(0, imaginary.theComplexField.zero)
+
+    def testStrings(self):
+        self.assertEqual("C", str(imaginary.theComplexField))
+        self.assertEqual("ComplexField()", repr(imaginary.theComplexField))
+
+
+def suite(suffix = "Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(ImaginaryTest, 'test'))
-    suite.addTest(unittest.makeSuite(ErrorTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name[-len(suffix):] == suffix:
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
