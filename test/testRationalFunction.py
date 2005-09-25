@@ -50,6 +50,11 @@ class RationalFunctionFieldTest (unittest.TestCase):
     def testCreateElement(self):
         assert self.Qx.createElement(Z.createElement(8))
 
+    def testConstants(self):
+        self.assertNotEqual(self.Qx.zero, self.Qx.one)
+        self.assertEqual(Q.createElement(1), self.Qx.one)
+        self.assertEqual(Q.createElement(0), self.Qx.zero)
+
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(RationalFunctionTest, 'test'))
