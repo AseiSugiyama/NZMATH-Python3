@@ -474,10 +474,7 @@ class OneVariablePolynomial:
 def initCoefficientRing(coefficient):
     myRing = None
     for c in coefficient.itercoeffs():
-        if isinstance(c, (int, long)):
-            cring = rational.theIntegerRing
-        else:
-            cring = c.getRing()
+        cring = ring.getRing(c)
         if not myRing or myRing != cring and myRing.issubring(cring):
             myRing = cring
         elif not cring.issubring(myRing):
