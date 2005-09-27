@@ -158,8 +158,8 @@ class RationalTest (unittest.TestCase):
         assert "0.33333" == Rational(1,3).decimalString(5)
 
     def testNonzero(self):
-        self.assertTrue(Rational(1,1))
-        self.assertFalse(Rational(0,1))
+        self.failUnless(Rational(1,1))
+        self.failIf(Rational(0,1))
 
 
 class IntegerTest(unittest.TestCase):
@@ -187,8 +187,8 @@ class IntegerTest(unittest.TestCase):
         assert theIntegerRing == self.three.getRing()
 
     def testNonzero(self):
-        self.assertTrue(Integer(1))
-        self.assertFalse(Integer(0))
+        self.failUnless(Integer(1))
+        self.failIf(Integer(0))
 
 
 class IntegerRingTest(unittest.TestCase):
@@ -233,9 +233,9 @@ class IntegerRingTest(unittest.TestCase):
 
     def testConstants(self):
         self.assertEqual(1, theIntegerRing.one)
-        self.assertTrue(isinstance(theIntegerRing.one, Integer))
+        self.failUnless(isinstance(theIntegerRing.one, Integer))
         self.assertEqual(0, theIntegerRing.zero)
-        self.assertTrue(isinstance(theIntegerRing.zero, Integer))
+        self.failUnless(isinstance(theIntegerRing.zero, Integer))
 
 
 class RationalFieldTest(unittest.TestCase):
@@ -263,9 +263,9 @@ class RationalFieldTest(unittest.TestCase):
 
     def testConstants(self):
         self.assertEqual(1, theRationalField.one)
-        self.assertTrue(isinstance(theRationalField.one, Rational))
+        self.failUnless(isinstance(theRationalField.one, Rational))
         self.assertEqual(0, theRationalField.zero)
-        self.assertTrue(isinstance(theRationalField.zero, Rational))
+        self.failUnless(isinstance(theRationalField.zero, Rational))
 
 class IntegerIfIntOrLongTest (unittest.TestCase):
     def testInt(self):
