@@ -32,7 +32,7 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
         if isinstance(representative, rational.Rational):
             t = gcd.extgcd(representative.denominator, self.m)
             if t[2] != 1:
-                raise ValueError, "No inverse of %s." % representative
+                raise ValueError, "No inverse of %s." % representative.denominator
             self.n = (representative.numerator * t[0]) % self.m
         elif isinstance(representative, (int, long)):
             self.n = representative % self.m
