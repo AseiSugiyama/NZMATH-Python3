@@ -46,12 +46,8 @@ class RationalFunctionField (ring.QuotientField):
         return not (self == other)
 
     def __contains__(self, element):
-        try:
-            if element.getRing().issubring(self):
-                return True
-        except:
-            if rational.isIntegerObject(element) and rational.theIntegerRing.issubring(self):
-                return True
+        if ring.getRing(element).issubring(self):
+            return True
         return False
 
     def getQuotientField(self):
