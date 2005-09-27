@@ -11,6 +11,7 @@ import integerResidueClass
 import polynomial
 import prime
 import rational
+import ring
 
 def Element_p(a,p):
     """
@@ -19,78 +20,75 @@ def Element_p(a,p):
     """
     return int(finitefield.FinitePrimeFieldElement(a,p).n)
 
-def PolyMod(f,g):
+def PolyMod(f, g):
     """
     return f (mod g)
     """
-    if isinstance(g,(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
+    if _isscalar(g):
         return 0
-    elif isinstance(f,(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
+    elif _isscalar(f):
         return f
     else:
-        return f%g
+        return f % g
 
-def GCD(f,g):
-    if f==0 and g!=0:
+def GCD(f, g):
+    # trivial cases
+    if f == 0 and g != 0:
         return g
-    elif g==0 and f!=0:
+    elif g == 0 and f != 0:
         return f
-    elif isinstance(f,(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
+    elif _isscalar(f) or _isscalar(g):
         return 1
-    elif isinstance(g,(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
+    # other cases
+    p = f.getRing().gcd(f, g)
+    if p.degree() == 0:
         return 1
     else:
-        p=f.getRing().gcd(f,g)
-        if p.degree()==0:
-            return 1
-        else:
-            return p
+        return p
 
-def PolyPow(f,d,g):
+def PolyPow(f, d, g):
     """
     this returns (f^d)%g
     """
-    l=arith1.expand(d,2)
-    poly=1
-    for i in range(len(l)-1,-1,-1):
-        poly=poly*poly
-        poly=PolyMod(poly,g)
-        if l[i]==1:
-            poly=poly*f
-            poly=PolyMod(poly,g)
+    l = arith1.expand(d,2)
+    l.reverse()
+    poly = ring.getRing(f).one
+    for i in range(len(l)):
+        poly = poly*poly
+        poly = PolyMod(poly, g)
+        if l[i]:
+            poly = poly*f
+            poly = PolyMod(poly, g)
     return poly
 
-def PolyMulRed(list,poly):
+def PolyMulRed(multipliees, poly):
     """
-    list[*] is (OneSparsePoly,int,long)
+    multipliees[*] is (OneSparsePoly,int,long)
     poly is OneSparsePoly
     """
-    if poly.degree()<1:
+    if poly.degree() < 1:
         return 0
-    i=0
-    while i<len(list):
-        if list[i]==0:
+    product = polynomial.PolynomialRing(poly.coefficientRing, 'x').one
+    for factor in multipliees:
+        if not _isscalar(factor) and factor.degree() >= poly.degree():
+            factor = PolyMod(factor, poly)
+        if factor == 0:
             return 0
-        elif isinstance(list[i],(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
-            pass
-        elif list[i].degree()>=poly.degree():
-            list[i]=PolyMod(list[i],poly)
-            if list[i]==0:
+        product = product * factor
+        if not _isscalar(product) and product.degree() >= poly.degree():
+            product = PolyMod(product, poly)
+            if product == 0:
                 return 0
-        i=i+1
-    POLY=polynomial.OneVariableSparsePolynomial({0:1},['x'],poly.coefficientRing)
-    i=0
-    while i<len(list):
-        POLY=POLY*list[i]
-        if isinstance(POLY,(int,long,finitefield.FinitePrimeFieldElement,integerResidueClass.IntegerResidueClass)):
-            pass
-        else:
-            if POLY.degree()>=poly.degree():
-                POLY=PolyMod(POLY,poly)
-                if POLY==0:
-                    return 0
-        i=i+1
-    return POLY
+    return product
+
+def _isscalar(elem):
+    """
+    test whether 'elem' is scalar or not.
+    """
+    return isinstance(elem, (int,
+                             long,
+                             finitefield.FinitePrimeFieldElement,
+                             integerResidueClass.IntegerResidueClass))
 
 def heart(q):
     """
@@ -508,7 +506,7 @@ class EC:
     def whetherOn(self,P):
         """
         Determine whether P is on curve or not.
-        Return 1 if P is on, return 0 otherwise.
+        Return True if P is on, return False otherwise.
         """
         if isinstance(P,list):
             if len(P)==2:
