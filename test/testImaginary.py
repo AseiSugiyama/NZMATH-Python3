@@ -121,6 +121,11 @@ class ComplexFieldTest (unittest.TestCase):
         self.assertEqual("C", str(imaginary.theComplexField))
         self.assertEqual("ComplexField()", repr(imaginary.theComplexField))
 
+    def testSubring(self):
+        C = imaginary.theComplexField
+        self.failUnless(C.issuperring(real.theRealField))
+        self.failUnless(C.issuperring(rational.theRationalField))
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()

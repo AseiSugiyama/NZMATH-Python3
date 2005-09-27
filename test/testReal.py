@@ -1,6 +1,6 @@
 import math, time, unittest
 import real
-import rational
+import rational, imaginary
 
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):
@@ -181,6 +181,13 @@ class RealFieldTest (unittest.TestCase):
     def testStrings(self):
         self.assertEqual("R", str(real.theRealField))
         self.assertEqual("RealField()", repr(real.theRealField))
+
+    def testSubring(self):
+        R = real.theRealField
+        self.failUnless(R.issuperring(R))
+        self.failUnless(R.issuperring(rational.theRationalField))
+        self.failUnless(R.issubring(imaginary.theComplexField))
+        self.failIf(R.issubring(rational.theRationalField))
 
 
 def suite(suffix = "Test"):

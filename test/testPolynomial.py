@@ -273,6 +273,7 @@ class RationalPolynomialTest(unittest.TestCase):
     def testContent(self):
         assert rational.Rational(1,2) == self.i.content()
 
+
 class IntegerResidueClassPolynomialTest(unittest.TestCase):
     def setUp(self):
         self.f1 = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(3,5), integerResidueClass.IntegerResidueClass(1,5)], x)
@@ -288,6 +289,13 @@ class IntegerResidueClassPolynomialTest(unittest.TestCase):
     def testCall(self):
         f = MultiVariableSparsePolynomial({(1,0): integerResidueClass.IntegerResidueClass(1,101), (0,1): integerResidueClass.IntegerResidueClass(100,101)}, ["x","y"])
         assert not f(x=1,y=1)
+
+
+class ComplexPolynomialTest (unittest.TestCase):
+    def testInit(self):
+        f = OneVariableDensePolynomial([1j,2], 'x')
+        self.assertEqual(1, f.degree())
+
 
 class PolynomialRingTest(unittest.TestCase):
     def setUp(self):
