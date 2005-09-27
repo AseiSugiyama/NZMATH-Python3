@@ -198,7 +198,7 @@ class Complex:
         return complex(float(self.real), float(self.imag))
 
 
-class ComplexField(ring.Field):
+class ComplexField (ring.Field):
     """
 
     ComplexField is a class of the field of real numbers.
@@ -243,6 +243,19 @@ class ComplexField(ring.Field):
 
     zero = property(_getZero, None, None, "additive unit.")
 
+    def issubring(self, aRing):
+        if isinstance(aRing, ComplexField):
+            return True
+        elif self.issuperring(aRing):
+            return False
+        return aRing.issuperring(self)
+
+    def issuperring(self, aRing):
+        if isinstance(aRing, ComplexField):
+            return True
+        elif real.theRealField.issuperring(aRing):
+            return True
+        return aRing.issubring(self)
 
 theComplexField = ComplexField()
 

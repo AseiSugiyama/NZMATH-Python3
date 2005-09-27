@@ -49,16 +49,33 @@ class RealField (ring.Field):
     def __ne__(self, other):
         return not (self == other)
 
+    # property one
     def _getOne(self):
+        "getter for one"
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit.")
 
+    # property zero
     def _getZero(self):
+        "getter for zero"
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit.")
 
+    def issubring(self, aRing):
+        if isinstance(aRing, RealField):
+            return True
+        elif self.issuperring(aRing):
+            return False
+        return aRing.issuperring(self)
+
+    def issuperring(self, aRing):
+        if isinstance(aRing, RealField):
+            return True
+        elif rational.theRationalField.issuperring(aRing):
+            return True
+        return aRing.issubring(self)
 
 class RelativeError:
     def __init__(self, comparity, numerator, denominator=1):
