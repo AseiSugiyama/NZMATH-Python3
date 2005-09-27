@@ -1882,7 +1882,7 @@ class OneVariablePolynomialCoefficients:
         retval.setDict(self.getAsDict())
         return retval
 
-class PolynomialRing (ring.CommutativeRing, object):
+class PolynomialRing (ring.CommutativeRing):
     """
 
     The class of polynomial ring.
