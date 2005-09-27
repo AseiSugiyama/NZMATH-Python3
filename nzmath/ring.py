@@ -403,3 +403,24 @@ class CommutativeRingProperties:
         if not self._isdomain:
             self.setIsufd(False)
             self.setIsnoetherian(False)
+
+
+def getRing(obj):
+    """
+    Return a ring to which 'obj' belongs.
+
+    Mainly for python built-in objects such as int or float.
+    """
+    try:
+        # if obj has its getRing method, use it.
+        return obj.getRing()
+    except AttributeError:
+        if isinstance(obj, (int, long)):
+            import rational
+            return rational.theIntegerRing
+        if isinstance(obj, float):
+            import real
+            return real.theRealField
+        if isinstance(obj, complex):
+            import imaginary
+            return imaginary.theComplexField

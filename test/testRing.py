@@ -1,5 +1,8 @@
 import unittest
 import ring
+import rational
+from real import theRealField
+from imaginary import theComplexField
 
 class CommutativeRingPropertiesTest (unittest.TestCase):
     def setUp(self):
@@ -72,9 +75,26 @@ class CommutativeRingPropertiesTest (unittest.TestCase):
         self.rp.setIsufd(True)
         assert True == self.rp.isdomain()
 
-def suite():
+
+class GetRingTest (unittest.TestCase):
+    def testInt(self):
+        Z = rational.theIntegerRing
+        self.assertEqual(Z, ring.getRing(1))
+        self.assertEqual(Z, ring.getRing(1L))
+        self.assertEqual(rational.Integer(1).getRing(), ring.getRing(rational.Integer(1)))
+
+    def testFloat(self):
+        self.assertEqual(theRealField, ring.getRing(1.0))
+
+    def testComplex(self):
+        self.assertEqual(theComplexField, ring.getRing(1+1j))
+
+def suite(suffix = "Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(CommutativeRingPropertiesTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name[-len(suffix):] == suffix:
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
