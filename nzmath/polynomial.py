@@ -117,9 +117,7 @@ class OneVariablePolynomial:
             sum[0] = sum[0] + other
             return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
         else:
-            if isinstance(other, (int, long)):
-                other = rational.Integer(other)
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
             return commonSuperring.createElement(self) + commonSuperring.createElement(other)
 
     __radd__ = __add__
@@ -153,7 +151,7 @@ class OneVariablePolynomial:
         elif isinstance(other, (int, long)):
             return rational.Integer(other).actAdditive(self)
         else:
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
             return commonSuperring.createElement(self) * commonSuperring.createElement(other)
 
     __rmul__ = __mul__
@@ -218,9 +216,7 @@ class OneVariablePolynomial:
                         deg -= 1
                 return (div_poly.copy(),
                         OneVariableSparsePolynomial(mod_poly.getAsDict(), x, coeffring))
-        elif isinstance(other, (int, long)):
-            other = rational.Integer(other)
-        commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+        commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
         return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
 
     def __rdivmod__(self, other):
@@ -1485,7 +1481,7 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
                                               rational.theRationalField),
                     0)
         else:
-            commonSuperring = self.getRing().getCommonSuperring(other.getRing())
+            commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
             return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
 
 class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
@@ -1991,14 +1987,10 @@ class PolynomialRing (ring.CommutativeRing, object):
         """
         if element in self.coefficientRing:
             return True
-        try:
-            ring = element.getRing()
-            if ring.issubring(self):
-                return True
-            return False
-        except AttributeError:
-            if isinstance(element, (int, long)):
-                return rational.theIntegerRing.issubring(self)
+        elem_ring = ring.getRing(element)
+        if elem_ring.issubring(self):
+            return True
+        return False
 
     def issubring(self, other):
         """
@@ -2066,7 +2058,7 @@ class PolynomialRing (ring.CommutativeRing, object):
                 return PolynomialRing(oCoef, sVars | oVars)
 
     def createElement(self, seed):
-        if not isinstance(seed, (int, long)) and seed.getRing() == self:
+        if not isinstance(seed, (int, long)) and ring.getRing(seed) == self:
             return seed.copy()
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
