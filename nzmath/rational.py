@@ -597,10 +597,10 @@ class Integer(long, ring.CommutativeRingElement):
         return Integer(other%long(self))
 
     def __divmod__(self, other):
-        return tuple(map(Integer, divmod(long(self), other)))
+        return tuple([Integer(x) for x in divmod(long(self), other)])
 
     def __rdivmod__(self, other):
-        return tuple(map(Integer, divmod(other, long(self))))
+        return tuple([Integer(x) for x in divmod(other, long(self))])
 
     def __add__(self, other):
         if isIntegerObject(other):
