@@ -539,11 +539,11 @@ class ResidueRingTest (unittest.TestCase):
         self.Zx_I7 = PolynomialResidueRing(Zx, I7)
 
     def testInit(self):
-        self.assertTrue(self.Zx_I7.isnoetherian())
+        self.failUnless(self.Zx_I7.isnoetherian())
 
     def testCreateElement(self):
         f = OneVariableDensePolynomial([1, 1], x)
-        self.assertTrue(isinstance(self.Zx_I7.createElement(f), ring.ResidueClass))
+        self.failUnless(isinstance(self.Zx_I7.createElement(f), ring.ResidueClass))
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
