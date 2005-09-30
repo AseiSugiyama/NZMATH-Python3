@@ -367,6 +367,14 @@ class PolynomialRingTest(unittest.TestCase):
         assert 1 == self.Qx.gcd(h,a)
         assert 1 == self.Zx.gcd(a,b)
 
+    def testConstants(self):
+        self.assertEqual(1, self.Zx.one)
+        self.failUnless(self.Zx.one)
+        self.failUnless(isinstance(self.Zx.one, OneVariablePolynomial))
+        self.assertEqual(0, self.Zx.zero)
+        self.failIf(self.Zx.zero)
+        self.failUnless(isinstance(self.Zx.zero, OneVariablePolynomial))
+
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
         self.x = OneVariableDensePolynomial([0,1],x)
