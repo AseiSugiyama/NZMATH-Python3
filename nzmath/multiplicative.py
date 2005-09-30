@@ -35,7 +35,7 @@ def moebius(n):
         return 1
     if prime.primeq(n):
         return -1
-    f = factor.trialDivision(n)
+    f = factor.trialdivision.trialDivision(n)
     m = 1
     for p, e in f:
         if e > 1:
@@ -51,7 +51,7 @@ def sigma(m, n):
         return 1
     if prime.primeq(n):
         return 1 + n**m
-    f = factor.trialDivision(n)
+    f = factor.trialdivision.trialDivision(n)
     s = 1
     for p, e in f:
         t = 1
