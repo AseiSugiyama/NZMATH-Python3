@@ -315,11 +315,17 @@ class OneVariablePolynomial:
             return OneVariableSparsePolynomial(self.coefficient.getAsDict(), [other], self.getCoefficientRing())
         elif not other:
             return self.coefficient[0]
-        else:
-            return_value = 0
-            for i, c in self.coefficient.iteritems():
-                return_value += (other ** i) * c
-            return return_value
+        elif not self:
+            return self.getCoefficientRing().zero
+
+        return_value = self.leadingCoefficient()
+        for d in range(self.degree()-1, -1, -1):
+            c_d = self[d]
+            if c_d:
+                return_value = return_value * other + c_d
+            elif return_value:
+                return_value = return_value * other
+        return return_value
 
     def degree(self):
         return self.coefficient.degree()
@@ -502,7 +508,7 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
     try:
         if _coefficientRing.getCharacteristic() > 0:
             return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
-    except AttributeError, e:
+    except AttributeError:
         pass
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
@@ -527,7 +533,7 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     try:
         if _coefficientRing.getCharacteristic() > 0:
             return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
-    except AttributeError, e:
+    except AttributeError:
         pass
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
@@ -1484,7 +1490,7 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
 class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
     """
 
-    OneVariablePolynomialChar0 is a class for one variable polynomial
+    OneVariablePolynomialCharNonZero is a class for one variable polynomial
     whose coefficient ring is a field of characteristic p > 0.
 
     """
