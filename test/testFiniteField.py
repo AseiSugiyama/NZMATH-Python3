@@ -59,6 +59,11 @@ class FinitePrimeFieldTest(unittest.TestCase):
         self.assertEqual(F17.one, F17.one + F17.zero)
         self.assertEqual(F17.zero, F17.zero * F17.zero)
 
+    def testGetInstance(self):
+        F17 = FinitePrimeField(17)
+        self.assertEqual(F17, FinitePrimeField.getInstance(17))
+        self.failUnless(FinitePrimeField.getInstance(17) is FinitePrimeField.getInstance(17))
+
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
     all_names = globals()

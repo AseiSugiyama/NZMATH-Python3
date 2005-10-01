@@ -41,6 +41,8 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             self.n = representative.n
         else:
             raise NotImplementedError, "FinitePrimeFieldElement is not made from %s." % (repr(representative),)
+        # ring
+        self.ring = None
 
     def __repr__(self):
         return "FinitePrimeFieldElement(%d, %d)" % (self.n, self.m)
@@ -49,7 +51,10 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
         return "%d in F_%d" % (self.n, self.m)
 
     def getRing(self):
-        return FinitePrimeField(self.m)
+        if not self.ring:
+            self.ring = FinitePrimeField.getInstance(self.m)
+        return self.ring
+
 
 class FinitePrimeField (FiniteField):
     """
@@ -57,6 +62,10 @@ class FinitePrimeField (FiniteField):
     FinitePrimeField is also known as F_p or GF(p).
 
     """
+
+    # class variable
+    _instances = {}
+
     def __init__(self, characteristic):
         self.char = characteristic
         self.properties = ring.CommutativeRingProperties()
@@ -72,8 +81,8 @@ class FinitePrimeField (FiniteField):
         return self.char
 
     def __eq__(self, other):
-        if isinstance(other, FinitePrimeField) and self.char == other.char:
-            return True
+        if isinstance(other, FinitePrimeField):
+            return self.char == other.char
         return False
 
     def __ne__(self, other):
@@ -118,6 +127,7 @@ class FinitePrimeField (FiniteField):
     def __nonzero__(self):
         return True
 
+    # properties
     def _getOne(self):
         "getter for one"
         if self._one is None:
@@ -133,6 +143,18 @@ class FinitePrimeField (FiniteField):
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit.")
+
+    # class method
+    def getInstance(cls, characteristic):
+        """
+        Return an instance of the class with specified characteristic.
+        """
+        if characteristic not in cls._instances:
+            cls._instances[characteristic] = cls(characteristic)
+        return cls._instances[characteristic]
+
+    getInstance = classmethod(getInstance)
+
 
 import arith1
 import bigrandom
@@ -249,6 +271,7 @@ class FiniteExtendedField (FiniteField):
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit.")
+
 
 class FiniteExtendedFieldElement (FiniteFieldElement):
     """
