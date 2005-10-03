@@ -33,6 +33,13 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         self.assertEqual(16, (Rational(1, 76) * residue1).toInteger())
         self.assertEqual(151, (Rational(1, 76) * residue1).getModulus())
 
+    def testDiv(self):
+        zero = FinitePrimeFieldElement(0, 5)
+        one = FinitePrimeFieldElement(1, 5)
+        self.failUnless(isinstance(zero.__div__(one), FinitePrimeFieldElement))
+        self.failUnless(isinstance(zero.__truediv__(one), FinitePrimeFieldElement))
+        self.assertEqual(zero, zero / one)
+
     def testGetRing(self):
         elem = FinitePrimeFieldElement(12, 17)
         f17 = elem.getRing()
