@@ -32,8 +32,10 @@ class IntegerResidueClassTest(unittest.TestCase):
         assert (residue1 * rational2).getModulus() == 15
 
     def testDiv(self):
+        residue0 = IntegerResidueClass(0, 15)
         residue1 = IntegerResidueClass(8, 15)
         residue2 = IntegerResidueClass(2, 15)
+        assert isinstance(residue0 / residue1, IntegerResidueClass)
         assert residue1 / residue2
         assert (residue1 / residue2).getResidue() == 4
         assert (residue1 / residue2).getModulus() == 15
