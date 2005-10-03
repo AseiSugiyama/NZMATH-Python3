@@ -51,25 +51,31 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         self.failIf(FinitePrimeFieldElement(0, 17))
 
 class FinitePrimeFieldTest(unittest.TestCase):
+    def setUp(self):
+        self.F17 = FinitePrimeField(17)
+    
     def testEq(self):
-        self.assertEqual(FinitePrimeField(17), FinitePrimeField(17))
+        self.assertEqual(self.F17, self.F17)
 
     def testNonZero(self):
-        self.failUnless(FinitePrimeField(17))
+        self.failUnless(self.F17)
         self.failUnless(FinitePrimeField(17L))
 
     def testConst(self):
-        F17 = FinitePrimeField(17)
-        self.assertEqual(FinitePrimeFieldElement(1, 17), F17.one)
-        self.assertEqual(FinitePrimeFieldElement(0, 17), F17.zero)
-        self.assertEqual(F17.one, F17.one * F17.one)
-        self.assertEqual(F17.one, F17.one + F17.zero)
-        self.assertEqual(F17.zero, F17.zero * F17.zero)
+        self.assertEqual(FinitePrimeFieldElement(1, 17), self.F17.one)
+        self.assertEqual(FinitePrimeFieldElement(0, 17), self.F17.zero)
+        self.assertEqual(self.F17.one, self.F17.one * self.F17.one)
+        self.assertEqual(self.F17.one, self.F17.one + self.F17.zero)
+        self.assertEqual(self.F17.zero, self.F17.zero * self.F17.zero)
 
     def testGetInstance(self):
-        F17 = FinitePrimeField(17)
-        self.assertEqual(F17, FinitePrimeField.getInstance(17))
+        self.assertEqual(self.F17, FinitePrimeField.getInstance(17))
         self.failUnless(FinitePrimeField.getInstance(17) is FinitePrimeField.getInstance(17))
+
+    def testStrings(self):
+        self.assertEqual("F_17", str(self.F17))
+        self.assertEqual("FinitePrimeField(17)", repr(self.F17))
+        
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()

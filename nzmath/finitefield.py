@@ -22,10 +22,10 @@ class FiniteFieldElement (ring.FieldElement):
 import integerResidueClass
 
 class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFieldElement):
-    def __init__(self, representative, modulus):
+    def __init__(self, representative, modulus, modulus_is_prime = True):
         if modulus < 0:
             modulus = -modulus
-        if prime.primeq(modulus):
+        if modulus_is_prime or prime.primeq(modulus):
             self.m = modulus
         else:
             raise ValueError, "modulus must be a prime."
@@ -87,6 +87,12 @@ class FinitePrimeField (FiniteField):
 
     def __ne__(self, other):
         return not (self == other)
+
+    def __str__(self):
+        return "F_%d" % self.char
+
+    def __repr__(self):
+        return "%s(%d)" % (self.__class__.__name__, self.char)
 
     def issubring(self, other):
         """
