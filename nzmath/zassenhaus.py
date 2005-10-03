@@ -1,3 +1,4 @@
+from __future__ import division
 import finitefield
 import integerResidueClass
 import polynomial
@@ -182,7 +183,7 @@ def padicFactorization(f):
         fmodp = polynomial.OneVariableSparsePolynomial(
             f.coefficient.getAsDict(),
             f.getVariable(),
-            finitefield.FinitePrimeField(p))
+            finitefield.FinitePrimeField.getInstance(p))
         g = fmodp.getRing().gcd(fmodp,
                                 fmodp.differentiate(fmodp.getVariable()))
         if g.degree() == 0:
