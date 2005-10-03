@@ -19,6 +19,7 @@ import testReal
 import testRing
 import testVector
 import testMultiplicative
+import testZassenhaus
 
 def suite():
     suite = unittest.TestSuite()
@@ -42,6 +43,7 @@ def suite():
     suite.addTest(testReal.suite())
     suite.addTest(testRing.suite())
     suite.addTest(testVector.suite())
+    suite.addTest(testZassenhaus.suite())
     return suite
 
 if __name__ == '__main__':
