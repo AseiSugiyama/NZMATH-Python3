@@ -447,9 +447,9 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
     def setUp(self):
         import finitefield
         self.F2 = finitefield.FinitePrimeField(2)
-        self.f = OneVariableDensePolynomial([1,1],x,self.F2)
-        self.g = OneVariableDensePolynomial([1,0,1],x,self.F2)
-        self.h = OneVariableDensePolynomial([0,1,1], x, self.F2)
+        self.f = OneVariableDensePolynomial([1, 1], x, self.F2)
+        self.g = OneVariableDensePolynomial([1, 0, 1], x, self.F2)
+        self.h = OneVariableDensePolynomial([0, 1, 1], x, self.F2)
 
     def testInit(self):
         assert isinstance(self.f, OneVariablePolynomialCharNonZero)

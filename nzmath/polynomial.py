@@ -76,11 +76,10 @@ class OneVariablePolynomial:
             if self.degree() < 1 and self[0] == other:
                 return True
             return False
-        else:
-            return NotImplemented
+        return NotImplemented
 
     def __ne__(self, other):
-        return not(self == other)
+        return not (self == other)
 
     def __pos__(self):
         retval = self.copy()
@@ -101,21 +100,21 @@ class OneVariablePolynomial:
             return self.copy()
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable():
-                sum = OneVariablePolynomialCoefficients()
-                sum.setDict(self.coefficient.getAsDict())
+                _sum = OneVariablePolynomialCoefficients()
+                _sum.setDict(self.coefficient.getAsDict())
                 for i, c in other.coefficient.iteritems():
-                    sum[i] = sum[i] + c
+                    _sum[i] = _sum[i] + c
                 commonRing = self.ring.getCommonSuperring(other.getRing())
-                return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
+                return OneVariableSparsePolynomial(_sum.getAsDict(), self.getVariableList(), commonRing.getCoefficientRing())
             else:
                 return self.toMultiVariableSparsePolynomial() + other.toMultiVariableSparsePolynomial()
         elif isinstance(other, MultiVariableSparsePolynomial):
             return self.toMultiVariableSparsePolynomial() + other
         elif other in self.getCoefficientRing():
-            sum = OneVariablePolynomialCoefficients()
-            sum.setDict(self.coefficient.getAsDict())
-            sum[0] = sum[0] + other
-            return OneVariableSparsePolynomial(sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
+            _sum = OneVariablePolynomialCoefficients()
+            _sum.setDict(self.coefficient.getAsDict())
+            _sum[0] = _sum[0] + other
+            return OneVariableSparsePolynomial(_sum.getAsDict(), self.getVariableList(), self.getCoefficientRing())
         else:
             commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
             return commonSuperring.createElement(self) + commonSuperring.createElement(other)
@@ -191,12 +190,12 @@ class OneVariablePolynomial:
                         canceler = (div_poly[deg_diff] * other).coefficient
                         for i in range(deg_diff, deg):
                             mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
-                        mod_poly[deg] = 0
+                        mod_poly[deg] = coeffring.zero
                         deg = mod_poly.degree()
                 else:
                     while deg >= 0:
                         div_poly[deg] = coeffring.createElement(mod_poly[deg] / o_lc)
-                        mod_poly[deg] = 0
+                        mod_poly[deg] = coeffring.zero
                         deg = mod_poly.degree()
                 mod_poly = OneVariableSparsePolynomial(mod_poly.getAsDict(), x, coeffring)
                 return div_poly, mod_poly
@@ -1509,6 +1508,49 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
                                            coeffring)
         self.ch = self.getCoefficientRing().getCharacteristic()
 
+    def __divmod__(self, other):
+        if not other:
+            raise ZeroDivisionError, "polynomial division or modulo by zero."
+        theField = self.getCoefficientRing()
+        x = self.getVariable()
+        if isinstance(other, OneVariablePolynomial):
+            null = OneVariablePolynomialCoefficients()
+            if other.degree() == 0:
+                other = other[0]
+                div_coeff = OneVariablePolynomialCoefficients()
+                div_coeff.changeRepresentation(div_coeff.USING_DICT)
+                for i, c in self.coefficient.iteritems():
+                    div_coeff[i] = c / other
+                return (self.__class__(div_coeff, x, theField),
+                        self.__class__(null, x, theField))
+            elif x != other.getVariable() or self.degree() < other.degree():
+                return  (self.__class__(null, x, theField),
+                         self.copy())
+            else:
+                div_poly = null
+                mod_poly = self.coefficient.copy()
+                deg, o_deg = mod_poly.degree(), other.degree()
+                o_lc = other[o_deg]
+                if o_deg > 0:
+                    while deg >= o_deg:
+                        deg_diff = deg - o_deg
+                        div_poly[deg_diff] = theField.createElement(mod_poly[deg] / o_lc)
+                        canceler = (div_poly[deg_diff] * other).coefficient
+                        for i in range(deg_diff, deg):
+                            mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
+                        mod_poly[deg] = theField.zero
+                        deg = mod_poly.degree()
+                else:
+                    while deg >= 0:
+                        div_poly[deg] = theField.createElement(mod_poly[deg] / o_lc)
+                        mod_poly[deg] = theField.zero
+                        deg = mod_poly.degree()
+                div_poly = self.__class__(div_poly, x, theField)
+                mod_poly = self.__class__(mod_poly, x, theField)
+                return (div_poly, mod_poly)
+        commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
+        return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
+
     def __pow__(self, index, mod = None):
         if not isinstance(index, (int, long)):
             raise TypeError, "index must be an integer."
@@ -1783,7 +1825,7 @@ class OneVariablePolynomialCoefficients:
         if self._using == OneVariablePolynomialCoefficients.USING_LIST:
             if len(self._list) > index:
                 self._list[index] = value
-            elif value:
+            elif value or not isinstance(value, (int, long, float, complex)):
                 self._list += [0]*(index - len(self._list)) + [value]
         elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
             self._dict[index] = value
@@ -1857,7 +1899,7 @@ class OneVariablePolynomialCoefficients:
         if self._using == OneVariablePolynomialCoefficients.USING_LIST:
             return iter([(i, c) for i, c in zip(range(len(self._list)), self._list) if c])
         elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
-            return self._dict.iteritems()
+            return iter([(i, c) for i, c in self._dict.iteritems() if c])
 
     def itercoeffs(self):
         if self._using == OneVariablePolynomialCoefficients.USING_LIST:
