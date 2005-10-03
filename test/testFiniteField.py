@@ -18,6 +18,7 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         residue1 = FinitePrimeFieldElement(8, 151)
         residue2 = FinitePrimeFieldElement(2, 151)
         self.failUnless(residue1 * residue2)
+        self.failUnless(isinstance(residue1 * residue2, FinitePrimeFieldElement))
         self.assertEqual(16, (residue1 * residue2).toInteger())
         self.assertEqual(151, (residue1 * residue2).getModulus())
         self.failUnless(residue1 * 2)
@@ -39,6 +40,23 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         self.failUnless(isinstance(zero.__div__(one), FinitePrimeFieldElement))
         self.failUnless(isinstance(zero.__truediv__(one), FinitePrimeFieldElement))
         self.assertEqual(zero, zero / one)
+
+    def testAdd(self):
+        residue1 = FinitePrimeFieldElement(8, 151)
+        residue2 = FinitePrimeFieldElement(2, 151)
+        self.failUnless(isinstance(residue1 + residue2, FinitePrimeFieldElement))
+
+    def testSub(self):
+        residue1 = FinitePrimeFieldElement(8, 151)
+        residue2 = FinitePrimeFieldElement(2, 151)
+        self.failUnless(isinstance(residue1 - residue2, FinitePrimeFieldElement))
+        # the followings are possible now. are they correct?
+        self.failUnless(isinstance(residue1 - 2, FinitePrimeFieldElement))
+        self.failUnless(isinstance(1 - residue2, FinitePrimeFieldElement))
+
+    def testInverse(self):
+        residue1 = FinitePrimeFieldElement(8, 151)
+        self.failUnless(isinstance(residue1.inverse(), FinitePrimeFieldElement))
 
     def testGetRing(self):
         elem = FinitePrimeFieldElement(12, 17)

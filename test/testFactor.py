@@ -10,47 +10,48 @@ class FactorTest (unittest.TestCase):
         assert factor.trialDivision(1042387) ==  [(701,1),(1487,1)]
 
     def testRho(self):
-        assert factor.rhomethod(60) == [(2,2),(3,1),(5,1)]
-        assert factor.rhomethod(128) == [(2,7)]
-        assert factor.rhomethod(200819) == [(409,1),(491,1)]
-        assert factor.rhomethod(1042387) ==  [(701,1),(1487,1)]
-        assert [(17,2), (19,1)] == factor.rhomethod(17**2 * 19)
+        m = "rhomethod sometimes fails to factor anyway."
+        self.assertEqual([(2,2),(3,1),(5,1)], factor.rhomethod(60), m)
+        self.assertEqual([(2,7)], factor.rhomethod(128), m)
+        self.assertEqual([(409,1),(491,1)], factor.rhomethod(200819), m)
+        self.assertEqual([(701,1),(1487,1)], factor.rhomethod(1042387), m)
+        self.assertEqual([(17,2), (19,1)], factor.rhomethod(17**2 * 19), m)
 
     def testPMinusOneMethod(self):
-        assert [(19,1), (101,1)] == factor.pmom(1919)
+        self.assertEqual([(19,1), (101,1)], factor.pmom(1919))
         # 6133 = prime.prime(800) > sqrt(B) & 800 == 0 mod 20
         p = 4 * 6133 + 1
-        assert [(p,1), (154858631,1)] == factor.pmom(p*154858631)
+        self.assertEqual([(p,1), (154858631,1)], factor.pmom(p*154858631))
 
     def testMPQS(self):
         p = 4 * 6133 + 1
         result = factor.mpqs(p*154858631)
-        assert [(p,1), (154858631,1)] == result
+        self.assertEqual([(p,1), (154858631,1)], result)
 
     def testPrimeDivisors(self):
-        assert [3, 5] == factor.primeDivisors(15)
+        self.assertEqual([3, 5], factor.primeDivisors(15))
 
     def testSquarePart(self):
-        assert 1 == factor.squarePart(15)
-        assert 17 == factor.squarePart(17**2 * 19)
+        self.assertEqual(1, factor.squarePart(15))
+        self.assertEqual(17, factor.squarePart(17**2 * 19))
 
     def testAllDivisors(self):
-        assert [1] == factor.AllDivisors(1)
-        assert [1, 2] == factor.AllDivisors(2)
-        assert [1, 2, 4] == factor.AllDivisors(4)
-        assert [1, 2, 3, 6] == factor.AllDivisors(6)
-        assert [1, 2, 3, 4, 6, 12] == factor.AllDivisors(12)
-        assert [1, 2, 3, 5, 6, 10, 15, 30] == factor.AllDivisors(30)
+        self.assertEqual([1], factor.AllDivisors(1))
+        self.assertEqual([1, 2], factor.AllDivisors(2))
+        self.assertEqual([1, 2, 4], factor.AllDivisors(4))
+        self.assertEqual([1, 2, 3, 6], factor.AllDivisors(6))
+        self.assertEqual([1, 2, 3, 4, 6, 12], factor.AllDivisors(12))
+        self.assertEqual([1, 2, 3, 5, 6, 10, 15, 30], factor.AllDivisors(30))
 
     def testPrimePowerTest(self):
         # not a power
-        assert 12, 0 == factor.PrimePowerTest(12)
-        assert 53, 0 == factor.PrimePowerTest(53)
+        self.assertEqual((12, 0), factor.PrimePowerTest(12))
+        self.assertEqual((53, 0), factor.PrimePowerTest(53))
         # powers
-        assert 7, 2 == factor.PrimePowerTest(49)
-        assert 3, 4 == factor.PrimePowerTest(81)
-        assert 5, 3 == factor.PrimePowerTest(125)
-        assert 2, 7 == factor.PrimePowerTest(128)
+        self.assertEqual((7, 2), factor.PrimePowerTest(49))
+        self.assertEqual((3, 4), factor.PrimePowerTest(81))
+        self.assertEqual((5, 3), factor.PrimePowerTest(125))
+        self.assertEqual((2, 7), factor.PrimePowerTest(128))
 
 def suite():
     suite = unittest.makeSuite(FactorTest, 'test');

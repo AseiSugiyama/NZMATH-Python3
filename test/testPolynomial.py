@@ -475,6 +475,9 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
 
     def testMod(self):
         assert self.f == self.f % self.g
+        r = self.g % self.h
+        for i in range(r.degree() + 1):
+            self.failUnless(r[i] in self.g.getCoefficientRing())
 
     def testFloordiv(self):
         assert 0 == self.f // self.g
@@ -485,9 +488,18 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         result = finitefield.FinitePrimeFieldElement(1,2)
         assert result == +self.f.differentiate(self.f.variable)
         assert not self.g.differentiate(self.g.variable)
+        pX = OneVariableDensePolynomial([0,1,1], 'X', finitefield.FinitePrimeField.getInstance(3))
+        dpX = pX.differentiate('X')
+        self.failUnless(isinstance(dpX, OneVariablePolynomialCharNonZero))
+        for i in range(dpX.degree()+1):
+            self.failUnless(isinstance(dpX[i], finitefield.FinitePrimeFieldElement))
 
     def testGcd(self):
         assert self.f == self.f.getRing().gcd(self.f, self.g)
+        import finitefield
+        pX = OneVariableDensePolynomial([0,1,1], 'X', finitefield.FinitePrimeField.getInstance(3))
+        dpX = pX.differentiate('X')
+        pX.getRing().gcd(pX, dpX)
 
     def testPow(self):
         assert self.f ** 2

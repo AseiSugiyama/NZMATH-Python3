@@ -87,7 +87,7 @@ class IntegerResidueClass:
 
     def __rsub__(self, other):
         try:
-            return IntegerResidueClass(other - self.n, self.m)
+            return self.__class__(other - self.n, self.m)
         except:
             return NotImplemented
 
