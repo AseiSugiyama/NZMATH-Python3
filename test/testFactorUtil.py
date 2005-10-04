@@ -43,11 +43,11 @@ class FactoringMethodTest (unittest.TestCase):
 
     def testVerbose(self):
         # initial value
-        self.assertFalse(self.method.verbose)
+        self.failIf(self.method.verbose)
         # set value
         self.method.verbose = True
         # confirm the value
-        self.assertTrue(self.method.verbose)
+        self.failUnless(self.method.verbose)
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()

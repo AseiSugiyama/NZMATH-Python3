@@ -16,29 +16,78 @@ class FactoringMethod (object):
         # verbosity
         self._verbose = False
 
-    def factor(self, number):
+    def factor(self, number, **options):
         """
         Factor the given positive integer.
-        The returned value must be in the form of [(p1, e1), ..., (pn, en)].
 
-        Each derived class must override this method.
+        The default returned type is a list of tuples.  Each tuple has
+        a factor and its valuation, and the product is equal to the
+        given number.  It looks like:
+          [(p1, e1), ..., (pn, en)].
 
-        Sample code:
-        
-        validate_input_number(number)
+        an option 'return_type' is for the returned type, whose value can be:
+        1) 'list' for default type described above.
+        2) 'tracker' for FactoringInteger.
+        """
+        if not self.validate_input_number(number):
+            return []
+
         tracker = FactoringInteger(number)
-        target = tracker.getNextTarget()
+        options['return_type'] = options.get('return_type', 'list')
+        tracker = FactoringInteger(number)
+        return self.continue_factor(tracker, **options)
+
+    def continue_factor(self, tracker, **options):
+        """
+        Continue factoring and return the result of factorization.
+
+        The argument 'tracker' should be an instance of FactoringInteger.
+        The default returned type is FactoringInteger.
+
+        This method should be overridden.
+        """
+        return_list = (options.get('return_type', '') == 'list')
+
         while True:
-            if prime.primeq(target):
-                tracker.register(target, True)
-            else:
-                p = find_a_factor_from(target)
-                tracker.register(p, prime.primeq(p))
             try:
                 target = tracker.getNextTarget()
             except LookupError:
+                # factored completely
                 break
-        return tracker.getFinalFactors()
+            if prime.primeq(target):
+                tracker.register(target, True)
+            else:
+                p = self.find(target)
+                if 1 < p < target:
+                    # factor found
+                    tracker.register(p)
+                elif p == 1:
+                    # failed to factor
+                    break
+        if return_list:
+            return tracker.getFinalFactors()
+        else:
+            return tracker
+
+    def validate_input_number(self, number):
+        """
+        Return True if the given number is an integer greater than one.
+        Return False if the given number is equal to one.
+        Otherwise, raise ValueError.
+        """
+        if isinstance(number, (int, long)):
+            if number == 1:
+                return False
+            if number > 1:
+                return True
+        raise ValueError("number must be a positive integer.")
+
+    def find(self, target):
+        """
+        Find a factor from the target number.
+
+        This method must be overridden, or 'factor' method should be
+        overridden not to call this method.
         """
         pass
 
