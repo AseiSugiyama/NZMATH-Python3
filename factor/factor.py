@@ -88,7 +88,7 @@ def subrhomethod(n):
 def rhomethod(n):
     """
 
-    This function returns factorization of arbitrary natural numbers 
+    This function returns factorization of arbitrary natural numbers.
 
     """
     target = FactoringIntegerForRhoMethod(n)
@@ -123,9 +123,9 @@ def pmom(nn):
         fact = f[kk]
         Numfact = f.count(fact)
         factors.append((fact,Numfact))
-        kk = kk+ Numfact
+        kk = kk + Numfact
     return factors
-    
+
 def subpmom(N):
     """
 
