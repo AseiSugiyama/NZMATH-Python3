@@ -1020,7 +1020,9 @@ class EC:
                             return 0,x(1)
                         s=finitefield.FinitePrimeFieldElement(P[0],p)
                         t=finitefield.FinitePrimeFieldElement(P[1],p)
-                        f=(3*s**2+self.a)*(x-s)-2*t*(y-t)
+                        #f=(3*s**2+self.a)*(x-s)-2*t*(y-t)
+                        f=(3*s**2+2*self.a2*s+self.a4-self.a1*t)*x-(2*t+self.a1*s+self.a3)*y
+                        f=f+(self.a2*s**2+2*self.a4*s+3*self.a6)-(t**2+self.a1*s*t+2*self.a3*t)
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
                             return 0,f
                         elif len(f.variable)==2:
@@ -1039,9 +1041,11 @@ class EC:
                         return 1,f
                     else:
                         Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
-                        s=finitefield.FinitePrimeFieldElement(P[0],p)
-                        t=finitefield.FinitePrimeFieldElement(P[1],p)
-                        f=(Q[0]-s)*(x-s)+(Q[1]-t)-(y-t)*(Q[0]-s)
+                        #s=finitefield.FinitePrimeFieldElement(P[0],p)
+                        #t=finitefield.FinitePrimeFieldElement(P[1],p)
+                        #f=(Q[0]-s)*(x-s)+(Q[1]-t)-(y-t)*(Q[0]-s)
+                        P=finitefield.FinitePrimeFieldElement(P[0],p),finitefield.FinitePrimeFieldElement(P[1],p)
+                        f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
                             return 0,f
                         elif len(f.variable)==2:
@@ -1058,7 +1062,7 @@ class EC:
     def Miller(self,P,m,Q):
         """
         this returns value of function
-        with divisor f_p(Q)
+        with divisor f_P(Q)
         this use for compute Weil/Tate pairing
         self is E_{a,b}
         """
@@ -1066,31 +1070,14 @@ class EC:
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
             m=arith1.expand(m,2)
-            f_o=finitefield.FinitePrimeFieldElement(1,self.ch)
-            f=f_o
-            V=P
+            f0=finitefield.FinitePrimeFieldElement(1,self.ch)
+            V=f0
+            Z=[0]
             i=len(m)-1
             while i>=0:
-                l=self.line(V,V)
-                if l[0]==0:
-                    f_n=l[1]
-                elif l[0]==1:
-                    f_n=l[1](Q[0])
-                elif l[0]==-1:
-                    f_n=l[1](Q[1])
-                else:
-                    f_n=l[1](x=Q[0],y=Q[1])
-                V=self.mul(2,V)
-                l=self.line(V)
-                if l[0]==0:
-                    f_d=l[1]
-                else:
-                    f_d=l[1](Q[0])
-                if f_d==0:
-                    return False
-                f=f**2*f_n/f_d
+                print Z
                 if m[i]==1:
-                    l=self.line(V,P)
+                    l=self.line(Z,P)
                     if l[0]==0:
                         f_n=l[1]
                     elif l[0]==1:
@@ -1099,44 +1086,65 @@ class EC:
                         f_n=l[1](Q[1])
                     else:
                         f_n=l[1](x=Q[0],y=Q[1])
-                    V=self.add(V,P)
-                    l=self.line(V)
+                    Z=self.add(Z,P)
+                    l=self.line(Z)
                     if l[0]==0:
                         f_d=l[1]
                     else:
                         f_d=l[1](Q[0])
                     if f_d==0:
                         return False
-                    f=f_o*f*f_n/f_d
+                    f=f*f1*f_n/f_d
+                l=self.line(Z,Z)
+                if l[0]==0:
+                    f_n=l[1]
+                elif l[0]==1:
+                    f_n=l[1](Q[0])
+                elif l[0]==-1:
+                    f_n=l[1](Q[1])
+                else:
+                    f_n=l[1](x=Q[0],y=Q[1])
+                Z=self.mul(2,Z)
+                l=self.line(Z)
+                if l[0]==0:
+                    f_d=l[1]
+                else:
+                    f_d=l[1](Q[0])
+                if f_d==0:
+                    return False
+                f=f**2*f_n/f_d
                 i=i-1
             return f
 
     def WeilPairing(self,m,P,Q):
-        i=1
-        while i<math.log(self.ch,2):
-            T=[0]
-            U=[0]
-            A=[0]
-            B=[0]
-            while T==[0] or U==[0] or A==[0] or B==[0]:
-                T,U=self.point(),self.point()
-                A=self.add(P,T)
-                B=self.add(Q,U)
-            g=self.Miller(P,m,B)
-            if g!=False and g!=0:
-                G=self.Miller(Q,m,T)
-                if G!=False and G!=0:
-                    h=self.Miller(Q,m,A)
-                    if h!=False and h!=0:
-                        H=self.Miller(P,m,U)
-                        if H!=False and H!=0:
-                            return g*G/h*H
-            i=i+1
-        return False
-
+        if P==Q or P==[0] or Q==[0]:
+            return finitefield.FinitePrimeFieldElement(1,p)
+        else:
+            i=1
+            while i<math.log(self.ch,2):
+                T=[0]
+                U=[0]
+                A=[0]
+                B=[0]
+                while T==[0] or U==[0] or A==[0] or B==[0]:
+                    T,U=self.point(),self.point()
+                    A=self.add(P,T)
+                    B=self.add(Q,U)
+                g=self.Miller(P,m,B)
+                if g!=False and g!=0:
+                    G=self.Miller(Q,m,T)
+                    if G!=False and G!=0:
+                        h=self.Miller(Q,m,A)
+                        if h!=False and h!=0:
+                            H=self.Miller(P,m,U)
+                            if H!=False and H!=0:
+                                return g*G/h*H
+                i=i+1
+            return False
+        
     def BSGS(self,n,P,Q):
         """
-        retruns k such that Q=kP
+        returns k such that Q=kP
         P,Q is the elements of the same group
         """
         B=[]
@@ -1197,16 +1205,19 @@ class EC:
                 N=other.order()
                 if prime.primeq(N):
                     return (1,N)
-                N0=gcd.gcd(other.ch-1,N)
+                if self==other:
+                    N0=factor.rhomethod(N)[0][0]
+                else:
+                    N0=gcd.gcd(other.ch-1,N)
                 if N0==N:
                     return (1,N)
-                N1,N2=N0,N//N0
-                N0=gcd.gcd(N1,N2)
-                N1,N2=N1*N0,N2//N0
+                N1,N2=N//N0,N0
+                #N0=gcd.gcd(N1,N2)
+                #N1,N2=N1//N0,N2*N0
                 P1=[0]
                 P2=[0]
                 k=1
-                while k<=10:
+                while k<=N1:
                     while P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
@@ -1223,6 +1234,7 @@ class EC:
                         ord1=other.BSGS(N,P1,[0])
                         ord2=other.BSGS(N,P2,[0])
                     r=gcd.lcm(ord1,ord2)
+                    # print P1,P2
                     e=other.WeilPairing(r,P1,P2)
                     if e==False:
                         pass
