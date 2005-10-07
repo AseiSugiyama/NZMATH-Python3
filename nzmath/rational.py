@@ -482,8 +482,11 @@ class RationalField (ring.QuotientField):
         self._one = self._zero = None
 
     def __contains__(self, element):
-        reduced = +element
-        return (isinstance(reduced, Rational) or isIntegerObject(reduced))
+        try:
+            reduced = +element
+            return (isinstance(reduced, Rational) or isIntegerObject(reduced))
+        except TypeError:
+            return False
 
     def classNumber(self):
         """The class number of the rational field is one."""
@@ -716,7 +719,10 @@ class IntegerRing (ring.CommutativeRing):
         an integer object in Python, please use isIntegerObject.
 
         """
-        return isIntegerObject(+element)
+        try:
+            return isIntegerObject(+element)
+        except TypeError:
+            return False
 
     def getQuotientField(self):
         """getQuotientField returns the rational field."""

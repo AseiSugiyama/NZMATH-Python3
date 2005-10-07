@@ -197,6 +197,7 @@ class IntegerRingTest(unittest.TestCase):
         assert 1L in theIntegerRing
         assert Integer(1) in theIntegerRing
         assert Rational(1,2) not in theIntegerRing
+        assert (1,) not in theIntegerRing
 
     def testGetQuotientField(self):
         assert theRationalField is theIntegerRing.getQuotientField()
@@ -245,6 +246,7 @@ class RationalFieldTest(unittest.TestCase):
         assert Integer(1) in theRationalField
         assert Rational(1,2) in theRationalField
         assert 3.14 not in theRationalField
+        assert (1,2) not in theRationalField
 
     def testGetQuotientField(self):
         assert theRationalField is theRationalField.getQuotientField()
