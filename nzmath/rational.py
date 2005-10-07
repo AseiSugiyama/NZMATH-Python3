@@ -485,7 +485,7 @@ class RationalField (ring.QuotientField):
         try:
             reduced = +element
             return (isinstance(reduced, Rational) or isIntegerObject(reduced))
-        except TypeError:
+        except (TypeError, AttributeError):
             return False
 
     def classNumber(self):
@@ -721,7 +721,7 @@ class IntegerRing (ring.CommutativeRing):
         """
         try:
             return isIntegerObject(+element)
-        except TypeError:
+        except (TypeError, AttributeError):
             return False
 
     def getQuotientField(self):

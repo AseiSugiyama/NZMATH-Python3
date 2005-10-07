@@ -2128,7 +2128,7 @@ class PolynomialRing (ring.CommutativeRing):
                 return PolynomialRing(oCoef, sVars | oVars)
 
     def createElement(self, seed):
-        if not isinstance(seed, (int, long)) and ring.getRing(seed) == self:
+        if ring.getRing(seed) == self:
             return seed.copy()
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
@@ -2136,6 +2136,14 @@ class PolynomialRing (ring.CommutativeRing):
                 return OneVariableDensePolynomial([seed], variable, self.coefficientRing)
             if isinstance(seed, OneVariablePolynomial):
                 return OneVariableDensePolynomial(seed.coefficient.getAsList(), variable, self.coefficientRing)
+            # container classes
+            if isinstance(seed, list):
+                return OneVariableDensePolynomial(seed, variable, self.coefficientRing)
+            if isinstance(seed, dict):
+                return OneVariableSparsePolynomial(seed, variable, self.coefficientRing)
+            if isinstance(seed, OneVariablePolynomialCoefficients):
+                return OneVariablePolynomial(seed, variable, self.coefficientRing)
+            # final judgement
             raise TypeError, "larger ring element cannot be a seed."
         else:
             if seed in self.coefficientRing:

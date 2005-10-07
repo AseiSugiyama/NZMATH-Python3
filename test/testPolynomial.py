@@ -375,6 +375,14 @@ class PolynomialRingTest(unittest.TestCase):
         self.failIf(self.Zx.zero)
         self.failUnless(isinstance(self.Zx.zero, OneVariablePolynomial))
 
+    def testCreateElement(self):
+        self.failUnless(isinstance(self.Zx.createElement(1), OneVariablePolynomial))
+        self.failUnless(isinstance(self.Zx.createElement([1,2,1]), OneVariablePolynomial))
+        self.failUnless(isinstance(self.Zx.createElement({100:1}), OneVariablePolynomial))
+        coeff = OneVariablePolynomialCoefficients()
+        self.failUnless(isinstance(self.Zx.createElement(coeff), OneVariablePolynomial))
+
+
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
         self.x = OneVariableDensePolynomial([0,1],x)
