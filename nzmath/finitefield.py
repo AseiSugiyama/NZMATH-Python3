@@ -55,6 +55,16 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             self.ring = FinitePrimeField.getInstance(self.m)
         return self.ring
 
+    def __eq__(self, other):
+        if not other and self.n == 0:
+            return True
+        if isinstance(other, integerResidueClass.IntegerResidueClass):
+            if other.m == self.m and other.n == self.n:
+                return True
+            else:
+                return False
+        return NotImplemented
+
 
 class FinitePrimeField (FiniteField):
     """

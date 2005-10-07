@@ -505,11 +505,12 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         assert self.f ** 2
 
     def testEquality(self):
-        assert self.f == self.f
+        self.assertEqual(self.f, self.f)
         one_poly = OneVariableSparsePolynomial({0:1}, x, self.F2)
-        one_field = self.F2.createElement(1)
-        assert one_poly == one_field
-        assert not one_poly != one_field
+        one_field = self.F2.one
+        self.assertEqual(one_poly, one_field)
+        self.assertEqual(one_field, one_poly)
+        self.failUnless(not one_poly != one_field)
 
     def testIsIrreducible(self):
         assert self.f.isIrreducible()
