@@ -176,9 +176,9 @@ def subpmom(N):
 def PrimePowerTest(n):
     """
     This program using Algo. 1.7.5 in Cohen's book judges whether
-    n is of the form p**k with p or not.
-    If it is True, then return is (p,k)
-    If it is False, then return is (n,0)
+    n is of the form p**k with prime p or not.
+    If it is True, then (p,k) will be returned,
+    otherwise (n,0).
     """
     if n % 2 == 1:
         q = n
