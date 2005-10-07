@@ -46,7 +46,7 @@ class FactorTest (unittest.TestCase):
     def testPrimePowerTest(self):
         # not a power
         self.assertEqual((12, 0), factor.PrimePowerTest(12))
-        self.assertEqual((53, 0), factor.PrimePowerTest(53))
+        self.assertEqual((53, 1), factor.PrimePowerTest(53))
         # powers
         self.assertEqual((7, 2), factor.PrimePowerTest(49))
         self.assertEqual((3, 4), factor.PrimePowerTest(81))
