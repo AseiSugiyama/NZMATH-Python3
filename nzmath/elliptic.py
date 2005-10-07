@@ -1071,7 +1071,7 @@ class EC:
                 raise ValueError,"You must input not [0]"
             m=arith1.expand(m,2)
             f0=finitefield.FinitePrimeFieldElement(1,self.ch)
-            V=f0
+            f=f0
             Z=[0]
             i=len(m)-1
             while i>=0:
