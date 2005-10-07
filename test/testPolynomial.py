@@ -574,6 +574,55 @@ class ResidueRingTest (unittest.TestCase):
         f = OneVariableDensePolynomial([1, 1], x)
         self.failUnless(isinstance(self.Zx_I7.createElement(f), ring.ResidueClass))
 
+
+class OneVariablePolynomialCoefficientsTest (unittest.TestCase):
+    def setUp(self):
+        self.c1 = OneVariablePolynomialCoefficients()
+        self.c2 = OneVariablePolynomialCoefficients()
+
+    def testInit(self):
+        self.assertEqual(self.c1._using, self.c1.USING_LIST)
+
+    def testEqual(self):
+        "trivial cases"
+        self.assertEqual(self.c1, self.c1)
+        self.assertEqual(self.c1, self.c2)
+        self.assertEqual(self.c1 == self.c2, not (self.c1 != self.c2))
+        self.assertNotEqual(self.c1, 1)
+
+    def testEqualDifferentRepresentations(self):
+        "after changing representation"
+        self.c2.changeRepresentation(self.c2.USING_DICT)
+        self.assertEqual(self.c1, self.c2)
+
+    def testEqualSetValues(self):
+        # change value
+        self.c2[0] = 1
+        self.assertNotEqual(self.c1, self.c2)
+        self.c1[0] = 2
+        self.assertNotEqual(self.c1, self.c2)
+        # change rep again
+        self.c2.changeRepresentation(self.c2.USING_DICT)
+        self.assertNotEqual(self.c1, self.c2)
+        self.c2[2] = self.c1[2] = 1
+        self.assertNotEqual(self.c1, self.c2)
+        self.assertNotEqual(self.c2, self.c1)
+
+    def testDegree(self):
+        self.assertEqual(-1, self.c1.degree())
+
+    def testList(self):
+        self.c1.setList([1,2,3])
+        self.assertEqual(2, self.c1.degree())
+        self.assertEqual([1,2,3], self.c1.getAsList())
+
+    def testDict(self):
+        self.c1.setDict({0:1, 2:3})
+        self.assertEqual(2, self.c1.degree())
+        self.assertEqual([1,0,3], self.c1.getAsList())
+        self.assertEqual({0:1, 2:3}, self.c1.getAsDict())
+
+
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
     all_names = globals()

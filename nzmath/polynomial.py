@@ -43,7 +43,7 @@ class OneVariablePolynomial:
             if index >= 0:
                 self.coefficient[index] = value
             else:
-                raise ValueError, "You must input non-negative integer for index."
+                raise ValueError, "degree must be a non-negative integer."
         else:
             raise TypeError, "You must input an element of the coefficient ring for value."
 
@@ -60,10 +60,12 @@ class OneVariablePolynomial:
         if isinstance(index, (int, long)) and index >= 0:
             return self.coefficient[index]
         else:
-            raise ValueError, "You must input non-negative integer for index."
+            raise ValueError, "degree must be a non-negative integer."
 
     def __eq__(self, other):
         if not self and not other:
+            return True
+        if self is other:
             return True
         if isinstance(other, OneVariablePolynomial):
             if self.getVariable() == other.getVariable() and self.degree() == other.degree():
@@ -1802,19 +1804,19 @@ class OneVariablePolynomialCoefficients:
         self._list = list()
         self._dict = dict()
         self._degree = -1
-        self._using = OneVariablePolynomialCoefficients.USING_LIST
+        self._using = self.USING_LIST
 
     def __getitem__(self, index):
         if not isinstance(index, (int, long)):
             raise TypeError, "index must be an integer."
         if index < 0:
             raise ValueError, "index must be a positive integer."
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             if len(self._list) > index:
                 return self._list[index]
             else:
                 return 0
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             return self._dict.get(index, 0)
 
     def __setitem__(self, index, value):
@@ -1822,16 +1824,17 @@ class OneVariablePolynomialCoefficients:
             raise TypeError, "index must be an integer."
         if index < 0:
             raise ValueError, "index must be a positive integer."
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             if len(self._list) > index:
                 self._list[index] = value
             elif value or not isinstance(value, (int, long, float, complex)):
-                self._list += [0]*(index - len(self._list)) + [value]
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+                zero = ring.getRing(value).zero
+                self._list += [zero]*(index - len(self._list)) + [value]
+        elif self._using == self.USING_DICT:
             self._dict[index] = value
 
     def degree(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             deg = len(self._list) - 1
             while deg >= 0:
                 if not self._list[deg]:
@@ -1839,7 +1842,7 @@ class OneVariablePolynomialCoefficients:
                 else:
                     break
             return deg
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             if not self._dict:
                 return -1
             deg = -1
@@ -1852,7 +1855,7 @@ class OneVariablePolynomialCoefficients:
         return [+self[i] for i in range(self.degree()+1)]
 
     def getAsDict(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             retval = dict()
             for i in range(self.degree()+1):
                 if self[i]:
@@ -1862,11 +1865,11 @@ class OneVariablePolynomialCoefficients:
             return self._dict.copy()
 
     def setList(self, aList):
-        self._using = OneVariablePolynomialCoefficients.USING_LIST
+        self._using = self.USING_LIST
         self._list = aList
 
     def setDict(self, aDict):
-        self._using = OneVariablePolynomialCoefficients.USING_DICT
+        self._using = self.USING_DICT
         self._dict = aDict
 
     def changeRepresentation(self, rep):
@@ -1926,6 +1929,28 @@ class OneVariablePolynomialCoefficients:
         retval = OneVariablePolynomialCoefficients()
         retval.setDict(self.getAsDict())
         return retval
+
+    def __eq__(self, other):
+        if self is other:
+            return True
+        if not isinstance(other, OneVariablePolynomialCoefficients):
+            return NotImplemented
+        if self._using == other._using:
+            if self._using == self.USING_LIST:
+                return self._list == other._list
+            else:
+                return self._dict == other._dict
+        else:
+            if self._using == self.USING_LIST:
+                return self._list == other.getAsList()
+            else:
+                return self._dict == other.getAsDict()
+
+    def __ne__(self, other):
+        if not isinstance(other, OneVariablePolynomialCoefficients):
+            return NotImplemented
+        return not (self == other)
+
 
 class PolynomialRing (ring.CommutativeRing):
     """
