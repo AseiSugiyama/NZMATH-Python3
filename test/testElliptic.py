@@ -113,6 +113,10 @@ class PairingTest (unittest.TestCase):
         l = e.line(P,P)
         assert l[0] == 2
         assert l[1](x=P[0],y=P[1]) == finitefield.FinitePrimeFieldElement(0, 17)
+        P2 = e.mul(2,P)
+        l2 = e.line(P,P2)
+        assert l2[0] == -1
+        assert l2[1](0) == finitefield.FinitePrimeFieldElement(0, 17)
 def suite():
     suite  = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EllipticTest, 'test'))
