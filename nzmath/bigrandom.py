@@ -35,5 +35,6 @@ def randrange(start,stop = "zero",step = 1):
     return -(long(random() * v) * step + start)
 
 random = _random.random
+seed = _random.seed
 
-__all__ = ['random', 'randrange']
+__all__ = ['random', 'randrange', 'seed']
