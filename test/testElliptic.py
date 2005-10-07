@@ -106,11 +106,18 @@ class OrderTest (unittest.TestCase):
         bySchoof = e.Schoof()
         byNaive = e.naive()
         assert bySchoof == byNaive
-
+class PairingTest (unittest.TestCase):
+    def testLine(self):
+        e = elliptic.EC([0,0,1,-1,0],17)
+        P = [0,0]
+        l = e.line(P,P)
+        assert l[0] == 2
+        assert l[1](x=P[0],y=P[1]) == finitefield.FinitePrimeFieldElement(0, 17)
 def suite():
     suite  = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EllipticTest, 'test'))
     suite.addTest(unittest.makeSuite(OrderTest, 'test'))
+    suite.addTest(unittest.makeSuite(PairingTest, 'test'))
     return suite
 
 if __name__ == '__main__':
