@@ -110,14 +110,14 @@ class IntegerResidueClass:
         return bool(self.n)
 
     def __eq__(self, other):
-        if other == 0 and self.n == 0:
+        if not other and self.n == 0:
             return True
-        try:
+        if isinstance(other, IntegerResidueClass):
             if other.m == self.m and other.n == self.n:
                 return True
-        except:
-            pass
-        return False
+            else:
+                return False
+        return NotImplemented
 
     def __ne__(self, other):
         return not (self == other)
@@ -205,12 +205,9 @@ class IntegerResidueClassRing (CommutativeRing):
         if None == self.properties.isfield():
             if primeq(self.m):
                 self.properties.setIsfield(True)
-                return True
             else:
                 self.properties.setIsdomain(False)
-                return False
-        else:
-            return self.properties.isfield()
+        return self.properties.isfield()
 
     isdomain = isfield
     isnoetherian = isfield
