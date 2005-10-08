@@ -375,6 +375,14 @@ class PolynomialRingTest(unittest.TestCase):
         self.failIf(self.Zx.zero)
         self.failUnless(isinstance(self.Zx.zero, OneVariablePolynomial))
 
+    def testVariables(self):
+        self.assertRaises(AttributeError, self.Zx.__getattr__, 'y')
+        self.assertEqual(self.Zx.x, self.Zx.createElement({1:1}))
+        self.assertRaises(AttributeError, self.Qxz.__getattr__, 'y')
+        self.failUnless(isinstance(self.Qxz.x, MultiVariableSparsePolynomial))
+        self.assertEqual('1/1 * x', str(self.Qxz.x))
+        self.assertEqual('1/1 * z', str(self.Qxz.z))
+
     def testCreateElement(self):
         self.failUnless(isinstance(self.Zx.createElement(1), OneVariablePolynomial))
         self.failUnless(isinstance(self.Zx.createElement([1,2,1]), OneVariablePolynomial))

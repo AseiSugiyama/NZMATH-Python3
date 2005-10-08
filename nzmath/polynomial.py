@@ -2157,10 +2157,31 @@ class PolynomialRing (ring.CommutativeRing):
                     index[position] = i
                     new_coef[tuple(index)] = self.coefficientRing.createElement(c)
                 return MultiVariableSparsePolynomial(new_coef, listvars)
+            elif isinstance(seed, str) and seed in self.vars:
+                position = listvars.index(seed)
+                new_coef = {}
+                index = [0]*len(listvars)
+                index[position] = 1
+                new_coef[tuple(index)] = self.coefficientRing.one
+                return MultiVariableSparsePolynomial(new_coef, listvars)
         # seed cannot be a multi-variable polynomial now
         raise NotImplementedError
 
-    def getOne(self):
+    def __getattr__(self, attr):
+        """
+        __getattr__
+
+        Return a polynomial corresponding to a specified variable.
+        """
+        if attr in self.vars:
+            if len(self.vars) == 1:
+                return self.createElement({1:1})
+            else:
+                return self.createElement(attr)
+        raise AttributeError("'%s' object has no attribute '%s'" % (self.__class__.__name__, attr))
+
+    def _getOne(self):
+        "getter for one"
         if not self._one:
             if len(self.vars) == 1:
                 variable = [v for v in self.vars][0]
@@ -2169,16 +2190,17 @@ class PolynomialRing (ring.CommutativeRing):
                 self._one = MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(1)}, list(self.vars))
         return self._one
 
-    one = property(getOne, None, None, "multiplicative unit")
+    one = property(_getOne, None, None, "multiplicative unit")
 
-    def getZero(self):
+    def _getZero(self):
+        "getter for zero"
         if len(self.vars) == 1:
             variable = [v for v in self.vars][0]
             return OneVariableDensePolynomial([], variable, self.coefficientRing)
         else:
             return MultiVariableSparsePolynomial({}, list(self.vars))
 
-    zero = property(getZero, None, None, "additive unit")
+    zero = property(_getZero, None, None, "additive unit")
 
     def gcd(self, a, b):
         if self.coefficientRing.isfield():
@@ -2194,6 +2216,7 @@ class PolynomialRing (ring.CommutativeRing):
             return subResultantGCD(a, b)
         else:
             raise NotImplementedError
+
 
 class OneVariablePolynomialIdeal (ring.Ideal):
     """
