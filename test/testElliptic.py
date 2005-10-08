@@ -96,6 +96,7 @@ class EllipticTest(unittest.TestCase):
         # D=F.divPoly(1)[0]
         # assert F.divPoly(1,7)==D[7]
 
+
 class OrderTest (unittest.TestCase):
     def testEqual(self):
         e = elliptic.EC([1,4],5)
@@ -106,6 +107,8 @@ class OrderTest (unittest.TestCase):
         bySchoof = e.Schoof()
         byNaive = e.naive()
         assert bySchoof == byNaive
+
+
 class PairingTest (unittest.TestCase):
     def testLine(self):
         e = elliptic.EC([0,0,1,-1,0],17)
@@ -117,6 +120,20 @@ class PairingTest (unittest.TestCase):
         l2 = e.line(P,P2)
         assert l2[0] == -1
         assert l2[1](0) == finitefield.FinitePrimeFieldElement(0, 17)
+
+    def testMiller(self):
+        e = elliptic.EC([0,0,1,-1,0], 17)
+        P = [0,0]
+        Q = [1,0]
+        self.failUnless(e.whetherOn(Q))
+        e.Miller(P, 2, Q) # I don't know the expected result.
+
+    def testWeilPairing(self):
+        e = elliptic.EC([0,0,1,-1,0], 17)
+        P = [0,0]
+        self.assertEqual(e.WeilPairing(3, P, P), e.coeffField.one)
+
+
 def suite():
     suite  = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(EllipticTest, 'test'))
