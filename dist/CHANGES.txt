@@ -1,8 +1,15 @@
 version 0.4.0 to 0.4.1
 ----------------------
-* fix a bug of Schoof's method in elliptic.
+* fix a bug of Schoof's method, EC.point, etc. in elliptic.
+* fix a bug of integrate method in polynomial.
 * move elliptic.divi to factor.AllDivisors.
 * rename arith1.sqroot to modsqrt and remove resembles in factor sub-package.
+* move vp from prime to arith1 and remove factor.factor.ord.
+* remove dependency on factor.trialDivision from prime.
+* move issquare from factor to arith1.
+* add a function getRing in ring.
+* add a function mpqsfind in factor.mpqs.
+* add generator_eratosthenes to prime (EXPERIMENTAL).
 
 version 0.3.1 to 0.4.0
 ----------------------
@@ -10,7 +17,7 @@ version 0.3.1 to 0.4.0
 * fix some bugs in factor.factor and polynomial.
 * add a method to culculate Mordel-Weil group structure of elliptic curve over finite fields. 
 * add a function floorpowerroot in arith1.
-* add functions bernoulli and catalan in combinatrial.
+* add functions bernoulli and catalan in combinatorial.
 * add a function PrimePowerTest in factor.factor.
 * add a function sigma in multiplicative.
 
