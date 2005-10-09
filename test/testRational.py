@@ -238,6 +238,12 @@ class IntegerRingTest(unittest.TestCase):
         self.assertEqual(0, theIntegerRing.zero)
         self.failUnless(isinstance(theIntegerRing.zero, Integer))
 
+    def testStrings(self):
+        # str
+        self.assertEqual("Z", str(theIntegerRing))
+        # repr
+        self.assertEqual("IntegerRing()", repr(theIntegerRing))
+
 
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
@@ -268,6 +274,13 @@ class RationalFieldTest(unittest.TestCase):
         self.failUnless(isinstance(theRationalField.one, Rational))
         self.assertEqual(0, theRationalField.zero)
         self.failUnless(isinstance(theRationalField.zero, Rational))
+
+    def testStrings(self):
+        # str
+        self.assertEqual("Q", str(theRationalField))
+        # repr
+        self.assertEqual("RationalField()", repr(theRationalField))
+
 
 class IntegerIfIntOrLongTest (unittest.TestCase):
     def testInt(self):
