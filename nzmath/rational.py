@@ -509,6 +509,9 @@ class RationalField (ring.QuotientField):
     def __str__(self):
         return "Q"
 
+    def __repr__(self):
+        return "RationalField()"
+
     def issubring(self, other):
         """
 
@@ -737,7 +740,7 @@ class IntegerRing (ring.CommutativeRing):
         return "Z"
 
     def __repr__(self):
-        return "IntegerRing"
+        return "IntegerRing()"
 
     def issubring(self, other):
         """
