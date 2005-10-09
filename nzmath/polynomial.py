@@ -1129,7 +1129,7 @@ class MultiVariableSparsePolynomial:
                 integrate_polynomial = MultiVariableSparsePolynomial(integrate_coefficient, integrate_variable)
                 return integrate_polynomial.adjust()
             else:
-                return (self * OneVariableDensePolynomial([0,1], other).toMultiVariableSparsePolynomial()).adjust()
+                return (self * OneVariableDensePolynomial([0, 1], other).toMultiVariableSparsePolynomial()).adjust()
         elif mini != None and maxi != None and other != None and isinstance(other, str):
             before_polynomial = self.adjust()
             if other in before_polynomial.variable:
@@ -1342,7 +1342,7 @@ def subResultantGCD(A, B):
         else:
             degB = 0
         delta = degA - degB
-        Q, R = pseudoDivision(A, B)
+        R = pseudoDivision(A, B)[1]
         if not R:
             return d * B.primitivePart()
         if isinstance(R, OneVariablePolynomial):
@@ -1702,7 +1702,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         p = Fq.getCharacteristic()
         if degree == 1:
             result = []
-            X = OneVariableDensePolynomial([0,1],
+            X = OneVariableDensePolynomial([0, 1],
                                            self.getVariable(),
                                            self.getCoefficientRing())
             f = self.copy()
@@ -1789,6 +1789,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         if d != g.degree():
             return False
         return True
+
 
 class OneVariablePolynomialCoefficients:
     """
@@ -1881,44 +1882,44 @@ class OneVariablePolynomialCoefficients:
         """
         if self._using == rep:
             pass
-        elif rep == OneVariablePolynomialCoefficients.USING_LIST:
+        elif rep == self.USING_LIST:
             self._list = self.getAsList()
             self._using = rep
-        elif rep == OneVariablePolynomialCoefficients.USING_DICT:
+        elif rep == self.USING_DICT:
             self._dict = self.getAsDict()
             self._using = rep
         return
 
     def __iter__(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             return iter(self._list)
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             return iter(self._dict)
 
     def __len__(self):
         return self.degree() + 1
 
     def iteritems(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             return iter([(i, c) for i, c in zip(range(len(self._list)), self._list) if c])
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             return iter([(i, c) for i, c in self._dict.iteritems() if c])
 
     def itercoeffs(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             for c in self._list:
                 if c:
                     yield c
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             for c in self._dict.itervalues():
                 yield c
 
     def iterdegrees(self):
-        if self._using == OneVariablePolynomialCoefficients.USING_LIST:
+        if self._using == self.USING_LIST:
             for i, c in zip(range(len(self._list)), self._list):
                 if c:
                     yield i
-        elif self._using == OneVariablePolynomialCoefficients.USING_DICT:
+        elif self._using == self.USING_DICT:
             for i in self._dict.itervalues():
                 yield i
 
@@ -1958,15 +1959,15 @@ class PolynomialRing (ring.CommutativeRing):
     The class of polynomial ring.
 
     """
-    def __init__(self, aRing, vars):
-        if isinstance(vars, str):
-            self.vars = sets.Set((vars,))
-        else:
-            self.vars = sets.Set(vars)
-        self.properties = ring.CommutativeRingProperties()
+    def __init__(self, aRing, var):
         if not isinstance(aRing, ring.Ring):
             raise TypeError, '%s should not be passed as ring' % aRing.__class__
         self.coefficientRing = aRing
+        if isinstance(var, str):
+            self.vars = sets.Set((var,))
+        else:
+            self.vars = sets.Set(var)
+        self.properties = ring.CommutativeRingProperties()
         if self.coefficientRing.isfield() and len(self.vars) == 1:
             self.properties.setIseuclidean(True)
         else:
@@ -1993,16 +1994,16 @@ class PolynomialRing (ring.CommutativeRing):
 
         """
         if not var:
-            vars = sets.Set()
+            _vars = sets.Set()
         elif isinstance(var, str):
-            vars = sets.Set((var,))
+            _vars = sets.Set((var,))
         else:
-            vars = sets.Set(var)
-        vars &= self.vars
-        varsInRing = self.vars - vars
-        if vars and varsInRing:
+            _vars = sets.Set(var)
+        _vars &= self.vars
+        varsInRing = self.vars - _vars
+        if _vars and varsInRing:
             return PolynomialRing(self.coefficientRing, varsInRing)
-        elif vars:
+        elif _vars:
             return self.coefficientRing
         elif varsInRing:
             if len(varsInRing) == 1:
@@ -2043,9 +2044,8 @@ class PolynomialRing (ring.CommutativeRing):
     def __str__(self):
         retval = str(self.coefficientRing)
         retval += "["
-        for v in self.vars:
-            retval += str(v) + ", "
-        retval = retval[:-2] + "]"
+        retval += ", ".join(list(self.vars))
+        retval += "]"
         return retval
 
     def __contains__(self, element):
@@ -2225,7 +2225,7 @@ class OneVariablePolynomialIdeal (ring.Ideal):
     variable polynomial ring.
 
     """
-    def __init__(self, generators, ring):
+    def __init__(self, generators, aRing):
         """
 
         OneVariablePolynomialIdeal(generators, ring) creates an ideal
@@ -2233,19 +2233,19 @@ class OneVariablePolynomialIdeal (ring.Ideal):
         variable, with the given generators.
 
         """
-        if generators in ring:
+        if generators in aRing:
             self.generators = [generators]
         elif isinstance(generators, list) and len(generators) > 0:
-            if ring.ispid():
+            if aRing.ispid():
                 g = generators[0]
                 for t in generators:
-                    g = ring.gcd(t, g)
+                    g = aRing.gcd(t, g)
                 self.generators = [g]
             else:
                 self.generators = generators[:]
         else:
             raise TypeError, "generators of ideal must be elements of the ring."
-        self.ring = ring
+        self.ring = aRing
 
     def __eq__(self, other):
         """

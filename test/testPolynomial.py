@@ -390,6 +390,14 @@ class PolynomialRingTest(unittest.TestCase):
         coeff = OneVariablePolynomialCoefficients()
         self.failUnless(isinstance(self.Zx.createElement(coeff), OneVariablePolynomial))
 
+    def testStrings(self):
+        # str
+        self.assertEqual("Z[x]", str(self.Zx))
+        self.assertEqual("Q[x, z]", str(self.Qxz))
+        # repr
+        self.assertEqual("PolynomialRing(IntegerRing(), Set(['x']))", repr(self.Zx))
+        self.assertEqual("PolynomialRing(RationalField(), Set(['x', 'z']))", repr(self.Qxz))
+
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):
