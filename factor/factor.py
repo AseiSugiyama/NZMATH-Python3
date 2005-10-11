@@ -59,6 +59,18 @@ class FactoringIntegerForRhoMethod:
         Sort primefactors list and return it.
         """
         if len(self.primefactors) != 1:
+            temp = []
+            while self.primefactors:
+                p0, e0 = self.primefactors.pop()
+                waste = []
+                for p, e in self.primefactors:
+                    if p == p0:
+                        e0 += e
+                        waste.apend((p,e))
+                for dust in waste:
+                    self.primefactors.remove(dust)
+                temp.append((p0,e0))
+            self.primefactors = temp
             self.primefactors.sort()
         return self.primefactors
 
