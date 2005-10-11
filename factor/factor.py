@@ -66,7 +66,7 @@ class FactoringIntegerForRhoMethod:
                 for p, e in self.primefactors:
                     if p == p0:
                         e0 += e
-                        waste.apend((p,e))
+                        waste.append((p,e))
                 for dust in waste:
                     self.primefactors.remove(dust)
                 temp.append((p0,e0))
