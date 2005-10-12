@@ -121,17 +121,17 @@ class PairingTest (unittest.TestCase):
         assert l2[0] == -1
         assert l2[1](0) == finitefield.FinitePrimeFieldElement(0, 17)
 
-    def testMiller(self):
-        e = elliptic.EC([0,0,1,-1,0], 17)
-        P = [0,0]
-        Q = [1,0]
-        self.failUnless(e.whetherOn(Q))
-        e.Miller(P, 2, Q) # I don't know the expected result.
-
     def testWeilPairing(self):
-        e = elliptic.EC([0,0,1,-1,0], 17)
-        P = [0,0]
-        self.assertEqual(e.WeilPairing(3, P, P), e.coeffField.one)
+        # this example was provided by Kim Nguyen.
+        e = elliptic.EC([0,4], 997)
+        P = [0,2]
+        Q = [747,776]
+        R = e.WeilPairing(3, P, P)
+        W1 = e.WeilPairing(3, P, Q)
+        W2 = e.WeilPairing(3, Q, P)
+        assert R == finitefield.FinitePrimeFieldElement(1, 997)
+        assert W1 == finitefield.FinitePrimeFieldElement(304, 997)
+        assert W1 == W2**-1
 
 
 def suite():
