@@ -1067,8 +1067,8 @@ class EC:
         """
         this returns value of function
         with divisor f_P(Q)
-        this use for compute Weil/Tate pairing
-        self is E_{a,b}
+        this use for only compute Weil pairing
+        self is assumed supersingular elliptic curve.
         """
         if self.ch>3 and self.index==1:
             # check points are not infinity point
@@ -1078,32 +1078,49 @@ class EC:
             f0=finitefield.FinitePrimeFieldElement(1,self.ch)
             f_d=0
             Z=R
-            #print P
             l=self.line(P,Z)
             if l[0]==0:
-                f_d=l[1]
+                f_n=l[1]
             elif l[0]==1:
-                f_d=l[1](Q[0])
+                f_n=l[1](Q[0])
             elif l[0]==-1:
-                f_d=l[1](Q[1])
+                f_n=l[1](Q[1])
             else:
-                f_d=l[1](x=Q[0],y=Q[1])
+                f_n=l[1](x=Q[0],y=Q[1])
             Z=self.add(Z,P)
             l=self.line(Z)
             if l[0]==0:
-                f_n=l[1]
+                f_d=l[1]
             else:
-                f_n=l[1](Q[0])
+                f_d=l[1](Q[0])
             if f_d==0:
                 return False
             f1=f_n/f_d
-            f=f0
-            Z=[0]
+            f=f1
+            Z=P
 
             # make addition chain
             m=arith1.expand(m,2)
-            i=len(m)-1
+            i=len(m)-2
             while i>=0:
+                l=self.line(Z,Z)
+                if l[0]==0:
+                    f_n=l[1]
+                elif l[0]==1:
+                    f_n=l[1](Q[0])
+                elif l[0]==-1:
+                    f_n=l[1](Q[1])
+                else:
+                    f_n=l[1](x=Q[0],y=Q[1])
+                Z=self.add(Z,Z)
+                l=self.line(Z)
+                if l[0]==0:
+                    f_d=l[1]
+                else:
+                    f_d=l[1](Q[0])
+                if f_d==0:
+                    return False
+                f=f**2*f_n/f_d
                 if m[i]==1:
                     l=self.line(Z,P)
                     if l[0]==0:
@@ -1123,24 +1140,6 @@ class EC:
                     if f_d==0:
                         return False
                     f=f*f1*f_n/f_d
-                l=self.line(Z,Z)
-                if l[0]==0:
-                    f_n=l[1]
-                elif l[0]==1:
-                    f_n=l[1](Q[0])
-                elif l[0]==-1:
-                    f_n=l[1](Q[1])
-                else:
-                    f_n=l[1](x=Q[0],y=Q[1])
-                Z=self.mul(2,Z)
-                l=self.line(Z)
-                if l[0]==0:
-                    f_d=l[1]
-                else:
-                    f_d=l[1](Q[0])
-                if f_d==0:
-                    return False
-                f=f**2*f_n/f_d
                 i=i-1
             return f
 
@@ -1148,29 +1147,28 @@ class EC:
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        i=1
-        l=2*math.log(self.ch,2)
-        while i<l:
-            T=[0]
-            U=[0]
+        if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
+            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+        while 1:
             A=[0]
             B=[0]
-            while T==[0] or U==[0] or A==[0] or B==[0]:
-                T,U=self.point(),self.point()
+            while A==[0] or B==[0]:
+                T,U=[0],[0]
+                while T==[0] or self.mul(m,T)!=[0]:
+                    T=self.point()
+                while U==[0] or self.mul(m,U)!=[0]:
+                    U=self.point()
                 A=self.add(P,T)
                 B=self.add(Q,U)
             g=self.Miller(P,m,B,T)
-            if g!=False and g!=0:
+            if g:
                 G=self.Miller(Q,m,T,U)
-                if G!=False and G!=0:
+                if G:
                     h=self.Miller(Q,m,A,U)
-                    if h!=False and h!=0:
+                    if h:
                         H=self.Miller(P,m,U,T)
-                        if H!=False and H!=0:
-                            return g*G/h*H
-            #print "Fp_Q=",g,"Fq_P=",h
-            i=i+1
-        return False
+                        if H:
+                            return (g*G)/(h*H)
        
     def BSGS(self,n,P,Q):
         """
