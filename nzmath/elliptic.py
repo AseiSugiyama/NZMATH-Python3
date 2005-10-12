@@ -425,8 +425,12 @@ class EC:
                 while arith1.legendre(t,self.ch)!=1:
                     s=random.randrange(0,self.ch)
                     t=(s**3+self.a4*s+self.a6).n
-                t=arith1.modsqrt(t,self.ch)*(-1)**random.randint(0,1)
-                return [s,t%self.ch]
+                t=arith1.modsqrt(t,self.ch)
+                r=random.randint(0,1)
+                if r:
+                    return [s,self.ch-t]
+                else:
+                    return [s,t]
             elif self.ch!=2 and self.ch!=3:
                 other=self.simple()
                 t=0
@@ -434,8 +438,8 @@ class EC:
                     s=random.randrange(0,self.ch)
                     t=(s**3+other.a*s+other.b).n
                 x=(s-3*self.b2)/36
-                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2*(-1)**random.randint(0,1)
-                return [x.n,y.n%self.ch]
+                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2
+                return [x.n,y.n]
             elif self.ch==3:
                 t=0
                 while arith1.legendre(t,self.ch)!=1:
@@ -1022,7 +1026,7 @@ class EC:
                         t=finitefield.FinitePrimeFieldElement(P[1],p)
                         #f=(3*s**2+self.a)*(x-s)-2*t*(y-t)
                         f=(3*s**2+2*self.a2*s+self.a4-self.a1*t)*x-(2*t+self.a1*s+self.a3)*y
-                        f=f+(self.a2*s**2+2*self.a4*s+3*self.a6)-(t**2+self.a1*s*t+2*self.a3*t)
+                        f=f-(s**3)+self.a4*s+2*self.a6-self.a3*t
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
                             return 0,f
                         elif len(f.variable)==2:
@@ -1059,7 +1063,7 @@ class EC:
         else:
             raise NotImplementedError,"Now making m(__)m"
 
-    def Miller(self,P,m,Q):
+    def Miller(self,P,m,Q,R):
         """
         this returns value of function
         with divisor f_P(Q)
@@ -1067,15 +1071,39 @@ class EC:
         self is E_{a,b}
         """
         if self.ch>3 and self.index==1:
+            # check points are not infinity point
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
-            m=arith1.expand(m,2)
+            # initialize
             f0=finitefield.FinitePrimeFieldElement(1,self.ch)
+            f_d=0
+            Z=R
+            #print P
+            l=self.line(P,Z)
+            if l[0]==0:
+                f_d=l[1]
+            elif l[0]==1:
+                f_d=l[1](Q[0])
+            elif l[0]==-1:
+                f_d=l[1](Q[1])
+            else:
+                f_d=l[1](x=Q[0],y=Q[1])
+            Z=self.add(Z,P)
+            l=self.line(Z)
+            if l[0]==0:
+                f_n=l[1]
+            else:
+                f_n=l[1](Q[0])
+            if f_d==0:
+                return False
+            f1=f_n/f_d
             f=f0
             Z=[0]
+
+            # make addition chain
+            m=arith1.expand(m,2)
             i=len(m)-1
             while i>=0:
-                print Z
                 if m[i]==1:
                     l=self.line(Z,P)
                     if l[0]==0:
@@ -1117,31 +1145,33 @@ class EC:
             return f
 
     def WeilPairing(self,m,P,Q):
-        if P==Q or P==[0] or Q==[0]:
-            return finitefield.FinitePrimeFieldElement(1,p)
-        else:
-            i=1
-            while i<math.log(self.ch,2):
-                T=[0]
-                U=[0]
-                A=[0]
-                B=[0]
-                while T==[0] or U==[0] or A==[0] or B==[0]:
-                    T,U=self.point(),self.point()
-                    A=self.add(P,T)
-                    B=self.add(Q,U)
-                g=self.Miller(P,m,B)
-                if g!=False and g!=0:
-                    G=self.Miller(Q,m,T)
-                    if G!=False and G!=0:
-                        h=self.Miller(Q,m,A)
-                        if h!=False and h!=0:
-                            H=self.Miller(P,m,U)
-                            if H!=False and H!=0:
-                                return g*G/h*H
-                i=i+1
-            return False
-        
+        """
+        computing the Weil pairing with Miller's algorithm.
+        """
+        i=1
+        l=2*math.log(self.ch,2)
+        while i<l:
+            T=[0]
+            U=[0]
+            A=[0]
+            B=[0]
+            while T==[0] or U==[0] or A==[0] or B==[0]:
+                T,U=self.point(),self.point()
+                A=self.add(P,T)
+                B=self.add(Q,U)
+            g=self.Miller(P,m,B,T)
+            if g!=False and g!=0:
+                G=self.Miller(Q,m,T,U)
+                if G!=False and G!=0:
+                    h=self.Miller(Q,m,A,U)
+                    if h!=False and h!=0:
+                        H=self.Miller(P,m,U,T)
+                        if H!=False and H!=0:
+                            return g*G/h*H
+            #print "Fp_Q=",g,"Fq_P=",h
+            i=i+1
+        return False
+       
     def BSGS(self,n,P,Q):
         """
         returns k such that Q=kP
