@@ -1063,6 +1063,20 @@ class EC:
         else:
             raise NotImplementedError,"Now making m(__)m"
 
+    def findpoint(self,ord=None):
+        """
+        returns point Q in E/F_p s.t point order of Q is ord.
+        """
+        if ord:
+            if self.order()%ord!=0:
+                raise ValueError,"point order does not divide group order."
+            else:
+                while 1:
+                    point=self.point()
+                    if self.mul(ord,point)==[0]:
+                        return point
+        else:
+            return self.point()
     def Miller(self,P,m,Q,R):
         """
         this returns value of function
@@ -1286,3 +1300,4 @@ class EC:
         else:
             raise NotImplementedError,"Now making m(__)m"
 
+        
