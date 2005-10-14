@@ -122,6 +122,24 @@ def powOrd(x,y,z):
         i=i+1
     return C[0]
 
+def ord(e):
+    """
+    given e:FinitePrimeFieldElement, find and return ord(e) . 
+    """
+    M=e.m-1
+    a=e
+    p=factor.trialdivision.trialDivision(M)
+    l=len(p)
+    o=1
+    i=0
+    while i<l:
+        b=a**(M//(p[i][0]**p[i][1]))
+        while b.toInteger()!=1:
+            o=o*p[i][0]
+            b=b**p[i][0]
+        i=i+1
+    return o
+
 class EC:
     """
     Elliptic curves over Q and Fp.
@@ -1063,6 +1081,28 @@ class EC:
         else:
             raise NotImplementedError,"Now making m(__)m"
 
+    def pointorder(self,P,ord=None,f=None):
+        """
+        find point order of P and return order.
+        """
+        if ord:
+            N=ord
+        else:
+            N=self.order()
+        if f:
+            p=f
+        else:
+            p=factor.trialdivision.trialDivision(N)
+        l=len(p)
+        o=1
+        i=0
+        while i<l:
+            B=self.mul(N/(p[i][0]**p[i][1]),P)
+            while B!=[0]:
+                o=o*p[i][0]
+                B=self.mul(p[i][0],B)
+            i=i+1
+        return o
     def findpoint(self,ord=None):
         """
         returns point Q in E/F_p s.t point order of Q is ord.
@@ -1161,17 +1201,16 @@ class EC:
         """
         computing the Weil pairing with Miller's algorithm.
         """
+        N=self.order()
+        p=factor.trialdivision.trialDivision(N)
         if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
         while 1:
             A=[0]
             B=[0]
             while A==[0] or B==[0]:
-                T,U=[0],[0]
-                while T==[0] or self.mul(m,T)!=[0]:
-                    T=self.point()
-                while U==[0] or self.mul(m,U)!=[0]:
-                    U=self.point()
+                T=self.findpoint(m)
+                U=self.findpoint(m)
                 A=self.add(P,T)
                 B=self.add(Q,U)
             g=self.Miller(P,m,B,T)
@@ -1182,7 +1221,9 @@ class EC:
                     if h:
                         H=self.Miller(P,m,U,T)
                         if H:
-                            return (g*G)/(h*H)
+                            Z=(g*G)/(h*H)
+                            if ord(Z)==m:
+                                return Z
        
     def BSGS(self,n,P,Q):
         """
@@ -1241,60 +1282,44 @@ class EC:
             return (L,O//L)
 
     def structure(self):
+        """
+        returns group structure E(K)=Z_m x Z_dm
+        """
         if self.ch>3:
             if self.index==1:
+                # step 1. find order E/F_p.
                 other=self.simple()
                 N=other.order()
+                p=factor.trialdivision.trialDivision(N)
                 if prime.primeq(N):
                     return (1,N)
-                if self==other:
-                    N0=factor.rhomethod(N)[0][0]
-                else:
-                    N0=gcd.gcd(other.ch-1,N)
-                if N0==N:
-                    return (1,N)
-                N1,N2=N//N0,N0
-                #N0=gcd.gcd(N1,N2)
-                #N1,N2=N1//N0,N2*N0
-                P1=[0]
-                P2=[0]
-                k=1
-                while k<=N1:
+
+                # step 2. decompose N.
+                r=gcd.gcd(other.ch-1,N)
+                print r
+                N0=r
+                N1,N2=1,N
+                while N0>1:
+                    N0=gcd.gcd(r,N2)
+                    N1,N2=N1*N0,N2//N0
+
+                print "(N1,N2)=(",N1,",",N2,")"
+                while 1:
+                    P1=[0]
+                    P2=[0]
                     while P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
-                    if P1==P2==[0]:
-                        ord1=1
-                        ord2=1
-                    elif P1==[0] and P2!=[0]:
-                        ord1=1
-                        ord2=other.BSGS(N,P2,[0])
-                    elif P1!=[0] and P2==[0]:
-                        ord1=other.BSGS(N,P1,[0])
-                        ord2=1
+                    s=other.pointorder(P1,N,p)
+                    t=other.pointorder(P2,N,p)
+                    m=gcd.lcm(s,t)
+                    e=other.WeilPairing(m,P1,P2)
+                    if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                        d=ord(e)
                     else:
-                        ord1=other.BSGS(N,P1,[0])
-                        ord2=other.BSGS(N,P2,[0])
-                    r=gcd.lcm(ord1,ord2)
-                    # print P1,P2
-                    e=other.WeilPairing(r,P1,P2)
-                    if e==False:
-                        pass
-                    else:
-                        s=1
-                        if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                            D=factor.AllDivisors(self.ch-1)
-                            j=e
-                            i=0
-                            while j!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                                j=e
-                                i=i+1
-                                j=pow(j,D[i])
-                            s=D[i]
-                        if r*s==N1:
-                            return (r*N2,s)
-                    k=k+1
-                return self.allPoint(N)
+                        d=1
+                    if m*d==N1:
+                        return (d,N//d)
             else:
                 raise NotImplementedError,"Now making m(__)m"
         else:
