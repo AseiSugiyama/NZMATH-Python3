@@ -32,7 +32,7 @@ def e1_Zn(x,n):
     if x[1]%a != 0:
         raise ValueError, "No Solution"
     else:
-        return b//a
+        return (b//a)%n
     
 def e2(x):
     """
