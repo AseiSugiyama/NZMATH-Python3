@@ -1923,7 +1923,7 @@ class OneVariablePolynomialCoefficients:
                 if c:
                     yield i
         elif self._using == self.USING_DICT:
-            for i in self._dict.itervalues():
+            for i in self._dict.iterkeys():
                 yield i
 
     def __repr__(self):
