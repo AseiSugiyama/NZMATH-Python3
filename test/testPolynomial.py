@@ -93,6 +93,14 @@ class IntegerOneVariableDensePolynomialTest(unittest.TestCase):
         assert Zx == self.b.getRing(), self.b.getRing()
         assert Zy == self.c.getRing(), self.c.getRing()
 
+    def testLeadingCoefficient(self):
+        self.assertEqual(1, self.a.leadingCoefficient())
+        self.assertEqual(-4, self.b.leadingCoefficient())
+        self.assertEqual(-2, self.c.leadingCoefficient())
+        self.assertEqual(2, self.d.leadingCoefficient())
+        self.assertEqual(0, self.zero.leadingCoefficient())
+
+
 class IntegerOneVariableSparsePolynomialTest (unittest.TestCase):
     def setUp(self):
         self.k = OneVariableSparsePolynomial({(1,):1},[x])
@@ -129,6 +137,7 @@ class IntegerOneVariableSparsePolynomialTest (unittest.TestCase):
 
     def testPow(self):
         assert self.k * self.k == self.k ** 2
+
 
 class IntegerOneVariablePolynomialsTest(unittest.TestCase):
     def setUp(self):

@@ -20,7 +20,8 @@ class OneVariablePolynomial:
 
         coefficient must be an instance of OneVariablePolynomialCoefficient.
         variable must be either one of string, list or tuple.
-        coeffring must be a ring object, which implements ring.Ring.
+        coeffring must be a commutative ring object,
+        which implements ring.CommutativeRing.
 
         """
         self.coefficient = coefficient
@@ -378,9 +379,7 @@ class OneVariablePolynomial:
 
     def content(self):
         """
-
         Return content of the polynomial.
-
         """
         coefring = self.getCoefficientRing()
         if coefring.isfield():
@@ -400,9 +399,7 @@ class OneVariablePolynomial:
 
     def primitivePart(self):
         """
-
         Return the primitive part of the polynomial.
-
         """
         return self / self.content()
 
@@ -410,7 +407,10 @@ class OneVariablePolynomial:
         """
         Return the leading coefficient of the polynomial.
         """
-        return self[self.degree()]
+        try:
+            return self[self.degree()]
+        except ValueError:
+            return self.getCoefficientRing().zero
 
     def toOneVariableDensePolynomial(self):
         return OneVariableDensePolynomial(self.coefficient.getAsList(), self.getVariable(), self.getCoefficientRing())
@@ -537,6 +537,7 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     except AttributeError:
         pass
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+
 
 class MultiVariableSparsePolynomial:
 
@@ -1367,6 +1368,7 @@ def discriminant(f):
     df = f.differentiate(variable)
     return (-1)**(deg*(deg-1)/2)*resultant(f,df)/f[deg]
 
+
 class OneVariablePolynomialChar0 (OneVariablePolynomial):
     """
 
@@ -1416,6 +1418,7 @@ class OneVariablePolynomialChar0 (OneVariablePolynomial):
             i += 1
         result[i] = a
         return result
+
 
 class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
     def __init__(self, coefficient, variable):
@@ -1487,6 +1490,7 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
         else:
             commonSuperring = self.getRing().getCommonSuperring(ring.getRing(other))
             return commonSuperring.createElement(self).__divmod__(commonSuperring.createElement(other))
+
 
 class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
     """
@@ -1691,7 +1695,6 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         Return the irreducible factors of the polynomial.  The
         polynomial must be a product of irreducible factors of the
         given degree.
-
 
         """
         import bigrandom
@@ -1901,7 +1904,7 @@ class OneVariablePolynomialCoefficients:
 
     def iteritems(self):
         if self._using == self.USING_LIST:
-            return iter([(i, c) for i, c in zip(range(len(self._list)), self._list) if c])
+            return iter([(i, c) for i, c in enumerate(self._list) if c])
         elif self._using == self.USING_DICT:
             return iter([(i, c) for i, c in self._dict.iteritems() if c])
 
