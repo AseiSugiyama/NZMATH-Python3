@@ -1125,6 +1125,15 @@ class EC:
         self is assumed supersingular elliptic curve.
         """
         if self.ch>3 and self.index==1:
+            # check order
+            if m<2:
+                raise ValueError,"order more than 1"
+            if m==2:
+                if P==Q:
+                    return finitefield.FinitePrimeFieldElement(1,self.ch)
+                else:
+                    return finitefield.FinitePrimeFieldElement(self.ch-1,self.ch)
+
             # check points are not infinity point
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
@@ -1222,6 +1231,7 @@ class EC:
                         H=self.Miller(P,m,U,T)
                         if H:
                             Z=(g*G)/(h*H)
+                            #return Z
                             if ord(Z)==m:
                                 return Z
        
@@ -1283,43 +1293,44 @@ class EC:
 
     def structure(self):
         """
-        returns group structure E(K)=Z_m x Z_dm
+        returns group structure E(K)=Z_d x Z_m with d|m|#E(K)
         """
         if self.ch>3:
             if self.index==1:
                 # step 1. find order E/F_p.
                 other=self.simple()
                 N=other.order()
-                p=factor.trialdivision.trialDivision(N)
                 if prime.primeq(N):
                     return (1,N)
 
                 # step 2. decompose N.
                 r=gcd.gcd(other.ch-1,N)
-                print r
+                p=factor.trialdivision.trialDivision(r)
                 N0=r
                 N1,N2=1,N
                 while N0>1:
                     N0=gcd.gcd(r,N2)
                     N1,N2=N1*N0,N2//N0
-
-                print "(N1,N2)=(",N1,",",N2,")"
+                if N1==r and N2!=1:
+                    return (N1,N2)
                 while 1:
                     P1=[0]
                     P2=[0]
                     while P1==[0] or P2==[0]:
                         P1,P2=other.point(),other.point()
                     P1,P2=other.mul(N2,P1),other.mul(N2,P2)
-                    s=other.pointorder(P1,N,p)
-                    t=other.pointorder(P2,N,p)
+                    s=other.pointorder(P1,r,p)
+                    t=other.pointorder(P2,r,p)
                     m=gcd.lcm(s,t)
-                    e=other.WeilPairing(m,P1,P2)
-                    if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                        d=ord(e)
-                    else:
-                        d=1
-                    if m*d==N1:
-                        return (d,N//d)
+                    if m>1:
+                        e=other.WeilPairing(m,P1,P2)
+                        if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                            d=ord(e)
+                        else:
+                            d=1
+                        print m,d
+                        if m*d==N1:
+                            return (d,N//d)
             else:
                 raise NotImplementedError,"Now making m(__)m"
         else:
