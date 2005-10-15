@@ -1232,7 +1232,7 @@ class EC:
                         if H:
                             Z=(g*G)/(h*H)
                             #return Z
-                            if ord(Z)==m:
+                            if ord(Z)<=m:
                                 return Z
        
     def BSGS(self,n,P,Q):
@@ -1328,7 +1328,7 @@ class EC:
                             d=ord(e)
                         else:
                             d=1
-                        print m,d
+                        #print m,d
                         if m*d==N1:
                             return (d,N//d)
             else:
