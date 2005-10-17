@@ -3,7 +3,9 @@ A module for generating primes and testing primality.
 """
 
 import gcd
+import bigrandom
 from arith1 import floorsqrt, vp
+
 
 def trialDivision(n, bound = 0):
     """
@@ -56,8 +58,6 @@ def millerRabin(n, times = 20):
     probability is at most 4**(-times).
 
     """
-    import bigrandom
-
     s, t = vp(n-1, 2)
     for i in range(times):
         b = bigrandom.randrange(2, n-1)
@@ -148,8 +148,6 @@ def randPrime(n):
     """
     returns a random n-digits prime
     """
-    import bigrandom
-
     if n <= 0 :
         raise ValueError,"input number must be natural number"
     else:
