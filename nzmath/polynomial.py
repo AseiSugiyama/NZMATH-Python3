@@ -7,6 +7,7 @@ from __future__ import division
 import sets
 import re
 
+import bigrandom
 import rational
 import ring
 import rationalFunction
@@ -1697,7 +1698,6 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         given degree.
 
         """
-        import bigrandom
         r = self.degree() / degree
         Fq = self.getCoefficientRing()
         FqX = self.getRing()
