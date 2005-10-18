@@ -1,15 +1,21 @@
 """
-
 finite fields.
-
 """
+
 import gcd
+import bigrandom
+import arith1
 import prime
-import rational
 import ring
+import rational
 import factor
+import integerResidueClass
+
 
 class FiniteField (ring.Field):
+    """
+    The base class for all finite fields.
+    """
     def __len__(self):
         "Cardinality of the field"
         raise NotImplementedError
@@ -17,23 +23,29 @@ class FiniteField (ring.Field):
     def __nonzero__(self):
         return True
 
+
 class FiniteFieldElement (ring.FieldElement):
+    """
+    The base class for all finite field element.
+    """
     pass
 
-import integerResidueClass
 
 class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFieldElement):
+    """
+    The class for finite prime field element.
+    """
     def __init__(self, representative, modulus, modulus_is_prime = True):
         if modulus < 0:
             modulus = -modulus
         if modulus_is_prime or prime.primeq(modulus):
             self.m = modulus
         else:
-            raise ValueError, "modulus must be a prime."
+            raise ValueError("modulus must be a prime.")
         if isinstance(representative, rational.Rational):
             t = gcd.extgcd(representative.denominator, self.m)
             if t[2] != 1:
-                raise ValueError, "No inverse of %s." % representative.denominator
+                raise ValueError("No inverse of %s." % representative.denominator)
             self.n = (representative.numerator * t[0]) % self.m
         elif isinstance(representative, (int, long)):
             self.n = representative % self.m
@@ -41,7 +53,7 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             assert representative.m == modulus
             self.n = representative.n
         else:
-            raise NotImplementedError, "FinitePrimeFieldElement is not made from %s." % (repr(representative),)
+            raise NotImplementedError("FinitePrimeFieldElement is not made from %s." % (repr(representative),))
         # ring
         self.ring = None
 
@@ -52,34 +64,35 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
         return "%d in F_%d" % (self.n, self.m)
 
     def getRing(self):
+        """
+        Return the finite prime field to which the element belongs.
+        """
         if not self.ring:
             self.ring = FinitePrimeField.getInstance(self.m)
         return self.ring
 
     def order(self):
         """
-        find and return order of element of group F_p. 
+        Find and return the order of the element in the multiplicative
+        group of F_p.
         """
-        if self.n==0:
-            raise ValueError, "zero is not in the group."    
-        if not hasattr(self,"orderfactor"):
-            self.orderfactor=factor.trialdivision.trialDivision(self.m-1)
-        M=self.m-1
-        o=1
-        for e in self.orderfactor:
-            b=self**(M//(e[0]**e[1]))
-            while b.toInteger()!=1:
-                o=o*e[0]
-                b=b**e[0]
-            i=i+1
+        if self.n == 0:
+            raise ValueError("zero is not in the group.")
+        grouporder = self.m - 1
+        if not hasattr(self, "orderfactor"):
+            self.orderfactor = factor.trialdivision.trialDivision(grouporder)
+        o = 1
+        for p, e in self.orderfactor:
+            b = self**(grouporder//(p**e))
+            while b.n != 1:
+                o = o*p
+                b = b**p
         return o
 
 
 class FinitePrimeField (FiniteField):
     """
-
     FinitePrimeField is also known as F_p or GF(p).
-
     """
 
     # class variable
@@ -93,13 +106,13 @@ class FinitePrimeField (FiniteField):
 
     def getCharacteristic(self):
         """
-
         Return the characteristic of the field.
-
         """
         return self.char
 
     def __eq__(self, other):
+        if self is other:
+            return True
         if isinstance(other, FinitePrimeField):
             return self.char == other.char
         return False
@@ -115,23 +128,22 @@ class FinitePrimeField (FiniteField):
 
     def issubring(self, other):
         """
-
         Report whether another ring contains the field as a subring.
-
         """
         if self == other:
             return True
-        elif isinstance(other, FiniteField) and other.getCharacteristic() == self.char:
+        if isinstance(other, FiniteField) and other.getCharacteristic() == self.char:
             return True
-        return False
+        try:
+            return other.issuperring(self)
+        except:
+            return False
 
     def issuperring(self, other):
         """
-
         Report whether the field is a superring of another ring.
         Since the field is a prime field, it can be a superring of
         itself only.
-
         """
         if self == other:
             return True
@@ -143,6 +155,11 @@ class FinitePrimeField (FiniteField):
         return False
 
     def createElement(self, seed):
+        """
+        Create an element of the field.
+
+        'seed' should be an integer.
+        """
         return FinitePrimeFieldElement(seed, self.char)
 
     def __len__(self):
@@ -181,20 +198,15 @@ class FinitePrimeField (FiniteField):
     getInstance = classmethod(getInstance)
 
 
-import arith1
-import bigrandom
 import polynomial
 
 class FiniteExtendedField (FiniteField):
     """
-
     FiniteExtendedField is a class for finite field, whose cardinality
     q = p**n with a prime p and n>1. It is usually called F_q or GF(q).
-
     """
     def __init__(self, characteristic, n_or_modulus):
         """
-
         FiniteExtendedField(p, n_or_modulus) creates a finite field.
         characteristic must be prime. n_or_modulus can be:
           1) an integer greater than 1, or
@@ -202,15 +214,14 @@ class FiniteExtendedField (FiniteField):
              greater than 1.
           3) an ideal of the polynomial ring F_p[#1] with degree
              greater than 1.
-
         """
         if prime.primeq(characteristic):
             self.char = characteristic
         else:
-            raise ValueError, "characteristic must be a prime."
+            raise ValueError("characteristic must be a prime.")
         if isinstance(n_or_modulus, (int, long)):
             if n_or_modulus <= 1:
-                raise ValueError, "degree of extension must be > 1."
+                raise ValueError("degree of extension must be > 1.")
             self.degree = n_or_modulus
             # randomly chosen irreducible polynomial
             seed = bigrandom.randrange(self.char ** self.degree)
@@ -227,39 +238,38 @@ class FiniteExtendedField (FiniteField):
                         n_or_modulus("#1"),
                         n_or_modulus("#1").getRing())
                 else:
-                    raise ValueError, "modulus must be of degree greater than 1."
+                    raise ValueError("modulus must be of degree greater than 1.")
             else:
-                raise TypeError, "modulus must be F_p polynomial."
+                raise TypeError("modulus must be F_p polynomial.")
         elif isinstance(n_or_modulus, polynomial.OneVariablePolynomialIdeal):
             if n_or_modulus.ring == polynomial.PolynomialRing(FinitePrimeField(self.char), ["#1"]):
                 if n_or_modulus.generators[0].degree() > 1:
                     self.modulus = n_or_modulus
                     self.degree = self.modulus.generators[0].degree()
                 else:
-                    raise ValueError, "modulus must be of degree greater than 1."
+                    raise ValueError("modulus must be of degree greater than 1.")
             else:
-                raise TypeError, "modulus must be in F_p[#1]"
+                raise TypeError("modulus must be in F_p[#1]")
         else:
-            raise TypeError, "degree or modulus must be supplied."
+            raise TypeError("degree or modulus must be supplied.")
         self._one = self._zero = None
 
     def getCharacteristic(self):
         """
-
         Return the characteristic of the field.
-
         """
         return self.char
 
     def __len__(self):
         """
-
         Return the cardinality of the field
-
         """
         return self.char ** self.degree
 
     def createElement(self, seed):
+        """
+        Create an element of the field.
+        """
         if isinstance(seed, (int, long)):
             expansion = arith1.expand(seed, self.char)
             return FiniteExtendedFieldElement(
@@ -275,6 +285,43 @@ class FiniteExtendedField (FiniteField):
     def __str__(self):
         return "F_%d @(%s)" % (len(self), str(self.modulus.generators[0]))
 
+    def issuperring(self, other):
+        """
+        Report whether the field is a superring of another ring.
+        """
+        if self is other:
+            return True
+        if isinstance(other, FiniteExtendedField):
+            if self.char == other.char and not (self.degree % other.degree):
+                return True
+            return False
+        if isinstance(other, FinitePrimeField):
+            if self.char == other.getCharacteristic():
+                return True
+            return False
+        try:
+            return other.issubring(self)
+        except:
+            return False
+
+    def issubring(self, other):
+        """
+        Report whether the field is a subring of another ring.
+        """
+        if self is other:
+            return True
+        if isinstance(other, FinitePrimeField):
+            return False
+        if isinstance(other, FiniteExtendedField):
+            if self.char == other.char and not (other.degree % self.degree):
+                return True
+            return False
+        try:
+            return other.issuperring(self)
+        except:
+            return False
+
+    # properties
     def _getOne(self):
         "getter for one"
         if self._one is None:
@@ -300,13 +347,10 @@ class FiniteExtendedField (FiniteField):
 
 class FiniteExtendedFieldElement (FiniteFieldElement):
     """
-
     FiniteExtendedFieldElement is a class for an element of F_q.
-
     """
     def __init__(self, representative, field):
         """
-
         FiniteExtendedFieldElement(representative, field) creates
         an element of the finite extended field.
 
@@ -314,25 +358,27 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
 
         Another argument field mut be an instance of
         FiniteExtendedField.
-
         """
         if isinstance(field, FiniteExtendedField):
             self.field = field
         else:
-            raise TypeError, "wrong type argument for field."
+            raise TypeError("wrong type argument for field.")
         if (isinstance(representative, polynomial.OneVariablePolynomial) and
             isinstance(representative.getCoefficientRing(), FinitePrimeField)):
             self.rep = self.field.modulus.reduce(representative)
         else:
-            raise TypeError, "wrong type argument for representative."
+            raise TypeError("wrong type argument for representative.")
 
     def getRing(self):
+        """
+        Return the field to which the element belongs.
+        """
         return self.field
 
     def __add__(self, other):
         assert self.field == other.field
-        sum = self.field.modulus.reduce(self.rep + other.rep)
-        return self.__class__(sum, self.field)
+        sum_ = self.field.modulus.reduce(self.rep + other.rep)
+        return self.__class__(sum_, self.field)
 
     def __sub__(self, other):
         assert self.field == other.field
@@ -350,8 +396,11 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
     __div__ = __truediv__
 
     def inverse(self):
+        """
+        Return the inverse of the element.
+        """
         if not self:
-            raise ZeroDivisionError, "There is no inverse of zero."
+            raise ZeroDivisionError("There is no inverse of zero.")
         return self ** (len(self.field)-2)
 
     def __pow__(self, index):
