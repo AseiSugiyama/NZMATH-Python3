@@ -7,6 +7,7 @@ import gcd
 import prime
 import rational
 import ring
+import factor
 
 class FiniteField (ring.Field):
     def __len__(self):
@@ -54,6 +55,26 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
         if not self.ring:
             self.ring = FinitePrimeField.getInstance(self.m)
         return self.ring
+
+    def order(self):
+        """
+        find and return order of element of group F_p. 
+        """
+        if self.n==0:
+            raise ValueError, "zero is not in the group."    
+        if not hasattr(self,"orderfactor"):
+            self.orderfactor=factor.trialdivision.trialDivision(self.m-1)
+        M=self.m-1
+        l=len(self.orderfactor)
+        o=1
+        i=0
+        while i<l:
+            b=self**(M//(self.orderfactor[i][0]**self.orderfactor[i][1]))
+            while b.toInteger()!=1:
+                o=o*self.orderfactor[i][0]
+                b=b**self.orderfactor[i][0]
+            i=i+1
+        return o
 
 
 class FinitePrimeField (FiniteField):

@@ -122,23 +122,6 @@ def powOrd(x,y,z):
         i=i+1
     return C[0]
 
-def ord(e):
-    """
-    given e:FinitePrimeFieldElement, find and return ord(e) . 
-    """
-    M=e.m-1
-    a=e
-    p=factor.trialdivision.trialDivision(M)
-    l=len(p)
-    o=1
-    i=0
-    while i<l:
-        b=a**(M//(p[i][0]**p[i][1]))
-        while b.toInteger()!=1:
-            o=o*p[i][0]
-            b=b**p[i][0]
-        i=i+1
-    return o
 
 class EC:
     """
@@ -1103,6 +1086,7 @@ class EC:
                 B=self.mul(p[i][0],B)
             i=i+1
         return o
+
     def findpoint(self,ord=None):
         """
         returns point Q in E/F_p s.t point order of Q is ord.
@@ -1117,6 +1101,7 @@ class EC:
                         return point
         else:
             return self.point()
+        
     def Miller(self,P,m,Q,R):
         """
         this returns value of function
@@ -1232,7 +1217,7 @@ class EC:
                         if H:
                             Z=(g*G)/(h*H)
                             #return Z
-                            if ord(Z)<=m:
+                            if not (m%Z.order()):
                                 return Z
        
     def BSGS(self,n,P,Q):
@@ -1325,7 +1310,7 @@ class EC:
                     if m>1:
                         e=other.WeilPairing(m,P1,P2)
                         if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
-                            d=ord(e)
+                            d=e.order()
                         else:
                             d=1
                         #print m,d
