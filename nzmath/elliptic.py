@@ -1078,13 +1078,11 @@ class EC:
             p=factor.trialdivision.trialDivision(N)
         l=len(p)
         o=1
-        i=0
-        while i<l:
-            B=self.mul(N/(p[i][0]**p[i][1]),P)
+        for e in p:
+            B=self.mul(N/(e[0]**e[1]),P)
             while B!=[0]:
-                o=o*p[i][0]
-                B=self.mul(p[i][0],B)
-            i=i+1
+                o=o*e[0]
+                B=self.mul(e[0],B)
         return o
 
     def findpoint(self,ord=None):

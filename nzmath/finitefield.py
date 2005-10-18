@@ -65,14 +65,12 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
         if not hasattr(self,"orderfactor"):
             self.orderfactor=factor.trialdivision.trialDivision(self.m-1)
         M=self.m-1
-        l=len(self.orderfactor)
         o=1
-        i=0
-        while i<l:
-            b=self**(M//(self.orderfactor[i][0]**self.orderfactor[i][1]))
+        for e in self.orderfactor:
+            b=self**(M//(e[0]**e[1]))
             while b.toInteger()!=1:
-                o=o*self.orderfactor[i][0]
-                b=b**self.orderfactor[i][0]
+                o=o*e[0]
+                b=b**e[0]
             i=i+1
         return o
 
