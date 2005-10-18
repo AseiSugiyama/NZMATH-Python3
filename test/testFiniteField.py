@@ -1,7 +1,7 @@
 import unittest
 from finitefield import *
-from rational import Integer
-from rational import Rational
+from rational import Integer, Rational, theRationalField
+
 
 class FinitePrimeFieldElementTest(unittest.TestCase):
     def testInit(self):
@@ -68,6 +68,17 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         self.failUnless(FinitePrimeFieldElement(12, 17))
         self.failIf(FinitePrimeFieldElement(0, 17))
 
+    def testOrder(self):
+        zero = FinitePrimeFieldElement(0, 5)
+        one = FinitePrimeFieldElement(1, 541)
+        minusone = FinitePrimeFieldElement(3910, 3911)
+        elem = FinitePrimeFieldElement(12, 17)
+        self.assertRaises(ValueError, zero.order)
+        self.assertEqual(1, one.order())
+        self.assertEqual(2, minusone.order())
+        self.assertEqual(16, elem.order())
+
+
 class FinitePrimeFieldTest(unittest.TestCase):
     def setUp(self):
         self.F17 = FinitePrimeField(17)
@@ -93,6 +104,18 @@ class FinitePrimeFieldTest(unittest.TestCase):
     def testStrings(self):
         self.assertEqual("F_17", str(self.F17))
         self.assertEqual("FinitePrimeField(17)", repr(self.F17))
+
+    def testSubring(self):
+        self.assert_(self.F17.issubring(self.F17))
+        self.assert_(self.F17.issuperring(self.F17))
+        # polynomial ring
+        import polynomial
+        F17X = polynomial.PolynomialRing(self.F17, 'X')
+        self.assert_(self.F17.issubring(F17X))
+        self.failIf(self.F17.issuperring(F17X))
+        # rational field
+        self.failIf(self.F17.issuperring(theRationalField))
+        self.failIf(self.F17.issubring(theRationalField))
         
 
 def suite(suffix = "Test"):
