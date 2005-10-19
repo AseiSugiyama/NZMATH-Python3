@@ -2223,18 +2223,14 @@ class PolynomialRing (ring.CommutativeRing):
 
 class OneVariablePolynomialIdeal (ring.Ideal):
     """
-
     OneVariablePolynomialIdeal is a class to represent an ideal of one
     variable polynomial ring.
-
     """
     def __init__(self, generators, aRing):
         """
-
         OneVariablePolynomialIdeal(generators, ring) creates an ideal
         in the ring, which must be a polynomial ring with one
         variable, with the given generators.
-
         """
         if generators in aRing:
             self.generators = [generators]
@@ -2243,18 +2239,20 @@ class OneVariablePolynomialIdeal (ring.Ideal):
                 g = generators[0]
                 for t in generators:
                     g = aRing.gcd(t, g)
+                if aRing.getCoefficientRing().isfield():
+                    if g.leadingCoefficient() != aRing.getCoefficientRing().one:
+                        g = g * g.leadingCoefficient().inverse()
                 self.generators = [g]
             else:
                 self.generators = generators[:]
         else:
-            raise TypeError, "generators of ideal must be elements of the ring."
+            raise TypeError("generators of ideal must be elements of the ring.")
         self.ring = aRing
+        self._cache = {}
 
     def __eq__(self, other):
         """
-
         I == J  <=>  I.__eq__(J)
-
         """
         assert self.__class__ == other.__class__
         if self is other:
@@ -2269,19 +2267,15 @@ class OneVariablePolynomialIdeal (ring.Ideal):
 
     def __ne__(self, other):
         """
-
         I != J  <=>  I.__ne__(J)
-
         """
         return not (self == other)
 
     def __contains__(self, element):
         """
-
         e in I  <=>  I.__contains__(e)
 
         for e in the ring, to which the ideal I belongs.
-
         """
         assert self.ring == element.getRing()
         for g in self.generators:
@@ -2294,15 +2288,76 @@ class OneVariablePolynomialIdeal (ring.Ideal):
 
     def reduce(self, element):
         """
-
         Reduce the given element by the ideal.  The result is an
         element of the class which represents the equivalent class.
-
         """
-        reduced = element
-        for g in self.generators:
-            reduced = reduced % g
+        reduced = element.copy()
+        if self.ring.iseuclidean() and isinstance(self.generators[0], OneVariablePolynomial):
+            g = self.generators[0]
+            coeffring = self.ring.getCoefficientRing()
+            zero = coeffring.zero
+            g_degree = g.degree()
+            r_degree = reduced.degree()
+            while r_degree >= g_degree:
+                if r_degree not in self._cache:
+                    self._expand_cache(r_degree)
+                reduced = reduced + reduced[r_degree]*self._cache[r_degree]
+                reduced[r_degree] = zero
+                r_degree = reduced.degree()
+        else:
+            for g in self.generators:
+                reduced = reduced % g
         return reduced
+
+    def _expand_cache(self, degree):
+        """
+        Expand cache to given degree.
+        """
+        g = self.generators[0]
+        g_degree = g.degree()
+        R = self.ring.getCoefficientRing()
+        x = self.ring.getVars().pop()
+        if not self._cache:
+            f = -g
+            f[g_degree] = R.zero
+            self._cache[g_degree] = f
+            for d in range(g_degree + 1, 2*g_degree + 1):
+                clist = self._cache[d - 1].coefficient.getAsList()
+                if self._cache[d - 1][g_degree - 1]:
+                    lc = clist[-1]
+                    clist = [R.zero] + clist[:-1]
+                    f = OneVariableDensePolynomial(clist, x, R)
+                    self._cache[d] = f - lc * self._cache[g_degree]
+                else:
+                    clist = [R.zero] + clist
+                    self._cache[d] = OneVariableDensePolynomial(clist, x, R)
+        d = degree
+        d_list = []
+        while d >= g_degree:
+            d_list.append(d)
+            d = d // 2
+        while d_list:
+            d = d_list.pop() # LIFO
+            if d in self._cache:
+                continue
+            double = self._cache[d//2] ** 2
+            clist = double.coefficient.getAsList()
+            while len(clist) - 1 >= g_degree:
+                lc = clist.pop()
+                if not lc:
+                    continue
+                reducer = self._cache[len(clist)].coefficient.getAsList()
+                for i, r in enumerate(reducer):
+                    clist[i] = clist[i] + r * lc
+            if d % 2:
+                clist = [R.zero] + clist
+                if len(clist) - 1 == g_degree:
+                    lc = clist.pop()
+                    reducer = self._cache[g_degree].coefficient.getAsList()
+                    for i, r in enumerate(reducer):
+                        clist[i] = clist[i] + r * lc
+            self._cache[d] = OneVariableDensePolynomial(clist, x, R)
+
 
 class MultiVariablePolynomialIdeal (ring.Ideal):
     """

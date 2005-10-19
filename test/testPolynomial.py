@@ -1,7 +1,9 @@
 import unittest
-from polynomial import *
-import integerResidueClass
+
 import ring
+import integerResidueClass
+from polynomial import *
+
 
 x, y, z = "xyz"
 Z = rational.theIntegerRing
@@ -656,11 +658,29 @@ class OneVariablePolynomialCoefficientsTest (unittest.TestCase):
         self.assertEqual({0:1, 2:3}, self.c1.getAsDict())
 
 
+class PolynomialIdealTest (unittest.TestCase):
+    def setUp(self):
+        QX = PolynomialRing(Q, 'X')
+        self.g = OneVariableDensePolynomial([3, 0, 0, 1], 'X', Q)
+        self.I = OneVariablePolynomialIdeal(self.g, QX)
+
+    def testReduce(self):
+        f = OneVariableSparsePolynomial({10: 1}, 'X', Q)
+        self.I.reduce(f)
+        self.assertEqual(self.I.reduce(f), f % self.g)
+        f = OneVariableSparsePolynomial({13: 1}, 'X', Q)
+        self.I.reduce(f)
+        self.assertEqual(self.I.reduce(f), f % self.g)
+        f = OneVariableSparsePolynomial({13: 1, 100: 2}, 'X', Q)
+        self.I.reduce(f)
+        self.assertEqual(self.I.reduce(f), f % self.g)
+
+
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
     all_names = globals()
     for name in all_names:
-        if name[-4:] == suffix:
+        if name.endswith(suffix):
             suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
