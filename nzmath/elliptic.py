@@ -140,22 +140,15 @@ class EC:
                 self.ch=0
             else:
                 self.ch=character
-            if self.ch != 0:
-                if not index: #field=F_p
-                    self.coeffField=finitefield.FinitePrimeField(character)
-                    self.index=1
-                elif index==0:
-                    raise ValueError,"you must input(index \in Z>0) (-_-;)"
-                elif index==1:
-                    self.coeffField=finitefield.FinitePrimeField(character)
-                    self.index=1
+                if not index or index == 1: #field=F_p
+                    self.field = finitefield.FinitePrimeField.getInstance(self.ch)
+                    self.index = 1
                 else: #field=F_q,q=(character)^r
                     """
                     index is irred polynomial in F_p,deg=r
                     To add this, we must exchange field and element.
                     """
                     raise NotImplementedError,"Now making (>_<),now we can use only over finite prime fields"
-            self.PointAtInfinity=[0]
             if self.ch==0:
                 if len(self)==5:
                     self.a1=coefficient[0]
@@ -567,8 +560,8 @@ class EC:
                                 s=(3*P[0]**2+2*self.a2*P[0]+self.a4-self.a1*P[1])/(2*P[1]+self.a1*P[0]+self.a3)
                                 t=(-P[0]**3+self.a4*P[0]+2*self.a6-self.a3*P[1])/(2*P[1]+self.a1*P[0]+self.a3)
                         else:
-                            s=(Q[1]-P[1]*finitefield.FinitePrimeFieldElement(1,self.ch))/(Q[0]-P[0])
-                            t=(P[1]*Q[0]-Q[1]*P[0]*finitefield.FinitePrimeFieldElement(1,self.ch))/(Q[0]-P[0])
+                            s=(Q[1]-P[1]*self.field.one)/(Q[0]-P[0])
+                            t=(P[1]*Q[0]-Q[1]*P[0]*self.field.one)/(Q[0]-P[0])
                         x3=s**2+self.a1*s-self.a2-P[0]-Q[0]
                         y3=-(s+self.a1)*x3-t-self.a3
                         R=[x3.n,y3.n]
@@ -643,26 +636,26 @@ class EC:
     def divPoly(self,Number=None):
         if self.ch==0:
             x=polynomial.OneVariableSparsePolynomial({1:1},['x'])
-            y=polynomial.OneVariableSparsePolynomial({1:1},['y'])
+            y=polynomial.OneVariableSparsePolynomial({1:1},['y']) # Unused variable
         else:
-            x=polynomial.OneVariableSparsePolynomial({1:1},['x'],finitefield.FinitePrimeField(self.ch))
-            y=polynomial.OneVariableSparsePolynomial({1:1},['y'],finitefield.FinitePrimeField(self.ch))
+            x=polynomial.OneVariableSparsePolynomial({1:1},['x'],self.field)
+            y=polynomial.OneVariableSparsePolynomial({1:1},['y'],self.field)
         if not Number:
             if self.ch<=3:
                 raise ValueError,"You must input (Number)"
             else:
                 f={}
-                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],finitefield.FinitePrimeField(self.ch))
-                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],finitefield.FinitePrimeField(self.ch))
+                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],self.field)
+                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],self.field)
                 H=heart(self.ch**self.index)
                 E=self.simple()
                 e=4*(x**3+E.a*x+E.b)
                 i=1
                 while i<=H[-1]+1:
                     if i==1:
-                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(E.ch))
+                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],E.field)
                     elif i==2:
-                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(E.ch))
+                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],E.field)
                     elif i==3:
                         f[3]=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
                     elif i==4:
@@ -714,15 +707,15 @@ class EC:
                     i=i+1
                 return f[Number]
             else:
-                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],finitefield.FinitePrimeField(self.ch))
-                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],finitefield.FinitePrimeField(self.ch))
+                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],self.field)
+                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],self.field)
                 e=4*x**3+self.b2*x**2+2*self.b4*x+self.b6
                 i=1
                 while i<=Number:
                     if i==1:
-                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(self.ch))
+                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],self.field)
                     elif i==2:
-                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],finitefield.FinitePrimeField(self.ch))
+                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],self.field)
                     elif i==3:
                         f[3]=3*x**4+self.b2*x**3+3*self.b4*x**2+3*self.b6*x+self.b8
                     elif i==4:
@@ -749,12 +742,10 @@ class EC:
                 other=self.simple()
             else:
                 other=self
-            E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],finitefield.FinitePrimeField(other.ch))
-            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(other.ch))
+            E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],other.field)
+            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],other.field)
             T=[]
-            D=other.divPoly()
-            L=D[1]
-            D=D[0]
+            D, L = other.divPoly()
             i=0
             M=1
             while i<len(L):
@@ -762,7 +753,7 @@ class EC:
                 M=M*j
                 u=PolyPow(x,other.ch,D[j]) #u=x^q
                 v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
-                g0=PolyPow(E,int((other.ch-1)/2),D[j]) #y^(q-1)
+                g0=PolyPow(E,(other.ch-1)//2,D[j]) #y^(q-1)
                 k=other.ch%j
                 f0=PolyMulRed([D[k-1],D[k+1]],D[j])
                 f3=PolyMulRed([D[k],D[k]],D[j])
@@ -928,7 +919,7 @@ class EC:
                     g=random.randint(2,other.ch-1)
                 W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
                 c,d=g**2*other.a,g**3*other.b
-                f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",finitefield.FinitePrimeField(other.ch))
+                f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",other.field)
                 BOX=[]
                 i=0
                 while i<other.ch:
@@ -1012,8 +1003,8 @@ class EC:
         p=self.ch
         if p>3:
             if self.index==1:
-                x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(p))
-                y=polynomial.OneVariableSparsePolynomial({1:1},["y"],finitefield.FinitePrimeField(p))
+                x=polynomial.OneVariableSparsePolynomial({1:1},["x"],self.field)
+                y=polynomial.OneVariableSparsePolynomial({1:1},["y"],self.field)
                 if not Q:
                     if P!=[0]:
                         return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
@@ -1045,11 +1036,13 @@ class EC:
                         f=x-finitefield.FinitePrimeFieldElement(P[0],p)
                         return 1,f
                     else:
-                        Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
+                        #Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
+                        Q = [self.field.createElement(e) for e in Q]
                         #s=finitefield.FinitePrimeFieldElement(P[0],p)
                         #t=finitefield.FinitePrimeFieldElement(P[1],p)
                         #f=(Q[0]-s)*(x-s)+(Q[1]-t)-(y-t)*(Q[0]-s)
-                        P=finitefield.FinitePrimeFieldElement(P[0],p),finitefield.FinitePrimeFieldElement(P[1],p)
+                        #P=finitefield.FinitePrimeFieldElement(P[0],p),finitefield.FinitePrimeFieldElement(P[1],p)
+                        P = [self.field.createElement(e) for e in P]
                         f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
                             return 0,f
@@ -1076,10 +1069,9 @@ class EC:
             p=f
         else:
             p=factor.trialdivision.trialDivision(N)
-        l=len(p)
         o=1
         for e in p:
-            B=self.mul(N/(e[0]**e[1]),P)
+            B=self.mul(N//(e[0]**e[1]),P)
             while B!=[0]:
                 o=o*e[0]
                 B=self.mul(e[0],B)
@@ -1113,15 +1105,15 @@ class EC:
                 raise ValueError,"order more than 1"
             if m==2:
                 if P==Q:
-                    return finitefield.FinitePrimeFieldElement(1,self.ch)
+                    return self.field.one
                 else:
-                    return finitefield.FinitePrimeFieldElement(self.ch-1,self.ch)
+                    return -self.field.one
 
             # check points are not infinity point
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
             # initialize
-            f0=finitefield.FinitePrimeFieldElement(1,self.ch)
+            f0=self.field.one # Unused variable
             f_d=0
             Z=R
             l=self.line(P,Z)
@@ -1194,7 +1186,7 @@ class EC:
         computing the Weil pairing with Miller's algorithm.
         """
         N=self.order()
-        p=factor.trialdivision.trialDivision(N)
+        p=factor.trialdivision.trialDivision(N) #  Unused variable
         if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
         while 1:
@@ -1253,7 +1245,7 @@ class EC:
     def allPoint(self,O):
         if self.ch>3 and self.index==1:
             p=self.ch
-            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],finitefield.FinitePrimeField(p))
+            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],self.field)
             other=self.simple()
             Y=x**3+other.a*x+other.b
             L=[]
@@ -1307,7 +1299,7 @@ class EC:
                     m=gcd.lcm(s,t)
                     if m>1:
                         e=other.WeilPairing(m,P1,P2)
-                        if e!=finitefield.FinitePrimeFieldElement(1,self.ch):
+                        if e!=self.field.one:
                             d=e.order()
                         else:
                             d=1
