@@ -132,6 +132,15 @@ class PairingTest (unittest.TestCase):
         assert R == finitefield.FinitePrimeFieldElement(1, 997)
         assert W1 == finitefield.FinitePrimeFieldElement(304, 997)
         assert W1 == W2**-1
+        assert W1**3 == finitefield.FinitePrimeFieldElement(1, 997)
+    def teststructure(self):
+        # this example was provided by magma.
+        e = elliptic.EC([0,4], 997)
+        f = elliptic.EC([-1,0], 65537)
+        g = elliptic.EC([0,1], 65538)
+        assert e.structure() == (12,84)
+        assert f.structure() == (256,256)
+        assert g.structure() == (1,65538)
 
 
 def suite():
