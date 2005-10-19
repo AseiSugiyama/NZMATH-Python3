@@ -972,26 +972,27 @@ class EC:
     def order(self,flag=None):
         """
         this returns #E(Fp)
-        if flag==0: #E/F_p
-        else:#E/F_{p^r}, E is defind over F_p
+        if flag==False : #E/F_p
+        else:#E/F_{p^r}, E is defined over F_p
         """
         if self.ch<=3:
             raise NotImplementedError,"Now making m(__)m"
         elif self.ch<10**4:
-            if not flag:
-                return self.ch+1-self.naive()
-            else:
+            if flag:
                 return pow(self.ch,flag)+1-powOrd(self.naive(),flag,self.ch)
+            elif not hasattr(self, "o"):
+                self.o=self.ch+1-self.naive()
         elif self.ch<10**30:
-            if not flag:
-                return self.ch+1-self.Shanks_Mestre()
-            else:
+            if flag:
                 return pow(self.ch,flag)+1-powOrd(self.Shanks_Mestre(),flag,self.ch)
+            elif not hasattr(self, "o"):
+                self.o=self.ch+1-self.Shanks_Mestre()
         else: # self.ch>=10**30
-            if not flag:
-                return self.ch+1-self.Schoof()
-            else:
+            if flag:
                 return pow(self.ch,flag)+1-powOrd(self.Schoof(),flag,self.ch)
+            elif not hasattr(self, "o"):
+                self.o=self.ch+1-self.Schoof()
+        return self.o
 
     def line(self,P,Q=None):
         """
@@ -1016,7 +1017,6 @@ class EC:
                             return 0,x(1)
                         s=finitefield.FinitePrimeFieldElement(P[0],p)
                         t=finitefield.FinitePrimeFieldElement(P[1],p)
-                        #f=(3*s**2+self.a)*(x-s)-2*t*(y-t)
                         f=(3*s**2+2*self.a2*s+self.a4-self.a1*t)*x-(2*t+self.a1*s+self.a3)*y
                         f=f-(s**3)+self.a4*s+2*self.a6-self.a3*t
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
@@ -1038,9 +1038,6 @@ class EC:
                     else:
                         #Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
                         Q = [self.field.createElement(e) for e in Q]
-                        #s=finitefield.FinitePrimeFieldElement(P[0],p)
-                        #t=finitefield.FinitePrimeFieldElement(P[1],p)
-                        #f=(Q[0]-s)*(x-s)+(Q[1]-t)-(y-t)*(Q[0]-s)
                         #P=finitefield.FinitePrimeFieldElement(P[0],p),finitefield.FinitePrimeFieldElement(P[1],p)
                         P = [self.field.createElement(e) for e in P]
                         f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
@@ -1061,25 +1058,26 @@ class EC:
         """
         find point order of P and return order.
         """
+        # parameter ord and f are extension for structure.
         if ord:
             N=ord
         else:
             N=self.order()
         if f:
-            p=f
+            l=f
         else:
-            p=factor.trialdivision.trialDivision(N)
+            l=factor.trialdivision.trialDivision(N)
         o=1
-        for e in p:
-            B=self.mul(N//(e[0]**e[1]),P)
+        for p,e in l:
+            B=self.mul(N//(p**e),P)
             while B!=[0]:
-                o=o*e[0]
-                B=self.mul(e[0],B)
+                o=o*p
+                B=self.mul(p,B)
         return o
 
     def findpoint(self,ord=None):
         """
-        returns point Q in E/F_p s.t point order of Q is ord.
+        returns point Q in E/F_p s.t [ord]Q == [0] .
         """
         if ord:
             if self.order()%ord!=0:
@@ -1097,7 +1095,6 @@ class EC:
         this returns value of function
         with divisor f_P(Q)
         this use for only compute Weil pairing
-        self is assumed supersingular elliptic curve.
         """
         if self.ch>3 and self.index==1:
             # check order
@@ -1113,7 +1110,7 @@ class EC:
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
             # initialize
-            f0=self.field.one # Unused variable
+            # f0=self.field.one # Unused variable
             f_d=0
             Z=R
             l=self.line(P,Z)
@@ -1185,8 +1182,6 @@ class EC:
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        N=self.order()
-        p=factor.trialdivision.trialDivision(N) #  Unused variable
         if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
         while 1:
@@ -1206,7 +1201,6 @@ class EC:
                         H=self.Miller(P,m,U,T)
                         if H:
                             Z=(g*G)/(h*H)
-                            #return Z
                             if not (m%Z.order()):
                                 return Z
        
@@ -1277,7 +1271,9 @@ class EC:
                 N=other.order()
                 if prime.primeq(N):
                     return (1,N)
-
+                if other.issupersingular() and other.ch%4==1:
+                    return (1,N)
+                
                 # step 2. decompose N.
                 r=gcd.gcd(other.ch-1,N)
                 p=factor.trialdivision.trialDivision(r)
@@ -1286,8 +1282,9 @@ class EC:
                 while N0>1:
                     N0=gcd.gcd(r,N2)
                     N1,N2=N1*N0,N2//N0
-                if N1==r and N2!=1:
+                if N1==2:
                     return (N1,N2)
+
                 while 1:
                     P1=[0]
                     P2=[0]
@@ -1310,5 +1307,17 @@ class EC:
                 raise NotImplementedError,"Now making m(__)m"
         else:
             raise NotImplementedError,"Now making m(__)m"
+
+    def issupersingular(self):
+        """
+        returns supersingularities.
+        """
+        if self.index==1 and self.ch>3:
+            if self.order()==self.ch+1:
+                return True
+            else:
+                return False
+        else:
+            raise NotImplementedError,"sorry, Now making."
 
         
