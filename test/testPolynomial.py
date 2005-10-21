@@ -676,7 +676,51 @@ class PolynomialIdealTest (unittest.TestCase):
         self.assertEqual(self.I.reduce(f), f % self.g)
 
 
-def suite(suffix = "Test"):
+class OneVariableMonomialTest (unittest.TestCase):
+    def testVariable(self):
+        x = OneVariableMonomial('X')
+        self.assert_(isinstance(x, OneVariablePolynomial))
+        self.assertEqual("X", str(x))
+        y = OneVariableMonomial('Y')
+        self.assert_(isinstance(y, OneVariablePolynomial))
+        self.assertEqual("Y", str(y))
+
+    def testIndex(self):
+        x = OneVariableMonomial('X', index=2)
+        self.assert_(isinstance(x, OneVariablePolynomial))
+        self.assertEqual("X ** 2", str(x))
+
+    def testCoefficient(self):
+        x = OneVariableMonomial('X', coefficient=2)
+        self.assert_(isinstance(x, OneVariablePolynomial))
+        self.assertEqual("2 * X", str(x))
+
+    def testRing(self):
+        x = OneVariableMonomial('X', coeffring=Q)
+        self.assert_(isinstance(x, OneVariablePolynomial))
+        self.assertEqual("1/1 * X", str(x))
+        self.assertEqual(x.getCoefficientRing(), Q)
+
+    def testRingCharNonZero(self):
+        import finitefield
+        F3 = finitefield.FinitePrimeField.getInstance(3)
+        x = OneVariableMonomial('X', coeffring=F3)
+        self.assert_(isinstance(x, OneVariablePolynomialCharNonZero))
+        self.assertEqual(x.getCoefficientRing(), F3)
+
+    def testAllOptions(self):
+        x = OneVariableMonomial('X', index=2, coefficient=3, coeffring=Q)
+        self.assert_(isinstance(x, OneVariablePolynomial))
+        self.assertEqual("3 * X ** 2", str(x))
+        self.assertEqual(x.getCoefficientRing(), Q)
+
+    def testConstant(self):
+        const = OneVariableMonomial('X', index=0, coefficient=-1)
+        self.assert_(isinstance(const, OneVariablePolynomial))
+        self.assertEqual("-1", str(const))
+
+
+def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
     for name in all_names:

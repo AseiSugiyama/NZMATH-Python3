@@ -348,8 +348,8 @@ class OneVariablePolynomial:
         else:
             raise ValueError, "You must specify a variable."
 
-    def integrate(self, var = None, min = None, max = None):
-        if min == None and max == None and var != None and isinstance(var, str):
+    def integrate(self, var=None, mini=None, maxi=None):
+        if mini == None and maxi == None and var != None and isinstance(var, str):
             if self.degree() == 0:
                 return OneVariableDensePolynomial([0, self[0]], var, self.getCoefficientRing())
             elif self.degree() < 0:
@@ -364,11 +364,11 @@ class OneVariablePolynomial:
                     integrate_coefficient,
                     var,
                     self.getCoefficientRing().getQuotientField())
-        elif min != None and max != None and var != None and isinstance(var, str):
+        elif mini != None and maxi != None and var != None and isinstance(var, str):
             if var != self.getVariable():
-                return self * (max - min)
+                return self * (maxi - mini)
             primitive_function = self.integrate(var)
-            return primitive_function(max) - primitive_function(min)
+            return primitive_function(maxi) - primitive_function(mini)
         else:
             raise ValueError, "You must call integrate with variable or with variable, min and max."
 
@@ -456,6 +456,8 @@ class OneVariablePolynomial:
         return_str = w_sign.sub("- ", return_str)
         one_coeff = re.compile("(^| )1 \* ")
         return_str = one_coeff.sub(" ", return_str)
+        while return_str.startswith(" "):
+            return_str = return_str[1:]
         return return_str
 
     def getVariable(self):
@@ -538,6 +540,30 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     except AttributeError:
         pass
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+
+
+def OneVariableMonomial(variable, index=1, coefficient=1, coeffring=None):
+    """
+    Create a polynomial consists of one monomial.
+
+    The variable name is required.
+    Optional arguments are:
+      index: power index of the monomial default to one.
+      coefficient: coefficient of the monomial default to one.
+      coeffring: ring of coefficients default to Z.
+    """
+    if not coeffring:
+        coeffring = ring.getRing(coefficient)
+    elif coefficient is 1:
+        coefficient = coeffring.one
+    _coefficient = OneVariablePolynomialCoefficients()
+    _coefficient.setDict({index: coefficient})
+    try:
+        if coeffring.getCharacteristic() > 0:
+            return OneVariablePolynomialCharNonZero(_coefficient, variable, coeffring)
+    except AttributeError:
+        pass
+    return OneVariablePolynomial(_coefficient, variable, coeffring)
 
 
 class MultiVariableSparsePolynomial:
@@ -1114,7 +1140,7 @@ class MultiVariableSparsePolynomial:
         else:
             raise ValueError, "You input [Polynomial, string]."
 
-    def integrate(self, other = None, mini = None, maxi = None):
+    def integrate(self, other=None, mini=None, maxi=None):
         if mini == None and maxi == None and other != None and isinstance(other, str):
             before_polynomial = self.adjust()
             if other in before_polynomial.variable:
