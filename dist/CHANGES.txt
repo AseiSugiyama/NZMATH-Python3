@@ -1,0 +1,76 @@
+version 0.4.0 to 0.4.1
+----------------------
+* fix a bug of Schoof's method, EC.point, etc. in elliptic.
+* fix a bug of integrate method in polynomial.
+* move elliptic.divi to factor.AllDivisors.
+* rename arith1.sqroot to modsqrt and remove resembles in factor sub-package.
+* move vp from prime to arith1 and remove factor.factor.ord.
+* remove dependency on factor.trialDivision from prime.
+* move issquare from factor to arith1.
+* add a function getRing in ring.
+* add a function mpqsfind in factor.mpqs.
+* add a method order to finitefield.FinitePrimeFieldElement.
+* add generator_eratosthenes to prime (EXPERIMENTAL).
+
+version 0.3.1 to 0.4.0
+----------------------
+* add new modules equation providing a root finding methods and zassenhaus providing factorization of integer coefficient polynomials.
+* fix some bugs in factor.factor and polynomial.
+* add a method to culculate Mordel-Weil group structure of elliptic curve over finite fields. 
+* add a function floorpowerroot in arith1.
+* add functions bernoulli and catalan in combinatorial.
+* add a function PrimePowerTest in factor.factor.
+* add a function sigma in multiplicative.
+
+version 0.3.0 to 0.3.1
+----------------------
+* fix import problem, and include finitefield.py mistakenly missing in 0.3.0.
+
+version 0.2.1 to 0.3.0
+----------------------
+* create a new module multiplicative.py with euler and moebius
+  from arith1.py to avoid circular import.
+
+version 0.2.0 to 0.2.1
+----------------------
+* include some missing files in 0.2.0.
+
+Version 0.1.1 to 0.2.0
+----------------------
+* add a new module factor.mpqs, which provides multi-polynomial
+  quadratic sieve method.
+* add a method to culculate order of elliptic curve over finite fields.
+* rewrite polynomial.py for one variable polynomials.
+* rewrite real.py and imaginary.py.
+* fix bug in matrix.py (reported by Justin Walker).
+* many other bug fixes.
+* create a tutorial.txt document.
+
+Version 0.1.0 to 0.1.1
+----------------------
+* BSD-licensed.
+* add a constant j to imaginary.
+* intializing Rational with denominator 0 raises ZeroDivisionError.
+* fix bugs in real.py and elliptic.py.
+
+Version 0.0.1 to 0.1.0
+----------------------
+* add new module elliptic for elliptic curve operations.
+* remove optional argument for generator in prime.py. Condition may
+  be specified with itertools instead.
+* add new module finitefield for finite field.  It only includes
+  finite prime field at the present moment.
+* add new module combinatrial including binomial and factorial.
+* add issubring and issuperring to Ring in ring.py.
+* add mpqs function (multi-polynomial quadratic sieve) in factor.py.
+* add IntegerIfIntOrLong function in rational.py.
+* add LUDecomposition method to Matrix in matrix.py.
+* now you can factor a very big but very smooth integer by trial division.
+* speed up real.log, and it now accepts float.
+* fix bugs in rational.py, integerResidueClass.py, etc..
+
+Version 0.0.0 to 0.0.1
+----------------------
+* add __long__ and __int__ methods to Rational in rational.py.
+* add gcd method to PolynomialRing in polynomial.py.
+* fix bugs in matrix.py, polynomial.py.
