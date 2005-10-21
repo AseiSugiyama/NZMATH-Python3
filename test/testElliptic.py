@@ -137,7 +137,7 @@ class PairingTest (unittest.TestCase):
         # this example was provided by magma.
         e = elliptic.EC([0,4], 997)
         f = elliptic.EC([-1,0], 65537)
-        g = elliptic.EC([0,1], 65538)
+        g = elliptic.EC([0,1], 65537)
         assert e.structure() == (12,84)
         assert f.structure() == (256,256)
         assert g.structure() == (1,65538)
