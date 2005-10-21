@@ -131,7 +131,7 @@ def suite(suffix = "Test"):
     suite = unittest.TestSuite()
     all_names = globals()
     for name in all_names:
-        if name[-len(suffix):] == suffix:
+        if name.endswith(suffix):
             suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
