@@ -182,13 +182,13 @@ class EC:
                     raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                 if self.disc==0:
                     raise ValueError, "singular curve (@_@)"
-                self.j=rational.IntegerIfIntOrLong(self.c4**3)/rational.IntegerIfIntOrLong(self.disc)
+                self.j=rational.IntegerIfIntOrLong(self.c4**3)/self.disc
             elif self.ch==1:
                 raise ValueError, "characteristic must be 0 or prime (-_-;)"
             elif self.ch==2: # y^2+x*y=x^3+a2*x^2+a6 or y^2+a3*y=x^3+a4*x+a6
-                for i in range(0,len(self)):
-                    if not isinstance(coefficient[i],(int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError, "you must input integer coefficients. m(__)m"
+                for c in coefficient:
+                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                        raise ValueError("you must input integer coefficients. m(__)m")
                 if len(self)==5:
                     if coefficient[0]%2==1 and coefficient[2]%2==coefficient[3]%2==0:
                         self.a1=finitefield.FinitePrimeFieldElement(1,2)
@@ -203,8 +203,8 @@ class EC:
                         self.c4=finitefield.FinitePrimeFieldElement(1,2)
                         self.c6=finitefield.FinitePrimeFieldElement(1,2)
                         self.disc=self.a6
-                        if self.disc.n!=0:
-                            self.j=self.a6.inverse()
+                        if self.disc:
+                            self.j=self.disc.inverse()
                     elif coefficient[0]%2==coefficient[1]%2==0:
                         self.a1=finitefield.FinitePrimeFieldElement(0,2)
                         self.a2=finitefield.FinitePrimeFieldElement(0,2)
@@ -226,9 +226,9 @@ class EC:
                 else:
                     raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
             elif self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
-                for i in range(0,len(self)):
-                    if not isinstance(coefficient[i],(int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError, "you must input integer coefficients. m(__)m"
+                for c in coefficient:
+                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                        raise ValueError("you must input integer coefficients. m(__)m")
                 if len(self)==5:
                     if coefficient[0]%3==coefficient[2]%3==coefficient[3]%3==0:
                         self.a1=finitefield.FinitePrimeFieldElement(0,3)
@@ -243,7 +243,7 @@ class EC:
                         self.c4=self.b2**2
                         self.c6=2*self.b2**3
                         self.disc=-self.a2**3*self.a6
-                        if self.disc.n!=0:
+                        if self.disc.n:
                             self.j=(-self.a2**3)*self.a6.inverse()
                     elif coefficient[0]==coefficient[1]==coefficient[2]==0:
                         self.a1=finitefield.FinitePrimeFieldElement(0,3)
@@ -266,10 +266,10 @@ class EC:
                 else:
                     raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
             else:
-                for i in range(0,len(self)):
-                    if not isinstance(coefficient[i],(int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError, "you must input integer coefficients. m(__)m"
-                if prime.millerRabin(self.ch)==1:
+                for c in coefficient:
+                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                        raise ValueError("you must input integer coefficients. m(__)m")
+                if prime.millerRabin(self.ch): # why Miller-Rabin?
                     if len(self)==5:
                         self.a1=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
                         self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
@@ -283,9 +283,10 @@ class EC:
                         self.c4=self.b2**2-24*self.b4
                         self.c6=-self.b2**3+36*self.b2*self.b4-216*self.b6
                         self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
-                        if self.disc.n==0:
+                        if self.disc:
+                            self.j=self.c4**3*self.disc.inverse()
+                        else:
                             raise ValueError, "singular curve (@_@)"
-                        self.j=self.c4**3*self.disc.inverse()
                     elif len(self)==2:
                         self.a=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
                         self.b=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
@@ -301,9 +302,10 @@ class EC:
                         self.c4=-48*self.a
                         self.c6=-864*self.b
                         self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
-                        if self.disc.n==0:
+                        if self.disc:
+                            self.j=self.c4**3*self.disc.inverse()
+                        else:
                             raise ValueError, "singular curve (@_@)"
-                        self.j=self.c4**3*self.disc.inverse()
                     else:
                         raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
                 else:
@@ -634,103 +636,97 @@ class EC:
             return self.sub([0],Q)
 
     def divPoly(self,Number=None):
-        if self.ch==0:
-            x=polynomial.OneVariableSparsePolynomial({1:1},['x'])
-            y=polynomial.OneVariableSparsePolynomial({1:1},['y']) # Unused variable
+        if self.ch == 0:
+            x = polynomial.OneVariableMonomial('x')
         else:
-            x=polynomial.OneVariableSparsePolynomial({1:1},['x'],self.field)
-            y=polynomial.OneVariableSparsePolynomial({1:1},['y'],self.field)
+            x = polynomial.OneVariableMonomial('x', coeffring=self.field)
         if not Number:
-            if self.ch<=3:
-                raise ValueError,"You must input (Number)"
-            else:
-                f={}
-                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],self.field)
-                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],self.field)
-                H=heart(self.ch**self.index)
-                E=self.simple()
-                e=4*(x**3+E.a*x+E.b)
-                i=1
-                while i<=H[-1]+1:
-                    if i==1:
-                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],E.field)
-                    elif i==2:
-                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],E.field)
-                    elif i==3:
-                        f[3]=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    elif i==4:
-                        f[4]=2*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
+            if self.ch <= 3:
+                raise ValueError("You must input (Number)")
+            Kx = x.getRing()
+            f = {-1: -Kx.one, 0: Kx.zero}
+            H = heart(self.ch**self.index)
+            E = self.simple()
+            e = 4*(x**3+E.a*x+E.b)
+            if 1 <= H[-1]+1:
+                f[1] = Kx.one
+            if 2 <= H[-1]+1:
+                f[2] = Kx.one
+            if 3 <= H[-1]+1:
+                f[3] = 3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
+            if 4 <= H[-1]+1:
+                f[4] = 2*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
+            i = 5
+            while i <= H[-1]+1:
+                if i % 2 != 0:
+                    j = (i-1)//2
+                    if j % 2 != 0:
+                        f[i] = f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
                     else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            if j%2!=0:
-                                f[i]=f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
-                            else:
-                                f[i]=e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
-                        else:
-                            j=i//2
-                            f[i]=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
-                    i=i+1
-                i=-1
-                while i<=H[-1]+1:
-                    if i>1 and i%2==0:
-                        f[i]=2*f[i]
-                    i=i+1
-                return f,H
+                        f[i] = e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                else:
+                    j = i//2
+                    f[i] = (f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
+                i += 1
+            i = -1
+            while i <= H[-1]+1:
+                if i > 1 and i % 2 == 0:
+                    f[i] = 2*f[i]
+                i += 1
+            return (f, H)
         else:
-            f={}
-            if self.ch==0:
-                f[-1]=-1
-                f[0]=0
-                E=self.simple()
-                e=x**3+E.a*x+E.b
-                i=1
-                while i<=Number:
-                    if i==1:
-                        f[1]=1
-                    elif i==2:
-                        f[2]=1
-                    elif i==3:
-                        f[3]=3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
-                    elif i==4:
-                        f[4]=2*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
-                    else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            if j%2!=0:
-                                f[i]=f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
-                            else:
-                                f[i]=e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+            f = {}
+            if self.ch == 0:
+                f[-1] = -1
+                f[0] = 0
+                E = self.simple()
+                e = x**3+E.a*x+E.b
+                if 1 <= Number:
+                    f[1] = 1
+                if 2 <= Number:
+                    f[2] = 1
+                if 3 <= Number:
+                    f[3] = 3*x**4+6*E.a*x**2+12*E.b*x-E.a**2
+                if 4 <= Number:
+                    f[4] = 2*(x**6+5*E.a*x**4+20*E.b*x**3-5*E.a**2*x**2-4*E.a*E.b*x-E.a**3-8*E.b**2)
+                i = 5
+                while i <= Number:
+                    if i % 2 != 0:
+                        j = (i-1)//2
+                        if j % 2 != 0:
+                            f[i] = f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
                         else:
-                            j=i//2
-                            f[i]=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
-                    i=i+1
+                            f[i] = e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                    else:
+                        j = i//2
+                        f[i] = (f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
+                    i += 1
                 return f[Number]
             else:
-                f[-1]=polynomial.OneVariableSparsePolynomial({0:-1},['x'],self.field)
-                f[0]=polynomial.OneVariableSparsePolynomial({},["x"],self.field)
-                e=4*x**3+self.b2*x**2+2*self.b4*x+self.b6
-                i=1
-                while i<=Number:
-                    if i==1:
-                        f[1]=polynomial.OneVariableSparsePolynomial({0:1},['x'],self.field)
-                    elif i==2:
-                        f[2]=polynomial.OneVariableSparsePolynomial({0:1},['x'],self.field)
-                    elif i==3:
-                        f[3]=3*x**4+self.b2*x**3+3*self.b4*x**2+3*self.b6*x+self.b8
-                    elif i==4:
-                        f[4]=2*x**6+self.b2*x**5+5*self.b4*x**4+10*self.b6*x**3+10*self.b8*x**2+(self.b2*self.b8-self.b4*self.b6)*x+self.b4*self.b8-self.b6**2
-                    else:
-                        if i%2!=0:
-                            j=(i-1)//2
-                            if j%2!=0:
-                                f[i]=f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
-                            else:
-                                f[i]=e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                Kx = x.getRing()
+                f[-1] = -Kx.one
+                f[0] = Kx.zero
+                e = 4*x**3 + self.b2*x**2 + 2*self.b4*x + self.b6
+                if 1 <= Number:
+                    f[1] = Kx.one
+                if 2 <= Number:
+                    f[2] = Kx.one
+                if 3 <= Number:
+                    f[3] = 3*x**4+self.b2*x**3+3*self.b4*x**2+3*self.b6*x+self.b8
+                if 4 <= Number:
+                    f[4] = 2*x**6+self.b2*x**5+5*self.b4*x**4+10*self.b6*x**3+10*self.b8*x**2+(self.b2*self.b8-self.b4*self.b6)*x+self.b4*self.b8-self.b6**2
+                i = 5
+                while i <= Number:
+                    if i % 2 != 0:
+                        j = (i-1)//2
+                        if j % 2 != 0:
+                            f[i]=f[j+2]*f[j]**3-e**2*f[j-1]*f[j+1]**3
                         else:
-                            j=i//2
-                            f[i]=(f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
-                    i=i+1
+                            f[i]=e**2*f[j+2]*f[j]**3-f[j-1]*f[j+1]**3
+                    else:
+                        j = i//2
+                        f[i] = (f[j+2]*f[j-1]**2-f[j-2]*f[j+1]**2)*f[j]
+                    i += 1
                 return f[Number]
 
     def Schoof(self):
@@ -742,9 +738,9 @@ class EC:
                 other=self.simple()
             else:
                 other=self
-            E=polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1},['x'],other.field)
-            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],other.field)
-            T=[]
+            E = polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1}, 'x', other.field)
+            x = polynomial.OneVariableMonomial("x", coeffring=other.field)
+            T = []
             D, L = other.divPoly()
             i=0
             M=1
@@ -1004,8 +1000,8 @@ class EC:
         p=self.ch
         if p>3:
             if self.index==1:
-                x=polynomial.OneVariableSparsePolynomial({1:1},["x"],self.field)
-                y=polynomial.OneVariableSparsePolynomial({1:1},["y"],self.field)
+                x = polynomial.OneVariableMonomial("x", coeffring=self.field)
+                y = polynomial.OneVariableMonomial("y", coeffring=self.field)
                 if not Q:
                     if P!=[0]:
                         return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
@@ -1036,9 +1032,7 @@ class EC:
                         f=x-finitefield.FinitePrimeFieldElement(P[0],p)
                         return 1,f
                     else:
-                        #Q=finitefield.FinitePrimeFieldElement(Q[0],p),finitefield.FinitePrimeFieldElement(Q[1],p)
                         Q = [self.field.createElement(e) for e in Q]
-                        #P=finitefield.FinitePrimeFieldElement(P[0],p),finitefield.FinitePrimeFieldElement(P[1],p)
                         P = [self.field.createElement(e) for e in P]
                         f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
                         if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
@@ -1239,7 +1233,7 @@ class EC:
     def allPoint(self,O):
         if self.ch>3 and self.index==1:
             p=self.ch
-            x=polynomial.OneVariableSparsePolynomial({1:1},["x"],self.field)
+            x = polynomial.OneVariableMonomial("x", coeffring=self.field)
             other=self.simple()
             Y=x**3+other.a*x+other.b
             L=[]
@@ -1267,15 +1261,15 @@ class EC:
         if self.ch>3:
             if self.index==1:
                 # step 1. find order E/F_p.
-                other=self.simple()
-                N=other.order()
+                simplified=self.simple()
+                N=simplified.order()
                 if prime.primeq(N):
                     return (1,N)
-                if other.issupersingular() and other.ch%4==1:
+                if simplified.issupersingular() and simplified.ch%4==1:
                     return (1,N)
-                
+
                 # step 2. decompose N.
-                r=gcd.gcd(other.ch-1,N)
+                r=gcd.gcd(simplified.ch-1,N)
                 p=factor.trialdivision.trialDivision(r)
                 N0=r
                 N1,N2=1,N
@@ -1286,16 +1280,18 @@ class EC:
                     return (N1,N2)
 
                 while 1:
-                    P1=[0]
-                    P2=[0]
-                    while P1==[0] or P2==[0]:
-                        P1,P2=other.point(),other.point()
-                    P1,P2=other.mul(N2,P1),other.mul(N2,P2)
-                    s=other.pointorder(P1,r,p)
-                    t=other.pointorder(P2,r,p)
+                    P1 = [0]
+                    while P1 == [0]:
+                        P1 = simplified.point()
+                    P2 = [0]
+                    while P2 == [0]:
+                        P2 = simplified.point()
+                    P1,P2=simplified.mul(N2,P1),simplified.mul(N2,P2)
+                    s=simplified.pointorder(P1,r,p)
+                    t=simplified.pointorder(P2,r,p)
                     m=gcd.lcm(s,t)
                     if m>1:
-                        e=other.WeilPairing(m,P1,P2)
+                        e=simplified.WeilPairing(m,P1,P2)
                         if e!=self.field.one:
                             d=e.order()
                         else:
