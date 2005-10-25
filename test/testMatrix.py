@@ -15,11 +15,11 @@ f = Matrix(4,4,[1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
 
 g = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
 
-h1 = Matrix(3,3,[])
+h1 = Matrix(3,3,[12,0,0,0,1,0,0,0,1])
 
-h2 = Matrix(3,3,[])
+h2 = Matrix(3,3,[1,0,0,0,1,0,0,0,0])
 
-h3 = Matrix([])
+h3 = Matrix(3,3,[1,0,0,0,1,0,0,0,1])
 
 class MatrixTest(unittest.TestCase):
     def testAdd(self):
