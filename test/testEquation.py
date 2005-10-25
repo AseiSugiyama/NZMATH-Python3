@@ -37,7 +37,6 @@ class LocalEquationTest (unittest.TestCase):
         solutions = equation.e3_Fp([2, 0, 0, 1], 43)
         for s in solutions:
             self.assertEqual(0, (2 + s**3) % 43)
-        print solutions
         thesolutions = [9, 11, 23]
         self.assertEquals(len(thesolutions), len(solutions))
         for s in thesolutions:

@@ -102,7 +102,7 @@ def e3_Fp(x,p):
     x.reverse()
     lc_inv = finitefield.FinitePrimeFieldElement(x[0], p).inverse()
     coeff = []
-    for c in x:
+    for c in x[1:]:
         coeff.append((c * lc_inv).n)
     equ=[]
     i=0
