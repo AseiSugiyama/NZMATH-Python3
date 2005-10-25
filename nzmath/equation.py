@@ -114,7 +114,7 @@ def e3_Fp(x,p):
             i=i+1
     if len(equ)==0:
         return equ
-    X=e2_Fp([1,coeff[0]+equ[0],coeff[1]+coeff[0]*equ[0]+equ[0]**2],p)
+    X=e2_Fp([coeff[1]+coeff[0]*equ[0]+equ[0]**2,coeff[0]+equ[0],1],p)
     if len(X)!=0:
         equ.append(X[0])
         equ.append(X[1])
