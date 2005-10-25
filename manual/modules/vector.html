@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>vector.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=vector.py">vector.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?vector.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?vector.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a><br /></p>
+<h2 id="content_1_0">vector.py</h2>
+<p>Module vector provides class Vector, function and some exception.<br /></p>
+<div class="contents">
+<a id="contents_1"></a><ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_0"> vector.py </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_1"> CLASSES </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_2"> class Vector </a></li>
+<li><a href="#content_1_3"> class VectorSizeError </a></li></ul></li>
+<li><a href="#content_1_4"> FUNCTIONS </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_5"> def innerProduct(aVector, other) </a></li></ul></li>
+<li><a href="#content_1_6"> EXCEPTIONS </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_7"> except VectorSizeError </a></li></ul></li>
+<li><a href="#content_1_8"> DEPENDENCY </a></li>
+<li><a href="#content_1_9"> BUGS(IMPLEMENT PROBLEMS, MAYBE) </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_10"> Implementation of Multiplication </a></li>
+<li><a href="#content_1_11"> Implementation of InnerProduct </a></li></ul></li></ul></li></ul></div>
+
+<h3 id="content_1_1">CLASSES</h3>
+<p>Module vector provides classes as follows.<br /></p>
+<h4 id="content_1_2">class Vector</h4>
+<p>Class Vector is an elemental class of vector. <br /></p>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Initialize</dt>
+<dd><pre>&gt;&gt;&gt; aVector=Vector(list)</pre>
+Variable aVector initializes to Vector object.<br />
+<strong>Example to use</strong>:<br />
+<pre>&gt;&gt;&gt; u=Vector([0,1,3])
+&gt;&gt;&gt; v=Vector([2,1,2])
+&gt;&gt;&gt; z=Vector([0]*3)
+&gt;&gt;&gt; z
+Vector [0, 0, 0]</pre></dd>
+<dt>Operators</dt>
+<dd>Class Vector provides operators and methods as follows.<br />
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><strong>&quot;+&quot;, &quot;-&quot;</strong><br />
+addition and subtraction.<br />
+operate with two vector of same length, or return <a href="#vector_e_vsize">Exception VectorSizeError</a>.<br />
+<pre>&gt;&gt;&gt; u+v
+Vector [2, 2, 5]
+&gt;&gt;&gt; -u
+Vector [0, -1, -3]</pre></li>
+<li><strong>&quot;*&quot;, &quot;/&quot;</strong><br />
+scalar product.
+<pre>&gt;&gt;&gt; v*3
+Vector [6, 3, 6]</pre></li>
+<li><a class="anchor" id="vector_len" href="#vector_len" title="vector_len"></a><strong>len(aVector)</strong><br />
+return length of aVector.<br />
+<pre>&gt;&gt;&gt; len(u)
+3</pre></li>
+<li><a class="anchor" id="vector_repr" href="#vector_repr" title="vector_repr"></a><strong>repr(aVector)</strong><br />
+return representation string of aVector.<br />
+<pre>&gt;&gt;&gt; repr(u)
+'Vector [0, 1, 3]'</pre></li>
+<li><a class="anchor" id="vector_str" href="#vector_str" title="vector_str"></a><strong>str(aVector)</strong><br />
+return string of listed representation of aVector.<br />
+<pre>&gt;&gt;&gt; str(u)
+'[0, 1, 3]'</pre></li></ul></dd>
+<dt>Function</dt>
+<dd>Class Vector defined functions as follows.<br />
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a class="anchor" id="vector_f_copy" href="#vector_f_copy" title="vector_f_copy"></a><strong>aVector.copy()</strong><br />
+return a copy of aVector.<br />
+<pre>&gt;&gt;&gt; x=u.copy()
+&gt;&gt;&gt; x
+Vector [0, 1, 3]</pre></li>
+<li><a class="anchor" id="vector_f_set" href="#vector_f_set" title="vector_f_set"></a><strong>aVector.set(list)</strong><br />
+substitute aVector with list.<br />
+<pre>&gt;&gt;&gt; x.set([2,1])
+&gt;&gt;&gt; x
+Vector [2, 1]</pre></li>
+<li><a class="anchor" id="vector_f_indexofNZ" href="#vector_f_indexofNZ" title="vector_f_indexofNZ"></a><strong>aVector.indexOfNoneZero()</strong><br />
+return nonzero index of aVector. if aVector is zero vector, return exception.<br />
+<pre>&gt;&gt;&gt; u.indexOfNoneZero()
+2
+&gt;&gt;&gt; x.indexOfNoneZero()
+1
+&gt;&gt;&gt; z.indexOfNoneZero()
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in ?
+  File &quot;vector.py&quot;, line 94, in indexOfNoneZero
+    raise Exception, &quot;all zero&quot;
+Exception: all zero</pre></li></ul></dd></dl>
+<h4 id="content_1_3">class VectorSizeError</h4>
+<p>Class VectorSizeError defines Exception VectorSizeError.</p>
+<h3 id="content_1_4">FUNCTIONS</h3>
+<p>Module vector provides functions as follows.<br /></p>
+<h4 id="content_1_5">def innerProduct(aVector, other)</h4>
+<p>return innerProduct, i.e.<br /></p>
+<blockquote><p class="quotation">
+<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$\(u,v\)\,=\,\Bigsum_{i\,=\,1}^{\text{len}\(u\)}\:{u[i]v[i]}" alt="a&nbsp;math&nbsp;image" title="e4d94e6c91b9846570d1a06340865056" /><br /></p></blockquote>
+
+<pre>&gt;&gt;&gt; innerProduct(u,v)
+7</pre>
+<h3 id="content_1_6">EXCEPTIONS</h3>
+<p>Module vector provide exceptions as follows.<br />
+<a class="anchor" id="vector_e_vsize" href="#vector_e_vsize" title="vector_e_vsize"></a></p>
+<h4 id="content_1_7">except VectorSizeError</h4>
+<p>Exception VectorSizeError occurs additive operation with two vector of different length.<br /></p>
+<pre>&gt;&gt;&gt; u=Vector([0,1,3])
+&gt;&gt;&gt; w=Vector([4,3,2,0])
+&gt;&gt;&gt; u+w
+Traceback (most recent call last):
+  File &quot;&lt;stdin&gt;&quot;, line 1, in ?
+  File &quot;vector.py&quot;, line 31, in __add__
+    raise VectorSizeError
+VectorSizeError</pre>
+<h3 id="content_1_8">DEPENDENCY</h3>
+<p>This module can be used independently of other NZMATH modules.<br /></p>
+<h3 id="content_1_9">BUGS(IMPLEMENT PROBLEMS, MAYBE)</h3>
+<h4 id="content_1_10">Implementation of Multiplication</h4>
+<p>There are not implemented as follows.<br /></p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>multiplication with Vector.<br /></li>
+<li>multiplication with <a href="matrix.html" title="matrix.py">Matrix</a>.<br /></li></ul>
+<h4 id="content_1_11">Implementation of InnerProduct</h4>
+<p>innerProduct with imaginary module are not implemented.<br /></p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Wed, 28 Sep 2005 13:50:47 JST  (27d)</div>
+
+</body>
+</html>

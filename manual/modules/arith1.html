@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>arith1.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=arith1.py">arith1.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?arith1.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?arith1.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">arith1</h2>
+<p>Miscellaneous arithmetic functions are provided.</p>
+<h3 id="content_1_1">functions</h3>
+<h4 id="content_1_2">floorsqrt(<em>a</em>)</h4>
+<p>Return the floor of square root of the given integer <em>a</em>.</p>
+<h4 id="content_1_3">floorpowerroot(<em>n</em>, <em>k</em>)</h4>
+<p>Return the floor of <em>k</em>-th power root of the given integer <em>n</em>.</p>
+<h4 id="content_1_4">legendre(<em>a</em>, <em>m</em>)</h4>
+<p>Return Legendre symbol (<em>a</em>/<em>m</em>) if <em>m</em> is a prime.
+Return Jacobi symbol otherwise.</p>
+<h4 id="content_1_5">sqroot(<em>a</em>, <em>p</em>)</h4>
+<p>Return squareroot of <em>a</em> for mod <em>p</em>.
+<em>p</em> must be an odd prime.<br />
+(will be renamed to modsqrt in the next release 0.4.1)</p>
+<h4 id="content_1_6">modsqrt(<em>a</em>, <em>p</em>)</h4>
+<p>Return one of the square roots of <em>a</em> for mod <em>p</em>.
+<em>p</em> must be an odd prime.<br />
+(will be renamed from sqroot in the next release 0.4.1)</p>
+<h4 id="content_1_7">expand(<em>n</em>, <em>m</em>)</h4>
+<p>Return <em>m</em>-adic expansion for <em>n</em>.
+<em>n</em> and <em>m</em> should satisfy <em>n</em> &gt; <em>m</em> &gt; 0.</p>
+<h4 id="content_1_8">inverse(<em>x</em>, <em>p</em>)</h4>
+<p>Return inverse of <em>x</em> for modulo <em>p</em>.</p>
+<h4 id="content_1_9">CRT(<em>nlist</em>)</h4>
+<p>This function is Chinese Rmainder Theorem using Algorithm 2.1.7
+of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Pomerance" title="References">C.Pomerance and R.Crandall</a>'s book.</p>
+<h4 id="content_1_10">AGM(<em>a</em>, <em>b</em>)</h4>
+<p>Arithmetic-Geometric Mean.</p>
+<h4 id="content_1_11">_BhaskaraBrouncker(<em>n</em>):</h4>
+<p>Return the minimum tuple (p,q) such that:</p>
+<pre>       p ** 2 - n * q ** 2 = 1 or -1,</pre>
+<p>for positive integer <em>n</em>, which is not a square.</p>
+<p>A good approximation for square root of <em>n</em> is given by the ratio
+p/q; the error is at most 1/2*q**2.</p>
+<h4 id="content_1_12">vp(<em>n</em>, <em>p</em> [,<em>k</em>])</h4>
+<p>The returned value is a tuple of <em>p</em>-adic valuation of <em>n</em> and its coprime part.  If <em>k</em> is given, it is added to the valuation.<br />
+<br />
+moved from <a href="prime.html" title="prime.py">prime</a> (0.4.1).</p>
+<h4 id="content_1_13">issquare(<em>n</em>)</h4>
+<p>Test whether a given integer <em>n</em> is a square number or not.<br />
+(will be added in the next release 0.4.1)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Mon, 24 Oct 2005 02:11:08 JST  (1d)</div>
+
+</body>
+</html>

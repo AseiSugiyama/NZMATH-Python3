@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>factor.py - NZMATH</title>
+ <link rel="stylesheet" href="../../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=factor.py">factor.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?factor.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../../index.html" title="UserManual">UserManual</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor%20%28ja%29" title="factor (ja)">日本語</a>)</p>
+<h2 id="content_1_0">factor module</h2>
+<p>factor module provides functions of factorization .</p>
+<h3 id="content_1_1">functions</h3>
+<h4 id="content_1_2">rhomethod(<em>n</em>)</h4>
+<p>Factor an integer <em>n</em> by Pollard's rho method.
+The method is preferable for numbers having small factors.
+But the method is a probabilistic method, possibly fails in factorizations.</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>subrhomethod(<em>n</em>)<br />
+This function is to find a non-trivial factor of n using algorithm of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Pomenrance" title="References">Crandall&amp;Pomerance</a></li>
+<li>sort_factor(<em>list</em>)<br />
+Sort factors for rho methods.
+(will be deleted in the next release 0.4.1)</li>
+<li>FactoringIntegerForRhoMethod<br />
+The class keeps track of the rho method factorization.
+(will be added in 0.4.1)</li></ul>
+<h4 id="content_1_3">pmom(<em>n</em>)</h4>
+<p>Factor an integer <em>n</em> by p-1 method.
+The method is preferable for numbers having small factors.</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>subpmom(<em>n</em>)<br />
+This function tries to find a non-trivial factor of N using Algorithm 8.8.2 (p-1  first stage) of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Cohen1" title="References">Cohen</a>'s book.
+In case of N = pow(2,i), this program willnot terminate.</li></ul>
+<h4 id="content_1_4">mod_sqrt(<em>a</em>,<em>m</em>)</h4>
+<p>Return a square root of <em>a</em> mod <em>m</em>.</p>
+<h4 id="content_1_5">ord(<em>p</em>,<em>n</em>)</h4>
+<p>Return the power of the prime <em>p</em> which divides the non-zero integer <em>n</em>.<br />
+(will be removed in the next release (0.4.1).
+Please use <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?arith1.py#c15b53c1" title="arith1.py">arith1.vp</a> instead.)</p>
+<h4 id="content_1_6">primeDivisors(<em>n</em>)</h4>
+<p>primeDivisors(n) returns the list of primes that divides n.</p>
+<h4 id="content_1_7">PrimePowerTest(<em>n</em>)</h4>
+<p>This function using Algo. 1.7.5 in <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Cohen1" title="References">Cohen</a>'s book judges whether <em>n</em> is of the form p**k with p or not.
+If it is True, then returned value is (p,k).
+Otherwise, returned value is (n,0).</p>
+<h4 id="content_1_8">squarePart(<em>n</em>)</h4>
+<p>squarePart(n) returns the largest integer whose square divides <em>n</em>.</p>
+<h4 id="content_1_9">AllDivisors(<em>n</em>)</h4>
+<p>Return all divisors of <em>n</em>.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Mon, 24 Oct 2005 02:08:58 JST  (1d)</div>
+
+</body>
+</html>

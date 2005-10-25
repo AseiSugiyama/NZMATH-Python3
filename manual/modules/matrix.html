@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>matrix.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=matrix.py">matrix.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<p>A=Matrix(m,n,[a11,a12,...a1n,a21,...,am1,...amn])</p>
+<p>For example:</p>
+<blockquote><p class="quotation">A = Matrix(2,2, [1,2,5,10])</p></blockquote>
+<p>yields</p>
+<blockquote><p class="quotation">A=
+1  2</p></blockquote>
+<p>5  10</p>
+<p>It is also possible to use the following syntax:</p>
+<p>B=Matrix(n,k,[b11,..,b1k]+....+[bn1,...,bnk])</p>
+<p>For example:</p>
+<blockquote><p class="quotation">B = Matrix(2,3, [0,1,3]+[0,2,2])</p></blockquote>
+<p>giving:</p>
+<blockquote><p class="quotation">B
+0 1 3</p></blockquote>
+<p>0 2 2</p>
+<p>It is possible to do operations on the matrices. Addition (+), Subtraction (-), Multiplication (*), as well as LU Decomposition:</p>
+<blockquote><p class="quotation">M.LUDecomposition()</p></blockquote>
+<p>In the example, we should get:</p>
+<p>( 1 0
+3/1 1 ,
+1   2
+0/1 4/1 )</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>jsa</li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Wed, 28 Sep 2005 13:50:47 JST  (27d)</div>
+
+</body>
+</html>

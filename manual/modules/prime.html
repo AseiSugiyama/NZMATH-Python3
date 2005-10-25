@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>prime.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=prime.py">prime.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?prime.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?prime.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">PRIME パッケージ</h2>
+<p>prime package provides functions of primarity tests.<br />
+prime パッケージは素数判定の機能を提供します。</p>
+<h3 id="content_1_1">関数</h3>
+<h4 id="content_1_2">apr(<em>n</em>)</h4>
+<p>apr is the main function for Adleman-Pomerance-Rumery primality test.
+Assuming <em>n</em> has no prime factors less than 32.
+Assuming <em>n</em> is spsp for several bases.</p>
+<h4 id="content_1_3">bigprimeq(<em>z</em>)</h4>
+<h4 id="content_1_4">generator()</h4>
+<p>Generate primes from 2 to infinity.</p>
+<h4 id="content_1_5">millerRabin(<em>n</em>, <em>times</em>=20)</h4>
+<p>Miller-Rabin pseudo-primality test.  Optional second argument
+times (default to 20) is the number of repetition.  The error
+probability is at most 4**(-<em>times</em>).</p>
+<h4 id="content_1_6">nextPrime(<em>n</em>)</h4>
+<p>returns the smallest prime bigger than the given integer.</p>
+<h4 id="content_1_7">prime(<em>s</em>)</h4>
+<p>returns the <em>s</em>-th prime number.</p>
+<h4 id="content_1_8">primeq(<em>n</em>)</h4>
+<p>A convinient function for primatilty test.
+It uses one of <a href="#q8386a65">trialDivision</a>, <a href="#d15ede4b">smallSpsp</a> or <a href="#wdc9454a">apr</a>
+depending on the size of <em>n</em>.</p>
+<h4 id="content_1_9">primitive_root(<em>p</em>)</h4>
+<p>return a primitive root of the odd prime <em>p</em>.
+If <em>p</em> is not an odd prime, the returned value is nonsense.</p>
+<h4 id="content_1_10">properDivisors(<em>n</em>)</h4>
+<h4 id="content_1_11">randPrime(<em>n</em>)</h4>
+<p>returns a random <em>n</em>-digits prime</p>
+<h4 id="content_1_12">smallSpsp(<em>n</em>)</h4>
+<p>4 spsp tests are sufficient to determine whether an integer less
+than 10**12 is prime or not.</p>
+<h4 id="content_1_13">spsp(<em>n</em>, <em>base</em>, <em>s</em>=None, <em>t</em>=None)</h4>
+<p>Strong Pseudo-Prime test.  Optional third and fourth argument
+<em>s</em> and <em>t</em> are the numbers such that <em>n</em>-1 = 2**<em>s</em> * <em>t</em> and <em>t</em> is odd.</p>
+<h4 id="content_1_14">trialDivision(<em>n</em>, <em>bound</em>=0)</h4>
+<p>Trial division primality test for an odd natural number.
+Optional second argument is a search bound of primes.
+If the <em>bound</em> is given and less than the sqaure root of <em>n</em>
+and 1 is returned, it only means there is no prime factor
+less than the bound.</p>
+<h4 id="content_1_15">vp(<em>n</em>, <em>p</em>, <em>k</em>=0)</h4>
+<p>The returned value is a tuple of <em>p</em>-adic valuation of <em>n</em> and its coprime part.  If <em>k</em> is given, it is added to the valuation.<br />
+<br />
+moved to <a href="arith1.html" title="arith1.py">arith1</a> (0.4.1?).</p>
+<h3 id="content_1_16">クラス</h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>FactoredInteger</li>
+<li>JacobiSum</li>
+<li>Status</li>
+<li>TestPrime</li>
+<li>Zeta</li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Wed, 28 Sep 2005 13:50:47 JST  (27d)</div>
+
+</body>
+</html>

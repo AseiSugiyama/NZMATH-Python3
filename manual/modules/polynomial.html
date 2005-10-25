@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>polynomial.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=polynomial.py">polynomial.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial%20%28ja%29" title="polynomial (ja)">日本語</a>)</p>
+<h2 id="content_1_0">polynomial module</h2>
+<p>polynomial module provides polynomials.</p>
+<h3 id="content_1_1">functions</h3>
+<h4 id="content_1_2">OneVariableDensePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])</h4>
+<p>A factory function to create an instance of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomial" title="OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
+For <em>coefficient</em>, specify a sequence of coefficients in ascending order from degree 0.
+<em>variable</em> is a name string of the variable.
+<em>coeffring</em> should be, if it is given, an objent of nzmath.ring.Ring, which represents the coefficient ring.
+If it is not given, the coefficient ring is speculated from <em>coefficient</em>.
+If <em>coefficient</em> is empty, then the speculation is impossible, thus in such cases <em>coeffring</em> must be given.</p>
+<h4 id="content_1_3">OneVariableSparsePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])</h4>
+<p>A factory function to create an instance of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomial" title="OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
+For <em>coefficient</em>, specify a dictionary, whose keys are degrees and values are coefficients.
+The explanations for <em>variable</em> and <em>coeffring</em> of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py#u6fdaf78" title="polynomial.py">OneVariableDensePolynomial</a> are valid for here.</p>
+<h4 id="content_1_4">construct(<em>polynomial</em> [, <em>kwd</em>])</h4>
+<p>Create an object of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomial" title="OneVariablePolynomial">OneVariablePolynomial</a> or its descendants with giving a valid Python code string of polynomial to <em>polynomial</em> argument.
+The identifiers appearing <em>polynomial</em>, which should not be interpreted as polynomial variables can be handed in <em>kwd</em> as a dictionary.</p>
+<h4 id="content_1_5">pseudoDivision(<em>A</em>, <em>B</em>)</h4>
+<p>Return the result of pseudo-division Q and R such that</p>
+<pre>d**(deg(A)-deg(B)+1) * A == B * Q + R,</pre>
+<p>where d is the leading coefficient of <em>B</em>.</p>
+<h4 id="content_1_6">resultant(<em>f</em>, <em>g</em>)</h4>
+<p>Return the resultant of <em>f</em> and <em>g</em>.</p>
+<h4 id="content_1_7">subResultantGCD(<em>A</em>, <em>B</em>)</h4>
+<p>Compute the gcd of <em>A</em> and <em>B</em> using sub-resultant algorithm.
+The coefficient ring of polynomials must be a UFD.</p>
+<h3 id="content_1_8">classes</h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?MultiVariableSparsePolynomial" title="MultiVariableSparsePolynomial">MultiVariableSparsePolynomial</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomial" title="OneVariablePolynomial">OneVariablePolynomial</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomialChar0" title="OneVariablePolynomialChar0">OneVariablePolynomialChar0</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?RationalOneVariablePolynomial" title="RationalOneVariablePolynomial">RationalOneVariablePolynomial</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomialCharNonZero" title="OneVariablePolynomialCharNonZero">OneVariablePolynomialCharNonZero</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomialCoefficients" title="OneVariablePolynomialCoefficients">OneVariablePolynomialCoefficients</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?PolynomialRing" title="PolynomialRing">PolynomialRing</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?MultiVariablePolynomialIdeal" title="MultiVariablePolynomialIdeal">MultiVariablePolynomialIdeal</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomialIdeal" title="OneVariablePolynomialIdeal">OneVariablePolynomialIdeal</a></li>
+<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?PolynomialResidueRing" title="PolynomialResidueRing">PolynomialResidueRing</a></li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Wed, 28 Sep 2005 13:50:46 JST  (27d)</div>
+
+</body>
+</html>
