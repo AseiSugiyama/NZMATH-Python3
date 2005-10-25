@@ -1,6 +1,6 @@
 
 import unittest
-import arith1
+import nzmath.arith1 as arith1
 
 class Arith1Test (unittest.TestCase):
     def testLegendre(self):
