@@ -2,6 +2,7 @@ version 0.4.0 to 0.4.1
 ----------------------
 * fix a bug of Schoof's method, EC.point, etc. in elliptic.
 * fix a bug of integrate method in polynomial.
+* fix a bug of e3_Fp function in equation.
 * move elliptic.divi to factor.AllDivisors.
 * rename arith1.sqroot to modsqrt and remove resembles in factor sub-package.
 * move vp from prime to arith1 and remove factor.factor.ord.
