@@ -4,7 +4,6 @@ import cmath
 
 import gcd
 import arith1
-import rational
 import imaginary
 import polynomial
 import finitefield
@@ -53,8 +52,13 @@ def e2_Fp(x,p):
     p is prime
     f = x[0] + x[1]*t + x[2]*t**2
     """
-    solutions = []
+    a = x[2]%p
+    b = x[1]%p
+    c = x[0]%p
+    if a == 0:
+        return [e1_Zn([c, b], p)]
     if p == 2:
+        solutions = []
         if x[0] % 2 == 0:
             solutions.append(0)
         if (x[0] + x[1] + x[2]) % 2 == 0:
@@ -62,17 +66,12 @@ def e2_Fp(x,p):
         if len(solutions) == 1:
             return solutions * 2
         return solutions
-    a = x[2]%p
-    b = x[1]%p
-    c = x[0]%p
-    if a == 0:
-        return e1_Zn([c, b], p)
     d = b**2 - 4*a*c
     if arith1.legendre(d, p) == -1:
         return []
     sqrtd = arith1.modsqrt(d, p)
     a = arith1.inverse(2*a, p)
-    return (((-b+sqrtd)*a)%p, ((-b-sqrtd)*a)%p)
+    return [((-b+sqrtd)*a)%p, ((-b-sqrtd)*a)%p]
 
 def e3(x):
     """
@@ -101,11 +100,10 @@ def e3_Fp(x,p):
     0 = x[0] + x[1]*t + x[2]*t**2 + x[3]*t**3
     """
     x.reverse()
-    coeff=[]
-    i=1
-    while i<len(x):
-        coeff.append(int(finitefield.FinitePrimeField(p).createElement(rational.Rational(x[i],x[0])).n))
-        i=i+1
+    lc_inv = finitefield.FinitePrimeFieldElement(x[0], p).inverse()
+    coeff = []
+    for c in x:
+        coeff.append((c * lc_inv).n)
     equ=[]
     i=0
     while i<p:
