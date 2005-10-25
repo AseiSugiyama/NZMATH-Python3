@@ -123,9 +123,7 @@ def inverse(x, p):
     """
     This function returns inverse of x for modulo p.
     """
-    if x < 0:
-        while x < 0:
-            x += p
+    x = x % p
     y = gcd.extgcd(p, x)
     if y[2] == 1:
         if y[1] < 0:
@@ -133,8 +131,7 @@ def inverse(x, p):
             return r
         else:
             return y[1]
-    else:
-        return False
+    raise ZeroDivisionError("There is no inverse for %d." % x)
 
 def CRT(nlist):
     """
