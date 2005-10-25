@@ -1,12 +1,13 @@
 from __future__ import division
-import arith1
-import cmath
-import finitefield
-import gcd
 import math
-import polynomial
+import cmath
+
+import gcd
+import arith1
 import rational
 import imaginary
+import polynomial
+import finitefield
 
 # x is (list,tuple) 
 # t is variable
@@ -52,15 +53,26 @@ def e2_Fp(x,p):
     p is prime
     f = x[0] + x[1]*t + x[2]*t**2
     """
-    a=x[2]%p    
-    b=x[1]%p
-    c=x[0]%p
-    if arith1.legendre(a,p)!=1:
+    solutions = []
+    if p == 2:
+        if x[0] % 2 == 0:
+            solutions.append(0)
+        if (x[0] + x[1] + x[2]) % 2 == 0:
+            solutions.append(1)
+        if len(solutions) == 1:
+            return solutions * 2
+        return solutions
+    a = x[2]%p
+    b = x[1]%p
+    c = x[0]%p
+    if a == 0:
+        return e1_Zn([c, b], p)
+    d = b**2 - 4*a*c
+    if arith1.legendre(d, p) == -1:
         return []
-    else:
-        sqrtd = arith1.modsqrt(b**2-4*a*c,p)
-    a=arith1.inverse(2*a,p)
-    return (((-b+sqrtd)*a)%p,((-b-sqrtd)*a)%p)
+    sqrtd = arith1.modsqrt(d, p)
+    a = arith1.inverse(2*a, p)
+    return (((-b+sqrtd)*a)%p, ((-b-sqrtd)*a)%p)
 
 def e3(x):
     """
