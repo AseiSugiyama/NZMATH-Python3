@@ -66,7 +66,18 @@ class Vector:
             return product
 
     def __div__(self, other):
-        return self * (1/other) 
+        return self * (1/other)
+
+    def __mod__(self,other):
+        if isinstance(other, Vector):
+            return NotImplemented
+        else:
+            if(other==0):
+                return ZeroDivisionError
+            V = Vector([0]*len(self))
+            for i in range(len(self)):
+                V[i] = ((int(self[i]) % int(other)))
+            return V
 
     def __repr__(self):
         return "Vector " + repr(self.compo)
