@@ -22,6 +22,7 @@ class Arith1Test (unittest.TestCase):
     def testInverse(self):
         assert arith1.inverse(160,841) == 205
         assert arith1.inverse(1,2**19-1) == 1
+        self.assertRaises(ZeroDivisionError, arith1.inverse, 0, 3)
 
     def testFloorsqrt(self):
         assert arith1.floorsqrt(0) == 0
