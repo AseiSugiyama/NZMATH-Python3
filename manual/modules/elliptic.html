@@ -19,7 +19,7 @@
 
 <hr class="full_hr" />
 <div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
-<h2 id="content_1_0">Using Elliptic.py</h2>
+<h2 id="content_1_0">Using Elliptic.py  <a class="anchor_super" id="o2768f05" href="elliptic.html#o2768f05" title="o2768f05">&dagger;</a></h2>
 <div class="contents">
 <a id="contents_1"></a><ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_0"> Using Elliptic.py </a>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_1"> Class EC </a>
@@ -27,24 +27,24 @@
 <li><a href="#content_1_3"> Notation </a></li>
 <li><a href="#content_1_4"> Methods </a></li></ul></li></ul></li></ul></div>
 
-<h3 id="content_1_1">Class EC</h3>
-<h4 id="content_1_2">Initialize</h4>
-<p>How to asssign curves in <strong>Weierstrass form</strong> given by the equation:<br /></p>
+<h3 id="content_1_1">Class EC  <a class="anchor_super" id="a3d510e9" href="elliptic.html#a3d510e9" title="a3d510e9">&dagger;</a></h3>
+<h4 id="content_1_2">Initialize  <a class="anchor_super" id="c61665ab" href="elliptic.html#c61665ab" title="c61665ab">&dagger;</a></h4>
+<p>How to asssign curves in <strong>Weierstrass form</strong> given by the equation:~E:</p>
 <blockquote><p class="quotation">
-<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?4$E:\:\:y^2\,+\,a_1xy\,+\,a_3y\,=\,x^3\,+\,a_2\,x^2\,+\,a_4x\,+\,a_6" alt="a&nbsp;math&nbsp;image" title="98f7cc5aa0d6a607876b7045ffd14b74" /><br /></p></blockquote>
+y^2 + a1xy + a3y = x^3 + a2x^2 + a4x + a6<br /></p></blockquote>
 
 <pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],p) </pre>
 <p>or for</p>
 <blockquote><p class="quotation">
-<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?4$E:\:\:y^2\,=\,x^3\,+\,ax\,+\,b" alt="a&nbsp;math&nbsp;image" title="92fbaac1795cec8783f17db942f64439" /><br /></p></blockquote>
+y^2= x^3 + a4x + a6<br /></p></blockquote>
 
 <pre>&gt;&gt;&gt; E=EC([a,b],p)</pre>
 <p>If the parameter p is not given (p=None) then E is defined over Q.<br /></p>
-<h4 id="content_1_3">Notation</h4>
+<h4 id="content_1_3">Notation  <a class="anchor_super" id="uddc85fc" href="elliptic.html#uddc85fc" title="uddc85fc">&dagger;</a></h4>
 <p>Note the points on E are represented as two-component vectors [x,y], except the point at infinity which is represented by the one-component vector [0] .<br />
 i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 <pre>&gt;&gt;&gt; infpoint = [0]</pre>
-<h4 id="content_1_4">Methods</h4>
+<h4 id="content_1_4">Methods  <a class="anchor_super" id="t8289a2f" href="elliptic.html#t8289a2f" title="t8289a2f">&dagger;</a></h4>
 <p>The following are the implemented methods in these module.<br /></p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>E.ch</dt>
 <dd>returns the characteristic of the field Fp. For this case, it gives ch=p .<br /></dd>
@@ -61,9 +61,12 @@ i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 <dt>E.simple()</dt>
 <dd>changes the data of E given in the short Weierstrass form by changing the coordinates if E.ch&gt;3 .<br /></dd>
 <dt>E.changeCurve(V)</dt>
-<dd>changes the data of E by changing the coordinates using the vector V=[u,r,s,t] with u!= 0. i.e., if x' and y' are the new coordinates, then <img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$x\,=\,u^2x^\prime\,+\,r,\:y\,=\,u^3y^\prime\,+\,su^2x^\prime\,+\,t" alt="a&nbsp;math&nbsp;image" title="9f5b43e3f3ed8f68892e92ed8b9346ba" /> by an admissible change of variables. <br /></dd>
+<dd>changes the data of E by changing the coordinates using the vector V=[u,r,s,t] with u!= 0. i.e., if x' and y' are the new coordinates, then
+y^2 + a1xy + a3y = x^3 +a2x^2 + a4x + a6</dd>
 <dt>E.changePoint(P,V)</dt>
-<dd>changes the coordinates of the point using the vector V=[u,r,s,t], i.e., if x' and y' are the new coordinates, then <img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$x\,=\,u^2x^\prime\,+\,r,\:y\,=\,u^3y^\prime\,+\,su^2x^\prime\,+\,t" alt="a&nbsp;math&nbsp;image" title="9f5b43e3f3ed8f68892e92ed8b9346ba" /> by an admissible change in variables. <br /></dd>
+<dd>changes the coordinates of the point using the vector V=[u,r,s,t], i.e., if x' and y' are the new coordinates, then
+y^2 + a1xy + a3y = x^3 +a2x^2 + a4x + a6
+by an admissible change in variables. <br /></dd>
 <dt>E.point()</dt>
 <dd>returns a random point on E.<br /></dd>
 <dt>E.coordinateY(x)</dt>
@@ -77,7 +80,8 @@ i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 <dt>E.mul(k,P)</dt>
 <dd>returns k times P.<br /></dd>
 <dt>E.divPoly(m)</dt>
-<dd>computes the mth divisor polynomial. If m is odd, this method returns the usual division polynomial. If m is even, it returns the usual division polynomial divided by <img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$2y\,+\,a_1x\,+\,a_3" alt="a&nbsp;math&nbsp;image" title="04f99f0d019628699ec24dd5c23ba168" />. If the parameter m is not specified (m=None), then this returns the list of division polynomials for Schoof's algorithm.<br /></dd></dl>
+<dd>computes the mth divisor polynomial. If m is odd, this method returns the usual division polynomial. If m is even, it returns the usual division polynomial divided by
+2y + a1x + a3 . If the parameter m is not specified (m=None), then this returns the list of division polynomials for Schoof's algorithm.<br /></dd></dl>
 <p>The following methods have been implemented only for elliptic curves over prime fields Fp except for 2 and 3.<br /></p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>E.Schoof()</dt>
 <dd>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of E over Fp. This uses the Schoof's method.<br /></dd>
@@ -88,7 +92,7 @@ i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 <dt>E.order(flag=0)</dt>
 <dd>computes #E(Fp). If p&lt;1000, this uses the Legendre method. If 10^4&lt;p&lt;10^30, this uses the Shanks-Mestre method. Otherwise, it uses Schoof's method. If flag=r, this computes #E(Fp^r) .<br /></dd>
 <dt>E.Miller(P,m,Q)</dt>
-<dd>returns the (<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$f_D_P(Q)" alt="a&nbsp;math&nbsp;image" title="bab9fea7eebd312490bb8308b5c70321" />) such that (<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$f_D_P" alt="a&nbsp;math&nbsp;image" title="66544c254b220df243f77507ea54cc70" />)=<img src="http://hanaya.math.metro-u.ac.jp/cgi-bin/mimetex.cgi?3$mD_P" alt="a&nbsp;math&nbsp;image" title="082dcacfa5faf1e29d2a36444cd10f52" /> with P,Q in E[m] by using Miller's algorithm.<br /></dd>
+<dd>returns the f_D_P such that (f_D_P)=D_P with P,Q in E[m] by using Miller's algorithm.<br /></dd>
 <dt>E.WeilPairing(m,P,Q)</dt>
 <dd>returns e_m(P,Q) by using E.Miller(P,m,Q).<br /></dd>
 <dt>E.BSGS(n,P,Q)</dt>
@@ -101,7 +105,7 @@ i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 28 Sep 2005 13:50:47 JST  (27d)</div>
+ Last-modified: Wed, 26 Oct 2005 16:01:20 JST  (2h)</div>
 
 </body>
 </html>

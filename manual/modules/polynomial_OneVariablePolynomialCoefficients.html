@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>polynomial.py/OneVariablePolynomialCoefficients - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=polynomial.py%2FOneVariablePolynomialCoefficients">polynomial.py/OneVariablePolynomialCoefficients</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py%2FOneVariablePolynomialCoefficients"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py%2FOneVariablePolynomialCoefficients</span></a>
+
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p>nzmath.<a href="polynomial.html" title="polynomial.py">polynomial</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?OneVariablePolynomialCoefficients%20%28ja%29" title="OneVariablePolynomialCoefficients (ja)">日本語</a>)</p>
+<h2 id="content_1_0">OneVariablePolynomialCoefficients class  <a class="anchor_super" id="cb97aac6" href="polynomial_OneVariablePolynomialCoefficients#cb97aac6.html" title="cb97aac6">&dagger;</a></h2>
+<p>The class is for managing coefficients of one variable polynomials.</p>
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="a33bb334" href="polynomial_OneVariablePolynomialCoefficients#a33bb334.html" title="a33bb334">&dagger;</a></h3>
+<p>OneVariablePolynomialCoefficients()</p>
+<h3 id="content_1_2">Methods  <a class="anchor_super" id="f5bda018" href="polynomial_OneVariablePolynomialCoefficients#f5bda018.html" title="f5bda018">&dagger;</a></h3>
+<h4 id="content_1_3">changeRepresentation(<em>rep</em>)  <a class="anchor_super" id="d642f6fa" href="polynomial_OneVariablePolynomialCoefficients#d642f6fa.html" title="d642f6fa">&dagger;</a></h4>
+<p>Change inner representation from list to dict or from dict to list.
+The method is destructive.</p>
+<h4 id="content_1_4">copy()  <a class="anchor_super" id="p6633794" href="polynomial_OneVariablePolynomialCoefficients#p6633794.html" title="p6633794">&dagger;</a></h4>
+<p>Return the copy of the object.</p>
+<h4 id="content_1_5">degree()  <a class="anchor_super" id="oc61c58e" href="polynomial_OneVariablePolynomialCoefficients#oc61c58e.html" title="oc61c58e">&dagger;</a></h4>
+<p>Return the degree.</p>
+<h4 id="content_1_6">getAsDict()  <a class="anchor_super" id="i5415b86" href="polynomial_OneVariablePolynomialCoefficients#i5415b86.html" title="i5415b86">&dagger;</a></h4>
+<p>Return the data in dict format.</p>
+<h4 id="content_1_7">getAsList()  <a class="anchor_super" id="f326606a" href="polynomial_OneVariablePolynomialCoefficients#f326606a.html" title="f326606a">&dagger;</a></h4>
+<p>Return the data in list format.</p>
+<h4 id="content_1_8">itercoeffs()  <a class="anchor_super" id="q5812776" href="polynomial_OneVariablePolynomialCoefficients#q5812776.html" title="q5812776">&dagger;</a></h4>
+<p>Return an iterator which yields non-zero coefficients one by one.</p>
+<h4 id="content_1_9">iterdegrees()  <a class="anchor_super" id="k6616f79" href="polynomial_OneVariablePolynomialCoefficients#k6616f79.html" title="k6616f79">&dagger;</a></h4>
+<p>Return an iterator which yields degrees having non-zero coefficient.</p>
+<h4 id="content_1_10">iteritems()  <a class="anchor_super" id="t7d2baf1" href="polynomial_OneVariablePolynomialCoefficients#t7d2baf1.html" title="t7d2baf1">&dagger;</a></h4>
+<p>Return an iterator which yields pairs of degree and non-zero coefficient.</p>
+<h4 id="content_1_11">setDict(<em>aDict</em>)  <a class="anchor_super" id="r1b2f6c7" href="polynomial_OneVariablePolynomialCoefficients#r1b2f6c7.html" title="r1b2f6c7">&dagger;</a></h4>
+<p>Take in data from a dictionary <em>aDict</em>.</p>
+<h4 id="content_1_12">setList(<em>aList</em>)  <a class="anchor_super" id="q45d1975" href="polynomial_OneVariablePolynomialCoefficients#q45d1975.html" title="q45d1975">&dagger;</a></h4>
+<p>Take in data from a list <em>aList</em>.</p>
+<h3 id="content_1_13">Operators  <a class="anchor_super" id="x8b5c320" href="polynomial_OneVariablePolynomialCoefficients#x8b5c320.html" title="x8b5c320">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">c[<em>i</em>]</td><td class="style_td">Return the coefficient of degree <em>i</em> term.</td></tr><tr><td class="style_td">iter(c)</td><td class="style_td">Return an iterator.</td></tr><tr><td class="style_td">len(c)</td><td class="style_td">Return the length of list representation.</td></tr><tr><td class="style_td">repr(c)</td><td class="style_td">Return the repr string of c.</td></tr><tr><td class="style_td">c[<em>i</em>]=<em>v</em></td><td class="style_td">Replace the coefficient of degree <em>i</em> term by <em>v</em>.</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: Tue, 18 Oct 2005 11:28:40 JST  (8d)</div>
+
+</body>
+</html>

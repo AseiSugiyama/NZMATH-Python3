@@ -6,23 +6,23 @@
  <meta http-equiv="content-style-type" content="text/css" />
 
 
- <title>factor.py - NZMATH</title>
+ <title>factor/factor.py - NZMATH</title>
  <link rel="stylesheet" href="../../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
 </head>
 <body>
 
 <div id="header">
- <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=factor.py">factor.py</a> </h1>
- <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?factor.py</span></a>
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?cmd=search&amp;word=factor%2Ffactor.py">factor/factor.py</a> </h1>
+ <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor%2Ffactor.py"><span class="small">http://hanaya.math.metro-u.ac.jp/nzmath/?factor%2Ffactor.py</span></a>
 
 </div>
 
 <hr class="full_hr" />
 <div id="body"><p><a href="../../index.html" title="UserManual">UserManual</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor%20%28ja%29" title="factor (ja)">ÆüËÜ¸ì</a>)</p>
-<h2 id="content_1_0">factor module</h2>
+<h2 id="content_1_0">factor module  <a class="anchor_super" id="v24bb909" href="../factor%2Ffactor.html#v24bb909" title="v24bb909">&dagger;</a></h2>
 <p>factor module provides functions of factorization .</p>
-<h3 id="content_1_1">functions</h3>
-<h4 id="content_1_2">rhomethod(<em>n</em>)</h4>
+<h3 id="content_1_1">functions  <a class="anchor_super" id="l2c7361e" href="../factor%2Ffactor.html#l2c7361e" title="l2c7361e">&dagger;</a></h3>
+<h4 id="content_1_2">rhomethod(<em>n</em>)  <a class="anchor_super" id="xf5f3cb4" href="../factor%2Ffactor.html#xf5f3cb4" title="xf5f3cb4">&dagger;</a></h4>
 <p>Factor an integer <em>n</em> by Pollard's rho method.
 The method is preferable for numbers having small factors.
 But the method is a probabilistic method, possibly fails in factorizations.</p>
@@ -34,27 +34,27 @@ Sort factors for rho methods.
 <li>FactoringIntegerForRhoMethod<br />
 The class keeps track of the rho method factorization.
 (will be added in 0.4.1)</li></ul>
-<h4 id="content_1_3">pmom(<em>n</em>)</h4>
+<h4 id="content_1_3">pmom(<em>n</em>)  <a class="anchor_super" id="if7992a7" href="../factor%2Ffactor.html#if7992a7" title="if7992a7">&dagger;</a></h4>
 <p>Factor an integer <em>n</em> by p-1 method.
 The method is preferable for numbers having small factors.</p>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>subpmom(<em>n</em>)<br />
 This function tries to find a non-trivial factor of N using Algorithm 8.8.2 (p-1  first stage) of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Cohen1" title="References">Cohen</a>'s book.
 In case of N = pow(2,i), this program willnot terminate.</li></ul>
-<h4 id="content_1_4">mod_sqrt(<em>a</em>,<em>m</em>)</h4>
+<h4 id="content_1_4">mod_sqrt(<em>a</em>,<em>m</em>)  <a class="anchor_super" id="scd5b9a7" href="../factor%2Ffactor.html#scd5b9a7" title="scd5b9a7">&dagger;</a></h4>
 <p>Return a square root of <em>a</em> mod <em>m</em>.</p>
-<h4 id="content_1_5">ord(<em>p</em>,<em>n</em>)</h4>
+<h4 id="content_1_5">ord(<em>p</em>,<em>n</em>)  <a class="anchor_super" id="i8a5ee23" href="../factor%2Ffactor.html#i8a5ee23" title="i8a5ee23">&dagger;</a></h4>
 <p>Return the power of the prime <em>p</em> which divides the non-zero integer <em>n</em>.<br />
 (will be removed in the next release (0.4.1).
-Please use <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?arith1.py#c15b53c1" title="arith1.py">arith1.vp</a> instead.)</p>
-<h4 id="content_1_6">primeDivisors(<em>n</em>)</h4>
+Please use <a href="../arith1.html#c15b53c1" title="arith1.py">arith1.vp</a> instead.)</p>
+<h4 id="content_1_6">primeDivisors(<em>n</em>)  <a class="anchor_super" id="xbf69189" href="../factor%2Ffactor.html#xbf69189" title="xbf69189">&dagger;</a></h4>
 <p>primeDivisors(n) returns the list of primes that divides n.</p>
-<h4 id="content_1_7">PrimePowerTest(<em>n</em>)</h4>
+<h4 id="content_1_7">PrimePowerTest(<em>n</em>)  <a class="anchor_super" id="v83307d9" href="../factor%2Ffactor.html#v83307d9" title="v83307d9">&dagger;</a></h4>
 <p>This function using Algo. 1.7.5 in <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Cohen1" title="References">Cohen</a>'s book judges whether <em>n</em> is of the form p**k with p or not.
 If it is True, then returned value is (p,k).
 Otherwise, returned value is (n,0).</p>
-<h4 id="content_1_8">squarePart(<em>n</em>)</h4>
+<h4 id="content_1_8">squarePart(<em>n</em>)  <a class="anchor_super" id="dca0acc8" href="../factor%2Ffactor.html#dca0acc8" title="dca0acc8">&dagger;</a></h4>
 <p>squarePart(n) returns the largest integer whose square divides <em>n</em>.</p>
-<h4 id="content_1_9">AllDivisors(<em>n</em>)</h4>
+<h4 id="content_1_9">AllDivisors(<em>n</em>)  <a class="anchor_super" id="dde6b370" href="../factor%2Ffactor.html#dde6b370" title="dde6b370">&dagger;</a></h4>
 <p>Return all divisors of <em>n</em>.</p>
 </div>
 
@@ -62,7 +62,7 @@ Otherwise, returned value is (n,0).</p>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Mon, 24 Oct 2005 02:08:58 JST  (1d)</div>
+ Last-modified: Mon, 24 Oct 2005 02:08:58 JST  (2d)</div>
 
 </body>
 </html>
