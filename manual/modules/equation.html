@@ -31,22 +31,26 @@ n is a rational integer, p is a prime number.</p>
 <p>Return the solution a*x = b (mod n)</p>
 <h4 id="content_1_4">e2(<em>f=[c,b,a]</em>)  <a class="anchor_super" id="u7394786" href="equation.html#u7394786" title="u7394786">&dagger;</a></h4>
 <p>Return the roots of a * x**2 + b * x + c = 0</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
 <h4 id="content_1_5">e2_Fp(<em>f=[c,b,a]</em>,<em>p</em>)  <a class="anchor_super" id="qab6bc7f" href="equation.html#qab6bc7f" title="qab6bc7f">&dagger;</a></h4>
 <p>Return the solutions of a*x**2 + b*x + c = 0 mod p</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
 <h4 id="content_1_6">e3(<em>f=[d,c,b,a]</em>)  <a class="anchor_super" id="r4eb80ac" href="equation.html#r4eb80ac" title="r4eb80ac">&dagger;</a></h4>
 <p>Return the roots of a * x**3 + b * x**2 + c * x + d = 0</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
 <h4 id="content_1_7">e3_Fp(<em>f=[d,c,b,a]</em>,<em>p</em>)  <a class="anchor_super" id="f2f9e8c5" href="equation.html#f2f9e8c5" title="f2f9e8c5">&dagger;</a></h4>
 <p>Return the solutions of a * x**3 + b * x**2 + c * x + d = 0 mod p</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
 <h4 id="content_1_8">Newton(<em>f</em>,<em>Initial</em>,<em>Repeat</em>)  <a class="anchor_super" id="of8a34fb" href="equation.html#of8a34fb" title="of8a34fb">&dagger;</a></h4>
 <p>Return a approximation root of f, where coeffcients of f is the real number. <br />
 Initial inputs as a initial number of Newton, Repeat inputs as the number of steps. <br />
-Default of Initial is 1, Repeat is 100. <br /></p>
+Default of Initial is 1, Repeat is 100.</p>
 <pre>Remark : There is a case which this method returns False output. For example, f(x) = x**2 + 1 </pre>
 <h4 id="content_1_9">SimMethod(<em>f</em>,<em>Repeat</em>,<em>NewtonInitial</em>)  <a class="anchor_super" id="b3fbf267" href="equation.html#b3fbf267" title="b3fbf267">&dagger;</a></h4>
 <p>Return the approximation roots, where coefficients of f is the complex number. <br />
 Repeat is the number of this method's steps, NewtonInitial is a Initial number of Newton Method which use in this method. <br />
 If this method returns Error in Newton Method, Then please change the NewtonInitial's value. <br />
-Default of NewtonInitial is 1, Repeat is 200. <br /></p>
+Default of NewtonInitial is 1, Repeat is 200.</p>
 <pre>Remark : If f has multiple root, maybe return Error.</pre>
 </div>
 
@@ -54,7 +58,7 @@ Default of NewtonInitial is 1, Repeat is 200. <br /></p>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 28 Sep 2005 13:50:47 JST</div>
+ Last-modified: Fri, 28 Oct 2005 13:31:30 JST</div>
 
 </body>
 </html>
