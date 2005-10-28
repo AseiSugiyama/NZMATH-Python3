@@ -20,6 +20,7 @@ files: clean
 	cp *.txt setup.py MANIFEST.in $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
+	cp -a ../manual $(TMPDIR)/nzmath/
 
 clean:
 	rm -fr $(TMPDIR)
