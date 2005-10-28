@@ -1,15 +1,35 @@
 #!/bin/sh
-# you only change DEFAULT to your mochia(simath)cvs repo.
-DEFAULT="$HOME/cvs/mochiya/"
-NZMATHDIST="nmath/dist"
-BASEDIR=$0
-BASEDIR=${BASEDIR%/*}
-DISTDIR=${BASEDIR:-$DEFAULT$NZMATHDIST}
+# you only change TMP to your global temporary directory.
+# usage:
+# $ ./nzmathwiki_publish.sh
+# automatically create nzmath-current manual located to
+# /tmp/nzmath .
+# if you check difference between nzmath-cvs manual,
+# $ diff -ubBr /tmp/nzmath/manual {your-nzmathcvs-repo}/manual
+# or you check only new version files,
+# $ diff -r --brief /tmp/nzmath/manual {your-nzmathcvs-repo}/manual
 
-BASEDIR="$DISTDIR/../manual"
+# 0. check options. if set, cleanup and exit.
+if [ "x$1" != "x" ]; then
+    echo -n "Cleanup and remove /tmp/nzmath/manual ..."
+    rm -rf /tmp/nzmath/manual
+    echo "Done."
+    exit 0
+fi
 
+# 0.1 structure directory tree.
+TMP="/tmp"
+echo -n "Check directory /tmp ..."
+cd $TMP
+[ -d nzmath ] || mkdir nzmath
+[ -d nzmath/manual ] || mkdir nzmath/manual
+[ -d nzmath/manual/modules ] || mkdir nzmath/manual/modules
+[ -d nzmath/manual/modules/factor ] || mkdir nzmath/manual/modules/factor
+BASEDIR="$TMP/nzmath/manual"
+echo "ok."
 WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
 
+echo "start to document source download from nzmath-doc wiki..."
 # 1. get base document.
 cd $BASEDIR
 wget -q $WIKIBASE\?UserManual -O index.html
@@ -81,6 +101,7 @@ do
   done
 done
 
+echo "automatically document parse and convert..."
 # 2. edit document.
 cd ../
 CSSBDAT="skin\/default\.ja\.css"
@@ -95,8 +116,6 @@ CONVNDAT="href=\"install.html\" "
 cat index.html.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.se
 cat index.html.se|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.sed
 cat index.html.sed|sed -e "s/%2F/\//">index.html
-#mv -f index.html.se index.html
-echo "you must fix index.html for modules/factor ."
 
 # 2.2. edit all html link.
 # 2.2.1 edit install.html .
@@ -104,7 +123,6 @@ CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
 CONVNDAT="href=\"index.html\" "
 cat install.html|sed -e "s/$CONVBDAT/$CONVNDAT/">install.html.sed
 cat install.html.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">install.html
-#mv -f install.html.sed install.html
 
 # 2.2.2. edit module cores .
 cd modules
@@ -134,7 +152,6 @@ do
   CONVNDAT="href=\"..\/index.html\" "
   cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/">$htmlfile.sed
   cat $htmlfile.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">$htmlfile
-  #mv -f $htmlfile.sed $htmlfile
 done
 
 # 2.2.3. edit submodule cores .
@@ -164,5 +181,10 @@ do
   cd ../
 done
 cd ../
+
+echo "cleanup temporary files ..."
 # 3. cleanup temporary file .
 rm -rf *.se *.sed modules/*.se modules/*.sed modules/*/*.se modules/*/*.sed
+
+echo "Done."
+exit 0
