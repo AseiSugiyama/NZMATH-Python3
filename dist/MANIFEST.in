@@ -1,2 +1,4 @@
 include *.txt
 include manual/*
+include manual/modules/*
+include manual/modules/factor/*
