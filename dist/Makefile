@@ -18,9 +18,9 @@ html: files
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
 	cp *.txt setup.py MANIFEST.in $(TMPDIR)
+	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
-	cp -a ../manual $(TMPDIR)/nzmath/
 
 clean:
 	rm -fr $(TMPDIR)
