@@ -29,7 +29,7 @@ setup (
                   'manual/modules/finitefield_FiniteFieldElement.html',
                   'manual/modules/finitefield_FinitePrimeField.html',
                   'manual/modules/finitefield_FinitePrimeFieldElement.html',
-                  'manual/modules/manual/modules/gcd.html',
+                  'manual/modules/gcd.html',
                   'manual/modules/imaginary.html',
                   'manual/modules/imaginary_AbsoluteError.html',
                   'manual/modules/imaginary_Complex.html',
