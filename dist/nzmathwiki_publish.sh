@@ -1,8 +1,12 @@
 #!/bin/sh
-# you only change CVSDIR to your mochia(simath)cvs repo.
-CVSDIR="$HOME/cvs/mochiya/"
-NMATHDIR="$CVSDIR/nmath/"
-BASEDIR="$NMATHDIR/manual"
+# you only change DEFAULT to your mochia(simath)cvs repo.
+DEFAULT="$HOME/cvs/mochiya/"
+NZMATHDIST="nmath/dist"
+BASEDIR=$0
+BASEDIR=${BASEDIR%/*}
+DISTDIR=${BASEDIR:-$DEFAULT$NZMATHDIST}
+
+BASEDIR="$DISTDIR/../manual"
 
 WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
 
