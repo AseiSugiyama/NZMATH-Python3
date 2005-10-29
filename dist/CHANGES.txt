@@ -10,6 +10,7 @@ version 0.4.0 to 0.4.1
 * move issquare from factor to arith1.
 * add a function getRing in ring.
 * add a function mpqsfind in factor.mpqs.
+* add a method order to finitefield.FinitePrimeFieldElement.
 * add generator_eratosthenes to prime (EXPERIMENTAL).
 
 version 0.3.1 to 0.4.0
