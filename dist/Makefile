@@ -1,8 +1,8 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
 HTMLPY = /home/tetsushi/work/docutils/tools/rst2html.py
-OLD_VER = 0.3.1
-NEW_VER = 0.4.0
+OLD_VER = 0.4.0
+NEW_VER = 0.4.1
 
 all: html sdist
 
@@ -18,6 +18,7 @@ html: files
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
 	cp *.txt setup.py MANIFEST.in $(TMPDIR)
+	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
 
@@ -28,3 +29,7 @@ tag:
 	for i in `cat target.files`; do \
 		echo cvs tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
 	done
+
+version:
+	sed -i -e 's/$(OLD_VER)/$(NEW_VER)/g' setup.py
+	sed -i -e 's/$(OLD_VER)/$(NEW_VER)/g' README.txt

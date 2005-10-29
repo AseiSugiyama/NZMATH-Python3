@@ -1,4 +1,4 @@
-NZMATH 0.4.0
+NZMATH 0.4.1
 ============
 
 Introduction
@@ -7,9 +7,9 @@ Introduction
 NZMATH is a Python based number theory oriented calculation system.
 It is developed at Tokyo Metropolitan University.
 
-The version 0.4.0 is an enhancement release.
-It is still on an early stage of development, and it should be
-considered as a beta quality product.
+The version 0.4.1 is an enhancement release.
+It is still on an early stage of development, and the API can be
+changed with versions.
 
 Installation
 ------------
@@ -18,25 +18,25 @@ To install NZMATH on your computer, you must have Python 2.3 or
 better.  If you don't have a copy of Python, please install it first.
 Python is available from http://www.python.org/ .
 
-The next step is to expand the NZMATH-0.4.0.tar.gz.  The way to do it
+The next step is to expand the NZMATH-0.4.1.tar.gz.  The way to do it
 depends on your operating system.  On the systems with recent GNU tar,
 you can do it with a single command::
 
- % tar xf NZMATH-0.4.0.tar.gz
+ % tar xf NZMATH-0.4.1.tar.gz
 
 where, % is the command line prompt.  Or with standard tar, you can do
 it as::
 
- % gzip -cd NZMATH-0.4.0.tar.gz | tar xf -
+ % gzip -cd NZMATH-0.4.1.tar.gz | tar xf -
 
-Then, you have a child directory named NZMATH-0.4.0.
+Then, you have a child directory named NZMATH-0.4.1.
 
 The third step is the last step, to install NZMATH to the standard
 python path. Usually, this means to write files to somewhere under
 /usr/lib or /usr/local/lib, and thus you have to have appropriate
 write permission.  Typically, do as the following::
 
- % cd NZMATH-0.4.0
+ % cd NZMATH-0.4.1
  % su
  # python setup.py install
 
