@@ -15,11 +15,11 @@ f = Matrix(4,4,[1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
 
 g = Matrix(3,3,[7,2,8,0,5,-2,0,1,9])
 
-h1 = Matrix(3,3,[12,0,0,0,1,0,0,0,1])
+h1 = IntegerMatrix(3,3,[12,0,0,0,1,0,0,0,1])
 
-h2 = Matrix(3,3,[1,0,0,0,1,0,0,0,0])
+h2 = IntegerMatrix(3,3,[1,0,0,0,1,0,0,0,0])
 
-h3 = Matrix(3,3,[1,0,0,0,1,0,0,0,1])
+h3 = IntegerMatrix(3,3,[1,0,0,0,1,0,0,0,1])
 
 class MatrixTest(unittest.TestCase):
     def testAdd(self):
@@ -107,9 +107,9 @@ class MatrixTest(unittest.TestCase):
         assert U.isUpperTriangularMatrix()
 
     def testsmith(self):
-        s1 = Matrix(3,3,[1,3,2,4,6,5,6,8,9])
-        s2 = Matrix(3,3,[1,2,4,0,3,5,0,0,0])
-        s3 = Matrix(3,3,[1,0,0,9,1,0,5,6,1])
+        s1 = IntegerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
+        s2 = IntegerMatrix(3,3,[1,2,4,0,3,5,0,0,0])
+        s3 = IntegerMatrix(3,3,[1,0,0,9,1,0,5,6,1])
         assert h1 == s1.smith()
         assert h2 == s2.smith()
         assert h3 == s3.smith()
