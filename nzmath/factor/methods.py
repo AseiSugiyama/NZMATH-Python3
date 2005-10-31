@@ -2,8 +2,7 @@
 factor.method -- provide factoring methods.
 """
 
-import arith1
-#import nzmath.arith1 as arith1
+import nzmath.arith1 as arith1
 import nzmath.prime as prime
 import util
 import find

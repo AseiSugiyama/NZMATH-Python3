@@ -6,8 +6,7 @@ but 1 is a factor anyway.
 'verbose' boolean flag can be specified for verbose reports.
 """
 
-import arith1
-#import nzmath.arith1 as arith1
+import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.gcd as gcd
 import nzmath.prime as prime
