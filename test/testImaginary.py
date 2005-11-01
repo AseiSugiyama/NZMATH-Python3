@@ -1,9 +1,9 @@
 import unittest
 import time
-import imaginary
-import real, rational
+import nzmath.imaginary as imaginary
+import nzmath.real as real
+import nzmath.rational as rational
 
-"$Id$"
 
 class ImaginaryTest (unittest.TestCase):
     def testAdd(self):

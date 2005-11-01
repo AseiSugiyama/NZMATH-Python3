@@ -1,7 +1,7 @@
 import unittest
-from integerResidueClass import *
-from rational import Integer
-from rational import Rational
+from nzmath.integerResidueClass import *
+from nzmath.rational import Integer
+from nzmath.rational import Rational
 
 class IntegerResidueClassTest(unittest.TestCase):
     def testInit(self):

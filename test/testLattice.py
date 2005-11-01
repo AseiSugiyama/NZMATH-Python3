@@ -1,5 +1,6 @@
 import unittest
-import lattice, matrix
+import nzmath.lattice as lattice
+import nzmath.matrix as matrix
 
 class LatticeTest (unittest.TestCase):
     def testLLL(self):
