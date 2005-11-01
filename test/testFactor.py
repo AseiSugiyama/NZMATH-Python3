@@ -1,6 +1,6 @@
 import unittest
-import factor
-import prime
+import nzmath.factor as factor
+import nzmath.prime as prime
 
 class FactorTest (unittest.TestCase):
     def testTrialDivision(self):
