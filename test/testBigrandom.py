@@ -1,6 +1,6 @@
 import unittest
 import random
-import bigrandom
+import nzmath.bigrandom as bigrandom
 
 trial_times = 100000
 error_range = 0.03 
