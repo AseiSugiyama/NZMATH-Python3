@@ -1,6 +1,6 @@
 import unittest
-import zassenhaus
-import polynomial
+import nzmath.zassenhaus as zassenhaus
+import nzmath.polynomial as polynomial
 
 class ZassenhausTest (unittest.TestCase):
     def testRegular(self):
@@ -32,7 +32,7 @@ class PadicFactorizationTest (unittest.TestCase):
         r = zassenhaus.padicFactorization(polynomial.OneVariableDensePolynomial([12,7,1],'X'))
         assert isinstance(r, tuple)
         assert 2 == len(r)
-        import prime
+        import nzmath.prime as prime
         assert prime.primeq(r[0])
         assert isinstance(r[1], list)
         assert 2 == len(r[1])

@@ -1,8 +1,8 @@
 import unittest
-import ring
-import rational
-from real import theRealField
-from imaginary import theComplexField
+import nzmath.ring as ring
+import nzmath.rational as rational
+from nzmath.real import theRealField
+from nzmath.imaginary import theComplexField
 
 class CommutativeRingPropertiesTest (unittest.TestCase):
     def setUp(self):

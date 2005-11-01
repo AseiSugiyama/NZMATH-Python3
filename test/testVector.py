@@ -1,5 +1,5 @@
 import unittest
-import vector
+import nzmath.vector as vector
 
 class VectorTest(unittest.TestCase):
 
@@ -23,13 +23,13 @@ class VectorTest(unittest.TestCase):
 
     def testMul(self):
         v1 = vector.Vector([1,2,3])
-        import matrix
+        import nzmath.matrix as matrix
         m1 = matrix.Matrix(2,3,[1,0,1,0,1,0])
         assert m1*v1 == vector.Vector([4,2])
 
     def testRMul(self):
         v1 = vector.Vector([1,2,3])
-        import matrix
+        import nzmath.matrix as matrix
         m1 = matrix.Matrix(3,2,[1,1,0,1,0,1])
         assert v1*m1 == vector.Vector([1,6])
 
