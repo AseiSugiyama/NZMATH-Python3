@@ -1,5 +1,5 @@
 import unittest
-import gcd
+import nzmath.gcd as gcd
 
 class GcdTest (unittest.TestCase):
     def testGcd(self):
@@ -27,7 +27,7 @@ class GcdTest (unittest.TestCase):
         assert (-4,3,1) == gcd.extgcd(8, 11)
         extgcd = gcd.extgcd(8, 11)
         assert 8 * extgcd[0] + 11 * extgcd[1] == extgcd[2]
-        import rational
+        import nzmath.rational as rational
         assert (-4,3,1) == gcd.extgcd(rational.Integer(8), 11)
 
     def testGcdOfList(self):
