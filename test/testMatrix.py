@@ -1,5 +1,5 @@
 import unittest
-from matrix import *
+from nzmath.matrix import *
 
 a = Matrix(2,2,[1,2,3,4])
 
