@@ -1,6 +1,6 @@
 from __future__ import division
 import unittest
-import equation
+import nzmath.equation as equation
 
 class GlobalEquationTest (unittest.TestCase):
     def test_e1(self):

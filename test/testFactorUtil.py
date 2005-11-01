@@ -1,9 +1,9 @@
 import unittest
-import factor.util
+import nzmath.factor.util as util
 
 class FactoringIntegerTest (unittest.TestCase):
     def setUp(self):
-        self.tracker100 = factor.util.FactoringInteger(100)
+        self.tracker100 = util.FactoringInteger(100)
 
     def testGetNextTarget(self):
         self.assertEqual(100, self.tracker100.getNextTarget())
@@ -39,7 +39,7 @@ class FactoringIntegerTest (unittest.TestCase):
 
 class FactoringMethodTest (unittest.TestCase):
     def setUp(self):
-        self.method = factor.util.FactoringMethod()
+        self.method = util.FactoringMethod()
 
     def testVerbose(self):
         # initial value

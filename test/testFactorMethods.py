@@ -1,5 +1,5 @@
 import unittest
-import factor.methods as mthd
+import nzmath.factor.methods as mthd
 
 class FactorTest (unittest.TestCase):
     def testTrialDivision(self):
