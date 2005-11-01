@@ -1,5 +1,5 @@
 import unittest
-from combinatorial import binomial, factorial, bernoulli, catalan
+from nzmath.combinatorial import binomial, factorial, bernoulli, catalan
 
 class BinomialTest (unittest.TestCase):
     def testPositiveAndPositive(self):
@@ -41,14 +41,14 @@ class BernoulliTest (unittest.TestCase):
         assert 1 == bernoulli(0)
 
     def testOdd(self):
-        import rational
+        import nzmath.rational as rational
         assert rational.Rational(-1, 2) == bernoulli(1)
         assert 0 == bernoulli(3)
         assert 0 == bernoulli(101)
         assert 0 == bernoulli(1010111111111111777979797979794555)
 
     def testEven(self):
-        import rational
+        import nzmath.rational as rational
         assert rational.Rational(1, 6) == bernoulli(2)
         assert rational.Rational(-1, 30) == bernoulli(4)
         assert rational.Rational(1, 42) == bernoulli(6)
