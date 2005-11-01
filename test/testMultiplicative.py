@@ -1,5 +1,5 @@
 import unittest
-import multiplicative
+import nzmath.multiplicative as multiplicative
 
 class MultiplicativeTest (unittest.TestCase):
     def testEuler(self):
