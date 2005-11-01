@@ -1,8 +1,8 @@
 import unittest
-from rationalFunction import RationalFunction, RationalFunctionField
-from rational import theRationalField as Q
-from rational import theIntegerRing as Z
-import polynomial
+from nzmath.rationalFunction import RationalFunction, RationalFunctionField
+from nzmath.rational import theRationalField as Q
+from nzmath.rational import theIntegerRing as Z
+import nzmath.polynomial as polynomial
 
 class RationalFunctionTest (unittest.TestCase):
     def setUp(self):

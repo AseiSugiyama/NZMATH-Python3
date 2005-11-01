@@ -1,6 +1,6 @@
 import unittest
-from rational import *
-import finitefield
+from nzmath.rational import *
+import nzmath.finitefield as finitefield
 # Rational, Integer, theIntegerRing, theRationalField
 
 class RationalTest (unittest.TestCase):
