@@ -1,6 +1,6 @@
 import unittest
-from finitefield import *
-from rational import Integer, Rational, theRationalField
+from nzmath.finitefield import *
+from nzmath.rational import Integer, Rational, theRationalField
 
 
 class FinitePrimeFieldElementTest(unittest.TestCase):
@@ -109,7 +109,7 @@ class FinitePrimeFieldTest(unittest.TestCase):
         self.assert_(self.F17.issubring(self.F17))
         self.assert_(self.F17.issuperring(self.F17))
         # polynomial ring
-        import polynomial
+        import nzmath.polynomial as polynomial
         F17X = polynomial.PolynomialRing(self.F17, 'X')
         self.assert_(self.F17.issubring(F17X))
         self.failIf(self.F17.issuperring(F17X))
