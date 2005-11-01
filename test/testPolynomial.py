@@ -1,8 +1,8 @@
 import unittest
 
-import ring
-import integerResidueClass
-from polynomial import *
+import nzmath.ring as ring
+import nzmath.integerResidueClass as integerResidueClass
+from nzmath.polynomial import *
 
 
 x, y, z = "xyz"
@@ -357,9 +357,10 @@ class PolynomialRingTest(unittest.TestCase):
         assert self.QwithXandY.isufd() == self.QwithXwithY.isufd()
         assert not self.QwithXwithY.ispid()
         assert self.QwithXandY.ispid() == self.QwithXwithY.ispid()
-        class Domain (ring.Ring):
+        class Domain (ring.CommutativeRing):
             def __init__(self):
-                pass
+                self.properties = ring.CommutativeRingProperties()
+                self.properties.setIsdomain(True)
             def isdomain(self):
                 return True
             def __getattr__(self, attr):
@@ -428,7 +429,7 @@ class PolynomialCompilerTest(unittest.TestCase):
 
 class PolynomialGCDTest(unittest.TestCase):
     def setUp(self):
-        import matrix
+        import nzmath.matrix as matrix
         self.f = OneVariableDensePolynomial([1,2,3,4,5], x)
         self.g = OneVariableDensePolynomial([7,8,9], x)
         self.correctResult = matrix.Matrix(6,6,
@@ -480,7 +481,7 @@ class SquareFreeDecompositionChar0Test(unittest.TestCase):
 
 class FiniteFieldPolynomialTest(unittest.TestCase):
     def setUp(self):
-        import finitefield
+        import nzmath.finitefield as finitefield
         self.F2 = finitefield.FinitePrimeField(2)
         self.f = OneVariableDensePolynomial([1, 1], x, self.F2)
         self.g = OneVariableDensePolynomial([1, 0, 1], x, self.F2)
@@ -519,7 +520,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         assert 0 == 0 // self.g
 
     def testDifferentiate(self):
-        import finitefield
+        import nzmath.finitefield as finitefield
         result = finitefield.FinitePrimeFieldElement(1,2)
         assert result == +self.f.differentiate(self.f.variable)
         assert not self.g.differentiate(self.g.variable)
@@ -531,7 +532,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
 
     def testGcd(self):
         assert self.f == self.f.getRing().gcd(self.f, self.g)
-        import finitefield
+        import nzmath.finitefield as finitefield
         pX = OneVariableDensePolynomial([0,1,1], 'X', finitefield.FinitePrimeField.getInstance(3))
         dpX = pX.differentiate('X')
         pX.getRing().gcd(pX, dpX)
@@ -573,7 +574,7 @@ class FiniteFieldPolynomialTest(unittest.TestCase):
         assert self.h.degree() == len(h_ssd)
 
     def testFactor(self):
-        import finitefield
+        import nzmath.finitefield as finitefield
         p = OneVariableDensePolynomial([1,2,3,0,0,3,2,1],
                                        x,
                                        finitefield.FinitePrimeField(5))
@@ -702,7 +703,7 @@ class OneVariableMonomialTest (unittest.TestCase):
         self.assertEqual(x.getCoefficientRing(), Q)
 
     def testRingCharNonZero(self):
-        import finitefield
+        import nzmath.finitefield as finitefield
         F3 = finitefield.FinitePrimeField.getInstance(3)
         x = OneVariableMonomial('X', coeffring=F3)
         self.assert_(isinstance(x, OneVariablePolynomialCharNonZero))
