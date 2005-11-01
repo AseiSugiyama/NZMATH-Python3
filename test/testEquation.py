@@ -9,6 +9,10 @@ class GlobalEquationTest (unittest.TestCase):
     def test_e3(self):
         solutions = equation.e3([1, 0, 0, 1])
         self.assertAlmostEqual(0, abs(solutions[0] + 1))
+        solutions = equation.e3([-6, 11, -6, 1])
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(((t -6)*t + 11)*t -6))
+
 
 class LocalEquationTest (unittest.TestCase):
     def test_e2_Fp(self):
