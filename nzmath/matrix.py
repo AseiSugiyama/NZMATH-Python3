@@ -744,10 +744,10 @@ class IntegerMatrix(Matrix):
         if isinstance(other, vector.Vector):
             return NotImplemented
         else:
-            if(other==0):
+            if other == 0:
                 return ZeroDivisionError
             for i in range(self.row):
-                self[i]=(self[i] % other)
+                self[i] = (self[i] % other)
             return self
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
@@ -807,61 +807,63 @@ class IntegerMatrix(Matrix):
         Return the list of diagonal elements.
         """
 
-        M=self.copy()
-        n=M.row
-        if(M.row!=M.column):
-            raise ValueError,"not square matrix"
+        M = self.copy()
+        n = M.row
+        if M.row != M.column:
+            raise ValueError("not square matrix")
 
-        R=int(M.determinant())
-        if(R<0):
-            R=-R
-        lst=[]
-        if(R==0):
-            raise ValueError,"Don't input matrix whose determinant is 0"
+        R = int(M.determinant())
+        if R < 0:
+            R = -R
+        lst = []
+        if R == 0:
+            raise ValueError("Don't input matrix whose determinant is 0")
         else :
-            if(R==1):
+            if R == 1:
                 for x in range(n-1):
                     lst.append(1)
-                n=1
-        import gcd
-        import vector
-        while (n!=1):
-            j=n
-            c=0
-            while(j!=1):
-                j=j-1
-                if(M[n,j]!=0):
-                    u,v,d= gcd.extgcd(M[n,n],M[n,j])
-                    B=u*M.getColumn(n)+v*M.getColumn(j)
-                    M.setColumn(j,(((M[n,n]//d)*M.getColumn(j)-(M[n,j]//d)*M.getColumn(n)) % R))
-                    M.setColumn(n,(B % R))
+                n = 1
+        import nzmath.gcd as gcd
+        import nzmath.vector as vector
+        while n != 1:
+            j = n
+            c = 0
+            while j != 1:
+                j = j-1
+                if M[n, j] != 0:
+                    u, v, d = gcd.extgcd(M[n, n],M[n, j])
+                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    M.setColumn(j, (((M[n, n] // d) * M.getColumn(j)
+                                     - (M[n, j] // d) * M.getColumn(n)) % R))
+                    M.setColumn(n, (B % R))
 
-            j=n
-            while(j!=1):
-                j=j-1
-                if(M[j,n]!=0):
-                    u,v,d= gcd.extgcd(M[n,n],M[j,n])
-                    B=u*M.getRow(n)+v*M.getRow(j)
-                    M.setRow(j,(((M[n,n]//d)*M.getRow(j)-(M[j,n]//d)*M.getRow(n)) % R))
-                    M.setRow(n,(B % R))
-                    c=c+1
+            j = n
+            while j != 1:
+                j = j-1
+                if M[j, n] != 0:
+                    u, v, d = gcd.extgcd(M[n, n],M[j, n])
+                    B = u * M.getRow(n) + v * M.getRow(j)
+                    M.setRow(j, (((M[n, n] // d) * M.getRow(j)
+                                  - (M[j,n] // d) * M.getRow(n)) % R))
+                    M.setRow(n, (B % R))
+                    c = c+1
 
-            if(c<=0):
-                b=int(M[n,n])
-                flag=False
-                for k in range(1,n):
-                    for l in range(1,n):
-                        if((M[k,l] % b) !=0):
-                            M.setRow(n,M.getRow(n)+M.getRow(k))
-                            flag=True
+            if c <= 0:
+                b = int(M[n, n])
+                flag = False
+                for k in range(1, n):
+                    for l in range(1, n):
+                        if (M[k, l] % b) != 0:
+                            M.setRow(n, M.getRow(n) + M.getRow(k))
+                            flag = True
 
-                if(flag==False):
-                    dd=gcd.gcd(M[n,n],R)
+                if not flag:
+                    dd = gcd.gcd(M[n,n], R)
                     lst.append(dd)
-                    R=(R//dd)
-                    n=n-1
+                    R = (R // dd)
+                    n = n-1
 
-        dd=gcd.gcd(M[1,1],R)
+        dd = gcd.gcd(M[1,1], R)
         lst.append(dd)
         lst.reverse()
         return lst
