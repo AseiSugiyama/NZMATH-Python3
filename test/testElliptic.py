@@ -1,8 +1,8 @@
 import unittest
-import elliptic
-import finitefield
-import polynomial
-import rational
+import nzmath.elliptic as elliptic
+import nzmath.finitefield as finitefield
+import nzmath.polynomial as polynomial
+import nzmath.rational as rational
 
 a = elliptic.EC([0,-1,1,0,0], 0)
 b = elliptic.EC([1,0], 0)
