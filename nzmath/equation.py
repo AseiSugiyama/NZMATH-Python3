@@ -82,16 +82,20 @@ def e3(x):
     c = x[0]/x[3]
     p = b - (a**2)/3
     q = 2*(a**3)/27 - a*b/3 + c
-    w = ( -1 + cmath.sqrt(-3)) / 2
+    w = (-1 + cmath.sqrt(-3)) / 2
+    W = (1, w, w.conjugate())
     k = -q/2 + cmath.sqrt((q**2)/4 + (p**3)/27)
     l = -q/2 - cmath.sqrt((q**2)/4 + (p**3)/27)
     m = k ** (1/3)
-    n = -(abs(l) ** (1/3))
+    n = l ** (1/3)
+
+    # choose n*W[i] by which m*n*W[i] be the nearest to -p/3
+    checker = [abs(3*m*n*z + p) for z in W]
+    n = n * W[checker.index(min(checker))]
 
     equ = []
     for i in range(3):
-        x = (w**i)*m +(w**(3-i))*n - a/3
-        equ.append(x)
+        equ.append(W[i]*m + W[-i]*n - a/3)
     return equ
 
 def e3_Fp(x,p):

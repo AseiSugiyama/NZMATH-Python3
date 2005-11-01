@@ -8,10 +8,20 @@ class GlobalEquationTest (unittest.TestCase):
 
     def test_e3(self):
         solutions = equation.e3([1, 0, 0, 1])
-        self.assertAlmostEqual(0, abs(solutions[0] + 1))
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(t**3 + 1))
         solutions = equation.e3([-6, 11, -6, 1])
         for t in solutions:
-            self.assertAlmostEqual(0, abs(((t -6)*t + 11)*t -6))
+            self.assertAlmostEqual(0, abs(((t - 6)*t + 11)*t - 6))
+        solutions = equation.e3([-1, -1, 1, 1])
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(((t + 1)*t - 1)*t - 1))
+        solutions = equation.e3([-0.5, 0.5, 0.5, 1])
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(((t + 0.5)*t + 0.5)*t - 0.5))
+        solutions = equation.e3([-0.5j, 0.5, 0.5, 1])
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(((t + 0.5)*t + 0.5)*t - 0.5j))
 
 
 class LocalEquationTest (unittest.TestCase):
