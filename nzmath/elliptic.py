@@ -1069,18 +1069,18 @@ class EC:
                 B=self.mul(p,B)
         return o
 
-    def findpoint(self,ord=None):
+    def findpoint(self,m=None):
         """
-        returns point Q in E/F_p s.t [ord]Q == [0] .
+        returns point P in E/F_p s.t mP == [0] .
         """
-        if ord:
-            if self.order()%ord!=0:
+        if m:
+            if self.order()%m:
                 raise ValueError,"point order does not divide group order."
             else:
                 while 1:
-                    point=self.point()
-                    if self.mul(ord,point)==[0]:
-                        return point
+                    P=self.point()
+                    if self.mul(m,P)==[0]:
+                        return P
         else:
             return self.point()
         
@@ -1103,6 +1103,12 @@ class EC:
             # check points are not infinity point
             if P==Q==[0] or Q==[0]:
                 raise ValueError,"You must input not [0]"
+
+            # use cache
+            if hasattr(self,"dbMiller"):
+                if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1],R[0],R[1])):
+                    return self.dbMiller[(P[0],P[1],m,Q[0],Q[1],R[0],R[1])]
+
             # initialize
             # f0=self.field.one # Unused variable
             f_d=0
@@ -1129,8 +1135,8 @@ class EC:
             Z=P
 
             # make addition chain
-            m=arith1.expand(m,2)
-            i=len(m)-2
+            M=arith1.expand(m,2)
+            i=len(M)-2
             while i>=0:
                 l=self.line(Z,Z)
                 if l[0]==0:
@@ -1150,7 +1156,7 @@ class EC:
                 if f_d==0:
                     return False
                 f=f**2*f_n/f_d
-                if m[i]==1:
+                if M[i]==1:
                     l=self.line(Z,P)
                     if l[0]==0:
                         f_n=l[1]
@@ -1170,6 +1176,15 @@ class EC:
                         return False
                     f=f*f1*f_n/f_d
                 i=i-1
+
+            # cacheing
+            if not hasattr(self,"dbdisable"):
+                T=(P[0],P[1],m,Q[0],Q[1],R[0],R[1])
+                if hasattr(self,"dbMiller"):
+                    self.dbMiller[T]=f
+                else:
+                    self.dbMiller = {T:f}
+
             return f
 
     def WeilPairing(self,m,P,Q):
@@ -1178,24 +1193,40 @@ class EC:
         """
         if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+
+        if P==[0] or Q==[0] or P==Q:
+            return self.field.one
+
+        # use cache
+        if hasattr(self,"dbWeilPairing"):
+            if self.dbWeilPairing.has_key((m,P[0],P[1],Q[0],Q[1])):
+                return self.dbWeilPairing[m,P[0],P[1],Q[0],Q[1]]
+                
         while 1:
             A=[0]
             B=[0]
             while A==[0] or B==[0]:
-                T=self.findpoint(m)
-                U=self.findpoint(m)
-                A=self.add(P,T)
-                B=self.add(Q,U)
-            g=self.Miller(P,m,B,T)
+                R1=self.findpoint(m)
+                R2=self.findpoint(m)
+                A=self.add(P,R1)
+                B=self.add(Q,R2)
+            g=self.Miller(P,m,B,R1)
             if g:
-                G=self.Miller(Q,m,T,U)
+                G=self.Miller(Q,m,R1,R2)
                 if G:
-                    h=self.Miller(Q,m,A,U)
+                    h=self.Miller(Q,m,A,R2)
                     if h:
-                        H=self.Miller(P,m,U,T)
+                        H=self.Miller(P,m,R2,R1)
                         if H:
                             Z=(g*G)/(h*H)
                             if not (m%Z.order()):
+                                # cacheing
+                                if not hasattr(self,"dbdisable"):
+                                    T=(m,P[0],P[1],Q[0],Q[1])
+                                    if hasattr(self,"dbWeilPairing"):
+                                        self.dbWeilPairing[T] = Z
+                                    else:
+                                        self.dbWeilPairing = {T:Z}
                                 return Z
        
     def BSGS(self,n,P,Q):
@@ -1260,6 +1291,9 @@ class EC:
         """
         if self.ch>3:
             if self.index==1:
+                if hasattr(self,"abelian"):
+                    return self.abelian
+
                 # step 1. find order E/F_p.
                 simplified=self.simple()
                 N=simplified.order()
@@ -1277,7 +1311,10 @@ class EC:
                     N0=gcd.gcd(r,N2)
                     N1,N2=N1*N0,N2//N0
                 if N1==2:
-                    return (N1,N2)
+                    S = (N1,N2)
+                    if not hasattr(self,"abelian"):
+                        self.abelian = S
+                    return S
 
                 while 1:
                     P1 = [0]
@@ -1298,7 +1335,10 @@ class EC:
                             d=1
                         #print m,d
                         if m*d==N1:
-                            return (d,N//d)
+                            S=(d,N//d)
+                            if not hasattr(self,"abelian"):
+                                self.abelian = S
+                            return S
             else:
                 raise NotImplementedError,"Now making m(__)m"
         else:
@@ -1315,5 +1355,30 @@ class EC:
                 return False
         else:
             raise NotImplementedError,"sorry, Now making."
+    
+    def flush(self):
+        """
+        flush attribute of defined after initialization.
+        """
+        if hasattr(self,"o"):
+            del self.o
+        if hasattr(self,"dbMiller"):
+            del self.dbMiller
+        if hasattr(self,"dbWeilPairing"):
+            del self.dbWeilPairing
+        if hasattr(self,"abelian"):
+            del self.abelian
 
-        
+    def disabledb(self):
+        """
+        disable cache for dependence of Miller.
+        """
+        self.flush()
+        self.dbdisable=True
+
+    def enabledb(self):
+        """
+        enaable cache for dependence of Miller.
+        """
+        if hasattr(self,"dbdisable"):
+            del self.dbdisable
