@@ -1,6 +1,7 @@
 import math, time, unittest
-import real
-import rational, imaginary
+import nzmath.real as real
+import nzmath.rational as rational
+import nzmath.imaginary as imaginary
 
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):
