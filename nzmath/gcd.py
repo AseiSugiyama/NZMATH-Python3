@@ -1,3 +1,10 @@
+"""
+funtions related to the greatest common divisor of integers.
+"""
+
+import operator
+
+
 def gcd(a, b):
     """
     Return the greatest common divisor of 2 integers a and b.
@@ -72,9 +79,39 @@ def gcd_of_list(integers):
 
 def lcm(a, b):
     """
-
     lcm returns the lowest common multiple of given 2 integers.
     If both are zero, it raises an exception.
-
     """
     return a // gcd(a, b) * b 
+
+def coprime(a, b):
+    """
+    Return True if a and b are coprime, False otherwise.
+
+    For Example:
+    >>> coprime(8, 5)
+    True
+    >>> coprime(-15, -27)
+    False
+    >>>
+    """
+    return abs(gcd(a, b)) == 1
+
+def pairwise_coprime(int_list):
+    """
+    Return True if all integers in int_list are pairwise coprime,
+    False otherwise.
+
+    For example:
+    >>> pairwise_coprime([1, 2, 3])
+    True
+    >>> pairwise_coprime([1, 2, 3, 4])
+    False
+    >>>
+    """
+    product = reduce(operator.mul, int_list, 1)
+    for n in int_list:
+        product = product // n
+        if not coprime(product, n):
+            return False
+    return True

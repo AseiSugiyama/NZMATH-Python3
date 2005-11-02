@@ -1,4 +1,5 @@
 import unittest
+import doctest
 import nzmath.gcd as gcd
 
 class GcdTest (unittest.TestCase):
@@ -35,6 +36,7 @@ class GcdTest (unittest.TestCase):
 
 def suite():
     suite = unittest.makeSuite(GcdTest, "test")
+    suite.addTest(doctest.DocTestSuite(gcd))
     return suite
 
 if __name__ == '__main__':
