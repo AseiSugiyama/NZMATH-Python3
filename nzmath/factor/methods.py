@@ -1,5 +1,5 @@
 """
-factor.method -- provide factoring methods.
+factoring methods.
 """
 
 import nzmath.arith1 as arith1

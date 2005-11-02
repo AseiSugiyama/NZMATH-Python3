@@ -1,5 +1,5 @@
 """
-All methods defined here returns one of a factor of given integer.
+All methods defined here return one of a factor of given integer.
 When 1 is returned, the method has failed to factor,
 but 1 is a factor anyway.
 
@@ -38,7 +38,7 @@ def rhomethod(n, **options):
 # p-1 method
 def pmom(n, **options):
     """
-    This program tries to find a non-trivial factor of N using
+    This function tries to find a non-trivial factor of n using
     Algorithm 8.8.2 (p-1 first stage) of Cohen's book.
     In case of N = pow(2,i), this program will not terminate.
     """
