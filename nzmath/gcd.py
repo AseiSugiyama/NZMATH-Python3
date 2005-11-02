@@ -2,9 +2,6 @@
 funtions related to the greatest common divisor of integers.
 """
 
-import operator
-
-
 def gcd(a, b):
     """
     Return the greatest common divisor of 2 integers a and b.
@@ -21,7 +18,7 @@ def binarygcd(a, b):
     if a < b:
         tmp = a
         a = b
-        b =tmp
+        b = tmp
     if b == 0:
         return a
     tmp = a % b
@@ -109,9 +106,10 @@ def pairwise_coprime(int_list):
     False
     >>>
     """
-    product = reduce(operator.mul, int_list, 1)
-    for n in int_list:
-        product = product // n
+    int_iter = iter(int_list)
+    product = int_iter.next()
+    for n in int_iter:
         if not coprime(product, n):
             return False
+        product *= n
     return True
