@@ -1,9 +1,17 @@
 from __future__ import division
-import finitefield
+import random
+
+import arith1
+import prime
+import rational
+import combinatorial
+import matrix
+import lattice
+import vector
 import integerResidueClass
 import polynomial
-import rational
-import prime
+import finitefield
+
 
 def zassenhaus(f):
     """
@@ -86,7 +94,7 @@ def vanHoeij(f):
             preF.extend(tri(fp_factors[j]))
         F = matrix.Matrix(d, n, preF)
         C = (A * F).transpose()
-        c = floorsqrt(s * n) // 2
+        c = arith1.floorsqrt(s * n) // 2
         M = c ** 2 * n + s * n ** 2 // 4
         extBase = matrix.Matrix(Base.row + s, n + s)
         for i in range(Base.row):
@@ -313,8 +321,6 @@ def minimumAbsoluteInjection(f):
             g[i] = c.n
     return g
 
-from arith1 import floorsqrt
-from combinatorial import binomial
 
 def upperBoundOfCoefficient(f):
     """
@@ -327,13 +333,14 @@ def upperBoundOfCoefficient(f):
     weight = 0
     for c in f.coefficient.itercoeffs():
         weight += abs(c)**2
-    weight = floorsqrt(weight) + 1
+    weight = arith1.floorsqrt(weight) + 1
     degree = f.degree()
     lc = f[degree]
     m = degree // 2 + 1
     bound = 1
     for i in range(1, m):
-        b = binomial(m - 1, i) * weight + binomial(m - 1, i - 1) * lc
+        b = combinatorial.binomial(m - 1, i) * weight + \
+            combinatorial.binomial(m - 1, i - 1) * lc
         if bound < b:
             bound = b
     return bound
@@ -355,7 +362,7 @@ def findCombination(f, d, factors, q):
     else:
         ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
         ZqZX = polynomial.PolynomialRing(ZqZ, f.getVariable())
-        for idx in combinationIndexGenerator(len(factors), d):
+        for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]
             product = reduce(lambda x, y: x*y, picked, 1)
             product = minimumAbsoluteInjection(ZqZX.createElement(product))
@@ -372,39 +379,6 @@ def divisibilityTest(f, g):
     if f % g:
         return False
     return True
-
-def combinationIndexGenerator(n, m):
-    """
-    Generate indeces of m elment subsets of n element set.
-
-    For example:
-    >>> for idx in combinationIndexGenerator(5,3):
-    ...     print idx
-    ...
-    [0, 1, 2]
-    [0, 1, 3]
-    [0, 1, 4]
-    [0, 2, 3]
-    [0, 2, 4]
-    [0, 3, 4]
-    [1, 2, 3]
-    [1, 2, 4]
-    [1, 3, 4]
-    [2, 3, 4]
-    >>>
-    """
-    assert n >= m > 0
-    idx = range(m)
-    while True:
-        yield idx
-        for i in range(1, m+1):
-            if idx[-i] != n-i:
-                idx[-i] += 1
-                for j in range(i-1, 0, -1):
-                    idx[-j] = idx[-j-1] + 1
-                break
-        else:
-            raise StopIteration
 
 def complexRootAbsoluteUpperBound(f):
     """
@@ -452,7 +426,5 @@ def tri(f):
         plist.append(p)
     return plist
 
-import matrix
-import random
-import lattice
-import vector
+# for backward compatibility
+combinationIndexGenerator = combinatorial.combinationIndexGenerator

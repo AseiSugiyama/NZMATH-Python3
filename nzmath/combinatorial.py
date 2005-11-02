@@ -1,14 +1,11 @@
 """
-
 Combinatorial functions
-
 """
 
 from rational import Integer, Rational
 
 def binomial(n, m):
     """
-
     The binomial coefficient.
     binomial(n, m) returns n ! / ((n - m) ! * m !).
 
@@ -17,7 +14,6 @@ def binomial(n, m):
     binomial(0,0) = 1.
 
     In other cases, it raises an exception.
-
     """
     if not isinstance(n, (int, long)):
         raise TypeError, "integer is expected, %s detected." % n.__class__
@@ -41,9 +37,7 @@ def binomial(n, m):
 
 def factorial(n):
     """
-
     Return n! for non negative integer n.
-
     """
     if not isinstance(n, (int, long)):
         raise TypeError, "integer is expected, %s detected." % n.__class__
@@ -59,9 +53,7 @@ def factorial(n):
 
 def bernoulli(n):
     """
-
     Return n-th Bernoulli number.
-
     """
     if n != 1 and n & 1:
         return 0
@@ -76,8 +68,39 @@ def bernoulli(n):
 
 def catalan(n):
     """
-
     Return n-th Catalan number.
-
     """
     return binomial(2*n, n) // (n+1)
+
+def combinationIndexGenerator(n, m):
+    """
+    Generate indeces of m elment subsets of n element set.
+
+    For example:
+    >>> for idx in combinationIndexGenerator(5,3):
+    ...     print idx
+    ...
+    [0, 1, 2]
+    [0, 1, 3]
+    [0, 1, 4]
+    [0, 2, 3]
+    [0, 2, 4]
+    [0, 3, 4]
+    [1, 2, 3]
+    [1, 2, 4]
+    [1, 3, 4]
+    [2, 3, 4]
+    >>>
+    """
+    assert n >= m > 0
+    idx = range(m)
+    while True:
+        yield idx
+        for i in range(1, m+1):
+            if idx[-i] != n-i:
+                idx[-i] += 1
+                for j in range(i-1, 0, -1):
+                    idx[-j] = idx[-j-1] + 1
+                break
+        else:
+            raise StopIteration

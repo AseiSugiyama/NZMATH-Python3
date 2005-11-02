@@ -1,5 +1,13 @@
 import unittest
-from nzmath.combinatorial import binomial, factorial, bernoulli, catalan
+import doctest
+import nzmath.combinatorial as combinatorial
+
+# for short
+binomial = combinatorial.binomial
+factorial = combinatorial.factorial
+bernoulli = combinatorial.bernoulli
+catalan = combinatorial.catalan
+
 
 class BinomialTest (unittest.TestCase):
     def testPositiveAndPositive(self):
@@ -58,12 +66,15 @@ class CatalanTest (unittest.TestCase):
     def testNormal(self):
         assert [1, 1, 2, 5, 14] == [catalan(i) for i in range(5)]
 
-def suite():
+
+def suite(suffix="Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(BinomialTest, 'test'))
-    suite.addTest(unittest.makeSuite(FactorialTest, 'test'))
-    suite.addTest(unittest.makeSuite(BernoulliTest, 'test'))
-    suite.addTest(unittest.makeSuite(CatalanTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
+    # doctest for combinationIndexGenerator
+    suite.addTest(doctest.DocTestSuite(combinatorial))
     return suite
 
 if __name__ == '__main__':
