@@ -2,8 +2,9 @@ import math
 import time
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
-import trialdivision
+## import trialdivision
 import nzmath.prime as prime
+import nzmath.factor.find as find
 
 class QS:
     def __init__(self, n, sieverange, factorbase):
@@ -729,7 +730,8 @@ def eratosthenes_log(n):
     return primes_log
 
 def sqrt_modn(n, modulo):
-    factorOfN = trialdivision.trialDivision(n)
+    import nzmath.factor.methods as methods
+    factorOfN = methods.trialdivision(n)
     prod = 1
     for p, e in factorOfN:
         prod = (prod * pow(p, e//2, modulo)) % modulo
@@ -814,24 +816,25 @@ parameters_for_mpqs = [[100,20], #9 -digits
 ### only find a factor
 ###
 
-def mpqsfind(n, s=0, f=0, m=0, verbose = False):
+def mpqsfind(n, s=0, f=0, m=0, verbose=False):
     """
     This is main function of MPQS.
     Arguments are (composite_number, sieve_range, factorbase_size, multiplier)
     You must input composite_number at least.
     """
-    if verbose:
-        starttime = time.time()
+    # verbosity
+    if not verbose:
+        find._silence()
+
+    starttime = time.time()
     M = MPQS(n, s, f, m)
-    if verbose:
-        print "Sieve range is [%d, %d]" % (M.move_range[0], M.move_range[-1]),\
-              "Factorbase size = %d, Max Factorbase %d" % (len(M.FB), M.maxFB)
+    print "Sieve range is [%d, %d]" % (M.move_range[0], M.move_range[-1]),\
+          "Factorbase size = %d, Max Factorbase %d" % (len(M.FB), M.maxFB)
     M.get_vector()
     N = M.number // M.multiplier
     V = Elimination(M.smooth)
     A = V.gaussian()
-    if verbose:
-        print "Found %d linearly dependent relations" % len(A)
+    print "Found %d linearly dependent relations" % len(A)
     differences = []
     for i in A:
         B = V.history[i].keys()
@@ -848,6 +851,7 @@ def mpqsfind(n, s=0, f=0, m=0, verbose = False):
     for diff in differences:
         divisor = gcd.gcd(diff, N)
         if 1 < divisor < N:
-            if verbose:
-                print "Total time = %f sec" % time.time()-starttime
+            print "Total time = %f sec" % (time.time() - starttime)
+            if not verbose:
+                find._verbose()
             return divisor
