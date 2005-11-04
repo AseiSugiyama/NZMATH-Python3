@@ -37,6 +37,7 @@ class FactoringIntegerTest (unittest.TestCase):
         self.assertEqual([(100, 1)], self.tracker100.getResult())
         self.assertEqual(100, self.tracker100.getNextTarget())
 
+
 class FactoringMethodTest (unittest.TestCase):
     def setUp(self):
         self.method = util.FactoringMethod()

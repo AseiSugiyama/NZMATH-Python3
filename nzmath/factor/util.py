@@ -28,14 +28,19 @@ class FactoringMethod (object):
         an option 'return_type' is for the returned type, whose value can be:
         1) 'list' for default type described above.
         2) 'tracker' for FactoringInteger.
+
+        an option 'need_sort' is boolean: True to sort the result.
+        This should be specified with return_type='list'.
         """
         if not self.validate_input_number(number):
             return []
 
         tracker = FactoringInteger(number)
         options['return_type'] = options.get('return_type', 'list')
-        tracker = FactoringInteger(number)
-        return self.continue_factor(tracker, **options)
+        result = self.continue_factor(tracker, **options)
+        if options['return_type'] == 'list' and options.get('need_sort', False):
+            result.sort()
+        return result
 
     def continue_factor(self, tracker, **options):
         """
@@ -57,7 +62,7 @@ class FactoringMethod (object):
             if prime.primeq(target):
                 tracker.register(target, True)
             else:
-                p = self.find(target)
+                p = self.find(target, **options)
                 if 1 < p < target:
                     # factor found
                     tracker.register(p)
@@ -82,7 +87,7 @@ class FactoringMethod (object):
                 return True
         raise ValueError("number must be a positive integer.")
 
-    def find(self, target):
+    def find(self, target, **options):
         """
         Find a factor from the target number.
 
@@ -128,15 +133,19 @@ class FactoringInteger:
             common_divisor = gcd.gcd(base, divisor)
             if common_divisor > 1:
                 if common_divisor == divisor:
-                    k, coprime = arith1.vp(base, divisor)
+                    k, coprime = arith1.vp(base, common_divisor)
+                    while not gcd.coprime(common_divisor, coprime):
+                        common_divisor = gcd.gcd(common_divisor, coprime)
+                        k, coprime = arith1.vp(base, common_divisor)
                     if k:
                         if coprime > 1:
-                            self.replace(base, [(divisor, k), (coprime, 1)])
+                            self.replace(base, [(common_divisor, k), (coprime, 1)])
                         else:
-                            self.replace(base, [(divisor, k)])
+                            self.replace(base, [(common_divisor, k)])
                         self.primality[divisor] = isprime
-                elif common_divisor < divisor:
+                else: # common_divisor properly divides divisor.
                     self.register(common_divisor)
+                    self.register(divisor // common_divisor)
 
     def replace(self, number, factors):
         """
