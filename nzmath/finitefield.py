@@ -8,7 +8,7 @@ import arith1
 import prime
 import ring
 import rational
-import factor
+import nzmath.factor.methods as methods
 import integerResidueClass
 
 
@@ -80,7 +80,7 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             raise ValueError("zero is not in the group.")
         grouporder = self.m - 1
         if not hasattr(self, "orderfactor"):
-            self.orderfactor = factor.trialdivision.trialDivision(grouporder)
+            self.orderfactor = methods.factor(grouporder)
         o = 1
         for p, e in self.orderfactor:
             b = self**(grouporder//(p**e))
