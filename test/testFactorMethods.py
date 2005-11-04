@@ -9,12 +9,11 @@ class FactorTest (unittest.TestCase):
         self.assertEqual(mthd.trialDivision(1042387),  [(701,1),(1487,1)])
 
     def testRho(self):
-        m = "rhomethod sometimes fails to factor anyway."
-        self.assertEqual([(2,2),(3,1),(5,1)], mthd.rhomethod(60), m)
-        self.assertEqual([(2,7)], mthd.rhomethod(128), m)
-        self.assertEqual([(409,1),(491,1)], mthd.rhomethod(200819), m)
-        self.assertEqual([(701,1),(1487,1)], mthd.rhomethod(1042387), m)
-        self.assertEqual([(17,2), (19,1)], mthd.rhomethod(17**2 * 19), m)
+        self.assertEqual([(2,2),(3,1),(5,1)], mthd.rhomethod(60))
+        self.assertEqual([(2,7)], mthd.rhomethod(128))
+        self.assertEqual([(409,1),(491,1)], mthd.rhomethod(200819))
+        self.assertEqual([(701,1),(1487,1)], mthd.rhomethod(1042387))
+        self.assertEqual([(17,2), (19,1)], mthd.rhomethod(17**2 * 19))
 
     def testPMinusOneMethod(self):
         self.assertEqual([(19,1), (101,1)], mthd.pmom(1919))
@@ -40,8 +39,16 @@ class FactorTest (unittest.TestCase):
         self.assertEqual([(19,1), (101,1)], mthd.factor(1919, method='pmom'))
         p = 4 * 6133 + 1
         self.assertEqual([(p,1), (154858631,1)], mthd.factor(p*154858631, 'm'))
-        m = "rhomethod sometimes fails to factor anyway."
-        self.assertEqual([(2,2),(3,1),(5,1)], mthd.factor(60, method='r'), m)
+        self.assertEqual([(2,2),(3,1),(5,1)], mthd.factor(60, method='r'))
+
+    def testVerbosity(self):
+        # default method
+        p = 4 * 6133 + 1
+        print "silent[",
+        result = mthd.mpqs(p*154858631, verbose=False)
+        print "] verbose[",
+        result = mthd.mpqs(p*154858631, verbose=True)
+        print "]"
 
 
 def suite(suffix = "Test"):
