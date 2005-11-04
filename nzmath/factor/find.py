@@ -6,6 +6,7 @@ but 1 is a factor anyway.
 'verbose' boolean flag can be specified for verbose reports.
 """
 
+import sys
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.gcd as gcd
@@ -19,6 +20,8 @@ def rhomethod(n, **options):
     """
     # verbosity
     verbose = options.get('verbose', False)
+    if not verbose:
+        _silence()
 
     if n <= 3:
         return 1
@@ -26,13 +29,15 @@ def rhomethod(n, **options):
     g = n
     while g == n:
         a = bigrandom.randrange(1, n-2)
-        s = bigrandom.randrange(0, n-1)
-        u = v = s
+        u = v = bigrandom.randrange(0, n-1)
+        print a, u
         g = gcd.gcd((v**2 + v + a) % n - u, n)
         while g == 1:
             u = (u**2 + a) % n
             v = ((pow(v, 2, n) + a)**2 + a) % n
             g = gcd.gcd(v - u, n)
+    if not verbose:
+        _verbose()
     return g
 
 # p-1 method
@@ -44,6 +49,8 @@ def pmom(n, **options):
     """
     # verbosity
     verbose = options.get('verbose', False)
+    if not verbose:
+        _silence()
 
     # initialize
     x , B = 2 , 10000001
@@ -54,6 +61,8 @@ def pmom(n, **options):
         primes.append(q)
         if q > B:
             if gcd.gcd(x-1, n) == 1:
+                if not verbose:
+                    _verbose()
                 return 1
             x = y
             break
@@ -75,6 +84,8 @@ def pmom(n, **options):
             x = pow(x, q, n)
             g = gcd.gcd(x-1, n)
             if g != 1:
+                if not verbose:
+                    _verbose()
                 if g == n:
                     return 1
                 return g
@@ -90,6 +101,11 @@ def trialDivision(n, **options):
     If both options are not given, prime factor is searched from 2
     to the square root of the given integer.
     """
+    # verbosity
+    verbose = options.get('verbose', False)
+    if not verbose:
+        _silence()
+
     if 'start' in options and 'stop' in options:
         if 'step' in options:
             trials = range(options['start'], options['stop'], options['step'])
@@ -101,12 +117,33 @@ def trialDivision(n, **options):
         trials = prime.generator_eratosthenes(arith1.floorsqrt(n))
     else:
         trials = prime.generator()
-    # verbosity
-    verbose = options.get('verbose', False)
 
     for p in trials:
         if not (n % p):
+            if not verbose:
+                _verbose()
             return p
         if p ** 2 > n:
             break
+    if not verbose:
+        _verbose()
     return 1
+
+def _silence():
+    """
+    Stop verbose outputs.
+    """
+    try:
+        devnull = file("/dev/null", "a")
+        sys.stderr = devnull
+        sys.stdout = devnull
+    except IOError:
+        # I don't know the way to stop...
+        pass
+
+def _verbose():
+    """
+    Stop silencing.
+    """
+    sys.stderr = sys.__stderr__
+    sys.stdout = sys.__stdout__
