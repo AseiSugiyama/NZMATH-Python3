@@ -4,9 +4,9 @@ factoring methods.
 
 import nzmath.arith1 as arith1
 import nzmath.prime as prime
-import util
-import find
-from mpqs import mpqsfind
+import nzmath.factor.util as util
+import nzmath.factor.find as find
+from nzmath.factor.mpqs import mpqsfind
 
 class DefaultMethod (util.FactoringMethod):
     """
@@ -47,7 +47,10 @@ class DefaultMethod (util.FactoringMethod):
         options['return_type'] = original_return_type
         mpqs = MPQSMethod()
         mpqs.verbose = self.verbose
-        return mpqs.continue_factor(tracker, **options)
+        result = mpqs.continue_factor(tracker, **options)
+        if options['return_type'] == 'list' and options.get('need_sort', False):
+            result.sort()
+        return result
 
 
 class TrialDivision (util.FactoringMethod):
@@ -130,7 +133,7 @@ class TrialDivision (util.FactoringMethod):
             trials = prime.generator()
         return trials
 
-    def find(self, target):
+    def find(self, target, **options):
         """
         Return the minimum factor of 'target' in the sequence.
         """
@@ -150,11 +153,11 @@ class PMinusOneMethod (util.FactoringMethod):
     def __init__(self):
         util.FactoringMethod.__init__(self)
 
-    def find(self, target):
+    def find(self, target, **options):
         """
         Find a factor from the target number.
         """
-        return find.pmom(target, verbose = self.verbose)
+        return find.pmom(target, verbose=self.verbose)
 
 
 class RhoMethod (util.FactoringMethod):
@@ -165,11 +168,11 @@ class RhoMethod (util.FactoringMethod):
     def __init__(self):
         util.FactoringMethod.__init__(self)
 
-    def find(self, target):
+    def find(self, target, **options):
         """
         Find a factor from the target number.
         """
-        return find.rhomethod(target, verbose = self.verbose)
+        return find.rhomethod(target, verbose=self.verbose)
 
 
 class MPQSMethod (util.FactoringMethod):
@@ -177,15 +180,23 @@ class MPQSMethod (util.FactoringMethod):
     Class for Multi-Polynomial Quadratic Sieve method.
     """
 
-
     def __init__(self):
         util.FactoringMethod.__init__(self)
 
-    def find(self, target):
+    def find(self, target, **options):
         """
         Find a factor from the target number.
         """
-        return mpqsfind(target, verbose = self.verbose)
+        limited_options = {}
+        if 's' in options:
+            limited_options['s'] = options['s']
+        if 'f' in options:
+            limited_options['f'] = options['f']
+        if 'm' in options:
+            limited_options['m'] = options['m']
+        if 'verbose' in options:
+            limited_options['verbose'] = options['verbose']
+        return mpqsfind(target, **limited_options)
 
 def trialDivision(n, **options):
     """
@@ -208,6 +219,7 @@ def pmom(n, **options):
     """
     method = PMinusOneMethod()
     options['return_type'] = 'list'
+    options['need_sort'] = True
     return method.factor(n, **options)
 
 def rhomethod(n, **options):
@@ -216,6 +228,7 @@ def rhomethod(n, **options):
     """
     method = RhoMethod()
     options['return_type'] = 'list'
+    options['need_sort'] = True
     return method.factor(n, **options)
 
 def mpqs(n, **options):
@@ -224,9 +237,10 @@ def mpqs(n, **options):
     """
     method = MPQSMethod()
     options['return_type'] = 'list'
+    options['need_sort'] = True
     return method.factor(n, **options)
 
-def factor(n, method = 'default', **options):
+def factor(n, method='default', **options):
     """
     Factor the given integer.
 
@@ -248,4 +262,5 @@ def factor(n, method = 'default', **options):
     except KeyError:
         chosen_method = DefaultMethod()
     options['return_type'] = 'list'
+    options['need_sort'] = True
     return chosen_method.factor(n, **options)
