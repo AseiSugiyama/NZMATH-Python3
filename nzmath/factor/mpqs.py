@@ -2,7 +2,6 @@ import math
 import time
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
-## import trialdivision
 import nzmath.prime as prime
 import nzmath.factor.find as find
 
