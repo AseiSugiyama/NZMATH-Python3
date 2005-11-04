@@ -730,7 +730,7 @@ def eratosthenes_log(n):
 
 def sqrt_modn(n, modulo):
     import nzmath.factor.methods as methods
-    factorOfN = methods.trialdivision(n)
+    factorOfN = methods.trialDivision(n)
     prod = 1
     for p, e in factorOfN:
         prod = (prod * pow(p, e//2, modulo)) % modulo
