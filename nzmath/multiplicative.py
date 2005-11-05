@@ -2,7 +2,7 @@
 Multiplicative number theoretic functions.
 """
 
-import factor.trialdivision
+import nzmath.factor.methods as factor_methods
 import prime
 
 def euler(n):                    
@@ -14,7 +14,7 @@ def euler(n):
         return 1
     if prime.primeq(n):
         return n-1
-    f = factor.trialdivision.trialDivision(n)
+    f = factor_methods.factor(n)
     t = 1
     for p, e in f:
         if e > 1:
@@ -35,7 +35,7 @@ def moebius(n):
         return 1
     if prime.primeq(n):
         return -1
-    f = factor.trialdivision.trialDivision(n)
+    f = factor_methods.factor(n)
     m = 1
     for p, e in f:
         if e > 1:
@@ -51,7 +51,7 @@ def sigma(m, n):
         return 1
     if prime.primeq(n):
         return 1 + n**m
-    f = factor.trialdivision.trialDivision(n)
+    f = factor_methods.factor(n)
     s = 1
     for p, e in f:
         t = 1

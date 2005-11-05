@@ -4,7 +4,6 @@ import random
 import sets
 
 import arith1
-import factor
 import finitefield
 import gcd
 import integerResidueClass
@@ -12,6 +11,7 @@ import polynomial
 import prime
 import rational
 import ring
+import nzmath.factor.methods as factor_methods
 
 def Element_p(a,p):
     """
@@ -1054,13 +1054,13 @@ class EC:
         """
         # parameter ord and f are extension for structure.
         if ord:
-            N=ord
+            N = ord
         else:
-            N=self.order()
+            N = self.order()
         if f:
-            l=f
+            l = f
         else:
-            l=factor.trialdivision.trialDivision(N)
+            l = factor_methods.factor(N)
         o=1
         for p,e in l:
             B=self.mul(N//(p**e),P)
@@ -1303,14 +1303,14 @@ class EC:
                     return (1,N)
 
                 # step 2. decompose N.
-                r=gcd.gcd(simplified.ch-1,N)
-                p=factor.trialdivision.trialDivision(r)
-                N0=r
-                N1,N2=1,N
-                while N0>1:
-                    N0=gcd.gcd(r,N2)
-                    N1,N2=N1*N0,N2//N0
-                if N1==2:
+                r = gcd.gcd(simplified.ch - 1, N)
+                p = factor_methods.factor(r)
+                N0 = r
+                N1,N2 = 1,N
+                while N0 > 1:
+                    N0 = gcd.gcd(r,N2)
+                    N1,N2 = N1*N0,N2//N0
+                if N1 == 2:
                     S = (N1,N2)
                     if not hasattr(self,"abelian"):
                         self.abelian = S
