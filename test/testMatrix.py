@@ -114,6 +114,15 @@ class MatrixTest(unittest.TestCase):
         assert h2 == s2.smith()
         assert h3 == s3.smith()
 
+    def testGetitem(self):
+        self.assertEqual(2, a[1,2])
+        self.assertRaises(IndexError, a.__getitem__, "wrong")
+
+    def testEqual(self):
+        self.assert_(a == a)
+        self.assert_(isinstance(a == a, bool))
+
+
 class SubspaceTest(unittest.TestCase):
     def testSupplementBasis(self):
         b = Subspace(3, 2, [1,2,3,4,5,7])
