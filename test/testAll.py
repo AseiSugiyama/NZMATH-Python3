@@ -4,7 +4,10 @@ import testBigrandom
 import testCombinatorial
 import testElliptic
 import testEquation
-import testFactor
+import testFactorUtil
+import testFactorMpqs
+import testFactorMethods
+import testFactorMisc
 import testFiniteField
 import testGcd
 import testImaginary
@@ -23,27 +26,10 @@ import testZassenhaus
 
 def suite():
     suite = unittest.TestSuite()
-    suite.addTest(testArith1.suite())
-    suite.addTest(testBigrandom.suite())
-    suite.addTest(testCombinatorial.suite())
-    suite.addTest(testElliptic.suite())
-    suite.addTest(testEquation.suite())
-    suite.addTest(testFactor.suite())
-    suite.addTest(testFiniteField.suite())
-    suite.addTest(testGcd.suite())
-    suite.addTest(testImaginary.suite())
-    suite.addTest(testIntegerResidueClass.suite())
-    suite.addTest(testLattice.suite())
-    suite.addTest(testMultiplicative.suite())
-    suite.addTest(testMatrix.suite())
-    suite.addTest(testPolynomial.suite())
-    suite.addTest(testPrime.suite())
-    suite.addTest(testRational.suite())
-    suite.addTest(testRationalFunction.suite())
-    suite.addTest(testReal.suite())
-    suite.addTest(testRing.suite())
-    suite.addTest(testVector.suite())
-    suite.addTest(testZassenhaus.suite())
+    all_names = globals()
+    for name in all_names:
+        if name.startswith("test"):
+            suite.addTest(all_names[name].suite())
     return suite
 
 if __name__ == '__main__':
