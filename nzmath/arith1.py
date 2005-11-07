@@ -2,15 +2,13 @@ import math
 
 def floorsqrt(a):
     """
-
     Return the floor of square root of the given integer.
-
     """
     if a < 2 ** 59:
-        return long(math.sqrt(a))
+        return int(math.sqrt(a))
     else:
         b_old = a
-        b = pow(10, (len(str(long(a)))+1)//2)
+        b = pow(10, log(a, 10)//2 + 1)
         while b_old > b:
             b_old, b = b, (b+a//b)//2
         return b_old
@@ -229,3 +227,39 @@ class _Issquare:
 
 # test whether a given number is a square number or not.
 issquare = _Issquare()
+
+def log(n, base=2):
+    """
+    Return the integer part of logarithm of the given natural number
+    'n' to the 'base'.  The default value for 'base' is 2.
+    """
+    if n < base:
+        return 0
+    if base == 10:
+        return _log10(n)
+    fit = base
+    result = 1
+    stock = [(result, fit)]
+    while fit < n:
+        next = fit ** 2
+        if next <= n:
+            fit = next
+            result += result
+            stock.append((result, fit))
+        else:
+            break
+    else: # just fit
+        return result
+    stock.reverse()
+    for index, power in stock:
+        prefit = fit * power
+        if prefit == n:
+            result += index
+            break
+        elif prefit < n:
+            fit = prefit
+            result += index
+    return result
+
+def _log10(n):
+    return len(str(n))-1

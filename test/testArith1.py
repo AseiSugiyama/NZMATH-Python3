@@ -25,15 +25,15 @@ class Arith1Test (unittest.TestCase):
         self.assertRaises(ZeroDivisionError, arith1.inverse, 0, 3)
 
     def testFloorsqrt(self):
-        assert arith1.floorsqrt(0) == 0
-        assert arith1.floorsqrt(1) == 1
-        assert arith1.floorsqrt(3) == 1
-        assert arith1.floorsqrt(4) == 2
-        assert arith1.floorsqrt(400000000000000000000) == 20000000000
-        assert arith1.floorsqrt(400000000000000000000 - 1) == 19999999999
-        assert arith1.floorsqrt(2**60 - 1) ** 2 <= 2**60 - 1
-        assert arith1.floorsqrt(2**59 - 1) ** 2 <= 2**59 - 1
-        assert arith1.floorsqrt(10) == 3
+        self.assertEqual(0, arith1.floorsqrt(0))
+        self.assertEqual(1, arith1.floorsqrt(1))
+        self.assertEqual(1, arith1.floorsqrt(3))
+        self.assertEqual(2, arith1.floorsqrt(4))
+        self.assertEqual(3, arith1.floorsqrt(10))
+        self.assertEqual(arith1.floorsqrt(400000000000000000000), 20000000000)
+        self.assertEqual(arith1.floorsqrt(400000000000000000000 - 1), 19999999999)
+        self.assert_(arith1.floorsqrt(2**60 - 1) ** 2 <= 2**60 - 1)
+        self.assert_(arith1.floorsqrt(2**59 - 1) ** 2 <= 2**59 - 1)
 
     def testFloorpowerroot(self):
         assert arith1.floorpowerroot(0,1) == 0
@@ -58,6 +58,14 @@ class Arith1Test (unittest.TestCase):
         assert (0, 10) == arith1.vp(10, 3)
         assert (1, 10) == arith1.vp(10, 3, 1)
         assert (3, 10) == arith1.vp(270, 3)
+
+    def testLog(self):
+        self.assertEqual(3, arith1.log(8, 2))
+        self.assertEqual(3, arith1.log(15, 2))
+        self.assertEqual(3, arith1.log(1000, 10))
+        self.assertEqual(9, arith1.log(1000000001, 10))
+        self.assert_(10 ** arith1.log(1000000001, 10) <= 1000000001)
+
 
 def suite():
     suite = unittest.makeSuite(Arith1Test, "test")
