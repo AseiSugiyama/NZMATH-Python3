@@ -392,15 +392,15 @@ class Matrix:
             
         return triangle
 
-    def isUpperTriangularMatrix(M):
-        for j in range(M.column):
-            for i in range(j+1, M.row):
-                if M.compo[i][j] != 0:
+    def isUpperTriangularMatrix(self):
+        for j in range(self.column):
+            for i in range(j+1, self.row):
+                if self.compo[i][j] != 0:
                     return False
         return True
 
-    def isLowerTriangularMatrix(M):
-        return M.transpose().isUpperTriangularMatrix()
+    def isLowerTriangularMatrix(self):
+        return self.transpose().isUpperTriangularMatrix()
 
     def trace(self):
         """
@@ -570,8 +570,6 @@ class Matrix:
             return None
         output = Matrix(self.column, len(basis))
         for j in range(1, output.column + 1):
-            if(other==0):
-                return ZeroDivisionError
             output.setColumn(j, basis[j-1])
         return output
 
@@ -877,11 +875,11 @@ class MatrixRing:
     def __repr__(self):
         return "MatrixRing(%d)" % self.size
 
-    def getInstance(self, size):
-        if size not in self._instances:
+    def getInstance(cls, size):
+        if size not in cls._instances:
             anInstance = MatrixRing(size)
-            self._instances[size] = anInstance
-        return self._instances[size]
+            cls._instances[size] = anInstance
+        return cls._instances[size]
 
     getInstance = classmethod(getInstance)
 
