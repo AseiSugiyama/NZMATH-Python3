@@ -32,32 +32,26 @@ class Matrix:
         else:
             raise ValueError, "invalide value for matrix size"
 
-    def __getitem__(self, *arg):
+    def __getitem__(self, index):
         """
-        
         M[i,j] : Return (i,j)-component of M. 
         M[i] <==> M.getColumn(i)
-        
         """
-        if isinstance(arg[0], tuple):
-            return self.compo[ arg[0][0]-1 ][ arg[0][1]-1 ]
-        elif isinstance(arg[0], int) or isinstance(arg[0], long): 
-            return self.getColumn(arg[0])
+        if isinstance(index, tuple):
+            return self.compo[index[0]-1][index[1]-1]
+        elif isinstance(index, (int, long)):
+            return self.getColumn(index)
         else:
-            raise IndexError, "Matrix invalid index:", arg[0]
+            raise IndexError("Matrix invalid index: %s" % index)
 
-    def __setitem__(self, *arg):
+    def __setitem__(self, key, value):
         """
-
         M[i,j] = a   :   Substitute a for (i,j)-component of M.
         M[i] = V <==> M.setColumn(i, V)
-        
         """
-        key = arg[0]
-        value = arg[1]
         if isinstance(key, tuple):
             self.compo[key[0]-1][key[1]-1] = value
-        elif isinstance(key, int) or isinstance(key, long):
+        elif isinstance(key, (int, long)):
             self.setColumn(key, value)
         else:
             raise TypeError, self.__setitem__.__doc__
@@ -65,19 +59,19 @@ class Matrix:
     def __eq__(self, other):
         if isinstance(other, Matrix):
             if (self.row != other.row) or (self.column != other.column):
-                return 0
+                return False
             for i in range(self.row):
                 for j in range(self.column):
                     if self.compo[i][j] != other.compo[i][j]:
-                        return 0
-            return 1
+                        return False
+            return True
         elif isinstance(other, int):
             if other == 0:  # zero matrix ?
                 for i in range(self.row):
                     for j in range(self.column):
                         if self.compo[i][j] != 0:
-                            return 0
-                return 1 
+                            return False
+                return True
         else:
             raise TypeError
 
