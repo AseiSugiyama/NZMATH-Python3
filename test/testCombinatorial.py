@@ -21,12 +21,21 @@ class BinomialTest (unittest.TestCase):
         assert 1 == binomial(0,0)
         assert 1 == binomial(1111111111111111111111111111111111111111111, 0)
         self.assertRaises(ValueError, binomial, 0, 3)
+        self.assertRaises(ValueError, binomial, -1, 0)
 
     def testNegativeAndPositive(self):
         self.assertRaises(ValueError, binomial, -1, 2)
 
     def testPositiveAndNegative(self):
         self.assertRaises(ValueError, binomial, 2, -1)
+
+    def testNegativeAndNegative(self):
+        self.assertRaises(ValueError, binomial, -2, -3)
+        self.assertRaises(ValueError, binomial, -1, -1)
+
+    def testNonInteger(self):
+        self.assertRaises(TypeError, binomial, 1.8, 1)
+        self.assertRaises(TypeError, binomial, 1, 1.8)
 
 
 class FactorialTest (unittest.TestCase):

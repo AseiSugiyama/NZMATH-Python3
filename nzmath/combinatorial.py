@@ -19,7 +19,7 @@ def binomial(n, m):
         raise TypeError, "integer is expected, %s detected." % n.__class__
     if not isinstance(m, (int, long)):
         raise TypeError, "integer is expected, %s detected." % m.__class__
-    if n == m or m == 0:
+    if n == m >= 0 or m == 0 and n > 0:
         return 1
     if n <= 0:
         raise ValueError, "non-positive number: %d" % n
