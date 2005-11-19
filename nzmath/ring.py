@@ -206,12 +206,12 @@ class QuotientFieldElement (FieldElement):
     def __add__(self, other):
         numerator = self.numerator*other.denominator + self.denominator*other.numerator
         denominator = self.denominator*other.denominator
-        return self.__class__(numerator,denominator) 
+        return self.__class__(numerator, denominator) 
 
     def __sub__(self, other):
         numerator = self.numerator*other.denominator - self.denominator*other.numerator
         denominator = self.denominator*other.denominator
-        return self.__class__(numerator,denominator) 
+        return self.__class__(numerator, denominator) 
 
     def __neg__(self):
         return self.__class__(-self.numerator, self.denominator)
@@ -234,8 +234,11 @@ class QuotientFieldElement (FieldElement):
     def inverse(self):
         return self.__class__(self.denominator, self.numerator)
 
-    def __eq__(self,other):
+    def __eq__(self, other):
         return self.numerator*other.denominator == self.denominator*other.numerator
+
+    def __ne__(self, other):
+        return self.numerator*other.denominator != self.denominator*other.numerator
 
 
 class Ideal:
@@ -500,11 +503,12 @@ def getRing(obj):
         return obj.getRing()
     except AttributeError:
         if isinstance(obj, (int, long)):
-            import rational
+            import nzmath.rational as rational
             return rational.theIntegerRing
         if isinstance(obj, float):
-            import real
+            import nzmath.real as real
             return real.theRealField
         if isinstance(obj, complex):
-            import imaginary
+            import nzmath.imaginary as imaginary
             return imaginary.theComplexField
+        raise
