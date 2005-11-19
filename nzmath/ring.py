@@ -12,7 +12,9 @@ class Ring (object):
     """
 
     def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""
+        """
+        This class is abstract and cannot be instanciated.
+        """
         raise NotImplementedError
 
     def createElement(self, seed):
@@ -35,14 +37,18 @@ class Ring (object):
         """
         raise NotImplementedError
 
+
 class CommutativeRing (Ring):
     """CommutativeRing is an abstract subclass of Ring
     whose multiplication is commutative."""
 
     def __init__(self, *args, **kwd):
-        """This class is abstract and cannot be instanciated."""
+        """
+        This class is abstract and cannot be instanciated.
+        """
+        if self.__class__.__name__ == 'CommutativeRing':
+            raise NotImplementedError
         self.properties = CommutativeRingProperties()
-        raise NotImplementedError
 
     def getQuotientField(self):
         """getQuotientField returns the quotient field of the ring
@@ -95,22 +101,19 @@ class CommutativeRing (Ring):
         False if not, or None if uncertain."""
         return self.properties.isfield()
 
+
 class Field (CommutativeRing):
     """Field is an abstract class which expresses that
     the derived classes are (in mathematical meaning) fields."""
 
     def __init__(self, *args, **kwd):
         """
-
         This class is abstract and cannot be instanciated.
-
-        Derived classes should initialize self.properties like:
-
-        self.properties = CommutativeRingProperties()
-        self.properties.setIsfield(True)
-
         """
-        raise NotImplementedError
+        if self.__class__.__name__ == 'Field':
+            raise NotImplementedError
+        CommutativeRing.__init__(self)
+        self.properties.setIsfield(True)
 
     def createElement(self, *args):
         """createElement returns an element of the field."""
@@ -129,12 +132,18 @@ class Field (CommutativeRing):
         It is, of course, itself."""
         return self
 
+
 class QuotientField (Field):
     """QuotientField is a class of quotient field."""
 
     def __init__(self, domain):
-        """creates quotient field from given domain."""
-        raise NotImplementedError
+        """
+        creates quotient field from given domain.
+        """
+        if self.__class__.__name__ == 'QuotientField':
+            raise NotImplementedError
+        Field.__init__(self)
+
 
 class RingElement:
     """RingElement is an abstract class for elements of rings."""
@@ -148,11 +157,14 @@ class RingElement:
         to which the element belongs."""
         raise NotImplementedError
 
+
 class CommutativeRingElement (RingElement):
     pass
 
+
 class FieldElement (CommutativeRingElement):
     pass
+
 
 class QuotientFieldElement (FieldElement):
     """
@@ -200,6 +212,7 @@ class QuotientFieldElement (FieldElement):
 
     def __eq__(self,other):
         return self.numerator*other.denominator == self.denominator*other.numerator
+
 
 class Ideal:
     """
@@ -264,6 +277,7 @@ class Ideal:
         """
         raise NotImplementedError
 
+
 class ResidueClassRing (CommutativeRing):
     """
 
@@ -273,16 +287,14 @@ class ResidueClassRing (CommutativeRing):
     """
     def __init__(self, ring, ideal):
         """
-
         ResidueClassRing(ring, ideal) creates a resudue class ring.
         The ring should be an instance of CommutativeRing, and ideal
         must be an instance of Ideal, whose ring attribute points the
         same ring with the given ring.
-
         """
+        CommutativeRing.__init__(self)
         self.ring = ring
         self.ideal = ideal
-        self.properties = CommutativeRingProperties()
         if self.ring.isnoetherian():
             self.properties.setIsnoetherian(True)
 
@@ -301,6 +313,7 @@ class ResidueClassRing (CommutativeRing):
 
     def __ne__(self, other):
         return not (self == other)
+
 
 class ResidueClass (CommutativeRingElement):
     """
@@ -327,6 +340,7 @@ class ResidueClass (CommutativeRingElement):
 
     def getRing(self):
         return ResidueClassRing(self.ideal.ring, self.ideal)
+
 
 class CommutativeRingProperties:
     """
