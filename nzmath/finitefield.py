@@ -8,7 +8,7 @@ import arith1
 import prime
 import ring
 import rational
-import nzmath.factor.methods as methods
+import nzmath.factor.methods as factor_methods
 import integerResidueClass
 
 
@@ -16,12 +16,25 @@ class FiniteField (ring.Field):
     """
     The base class for all finite fields.
     """
+    def __init__(self, characteristic):
+        # This class is abstract and can not be instanciated.
+        if self.__class__.__name__ == "Field":
+            raise NotImplementedError
+        ring.Field.__init__(self)
+        self.char = characteristic
+
     def __len__(self):
         "Cardinality of the field"
         raise NotImplementedError
 
     def __nonzero__(self):
         return True
+
+    def getCharacteristic(self):
+        """
+        Return the characteristic of the field.
+        """
+        return self.char
 
 
 class FiniteFieldElement (ring.FieldElement):
@@ -80,7 +93,7 @@ class FinitePrimeFieldElement (integerResidueClass.IntegerResidueClass, FiniteFi
             raise ValueError("zero is not in the group.")
         grouporder = self.m - 1
         if not hasattr(self, "orderfactor"):
-            self.orderfactor = methods.factor(grouporder)
+            self.orderfactor = factor_methods.factor(grouporder)
         o = 1
         for p, e in self.orderfactor:
             b = self**(grouporder//(p**e))
@@ -99,16 +112,7 @@ class FinitePrimeField (FiniteField):
     _instances = {}
 
     def __init__(self, characteristic):
-        self.char = characteristic
-        self.properties = ring.CommutativeRingProperties()
-        self.properties.setIsfield(True)
-        self._one = self._zero = None
-
-    def getCharacteristic(self):
-        """
-        Return the characteristic of the field.
-        """
-        return self.char
+        FiniteField.__init__(self, characteristic)
 
     def __eq__(self, other):
         if self is other:
@@ -215,10 +219,9 @@ class FiniteExtendedField (FiniteField):
           3) an ideal of the polynomial ring F_p[#1] with degree
              greater than 1.
         """
-        if prime.primeq(characteristic):
-            self.char = characteristic
-        else:
+        if not prime.primeq(characteristic):
             raise ValueError("characteristic must be a prime.")
+        FiniteField.__init__(self, characteristic)
         if isinstance(n_or_modulus, (int, long)):
             if n_or_modulus <= 1:
                 raise ValueError("degree of extension must be > 1.")
@@ -252,13 +255,6 @@ class FiniteExtendedField (FiniteField):
                 raise TypeError("modulus must be in F_p[#1]")
         else:
             raise TypeError("degree or modulus must be supplied.")
-        self._one = self._zero = None
-
-    def getCharacteristic(self):
-        """
-        Return the characteristic of the field.
-        """
-        return self.char
 
     def __len__(self):
         """
