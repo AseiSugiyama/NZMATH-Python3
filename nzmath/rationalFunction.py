@@ -1,26 +1,28 @@
 """
-
 rational functions and fields of rational functions
-
 """
 
 import sets
 import rational
 import ring
- 
+import polynomial
+
+
 class RationalFunctionField (ring.QuotientField):
     """
-
     The class for rational function fields.
-
     """
+
     def __init__(self, field, vars):
+        if isinstance(field, ring.QuotientField):
+            ring.QuotientField.__init__(self, polynomial.PolynomialRing(field.basedomain, vars))
+        else:
+            ring.QuotientField.__init__(self, polynomial.PolynomialRing(field, vars))
         self.coefficientField = field
         if isinstance(vars, str):
             self.vars = sets.Set((vars,))
         else:
             self.vars = sets.Set(vars)
-        self._one = self._zero = None
 
     def __str__(self):
         retval = str(self.coefficientField)
@@ -29,7 +31,6 @@ class RationalFunctionField (ring.QuotientField):
             retval += str(v) + ", "
         retval = retval[:-2] + ")"
         return retval
-
 
     def __eq__(self, other):
         if not isinstance(other, RationalFunctionField):
