@@ -1,8 +1,7 @@
 """
-
 Class definitions of polynomials.
-
 """
+
 from __future__ import division
 import sets
 import re
@@ -12,10 +11,14 @@ import rational
 import ring
 import rationalFunction
 
-class OneVariablePolynomial:
+
+class OneVariablePolynomial (ring.CommutativeRingElement):
+    """
+    The class is for polynomials with one variable.
+    """
+
     def __init__(self, coefficient, variable, coeffring):
         """
-
         OneVariablePolynomial(coefficient, variable, coeffring)
         makes a one variable polynomial object.
 
@@ -23,7 +26,6 @@ class OneVariablePolynomial:
         variable must be either one of string, list or tuple.
         coeffring must be a commutative ring object,
         which implements ring.CommutativeRing.
-
         """
         self.coefficient = coefficient
         self.variable = variable
@@ -39,7 +41,6 @@ class OneVariablePolynomial:
         TypeError will be raised if n is not an integer, or if val is
         not in the coefficient ring.
         ValueError will be raised if n is negative.
-
         """
         if value in self.getCoefficientRing():
             if index >= 0:
@@ -51,13 +52,11 @@ class OneVariablePolynomial:
 
     def __getitem__(self, index):
         """
-
         aOneVariablePolynomial[n]
         returns the coefficient at degree n.
 
         TypeError will be raised if n is not an integer.
         ValueError will be raised if n is negative.
-
         """
         if isinstance(index, (int, long)) and index >= 0:
             return self.coefficient[index]
@@ -1984,19 +1983,18 @@ class OneVariablePolynomialCoefficients:
 
 class PolynomialRing (ring.CommutativeRing):
     """
-
     The class of polynomial ring.
-
     """
+
     def __init__(self, aRing, var):
         if not isinstance(aRing, ring.Ring):
             raise TypeError, '%s should not be passed as ring' % aRing.__class__
+        ring.CommutativeRing.__init__(self)
         self.coefficientRing = aRing
         if isinstance(var, str):
             self.vars = sets.Set((var,))
         else:
             self.vars = sets.Set(var)
-        self.properties = ring.CommutativeRingProperties()
         if self.coefficientRing.isfield() and len(self.vars) == 1:
             self.properties.setIseuclidean(True)
         else:
@@ -2008,7 +2006,6 @@ class PolynomialRing (ring.CommutativeRing):
                 self.properties.setIsdomain(True)
             elif False == self.coefficientRing.isdomain():
                 self.properties.setIsdomain(False)
-        self._one = self._zero = None
 
     def getVars(self):
         return self.vars.copy()
