@@ -1,27 +1,23 @@
 """
-
 rational module provides Rational, Integer, RationalField, and IntegerRing.
-
 """
 import math
 import ring
 
+
 class Rational (ring.QuotientFieldElement):
     """
-
     Rational is the class of rational numbers.
-
     """
+
     def __init__(self, numerator, denominator=1):
         """
-
         Create a rational from:
           * integers,
           * float, or
           * Rational.
         Other objects can be converted if they have toRational
         methods.  Otherwise raise TypeError.
-
         """
         if not denominator:
             raise ZeroDivisionError
@@ -467,18 +463,15 @@ class Rational (ring.QuotientFieldElement):
         self.numerator = Integer(numerator)
         self.denominator = Integer(denominator)
 
+
 class RationalField (ring.QuotientField):
     """
-
     RationalField is a class of field of rationals.
     The class has the single instance 'theRationalField'.
-
     """
 
     def __init__(self):
-        self.basedomain = theIntegerRing
-        self.properties = ring.CommutativeRingProperties()
-        self.properties.setIsfield(True)
+        ring.QuotientField.__init__(self, theIntegerRing)
         self._one = self._zero = None
 
     def __contains__(self, element):
@@ -498,11 +491,9 @@ class RationalField (ring.QuotientField):
 
     def createElement(self, numerator, denominator=1):
         """
-
         createElement returns a Rational object.
         If the number of arguments is one, it must be an integer or a rational.
         If the number of arguments is two, they must be integers.
-
         """
         return Rational(numerator, denominator)
 
@@ -514,7 +505,6 @@ class RationalField (ring.QuotientField):
 
     def issubring(self, other):
         """
-
         reports whether another ring contains the rational field as
         subring.
 
@@ -522,7 +512,6 @@ class RationalField (ring.QuotientField):
         other is the integer ring, the output is False.  In other
         cases it depends on the implementation of another ring's
         issuperring method.
-
         """
         if isinstance(other, RationalField):
             return True
@@ -532,14 +521,12 @@ class RationalField (ring.QuotientField):
 
     def issuperring(self, other):
         """
-
         reports whether the rational number field contains another
         ring as subring.
 
         If other is also the rational number field or the ring of
         integer, the output is True.  In other cases it depends on the
         implementation of another ring's issubring method.
-
         """
         if isinstance(other, (RationalField, IntegerRing)):
             return True
@@ -561,12 +548,11 @@ class RationalField (ring.QuotientField):
 
     zero = property(_getZero, None, None, "additive unit.")
 
+
 class Integer(long, ring.CommutativeRingElement):
     """
-
     Integer is a class of integer.  Since 'int' and 'long' do not
     return rational for division, it is needed to create a new class.
-
     """
 
     def __div__(self, other):
@@ -660,12 +646,10 @@ class Integer(long, ring.CommutativeRingElement):
 
     def actAdditive(self, other):
         """
-
         Act on other additively, i.e. n is expanded to n time
         additions of other.  Naively, it is:
           return sum([+other for _ in xrange(self)])
         but, here we use a binary addition chain.
-
         """
         nonneg, absVal = (self >= 0), abs(self)
         result = 0
@@ -681,12 +665,10 @@ class Integer(long, ring.CommutativeRingElement):
 
     def actMultiplicative(self, other):
         """
-
         Act on other multiplicatively, i.e. n is expanded to n time
         multiplications of other.  Naively, it is:
           return reduce(lambda x,y:x*y, [+other for _ in xrange(self)])
         but, here we use a binary addition chain.
-
         """
         nonneg, absVal = (self >= 0), abs(self)
         result = 1
@@ -700,27 +682,24 @@ class Integer(long, ring.CommutativeRingElement):
             result = result.inverse()
         return result
 
+
 class IntegerRing (ring.CommutativeRing):
     """
-
     IntegerRing is a class of ring of rational integers.
     The class has the single instance 'theIntegerRing'.
-
     """
 
     def __init__(self):
-        self.properties = ring.CommutativeRingProperties()
+        ring.CommutativeRing.__init__(self)
         self.properties.setIseuclidean(True)
         self.properties.setIsfield(False)
         self._one = self._zero = None
 
     def __contains__(self, element):
         """
-
         `in' operator is provided for checking an object be in the
         rational integer ring mathematically.  To check an object be
         an integer object in Python, please use isIntegerObject.
-
         """
         try:
             return isIntegerObject(+element)
@@ -728,12 +707,16 @@ class IntegerRing (ring.CommutativeRing):
             return False
 
     def getQuotientField(self):
-        """getQuotientField returns the rational field."""
+        """
+        getQuotientField returns the rational field.
+        """
         return theRationalField
 
     def createElement(self, seed):
-        """createElement returns an Integer object with seed,
-        which must be an integer."""
+        """
+        createElement returns an Integer object with seed,
+        which must be an integer.
+        """
         return Integer(seed)
 
     def __str__(self):
@@ -744,14 +727,12 @@ class IntegerRing (ring.CommutativeRing):
 
     def issubring(self, other):
         """
-
         reports whether another ring contains the integer ring as
         subring.
 
         If other is also the integer ring, the output is True.  In
         other cases it depends on the implementation of another ring's
         issuperring method.
-
         """
         if isinstance(other, IntegerRing):
             return True
@@ -759,14 +740,12 @@ class IntegerRing (ring.CommutativeRing):
 
     def issuperring(self, other):
         """
-
         reports whether the integer ring contains another ring as
         subring.
 
         If other is also the integer ring, the output is True.  In
         other cases it depends on the implementation of another ring's
         issubring method.
-
         """
         if isinstance(other, IntegerRing):
             return True
@@ -774,9 +753,7 @@ class IntegerRing (ring.CommutativeRing):
 
     def gcd(self, n, m):
         """
-
         gcd returns the greatest common divisor of given 2 integers.
-
         """
         import gcd
         a, b = abs(n), abs(m)
@@ -784,10 +761,8 @@ class IntegerRing (ring.CommutativeRing):
 
     def lcm(self, a, b):
         """
-
         lcm returns the lowest common multiple of given 2 integers.
         If both are zero, it raises an exception.
-
         """
         return a // self.gcd(a, b) * b 
 
@@ -807,24 +782,22 @@ class IntegerRing (ring.CommutativeRing):
 
     zero = property(_getZero, None, None, "additive unit.")
 
+
 theIntegerRing = IntegerRing()
 theRationalField = RationalField()
 
+
 def isIntegerObject(anObject):
     """
-
     True if the given object is instance of int or long,
     False otherwise.
-
     """
     return isinstance(anObject, (int, long))
 
 def IntegerIfIntOrLong(anObject):
     """
-
     Cast int or long objects to Integer.
     The objects in list or tuple can be casted also.
-
     """
     objectClass = anObject.__class__
     if objectClass == int or objectClass == long:
