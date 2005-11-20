@@ -472,7 +472,6 @@ class RationalField (ring.QuotientField):
 
     def __init__(self):
         ring.QuotientField.__init__(self, theIntegerRing)
-        self._one = self._zero = None
 
     def __contains__(self, element):
         try:
@@ -693,7 +692,6 @@ class IntegerRing (ring.CommutativeRing):
         ring.CommutativeRing.__init__(self)
         self.properties.setIseuclidean(True)
         self.properties.setIsfield(False)
-        self._one = self._zero = None
 
     def __contains__(self, element):
         """

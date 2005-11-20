@@ -13,11 +13,16 @@ class Ring (object):
       The multiplication obeys the distributive law.
     """
 
-    def __init__(self, *args, **kwd):
+    def __init__(self):
         """
-        This class is abstract and cannot be instanciated.
+        Initialize _one and _zero for later use for properties 'one'
+        and 'zero'.
         """
-        raise NotImplementedError
+        # This class is abstract and cannot be instanciated.
+        if self.__class__.__name__ == "Ring":
+            raise NotImplementedError
+        self._one = None
+        self._zero = None
 
     def createElement(self, seed):
         """
@@ -44,12 +49,15 @@ class CommutativeRing (Ring):
     whose multiplication is commutative.
     """
 
-    def __init__(self, *args, **kwd):
+    def __init__(self):
         """
-        This class is abstract and cannot be instanciated.
+        Initialize 'properties' attribute by an object of
+        CommutativeRingProperties.
         """
+        # This class is abstract and cannot be instanciated.
         if self.__class__.__name__ == 'CommutativeRing':
             raise NotImplementedError
+        Ring.__init__(self)
         self.properties = CommutativeRingProperties()
 
     def getQuotientField(self):
@@ -108,10 +116,11 @@ class Field (CommutativeRing):
     the derived classes are (in mathematical meaning) fields.
     """
 
-    def __init__(self, *args, **kwd):
+    def __init__(self):
         """
-        This class is abstract and cannot be instanciated.
+        Set field flag True of 'properties' attribute.
         """
+        # This class is abstract and cannot be instanciated.
         if self.__class__.__name__ == 'Field':
             raise NotImplementedError
         CommutativeRing.__init__(self)
@@ -150,8 +159,10 @@ class QuotientField (Field):
 
     def __init__(self, domain):
         """
-        creates quotient field from given domain.
+        Create quotient field from given domain.
+        Initialize 'basedomain' attribute by the given 'domain'.
         """
+        # This class is abstract and cannot be instanciated.
         if self.__class__.__name__ == 'QuotientField':
             raise NotImplementedError
         Field.__init__(self)
@@ -512,4 +523,4 @@ def getRing(obj):
         if isinstance(obj, complex):
             import nzmath.imaginary as imaginary
             return imaginary.theComplexField
-        raise
+    return None
