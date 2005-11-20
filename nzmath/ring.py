@@ -155,6 +155,7 @@ class QuotientField (Field):
         if self.__class__.__name__ == 'QuotientField':
             raise NotImplementedError
         Field.__init__(self)
+        self.basedomain = domain
 
 
 class RingElement:
