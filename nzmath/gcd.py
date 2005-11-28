@@ -7,7 +7,7 @@ def gcd(a, b):
     Return the greatest common divisor of 2 integers a and b.
     """
     while b:
-        a, b = b, a%b
+        a, b = b, a % b
     return a
 
 def binarygcd(a, b):
@@ -16,14 +16,10 @@ def binarygcd(a, b):
     by binary gcd algorithm.
     """
     if a < b:
-        tmp = a
-        a = b
-        b = tmp
+        a, b = b, a
     if b == 0:
         return a
-    tmp = a % b
-    a = b
-    b = tmp
+    a, b = b, a % b
     if b == 0:
         return a
     k = 0
@@ -52,11 +48,10 @@ def extgcd(x, y):
     of two integers x and y and u, v such that d = x * u + y * v.
     """
     # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
-    a,b,g,u,v,w = 1,0,abs(x),0,1,abs(y)
+    a, b, g, u, v, w = 1, 0, abs(x), 0, 1, abs(y)
     while w > 0:
         q = g // w
-        a,b,g,u,v,w = u,v,w,a-q*u,b-q*v,g-q*w
-
+        a, b, g, u, v, w = u, v, w, a-q*u, b-q*v, g-q*w
     return (a,b,g)
 
 def gcd_of_list(integers):
