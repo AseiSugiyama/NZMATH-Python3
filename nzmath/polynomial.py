@@ -166,18 +166,15 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
         if isinstance(other, OneVariablePolynomial):
             if other.degree() == 0:
                 other = other[0]
+                div_coeff, mod_coeff = {}, {}
                 if coeffring.isfield() or isinstance(other, ring.FieldElement):
-                    div_coeff = {}
                     for i, c in self.coefficient.iteritems():
                         div_coeff[i] = c / other
-                    return (OneVariableSparsePolynomial(div_coeff, x, coeffring),
-                            OneVariableDensePolynomial([], x, coeffring))
                 else:
-                    div_coeff, mod_coeff = {}, {}
                     for i, c in self.coefficient.iteritems():
                         div_coeff[i], mod_coeff[i] = divmod(c, other)
-                    return (OneVariableSparsePolynomial(div_coeff, x, coeffring),
-                            OneVariableSparsePolynomial(mod_coeff, x , coeffring))
+                return (OneVariableSparsePolynomial(div_coeff, x, coeffring),
+                        OneVariableSparsePolynomial(mod_coeff, x , coeffring))
             elif x != other.getVariable() or self.degree() < other.degree():
                 return  (OneVariableDensePolynomial([], x, coeffring),
                          self.copy())
@@ -186,20 +183,14 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
                 mod_poly = self.coefficient.copy()
                 deg, o_deg = mod_poly.degree(), other.degree()
                 o_lc = other[o_deg]
-                if o_deg > 0:
-                    while deg >= o_deg:
-                        deg_diff = deg - o_deg
-                        div_poly[deg_diff] = coeffring.createElement(mod_poly[deg] / o_lc)
-                        canceler = (div_poly[deg_diff] * other).coefficient
-                        for i in range(deg_diff, deg):
-                            mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
-                        mod_poly[deg] = coeffring.zero
-                        deg = mod_poly.degree()
-                else:
-                    while deg >= 0:
-                        div_poly[deg] = coeffring.createElement(mod_poly[deg] / o_lc)
-                        mod_poly[deg] = coeffring.zero
-                        deg = mod_poly.degree()
+                while deg >= o_deg:
+                    deg_diff = deg - o_deg
+                    div_poly[deg_diff] = coeffring.createElement(mod_poly[deg] / o_lc)
+                    canceler = (div_poly[deg_diff] * other).coefficient
+                    for i in range(deg_diff, deg):
+                        mod_poly[i] = mod_poly[i] - canceler[i - deg_diff]
+                    mod_poly[deg] = coeffring.zero
+                    deg = mod_poly.degree()
                 mod_poly = OneVariableSparsePolynomial(mod_poly.getAsDict(), x, coeffring)
                 return div_poly, mod_poly
             else:
