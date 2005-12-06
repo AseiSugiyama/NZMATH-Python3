@@ -517,19 +517,17 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
                 else:
                     key = i
                 _coefficient[key] = c
-        _variable = variable
         _coefficientRing = initCoefficientRing(_coefficient)
     else:
-        _variable = variable
         _coefficientRing = coeffring
         for i, c in coefficient.iteritems():
             _coefficient[i] = coeffring.createElement(c)
     try:
         if _coefficientRing.getCharacteristic() > 0:
-            return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
+            return OneVariablePolynomialCharNonZero(_coefficient, variable, _coefficientRing)
     except AttributeError:
         pass
-    return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+    return OneVariablePolynomial(_coefficient, variable, _coefficientRing)
 
 
 def OneVariableMonomial(variable, index=1, coefficient=1, coeffring=None):
@@ -1108,69 +1106,57 @@ class MultiVariableSparsePolynomial:
         result_polynomial = MultiVariableSparsePolynomial(new_coefficient, new_variable)
         return result_polynomial
 
-    def differentiate(self, other):
-        if isinstance(other, str):
-            origin_polynomial = self.adjust()
-            if other in origin_polynomial.variable:
-                result_variable = origin_polynomial.variable[:]
-                variable_position = result_variable.index(other)
-                result_coefficient = {}
-                for i in origin_polynomial.coefficient:
-                    if i[variable_position] > 0:
-                        new_coefficient_key = list(i)
-                        new_index = new_coefficient_key[variable_position] - 1
-                        new_coefficient_value = origin_polynomial.coefficient[i] * (new_index + 1)
-                        new_coefficient_key[variable_position] = new_index
-                        new_coefficient_key = tuple(new_coefficient_key)
-                        result_coefficient[new_coefficient_key] = new_coefficient_value
-                result_polynomial = MultiVariableSparsePolynomial(result_coefficient, result_variable)
-                return result_polynomial.adjust()
-            else:
-                return 0
-        else:
-            raise ValueError, "You input [Polynomial, string]."
+    def differentiate(self, var):
+        """
+        Return partial differentiation with var.
+        """
+        if not isinstance(var, str):
+            raise TypeError("var must be the name of a variable.")
+        original = self.adjust()
+        variables = original.variable
+        if var not in variables: # trivial case
+            return 0
+        var_at = variables.index(var)
+        coefficients = {}
+        for degrees in original.coefficient:
+            coefficient = original.coefficient[degrees]
+            if degrees[var_at] == 0 or not coefficient:
+                continue
+            new_degrees = list(degrees)
+            new_degrees[var_at] -= 1
+            coefficients[tuple(new_degrees)] = coefficient * degrees[var_at]
+        return MultiVariableSparsePolynomial(coefficients, variables).adjust()
 
-    def integrate(self, other=None, mini=None, maxi=None):
-        if mini == None and maxi == None and other != None and isinstance(other, str):
-            before_polynomial = self.adjust()
-            if other in before_polynomial.variable:
-                integrate_variable = before_polynomial.variable[:]
-                variable_position = integrate_variable.index(other)
-                integrate_coefficient = {}
-                for i in before_polynomial.coefficient:
-                    new_coefficient_key = list(i)
-                    new_index = new_coefficient_key[variable_position] + 1
-                    new_coefficient_value = before_polynomial.coefficient[i] * rational.Rational(1, new_index)
-                    new_coefficient_key[variable_position] = new_index
-                    new_coefficient_key = tuple(new_coefficient_key)
-                    integrate_coefficient[new_coefficient_key] = new_coefficient_value
-                integrate_polynomial = MultiVariableSparsePolynomial(integrate_coefficient, integrate_variable)
-                return integrate_polynomial.adjust()
+    def integrate(self, var=None, mini=None, maxi=None):
+        """
+        Return definite or indefinite integration of the polynomial.
+        """
+        if not isinstance(var, str):
+            raise TypeError("var must be the name of a variable.")
+        if (mini is None and maxi is not None or
+            mini is not None and maxi is None):
+            raise ValueError("either one of mini or maxi is missing.")
+
+        integrand = self.adjust()
+        if var in integrand.variable:
+            var_at = integrand.variable.index(var)
+            coefficients = {}
+            for degrees in integrand.coefficient:
+                new_degrees = list(degrees)
+                new_degrees[var_at] += 1
+                new_coefficient = integrand.coefficient[degrees] * rational.Rational(1, new_degrees[var_at])
+                new_degrees = tuple(new_degrees)
+                coefficients[new_degrees] = new_coefficient
+            integrated = MultiVariableSparsePolynomial(coefficients, integrand.variable).adjust()
+            if mini is None and maxi is None:
+                return integrated
             else:
-                return (self * OneVariableDensePolynomial([0, 1], other).toMultiVariableSparsePolynomial()).adjust()
-        elif mini != None and maxi != None and other != None and isinstance(other, str):
-            before_polynomial = self.adjust()
-            if other in before_polynomial.variable:
-                integrate_variable = before_polynomial.variable[:]
-                variable_position = integrate_variable.index(other)
-                integrate_coefficient = {}
-                for i in before_polynomial.coefficient:
-                    new_coefficient_key = list(i)
-                    new_index = new_coefficient_key[variable_position] + 1
-                    new_coefficient_value = before_polynomial.coefficient[i] * rational.Rational(1, new_index)
-                    new_coefficient_key[variable_position] = new_index
-                    new_coefficient_key = tuple(new_coefficient_key)
-                    integrate_coefficient[new_coefficient_key] = new_coefficient_value
-                integrate_polynomial = MultiVariableSparsePolynomial(integrate_coefficient, integrate_variable)
-                integrate_dict_max = {}
-                integrate_dict_min = {}
-                integrate_dict_max[integrate_variable[variable_position]] = maxi
-                integrate_dict_min[integrate_variable[variable_position]] = mini
-                return integrate_polynomial(**integrate_dict_max) - integrate_polynomial(**integrate_dict_min)
-            else:
-                return self * (OneVariableDensePolynomial([0, 1], other)(maxi) - OneVariableSparsePolynomial([0, 1], other)(mini))
+                return integrated(**{var: maxi}) - integrated(**{var: mini})
         else:
-            raise ValueError, "You must input integrate(polynomial,variable) or integrate(polynomial,variable,mini,maxi)."
+            if mini is None and maxi is None:
+                return integrand * OneVariableMonomial(var)
+            else:
+                return integrand * (maxi - mini)
 
     def toOneVariableDensePolynomial(self):
         origin_polynomial = self.adjust()
