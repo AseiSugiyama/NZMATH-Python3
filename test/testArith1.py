@@ -67,7 +67,14 @@ class Arith1Test (unittest.TestCase):
         self.assert_(10 ** arith1.log(1000000001, 10) <= 1000000001)
 
     def testIssquare(self):
+        self.assert_(arith1.issquare(1))
+        self.assertEqual(1, arith1.issquare(1))
         self.assert_(arith1.issquare(289))
+        self.assertEqual(17, arith1.issquare(289))
+        self.failIf(arith1.issquare(2))
+        self.assertEqual(0, arith1.issquare(2))
+        self.failIf(arith1.issquare(0))
+        self.assertEqual(0, arith1.issquare(0))
 
 
 def suite():
