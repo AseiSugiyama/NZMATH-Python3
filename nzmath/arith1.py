@@ -1,4 +1,11 @@
+"""
+Miscellaneous arithmetic functions
+"""
+
 import math
+import random
+import nzmath.gcd as gcd
+
 
 def floorsqrt(a):
     """
@@ -68,8 +75,6 @@ def legendre(a, m):
         return symbol
     return 0
 
-import random
-import gcd
 def modsqrt(a, p):
     """
     This function returns one of the square roots of 'a' for mod 'p'.
@@ -220,7 +225,7 @@ class _Issquare:
         if a&63 in self.q64:
             r = a % 45045
             if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
-                q = arith1.floorsqrt(a)
+                q = floorsqrt(a)
                 if q*q == a:
                     return q
         return 0
