@@ -222,6 +222,11 @@ class _Issquare:
     q65 = [0, 1, 4, 9, 10, 14, 16, 25, 26, 29, 30, 35, 36, 39, 40, 49, 51, 55, 56, 61, 64]
     q11 = [0, 1, 3, 4, 5, 9]
     def __call__(self, a):
+        """
+        Test whether a given number is a square number or not.  If
+        the number is a square number, the function returns its square
+        root.  Otherwise zero is returned.
+        """
         if a&63 in self.q64:
             r = a % 45045
             if r%63 in self.q63 and r%65 in self.q65 and r%11 in self.q11:
