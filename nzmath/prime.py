@@ -90,9 +90,7 @@ def prime(s):
 
 def generator():
     """
-
     Generate primes from 2 to infinity.
-
     """
     yield 2
     yield 3
@@ -112,15 +110,34 @@ def generator_eratosthenes(n):
     if n < 2:
         raise StopIteration
     yield 2
-    sieve = [1]*(((n+1)//2)-1)
-    k = 3
-    i = 0
-    sieve_len = len(sieve)
+
+    sieve_len_max = (n+1)//2
+    if n < 400:
+        # simple init is faster below 400, on my machine :-)
+        sieve = [1] * sieve_len_max
+        k = 3
+        i = 1
+    else:
+        yield 3
+        sieve = [1, 0, 1]
+        k = 5
+        i = 2
+        sieve_len = 3
+        while sieve_len < sieve_len_max:
+            if sieve[i]:
+                yield k
+                sieve = sieve * k
+                sieve_len *= k
+                for j in range(i, sieve_len, k):
+                    sieve[j] = 0
+            k, i = k+2, i+1
+        sieve = sieve[:sieve_len_max]
+
     while k*k <= n:
         if sieve[i]:
             yield k
             j = i + k
-            while j < sieve_len:
+            while j < sieve_len_max:
                 sieve[j] = 0
                 j += k
         k, i = k+2, i+1
@@ -131,9 +148,7 @@ def generator_eratosthenes(n):
 
 def nextPrime(n):
     """
-
-    returns the smallest prime bigger than the given integer.
-
+    Return the smallest prime bigger than the given integer.
     """
     if n <= 1:
         return 2
@@ -146,7 +161,7 @@ def nextPrime(n):
 
 def randPrime(n):
     """
-    returns a random n-digits prime
+    Return a random n-digits prime
     """
     if n <= 0 :
         raise ValueError,"input number must be natural number"
@@ -166,10 +181,8 @@ def randPrime(n):
 
 def smallSpsp(n):
     """
-
     4 spsp tests are sufficient to determine whether an integer less
     than 10**12 is prime or not.
-
     """
     for p in [2, 13, 23, 1662803]:
         if not spsp(n, p):
