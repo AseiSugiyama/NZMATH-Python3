@@ -49,6 +49,15 @@ class PrimeTest(unittest.TestCase):
         assert prime.nextPrime(541) == 547
         assert prime.nextPrime(542) == 547
 
+    def testGeneratorEratosthenes(self):
+        g = prime.generator_eratosthenes(3)
+        self.assertEqual(2, g.next())
+        self.assertEqual(3, g.next())
+        self.assertRaises(StopIteration, g.next)
+        g = prime.generator_eratosthenes(541)
+        self.assertEqual(100, len([p for p in g]))
+
+
 def suite():
     suite = unittest.makeSuite(PrimeTest, 'test')
     return suite
