@@ -104,3 +104,29 @@ def combinationIndexGenerator(n, m):
                 break
         else:
             raise StopIteration
+
+def fallingfactorial(n, m):
+    """
+    Return the falling factorial; n to the m falling, i.e. n(n-1)..(n-m+1).
+
+    For Example:
+    >>> fallingfactorial(7, 3)
+    210
+    """
+    r = 1
+    for i in range(n, n-m, -1):
+        r *= i
+    return r
+
+def risingfactorial(n, m):
+    """
+    Return the rising factorial; n to the m rising, i.e. n(n+1)..(n+m-1).
+
+    For example:
+    >>> risingfactorial(7, 3)
+    504
+    """
+    r = 1
+    for i in range(n, n+m):
+        r *= i
+    return r
