@@ -1,12 +1,7 @@
 import unittest
 import doctest
 import nzmath.combinatorial as combinatorial
-
-# for short
-binomial = combinatorial.binomial
-factorial = combinatorial.factorial
-bernoulli = combinatorial.bernoulli
-catalan = combinatorial.catalan
+from nzmath.combinatorial import *
 
 
 class BinomialTest (unittest.TestCase):
@@ -73,7 +68,33 @@ class BernoulliTest (unittest.TestCase):
 
 class CatalanTest (unittest.TestCase):
     def testNormal(self):
-        assert [1, 1, 2, 5, 14] == [catalan(i) for i in range(5)]
+        self.assertEqual([1, 1, 2, 5, 14], [catalan(i) for i in range(5)])
+
+
+class MultinomialTest (unittest.TestCase):
+    def testBinomial(self):
+        """
+        test for binomial cases.
+        """
+        self.assertEqual(binomial(3, 1), multinomial(3, (1, 2)))
+        self.assertEqual(binomial(4, 2), multinomial(4, (2, 2)))
+
+    def testTrinomial(self):
+        """
+        test for binomial cases.
+        """
+        self.assertEqual(factorial(3), multinomial(3, [1]* 3))
+        self.assertEqual(12, multinomial(4, (1, 1, 2)))
+
+    def testError(self):
+        """
+        test for error cases.
+        """
+        # n != sum(parts)
+        self.assertRaises(ValueError, multinomial, 2, [1, 1, 1])
+        self.assertRaises(ValueError, multinomial, 5, [1, 1, 1])
+        # parts is not a sequence of natural numbers.
+        self.assertRaises(ValueError, multinomial, 2, [-1, 2, 1])
 
 
 def suite(suffix="Test"):

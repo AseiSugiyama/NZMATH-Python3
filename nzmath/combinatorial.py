@@ -2,7 +2,7 @@
 Combinatorial functions
 """
 
-from rational import Integer, Rational
+from nzmath.rational import Integer, Rational
 
 def binomial(n, m):
     """
@@ -130,3 +130,24 @@ def risingfactorial(n, m):
     for i in range(n, n+m):
         r *= i
     return r
+
+def multinomial(n, parts):
+    """
+    Return multinomial coefficient.
+
+    parts MUST be a sequence of natural numbers and n==sum(parts) holds.
+    """
+    if n != sum(parts):
+        raise ValueError("sum of parts must be equal to n.")
+    for part in parts:
+        if not isinstance(part, (int, long)) or part < 0:
+            raise ValueError("parts must be a sequence of natural numbers.")
+    # binomial case
+    if len(parts) == 2:
+        return binomial(n, parts[0])
+    # other cases
+    result = factorial(n)
+    for part in parts:
+        if part >= 2: # 0! = 1! = 1 are negligible
+            result //= factorial(part)
+    return result
