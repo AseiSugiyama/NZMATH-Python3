@@ -4,6 +4,7 @@ Combinatorial functions
 
 from nzmath.rational import Integer, Rational
 
+
 def binomial(n, m):
     """
     The binomial coefficient.
@@ -151,3 +152,39 @@ def multinomial(n, parts):
         if part >= 2: # 0! = 1! = 1 are negligible
             result //= factorial(part)
     return result
+
+def partitionGenerator(n, maxi=None):
+    """
+    Generate partitions of n.
+    If maxi is given, then addends are limited to at most maxi.
+    """
+    if maxi is None or maxi > n:
+        maxi = n
+    partition = [maxi]
+    rest = n - maxi
+    while True:
+        key = partition[-1]
+        q, r = divmod(rest, key)
+        if q:
+            partition.extend([key] * q)
+        if r:
+            partition.append(r)
+        rest = 0
+
+        yield tuple(partition)
+
+        try:
+            # wind up all 1's.
+            first_one = partition.index(1)
+            rest = len(partition) - first_one
+            del partition[first_one:]
+            level = first_one -1
+        except ValueError:
+            # 1 is not found
+            level = len(partition) - 1
+        if level >= 0:
+            partition[level] -= 1
+            rest += 1
+        else:
+            # partition==[1]*n: it means all partitions have been generated.
+            raise StopIteration
