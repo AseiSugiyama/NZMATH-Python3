@@ -1,6 +1,5 @@
 import unittest
 import doctest
-import nzmath.combinatorial as combinatorial
 from nzmath.combinatorial import *
 
 
@@ -97,13 +96,42 @@ class MultinomialTest (unittest.TestCase):
         self.assertRaises(ValueError, multinomial, 2, [-1, 2, 1])
 
 
+class PartitionTest (unittest.TestCase):
+    def testForOne(self):
+        self.assertEqual([(1,)], [p for p in partitionGenerator(1)])
+
+    def testForTwo(self):
+        for partition in partitionGenerator(2):
+            self.assertEqual(2, sum(partition))
+        self.assertEqual(2, len([p for p in partitionGenerator(2)]))
+        self.assertEqual([(1, 1)], [p for p in partitionGenerator(2, 1)])
+
+    def testForSix(self):
+        for partition in partitionGenerator(6):
+            self.assertEqual(6, sum(partition))
+        self.assertEqual(11, len([p for p in partitionGenerator(6)]))
+        self.assertEqual(7, len([p for p in partitionGenerator(6, 3)]))
+        self.assertEqual([(1,)*6], [p for p in partitionGenerator(6, 1)])
+
+    def testForNine(self):
+        for partition in partitionGenerator(9):
+            self.assertEqual(9, sum(partition))
+        self.assertEqual(30, len([p for p in partitionGenerator(9)]))
+        self.assertEqual(23, len([p for p in partitionGenerator(9, 5)]))
+        self.assertEqual([(1,)*9], [p for p in partitionGenerator(9, 1)])
+
+    def testMaxiExceedNumber(self):
+        self.assertEqual(11, len([p for p in partitionGenerator(6, 12)]))
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
     for name in all_names:
         if name.endswith(suffix):
             suite.addTest(unittest.makeSuite(all_names[name], "test"))
-    # doctest for combinationIndexGenerator
+    # doctest
+    import nzmath.combinatorial as combinatorial
     suite.addTest(doctest.DocTestSuite(combinatorial))
     return suite
 
