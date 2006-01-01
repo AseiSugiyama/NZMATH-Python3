@@ -2,24 +2,25 @@
 A module for generating primes and testing primality.
 """
 
-import gcd
-import bigrandom
-from arith1 import floorsqrt, vp
+import logging
+import nzmath.gcd as gcd
+import nzmath.bigrandom as bigrandom
+from nzmath.arith1 import floorsqrt, vp
+
+_log = logging.getLogger('nzmath.prime')
 
 
-def trialDivision(n, bound = 0):
+def trialDivision(n, bound=0):
     """
-
     Trial division primality test for an odd natural number.
     Optional second argument is a search bound of primes.
     If the bound is given and less than the sqaure root of n
     and True is returned, it only means there is no prime factor
     less than the bound.
-
     """
 
     if bound:
-        m = min((bound, floorsqrt(n)))
+        m = min(bound, floorsqrt(n))
     else:
         m = floorsqrt(n)
     p = 3
@@ -31,10 +32,8 @@ def trialDivision(n, bound = 0):
 
 def spsp(n, base, s=None, t=None):
     """
-
     Strong Pseudo-Prime test.  Optional third and fourth argument
     s and t are the numbers such that n-1 = 2**s * t and t is odd.
-
     """
     if not s or not t:
         s, t = vp(n-1, 2)
@@ -52,11 +51,9 @@ def spsp(n, base, s=None, t=None):
 
 def millerRabin(n, times = 20):
     """
-
     Miller-Rabin pseudo-primality test.  Optional second argument
     times (default to 20) is the number of repetition.  The error
     probability is at most 4**(-times).
-
     """
     s, t = vp(n-1, 2)
     for i in range(times):
@@ -75,7 +72,9 @@ def bigprimeq(z):
     return millerRabin(z)
 
 def prime(s):
-    """prime(n) returns the n-th prime number."""
+    """
+    prime(n) returns the n-th prime number.
+    """
     if s != long(s):
         raise ValueError, "non-integer for prime()"
     elif s <= 0:
@@ -238,7 +237,7 @@ def properDivisors(n):
         l.sort()
         return l
 
-def _factor(n, bound = 0):
+def _factor(n, bound=0):
     """
     Trial division factorization for a natural number.
     Optional second argument is a search bound of primes.
@@ -262,7 +261,7 @@ def _factor(n, bound = 0):
         factors.append((n, 1))
     return factors
 
-def _calc_bound(n, bound = 0):
+def _calc_bound(n, bound=0):
     if bound:
         m = min((bound, floorsqrt(n)))
     else:
@@ -438,7 +437,7 @@ class FactoredInteger:
 
     __rmul__ = __mul__
 
-    def __pow__(self, other, mod=None):
+    def __pow__(self, other):
         new = +self
         new.integer = new.integer**other
         for p in new.factors:
@@ -631,7 +630,7 @@ class Status:
                 if not _isprime(q) or et%q == 0:
                     continue
                 if n%q == 0:
-                    sys.stderr.write("%s divides %s.\n" % (q,n))
+                    _log.info("%s divides %s.\n" % (q, n))
                     return False
                 k = vp(q-1,2)[0]
                 if k == 1:
@@ -657,8 +656,7 @@ class Status:
                 if not _isprime(q) or et % q == 0:
                     continue
                 if n % q == 0:
-                    import sys
-                    sys.stderr.write("%s divides %s.\n" % (q,n))
+                    _log.info("%s divides %s.\n" % (q, n))
                     return False
                 if not self.subodd(p,q,n,J):
                     return False
@@ -787,8 +785,7 @@ def apr(n):
     while i < el.t.integer:
         r = (r*n) % el.et.integer
         if n % r == 0 and r != 1 and r != n:
-            import sys
-            sys.stderr.write("%s divide %s.\n" %(r,n))
+            _log.info("%s divide %s.\n" %(r, n))
             return False
         i += 1
     return True
