@@ -6,11 +6,13 @@ but 1 is a factor anyway.
 'verbose' boolean flag can be specified for verbose reports.
 """
 
-import sys
+import logging
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.gcd as gcd
 import nzmath.prime as prime
+
+_log = logging.getLogger('nzmath.factor.find')
 
 # Pollard's rho method
 def rhomethod(n, **options):
@@ -30,7 +32,7 @@ def rhomethod(n, **options):
     while g == n:
         a = bigrandom.randrange(1, n-2)
         u = v = bigrandom.randrange(0, n-1)
-        print a, u
+        _log.info("%d %d" % (a, u))
         g = gcd.gcd((v**2 + v + a) % n - u, n)
         while g == 1:
             u = (u**2 + a) % n
@@ -133,17 +135,10 @@ def _silence():
     """
     Stop verbose outputs.
     """
-    try:
-        devnull = file("/dev/null", "a")
-        sys.stderr = devnull
-        sys.stdout = devnull
-    except IOError:
-        # I don't know the way to stop...
-        pass
+    _log.setLevel(logging.NOTSET)
 
 def _verbose():
     """
     Stop silencing.
     """
-    sys.stderr = sys.__stderr__
-    sys.stdout = sys.__stdout__
+    _log.setLevel(logging.DEBUG)

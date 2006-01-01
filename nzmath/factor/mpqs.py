@@ -1,9 +1,12 @@
 import math
 import time
+import logging
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.prime as prime
 import nzmath.factor.find as find
+
+_log = logging.getLogger('nzmath.factor.mpqs')
 
 class QS:
     def __init__(self, n, sieverange, factorbase):
@@ -11,7 +14,7 @@ class QS:
         self.sqrt_n = int(math.sqrt(n))
         for i in [2,3,5,7,11,17,19]:
             if n % i == 0:
-                print "This number is divided by ", i
+                _log.error("This number is divided by %d" % i)
                 raise ValueError
         i = 1
         while 1:
@@ -165,8 +168,8 @@ class QS:
                         v = r % 2
                         index_vector.append(v)
                 smooth.append([index_vector, (poly_val, t+self.sqrt_n-M)])
-        print " Sieve time is", time.time()-T, "sec"
-        print " Found smooth numbers are ", len(smooth), "/", len(self.FB)
+        _log.info(" Sieve time is %f sec" % (time.time()-T))
+        _log.info(" Found smooth numbers are %d / %d" % (len(smooth), len(self.FB)))
         self.smooth = smooth
         return smooth
 
@@ -174,14 +177,14 @@ class QS:
 class MPQS:
     def __init__(self, n, sieverange=0, factorbase=0, multiplier=0):
         self.number = n
-        print "The number is %d MPQS starting" % n
+        _log.info("The number is %d MPQS starting" % n)
 
         if prime.primeq(self.number):
-            print "This number is Prime Number"
+            _log.error("This number is Prime Number")
             raise ValueError
         for i in [2,3,5,7,11,13]:
             if n % i == 0:
-                print "This number is divided by ", i
+                _log.error("This number is divided by %d" % i)
                 raise ValueError
 
         self.sievingtime = 0
@@ -235,15 +238,15 @@ class MPQS:
                 k = 1
             else:
                 if multiplier == 1:
-                    print "This number is 3 mod 4 "
+                    _log.error("This number is 3 mod 4 ")
                     raise ValueError
                 else:
                     k = multiplier
         self.number = k*self.number
         self.multiplier = k
 
-        print self.digit, "- digits Number"
-        print "Multiplier is", self.multiplier
+        _log.info("%d - digits Number" % self.digit)
+        _log.info("Multiplier is %d" % self.multiplier)
 
         # Table of (log p) , p in FB
         i = 0
@@ -431,18 +434,18 @@ class MPQS:
             i += 1
             if i % 50 == 0:
                 if i == 50:
-                    print "*/ Per 50 times changing poly report /* "
-                print "Time of deciding coefficient =", self.coefficienttime, "sec"
-                print "Sieving Time =", self.sievingtime, "sec"
-                print "Find smooth numbers are", V, "/", P
+                    _log.info("*/ Per 50 times changing poly report /* ")
+                _log.info("Time of deciding coefficient = %f sec" % self.coefficienttime)
+                _log.info("Sieving Time = %f sec" % self.sievingtime)
+                _log.info("Find smooth numbers are %d / %d" % (V, P))
         if P < 100:
             V += 5
         self.smooth = smooth
-        print "*/ Total", i, "times changing poly report /*"
-        print "Time of deciding coefficient =", self.coefficienttime, "sec"
-        print "Sieving Time =", self.sievingtime, "sec"
-        print "Found smooth numbers are", V, "/", P
-        print "Total time of getting enough smooth numbers =", time.time()-T, "sec"
+        _log.info("*/ Total %d times changing poly report /*" % i)
+        _log.info("Time of deciding coefficient = %f sec" % self.coefficienttime)
+        _log.info("Sieving Time = %f sec" % self.sievingtime)
+        _log.info("Found smooth numbers are %d / %d" % (V, P))
+        _log.info("Total time of getting enough smooth numbers = %f sec" % (time.time()-T))
         return smooth
 
     def getNumberOfDigit(self):
@@ -534,7 +537,7 @@ class Elimination:
                     g += 1
                 if g == FBnum:
                     zero_vector.append(check)
-        print "Time of Gaussian Elimination = %f sec" % (time.time() - T)
+        _log.info("Time of Gaussian Elimination = %f sec" % (time.time() - T))
         return zero_vector
 
 def qs(n, s, f):
@@ -545,11 +548,11 @@ def qs(n, s, f):
     """
     a = time.time()
     Q = QS(n, s, f)
-    print "Sieve range is [ %d , %d ] , Factorbase size = %d , Max Factorbase %d" % (Q.move_range[0], Q.move_range[-1], len(Q.FB), Q.maxFB)
+    _log.info("Sieve range is [ %d , %d ] , Factorbase size = %d , Max Factorbase %d" % (Q.move_range[0], Q.move_range[-1], len(Q.FB), Q.maxFB))
     Q.run_sieve()
     V = Elimination(Q.smooth)
     A = V.gaussian()
-    print "Found %d linearly dependent relations" % len(A)
+    _log.info("Found %d linearly dependent relations" % len(A))
     answerX_Y = []
     N_factors = []
     for i in A:
@@ -569,8 +572,8 @@ def qs(n, s, f):
                factor != Q.number and prime.primeq(factor) == 1:
                 N_factors.append(factor)
     N_factors.sort()
-    print "Total time =", time.time()-a, "sec"
-    print N_factors
+    _log.info("Total time = %f sec" % (time.time()-a))
+    _log.info(str(N_factors))
 
 def mpqs(n, s=0, f=0, m=0):
     """
@@ -580,12 +583,12 @@ def mpqs(n, s=0, f=0, m=0):
     """
     T = time.time()
     M = MPQS(n, s, f, m)
-    print "Sieve range is [ %d , %d ] , Factorbase size = %d , Max Factorbase %d" % (M.move_range[0], M.move_range[-1], len(M.FB), M.maxFB)
+    _log.info("Sieve range is [ %d , %d ] , Factorbase size = %d , Max Factorbase %d" % (M.move_range[0], M.move_range[-1], len(M.FB), M.maxFB))
     M.get_vector()
     N = M.number // M.multiplier
     V = Elimination(M.smooth)
     A = V.gaussian()
-    print "Found %d linerly dependent relations" % len(A)
+    _log.info("Found %d linerly dependent relations" % len(A))
     answerX_Y = []
     N_prime_factors = []
     N_factors = []
@@ -612,10 +615,10 @@ def mpqs(n, s=0, f=0, m=0):
             else:
                 N_factors.append(factor)
 
-    print "Total time = %f sec" % (time.time() - T)
+    _log.info("Total time = %f sec" % (time.time() - T))
 
     if NN == N:
-        print  "Factored completely!"
+        _log.debug("Factored completely!")
         N_prime_factors.sort()
         for p in N_prime_factors:
             N = N // p
@@ -626,7 +629,7 @@ def mpqs(n, s=0, f=0, m=0):
         f = N // NN
         if prime.primeq(f):
             N_prime_factors.append(f)
-            print  "Factored completely !"
+            _log.debug("Factored completely !")
             N_prime_factors.sort()
             for p in N_prime_factors:
                 N = N // p
@@ -648,7 +651,7 @@ def mpqs(n, s=0, f=0, m=0):
         output.append((P, i))
 
     if  N == 1:
-        print "Factored completely!! "
+        _log.debug("Factored completely!! ")
         return output
 
     for F in N_factors:
@@ -659,22 +662,22 @@ def mpqs(n, s=0, f=0, m=0):
             i = arith1.vp(N, g, 1)[0]
             output.append((g, i))
     if N == 1:
-        print  "Factored completely !! "
+        _log.debug("Factored completely !! ")
         return output
     elif prime.primeq(N):
         output.append((N, 1))
-        print  "Factored completely!!! "
+        _log.debug("Factored completely!!! ")
         return output
     else:
         N_factors.sort()
-        print "Sorry, not factored completely"
+        _log.error("Sorry, not factored completely")
         return output, N_factors
 
 
 
 ########################################################
 #                                                      #
-# Following functions are subfunction for main progrum #
+# Following functions are subfunction for main program #
 #                                                      #
 ########################################################
 
@@ -822,18 +825,21 @@ def mpqsfind(n, s=0, f=0, m=0, verbose=False):
     You must input composite_number at least.
     """
     # verbosity
-    if not verbose:
-        find._silence()
+    if verbose:
+        _log.setLevel(logging.DEBUG)
+        _log.debug("verbose")
+    else:
+        _log.setLevel(logging.NOTSET)
 
     starttime = time.time()
     M = MPQS(n, s, f, m)
-    print "Sieve range is [%d, %d]" % (M.move_range[0], M.move_range[-1]),\
-          "Factorbase size = %d, Max Factorbase %d" % (len(M.FB), M.maxFB)
+    _log.info("Sieve range is [%d, %d]" % (M.move_range[0], M.move_range[-1]))
+    _log.info("Factorbase size = %d, Max Factorbase %d" % (len(M.FB), M.maxFB))
     M.get_vector()
     N = M.number // M.multiplier
     V = Elimination(M.smooth)
     A = V.gaussian()
-    print "Found %d linearly dependent relations" % len(A)
+    _log.info("Found %d linearly dependent relations" % len(A))
     differences = []
     for i in A:
         B = V.history[i].keys()
@@ -850,7 +856,5 @@ def mpqsfind(n, s=0, f=0, m=0, verbose=False):
     for diff in differences:
         divisor = gcd.gcd(diff, N)
         if 1 < divisor < N:
-            print "Total time = %f sec" % (time.time() - starttime)
-            if not verbose:
-                find._verbose()
+            _log.info("Total time = %f sec" % (time.time() - starttime))
             return divisor
