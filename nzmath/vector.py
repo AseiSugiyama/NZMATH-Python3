@@ -1,5 +1,3 @@
-#from matrix import *
-
 class Vector:
 
     def __init__(self, compo):
@@ -42,7 +40,7 @@ class Vector:
         return self.__class__(tmp)
 
     def __mul__(self, other):
-        from matrix import Matrix
+        from nzmath.matrix import Matrix
         if isinstance(other, Vector):
             return NotImplemented
         elif isinstance(other, Matrix):
@@ -54,7 +52,7 @@ class Vector:
             return product
 
     def __rmul__(self, other):
-        from matrix import Matrix
+        from nzmath.matrix import Matrix
         if isinstance(other, Vector):
             return NotImplemented
         elif isinstance(other, Matrix):
@@ -114,19 +112,3 @@ def innerProduct(self, other):
 
 class VectorSizeError(Exception):
     pass
-
-
-if __name__ == '__main__':
-    u=Vector([0]*3)
-    v=Vector([3,5,2])
-    w=Vector([-7,2,0])
-    print "v=",v
-    print "w=",w
-    print "v+w", v+w
-    w = u-v
-    print "w=u-v", w
-    c=2
-    print c
-    print v
-    print v * c
-    print c * v
