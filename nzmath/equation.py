@@ -1,12 +1,16 @@
 from __future__ import division
 import math
 import cmath
+import logging
 
-import gcd
-import arith1
-import imaginary
-import polynomial
-import finitefield
+import nzmath.gcd as gcd
+import nzmath.arith1 as arith1
+import nzmath.imaginary as imaginary
+import nzmath.polynomial as polynomial
+import nzmath.finitefield as finitefield
+
+_log = logging.getLogger('nzmath.equation')
+_log.setLevel(logging.DEBUG)
 
 # x is (list,tuple) 
 # t is variable
@@ -182,10 +186,10 @@ def SimMethod(g,NewtonInitial=1,repeat=250):
     for i in range(0,deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
-    print q
+    _log.debug(str(q))
     df = f.differentiate('x')
     r = Newton(q,NewtonInitial)
-    print r
+    _log.debug(str(r))
     b = -f[deg-1]/(deg*f[deg])
     z = []
     for i in range(deg):
