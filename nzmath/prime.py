@@ -8,6 +8,7 @@ import nzmath.bigrandom as bigrandom
 from nzmath.arith1 import floorsqrt, vp
 
 _log = logging.getLogger('nzmath.prime')
+_log.setLevel(logging.DEBUG)
 
 
 def trialDivision(n, bound=0):
