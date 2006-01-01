@@ -7,7 +7,7 @@ version 0.4.1 to 0.5.0
 * add functions coprime and pairwise_coprime to gcd.
 * add a function log to arith1.
 * add a method smith to matrix.IntegerMatrix.
-* add functions fallingfactorial, risingfactorial and multinomial to combinatorial.
+* add functions fallingfactorial, risingfactorial, multinomial and partitionGenerator to combinatorial.
 
 version 0.4.0 to 0.4.1
 ----------------------
