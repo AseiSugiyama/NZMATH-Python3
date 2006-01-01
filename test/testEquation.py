@@ -1,5 +1,6 @@
 from __future__ import division
 import unittest
+import logging
 import nzmath.equation as equation
 
 class GlobalEquationTest (unittest.TestCase):
@@ -66,5 +67,6 @@ def suite(suffix="Test"):
     return suite
 
 if __name__ == '__main__':
+    logging.basicConfig()
     runner = unittest.TextTestRunner()
     runner.run(suite())
