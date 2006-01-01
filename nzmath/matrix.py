@@ -1,5 +1,5 @@
-import rational
-import vector
+import nzmath.rational as rational
+import nzmath.vector as vector
 
 class Matrix:
     """
@@ -472,7 +472,7 @@ class Matrix:
             C = self * C
             coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
             C = C + coeff[i] * unitMatrix(self.row)
-        import polynomial
+        import nzmath.polynomial as polynomial
         coeff.reverse()
         return polynomial.OneVariableDensePolynomial(coeff, "x")
 
@@ -991,44 +991,3 @@ class NoInverse(Exception):
 
 class NoRing(Exception):
     pass
-
-
-#--------------------------------------------------------------------
-# for debugging
-#--------------------------------------------------------------------
-
-if __name__ == '__main__':
-
-    def pause():
-        print "--- hit enter key ---"
-        raw_input()
-
-    a = Matrix(5,3, [0,1,3]+[0,2,2]+[0,0,5]+[0,1,1]+[2,0,0]) 
-    b = Matrix(2,2, [1,2,5,10]) 
-    c = Matrix(3,3, [0,1,1,-1,1,0,2,2,3]) 
-    d = Matrix(4,2, [0,1,0,1]+[2,0,0,3]) 
-    e = Matrix(3,2, [1,0]+[2,1]+[1,1]) 
-    f = Matrix(3,2, [0,1]+[-1,4]+[2,6]) 
-    h = Matrix(4,4,[-2,-2,-1,2,-1,-3,-13,-2,-1,0,2,0,-8,-8,-14,3]) 
-    i = Matrix(2,3,[-1,-2,-3,1,4,5]) 
-    sb = Matrix(4,3,[1,0,2]+[0,3,4]+[5,6,7]+[8,0,9]) 
-    j = Matrix(2,2,[3,4,5,6]) 
-    k = Matrix(3,3,[7,2,8,0,5,-2,0,1,9]) 
-    A = Matrix(4,4,[1,1,0,3]+[2,1,-1,1]+[3,-1,-1,2]+[-1,2,3,-1])
-
-    L, U = A.LUDecomposition()
-    print A
-    print L
-    print U
-    print L * U
-    if L*U == A:
-        print "True"
-    else:
-        print "False"
-    B = Matrix(3,3, [1,2,3]+[2,8,11]+[3,22,25])
-    print B
-    L, U = B.LUDecomposition()
-    print L
-    print U
-    print L * U
-    print L * U == B
