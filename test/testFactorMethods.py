@@ -1,4 +1,5 @@
 import unittest
+import logging
 import nzmath.factor.methods as mthd
 
 class FactorTest (unittest.TestCase):
@@ -44,11 +45,10 @@ class FactorTest (unittest.TestCase):
     def testVerbosity(self):
         # default method
         p = 4 * 6133 + 1
-        print "silent[",
+        _log.info("silent:")
         result = mthd.mpqs(p*154858631, verbose=False)
-        print "] verbose[",
+        _log.info("verbose:")
         result = mthd.mpqs(p*154858631, verbose=True)
-        print "]"
 
 
 def suite(suffix = "Test"):
@@ -60,5 +60,8 @@ def suite(suffix = "Test"):
     return suite
 
 if __name__ == '__main__':
+    logging.basicConfig()
+    _log = logging.getLogger('nzmath.test.testFactorMethod')
+    _log.setLevel(logging.INFO)
     runner = unittest.TextTestRunner()
     runner.run(suite())
