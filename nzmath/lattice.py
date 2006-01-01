@@ -1,6 +1,6 @@
 from __future__ import division
-from matrix import Matrix
-from vector import *
+from nzmath.matrix import Matrix
+from nzmath.vector import *
 
 
 class Lattice:
@@ -41,8 +41,6 @@ class Lattice:
             #step3
             while 1:
                 self.RED(k,k-1)
-                #print self.B[k],self.mu[(k,k-1)],self.B[k-1]
-                #raw_input()
                 if self.B[k] < (0.75-self.mu[(k,k-1)]*self.mu[(k,k-1)]) * self.B[k-1]:
                     self.SWAP(k)
                     k = max([2,k-1])
@@ -55,10 +53,6 @@ class Lattice:
             if k <= self.basis.column:
                 pass
             else:
-                #LLLreduced = Matrix(self.basis.row, self.basis.column)
-                #for i in range(1, self.basis.column+1):
-                    #LLLreduced.setColumn(i,self.basis[i])
-                #return (LLLreduced,self.H)
                 del self.kmax
                 del self.bstar
                 del self.B
@@ -79,7 +73,6 @@ class Lattice:
         return
 
     def SWAP(self, k):
-        #print "SWAP called %d" % k
         self.basis.swapColumn(k,k-1)
         self.H.swapColumn(k,k-1)
         if k > 2:
@@ -113,9 +106,3 @@ class LatticeElement(Matrix):
 
     def getLattice(self):
         return self.lattice
-
-if __name__ == '__main__':
-    basis = Matrix(3,3,[1,2,3,6,2,5,0,-1,2])
-    qForm = Matrix(3,3,[7,3,0,2,6,0,2,1,2])
-    L = Lattice(basis, qForm)
-    print L.LLL()
