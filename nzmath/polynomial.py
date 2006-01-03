@@ -9,7 +9,6 @@ import copy
 import nzmath.bigrandom as bigrandom
 import nzmath.rational as rational
 import nzmath.ring as ring
-import nzmath.rationalFunction as rationalFunction
 
 try:
     # Python 2.4 has set type
@@ -238,6 +237,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
         elif isinstance(other, (int, long)):
             return self * rational.Rational(1, other)
         else:
+            import nzmath.rationalFunction as rationalFunction
             return rationalFunction.RationalFunction(self, other)
 
     __div__ = __truediv__
@@ -247,6 +247,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
         if not rem:
             return quot
         else:
+            import nzmath.rationalFunction as rationalFunction
             return rationalFunction.RationalFunction(other, self)
 
     __rdiv__ = __rtruediv__
@@ -2031,6 +2032,7 @@ class PolynomialRing (ring.CommutativeRing):
         """
         try:
             coefficientField = self.coefficientRing.getQuotientField()
+            import nzmath.rationalFunction as rationalFunction
             return rationalFunction.RationalFunctionField(coefficientField, self.vars)
         except:
             raise
@@ -2076,6 +2078,7 @@ class PolynomialRing (ring.CommutativeRing):
         reports whether another ring contains this polynomial ring.
 
         """
+        import nzmath.rationalFunction as rationalFunction
         if isinstance(other, PolynomialRing):
             if self.coefficientRing.issubring(other.getCoefficientRing(other.getVars())) and \
                    self.vars.issubset(other.getVars()):
