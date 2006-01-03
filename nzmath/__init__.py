@@ -1,22 +1,12 @@
-import arith1
-import bigrandom
-import combinatorial
-import elliptic
-import factor
-import finitefield
-import gcd
-import imaginary
-import integerResidueClass
-import lattice
-import matrix
-import polynomial
-import prime
-import rational
-import rationalFunction
-import real
-import ring
-import vector
-import multiplicative
+"""
+NZMATH is a Python based number theory oriented calculation system.
+It is developed at Tokyo Metropolitan University.
+
+NZMATH is distributed under the BSD license.  See LICENSE.txt for
+detail.
+
+Copyright (c) 2003-2005, NZMATH development group, all right reserved.
+"""
 
 __all__ = [
     "arith1",
@@ -37,5 +27,6 @@ __all__ = [
     "rationalFunction",
     "real",
     "ring",
-    "vector"
+    "vector",
+    "zassenhaus"
     ]
