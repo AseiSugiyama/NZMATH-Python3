@@ -2,16 +2,20 @@ from __future__ import division
 import math
 import random
 import sets
+import logging
 
-import arith1
-import finitefield
-import gcd
-import integerResidueClass
-import polynomial
-import prime
-import rational
-import ring
+import nzmath.arith1 as arith1
+import nzmath.finitefield as finitefield
+import nzmath.gcd as gcd
+import nzmath.integerResidueClass as integerResidueClass
+import nzmath.polynomial as polynomial
+import nzmath.prime as prime
+import nzmath.rational as rational
+import nzmath.ring as ring
 import nzmath.factor.methods as factor_methods
+
+_log = logging.getLogger('nzmath.elliptic')
+
 
 def Element_p(a,p):
     """
@@ -514,8 +518,8 @@ class EC:
                     if P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]==P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6:
                         return True
                     else:
-                        print P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]
-                        print P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6
+                        _log.debug(str(P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]))
+                        _log.debug(str(P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6))
                         return False
                 else:
                     if self.index!=1:
@@ -762,7 +766,7 @@ class EC:
                 if P!=1:
                     if arith1.legendre(other.ch,j)==-1:
                         T.append((0,j))
-                        print T,"$"
+                        _log.debug("%s $" % str(T))
                     else:
                         w=arith1.modsqrt(k,j)
                         if w%2==0:
@@ -776,13 +780,13 @@ class EC:
                                 P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
                             if P!=1:
                                 T.append((2*w,j))
-                                print T,"$$"
+                                _log.debug("%s $$" % str(T))
                             else:
                                 T.append((-2*w,j))
-                                print T,"$$$"
+                                _log.debug("%s $$$" % str(T))
                         else:
                             T.append((0,j))
-                            print T,"$$$$"
+                            _log.debug("%s $$$$" % str(T))
                 else:
                     X=v+u+x
                     Y=x-v
@@ -842,16 +846,16 @@ class EC:
                             Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
                             if Q==0:
                                 T.append((t,j))
-                                print T,"@"
+                                _log.debug("%s @" % str(T))
                                 break
                             else:
                                 T.append((j-t,j))
-                                print T,"@@"
+                                _log.debug("%s @@" % str(T))
                                 break
                         t=t+1
                         if t>(j-1)/2:
                             T.append((0,j))
-                            print T,"@@@"
+                            _log.debug("%s @@@" % str(T))
                 i=i+1
             tau=arith1.CRT(T)
             if tau>M/2:
