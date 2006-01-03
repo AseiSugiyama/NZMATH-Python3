@@ -2,6 +2,9 @@ import unittest
 import logging
 import nzmath.factor.methods as mthd
 
+_log = logging.getLogger('nzmath.test.testFactorMethod')
+_log.setLevel(logging.INFO)
+
 class FactorTest (unittest.TestCase):
     def testTrialDivision(self):
         self.assertEqual(mthd.trialDivision(60), [(2,2),(3,1),(5,1)])
@@ -61,7 +64,5 @@ def suite(suffix = "Test"):
 
 if __name__ == '__main__':
     logging.basicConfig()
-    _log = logging.getLogger('nzmath.test.testFactorMethod')
-    _log.setLevel(logging.INFO)
     runner = unittest.TextTestRunner()
     runner.run(suite())
