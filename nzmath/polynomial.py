@@ -3,13 +3,20 @@ Class definitions of polynomials.
 """
 
 from __future__ import division
-import sets
 import re
+import copy
 
-import bigrandom
-import rational
-import ring
-import rationalFunction
+import nzmath.bigrandom as bigrandom
+import nzmath.rational as rational
+import nzmath.ring as ring
+import nzmath.rationalFunction as rationalFunction
+
+try:
+    # Python 2.4 has set type
+    set
+except NameError:
+    # Python 2.3 has Set class in sets
+    from sets import Set as set
 
 
 class OneVariablePolynomial (ring.CommutativeRingElement):
@@ -587,7 +594,7 @@ class MultiVariableSparsePolynomial:
                     return self_adjust + other_adjust
                 if self_adjust.variable == other_adjust.variable:
                     return self_adjust + other_adjust
-                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable = list(set(self_adjust.variable).union(set(other_adjust.variable)))
                 sum_variable.sort()
                 return self_adjust.arrange_variable(sum_variable) + other_adjust.arrange_variable(sum_variable)
         elif other in self.getRing():
@@ -644,7 +651,7 @@ class MultiVariableSparsePolynomial:
                     return self_adjust * other_adjust
                 if self_adjust.variable == other_adjust.variable:
                     return self_adjust * other_adjust
-                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable = list(set(self_adjust.variable).union(set(other_adjust.variable)))
                 sum_variable.sort()
                 return self_adjust.arrange_variable(sum_variable) * other_adjust.arrange_variable(sum_variable)
         elif other in self.getRing():
@@ -701,7 +708,7 @@ class MultiVariableSparsePolynomial:
             if self.variable != other.variable:
                 self_adjust = self.adjust()
                 other_adjust = other.adjust()
-                sum_variable = list(sets.Set(self_adjust.variable).union(sets.Set(other_adjust.variable)))
+                sum_variable = list(set(self_adjust.variable).union(set(other_adjust.variable)))
                 sum_variable.sort()
                 return self_adjust.arrange_variable(sum_variable) //  other_adjust.arrange_variable(sum_variable)
             else:
@@ -1225,7 +1232,7 @@ def construct(polynomial, kwd={}):
     r = eval(polynomial, kwd)
     return r
 
-import matrix
+import nzmath.matrix as matrix
 
 def resultant(f, g):
     """
@@ -1247,8 +1254,6 @@ def resultant(f, g):
             M.compo[n+i][i+j] = g[j]
 
     return M.determinant()
-
-import copy
 
 # Algorithm 3.1.2 of Cohen's book
 def pseudoDivision(A, B):
@@ -1969,9 +1974,9 @@ class PolynomialRing (ring.CommutativeRing):
         ring.CommutativeRing.__init__(self)
         self.coefficientRing = aRing
         if isinstance(var, str):
-            self.vars = sets.Set((var,))
+            self.vars = set((var,))
         else:
-            self.vars = sets.Set(var)
+            self.vars = set(var)
         if self.coefficientRing.isfield() and len(self.vars) == 1:
             self.properties.setIseuclidean(True)
         else:
@@ -1997,11 +2002,11 @@ class PolynomialRing (ring.CommutativeRing):
 
         """
         if not var:
-            _vars = sets.Set()
+            _vars = set()
         elif isinstance(var, str):
-            _vars = sets.Set((var,))
+            _vars = set((var,))
         else:
-            _vars = sets.Set(var)
+            _vars = set(var)
         _vars &= self.vars
         varsInRing = self.vars - _vars
         if _vars and varsInRing:
@@ -2108,7 +2113,7 @@ class PolynomialRing (ring.CommutativeRing):
         For example:
         PolynomialRing(PolynomialRing(Q, "x"), "y").unnest()
         returns
-        PolynomialRing(Q, sets.Set(["x","y"])).
+        PolynomialRing(Q, set(["x","y"])).
 
         """
         return PolynomialRing(self.coefficientRing.coefficientRing, self.coefficientRing.vars | self.vars)

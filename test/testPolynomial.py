@@ -4,6 +4,12 @@ import nzmath.ring as ring
 import nzmath.integerResidueClass as integerResidueClass
 from nzmath.polynomial import *
 
+try:
+    # Python 2.4 has set type
+    set
+except NameError:
+    # Python 2.3 has Set class in sets
+    from sets import Set as set
 
 x, y, z = "xyz"
 Z = rational.theIntegerRing
@@ -407,8 +413,8 @@ class PolynomialRingTest(unittest.TestCase):
         self.assertEqual("Z[x]", str(self.Zx))
         self.assertEqual("Q[x, z]", str(self.Qxz))
         # repr
-        self.assertEqual("PolynomialRing(IntegerRing(), Set(['x']))", repr(self.Zx))
-        self.assertEqual("PolynomialRing(RationalField(), Set(['x', 'z']))", repr(self.Qxz))
+        self.assertEqual(("PolynomialRing(IntegerRing(), %s)" % set(['x'])), repr(self.Zx))
+        self.assertEqual(("PolynomialRing(RationalField(), %s)" % set(['x', 'z'])), repr(self.Qxz))
 
 
 class PolynomialCompilerTest(unittest.TestCase):
