@@ -4,9 +4,9 @@ import operator
 import itertools
 import cmath
 # NZMATH modules
-import real
-import rational
-import ring
+import nzmath.real as real
+import nzmath.rational as rational
+import nzmath.ring as ring
 
 class Complex:
     """
