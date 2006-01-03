@@ -2,14 +2,14 @@
 finite fields.
 """
 
-import gcd
-import bigrandom
-import arith1
-import prime
-import ring
-import rational
+import nzmath.gcd as gcd
+import nzmath.bigrandom as bigrandom
+import nzmath.arith1 as arith1
+import nzmath.prime as prime
+import nzmath.ring as ring
+import nzmath.rational as rational
 import nzmath.factor.methods as factor_methods
-import integerResidueClass
+import nzmath.integerResidueClass as integerResidueClass
 
 
 class FiniteField (ring.Field):
@@ -202,7 +202,7 @@ class FinitePrimeField (FiniteField):
     getInstance = classmethod(getInstance)
 
 
-import polynomial
+import nzmath.polynomial as polynomial
 
 class FiniteExtendedField (FiniteField):
     """
