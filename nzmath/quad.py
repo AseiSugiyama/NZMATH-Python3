@@ -1,10 +1,10 @@
 import math
 import time
+import random
 import nzmath.gcd
 import nzmath.factor.factor
 import nzmath.arith1
-import rational
-import random
+import nzmath.rational as rational
 # import quad
 
 def ret_nre(list_ofab, len_l, disc):
