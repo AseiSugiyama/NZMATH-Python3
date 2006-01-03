@@ -2,10 +2,16 @@
 rational functions and fields of rational functions
 """
 
-import sets
-import rational
-import ring
-import polynomial
+import nzmath.rational as rational
+import nzmath.ring as ring
+import nzmath.polynomial as polynomial
+
+try:
+    # Python 2.4 has set type
+    set
+except NameError:
+    # Python 2.3 has Set class in sets
+    from sets import Set as set
 
 
 class RationalFunctionField (ring.QuotientField):
@@ -20,9 +26,9 @@ class RationalFunctionField (ring.QuotientField):
             ring.QuotientField.__init__(self, polynomial.PolynomialRing(field, vars))
         self.coefficientField = field
         if isinstance(vars, str):
-            self.vars = sets.Set((vars,))
+            self.vars = set((vars,))
         else:
-            self.vars = sets.Set(vars)
+            self.vars = set(vars)
 
     def __str__(self):
         retval = str(self.coefficientField)
@@ -85,7 +91,7 @@ class RationalFunctionField (ring.QuotientField):
         For example:
         RationalFunctionField(RationalFunctionField(Q, "x"), "y").unnest()
         returns
-        RationalFunctionField(Q, sets.Set(["x","y"])).
+        RationalFunctionField(Q, set(["x","y"])).
 
         """
         return RationalFunctionField(self.coefficientField.coefficientField, self.coefficientField.vars | self.vars)
@@ -153,6 +159,6 @@ class RationalFunction (ring.QuotientFieldElement):
             nring = self.numerator.getCoefficientRing()
         dvars = self.denominator.getVariableList()
         if nring.isfield():
-            return RationalFunctionField(nring, sets.Set(nvars+dvars))
+            return RationalFunctionField(nring, set(nvars+dvars))
         else:
-            return RationalFunctionField(nring.getQuotientField(), sets.Set(nvars+dvars))
+            return RationalFunctionField(nring.getQuotientField(), set(nvars+dvars))
