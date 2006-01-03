@@ -1,6 +1,6 @@
-from gcd import extgcd
-from rational import Integer
-from rational import Rational
+from nzmath.gcd import extgcd
+from nzmath.rational import Integer
+from nzmath.rational import Rational
 
 class IntegerResidueClass:
     def __init__(self, representative, modulus):
@@ -146,8 +146,8 @@ class IntegerResidueClass:
     def getRing(self):
         return IntegerResidueClassRing.getInstance(self.m)
 
-from ring import CommutativeRing, CommutativeRingProperties
-from prime import primeq
+from nzmath.ring import CommutativeRing, CommutativeRingProperties
+from nzmath.prime import primeq
 
 class IntegerResidueClassRing (CommutativeRing):
     """IntegerResidueClassRing is also known as Z/mZ."""
