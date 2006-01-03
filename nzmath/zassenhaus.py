@@ -1,16 +1,16 @@
 from __future__ import division
 import random
 
-import arith1
-import prime
-import rational
-import combinatorial
-import matrix
-import lattice
-import vector
-import integerResidueClass
-import polynomial
-import finitefield
+import nzmath.arith1 as arith1
+import nzmath.prime as prime
+import nzmath.rational as rational
+import nzmath.combinatorial as combinatorial
+import nzmath.matrix as matrix
+import nzmath.lattice as lattice
+import nzmath.vector as vector
+import nzmath.integerResidueClass as integerResidueClass
+import nzmath.polynomial as polynomial
+import nzmath.finitefield as finitefield
 
 
 def zassenhaus(f):
