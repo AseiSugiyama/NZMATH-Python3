@@ -2,7 +2,7 @@
 rational module provides Rational, Integer, RationalField, and IntegerRing.
 """
 import math
-import ring
+import nzmath.ring as ring
 
 
 class Rational (ring.QuotientFieldElement):
@@ -374,6 +374,9 @@ class Rational (ring.QuotientFieldElement):
         return float(self.decimalString(17))
 
     def decimalString(self, N):
+        """
+        Return a string of the number to N decimal places.
+        """
         n = self.numerator
         d = self.denominator
         L = []
@@ -753,7 +756,7 @@ class IntegerRing (ring.CommutativeRing):
         """
         gcd returns the greatest common divisor of given 2 integers.
         """
-        import gcd
+        import nzmath.gcd as gcd
         a, b = abs(n), abs(m)
         return Integer(gcd.gcd(a, b))
 
