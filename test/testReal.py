@@ -103,14 +103,14 @@ class NewFunctionTest (unittest.TestCase):
         assert abs(real.sin(pi)) < self.absolute
         assert -1 <= (real.cos(pi)) < -1 + self.absolute
         assert abs(real.tan(pi)) < self.absolute
-        s = time.time()
+##         s = time.time()
         abs7 = real.sin(7, real.AbsoluteError(0, 1, 10**20))
-        abstime = time.time() - s
-        assert abstime < 1.5
-        s = time.time()
+##         abstime = time.time() - s
+##         assert abstime < 1.5
+##         s = time.time()
         rel7 = real.sin(7, real.RelativeError(0, 1, 10**20))
-        reltime = time.time() - s
-        assert reltime < 1.5
+##         reltime = time.time() - s
+##         assert reltime < 1.5
         assert abs(abs7 - rel7) < rational.Rational(1, 10**20), abs(abs7 - rel7).trim(10**20)
 
     def testHyperbolic(self):

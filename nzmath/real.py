@@ -10,9 +10,9 @@ from __future__ import division, generators
 import math
 import itertools
 
-import rational
-import arith1
-import ring
+import nzmath.rational as rational
+import nzmath.arith1 as arith1
+import nzmath.ring as ring
 
 
 class RealField (ring.Field):
