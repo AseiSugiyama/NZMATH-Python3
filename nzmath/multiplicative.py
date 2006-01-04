@@ -3,7 +3,7 @@ Multiplicative number theoretic functions.
 """
 
 import nzmath.factor.methods as factor_methods
-import prime
+import nzmath.prime as prime
 
 def euler(n):                    
     """
@@ -55,7 +55,7 @@ def sigma(m, n):
     s = 1
     for p, e in f:
         t = 1
-        for i in range(1,e+1):
+        for i in range(1, e+1):
             t += (p**i)**m
         s *= t
     return s
