@@ -1,4 +1,6 @@
 import unittest
+import logging
+
 import testArith1
 import testBigrandom
 import testCombinatorial
@@ -33,5 +35,6 @@ def suite():
     return suite
 
 if __name__ == '__main__':
+    logging.basicConfig()
     runner = unittest.TextTestRunner()
     runner.run(suite())
