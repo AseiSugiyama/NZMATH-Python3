@@ -5,6 +5,7 @@ Class definitions of polynomials.
 from __future__ import division
 import re
 import copy
+import logging
 
 import nzmath.bigrandom as bigrandom
 import nzmath.rational as rational
@@ -16,6 +17,8 @@ try:
 except NameError:
     # Python 2.3 has Set class in sets
     from sets import Set as set
+
+_log = logging.getLogger('nzmath.polynomial')
 
 
 class OneVariablePolynomial (ring.CommutativeRingElement):
@@ -511,7 +514,12 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
         if _coefficientRing.getCharacteristic() > 0:
             return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
     except AttributeError:
-        pass
+        if _coefficientRing == rational.theRationalField:
+            return RationalOneVariablePolynomial(_coefficient, _variable)
+        elif _coefficientRing == rational.theIntegerRing:
+            return OneVariablePolynomialChar0(_coefficient, _variable, rational.theIntegerRing)
+    except:
+        raise
     return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
 
 def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
@@ -534,7 +542,12 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
         if _coefficientRing.getCharacteristic() > 0:
             return OneVariablePolynomialCharNonZero(_coefficient, variable, _coefficientRing)
     except AttributeError:
-        pass
+        if _coefficientRing == rational.theRationalField:
+            return RationalOneVariablePolynomial(_coefficient, variable)
+        elif _coefficientRing == rational.theIntegerRing:
+            return OneVariablePolynomialChar0(_coefficient, variable, rational.theIntegerRing)
+    except:
+        raise
     return OneVariablePolynomial(_coefficient, variable, _coefficientRing)
 
 
