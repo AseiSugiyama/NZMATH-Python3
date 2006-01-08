@@ -1,4 +1,5 @@
 import unittest
+import logging
 
 import nzmath.ring as ring
 import nzmath.integerResidueClass as integerResidueClass
@@ -727,6 +728,40 @@ class OneVariableMonomialTest (unittest.TestCase):
         self.assertEqual("-1", str(const))
 
 
+class OneVariableDensePolynomialTest (unittest.TestCase):
+    def testClassForInteger(self):
+        self.assert_(isinstance(OneVariableDensePolynomial([1, 1], 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableDensePolynomial([1, 1], 'x'), OneVariablePolynomialChar0))
+
+    def testClassForRational(self):
+        self.assert_(isinstance(OneVariableDensePolynomial([1, rational.Rational(1, 2)], 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableDensePolynomial([1, rational.Rational(1, 2)], 'x'), OneVariablePolynomialChar0))
+        self.assert_(isinstance(OneVariableDensePolynomial([1, rational.Rational(1, 2)], 'x'), RationalOneVariablePolynomial))
+
+    def testClassForFiniteField(self):
+        import nzmath.finitefield
+        element = nzmath.finitefield.FinitePrimeFieldElement
+        self.assert_(isinstance(OneVariableDensePolynomial([element(1, 5), element(1, 5)], 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableDensePolynomial([element(1, 5), element(1, 5)], 'x'), OneVariablePolynomialCharNonZero))
+
+
+class OneVariableSparsePolynomialTest (unittest.TestCase):
+    def testClassForInteger(self):
+        self.assert_(isinstance(OneVariableSparsePolynomial({1:1, 0:1}, 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:1, 1:1}, 'x'), OneVariablePolynomialChar0))
+
+    def testClassForRational(self):
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:1, 1:rational.Rational(1, 2)}, 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:1, 1:rational.Rational(1, 2)}, 'x'), OneVariablePolynomialChar0))
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:1, 1:rational.Rational(1, 2)}, 'x'), RationalOneVariablePolynomial))
+
+    def testClassForFiniteField(self):
+        import nzmath.finitefield
+        element = nzmath.finitefield.FinitePrimeFieldElement
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:element(1, 5), 1:element(1, 5)}, 'x'), OneVariablePolynomial))
+        self.assert_(isinstance(OneVariableSparsePolynomial({0:element(1, 5), 1:element(1, 5)}, 'x'), OneVariablePolynomialCharNonZero))
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
@@ -736,5 +771,6 @@ def suite(suffix="Test"):
     return suite
 
 if __name__== '__main__':
+    logging.basicConfig()
     runner = unittest.TextTestRunner()
     runner.run(suite())
