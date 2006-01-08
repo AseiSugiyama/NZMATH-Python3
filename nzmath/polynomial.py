@@ -349,30 +349,6 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
         else:
             raise ValueError, "You must specify a variable."
 
-    def integrate(self, var=None, mini=None, maxi=None):
-        if mini == None and maxi == None and var != None and isinstance(var, str):
-            if self.degree() == 0:
-                return OneVariableDensePolynomial([0, self[0]], var, self.getCoefficientRing())
-            elif self.degree() < 0:
-                return self(var)
-            elif var != self.getVariable():
-                return self * OneVariableDensePolynomial([0, 1], var, self.getCoefficientRing())
-            else:
-                integrate_coefficient = {}
-                for i, c in self.coefficient.iteritems():
-                    integrate_coefficient[i+1] = c / (i+1)
-                return OneVariableSparsePolynomial(
-                    integrate_coefficient,
-                    var,
-                    self.getCoefficientRing().getQuotientField())
-        elif mini != None and maxi != None and var != None and isinstance(var, str):
-            if var != self.getVariable():
-                return self * (maxi - mini)
-            primitive_function = self.integrate(var)
-            return primitive_function(maxi) - primitive_function(mini)
-        else:
-            raise ValueError, "You must call integrate with variable or with variable, min and max."
-
     def getRing(self):
         return self.ring
 
@@ -1440,6 +1416,30 @@ class OneVariablePolynomialChar0 (OneVariablePolynomial):
             i += 1
         result[i] = a
         return result
+
+    def integrate(self, var=None, mini=None, maxi=None):
+        if mini == None and maxi == None and var != None and isinstance(var, str):
+            if self.degree() == 0:
+                return OneVariableDensePolynomial([0, self[0]], var, self.getCoefficientRing())
+            elif self.degree() < 0:
+                return self(var)
+            elif var != self.getVariable():
+                return self * OneVariableDensePolynomial([0, 1], var, self.getCoefficientRing())
+            else:
+                integrate_coefficient = {}
+                for i, c in self.coefficient.iteritems():
+                    integrate_coefficient[i+1] = c / (i+1)
+                return OneVariableSparsePolynomial(
+                    integrate_coefficient,
+                    var,
+                    self.getCoefficientRing().getQuotientField())
+        elif mini != None and maxi != None and var != None and isinstance(var, str):
+            if var != self.getVariable():
+                return self * (maxi - mini)
+            primitive_function = self.integrate(var)
+            return primitive_function(maxi) - primitive_function(mini)
+        else:
+            raise ValueError, "You must call integrate with variable or with variable, min and max."
 
 
 class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
