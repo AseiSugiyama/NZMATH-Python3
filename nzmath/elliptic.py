@@ -1264,6 +1264,7 @@ class EC:
                 return n
             else:
                 return False
+		
 
     def allPoint(self,O):
         if self.ch>3 and self.index==1:
