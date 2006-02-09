@@ -12,10 +12,12 @@ import testFactorMethods
 import testFactorMisc
 import testFiniteField
 import testGcd
+import testGroup
 import testImaginary
 import testIntegerResidueClass
 import testLattice
 import testMatrix
+import testPermute
 import testPolynomial
 import testPrime
 import testRational
