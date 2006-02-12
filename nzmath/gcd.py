@@ -52,7 +52,7 @@ def extgcd(x, y):
     while w > 0:
         q = g // w
         a, b, g, u, v, w = u, v, w, a-q*u, b-q*v, g-q*w
-    return (a,b,g)
+    return (a, b, g)
 
 def gcd_of_list(integers):
     """
@@ -60,14 +60,20 @@ def gcd_of_list(integers):
     such that d = c1 * x1 + ... + cn * xn.
     """
     the_gcd = 0
-    coeff = []
-    for next in integers:
-        t = extgcd(the_gcd, next)
-        for i in range(len(coeff)):
-            coeff[i] *= t[0]
-        coeff.append(t[1])
-        the_gcd = t[2]
-    return [the_gcd, coeff]
+    total_length = len(integers)
+    coeffs = []
+    coeffs_length = 0
+    for integer in integers:
+        multiplier, new_coeff, the_gcd = extgcd(the_gcd, integer)
+        if multiplier != 1:
+            for i in range(coeffs_length):
+                coeffs[i] *= multiplier
+        coeffs.append(new_coeff)
+        coeffs_length += 1
+        if the_gcd == 1:
+            coeffs.extend([0] * (total_length - coeffs_length))
+            break
+    return [the_gcd, coeffs]
 
 def lcm(a, b):
     """
