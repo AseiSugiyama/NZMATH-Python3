@@ -1,5 +1,4 @@
 import math
-import time
 import nzmath.gcd
 import nzmath.arith1
 import nzmath.rational
@@ -178,7 +177,7 @@ def computeClassNumber(disc, limit_dis=100000):
     '''
     counting reduced forms. not only fundamenta discriminant.
     '''
-    time_a = time.time()
+
     if disc % 4 not in (0, 1):
         raise ValueError , \
               ("a discriminant must be 0 or 1 mod 4")
@@ -242,8 +241,7 @@ def computeClassNumber(disc, limit_dis=100000):
         #        if b <= c_b:
         #            continue
         #        else:
-    time_b = time.time()
-    #    print time_b - time_a
+
     return h,ret_list
 
 def euclid_exd(a,b):
