@@ -20,6 +20,7 @@ import testMatrix
 import testPermute
 import testPolynomial
 import testPrime
+import testQuad
 import testRational
 import testRationalFunction
 import testReal
