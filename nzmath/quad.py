@@ -1,6 +1,5 @@
 import math
 import time
-import random
 import nzmath.gcd
 import nzmath.arith1
 import nzmath.rational
