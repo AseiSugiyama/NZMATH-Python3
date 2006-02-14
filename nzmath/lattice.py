@@ -59,7 +59,7 @@ class Lattice:
                 del self.mu
 
                 return self.H
-    
+
     def RED(self,k,l):
         from math import floor
         if abs(self.mu[(k,l)]) <= 0.5:
@@ -77,7 +77,7 @@ class Lattice:
         self.H.swapColumn(k,k-1)
         if k > 2:
             for j in range(1,k-1):
-                self.mu[(k,j)],self.mu[(k-1,j)] = self.mu[(k-1,j)],self.mu[(k,j)]  
+                self.mu[(k,j)],self.mu[(k-1,j)] = self.mu[(k-1,j)],self.mu[(k,j)]
         _mu = self.mu[(k,k-1)]
         _B = self.B[k] + _mu*_mu*self.B[k-1]
         self.mu[(k,k-1)] = _mu*self.B[k-1]/_B

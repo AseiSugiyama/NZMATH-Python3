@@ -3,21 +3,17 @@ import nzmath.vector as vector
 
 class Matrix:
     """
-    
     Matrix is a class for matrices.
-
     """
 
     def __init__(self, row, column, compo = 0):
         """
-
         Matrix(row, column [,components])
-
         """
         if (rational.isIntegerObject(row)
             and rational.isIntegerObject(column)
             and row > 0
-            and column > 0 ): 
+            and column > 0 ):
             self.row = row
             self.column = column
             self.compo = []
@@ -34,7 +30,7 @@ class Matrix:
 
     def __getitem__(self, index):
         """
-        M[i,j] : Return (i,j)-component of M. 
+        M[i,j] : Return (i,j)-component of M.
         M[i] <==> M.getColumn(i)
         """
         if isinstance(index, tuple):
@@ -76,7 +72,7 @@ class Matrix:
             raise TypeError
 
     def __add__(self, other):
-        if (self.row != other.row) or (self.column != other.column): 
+        if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
         sum = self.__class__(self.row, self.column)
@@ -88,7 +84,7 @@ class Matrix:
         return sum
 
     def __sub__(self, other):
-        if (self.row != other.row) or (self.column != other.column): 
+        if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
         diff = self.__class__(self.row, self.column)
@@ -101,19 +97,17 @@ class Matrix:
 
     def __mul__(self, other):
         """
-        
         multiplication with a Matrix or a scalar
-        
         """
         if isinstance(other, Matrix):
             if self.column != other.row:
                 raise MatrixSizeError
-            product = self.__class__(self.row, other.column) 
+            product = self.__class__(self.row, other.column)
             for i in range(1, self.row+1):
                 for j in range(1, other.column+1):
                     for k in range(self.column):
                         product[i,j] += self[i,k] * other[k,j]
-            return product 
+            return product
         elif isinstance(other, vector.Vector):
             if self.column != len(other):
                 raise vector.VectorSizeError
@@ -121,8 +115,8 @@ class Matrix:
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
                     tmp[i-1] += self[i,j] * other[j]
-            return vector.Vector(tmp) 
-        else: 
+            return vector.Vector(tmp)
+        else:
             product = self.__class__(self.row, self.column)
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
@@ -131,11 +125,9 @@ class Matrix:
 
     def __div__(self, other):
         """
-        
         division by a scalar
-        
         """
-        return self * (1 / rational.Rational(other)) 
+        return self * (1 / rational.Rational(other))
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -157,7 +149,7 @@ class Matrix:
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
                     product[i,j] = self[i,j] * other
-            return product 
+            return product
 
     def __neg__(self):
         return (-1) * self
@@ -165,7 +157,7 @@ class Matrix:
     def __pow__(self, other):
         n = +other
         if not n in rational.theIntegerRing:
-            raise ValueError 
+            raise ValueError
         if self.row != self.column:
             raise MatrixSizeError
 
@@ -176,7 +168,7 @@ class Matrix:
             z = self.copy()
         else:
             n = abs(n)
-            z = self.inverse() 
+            z = self.inverse()
 
         while 1:
             if n % 2 == 1:
@@ -184,7 +176,7 @@ class Matrix:
             n //= 2
             if n == 0:
                 return power
-            z = z*z 
+            z = z*z
 
     def __repr__(self):
         return_str = ""
@@ -199,7 +191,7 @@ class Matrix:
             return_str += "\n"
         return return_str[:-1]
 
-    __str__ = __repr__ 
+    __str__ = __repr__
 
     def __call__(self, arg):
         return self * arg
@@ -209,9 +201,7 @@ class Matrix:
 
     def copy(self):
         """
-        
         Create a copy of the instance.
-        
         """
         copy = self.__class__(self.row, self.column)
         copy.row = self.row
@@ -222,18 +212,14 @@ class Matrix:
 
     def set(self, list):
         """
-
         set(list) : Substitute list for components
-        
         """
         for i in range(self.row):
             self.compo[i] = list[self.column*i : self.column*(i+1)]
 
     def setRow(self, m, arg):
         """
-        
         setRow(m, new_row) : new_row should be a list/Vector/Matrix
-        
         """
         if isinstance(arg, list):
             self.compo[m-1] = arg[:]
@@ -245,13 +231,11 @@ class Matrix:
                 self.compo[m-1][i] = arg.compo[i]
         else:
             raise TypeError, self.setRow.__doc__
-    
+
     def setColumn(self, n, arg):
         """
-        
         setColumn(n, new_column) : new_column should be a list/Vector/Matrix
-        
-        """ 
+        """
         if isinstance(arg, list):
             for i in range(self.row):
                 self.compo[i][n-1] = arg[i]
@@ -266,9 +250,7 @@ class Matrix:
 
     def getRow(self, i):
         """
-        
         getRow(i) : Return i-th row in form of Matrix
-        
         """
         row = []
         for k in range(self.column):
@@ -277,9 +259,7 @@ class Matrix:
 
     def getColumn(self, j):
         """
-
         getColumn(j) : Return j-th column in form of Matrix
-        
         """
         column = []
         for k in range(self.row):
@@ -288,9 +268,7 @@ class Matrix:
 
     def swapRow(self, m1, m2):
         """
-        
         swapRow(m1, m2) : Swap self's m1-th row and m2-th row.
-        
         """
         tmp = self.compo[m1-1][:]
         self.compo[m1-1] = self.compo[m2-1][:]
@@ -298,9 +276,7 @@ class Matrix:
 
     def swapColumn(self, n1, n2):
         """
-        
         swapColumn(n1, n2) : Swap self's n1-th column and n2-th column.
-        
         """
         tmp = self[n1]
         self.setColumn(n1, self[n2])
@@ -308,10 +284,8 @@ class Matrix:
 
     def insertRow(self, i, arg):
         """
-        
         insertRow(i, new_row) : new_row can be a list or a Matrix
-        
-        """ 
+        """
         if isinstance(arg, list):
             self.compo.insert(i-1, arg)
             self.row += 1
@@ -323,9 +297,7 @@ class Matrix:
 
     def insertColumn(self, j, arg):
         """
-        
         insertColumn(j, arg) : new_column can be a list or a Matrix
-        
         """
         if isinstance(arg, list):
             for k in range(self.row):
@@ -358,9 +330,7 @@ class Matrix:
 
     def transpose(self):
         """
-        
         Return transposed matrix of self.
-    
         """
         trans = self.__class__(self.column, self.row)
         for i in range(1, trans.row+1):
@@ -370,9 +340,7 @@ class Matrix:
 
     def triangulate(self):
         """
-        
         Return triangulated matrix of self.
-    
         """
         triangle = self.copy()
         for i in range(triangle.row):
@@ -389,7 +357,7 @@ class Matrix:
                 ratio = triangle.compo[k][i] / rational.Rational(triangle.compo[i][i])
                 for l in range(i, triangle.column):
                     triangle.compo[k][l] -= rational.Rational(triangle.compo[i][l] * ratio)
-            
+
         return triangle
 
     def isUpperTriangularMatrix(self):
@@ -404,9 +372,7 @@ class Matrix:
 
     def trace(self):
         """
-        
         Return trace of self.
-    
         """
         trace = 0
         for i in range(self.row):
@@ -415,9 +381,7 @@ class Matrix:
 
     def determinant(self):
         """
-        
         Return determinant of self.
-    
         """
         det = 1
         if self.row != self.column:
@@ -429,9 +393,7 @@ class Matrix:
 
     def submatrix(self, i, j):
         """
-        
         Return submatrix which deleted i-th row and j-th column from self.
-    
         """
         sub = self.copy()
         sub.deleteRow(i)
@@ -447,10 +409,8 @@ class Matrix:
 
     def inverse(self):
         """
-        
         Return inverse matrix of self if exists,
         or return None.
-        
         """
         if self.row != self.column:
             raise MatrixSizeError
@@ -458,9 +418,7 @@ class Matrix:
 
     def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
         """
-        
         characteristicPolynomial() -> Polynomial
-        
         """
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
@@ -478,14 +436,12 @@ class Matrix:
 
     def LUDecomposition(self):
         """
-
         LUDecomposition() -> (L, U)
 
         L and U are matrices such that
             self == L * U
             L : lower triangular matrix
             U : upper triangular matrix
-
         """
 
         A = self.copy()
@@ -512,9 +468,7 @@ class Matrix:
 
     def cohensSimplify(self):      # common process of image() and kernel()
         """
-        
         cohensSimplify is used in image() and kernel()
-        
         """
         c = [0] * (self.row + 1)
         d = [-1] * (self.column + 1)
@@ -530,7 +484,7 @@ class Matrix:
             top = (-1) / rational.Rational(self[j,k])
             self[j,k] = -1
             for s in range(k+1, self.column+1):
-                self[j,s] = top * self[j,s] 
+                self[j,s] = top * self[j,s]
             for i in range(1, self.row+1):
                 if i == j:
                     continue
@@ -544,10 +498,8 @@ class Matrix:
 
     def kernel(self):       # Algorithm 2.3.1 of Cohen's book
         """
-        
         Return a Matrix which column vectors are one basis of self's kernel,
         or return None if self's kernel is 0.
-        
         """
         M = self.copy()
         tmp = M.cohensSimplify()
@@ -575,10 +527,8 @@ class Matrix:
 
     def image(self):        # Algorithm 2.3.2 of Cohen's book
         """
-        
         Return a Matrix which column vectors are one basis of self's image,
         or return None if self's image is 0.
-        
         """
         M = self.copy()
         tmp = M.cohensSimplify()
@@ -594,21 +544,17 @@ class Matrix:
 
     def rank(self):
         """
-        
         Return rank of self.
-
         """
         return len(self.image())
 
     def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
         """
-
         inverseImage(V) -> X
 
         such that
         self * X == V
-
-        """ 
+        """
         M = self.copy()
         m = M.row; n = M.column; r = V.column
         X = Matrix(n,r)
@@ -616,7 +562,7 @@ class Matrix:
         # step 1
         B = V.copy()
 
-        # step 2 - 
+        # step 2 -
         for j in range(n):
             # step 3
             for i in range(j,m):
@@ -629,7 +575,7 @@ class Matrix:
                 for l in range(n):
                     t = M.compo[i][l]; M.compo[i][l] = M.compo[j][l]; M.compo[j][l] = t
                 for l in range(r):
-                    t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t 
+                    t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t
             # step 5
             d = 1 / rational.Rational(M.compo[j][j])
             for k in range(j+1, m):
@@ -651,17 +597,17 @@ class Matrix:
                 sum = 0
                 for i in range(n):
                     sum += M.compo[k][i] * X.compo[i][j]
-                if (sum != B.compo[k][j]): 
+                if (sum != B.compo[k][j]):
                     raise NoInverseImage, "some vectors are not in the inverse image"
 
         return X
 
     def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
         if self.row != self.column:
-            raise MatrixSizeError 
+            raise MatrixSizeError
         n = self.row
 
-        # step 1 
+        # step 1
         H = self.copy()
         for m in range(2, H.row):
             # step 2
@@ -681,15 +627,13 @@ class Matrix:
                     u = H[i,m-1] / rational.Rational(t)
                     for j in range(m,n+1):
                         H[i,j] -= u * H[m,j]
-                        H[i,m-1] = 0 
+                        H[i,m-1] = 0
                     H.setColumn(m, H[m] + u * H[i] )
         return H
 
     def columnEchelonForm(self):  # Algorithm 2.3.11 of Cohen's book
         """
-        
         Return a Matrix in column echelon form whose image is equal to the image of self.
-    
         """
         M = self.copy()
         k = M.column
@@ -710,22 +654,18 @@ class Matrix:
                 for l in range(1,i+1):
                     M[l,j] = M[l,j] - M[l,k] * M[i,j]
             k = k-1
-        return M 
+        return M
 
 
 class IntegerMatrix(Matrix):
     """
-
     IntegerMatrix is a class for matrices
     which coefficients are all integers.
-
     """
 
     def __div__(self, other):
         """
-        
         division by a scalar
-        
         """
         if (other == 1) or (other == -1) :
             return self * other
@@ -765,7 +705,7 @@ class IntegerMatrix(Matrix):
                 j0 = j  # the first non-zero's index
                 for j in range(2, k+1): # Pick among the non-zero A[i,j] for j <= k one with the smallest absolute value
                     if  0 < abs(A[i,j]) < abs(A[i,j0]):
-                        j0 = j 
+                        j0 = j
                 if j0 < k:
                     A.swapColumn(k,j0)
                 if A[i,k] < 0:
@@ -863,10 +803,8 @@ class IntegerMatrix(Matrix):
 
 class MatrixRing:
     """
-
     MatrixRing is a class for matrix rings.
-
-    """ 
+    """
     _instances = {}
 
     def __init__(self, size):
@@ -888,16 +826,12 @@ class MatrixRing:
 
 class Subspace(Matrix):
     """
-    
     Subspace is a class for subspaces.
-    
     """
 
     def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
         """
-        
         Return a basis of full space, which including self's column vectors.
-    
         """
         if self.row < self.column:
             raise MatrixSizeError
@@ -974,7 +908,7 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
 
 
 #--------------------------------------------------------------------
-#   define exceptions 
+#   define exceptions
 #--------------------------------------------------------------------
 
 class MatrixSizeError(Exception):
