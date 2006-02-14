@@ -61,54 +61,6 @@ class QuadraticForm:
         else:
             return NotImplemented
         
-def test_of_crfo(disc):
-    list_1 , list_2 , cls_nb = test_of_crf(disc)
-    list_2.sort()
-    flg_ofg = 0
-    for k in range(cls_nb):
-        temp_list = list_2[:]
-        del temp_list[k]
-        if list_2[k] in temp_list:
-            flg_ofg = 1
-            print "NOOOOO good"
-
-    for i in range(cls_nb):
-        list_1[i].sort()
-        if list_1[i] != list_2:
-            print list_1[i]
-            print list_2
-            print "no good"
-            flg_ofg =1
-        else:
-            print list_1[i]
-            print list_2
-            print "very good"
-    if flg_ofg == 0:
-        print "OK"
-    else:
-        print "NG"
-    print cls_nb
-        
-def test_of_crf(disc):
-    cls_nb, list_of_qd = computeClassNumber(disc)
-    ret_list = []
-
-    print list_of_qd
-    print ">>>>"
-    for i in range(cls_nb):
-        temp_list = []
-        for j in range(cls_nb):
-            temp_list.append(computePDF(list_of_qd[i], list_of_qd[j]))
-        ret_list.append(temp_list)
-
-    return ret_list, list_of_qd, cls_nb
-    
-    '''
-    for i in list_of_qd:
-        print i
-    '''
-                                
-
 def deg_rounity(dis):
     '''
     caluclation of w(D)
@@ -127,34 +79,6 @@ def deg_rounity(dis):
     else:
         print "unknown error"
         raise ValueError
-
-def cls_num_ofdis(fun_dis, h_d0, f):
-    '''
-    caluclation h(D) from h(D_0)
-    '''
-
-    try:
-        fd_or_not(fun_dis)
-    except ValueError:
-        print '%s is not fundamental discriminant' % fun_dis
-        return 1
-    except:
-        print 'unknown error'
-        return 1
-    else:
-        pass
-
-    dis = fun_dis * (f*f)
-    w_dis = deg_rounity(dis)
-    w_fdis = deg_rounity(fun_dis)
-    m_p = 1
-    for i in nzmath.factor.factor.rhomethod(f):
-        m_p = m_p*(1 - nzmath.rational.Rational(nzmath.arith1.legendre(fun_dis, i[0]),i[0]))
-
-    h_d = w_dis * nzmath.rational.Rational(h_d0 , w_fdis) * f * m_p
-
-    return h_d
-
 
 def reducePDF(a):
     '''
