@@ -721,8 +721,8 @@ class MultiVariableSparsePolynomial:
                             del(remainder_coefficient[typical_coefficient])
                             remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_polynomial.variable).adjust()
                     return_polynomial += remainder_polynomial // other
-                    return return_polynomial                
-        else:
+                    return return_polynomial
+                else:
             raise NotImplementedError
 
     def search_typical_term(self):
@@ -806,7 +806,7 @@ class MultiVariableSparsePolynomial:
         elif isinstance(other, OneVariablePolynomial):
             return other.toMultiVariableSparsePolynomial() // self
         else:
-            raise NotImplementedError 
+            raise NotImplementedError
 
     def __rdiv__(self, other):
         raise NotImplementedError
@@ -999,7 +999,7 @@ class MultiVariableSparsePolynomial:
             return result_polynomial
 
     def adjust(self):
-        if (len(self.variable) == 0) or (len(self.coefficient.keys()) == 0):
+        if len(self.variable) == 0 or len(self.coefficient.keys()) == 0:
             return 0
         result_polynomial = self.sort_variable()
         result_polynomial = result_polynomial.merge_variable()
@@ -1013,7 +1013,7 @@ class MultiVariableSparsePolynomial:
             return result_coefficient[zero_test]
         return result_polynomial
 
-    copy = adjust 
+    copy = adjust
 
     def sort_variable(self):
         positions = {}
