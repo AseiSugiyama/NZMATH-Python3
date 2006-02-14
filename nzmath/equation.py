@@ -12,12 +12,12 @@ import nzmath.finitefield as finitefield
 _log = logging.getLogger('nzmath.equation')
 _log.setLevel(logging.DEBUG)
 
-# x is (list,tuple) 
+# x is (list,tuple)
 # t is variable
 def e1(x):
     """
     0 = x[0] + x[1]*t
-    """ 
+    """
     if x[1] == 0:
         raise ZeroDivisionError,"No Solution"
     else:
@@ -37,7 +37,7 @@ def e1_Zn(x,n):
         raise ValueError, "No Solution"
     else:
         return (b//a)%n
-    
+
 def e2(x):
     """
     0 = x[0] + x[1]*t + x[2]*t**2
@@ -128,18 +128,6 @@ def e3_Fp(x,p):
         equ.append(X[1])
     return equ
 
-"""
-def solve_Fp(poly,p):
-    if poly.degree()==1:
-        return 0
-    elif poly.degree()==2:
-        return 0
-    elif poly.degree()==3:
-        return 0
-    else:
-        return 0
-"""
-    
 def Newton(f,initial=1,repeat=250):
     """
     f = a_n + a_(n-1) * x + ... + a_0 * x ** n
@@ -173,9 +161,9 @@ def Newton(f,initial=1,repeat=250):
             if l == e1(tangent):
                 return l
             else:
-                l = e1(tangent) 
+                l = e1(tangent)
     return l
-    
+
 def SimMethod(g,NewtonInitial=1,repeat=250):
     """
      g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
@@ -194,7 +182,7 @@ def SimMethod(g,NewtonInitial=1,repeat=250):
     z = []
     for i in range(deg):
         z.append(b+r*cmath.exp((1j)*(2*i*(math.pi)/deg+3/(2*deg))))
-    
+
     for loop in range(repeat):
         sigma_list = []
         for i in range(len(z)):
@@ -207,7 +195,7 @@ def SimMethod(g,NewtonInitial=1,repeat=250):
         k = []
         for i in range(len(z)):
             k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_list[i])))
-        
+
         for i in range(len(z)):
             z[i] = k[i] + z[i]
 

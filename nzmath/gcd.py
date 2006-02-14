@@ -80,7 +80,7 @@ def lcm(a, b):
     lcm returns the lowest common multiple of given 2 integers.
     If both are zero, it raises an exception.
     """
-    return a // gcd(a, b) * b 
+    return a // gcd(a, b) * b
 
 def coprime(a, b):
     """
