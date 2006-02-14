@@ -10,22 +10,17 @@ class Group:
             self.classes = value
             if isinstance(self.classes, nzmath.ring.RingElement):
                 self.classes = self.classes.getRing()
-            """
-            else:
-                if isinstance(a, == nzmath.group.GroupElement)
-                    self.classes = self.classes.getGroup()
-            """
         else:
             self.classes = value
 
     def __repr__(self):
-        if (hasattr(self.classes, "__repr__")):
+        if hasattr(self.classes, "__repr__"):
             return self.classes.__repr__()
         else:
             return repr(self.classes.__class__.__name__)
 
     def __str__(self):
-        if (hasattr(self.classes, "__str__")):
+        if hasattr(self.classes, "__str__"):
             return self.classes.__str__()
         else:
             return str(self.classes.__class__.__name__)
@@ -58,18 +53,13 @@ class Group:
         else:
             if hasattr(self.classes, "__len__"):
                 order = self.classes.__len__()
-        if self.main & hasattr(self.classes, "_getZero"): # *-cyclic group
+        if self.main and hasattr(self.classes, "_getZero"): # *-cyclic group
             order = order - 1
         return order
 
     def gr_order_fact(self):
         import nzmath.factor.methods as facts
         return facts.factor(self.grouporder())
-
-    """
-    def homomorphism(self):
-        return 0
-    """
 
 
 class GroupElement:
@@ -97,30 +87,30 @@ class GroupElement:
         return self.class_name + ',' + str(self.element)
 
     def __eq__(self,other):
-        if(self.element == other.element):
+        if self.element == other.element:
             return True
         else:
             return False
 
     def __ne__(self, other):
-        return not(self == other)
+        return not (self == other)
 
     def type_check(self, value):
         a=self.element
-        if not(value & 1):
-            if hasattr(a, "__add__") & hasattr(a, "__mul__"):
+        if not (value & 1):
+            if hasattr(a, "__add__") and hasattr(a, "__mul__"):
                 return True
             else:
                 return False
         else:
-            if hasattr(a, "__mul__") & hasattr(a, "__pow__"):
+            if hasattr(a, "__mul__") and hasattr(a, "__pow__"):
                 return True
             else:
                 return False
 
     def setmain(self, value):
         value = value & 1
-        if isinstance(value, int) & self.type_check(value):
+        if isinstance(value, int) and self.type_check(value):
             self.main = value
         else:
             return ValueError("invalid input")
@@ -166,5 +156,3 @@ class GroupElement:
                 k = k * p
                 b = b.ope2(p)
         return k
-
-
