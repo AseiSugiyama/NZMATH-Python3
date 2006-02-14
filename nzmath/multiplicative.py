@@ -5,7 +5,7 @@ Multiplicative number theoretic functions.
 import nzmath.factor.methods as factor_methods
 import nzmath.prime as prime
 
-def euler(n):                    
+def euler(n):
     """
     Euler totient function.
     It returns the number of relatively prime numbers to n smaller than n.
@@ -29,7 +29,7 @@ def moebius(n):
     It returns:
       -1  if n has odd distinct prime factors,
        1  if n has even distinct prime factors, or
-       0  if n has a squared prime factor. 
+       0  if n has a squared prime factor.
     """
     if n == 1:
         return 1
