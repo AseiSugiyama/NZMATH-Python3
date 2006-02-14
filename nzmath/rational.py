@@ -70,10 +70,10 @@ class Rational (ring.QuotientFieldElement):
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator - self.denominator*other.numerator
             denominator = self.denominator*other.denominator
-            return +Rational(numerator, denominator) 
+            return +Rational(numerator, denominator)
         elif isIntegerObject(other):
             numerator = self.numerator - self.denominator*other
-            denominator = self.denominator            
+            denominator = self.denominator
             return +Rational(numerator, denominator)
         elif isinstance(other, float):
             return self - Rational(other)
@@ -765,7 +765,7 @@ class IntegerRing (ring.CommutativeRing):
         lcm returns the lowest common multiple of given 2 integers.
         If both are zero, it raises an exception.
         """
-        return a // self.gcd(a, b) * b 
+        return a // self.gcd(a, b) * b
 
     def _getOne(self):
         "getter for one"

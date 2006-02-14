@@ -218,12 +218,12 @@ class QuotientFieldElement (FieldElement):
     def __add__(self, other):
         numerator = self.numerator*other.denominator + self.denominator*other.numerator
         denominator = self.denominator*other.denominator
-        return self.__class__(numerator, denominator) 
+        return self.__class__(numerator, denominator)
 
     def __sub__(self, other):
         numerator = self.numerator*other.denominator - self.denominator*other.numerator
         denominator = self.denominator*other.denominator
-        return self.__class__(numerator, denominator) 
+        return self.__class__(numerator, denominator)
 
     def __neg__(self):
         return self.__class__(-self.numerator, self.denominator)
