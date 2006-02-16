@@ -30,6 +30,15 @@ class ElementOfQuadraticForm:
             exp = exp - 1
         return eltemp
 
+    def repOfModule(self):
+        ld = self.element[1]**2 - 4*self.element[0]*self.element[2]
+        a_m2 = 2*self.element[0]
+        rb = -self.element[1]
+
+        return_str = '%s * i r(%s) / %s' % (rb,
+                                            ld,
+                                            a_m2)
+        return return_str
 
 class QuadraticForm:
     """
