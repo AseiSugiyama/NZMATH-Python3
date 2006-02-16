@@ -232,7 +232,15 @@ def computeClassNumber(disc, limit_dis=100000):
                 break
         b += 2
 
-    return (h, ret_list)
+    # modify to return class not plane list. 17.Feb 2006
+    ret_css = []
+    eounit = ret_list[0]
+    del ret_list[0]
+    for t_lt in ret_list:
+        #print t_lt
+        ret_css.append(ElementOfQuadraticForm(t_lt, eounit))
+            
+    return (h, ret_css)
 
 def euclid_exd(a, b):
     if (type(a) != int) or (type(b) != int):
