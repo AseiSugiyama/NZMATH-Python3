@@ -1182,7 +1182,7 @@ class EC:
                 i=i-1
 
             # cacheing
-            if not hasattr(self,"dbdisable"):
+            if hasattr(self,"dbenable"):
                 T=(P[0],P[1],m,Q[0],Q[1],R[0],R[1])
                 if hasattr(self,"dbMiller"):
                     self.dbMiller[T]=f
@@ -1225,7 +1225,7 @@ class EC:
                             Z=(g*G)/(h*H)
                             if not (m%Z.order()):
                                 # cacheing
-                                if not hasattr(self,"dbdisable"):
+                                if hasattr(self,"dbenable"):
                                     T=(m,P[0],P[1],Q[0],Q[1])
                                     if hasattr(self,"dbWeilPairing"):
                                         self.dbWeilPairing[T] = Z
@@ -1378,11 +1378,11 @@ class EC:
         disable cache for dependence of Miller.
         """
         self.flush()
-        self.dbdisable=True
+        if hasattr(self,"dbenable"):
+            del self.dbenable
 
     def enabledb(self):
         """
         enaable cache for dependence of Miller.
         """
-        if hasattr(self,"dbdisable"):
-            del self.dbdisable
+        self.dbenable=True
