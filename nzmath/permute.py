@@ -1,11 +1,11 @@
 class Permute:
 
     """
-    This is a class to make normal type's element of permutation group.
+    This is a class for 'normal' type element of permutation group.
     Example, [2,3,1,5,4]
     This means [1 2 3 4 5]
                [2 3 1 5 4]
-    (It is one-to-one onto map, 1->2, 2->3, 3->1, 4->5, 5->4)
+    (It is 1:1 onto mapping, 1->2, 2->3, 3->1, 4->5, 5->4)
     """
 
     def __init__(self, value):
@@ -33,8 +33,8 @@ class Permute:
 
     def __mul__(self, other):
         """
-        It is a method to permute's multiply.
-        Self is caluculated after other
+        Multiplication is with composite mapping way.
+        Self is calculated after other
         """
         a = self.data
         b = other.data
@@ -57,7 +57,7 @@ class Permute:
     def __pow__(self, other):
         b = Permute(self.data)  # Other instance
         if not isinstance(other, (int, long)):
-            raise ValueError("This can't caluculate")
+            raise ValueError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
                 b = self * b
@@ -74,14 +74,14 @@ class Permute:
             b[a[i] - 1] = i+1
         return Permute(b)
 
-    def identify(self):
+    def identity(self):
         return Permute(range(1, len(self.data) + 1))
 
     def numbering(self):
         """
-        This method is numbering to self permute element.
-        It is synmetrical arranging.
-        This is inductive definition for dimention.
+        Return number of permutation element.
+        It is symmetrical arranging.
+        This is inductive definition for dimension.
         Example,
         2-dimension [1,2], [2,1]
         3-dimension [1,2,3], [2,1,3], [1,3,2], [2,3,1], [3,1,2], [3,2,1]
@@ -109,11 +109,11 @@ class Permute:
 
     def order(self):
         """
-        This method returns self permute element order.
+        This method returns order for permutation element.
         """
         b=Permute(self.data)
         i = 1
-        while b != b.identify():
+        while b != b.identity():
             b = self * b
             i += 1
         return i
@@ -121,7 +121,7 @@ class Permute:
     def ToTranspose(self):
         """
         This method returns
-         2-dimensional cyclic type's element of permute group.
+         2-dimensional cyclic type element of permutation group.
         It is recursive program.
         """
         a = list(self.data)
@@ -138,7 +138,7 @@ class Permute:
 
     def ToCyclic(self):
         """
-        This method returns cyclic type's element of permute group.
+        This method returns cyclic type element of permutation group.
         """
         a = self.data
         b = list(self.data)
@@ -158,8 +158,7 @@ class Permute:
 
     def sgn(self):
         """
-        This method returns sign of permute group.
-        I make two patern to this task.
+        This method returns sign for permutation element.
         """
         a = self.data
         k = l = 1
@@ -171,7 +170,7 @@ class Permute:
 
     def types(self):
         """
-        This method returns 'type' by cyclic permute element length.
+        This method returns 'type' defined by each cyclic element length.
         """
         a = self.ToCyclic().data
         c = []
@@ -182,7 +181,7 @@ class Permute:
 
     def ToMatrix(self):
         """
-        This is defined permute matrix
+        This method returns permutation matrix
         """
         import nzmath.matrix as matrix
         a = len(self.data)
@@ -214,7 +213,7 @@ class Permute:
 class ExPermute:
 
     """
-    This is a class to maka cyclic type's element of permutation group.
+    This is a class for cyclic type element of permutation group.
     Example, (5, [(1, 2), (3, 4)])
     This means (1, 2)(3, 4)=[2, 1, 4, 3, 5]
     """
@@ -223,10 +222,10 @@ class ExPermute:
         self.dim = val1
         self.data = val2
         if not (isinstance(val1, int) and isinstance(val2, list)):
-            raise ValueError("This is not cyclic form")
+            raise ValueError("This isn't cyclic form")
         for x in val2:
             if not isinstance(x, tuple):
-                raise ValueError("This is not cyclic form")
+                raise ValueError("This isn't cyclic form")
             b = range(val1)
             for y in x:
                 if not isinstance(y, int):
@@ -260,7 +259,7 @@ class ExPermute:
     def __pow__(self, other):
         b = ExPermute(self.dim, self.data)  # other instance
         if not isinstance(other, int):
-            raise ValueError("This can't caluculate")
+            raise ValueError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
                 b = self * b
@@ -280,7 +279,7 @@ class ExPermute:
             a[i] = tuple(b)
         return ExPermute(self.dim, a)
 
-    def identify(self):
+    def identity(self):
         return ExPermute(self.dim, [])
 
     def grouporder(self):
@@ -289,14 +288,13 @@ class ExPermute:
 
     def order(self):
         """
-        This method returns self permute element order.
+        This method returns order for permutation element.
         """
         return self.ToNormal().order()
 
     def ToNormal(self):
         """
-        This method returns normal type's element of permute group.
-        I make two patern to this task.
+        This method returns normal type element of permutation group.
         """
         dim = self.dim
         a = list(self.data)
