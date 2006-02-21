@@ -1,9 +1,9 @@
 class Group:
     """
-    This is a class for Group.
+    This is a class for finite group.
     """
 
-    def __init__(self, value, flag=0): # 0:class_name 1:GroupElement
+    def __init__(self, value, flag=0): # 0:group_instance 1:GroupElement
         self.main = 0
         if flag:
             import nzmath.ring
@@ -34,9 +34,9 @@ class Group:
     def createElement(self, value):
         return GroupElement(self.classes.createElement(value))
 
-    def identify(self):
-        if hasattr(self.classes, "identify"):
-            return GroupElement(self.classes.identify())
+    def identity(self):
+        if hasattr(self.classes, "identity"):
+            return GroupElement(self.classes.identity())
         else:
             if self.main:
                 if hasattr(self.classes, "_getOne"):
@@ -64,7 +64,7 @@ class Group:
 
 class GroupElement:
     """
-    This is for Group (especially,Abelian) Element.
+    This is a class for finite group element.
     """
 
     def __init__(self, value, opes = -1):
@@ -152,7 +152,7 @@ class GroupElement:
         k = 1
         for p, e in ordfact:
             b = self.ope2(ord // (p ** e))
-            while b != self.classes.identify():
+            while b != self.classes.identity():
                 k = k * p
                 b = b.ope2(p)
         return k
