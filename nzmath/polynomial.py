@@ -722,7 +722,7 @@ class MultiVariableSparsePolynomial:
                             remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_polynomial.variable).adjust()
                     return_polynomial += remainder_polynomial // other
                     return return_polynomial
-                else:
+        else:
             raise NotImplementedError
 
     def search_typical_term(self):
@@ -2432,3 +2432,6 @@ class PolynomialResidueRing (ring.ResidueClassRing):
         if seed in self.ring:
             return ring.ResidueClass(seed, self.ideal)
         raise ValueError, "seed is not valid."
+
+
+    
