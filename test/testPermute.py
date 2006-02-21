@@ -5,7 +5,7 @@ a1 = Permute([1, 3, 2, 4])
 a2 = Permute([2, 3, 1, 4])
 
 b1 = ExPermute(4, [(1, 2, 3, 4)])
-b2 = ExPermute(5, [(1, 2, 3)])
+b2 = ExPermute(4, [(1, 2, 3)])
 
 
 class PermTest(unittest.TestCase):
@@ -26,7 +26,7 @@ class PermTest(unittest.TestCase):
         assert(Permute([1, 3, 2, 4]) == a1.inverse())
 
     def testIdentity(self):
-        assert(Permute([1, 2, 3, 4]) == a1.identify())
+        assert(Permute([1, 2, 3, 4]) == a1.identity())
 
     def testNumber(self):
         assert(3 == a1.numbering())
@@ -59,36 +59,36 @@ class PermTest(unittest.TestCase):
 
 class ExPermTest(unittest.TestCase):
 
-    def TestMul(self):
-        assert(ExPermute(4, [(1, 2, 3), (1, 2, 3, 4)]) == b1 * b2)
+    def testMul(self):
+        assert(ExPermute(4, [(1, 2, 3, 4), (1, 2, 3)]) == b1 * b2)
         
-    def TestDiv(self):
+    def testDiv(self):
         assert(ExPermute(4, [(1, 2, 3, 4), (1, 3, 2)]) == b1 / b2)
 
-    def TestPow(self):
-        assert(ExPermute(4, [(1, 3, 2, 4)]) == b2 ** 2)
+    def testPow(self):
+        assert(ExPermute(4, [(1, 3, 2)]) == b2 ** 2)
 
-    def TestInverse(self):
+    def testInverse(self):
         assert(ExPermute(4, [(1, 4, 3, 2)]) == b1.inverse())
 
-    def TestIdentify(self):
-        assert(ExPermute(4, []) == b1.inverse())
+    def testIdentity(self):
+        assert(ExPermute(4, []) == b1.identity())
 
-    def TestGroupOrder(self):
-        assert(24 == b1.inverse())
+    def testGroupOrder(self):
+        assert(24 == b1.grouporder())
 
-    def TestOrder(self):
+    def testOrder(self):
         assert(4 == b1.order())
 
-    def TestToNormal(self):
+    def testToNormal(self):
         assert(Permute([2, 3, 4, 1]) == b1.ToNormal())
 
-    def TestSimplify(self):
+    def testSimplify(self):
         assert(ExPermute(4, [(1, 2, 3, 4)]) == b1.simplify())
 
-    def TestEqual(self):
+    def testEqual(self):
         assert(b1 == b1)
-        
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()

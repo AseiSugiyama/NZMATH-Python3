@@ -3,7 +3,7 @@ from nzmath.group import *
 from nzmath.finitefield import FinitePrimeFieldElement
 from nzmath.permute import Permute
 
-a1 = GroupElement(Permute([2, 4, 1, 3])) #Multiple Group
+a1 = GroupElement(Permute([2, 4, 1, 3])) #Multiplication Group
 a2 = GroupElement(Permute([3, 1, 4, 2]))
 
 aa1 = Group(a1.element, 1)
@@ -22,10 +22,10 @@ cc2 = Group(c2)
 
 class GroupTest (unittest.TestCase):
 
-    def testIdentify(self):
-        assert(GroupElement(Permute([1, 2, 3, 4])) == aa1.identify())
-        assert(GroupElement(FinitePrimeFieldElement(0, 37)) == cc1_a.identify())
-        assert(GroupElement(FinitePrimeFieldElement(1, 37)) == cc1_m.identify())
+    def testidentity(self):
+        assert(GroupElement(Permute([1, 2, 3, 4])) == aa1.identity())
+        assert(GroupElement(FinitePrimeFieldElement(0, 37)) == cc1_a.identity())
+        assert(GroupElement(FinitePrimeFieldElement(1, 37)) == cc1_m.identity())
 
     def testGroupOrder(self):
         assert(24 == aa1.grouporder())
