@@ -27,7 +27,7 @@ class Group:
 
     def setmain(self, value):
         if isinstance(value, int) :
-            self.main = (value & 1)
+            self.main = (value and 1)
         else:
             return ValueError("invalid input")
 
@@ -97,7 +97,7 @@ class GroupElement:
 
     def type_check(self, value):
         a=self.element
-        if not (value & 1):
+        if not (value and 1):
             if hasattr(a, "__add__") and hasattr(a, "__mul__"):
                 return True
             else:
@@ -109,7 +109,7 @@ class GroupElement:
                 return False
 
     def setmain(self, value):
-        value = value & 1
+        value = value and 1
         if isinstance(value, int) and self.type_check(value):
             self.main = value
         else:
