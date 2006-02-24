@@ -18,8 +18,8 @@ class ReducedQuadraticForm:
         return computePDF(self.element, other.element)
 
     def __pow__(self, exp):
-        if type(exp) != int:
-            raise ValueError
+        if not isinstance(exp, (int, long)):
+            raise TypeError("powering index must be an integer.")
         if exp == 0:
             return self.unit
         elif exp == 1:
@@ -35,16 +35,14 @@ class ReducedQuadraticForm:
         a_m2 = 2*self.element[0]
         rb = -self.element[1]
 
-        return_str = '%s * i r(%s) / %s' % (rb,
-                                            ld,
-                                            a_m2)
+        return_str = '%s * i r(%s) / %s' % (rb, ld, a_m2)
         return return_str
 
 
 def deg_rounity(dis):
-    '''
+    """
     caluclation of w(D)
-    '''
+    """
     if dis >= 0:
         raise ValueError
     if dis % 4 not in (0, 1):
@@ -57,14 +55,13 @@ def deg_rounity(dis):
     elif dis == -3:
         return 6
     else:
-        print "unknown error"
-        raise ValueError
+        raise ValueError("unknown error")
 
 def reducePDF(a):
-    '''
+    """
     Reduction of Positive Definite Forms
     f = (a[0], a[1], a[2])
-    '''
+    """
     if a[0] < 0:
         raise ValueError("a must be positive in quadratic form f=(a,b,c).")
     if (a[1]**2 - 4*a[0]*a[2]) >= 0:
@@ -103,10 +100,9 @@ def dis_chk(f):
     return (f[1]*f[1] - 4*f[0]*f[2])
 
 def computePDF(f_1, f_2):
-
-    '''
+    """
     Composition of Positive Definite Forms.
-    '''
+    """
 
     if nzmath.gcd.gcd_of_list(f_1)[0] != 1:
         raise ValueError(
@@ -152,9 +148,9 @@ def computePDF(f_1, f_2):
     return reducePDF(f_3)
 
 def computeClassNumber(disc, limit_dis=100000):
-    '''
+    """
     counting reduced forms. not only fundamenta discriminant.
-    '''
+    """
 
     if disc % 4 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
@@ -174,7 +170,6 @@ def computeClassNumber(disc, limit_dis=100000):
         else:
             # caution!!!
             # reduced form of b is not -1 but 1
-            # f_b = -1
             f_b = 1
             f_c = -((disc - 1) / 4)
         ret_list.append([f_a, f_b, f_c])
@@ -218,8 +213,8 @@ def computeClassNumber(disc, limit_dis=100000):
     return (h, ret_list)
 
 def euclid_exd(a, b):
-    if (type(a) != int) or (type(b) != int):
-        raise ValueError
+    if not isinstance(a, (int, long)) or not isinstance(b, (int, long)):
+        raise TypeError
     u = 1
     d = a
     if b == 0:
