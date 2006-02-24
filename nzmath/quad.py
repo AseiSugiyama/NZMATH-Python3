@@ -15,7 +15,7 @@ class ReducedQuadraticForm:
     def __mul__(self, other):
         if not isinstance(other, ReducedQuadraticForm):
             return NotImplemented
-        return computePDF(self.element, other.element)
+        return self.__class__(computePDF(self.element, other.element), self.unit)
 
     def __pow__(self, exp):
         if not isinstance(exp, (int, long)):
@@ -28,7 +28,7 @@ class ReducedQuadraticForm:
         while exp != 1:
             eltemp = computePDF(eltemp, self.element)
             exp = exp - 1
-        return eltemp
+        return self.__class__(eltemp, self.unit)
 
     def repOfModule(self):
         ld = self.element[1]**2 - 4*self.element[0]*self.element[2]
