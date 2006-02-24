@@ -16,26 +16,30 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a><br /></p>
-<h2 id="content_1_0">vector.py  <a class="anchor_super" id="d915c307" href="vector.html#d915c307" title="d915c307">&dagger;</a></h2>
+<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a><br /></p>
+<h2 id="content_1_0">vector  <a class="anchor_super" id="d915c307" href="vector.html#d915c307" title="d915c307">&dagger;</a></h2>
 <p>Module vector provides class Vector, function and some exception.<br /></p>
 <div class="contents">
-<a id="contents_1"></a><ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_0"> vector.py </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_1"> CLASSES </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_2"> class Vector </a></li>
-<li><a href="#content_1_3"> class VectorSizeError </a></li></ul></li>
-<li><a href="#content_1_4"> FUNCTIONS </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_5"> def innerProduct(aVector, other) </a></li></ul></li>
-<li><a href="#content_1_6"> EXCEPTIONS </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_7"> except VectorSizeError </a></li></ul></li>
-<li><a href="#content_1_8"> DEPENDENCY </a></li>
-<li><a href="#content_1_9"> BUGS(IMPLEMENT PROBLEMS, MAYBE) </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_10"> Implementation of Multiplication </a></li>
-<li><a href="#content_1_11"> Implementation of InnerProduct </a></li></ul></li></ul></li></ul></div>
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#d915c307"> vector </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#t7226ad6"> CLASSES </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#we1309cd"> class Vector </a></li>
+<li><a href="#e2478e1b"> class VectorSizeError </a></li></ul></li>
+<li><a href="#y63e6423"> FUNCTIONS </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#j94d9f48"> def innerProduct(aVector, other) </a></li></ul></li>
+<li><a href="#q52b98f9"> EXCEPTIONS </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#vector_e_vsize"> except VectorSizeError </a></li></ul></li>
+<li><a href="#e16e7a7e"> DEPENDENCY </a></li>
+<li><a href="#te97f72c"> BUGS(IMPLEMENT PROBLEMS, MAYBE) </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#xe4e6d56"> Implementation of Multiplication </a></li>
+<li><a href="#b953bb53"> Implementation of InnerProduct </a></li></ul></li></ul></li></ul>
+</div>
 
-<h3 id="content_1_1">CLASSES  <a class="anchor_super" id="t7226ad6" href="vector.html#t7226ad6" title="t7226ad6">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">CLASSES  <a class="anchor_super" id="t7226ad6" href="vector.html#t7226ad6" title="t7226ad6">&dagger;</a></h3>
 <p>Module vector provides classes as follows.<br /></p>
-<h4 id="content_1_2">class Vector  <a class="anchor_super" id="we1309cd" href="vector.html#we1309cd" title="we1309cd">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">class Vector  <a class="anchor_super" id="we1309cd" href="vector.html#we1309cd" title="we1309cd">&dagger;</a></h4>
 <p>Class Vector is an elemental class of vector. <br /></p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Initialize</dt>
 <dd><pre>&gt;&gt;&gt; aVector=Vector(list)</pre>
@@ -59,31 +63,31 @@ Vector [0, -1, -3]</pre></li>
 scalar product.
 <pre>&gt;&gt;&gt; v*3
 Vector [6, 3, 6]</pre></li>
-<li><a class="anchor" id="vector_len" href="#vector_len" title="vector_len"></a><strong>len(aVector)</strong><br />
+<li><a class="anchor" id="vector_len"></a><strong>len(aVector)</strong><br />
 return length of aVector.<br />
 <pre>&gt;&gt;&gt; len(u)
 3</pre></li>
-<li><a class="anchor" id="vector_repr" href="#vector_repr" title="vector_repr"></a><strong>repr(aVector)</strong><br />
+<li><a class="anchor" id="vector_repr"></a><strong>repr(aVector)</strong><br />
 return representation string of aVector.<br />
 <pre>&gt;&gt;&gt; repr(u)
 'Vector [0, 1, 3]'</pre></li>
-<li><a class="anchor" id="vector_str" href="#vector_str" title="vector_str"></a><strong>str(aVector)</strong><br />
+<li><a class="anchor" id="vector_str"></a><strong>str(aVector)</strong><br />
 return string of listed representation of aVector.<br />
 <pre>&gt;&gt;&gt; str(u)
 '[0, 1, 3]'</pre></li></ul></dd>
 <dt>Function</dt>
 <dd>Class Vector defined functions as follows.<br />
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a class="anchor" id="vector_f_copy" href="#vector_f_copy" title="vector_f_copy"></a><strong>aVector.copy()</strong><br />
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a class="anchor" id="vector_f_copy"></a><strong>aVector.copy()</strong><br />
 return a copy of aVector.<br />
 <pre>&gt;&gt;&gt; x=u.copy()
 &gt;&gt;&gt; x
 Vector [0, 1, 3]</pre></li>
-<li><a class="anchor" id="vector_f_set" href="#vector_f_set" title="vector_f_set"></a><strong>aVector.set(list)</strong><br />
+<li><a class="anchor" id="vector_f_set"></a><strong>aVector.set(list)</strong><br />
 substitute aVector with list.<br />
 <pre>&gt;&gt;&gt; x.set([2,1])
 &gt;&gt;&gt; x
 Vector [2, 1]</pre></li>
-<li><a class="anchor" id="vector_f_indexofNZ" href="#vector_f_indexofNZ" title="vector_f_indexofNZ"></a><strong>aVector.indexOfNoneZero()</strong><br />
+<li><a class="anchor" id="vector_f_indexofNZ"></a><strong>aVector.indexOfNoneZero()</strong><br />
 return nonzero index of aVector. if aVector is zero vector, return exception.<br />
 <pre>&gt;&gt;&gt; u.indexOfNoneZero()
 2
@@ -95,17 +99,22 @@ Traceback (most recent call last):
   File &quot;vector.py&quot;, line 94, in indexOfNoneZero
     raise Exception, &quot;all zero&quot;
 Exception: all zero</pre></li></ul></dd></dl>
-<h4 id="content_1_3">class VectorSizeError  <a class="anchor_super" id="e2478e1b" href="vector.html#e2478e1b" title="e2478e1b">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">class VectorSizeError  <a class="anchor_super" id="e2478e1b" href="vector.html#e2478e1b" title="e2478e1b">&dagger;</a></h4>
 <p>Class VectorSizeError defines Exception VectorSizeError.</p>
-<h3 id="content_1_4">FUNCTIONS  <a class="anchor_super" id="y63e6423" href="vector.html#y63e6423" title="y63e6423">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_4">FUNCTIONS  <a class="anchor_super" id="y63e6423" href="vector.html#y63e6423" title="y63e6423">&dagger;</a></h3>
 <p>Module vector provides functions as follows.<br /></p>
-<h4 id="content_1_5">def innerProduct(aVector, other)  <a class="anchor_super" id="j94d9f48" href="vector.html#j94d9f48" title="j94d9f48">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">def innerProduct(aVector, other)  <a class="anchor_super" id="j94d9f48" href="vector.html#j94d9f48" title="j94d9f48">&dagger;</a></h4>
 <p>return innerProduct.<br /></p>
 <pre>&gt;&gt;&gt; innerProduct(u,v)
 7</pre>
-<h3 id="content_1_6">EXCEPTIONS  <a class="anchor_super" id="q52b98f9" href="vector.html#q52b98f9" title="q52b98f9">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_6">EXCEPTIONS  <a class="anchor_super" id="q52b98f9" href="vector.html#q52b98f9" title="q52b98f9">&dagger;</a></h3>
 <p>Module vector provide exceptions as follows.<br /></p>
-<h4 id="content_1_7">except VectorSizeError  <a class="anchor_super" id="vector_e_vsize" href="vector.html#vector_e_vsize" title="vector_e_vsize">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">except VectorSizeError  <a class="anchor_super" id="vector_e_vsize" href="vector.html#vector_e_vsize" title="vector_e_vsize">&dagger;</a></h4>
 <p>Exception VectorSizeError occurs additive operation with two vector of different length.<br /></p>
 <pre>&gt;&gt;&gt; u=Vector([0,1,3])
 &gt;&gt;&gt; w=Vector([4,3,2,0])
@@ -115,14 +124,18 @@ Traceback (most recent call last):
   File &quot;vector.py&quot;, line 31, in __add__
     raise VectorSizeError
 VectorSizeError</pre>
-<h3 id="content_1_8">DEPENDENCY  <a class="anchor_super" id="e16e7a7e" href="vector.html#e16e7a7e" title="e16e7a7e">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_8">DEPENDENCY  <a class="anchor_super" id="e16e7a7e" href="vector.html#e16e7a7e" title="e16e7a7e">&dagger;</a></h3>
 <p>This module can be used independently of other NZMATH modules.<br /></p>
-<h3 id="content_1_9">BUGS(IMPLEMENT PROBLEMS, MAYBE)  <a class="anchor_super" id="te97f72c" href="vector.html#te97f72c" title="te97f72c">&dagger;</a></h3>
-<h4 id="content_1_10">Implementation of Multiplication  <a class="anchor_super" id="xe4e6d56" href="vector.html#xe4e6d56" title="xe4e6d56">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_9">BUGS(IMPLEMENT PROBLEMS, MAYBE)  <a class="anchor_super" id="te97f72c" href="vector.html#te97f72c" title="te97f72c">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">Implementation of Multiplication  <a class="anchor_super" id="xe4e6d56" href="vector.html#xe4e6d56" title="xe4e6d56">&dagger;</a></h4>
 <p>There are not implemented as follows.<br /></p>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>multiplication with Vector.<br /></li>
-<li>multiplication with <a href="matrix.html" title="matrix.py">Matrix</a>.<br /></li></ul>
-<h4 id="content_1_11">Implementation of InnerProduct  <a class="anchor_super" id="b953bb53" href="vector.html#b953bb53" title="b953bb53">&dagger;</a></h4>
+<li>multiplication with <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py" title="matrix.py (67d)">Matrix</a>.<br /></li></ul>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">Implementation of InnerProduct  <a class="anchor_super" id="b953bb53" href="vector.html#b953bb53" title="b953bb53">&dagger;</a></h4>
 <p>innerProduct with imaginary module are not implemented.<br /></p>
 </div>
 
@@ -130,7 +143,7 @@ VectorSizeError</pre>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 26 Oct 2005 16:54:20 JST</div>
+ Last-modified: 2005-12-18 (Æü) 18:50:51  (67d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
