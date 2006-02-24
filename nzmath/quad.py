@@ -3,7 +3,7 @@ import nzmath.gcd
 import nzmath.arith1
 import nzmath.rational
 
-class ElementOfQuadraticForm:
+class ReducedQuaraticForm:
     def __init__(self, element, unit):
         self.element = element
         self.unit = unit
@@ -13,7 +13,7 @@ class ElementOfQuadraticForm:
         return return_str
 
     def __mul__(self, other):
-        if not isinstance(other, ElementOfQuadraticForm):
+        if not isinstance(other, ReducedQuaraticForm):
             return NotImplemented
         return computePDF(self.element, other.element)
 
@@ -40,36 +40,6 @@ class ElementOfQuadraticForm:
                                             a_m2)
         return return_str
 
-class QuadraticForm:
-    """
-    This is a class of quadratic form.
-    """
-    def __init__(self, disc):
-        self.disc = disc
-        self.classnumber, tempelements = computeClassNumber(disc)
-        self.unit = tempelements[0]
-        self.elements = []
-        for tempelement in tempelements:
-            self.elements.append(ElementOfQuadraticForm(tempelement, self.unit))
-
-
-    def __repr__(self):
-        return_str = 'disc -> %s\nclassnumber -> %s\nelements -> %s\nunit -> %s' % (
-            self.disc, self.classnumber, self.elements, self.unit)
-        return return_str
-
-    def __eq__(self, other):
-        if not self and not other:
-            return True
-        if self is other:
-            return True
-        if isinstance(other, QuadraticForm):
-            if self.disc == other.disc:
-                return True
-            else:
-                return False
-        else:
-            return NotImplemented
 
 def deg_rounity(dis):
     '''
@@ -245,7 +215,7 @@ def computeClassNumber(disc, limit_dis=100000):
     eounit = ret_list[0]
     for i, t_lt in enumerate(ret_list):
         #print t_lt
-        ret_list[i] = ElementOfQuadraticForm(t_lt, eounit)
+        ret_list[i] = ReducedQuaraticForm(t_lt, eounit)
 
     return (h, ret_list)
 
