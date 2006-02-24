@@ -1,6 +1,8 @@
 version 0.4.1 to 0.5.0
 ----------------------
 * rearrange modules in factor sub-package.
+* add a new module quad for computing class numbers of imaginary quadratic fields.
+* add new modules group and perm for group order computation and calculations of permutation groups.
 * fix a bug of issquare function in arith1.
 * fix a bug of e3 function in equation.
 * move zassenhaus.combinationIndexGenerator to combinatorial.

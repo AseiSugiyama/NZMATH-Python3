@@ -1,10 +1,10 @@
 from distutils.core import setup
 
-doc_prefix = "share/doc/NZMATH-0.4.1/"
+doc_prefix = "share/doc/NZMATH-0.5.0/"
 
 setup (
     name="NZMATH",
-    version="0.4.1",
+    version="0.5.0",
     url="http://tnt.math.metro-u.ac.jp/nzmath/",
     author="NZMATH development group",
     author_email="nzmath-user@tnt.math.metro-u.ac.jp",
@@ -30,6 +30,9 @@ setup (
                   'manual/modules/finitefield_FinitePrimeField.html',
                   'manual/modules/finitefield_FinitePrimeFieldElement.html',
                   'manual/modules/gcd.html',
+                  'manual/modules/group.html',
+                  'manual/modules/group_Group.html',
+                  'manual/modules/group_GroupElement.html',
                   'manual/modules/imaginary.html',
                   'manual/modules/imaginary_AbsoluteError.html',
                   'manual/modules/imaginary_Complex.html',
@@ -42,6 +45,9 @@ setup (
                   'manual/modules/lattice.html',
                   'manual/modules/matrix.html',
                   'manual/modules/multiplicative.html',
+                  'manual/modules/permute.html',
+                  'manual/modules/permute_Permute.html',
+                  'manual/modules/permute_ExPermute.html',
                   'manual/modules/polynomial.html',
                   'manual/modules/polynomial_MultiVariablePolynomialIdeal.html',
                   'manual/modules/polynomial_MultiVariableSparsePolynomial.html',
@@ -54,6 +60,8 @@ setup (
                   'manual/modules/polynomial_PolynomialRing.html',
                   'manual/modules/polynomial_RationalOneVariablePolynomial.html',
                   'manual/modules/prime.html',
+                  'manual/modules/quad.html',
+                  'manual/modules/quad_ReducedlQuadraticForm.html',
                   'manual/modules/rational.html',
                   'manual/modules/rationalFunction.html',
                   'manual/modules/rationalFunction_RationalFunction.html',

@@ -1,3 +1,7 @@
+2006-02-24
+----------
+The version 0.5.0 has been released.
+
 2005-10-28
 ----------
 The version 0.4.1 has been released, including the first version of manual.

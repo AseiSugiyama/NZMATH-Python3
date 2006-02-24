@@ -1,8 +1,8 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
-HTMLPY = /home/tetsushi/work/docutils/tools/rst2html.py
-OLD_VER = 0.4.0
-NEW_VER = 0.4.1
+HTMLPY = $(PYTHON) /home/tetsushi/work/docutils/tools/rst2html.py
+OLD_VER = 0.4.1
+NEW_VER = 0.5.0
 
 all: html sdist
 
