@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>permute.py/Permute - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?permute.py%2FPermute">permute.py/Permute</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?permute.py" title="permute.py (9d)">permute.py</a></p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#s87302fa"> Permute </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#b93ae3f4"> Operation </a></li>
+<li><a href="#p558013b"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#fb9b3cf6"> inverse() </a></li>
+<li><a href="#t0a21b7f"> identity() </a></li>
+<li><a href="#m7274706"> numbering() </a></li>
+<li><a href="#ya2da006"> grouporder() </a></li>
+<li><a href="#reaf052e"> order() </a></li>
+<li><a href="#v089fb7c"> ToTranspose() </a></li>
+<li><a href="#zc819ca2"> ToCyclic() </a></li>
+<li><a href="#o35e39b1"> sgn() </a></li>
+<li><a href="#j1e52ca5"> types() </a></li>
+<li><a href="#tc789b17"> ToMatrix() </a></li></ul></li></ul></li></ul>
+</div>
+
+<h2 id="content_1_0">Permute  <a class="anchor_super" id="s87302fa" href="permute_Permute.html#s87302fa" title="s87302fa">&dagger;</a></h2>
+<p>This is a class for permutation group.<br class="spacer" />
+Create element with 'normal' way.<br class="spacer" /></p>
+<pre>  [σ1,σ2,σ3,σ4,σ5]</pre>
+<p>(1:1 onto mapping(bijection), 1-&gt;σ1, 2-&gt;σ2, 3-&gt;σ3, 4-&gt;σ4, 5-&gt;σ5.)</p>
+<blockquote><p class="quotation">
+<strong>Initialize</strong><br class="spacer" />
+Initialize with 'normal' list.</p>
+<pre>&gt;&gt;&gt;pm=Permute([σ1,σ2,...,σn])</pre></blockquote>
+
+<div class="spacer">&nbsp;</div>
+<p>Example</p>
+<pre>&gt;&gt;&gt;a=Permute([2,3,1,5,4])</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Operation  <a class="anchor_super" id="b93ae3f4" href="permute_Permute.html#b93ae3f4" title="b93ae3f4">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td></tr><tr><td class="style_td">*</td><td class="style_td">Multiplication</td></tr><tr><td class="style_td">/</td><td class="style_td">Division</td></tr><tr><td class="style_td">**</td><td class="style_td">Powering</td></tr></tbody></table></div>
+<p>Multiplication with normal mapping way.<br class="spacer" />
+i.e. σ=[σ1,σ2,..,σn],τ=[τ1,τ2,..,τn], σ*τ is mapping,τi-&gt;σi.<br class="spacer" /></p>
+<div class="spacer">&nbsp;</div>
+<p>You can get σi.<br class="spacer" /></p>
+<pre>&gt;&gt;&gt;a[3]
+1</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="p558013b" href="permute_Permute.html#p558013b" title="p558013b">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">inverse()  <a class="anchor_super" id="fb9b3cf6" href="permute_Permute.html#fb9b3cf6" title="fb9b3cf6">&dagger;</a></h4>
+<p>Return inverse(-1 powering).</p>
+<pre>&gt;&gt;&gt;a.inverse()
+[3,1,2,5,4]</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">identity()  <a class="anchor_super" id="t0a21b7f" href="permute_Permute.html#t0a21b7f" title="t0a21b7f">&dagger;</a></h4>
+<p>Return identity element(unit) of permutation group.</p>
+<pre>&gt;&gt;&gt;a.identity()
+[1,2,3,4,5]</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">numbering()  <a class="anchor_super" id="m7274706" href="permute_Permute.html#m7274706" title="m7274706">&dagger;</a></h4>
+<p>Return number of permutation element.<br class="spacer" />
+It is symmetrical arranging.</p>
+<div class="spacer">&nbsp;</div>
+<p>This is inductive definition for dimension.<br class="spacer" /><br class="spacer" />
+If (n-1) dimension numbering of [σ1,σ2,...,σ(n-2),σ(n-1)] is k,<br class="spacer" />
+numbering of [σ1,σ2,...,σ(n-2),σ(n-1),n] is k and<br class="spacer" />
+numbering of [σ1,σ2,...,σ(n-2),n,σ(n-1)] is k+(n-1)! and so on.<br class="spacer" />
+(Goto <a href="http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm" rel="nofollow">点と線の部屋 第二部第十五章第二節</a>)</p>
+<pre>&gt;&gt;&gt;a.numbering()
+28</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">grouporder()  <a class="anchor_super" id="ya2da006" href="permute_Permute.html#ya2da006" title="ya2da006">&dagger;</a></h4>
+<p>Return group order(Cardinality) of permutation group.</p>
+<pre>&gt;&gt;&gt;a.grouporder()
+120</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">order()  <a class="anchor_super" id="reaf052e" href="permute_Permute.html#reaf052e" title="reaf052e">&dagger;</a></h4>
+<p>Return element order.<br class="spacer" />
+<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroupElement" title="group.py/GroupElement (14d)">GroupElement</a> method faster than this for large dimension.</p>
+<pre>&gt;&gt;&gt;a.order()
+6</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">ToTranspose()  <a class="anchor_super" id="v089fb7c" href="permute_Permute.html#v089fb7c" title="v089fb7c">&dagger;</a></h4>
+<p>Return the <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?permute.py%2FExPermute" title="permute.py/ExPermute (9d)">ExPermute</a> element with transpose(2-dimensional cyclic) type.<br class="spacer" />
+It is recursive program,and it takes more time than ToCyclic module.</p>
+<pre>&gt;&gt;&gt;a.ToTranspose()
+[(4,5)(1,3)(1,2)](5)</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">ToCyclic()  <a class="anchor_super" id="zc819ca2" href="permute_Permute.html#zc819ca2" title="zc819ca2">&dagger;</a></h4>
+<p>Return the <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?permute.py%2FExPermute" title="permute.py/ExPermute (9d)">ExPermute</a> element.</p>
+<pre>&gt;&gt;&gt;a.ToCyclic()
+[(1,2,3)(4,5)](5)</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">sgn()  <a class="anchor_super" id="o35e39b1" href="permute_Permute.html#o35e39b1" title="o35e39b1">&dagger;</a></h4>
+<p>Return the sign of permutation group element.<br class="spacer" />
+It returns even permutation is 1,odd one is -1.</p>
+<pre>&gt;&gt;a.sgn()
+-1</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">types()  <a class="anchor_super" id="j1e52ca5" href="permute_Permute.html#j1e52ca5" title="j1e52ca5">&dagger;</a></h4>
+<p>Return cyclic type defined by each cyclic permutation element length.<br class="spacer" /></p>
+<pre>&gt;&gt;&gt;a.types()
+'(2,3)type'</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_12">ToMatrix()  <a class="anchor_super" id="tc789b17" href="permute_Permute.html#tc789b17" title="tc789b17">&dagger;</a></h4>
+<p>Return permutation matrix,A.<br class="spacer" />
+A[i,σi]=1,other A[k,j]=0.</p>
+<pre>&gt;&gt;&gt;a.ToMatrix()
+0 0 1 0 0
+1 0 0 0 0
+0 1 0 0 0
+0 0 0 0 1
+0 0 0 1 0</pre>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2006-02-15 (水) 14:15:10  (9d)</div>
+
+<div id="footer">
+ Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

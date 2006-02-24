@@ -16,31 +16,41 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="finitefield.html" title="finitefield.py">finitefield.py</a></p>
+<div id="body"><p><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?finitefield.py" title="finitefield.py (67d)">finitefield.py</a></p>
 <h2 id="content_1_0">FiniteExtendedField class  <a class="anchor_super" id="p41492ee" href="finitefield_FiniteExtendedField.html#p41492ee" title="p41492ee">&dagger;</a></h2>
 <p>FiniteExtendedField is a class for finite field, whose cardinality
 q = p**n with a prime p and n&gt;1. It is usually called F_q or GF(q).
-The class is a subclass of <a href="finitefield_FiniteField.html" title="finitefield.py/FiniteField">FiniteField</a>.</p>
-<h3 id="content_1_1">Constructor  <a class="anchor_super" id="l749c43b" href="finitefield_FiniteExtendedField.html#l749c43b" title="l749c43b">&dagger;</a></h3>
-<h4 id="content_1_2">FiniteExtendedField(<em>characteristic</em>, <em>n_or_modulus</em>)  <a class="anchor_super" id="z331bf9b" href="finitefield_FiniteExtendedField.html#z331bf9b" title="z331bf9b">&dagger;</a></h4>
+The class is a subclass of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?finitefield.py%2FFiniteField" title="finitefield.py/FiniteField (121d)">FiniteField</a>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Constructor  <a class="anchor_super" id="l749c43b" href="finitefield_FiniteExtendedField.html#l749c43b" title="l749c43b">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">FiniteExtendedField(<em>characteristic</em>, <em>n_or_modulus</em>)  <a class="anchor_super" id="z331bf9b" href="finitefield_FiniteExtendedField.html#z331bf9b" title="z331bf9b">&dagger;</a></h4>
 <p>Create a finite field. <em>characteristic</em> must be prime.
 <em>n_or_modulus</em> can be:</p>
 <ol class="list1" style="padding-left:16px;margin-left:16px"><li>an integer greater than 1, or</li>
 <li>a polynomial in a polynomial ring of F_p with degree greater than 1.</li>
 <li>an ideal of the polynomial ring F_p[#1] with degree greater than 1.</li></ol>
-<h3 id="content_1_3">Methods  <a class="anchor_super" id="p83ee7d7" href="finitefield_FiniteExtendedField.html#p83ee7d7" title="p83ee7d7">&dagger;</a></h3>
-<h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="w9c4bf55" href="finitefield_FiniteExtendedField.html#w9c4bf55" title="w9c4bf55">&dagger;</a></h4>
-<h4 id="content_1_5">getCharacteristic()  <a class="anchor_super" id="sf1d0317" href="finitefield_FiniteExtendedField.html#sf1d0317" title="sf1d0317">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Methods  <a class="anchor_super" id="p83ee7d7" href="finitefield_FiniteExtendedField.html#p83ee7d7" title="p83ee7d7">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="w9c4bf55" href="finitefield_FiniteExtendedField.html#w9c4bf55" title="w9c4bf55">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">getCharacteristic()  <a class="anchor_super" id="sf1d0317" href="finitefield_FiniteExtendedField.html#sf1d0317" title="sf1d0317">&dagger;</a></h4>
 <p>Return the characteristic of the field.</p>
-<h4 id="content_1_6">gcd(<em>a</em>, <em>b</em>), getQuotientField(), isfield()  <a class="anchor_super" id="of89c679" href="finitefield_FiniteExtendedField.html#of89c679" title="of89c679">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">gcd(<em>a</em>, <em>b</em>), getQuotientField(), isfield()  <a class="anchor_super" id="of89c679" href="finitefield_FiniteExtendedField.html#of89c679" title="of89c679">&dagger;</a></h4>
 <p>Inherited from ring.Field.</p>
-<h4 id="content_1_7">Methods inherited from ring.CommutativeRing.  <a class="anchor_super" id="jcd9705e" href="finitefield_FiniteExtendedField.html#jcd9705e" title="jcd9705e">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">Methods inherited from ring.CommutativeRing.  <a class="anchor_super" id="jcd9705e" href="finitefield_FiniteExtendedField.html#jcd9705e" title="jcd9705e">&dagger;</a></h4>
 <p>isdomain(), iseuclidean(), isnoetherian(), ispid(), isufd()</p>
-<h4 id="content_1_8">Methods inherited from ring.Ring.  <a class="anchor_super" id="rd967f15" href="finitefield_FiniteExtendedField.html#rd967f15" title="rd967f15">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">Methods inherited from ring.Ring.  <a class="anchor_super" id="rd967f15" href="finitefield_FiniteExtendedField.html#rd967f15" title="rd967f15">&dagger;</a></h4>
 <p>issubring(<em>other</em>), issuperring(<em>other</em>)</p>
-<h3 id="content_1_9">Operators  <a class="anchor_super" id="gaf10968" href="finitefield_FiniteExtendedField.html#gaf10968" title="gaf10968">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_9">Operators  <a class="anchor_super" id="gaf10968" href="finitefield_FiniteExtendedField.html#gaf10968" title="gaf10968">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">len</td><td class="style_td">cardinality</td></tr><tr><td class="style_td">repr</td><td class="style_td">repr string</td></tr><tr><td class="style_td">str</td><td class="style_td">str string</td></tr></tbody></table></div>
-<h3 id="content_1_10">Properties  <a class="anchor_super" id="vda1a3da" href="finitefield_FiniteExtendedField.html#vda1a3da" title="vda1a3da">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_10">Properties  <a class="anchor_super" id="vda1a3da" href="finitefield_FiniteExtendedField.html#vda1a3da" title="vda1a3da">&dagger;</a></h3>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>one (read only) The multiplicative unit of the field.</li>
 <li>zero (read only) The additive unit of the field.</li></ul>
 <p>(These properties are new in 0.4.1)</p>
@@ -50,7 +60,7 @@ The class is a subclass of <a href="finitefield_FiniteField.html" title="finitef
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 26 Oct 2005 16:14:43 JST</div>
+ Last-modified: 2005-10-26 (¿å) 16:14:43  (121d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

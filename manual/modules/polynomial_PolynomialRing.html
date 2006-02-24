@@ -16,40 +16,53 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p>nzmath.<a href="polynomial.html" title="polynomial.py">polynomial</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?PolynomialRing%20%28ja%29" title="PolynomialRing (ja)">日本語</a>)</p>
+<div id="body"><p>nzmath.<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?polynomial.py" title="polynomial.py (67d)">polynomial</a> | (<a href="http://hanaya.math.metro-u.ac.jp/nzmath/?PolynomialRing%20%28ja%29" title="PolynomialRing (ja) (149d)">日本語</a>)</p>
 <h2 id="content_1_0">PolynomialRing  <a class="anchor_super" id="jb7e23dd" href="polynomial_PolynomialRing.html#jb7e23dd" title="jb7e23dd">&dagger;</a></h2>
 <p>PolynomialRing is a class for polynomial rings, and it is a derivative class of nzmath.ring.CommutativeRing.</p>
-<h3 id="content_1_1">Constructor  <a class="anchor_super" id="ve616e1b" href="polynomial_PolynomialRing.html#ve616e1b" title="ve616e1b">&dagger;</a></h3>
-<h4 id="content_1_2">PolynomialRing(<em>aRing</em>, <em>vars</em>)  <a class="anchor_super" id="w3873272" href="polynomial_PolynomialRing.html#w3873272" title="w3873272">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Constructor  <a class="anchor_super" id="ve616e1b" href="polynomial_PolynomialRing.html#ve616e1b" title="ve616e1b">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">PolynomialRing(<em>aRing</em>, <em>vars</em>)  <a class="anchor_super" id="w3873272" href="polynomial_PolynomialRing.html#w3873272" title="w3873272">&dagger;</a></h4>
 <p><em>aRing</em> is a coefficient ring, and <em>vars</em> is a string of variable name or a list of such strings.</p>
-<h3 id="content_1_3">Methods  <a class="anchor_super" id="m281dadc" href="polynomial_PolynomialRing.html#m281dadc" title="m281dadc">&dagger;</a></h3>
-<h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="o0a6467c" href="polynomial_PolynomialRing.html#o0a6467c" title="o0a6467c">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Methods  <a class="anchor_super" id="m281dadc" href="polynomial_PolynomialRing.html#m281dadc" title="m281dadc">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="o0a6467c" href="polynomial_PolynomialRing.html#o0a6467c" title="o0a6467c">&dagger;</a></h4>
 <p>Create a polynomial from <em>seed</em>.</p>
-<h4 id="content_1_5">gcd(<em>a</em>, <em>b</em>)  <a class="anchor_super" id="cdc76812" href="polynomial_PolynomialRing.html#cdc76812" title="cdc76812">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">gcd(<em>a</em>, <em>b</em>)  <a class="anchor_super" id="cdc76812" href="polynomial_PolynomialRing.html#cdc76812" title="cdc76812">&dagger;</a></h4>
 <p>Compute greatest common divisor of <em>a</em> and <em>b</em> in the ring.</p>
-<h4 id="content_1_6">getCoefficientRing([<em>var</em>])  <a class="anchor_super" id="aef37b91" href="polynomial_PolynomialRing.html#aef37b91" title="aef37b91">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">getCoefficientRing([<em>var</em>])  <a class="anchor_super" id="aef37b91" href="polynomial_PolynomialRing.html#aef37b91" title="aef37b91">&dagger;</a></h4>
 <p>Return the coefficient ring with respect to variable <em>var</em>.
 There is no need to specify <em>var</em> if the ring has only one variable.
 Or TypeError will be raised if <em>var</em> is not specified.</p>
-<h4 id="content_1_7">getCommonSuperring(<em>other</em>)  <a class="anchor_super" id="kd55695e" href="polynomial_PolynomialRing.html#kd55695e" title="kd55695e">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">getCommonSuperring(<em>other</em>)  <a class="anchor_super" id="kd55695e" href="polynomial_PolynomialRing.html#kd55695e" title="kd55695e">&dagger;</a></h4>
 <p>Return a common super ring of the polynomial ring and <em>other</em> ring.</p>
-<h4 id="content_1_8">getQuotientField()  <a class="anchor_super" id="w41cd6c8" href="polynomial_PolynomialRing.html#w41cd6c8" title="w41cd6c8">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">getQuotientField()  <a class="anchor_super" id="w41cd6c8" href="polynomial_PolynomialRing.html#w41cd6c8" title="w41cd6c8">&dagger;</a></h4>
 <p>Return the quotient field of the polynomial ring if the coefficient ring has the quotient field.
 Otherwise, raise an error.</p>
-<h4 id="content_1_9">getVars()  <a class="anchor_super" id="bdeeef68" href="polynomial_PolynomialRing.html#bdeeef68" title="bdeeef68">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">getVars()  <a class="anchor_super" id="bdeeef68" href="polynomial_PolynomialRing.html#bdeeef68" title="bdeeef68">&dagger;</a></h4>
 <p>Return a list of variable names.</p>
-<h4 id="content_1_10">issubring(<em>other</em>)  <a class="anchor_super" id="ibed40b8" href="polynomial_PolynomialRing.html#ibed40b8" title="ibed40b8">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">issubring(<em>other</em>)  <a class="anchor_super" id="ibed40b8" href="polynomial_PolynomialRing.html#ibed40b8" title="ibed40b8">&dagger;</a></h4>
 <p>Return whether the polynomial ring is a subring of <em>other</em> ring.</p>
-<h4 id="content_1_11">issuperring(<em>other</em>)  <a class="anchor_super" id="rd842d37" href="polynomial_PolynomialRing.html#rd842d37" title="rd842d37">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">issuperring(<em>other</em>)  <a class="anchor_super" id="rd842d37" href="polynomial_PolynomialRing.html#rd842d37" title="rd842d37">&dagger;</a></h4>
 <p>Return whether the polynomial ring is a superring of <em>other</em> ring.</p>
-<h4 id="content_1_12">unnest()  <a class="anchor_super" id="f8515641" href="polynomial_PolynomialRing.html#f8515641" title="f8515641">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_12">unnest()  <a class="anchor_super" id="f8515641" href="polynomial_PolynomialRing.html#f8515641" title="f8515641">&dagger;</a></h4>
 <p>If the polynomial ring is nested, i.e. the coefficient ring is also a polynomial ring, the method returns an unnested ring.
 For example, the result of:</p>
 <pre> PolynomialRing(PolynomialRing(Q, &quot;x&quot;), &quot;y&quot;).unnest()</pre>
 <p>is</p>
 <pre> PolynomialRing(Q, sets.Set([&quot;x&quot;,&quot;y&quot;]))</pre>
 <p>If the method is called against non-nested polynomial ring, an error will bbe raised.</p>
-<h4 id="content_1_13">Inherited Methods  <a class="anchor_super" id="l8a1813a" href="polynomial_PolynomialRing.html#l8a1813a" title="l8a1813a">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_13">Inherited Methods  <a class="anchor_super" id="l8a1813a" href="polynomial_PolynomialRing.html#l8a1813a" title="l8a1813a">&dagger;</a></h4>
 <p>The methods below are defined in nzmath.ring.CommutativeRing:<br />
 isdomain(),
 iseuclidean(),
@@ -57,9 +70,11 @@ isfield(),
 isnoetherian(),
 ispid(),
 isufd()</p>
-<h3 id="content_1_14">Operators  <a class="anchor_super" id="xf3771d8" href="polynomial_PolynomialRing.html#xf3771d8" title="xf3771d8">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_14">Operators  <a class="anchor_super" id="xf3771d8" href="polynomial_PolynomialRing.html#xf3771d8" title="xf3771d8">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">e in r</td><td class="style_td">whether an object e is in the polynomial ring r or not.</td></tr><tr><td class="style_td">r1 == r2</td><td class="style_td">whether two rings (r1,r2) are the same ring or not.</td></tr><tr><td class="style_td">str(r)</td><td class="style_td">return str string of the polynomial ring r</td></tr></tbody></table></div>
-<h3 id="content_1_15">Properties  <a class="anchor_super" id="j4e49016" href="polynomial_PolynomialRing.html#j4e49016" title="j4e49016">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_15">Properties  <a class="anchor_super" id="j4e49016" href="polynomial_PolynomialRing.html#j4e49016" title="j4e49016">&dagger;</a></h3>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>one  (read only) The multiplicative unit 1 of the ring.</li>
 <li>zero  (read only) The additive unit 0 of the ring.</li></ul>
 </div>
@@ -68,7 +83,7 @@ isufd()</p>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 28 Sep 2005 13:50:47 JST</div>
+ Last-modified: 2005-09-28 (水) 13:50:47  (149d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

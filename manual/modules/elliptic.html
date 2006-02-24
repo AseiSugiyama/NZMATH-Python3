@@ -16,18 +16,23 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
-<h2 id="content_1_0">Using Elliptic.py  <a class="anchor_super" id="o2768f05" href="elliptic.html#o2768f05" title="o2768f05">&dagger;</a></h2>
+<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a></p>
+<h2 id="content_1_0">elliptic  <a class="anchor_super" id="dbd67520" href="elliptic.html#dbd67520" title="dbd67520">&dagger;</a></h2>
 <div class="contents">
-<a id="contents_1"></a><ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_0"> Using Elliptic.py </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_1"> Class EC </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#content_1_2"> Initialize </a></li>
-<li><a href="#content_1_3"> Notation </a></li>
-<li><a href="#content_1_4"> Methods </a></li></ul></li></ul></li></ul></div>
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#dbd67520"> elliptic </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#a3d510e9"> Class EC </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#c61665ab"> Initialize </a></li>
+<li><a href="#uddc85fc"> Notation </a></li>
+<li><a href="#t8289a2f"> Methods </a></li></ul></li></ul></li></ul>
+</div>
 
-<h3 id="content_1_1">Class EC  <a class="anchor_super" id="a3d510e9" href="elliptic.html#a3d510e9" title="a3d510e9">&dagger;</a></h3>
-<h4 id="content_1_2">Initialize  <a class="anchor_super" id="c61665ab" href="elliptic.html#c61665ab" title="c61665ab">&dagger;</a></h4>
-<p>How to asssign curves in <strong>Weierstrass form</strong> given by the equation:~E:</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Class EC  <a class="anchor_super" id="a3d510e9" href="elliptic.html#a3d510e9" title="a3d510e9">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">Initialize  <a class="anchor_super" id="c61665ab" href="elliptic.html#c61665ab" title="c61665ab">&dagger;</a></h4>
+<p>How to asssign curves in <strong>Weierstrass form</strong> given by the equation:<br />
+E:</p>
 <blockquote><p class="quotation">
 y^2 + a1xy + a3y = x^3 + a2x^2 + a4x + a6<br /></p></blockquote>
 
@@ -38,11 +43,13 @@ y^2= x^3 + a4x + a6<br /></p></blockquote>
 
 <pre>&gt;&gt;&gt; E=EC([a,b],p)</pre>
 <p>If the parameter p is not given (p=None) then E is defined over Q.<br /></p>
-<h4 id="content_1_3">Notation  <a class="anchor_super" id="uddc85fc" href="elliptic.html#uddc85fc" title="uddc85fc">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">Notation  <a class="anchor_super" id="uddc85fc" href="elliptic.html#uddc85fc" title="uddc85fc">&dagger;</a></h4>
 <p>Note the points on E are represented as two-component vectors [x,y], except the point at infinity which is represented by the one-component vector [0] .<br />
 i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
 <pre>&gt;&gt;&gt; infpoint = [0]</pre>
-<h4 id="content_1_4">Methods  <a class="anchor_super" id="t8289a2f" href="elliptic.html#t8289a2f" title="t8289a2f">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">Methods  <a class="anchor_super" id="t8289a2f" href="elliptic.html#t8289a2f" title="t8289a2f">&dagger;</a></h4>
 <p>The following are the implemented methods in these module.<br /></p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>E.ch</dt>
 <dd>returns the characteristic of the field Fp. For this case, it gives ch=p .<br /></dd>
@@ -103,7 +110,7 @@ by an admissible change in variables. <br /></dd>
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Wed, 26 Oct 2005 16:01:20 JST</div>
+ Last-modified: 2005-12-18 (Æü) 18:20:13  (67d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

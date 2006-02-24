@@ -16,51 +16,71 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a></p>
 <h2 id="content_1_0">arith1  <a class="anchor_super" id="k88e3bcb" href="arith1.html#k88e3bcb" title="k88e3bcb">&dagger;</a></h2>
 <p>Miscellaneous arithmetic functions are provided.</p>
-<h3 id="content_1_1">functions  <a class="anchor_super" id="i8cbf864" href="arith1.html#i8cbf864" title="i8cbf864">&dagger;</a></h3>
-<h4 id="content_1_2">floorsqrt(<em>a</em>)  <a class="anchor_super" id="vc5aea29" href="arith1.html#vc5aea29" title="vc5aea29">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="i8cbf864" href="arith1.html#i8cbf864" title="i8cbf864">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">floorsqrt(<em>a</em>)  <a class="anchor_super" id="vc5aea29" href="arith1.html#vc5aea29" title="vc5aea29">&dagger;</a></h4>
 <p>Return the floor of square root of the given integer <em>a</em>.</p>
-<h4 id="content_1_3">floorpowerroot(<em>n</em>, <em>k</em>)  <a class="anchor_super" id="yc8a4e8a" href="arith1.html#yc8a4e8a" title="yc8a4e8a">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">floorpowerroot(<em>n</em>, <em>k</em>)  <a class="anchor_super" id="yc8a4e8a" href="arith1.html#yc8a4e8a" title="yc8a4e8a">&dagger;</a></h4>
 <p>Return the floor of <em>k</em>-th power root of the given integer <em>n</em>.</p>
-<h4 id="content_1_4">legendre(<em>a</em>, <em>m</em>)  <a class="anchor_super" id="f5d93397" href="arith1.html#f5d93397" title="f5d93397">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">legendre(<em>a</em>, <em>m</em>)  <a class="anchor_super" id="f5d93397" href="arith1.html#f5d93397" title="f5d93397">&dagger;</a></h4>
 <p>Return Legendre symbol (<em>a</em>/<em>m</em>) if <em>m</em> is a prime.
 Return Jacobi symbol otherwise.</p>
-<h4 id="content_1_5">modsqrt(<em>a</em>, <em>p</em>)  <a class="anchor_super" id="n777e332" href="arith1.html#n777e332" title="n777e332">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">modsqrt(<em>a</em>, <em>p</em>)  <a class="anchor_super" id="n777e332" href="arith1.html#n777e332" title="n777e332">&dagger;</a></h4>
 <p>Return one of the square roots of <em>a</em> for mod <em>p</em>.
 <em>p</em> must be an odd prime.<br />
 (renamed from 'sqroot' in 0.4.1)</p>
-<h4 id="content_1_6">expand(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="i2e36705" href="arith1.html#i2e36705" title="i2e36705">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">expand(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="i2e36705" href="arith1.html#i2e36705" title="i2e36705">&dagger;</a></h4>
 <p>Return <em>m</em>-adic expansion for <em>n</em>.
 <em>n</em> and <em>m</em> should satisfy <em>n</em> &gt; <em>m</em> &gt; 0.</p>
-<h4 id="content_1_7">inverse(<em>x</em>, <em>p</em>)  <a class="anchor_super" id="r20ee256" href="arith1.html#r20ee256" title="r20ee256">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">inverse(<em>x</em>, <em>p</em>)  <a class="anchor_super" id="r20ee256" href="arith1.html#r20ee256" title="r20ee256">&dagger;</a></h4>
 <p>Return inverse of <em>x</em> for modulo <em>p</em>.</p>
-<h4 id="content_1_8">CRT(<em>nlist</em>)  <a class="anchor_super" id="iaf4bf5c" href="arith1.html#iaf4bf5c" title="iaf4bf5c">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">CRT(<em>nlist</em>)  <a class="anchor_super" id="iaf4bf5c" href="arith1.html#iaf4bf5c" title="iaf4bf5c">&dagger;</a></h4>
+<p>Return the uniquely determined integer satisfying all modulus conditions given by <em>nlist</em>.
+The modulus condition <em>nlist</em> is a list like [(1,2), (2,3), (3,5)], which means the number should be 1 mod 2, 2 mod 3 and 3 mod 5.</p>
 <p>This function is Chinese Rmainder Theorem using Algorithm 2.1.7
-of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Pomerance" title="References">C.Pomerance and R.Crandall</a>'s book.</p>
-<h4 id="content_1_9">AGM(<em>a</em>, <em>b</em>)  <a class="anchor_super" id="a1d763bf" href="arith1.html#a1d763bf" title="a1d763bf">&dagger;</a></h4>
+of <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?References#Pomerance" title="References (149d)">C.Pomerance and R.Crandall</a>'s book.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">AGM(<em>a</em>, <em>b</em>)  <a class="anchor_super" id="a1d763bf" href="arith1.html#a1d763bf" title="a1d763bf">&dagger;</a></h4>
 <p>Arithmetic-Geometric Mean.</p>
-<h4 id="content_1_10">_BhaskaraBrouncker(<em>n</em>):  <a class="anchor_super" id="j7d67c86" href="arith1.html#j7d67c86" title="j7d67c86">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">_BhaskaraBrouncker(<em>n</em>):  <a class="anchor_super" id="j7d67c86" href="arith1.html#j7d67c86" title="j7d67c86">&dagger;</a></h4>
 <p>Return the minimum tuple (p,q) such that:</p>
 <pre>       p ** 2 - n * q ** 2 = 1 or -1,</pre>
 <p>for positive integer <em>n</em>, which is not a square.</p>
 <p>A good approximation for square root of <em>n</em> is given by the ratio
 p/q; the error is at most 1/2*q**2.</p>
-<h4 id="content_1_11">vp(<em>n</em>, <em>p</em> [,<em>k</em>])  <a class="anchor_super" id="c15b53c1" href="arith1.html#c15b53c1" title="c15b53c1">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">vp(<em>n</em>, <em>p</em> [,<em>k</em>])  <a class="anchor_super" id="c15b53c1" href="arith1.html#c15b53c1" title="c15b53c1">&dagger;</a></h4>
 <p>The returned value is a tuple of <em>p</em>-adic valuation of <em>n</em> and its coprime part.  If <em>k</em> is given, it is added to the valuation.<br />
 <br />
-moved from <a href="prime.html" title="prime.py">prime</a> (0.4.1).</p>
-<h4 id="content_1_12">issquare(<em>n</em>)  <a class="anchor_super" id="y922db90" href="arith1.html#y922db90" title="y922db90">&dagger;</a></h4>
-<p>Test whether a given integer <em>n</em> is a square number or not.<br />
+moved from <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?prime.py" title="prime.py (67d)">prime</a> (0.4.1).</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_12">issquare(<em>n</em>)  <a class="anchor_super" id="y922db90" href="arith1.html#y922db90" title="y922db90">&dagger;</a></h4>
+<p>Test whether a given integer <em>n</em> is a square number or not.
+If <em>n</em> is a square number, the function returns its square root.<br />
 (new in 0.4.1)</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_13">log(<em>n</em> [,<em>base</em>])  <a class="anchor_super" id="xfd4a43c" href="arith1.html#xfd4a43c" title="xfd4a43c">&dagger;</a></h4>
+<p>Return integer part of logarithm of the given integer <em>n</em>
+to the <em>base</em>.  The default value for <em>base</em> is 2.
+(new in 0.5.0)</p>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Fri, 28 Oct 2005 17:27:58 JST</div>
+ Last-modified: 2005-12-18 (Æü) 18:23:16  (67d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

@@ -16,44 +16,59 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="index.html" title="UserManual">UserManual</a></p>
+<div id="body"><p><a href="index.html" title="UserManual (52m)">UserManual</a></p>
 <h2 id="content_1_0">Installation of NZMATH  <a class="anchor_super" id="m75bffea" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#m75bffea" title="m75bffea">&dagger;</a></h2>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#b589fc67">Basic installation</a></li>
 <li><a href="#cfc02dd6">Package installations</a></li></ul>
-<h3 id="content_1_1">Basic installation  <a class="anchor_super" id="b589fc67" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#b589fc67" title="b589fc67">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Basic installation  <a class="anchor_super" id="b589fc67" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#b589fc67" title="b589fc67">&dagger;</a></h3>
 <p>To install NZMATH, you must have a Python 2.3 installed in your computer or
 a higher version.  If you don't have a copy of Python, please install it first.
-Python is available from <a href="http://www.python.org/">www.python.org</a> .</p>
-<p>The next step is to extract <a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.4.1.tar.gz">NZMATH-0.4.1.tar.gz</a>. You can easily unzip this, depending on your OS. For systems with recent GNU tar, you can
+Python is available from <a href="http://www.python.org/" rel="nofollow">www.python.org</a> .</p>
+<p>The next step is to extract <a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.5.0.tar.gz" rel="nofollow">NZMATH-0.5.0.tar.gz</a>. You can easily unzip this, depending on your OS. For systems with recent GNU tar, you can
 do it with a single command:</p>
-<pre>% tar xf NZMATH-0.4.1.tar.gz</pre>
+<pre>% tar xf NZMATH-0.5.0.tar.gz</pre>
 <p>where, % is the command line prompt.  Or with standard tar, you can do
 it as:</p>
-<pre>% gzip -cd NZMATH-0.4.1.tar.gz | tar xf -</pre>
-<p>Then, you have a child directory named NZMATH-0.4.1.</p>
+<pre>% gzip -cd NZMATH-0.5.0.tar.gz | tar xf -</pre>
+<p>Then, you have a child directory named NZMATH-0.5.0.</p>
 <p>The last step is to install NZMATH to the standard
 python path. Usually, this translates to writing files somewhere under
 /usr/lib or /usr/local/lib, and thus you have to have appropriate
 write permission.  Typically, do as the following:</p>
-<pre>% cd NZMATH-0.4.1
+<pre>% cd NZMATH-0.5.0
 % su
 # python setup.py install</pre>
-<h3 id="content_1_2">Package installations  <a class="anchor_super" id="cfc02dd6" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#cfc02dd6" title="cfc02dd6">&dagger;</a></h3>
-<h4 id="content_1_3">Gentoo Linux  <a class="anchor_super" id="i8247269" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#i8247269" title="i8247269">&dagger;</a></h4>
-<p>There is a private package for <a href="http://www.gentoo.org/">Gentoo Linux</a>.
-Put <a href="http://lowlife.jp/mft/static/nzmath-0.4.0.ebuild">nzmath-0.4.0.ebuild</a> into your overlay portage tree of category sci-mathematics.
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Package installations  <a class="anchor_super" id="cfc02dd6" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#cfc02dd6" title="cfc02dd6">&dagger;</a></h3>
+<p>These packages may be updated after our releases.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">KNOPPIX/Math  <a class="anchor_super" id="bef24f53" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#bef24f53" title="bef24f53">&dagger;</a></h4>
+<p><a href="http://geom.math.metro-u.ac.jp/wiki/index.php?%5B%5BKNOPPIX%2FMath%5D%5D" rel="nofollow">KNOPPIX/Math</a>
+2006 is shipped with NZMATH-0.4.1 installed.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">Gentoo Linux  <a class="anchor_super" id="i8247269" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#i8247269" title="i8247269">&dagger;</a></h4>
+<p>There is a private package for <a href="http://www.gentoo.org/" rel="nofollow">Gentoo Linux</a>.
+Put <a href="http://lowlife.jp/mft/static/nzmath-0.4.0.ebuild" rel="nofollow">nzmath-0.4.0.ebuild</a> into your overlay portage tree of category sci-mathematics.
 Then emerge it as usual if you are of ~x86 user.
 Other arch user have to cast a spell on your /etc/portage or the ebuild.</p>
-<h4 id="content_1_4">KNOPPIX/Math  <a class="anchor_super" id="bef24f53" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#bef24f53" title="bef24f53">&dagger;</a></h4>
-<p><a href="http://geom.math.metro-u.ac.jp/wiki/index.php?%5B%5BKNOPPIX%2FMath%5D%5D">KNOPPIX/Math</a>
-2005 is shipped with NZMATH-0.3.1 installed.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">Mac OS X (Tiger)  <a class="anchor_super" id="i5c56650" href="http://hanaya.math.metro-u.ac.jp/nzmath/?Install#i5c56650" title="i5c56650">&dagger;</a></h4>
+<p>An NZMATH 0.4.1 application binary for Mac OS X
+<a href="http://tnt.math.metro-u.ac.jp/nzmath/macosx/NZMATH-20060123.tar.gz" rel="nofollow">NZMATH-20060123.tar.gz</a>   is contributed by Kishi Toshiharu.
+You can use it by following instruction:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>download it.</li>
+<li>expand it.</li>
+<li>move resulting NZMATH.app to Application Folder.</li>
+<li>double click the NZMATH.app.</li></ol>
+<p>Note that it works on Tiger (10.4) only.</p>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: Fri, 28 Oct 2005 16:59:38 JST</div>
+ Last-modified: 2006-02-24 (¶â) 16:06:54  (1h)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
