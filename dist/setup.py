@@ -80,8 +80,10 @@ setup (
                   'manual/modules/vector.html',
                   'manual/modules/zassenhaus.html']),
                 (doc_prefix + "manual/modules/factor",
-                 ['manual/modules/factor/factor.html',
+                 ['manual/modules/factor/find.html',
+                  'manual/modules/factor/methods.html',
+                  'manual/modules/factor/misc.html',
                   'manual/modules/factor/mpqs.html',
-                  'manual/modules/factor/trialdivision.html'])
+                  'manual/modules/factor/util.html'])
                 ]
      )
