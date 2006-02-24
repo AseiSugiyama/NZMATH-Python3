@@ -3,7 +3,7 @@ import nzmath.gcd
 import nzmath.arith1
 import nzmath.rational
 
-class ReducedQuaraticForm:
+class ReducedQuadraticForm:
     def __init__(self, element, unit):
         self.element = element
         self.unit = unit
@@ -13,7 +13,7 @@ class ReducedQuaraticForm:
         return return_str
 
     def __mul__(self, other):
-        if not isinstance(other, ReducedQuaraticForm):
+        if not isinstance(other, ReducedQuadraticForm):
             return NotImplemented
         return computePDF(self.element, other.element)
 
@@ -211,11 +211,9 @@ def computeClassNumber(disc, limit_dis=100000):
                 break
         b += 2
 
-    # modify to return class not plane list. 17.Feb 2006
     eounit = ret_list[0]
     for i, t_lt in enumerate(ret_list):
-        #print t_lt
-        ret_list[i] = ReducedQuaraticForm(t_lt, eounit)
+        ret_list[i] = ReducedQuadraticForm(t_lt, eounit)
 
     return (h, ret_list)
 
