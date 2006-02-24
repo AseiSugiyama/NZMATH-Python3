@@ -11,8 +11,8 @@ class QuadTest (unittest.TestCase):
     def testComputeClassNumber(self):
         self.assert_(quad.computeClassNumber(-4))
         ## no comparison method defined.
-        ## self.assertEqual((1, [quad.ElementOfQuadraticForm([1, 0, 1], [1, 0, 1])]), quad.computeClassNumber(-4))
-        self.assertEqual(quad.ElementOfQuadraticForm, quad.computeClassNumber(-4)[1][0].__class__)
+        ## self.assertEqual((1, [quad.ReducedQuadraticForm([1, 0, 1], [1, 0, 1])]), quad.computeClassNumber(-4))
+        self.assertEqual(quad.ReducedQuadraticForm, quad.computeClassNumber(-4)[1][0].__class__)
         self.assertEqual("[1, 0, 1]", repr(quad.computeClassNumber(-4)[1][0]))
         self.assertEqual(1, quad.computeClassNumber(-3)[0])
         self.assertEqual(1, len(quad.computeClassNumber(-3)[1]))
