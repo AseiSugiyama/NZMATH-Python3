@@ -61,7 +61,7 @@ setup (
                   'manual/modules/polynomial_RationalOneVariablePolynomial.html',
                   'manual/modules/prime.html',
                   'manual/modules/quad.html',
-                  'manual/modules/quad_ReducedlQuadraticForm.html',
+                  'manual/modules/quad_ReducedQuadraticForm.html',
                   'manual/modules/rational.html',
                   'manual/modules/rationalFunction.html',
                   'manual/modules/rationalFunction_RationalFunction.html',
@@ -80,8 +80,10 @@ setup (
                   'manual/modules/vector.html',
                   'manual/modules/zassenhaus.html']),
                 (doc_prefix + "manual/modules/factor",
-                 ['manual/modules/factor/factor.html',
+                 ['manual/modules/factor/find.html',
+                  'manual/modules/factor/methods.html',
+                  'manual/modules/factor/misc.html',
                   'manual/modules/factor/mpqs.html',
-                  'manual/modules/factor/trialdivision.html'])
+                  'manual/modules/factor/util.html'])
                 ]
      )
