@@ -36,7 +36,7 @@ wget -q $WIKIBASE\?UserManual -O index.html
 wget -q $WIKIBASE\?Install -O install.html
 # 1.1. get module core document.
 cd modules
-for docs in arith1 bigrandom combinatorial elliptic equation finitefield gcd imaginary integerResidueClass lattice matrix multiplicative polynomial prime rational rationalFunction real ring vector zassenhaus
+for docs in arith1 bigrandom combinatorial elliptic equation finitefield gcd group imaginary integerResidueClass lattice matrix multiplicative permute polynomial prime quad rational rationalFunction real ring vector zassenhaus
 do
   wget -q $WIKIBASE\?$docs.py -O $docs.html
 done
@@ -44,7 +44,7 @@ done
 for subs in factor
 do
   cd $subs
-  for docs in factor mpqs trialdivision
+  for docs in find methods misc mpqs util
   do
     wget -q $WIKIBASE\?$subs%2F$docs.py -O $docs.html
   done
@@ -54,6 +54,13 @@ done
 for docs in finitefield
 do
   for clses in FiniteField FinitePrimeField FiniteExtendedField FiniteFieldElement FinitePrimeFieldElement FiniteExtendedFieldElement
+  do
+    wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
+  done
+done
+for docs in group
+do
+  for clses in Group GroupElement
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
@@ -72,9 +79,23 @@ do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
 done
+for docs in permute
+do
+  for clses in Permute ExPermute
+  do
+    wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
+  done
+done
 for docs in polynomial
 do
   for clses in MultiVariableSparsePolynomial OneVariablePolynomial OneVariablePolynomialChar0 RationalOneVariablePolynomial OneVariablePolynomialCharNonZero OneVariablePolynomialCoefficients PolynomialRing MultiVariablePolynomialIdeal OneVariablePolynomialIdeal PolynomialResidueRing
+  do
+    wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
+  done
+done
+for docs in quad
+do
+  for clses in ReducedQuadraticForm
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
