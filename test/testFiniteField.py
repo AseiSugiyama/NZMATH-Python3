@@ -1,7 +1,7 @@
 import unittest
 from nzmath.finitefield import *
 from nzmath.rational import Integer, Rational, theRationalField
-
+from nzmath.polynomial import OneVariableDensePolynomial as poly
 
 class FinitePrimeFieldElementTest(unittest.TestCase):
     def testInit(self):
@@ -116,7 +116,29 @@ class FinitePrimeFieldTest(unittest.TestCase):
         # rational field
         self.failIf(self.F17.issuperring(theRationalField))
         self.failIf(self.F17.issubring(theRationalField))
-        
+
+
+class FiniteExtendedFieldTest (unittest.TestCase):
+    def testInit(self):
+        self.assert_(FiniteExtendedField(2, 3))
+        F8 = FiniteExtendedField(2, 3)
+        self.assertEqual(8, len(F8))
+
+    def testCreateElement(self):
+        F125 = FiniteExtendedField(5, 3)
+        self.assertEqual(F125.createElement(6), F125.createElement(poly([1, 1], "x", FinitePrimeField.getInstance(5))))
+        self.assertEqual(F125.createElement(6), F125.createElement([1, 1]))
+
+    def testSuperring(self):
+        F125 = FiniteExtendedField(5, 3)
+        F5 = FinitePrimeField.getInstance(5)
+        self.assert_(F125.issuperring(F5))
+
+    def testSubring(self):
+        F125 = FiniteExtendedField(5, 3)
+        F5 = FinitePrimeField.getInstance(5)
+        self.failIf(F125.issubring(F5))
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()

@@ -274,6 +274,15 @@ class FiniteExtendedField (FiniteField):
                 self)
         elif isinstance(seed, polynomial.OneVariablePolynomial):
             return FiniteExtendedFieldElement(seed("#1"), self)
+        else:
+            try:
+                # lastly check sequence
+                return FiniteExtendedFieldElement(
+                    polynomial.OneVariableDensePolynomial(
+                    list(seed), "#1", FinitePrimeField(self.char)),
+                    self)
+            except TypeError:
+                raise TypeError("seed %s is not an appropriate object." % str(seed))
 
     def __repr__(self):
         return "%s(%d, %s)" % (self.__class__.__name__, self.char, repr(self.modulus))
