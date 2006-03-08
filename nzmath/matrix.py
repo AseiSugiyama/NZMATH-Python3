@@ -957,8 +957,10 @@ def unitMatrix(size):
         unit_matrix.compo[i][i] = 1
     return unit_matrix
 
-def zeroMatrix(size):
-    return SquareMatrix(size)
+def zeroMatrix(row, column = 0):
+    if row == column or column == 0:
+        return SquareMatrix(row)
+    return Matrix(row, column)
 
 def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     if L.row != M.row:
