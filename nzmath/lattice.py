@@ -40,13 +40,13 @@ class Lattice:
                         raise VectorsNotIndependent
             #step3
             while 1:
-                self.RED(k,k-1)
+                self._RED(k,k-1)
                 if self.B[k] < (0.75-self.mu[(k,k-1)]*self.mu[(k,k-1)]) * self.B[k-1]:
-                    self.SWAP(k)
+                    self._SWAP(k)
                     k = max([2,k-1])
                 else:
                     for l in range(k-2,0,-1):
-                        self.RED(k,l)
+                        self._RED(k,l)
                     k += 1
                     break
             #step4
@@ -60,7 +60,7 @@ class Lattice:
 
                 return self.H
 
-    def RED(self,k,l):
+    def _RED(self,k,l):
         from math import floor
         if abs(self.mu[(k,l)]) <= 0.5:
             return
@@ -72,7 +72,7 @@ class Lattice:
             self.mu[(k,i)] -= q*self.mu[(l,i)]
         return
 
-    def SWAP(self, k):
+    def _SWAP(self, k):
         self.basis.swapColumn(k,k-1)
         self.H.swapColumn(k,k-1)
         if k > 2:

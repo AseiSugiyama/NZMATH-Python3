@@ -1,3 +1,5 @@
+from __future__ import division
+
 class Vector:
 
     def __init__(self, compo):
@@ -42,7 +44,7 @@ class Vector:
     def __mul__(self, other):
         from nzmath.matrix import Matrix
         if isinstance(other, Vector):
-            return NotImplemented
+            return TypeError
         elif isinstance(other, Matrix):
             return NotImplemented
         else:
@@ -54,7 +56,7 @@ class Vector:
     def __rmul__(self, other):
         from nzmath.matrix import Matrix
         if isinstance(other, Vector):
-            return NotImplemented
+            return TypeError
         elif isinstance(other, Matrix):
             return NotImplemented
         else:
@@ -68,7 +70,7 @@ class Vector:
 
     def __mod__(self,other):
         if isinstance(other, Vector):
-            return NotImplemented
+            return TypeError
         else:
             if(other==0):
                 return ZeroDivisionError
@@ -78,7 +80,7 @@ class Vector:
             return V
 
     def __repr__(self):
-        return "Vector " + repr(self.compo)
+        return "Vector(" + repr(self.compo) + ")"
 
     def __str__(self):
         return str(self.compo)
@@ -100,12 +102,30 @@ class Vector:
             if entry != 0:
                 return c
             c += 1
-        raise Exception, "all zero"
+        raise ValueError, "all zero"
+
+    def toMatrix(self, type = 0):
+        """
+        toMatrix(type): convert Matrix representation.
+        if type is set, return column matrix, otherwise row matrix.
+        """
+        import nzmath.matrix as matrix
+        if type:
+            return matrix.createMatrix(len(self), 1, self.compo)
+        else:
+            return matrix.createMatrix(1, len(self), self.compo)
+
+    def isDiagonal(self, other):
+        return innerProduct(self, other) == 0
 
 def innerProduct(self, other):
+    from nzmath.imaginary import Complex
     v=0
     for i in range(1,len(self)+1):
-        v += self[i] * other[i]
+        try:
+            v += self[i] * Complex(other[i].real, -other[i].imag)
+        except AttributeError:
+            v += self[i] * other[i]
     return v
 
 
