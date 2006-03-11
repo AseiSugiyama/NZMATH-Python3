@@ -228,12 +228,12 @@ class FiniteExtendedField (FiniteField):
             self.degree = n_or_modulus
             # randomly chosen irreducible polynomial
             seed = bigrandom.randrange(self.char ** self.degree)
-            cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField(self.char))
+            cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField.getInstance(self.char))
             while cand.degree() < self.degree and not cand.isIrreducible():
                 seed = bigrandom.randrange(self.char ** self.degree)
-                cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField(self.char))
+                cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField.getInstance(self.char))
             self.modulus = polynomial.OneVariablePolynomialIdeal(cand, cand.getRing())
-        elif isinstance(n_or_modulus, polynomial.OneVariablePolynomial):
+        elif isinstance(n_or_modulus, polynomial.OneVariablePolynomialCharNonZero):
             if isinstance(n_or_modulus.getCoefficientRing(), FinitePrimeField):
                 if n_or_modulus.degree() > 1 and n_or_modulus.isIrreducible():
                     self.degree = n_or_modulus.degree()
@@ -270,7 +270,7 @@ class FiniteExtendedField (FiniteField):
             expansion = arith1.expand(seed, self.char)
             return FiniteExtendedFieldElement(
                 polynomial.OneVariableDensePolynomial(
-                expansion, "#1", FinitePrimeField(self.char)),
+                expansion, "#1", FinitePrimeField.getInstance(self.char)),
                 self)
         elif isinstance(seed, polynomial.OneVariablePolynomial):
             return FiniteExtendedFieldElement(seed("#1"), self)
@@ -279,7 +279,7 @@ class FiniteExtendedField (FiniteField):
                 # lastly check sequence
                 return FiniteExtendedFieldElement(
                     polynomial.OneVariableDensePolynomial(
-                    list(seed), "#1", FinitePrimeField(self.char)),
+                    list(seed), "#1", FinitePrimeField.getInstance(self.char)),
                     self)
             except TypeError:
                 raise TypeError("seed %s is not an appropriate object." % str(seed))
@@ -332,7 +332,7 @@ class FiniteExtendedField (FiniteField):
         if self._one is None:
             self._one = FiniteExtendedFieldElement(
                 polynomial.OneVariableDensePolynomial(
-                [1], "#1", FinitePrimeField(self.char)),
+                [1], "#1", FinitePrimeField.getInstance(self.char)),
                 self)
         return self._one
 
@@ -343,7 +343,7 @@ class FiniteExtendedField (FiniteField):
         if self._zero is None:
             self._zero = FiniteExtendedFieldElement(
                 polynomial.OneVariableDensePolynomial(
-                [], "#1", FinitePrimeField(self.char)),
+                [], "#1", FinitePrimeField.getInstance(self.char)),
                 self)
         return self._zero
 
@@ -428,4 +428,3 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
 
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self.rep), repr(self.field))
-

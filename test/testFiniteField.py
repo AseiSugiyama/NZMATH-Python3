@@ -120,9 +120,9 @@ class FinitePrimeFieldTest(unittest.TestCase):
 
 class FiniteExtendedFieldTest (unittest.TestCase):
     def testInit(self):
-        self.assert_(FiniteExtendedField(2, 3))
-        F8 = FiniteExtendedField(2, 3)
-        self.assertEqual(8, len(F8))
+        self.assertEqual(8, len(FiniteExtendedField(2, 3)))
+        f = poly([1, 1, 0, 1], "x", FinitePrimeField.getInstance(2))
+        self.assertEqual(8, len(FiniteExtendedField(2, f)))
 
     def testCreateElement(self):
         F125 = FiniteExtendedField(5, 3)
