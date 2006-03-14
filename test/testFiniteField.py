@@ -134,10 +134,22 @@ class FiniteExtendedFieldTest (unittest.TestCase):
         F5 = FinitePrimeField.getInstance(5)
         self.assert_(F125.issuperring(F5))
 
+    def testSuperringGlobal(self):
+        import nzmath.rational as rational
+        F125 = FiniteExtendedField(5, 3)
+        self.failIf(F125.issuperring(rational.theRationalField))
+        self.failIf(F125.issuperring(rational.theIntegerRing))
+
     def testSubring(self):
         F125 = FiniteExtendedField(5, 3)
         F5 = FinitePrimeField.getInstance(5)
         self.failIf(F125.issubring(F5))
+
+    def testSubringGlobal(self):
+        import nzmath.rational as rational
+        F125 = FiniteExtendedField(5, 3)
+        self.failIf(F125.issubring(rational.theRationalField))
+        self.failIf(F125.issubring(rational.theIntegerRing))
 
 
 def suite(suffix = "Test"):
