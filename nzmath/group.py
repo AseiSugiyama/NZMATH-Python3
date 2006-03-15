@@ -1,3 +1,6 @@
+import nzmath.rational as rational
+import nzmath.factor.methods as facts
+
 class Group:
     """
     This is a class for finite group.
@@ -32,7 +35,7 @@ class Group:
         if isinstance(value, int) :
             self.main = (value and 1)
         else:
-            return ValueError("invalid input")
+            return TypeError("invalid input")
 
     def createElement(self, value):
         """
@@ -69,7 +72,6 @@ class Group:
         return order
 
     def gr_order_fact(self):
-        import nzmath.factor.methods as facts
         return facts.factor(self.grouporder())
 
 
@@ -130,7 +132,7 @@ class GroupElement:
         if isinstance(value, int) and self.type_check(value):
             self.main = value
         else:
-            return ValueError("invalid input")
+            return TypeError("invalid input")
         self.classes.setmain(self.main)
 
     def ope(self, other):
@@ -152,7 +154,7 @@ class GroupElement:
         """
         Group extended operation
         """
-        if isinstance(other, (int, long)):
+        if rational.isIntegerObject(other):
             if not self.main:
                 if self.type_check(0):
                     return GroupElement(self.element * other, self.main)
@@ -164,7 +166,7 @@ class GroupElement:
                 else:
                     return TypeError("don't have pow operation")
         else:
-            return ValueError("input integer")
+            return TypeError("input integer")
 
     def order(self):
         """
@@ -187,8 +189,8 @@ class GroupElement:
         """
         Compute order using Terr's Baby-step Giant-step algorithm
         """
-        if v < 1:
-            return valueError
+        if v < 1 or not(rational.isIntegerObject(v)):
+            return TypeError("input integer v>=1")
         e = self.classes.identity()
         a = self.classes.identity()
         R = [(e, 0)]
