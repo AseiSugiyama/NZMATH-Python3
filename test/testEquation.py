@@ -2,27 +2,61 @@ from __future__ import division
 import unittest
 import logging
 import nzmath.equation as equation
+from operator import mul
+from nzmath.polynomial import OneVariableDensePolynomial
 
-class GlobalEquationTest (unittest.TestCase):
+
+class GlobalEquationTestBase (unittest.TestCase):
+    """
+    Base class for global equation tests.
+    """
+    def assert_solve(self, method, coefficients):
+        """
+        assert that the given 'method' solves the algebraic equation
+        f(X) = 0, where f is given by its 'coefficients'.
+        """
+        solutions = method(coefficients)
+        f = OneVariableDensePolynomial(coefficients, "T")
+        self.assert_roots(f, solutions)
+        self.assert_roots_coefficients(solutions, coefficients)
+
+    def assert_roots(self, polynomial, solutions):
+        """
+        assert that the given 'polynomial' has 'solutions' as its
+        zeros.
+        """
+        for t in solutions:
+            self.assertAlmostEqual(0, abs(polynomial(t)))
+
+    def assert_roots_coefficients(self, solutions, coefficients):
+        """
+        assert that the given 'solutions' and 'coefficients' satisfies
+        the relations between roots and coefficients.
+
+        limitation: only norm and trace are tested, now.
+        """
+        # norm
+        degree = len(coefficients) - 1
+        self.assertAlmostEqual(0, abs((-1)**degree*coefficients[0] - reduce(mul, solutions, 1)))
+        # trace
+        self.assertAlmostEqual(0, abs(-coefficients[-2] - sum(solutions)))
+
+
+class GlobalEquationTest (GlobalEquationTestBase):
     def test_e1(self):
         self.assertEqual(-3/2, equation.e1([3, 2]))
 
     def test_e3(self):
-        solutions = equation.e3([1, 0, 0, 1])
-        for t in solutions:
-            self.assertAlmostEqual(0, abs(t**3 + 1))
-        solutions = equation.e3([-6, 11, -6, 1])
-        for t in solutions:
-            self.assertAlmostEqual(0, abs(((t - 6)*t + 11)*t - 6))
-        solutions = equation.e3([-1, -1, 1, 1])
-        for t in solutions:
-            self.assertAlmostEqual(0, abs(((t + 1)*t - 1)*t - 1))
-        solutions = equation.e3([-0.5, 0.5, 0.5, 1])
-        for t in solutions:
-            self.assertAlmostEqual(0, abs(((t + 0.5)*t + 0.5)*t - 0.5))
-        solutions = equation.e3([-0.5j, 0.5, 0.5, 1])
-        for t in solutions:
-            self.assertAlmostEqual(0, abs(((t + 0.5)*t + 0.5)*t - 0.5j))
+        self.assert_solve(equation.e3, [1, 0, 0, 1])
+        self.assert_solve(equation.e3, [-6, 11, -6, 1])
+        self.assert_solve(equation.e3, [-1, -1, 1, 1])
+        self.assert_solve(equation.e3, [-0.5, 0.5, 0.5, 1])
+        self.assert_solve(equation.e3, [-0.5j, 0.5, 0.5, 1])
+
+
+class SimMethodTest (GlobalEquationTestBase):
+    def test_degree3(self):
+        self.assert_solve(equation.SimMethod, [1, 0, 0, 1])
 
 
 class LocalEquationTest (unittest.TestCase):
