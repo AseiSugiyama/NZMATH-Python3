@@ -53,6 +53,11 @@ class GroupElementTest(unittest.TestCase):
         assert(37 == c1_a.order())
         assert(36 == c1_m.order())
 
+    def testT_Order(self):
+        assert(4 == a1.t_order())
+        assert(37 == c1_a.t_order())
+        assert(36 == c1_m.t_order())
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
@@ -65,4 +70,3 @@ def suite(suffix = "Test"):
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
-
