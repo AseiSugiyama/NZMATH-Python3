@@ -1,3 +1,7 @@
+import nzmath.rational as rational
+import nzmath.combinatorial as combinatorial
+import nzmath.matrix as matrix
+
 class Permute:
 
     """
@@ -12,23 +16,23 @@ class Permute:
         self.data = value
         a = self.data
         if not isinstance(a, list):
-            raise ValueError("This isn't normal form")
+            raise TypeError("This isn't normal form")
         b = range(len(a))
         for x in a:
-            if not isinstance(x, int):
-                raise ValueError("This number should be integer list")
+            if not rational.isIntegerObject(x):
+                raise TypeError("This number should be integer list")
             elif x <= 0 or x > len(a):
-                raise ValueError("This isn't onto")
+                raise TypeError("This isn't onto")
             elif b[x-1] == -1:
                 raise ValueError("This isn't one-to-one")
             else:
                 b[x-1] = -1
 
     def __getitem__(self, other):
-        if not isinstance(other, int):
-            raise ValueError("This number should be integer")
+        if not rational.isIntegerObject(other):
+            raise TypeError("This number should be integer")
         elif other <= 0 or other > len(self.data):
-            raise ValueError("This is out of range")
+            raise IndexError("This is out of range")
         return self.data[other - 1]
 
     def __mul__(self, other):
@@ -40,7 +44,7 @@ class Permute:
         b = other.data
         c = []
         if len(a) != len(b):
-            raise ValueError("This can't multiply")
+            raise TypeError("This can't multiply")
         for i in range(len(a)):
             c.append(a[b[i] - 1])
         return Permute(c)
@@ -55,9 +59,9 @@ class Permute:
         return other * (self.inverse())
 
     def __pow__(self, other):
-        b = Permute(self.data)  # Other instance
-        if not isinstance(other, (int, long)):
-            raise ValueError("This can't calculate")
+        b = Permute(self.data)
+        if not rational.isIntegerObject(other):
+            raise TypeError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
                 b = self * b
@@ -104,8 +108,7 @@ class Permute:
         return c
 
     def grouporder(self):
-        import nzmath.combinatorial
-        return nzmath.combinatorial.factorial(len(self.data))
+        return combinatorial.factorial(len(self.data))
 
     def order(self):
         """
@@ -183,9 +186,8 @@ class Permute:
         """
         This method returns permutation matrix
         """
-        import nzmath.matrix as matrix
         a = len(self.data)
-        A = matrix.Matrix(a, a)
+        A = matrix.SquareMatrix(a)
         for j in range(a):
             A[j+1, self.data[j]] = 1
         return A
@@ -221,17 +223,17 @@ class ExPermute:
     def __init__(self, val1, val2):
         self.dim = val1
         self.data = val2
-        if not (isinstance(val1, int) and isinstance(val2, list)):
-            raise ValueError("This isn't cyclic form")
+        if not (rational.isIntegerObject(val1) and isinstance(val2, list)):
+            raise TypeError("This isn't cyclic form")
         for x in val2:
             if not isinstance(x, tuple):
-                raise ValueError("This isn't cyclic form")
+                raise TypeError("This isn't cyclic form")
             b = range(val1)
             for y in x:
-                if not isinstance(y, int):
-                    raise ValueError("This number should be integer")
+                if not rational.isIntegerObject(val1):
+                    raise TypeError("This number should be integer")
                 if (y > val1) or (y <= 0):
-                    raise ValueError("This is out of range")
+                    raise TypeError("This is out of range")
                 elif b[y-1] == -1:
                     raise ValueError("This isn't one-to-one")
                 else:
@@ -239,7 +241,7 @@ class ExPermute:
 
     def __mul__(self, other):
         if self.dim != other.dim:
-            raise ValueError("This can't multiply")
+            raise TypeError("This can't multiply")
         c = []
         for x in self.data:
             c.append(x)
@@ -258,8 +260,8 @@ class ExPermute:
 
     def __pow__(self, other):
         b = ExPermute(self.dim, self.data)  # other instance
-        if not isinstance(other, int):
-            raise ValueError("This can't calculate")
+        if not rational.isIntegerObject(other):
+            raise TypeError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
                 b = self * b
@@ -283,8 +285,7 @@ class ExPermute:
         return ExPermute(self.dim, [])
 
     def grouporder(self):
-        import nzmath.combinatorial
-        return nzmath.combinatorial.factorial(self.dim)
+        return combinatorial.factorial(self.dim)
 
     def order(self):
         """
