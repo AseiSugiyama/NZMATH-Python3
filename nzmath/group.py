@@ -26,34 +26,45 @@ class Group:
             return str(self.classes.__class__.__name__)
 
     def setmain(self, value):
+        """
+        Change group type for additive(0) or multiplicative(1).
+        """
         if isinstance(value, int) :
             self.main = (value and 1)
         else:
             return ValueError("invalid input")
 
     def createElement(self, value):
+        """
+        Create group element with value.
+        Return GroupElement instance.
+        """
         return GroupElement(self.classes.createElement(value))
 
     def identity(self):
+        """
+        Return identity element(unit).
+        Return addtive 0 or multiplicative 1.
+        """
         if hasattr(self.classes, "identity"):
             return GroupElement(self.classes.identity())
         else:
             if self.main:
-                if hasattr(self.classes, "_getOne"):
-                    return GroupElement(self.classes._getOne(), 1)
+                return GroupElement(self.classes.one, 1)
             else:
-                if hasattr(self.classes, "_getZero"):
-                    return GroupElement(self.classes._getZero(), 0)
-        return -1
+                return GroupElement(self.classes.zero, 0)
 
     def grouporder(self):
+        """
+        Return group order(Cardinality).
+        """
         order = 0
         if hasattr(self.classes, "grouporder"):
             order = self.classes.grouporder()
         else:
             if hasattr(self.classes, "__len__"):
                 order = self.classes.__len__()
-        if self.main and hasattr(self.classes, "_getZero"): # *-cyclic group
+        if self.main and hasattr(self.classes, "zero"): # *-cyclic group
             order = order - 1
         return order
 
@@ -96,6 +107,9 @@ class GroupElement:
         return not (self == other)
 
     def type_check(self, value):
+        """
+        Check group type is value or not.
+        """
         a=self.element
         if not (value and 1):
             if hasattr(a, "__add__") and hasattr(a, "__mul__"):
@@ -109,6 +123,9 @@ class GroupElement:
                 return False
 
     def setmain(self, value):
+        """
+        Change group type for additive(0) or multiplicative(1).
+        """
         value = value and 1
         if isinstance(value, int) and self.type_check(value):
             self.main = value
@@ -117,6 +134,9 @@ class GroupElement:
         self.classes.setmain(self.main)
 
     def ope(self, other):
+        """
+        Group basic operation.
+        """
         if  not self.main:
             if  other.type_check(0):
                 return GroupElement(self.element + other.element, self.main)
@@ -129,6 +149,9 @@ class GroupElement:
                 return TypeError("don't have mul operation")
 
     def ope2(self, other):
+        """
+        Group extended operation
+        """
         if isinstance(other, (int, long)):
             if not self.main:
                 if self.type_check(0):
@@ -144,8 +167,11 @@ class GroupElement:
             return ValueError("input integer")
 
     def order(self):
-        if hasattr(self.classes.classes, "_getZero"):
-            if self.element == self.classes.classes._getZero():
+        """
+        Compute order using grouporder factorization.
+        """
+        if hasattr(self.classes.classes, "zero"):
+            if self.element == self.classes.classes.zero:
                 return 1
         ord = self.classes.grouporder()
         ordfact = self.classes.gr_order_fact()
@@ -156,3 +182,31 @@ class GroupElement:
                 k = k * p
                 b = b.ope2(p)
         return k
+
+    def t_order(self, v=2):
+        """
+        Compute order using Terr's Baby-step Giant-step algorithm
+        """
+        if v < 1:
+            return valueError
+        e = self.classes.identity()
+        a = self.classes.identity()
+        R = [(e, 0)]
+        for i in range(1, v + 1):
+            a = self.ope(a)
+            if a == e:
+                return i
+            else:
+                R.append((a, i))
+        j = 0
+        b = a.ope2(2)
+        t = 2 * v
+        while(1):
+            for (c, k) in R:
+                if b == c:
+                    return (t - k)
+            a = self.ope(a)
+            j += 1
+            R.append((a, j + v))
+            b = a.ope(b)
+            t += j + v
