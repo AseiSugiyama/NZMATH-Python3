@@ -537,7 +537,7 @@ class SquareMatrix(Matrix):
         SquareMatrix(size [,components])
         """
         if (rational.isIntegerObject(row) and row > 0):
-            self.row = self.column = size
+            self.row = self.column = row
             self.compo = []
             if isinstance(column, list):
                 if (len(column) != self.row ** 2):
