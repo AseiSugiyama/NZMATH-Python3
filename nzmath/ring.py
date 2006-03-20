@@ -142,7 +142,7 @@ class Field (CommutativeRing):
         """
         A field is trivially a ufd and shuold be provide gcd.
         """
-        return self.createElement(1)
+        return self.one
 
     def getQuotientField(self):
         """
