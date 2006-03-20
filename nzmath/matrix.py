@@ -532,21 +532,26 @@ class SquareMatrix(Matrix):
     SquareMatrix is a class for square matrices.
     """
 
-    def __init__(self, size, compo = 0):
+    def __init__(self, row, column = 0, compo = 0):
         """
         SquareMatrix(size [,components])
         """
-        if (rational.isIntegerObject(size) and size > 0):
+        if (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = size
             self.compo = []
-            if compo == 0:
+            if isinstance(column, list):
+                if (len(column) != self.row ** 2):
+                    raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
-                    self.compo.append([0] * self.column)
-            else:
+                    self.compo.append(column[self.column*i : self.column*(i+1)])
+            elif isinstance(compo, list):
                 if (len(compo) != self.row ** 2):
                     raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
                     self.compo.append(compo[self.column*i : self.column*(i+1)])
+            else:
+                for i in range(self.row):
+                    self.compo.append([0] * self.column)
         else:
             raise ValueError, "invalide value for matrix size"
 
