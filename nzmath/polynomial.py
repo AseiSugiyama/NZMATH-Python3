@@ -294,8 +294,9 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
             while index > 0:
                 if index % 2 == 1:
                     power_product *= power_of_2
-                power_of_2 = power_of_2 * power_of_2
                 index = index // 2
+                if index > 0:
+                    power_of_2 = power_of_2 * power_of_2
             return power_product.copy()
         else:
             power_product = self.getRing().one
@@ -304,8 +305,9 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
                 if index % 2 == 1:
                     power_product *= power_of_2
                     power_product %= mod
-                power_of_2 = (power_of_2 * power_of_2) % mod
                 index = index // 2
+                if index > 0:
+                    power_of_2 = (power_of_2 * power_of_2) % mod
             return power_product.copy()
 
     def __nonzero__(self):
@@ -1232,7 +1234,7 @@ def resultant(f, g):
     """
     m = f.degree()
     n = g.degree()
-    M = matrix.Matrix(m+n, m+n)
+    M = matrix.createMatrix(m+n, m+n)
 
     # set upper half
     for i in range(n):

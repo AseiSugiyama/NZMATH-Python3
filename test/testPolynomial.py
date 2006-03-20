@@ -434,6 +434,7 @@ class PolynomialCompilerTest(unittest.TestCase):
         assert self.x**2 + 1 == construct("1 + x**2")
         assert self.multi == construct("Q(3,4) + Q(21,16) * x + Q(9,8) * y", {"Q": rational.Rational})
 
+
 class PolynomialGCDTest(unittest.TestCase):
     def setUp(self):
         import nzmath.matrix as matrix
@@ -448,7 +449,7 @@ class PolynomialGCDTest(unittest.TestCase):
                                             +   [0,0,0,7,8,9] ).determinant()
         self.f2 = OneVariableDensePolynomial([-3,-2,2,2,1], x)
         self.g2 = OneVariableDensePolynomial([-6,-5,2,5,4], x)
-                                            
+
     def testResultant(self):
         assert resultant(self.f, self.g) == self.correctResult
 
