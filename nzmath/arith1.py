@@ -134,12 +134,16 @@ def inverse(x, p):
             return r
         else:
             return y[1]
-    raise ZeroDivisionError("There is no inverse for %d." % x)
+    raise ZeroDivisionError("There is no inverse for %d modulo %d." % (x, p))
 
 def CRT(nlist):
     """
     This function is Chinese Rmainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
+
+    For example:
+    >>> CRT([(1,2),(2,3),(3,5)])
+    23
     """
     r = len(nlist)
     product = []
