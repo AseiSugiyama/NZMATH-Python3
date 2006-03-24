@@ -259,7 +259,7 @@ class GenerateGroup(Group):
         else:
             return TypeError("input generator list")
         if classes == -1:
-            gr = generator[0].getGroup()
+            gr = self.generator[0].getGroup()
         else:
             gr = Group(classes)
         self.classes, self.main = gr.classes, gr.main
@@ -287,7 +287,7 @@ class AbelianGenerate(GenerateGroup):
     This is a class for finite abelian group with genarator.
     """
 
-    def relation_lattice(self):
+    def relationLattice(self):
         """
         Return relation lattice basis as column vector matrix for generator.
         If B[j]=transpose(b[1,j],b[2,j],..,b[l,j]),
