@@ -5,20 +5,16 @@ from nzmath.permute import Permute
 
 a1 = GroupElement(Permute([2, 4, 1, 3])) #Multiplication Group
 a2 = GroupElement(Permute([3, 1, 4, 2]))
-
-aa1 = Group(a1.element, 1)
-aa2 = Group(a2.element, 1)
+aa1 = a1.getGroup()
 
 c1_a = GroupElement(FinitePrimeFieldElement(20, 37)) #Field
+cc1_a = c1_a.getGroup()
+c2 = GroupElement(FinitePrimeFieldElement(15, 37))
 c1_m = GroupElement(c1_a.element)
+cc1_m = c1_m.getGroup()
 c1_m.setmain(1)
-
-cc1_a = Group(c1_a.element, 1)
-cc1_m = Group(c1_m.element, 1)
 cc1_m.setmain(1)
 
-c2 = GroupElement(FinitePrimeFieldElement(15, 37))
-cc2 = Group(c2)
 
 class GroupTest (unittest.TestCase):
 
@@ -36,7 +32,8 @@ class GroupTest (unittest.TestCase):
 class GroupElementTest(unittest.TestCase):
     def testEqual(self):
         assert(a1 == GroupElement(Permute([2, 4, 1, 3])))
-        assert(c2 == GroupElement(FinitePrimeFieldElement(15, 37)))
+        assert(c1_a == GroupElement(FinitePrimeFieldElement(20, 37)))
+        assert(c1_m == GroupElement(FinitePrimeFieldElement(20, 37)))
 
     def testOpe1(self):
         assert(GroupElement(Permute([1, 2, 3, 4])) == a1.ope(a2))
