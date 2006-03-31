@@ -44,7 +44,7 @@ class Group:
         if isinstance(value, int) :
             self.main = (value and 1)
         else:
-            return TypeError("invalid input")
+            raise TypeError("invalid input")
 
     def createElement(self, value):
         """
@@ -144,7 +144,7 @@ class GroupElement:
         if isinstance(value, int) and self.type_check(value):
             self.main = (value and 1)
         else:
-            return TypeError("invalid input")
+            raise TypeError("invalid input")
         self.classes.setmain(self.main)
 
     def ope(self, other):
@@ -166,7 +166,7 @@ class GroupElement:
             else:
                 return GroupElement(self.element ** other, self.main)
         else:
-            return TypeError("input integer")
+            raise TypeError("input integer")
 
     def inverse(self):
         """
@@ -208,7 +208,7 @@ class GroupElement:
         Compute order using Terr's Baby-step Giant-step algorithm.
         """
         if (v < 1) or not(rational.isIntegerObject(v)):
-            return TypeError("input integer v >= 1")
+            raise TypeError("input integer v >= 1")
         e = self.classes.identity()
         a = self.classes.identity()
         R = [(e, 0)]
@@ -237,7 +237,7 @@ class GroupElement:
         """
         if self.type_check(0) and self.type_check(1):
             import nzmath.ring as ring
-            if isinstance(self.element, ring.RingElement):
+            if hasattr(self.element, "getRing"):
                 return Group(self.element.getRing(), self.main)
             else:
                 return Group(self.element, self.main)
@@ -283,7 +283,7 @@ class GenerateGroup(Group):
         if isinstance(value, int) :
             self.main = (value and 1)
         else:
-            return TypeError("invalid input")
+            raise TypeError("invalid input")
         for a in self.generator:
             a.setmain(value)
 
@@ -302,8 +302,9 @@ class AbelianGenerate(GenerateGroup):
         import nzmath.vector as vector
         import nzmath.matrix as matrix
         import math
+        import nzmath.sandbox.extsmith as extsmith
         l = len(self.generator)
-        b = matrix.SquareMatrix(l)
+        b = extsmith.IntSquareMatrix(l)
         H1 = [(self.identity(), vector.Vector([0] * l))]
         H2 = list(H1)
         m = 1
@@ -384,4 +385,20 @@ class AbelianGenerate(GenerateGroup):
         """
         Compute Finite Abelian Group Structure.
         """
-        pass
+        B = self.relationLattice()
+        U_d, V, M = B.smithNormalForm()
+        det = int(M.determinant())
+        U = U_d.inverse()
+        for i in range(U_d.row):
+            U_d[i] = (U_d[i] % det)
+        structure = []
+        l = M.row
+        for j in range(1, l):
+            if M[j, j] != 1 or j == 1:
+                g = self.identity()
+                for i in range(1, l+1):
+                    g = g.ope(self.generator[i-1].ope2(int(U[i, j])))
+                structure.append((g, M[j, j]))
+            else:
+                break
+        return structure, det
