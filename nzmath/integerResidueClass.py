@@ -42,7 +42,7 @@ class IntegerResidueClass:
             pass
         try:
             return self * self.__class__(other, self.m).inverse()
-        except ValueError:
+        except (ValueError, NotImplementedError):
             return NotImplemented
 
     __floordiv__ = __truediv__ = __div__
