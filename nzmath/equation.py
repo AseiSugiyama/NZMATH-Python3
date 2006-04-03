@@ -3,9 +3,7 @@ import math
 import cmath
 import logging
 
-import nzmath.gcd as gcd
 import nzmath.arith1 as arith1
-import nzmath.imaginary as imaginary
 import nzmath.polynomial as polynomial
 import nzmath.finitefield as finitefield
 
@@ -164,40 +162,52 @@ def Newton(f,initial=1,repeat=250):
                 l = e1(tangent)
     return l
 
-def SimMethod(g,NewtonInitial=1,repeat=250):
+def SimMethod(g, NewtonInitial=1, repeat=250):
     """
      g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
     """
-    f = polynomial.OneVariableDensePolynomial(g,'x')
+    f = polynomial.OneVariableDensePolynomial(g, 'x')
     deg = f.degree()
-    q=[]
-    for i in range(0,deg):
+    q = []
+    for i in range(deg):
         q.append(-abs(f[i]))
     q.append(abs(f[deg]))
-    _log.debug(str(q))
+    r = Newton(q, NewtonInitial)
     df = f.differentiate('x')
-    r = Newton(q,NewtonInitial)
-    _log.debug(str(r))
-    b = -f[deg-1]/(deg*f[deg])
+
+    center = -f[deg-1]/(deg*f[deg])
+    about_two_pi = 6
+    angular_step = cmath.exp(1j * about_two_pi / deg)
+    angular_move = r
     z = []
     for i in range(deg):
-        z.append(b+r*cmath.exp((1j)*(2*i*(math.pi)/deg+3/(2*deg))))
+        z.append(center + angular_move)
+        angular_move *= angular_step
 
-    for loop in range(repeat):
+    old_sigma_list = range(deg)
+    for loop in range(repeat*deg):
         sigma_list = []
-        for i in range(len(z)):
+        for i in range(deg):
             sigma = 0
-            for j in range(len(z)):
-                if j != i:
-                    sigma = sigma + 1/(z[i] - z[j])
+            for j in range(i):
+                sigma += 1 / (z[i] - z[j])
+            for j in range(i+1, deg):
+                sigma += 1 / (z[i] - z[j])
             sigma_list.append(sigma)
 
-        k = []
-        for i in range(len(z)):
-            k.append(-f(z[i])/df(z[i])/(1-((-f(z[i])/df(z[i]))*sigma_list[i])))
+        for i in range(deg):
+            ratio = f(z[i]) / df(z[i])
+            z[i] -= ratio / (1 + ratio*sigma_list[i])
 
-        for i in range(len(z)):
-            z[i] = k[i] + z[i]
+        if sigma_list == old_sigma_list:
+            # it seems converged.
+            break
+        for sigma in sigma_list:
+            if abs(sigma) >= 1.0e+7:
+                # it seems diverging, so change initial value and retry.
+                # I don't know whether multiplying by an arbitrary value
+                # is a good choice or not. (Fe2+)
+                return SimMethod(g, -4*NewtonInitial, repeat + 10)
+        old_sigma_list = sigma_list
 
     return z
-

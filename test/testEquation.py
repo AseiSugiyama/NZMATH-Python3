@@ -57,6 +57,10 @@ class GlobalEquationTest (GlobalEquationTestBase):
 class SimMethodTest (GlobalEquationTestBase):
     def test_degree3(self):
         self.assert_solve(equation.SimMethod, [1, 0, 0, 1])
+        self.assert_solve(equation.SimMethod, [-2, 0, 0, 1])
+
+    def test_degree4(self):
+        self.assert_solve(equation.SimMethod, [-2, 0, 1, 0, 1])
 
 
 class LocalEquationTest (unittest.TestCase):
