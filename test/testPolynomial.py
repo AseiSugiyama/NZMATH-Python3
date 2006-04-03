@@ -441,17 +441,20 @@ class PolynomialGCDTest(unittest.TestCase):
         self.f = OneVariableDensePolynomial([1,2,3,4,5], x)
         self.g = OneVariableDensePolynomial([7,8,9], x)
         self.correctResult = matrix.createMatrix(6,6,
-                                                [1,2,3,4,5,0]
-                                            +   [0,1,2,3,4,5]
-                                            +   [7,8,9,0,0,0]
-                                            +   [0,7,8,9,0,0]
-                                            +   [0,0,7,8,9,0]
-                                            +   [0,0,0,7,8,9] ).determinant()
+                                                [5,4,3,2,1,0]
+                                            +   [0,5,4,3,2,1]
+                                            +   [9,8,7,0,0,0]
+                                            +   [0,9,8,7,0,0]
+                                            +   [0,0,9,8,7,0]
+                                            +   [0,0,0,9,8,7] ).determinant()
         self.f2 = OneVariableDensePolynomial([-3,-2,2,2,1], x)
         self.g2 = OneVariableDensePolynomial([-6,-5,2,5,4], x)
 
     def testResultant(self):
-        assert resultant(self.f, self.g) == self.correctResult
+        self.assertEqual(self.correctResult, resultant(self.f, self.g))
+        self.assertEqual(2, resultant(
+            OneVariableDensePolynomial([-2, 0, 0, 1], x),
+            OneVariableDensePolynomial([0, 1], x)))
 
     def testPseudoDivision(self): 
         A = self.f

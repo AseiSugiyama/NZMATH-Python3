@@ -1228,23 +1228,23 @@ import nzmath.matrix as matrix
 
 def resultant(f, g):
     """
-
-    returns the resultant of 2 polynomials.
-
+    Return the resultant of 2 polynomials.
     """
     m = f.degree()
     n = g.degree()
-    M = matrix.createMatrix(m+n, m+n)
+    full_size = m + n
 
-    # set upper half
+    f_row = f.coefficient.getAsList()[::-1] + [0] * (n - 1)
+    upper = []
     for i in range(n):
-        for j in range(m+1):
-            M.compo[i][i+j] = f[j]
-    # set lower half
+        upper += f_row[-i:] + f_row[:-i]
+    g_row = g.coefficient.getAsList()[::-1] + [0] * (m - 1)
+    lower = []
     for i in range(m):
-        for j in range(n+1):
-            M.compo[n+i][i+j] = g[j]
+        lower += g_row[-i:] + g_row[:-i]
 
+    assert len(upper) + len(lower) == full_size ** 2
+    M = matrix.createMatrix(full_size, upper + lower)
     return M.determinant()
 
 # Algorithm 3.1.2 of Cohen's book
@@ -1363,6 +1363,9 @@ def subResultantGCD(A, B):
             h = h ** (delta - 1) * g ** delta
 
 def discriminant(f):
+    """
+    Return discriminant of the given polynomial f.
+    """
     deg = f.degree()
     variable = f.getVariable()
     df = f.differentiate(variable)
@@ -1460,7 +1463,6 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
                                                 rational.theRationalField)
 
     def __divmod__(self, other):
-
         """
         About this division , we can treat only a map of
                      Q[x] --> Q[x]
@@ -1483,12 +1485,12 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
             else:
                 self_coeff = self.coefficient.getAsList()
                 other_coeff = other.coefficient.getAsList()
-                max_term_coeff_of_other = other_coeff[-1]
+                other_leading_coeff = other_coeff[-1]
                 new_coeff = []
                 i = self.degree()
                 k = other.degree()
                 while i >= k:
-                    q = self_coeff[-1] / max_term_coeff_of_other
+                    q = self_coeff[-1] / other_leading_coeff
                     m = 1
                     for j in other_coeff:
                         self_coeff[-(k+m)] = self_coeff[-(k+m)] - j * q
