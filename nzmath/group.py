@@ -37,6 +37,15 @@ class Group:
         else:
             return str(self.classes.__class__.__name__)
 
+    def __eq__(self, other):
+        if self.classes == other.classes and self.main == other.main:
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not (self == other)
+
     def setmain(self, value):
         """
         Change group type for additive(0) or multiplicative(1).
@@ -75,6 +84,8 @@ class Group:
             order = self.classes.grouporder()
         elif hasattr(self.classes, "__len__"):
             order = len(self.classes)
+        else:
+            order = self.classes.m
         if self.main and hasattr(self.classes, "zero"): # *-cyclic group
             order -= 1
         return order
@@ -113,7 +124,7 @@ class GroupElement:
         return self.class_name + ',' + str(self.element)
 
     def __eq__(self, other):
-        if self.element == other.element:
+        if self.element == other.element and self.main == other.main:
             return True
         else:
             return False
