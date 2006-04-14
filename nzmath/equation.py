@@ -162,20 +162,58 @@ def Newton(f,initial=1,repeat=250):
                 l = e1(tangent)
     return l
 
-def SimMethod(g, NewtonInitial=1, repeat=250):
+def SimMethod(g, initials=None, newtoninitial=1.0, repeat=250):
     """
-     g is list , m is the number of steps: ( = a_0*x^n + ... + a_(n-1)*x^1 + a_n*x^0 => [a_n, a_(n-1), ... , a_0] (a_0 != 0 and a_i is complex number))
+    Return zeros of a polynomial given as a list.
+
+    - g is the list of the polynomial coefficient in ascending order.
+    - initial (optional) is a list of initial approximations of zeros.
+    - newtoninitial (optional) is an initial value for Newton method to
+      obtain an initial approximations of zeros if 'initial' is not given.
+      default value is 1.0.
+    - repeat (optional) is the number of iteration. default is 250.
     """
+    if initials is None:
+        z = _initialize(g, newtoninitial)
+    else:
+        z = initials
+
     f = polynomial.OneVariableDensePolynomial(g, 'x')
     deg = f.degree()
-    q = []
-    for i in range(deg):
-        q.append(-abs(f[i]))
-    q.append(abs(f[deg]))
-    r = Newton(q, NewtonInitial)
     df = f.differentiate('x')
 
-    center = -f[deg-1]/(deg*f[deg])
+    value_list = [f(z[i]) for i in range(deg)]
+    for loop in range(repeat*deg):
+        sigma_list = [0] * deg
+        for i in range(deg):
+            if not value_list[i]:
+                continue
+            sigma = 0
+            for j in range(i):
+                sigma += 1 / (z[i] - z[j])
+            for j in range(i+1, deg):
+                sigma += 1 / (z[i] - z[j])
+            sigma_list[i] = sigma
+
+        for i in range(deg):
+            if not value_list[i]:
+                continue
+            ratio = value_list[i] / df(z[i])
+            z[i] -= ratio / (1 - ratio*sigma_list[i])
+            value_list[i] = f(z[i])
+
+    return z
+
+def _initialize(g, newtoninitial=1):
+    """
+    create initial values of equation given as a list g.
+    """
+    q = [-abs(c) for c in g[:-1]]
+    q.append(abs(g[-1]))
+    r = Newton(q, newtoninitial)
+
+    deg = len(g) - 1
+    center = -g[-2]/(deg*g[-1])
     about_two_pi = 6
     angular_step = cmath.exp(1j * about_two_pi / deg)
     angular_move = r
@@ -183,31 +221,5 @@ def SimMethod(g, NewtonInitial=1, repeat=250):
     for i in range(deg):
         z.append(center + angular_move)
         angular_move *= angular_step
-
-    old_sigma_list = range(deg)
-    for loop in range(repeat*deg):
-        sigma_list = []
-        for i in range(deg):
-            sigma = 0
-            for j in range(i):
-                sigma += 1 / (z[i] - z[j])
-            for j in range(i+1, deg):
-                sigma += 1 / (z[i] - z[j])
-            sigma_list.append(sigma)
-
-        for i in range(deg):
-            ratio = f(z[i]) / df(z[i])
-            z[i] -= ratio / (1 + ratio*sigma_list[i])
-
-        if sigma_list == old_sigma_list:
-            # it seems converged.
-            break
-        for sigma in sigma_list:
-            if abs(sigma) >= 1.0e+7:
-                # it seems diverging, so change initial value and retry.
-                # I don't know whether multiplying by an arbitrary value
-                # is a good choice or not. (Fe2+)
-                return SimMethod(g, -4*NewtonInitial, repeat + 10)
-        old_sigma_list = sigma_list
 
     return z
