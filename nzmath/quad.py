@@ -2,6 +2,7 @@ import math
 import nzmath.gcd
 import nzmath.arith1
 import nzmath.rational
+import nzmath.factor.misc
 
 class ReducedQuadraticForm:
     def __init__(self, element, unit):
@@ -149,7 +150,7 @@ def computePDF(f_1, f_2):
 
 def computeClassNumber(disc, limit_dis=100000):
     """
-    counting reduced forms. not only fundamenta discriminant.
+    counting reduced forms. not only fundamental discriminant.
     """
 
     if disc % 4 not in (0, 1):
@@ -235,4 +236,20 @@ def euclid_exd(a, b):
             d = v_3
             v_1 = t_1
             v_3 = t_3
+
+def fundOrNot(disc):
+    if disc != 1:
+        return False
+    if (disc % 4) == 1 and nzmath.factor.misc.squarePart(disc) == 1:
+        return True
+    elif (disc % 4) == 0 and nzmath.factor.misc.squarePart(disc / 4) == 1:
+        discof = (disc / 4) % 4
+        if discof == 2:
+            return True
+        elif discof == 3:
+            return True
+    return False
+
+
+
 
