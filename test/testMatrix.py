@@ -94,6 +94,16 @@ class MatrixTest(unittest.TestCase):
         self.assert_(a == a)
         self.assert_(isinstance(a == a, bool))
 
+    def testDeleteColumn(self):
+        m_2_3 = createMatrix(2, 3, [1, 2, 3] + [4, 5, 6])
+        m_delete_1 = createMatrix(2, 2, [2, 3, 5, 6])
+        self.assertEqual(m_delete_1, m_2_3.deleteColumn(1))
+        m_delete_2 = createMatrix(2, 2, [1, 3, 4, 6])
+        self.assertEqual(m_delete_2, m_2_3.deleteColumn(2))
+        m_delete_3 = createMatrix(2, 2, [1, 2, 4, 5])
+        self.assertEqual(m_delete_3, m_2_3.deleteColumn(3))
+
+
 class SquareMatrixTest(unittest.TestCase):
     def testTrace(self):
         assert c.trace() == 15
