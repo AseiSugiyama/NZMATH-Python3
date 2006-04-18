@@ -534,24 +534,28 @@ class SquareMatrix(Matrix):
 
     def __init__(self, row, column = 0, compo = 0):
         """
-        SquareMatrix(size [,components])
+        SquareMatrix(row, column [,components])
+        SquareMatrix must be row == column
         """
-        if (rational.isIntegerObject(row) and row > 0):
+        if row != column and column > 0:
+            raise ValueError, self.__doc__
+        elif (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = row
             self.compo = []
-            if isinstance(column, list):
-                if (len(column) != self.row ** 2):
-                    raise ValueError, "number of given components is not match the matrix size"
-                for i in range(self.row):
-                    self.compo.append(column[self.column*i : self.column*(i+1)])
-            elif isinstance(compo, list):
-                if (len(compo) != self.row ** 2):
-                    raise ValueError, "number of given components is not match the matrix size"
-                for i in range(self.row):
-                    self.compo.append(compo[self.column*i : self.column*(i+1)])
-            else:
+            if (not isinstance(column, list) and compo == 0):
                 for i in range(self.row):
                     self.compo.append([0] * self.column)
+            else:
+                if isinstance(column, list):
+                    _compo = column
+                elif isinstance(compo, list):
+                    _compo = compo
+                else:
+                    raise ValueError, "matrix parameter not found"
+                if (len(_compo) != self.row ** 2):
+                    raise ValueError, "number of given components is not match the matrix size"
+                for i in range(self.row):
+                    self.compo.append(_compo[self.column*i : self.column*(i+1)])
         else:
             raise ValueError, "invalide value for matrix size"
 
@@ -943,7 +947,7 @@ def _selectMatrix(matrice):
             return newmatrice
     return matrice
 
-def createMatrix(row, column, compo = 0):
+def createMatrix(row, column = 0, compo = 0):
     """
     generate new Matrix or SquareMatrix class.
     """
