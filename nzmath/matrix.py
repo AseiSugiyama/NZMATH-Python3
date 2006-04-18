@@ -535,9 +535,9 @@ class SquareMatrix(Matrix):
     def __init__(self, row, column = 0, compo = 0):
         """
         SquareMatrix(row, column [,components])
-        SquareMatrix must be row == column
+        SquareMatrix must be row == column .
         """
-        if row != column and column > 0:
+        if (column !=0) and (row != column) and (not isinstance(column, list)):
             raise ValueError, self.__doc__
         elif (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = row
