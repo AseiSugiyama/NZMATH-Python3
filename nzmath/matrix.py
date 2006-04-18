@@ -271,7 +271,7 @@ class Matrix:
             matrice.row += 1
         elif isinstance(arg, Matrix):
             if matrice.column != arg.column:
-               raise MatrixSizeError
+                raise MatrixSizeError
             matrice.compo += arg.compo
             matrice.row += arg.row
         else:
@@ -290,7 +290,7 @@ class Matrix:
             matrice.column += 1
         elif isinstance(arg, Matrix):
             if matrice.row != arg.row:
-               raise MatrixSizeError 
+                raise MatrixSizeError 
             for k in range(arg.row):
                 matrice.compo[k] = matrice.compo[k][:j-1] + arg.compo[k] + matrice.compo[k][j-1:]
             matrice.column += arg.column
