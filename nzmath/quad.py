@@ -238,7 +238,7 @@ def euclid_exd(a, b):
             v_3 = t_3
 
 def fundOrNot(disc):
-    if disc != 1:
+    if disc == 1:
         return False
     if (disc % 4) == 1 and nzmath.factor.misc.squarePart(disc) == 1:
         return True
