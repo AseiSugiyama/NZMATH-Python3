@@ -112,15 +112,29 @@ class OrderTest (unittest.TestCase):
 
 class PairingTest (unittest.TestCase):
     def testLine(self):
+        # having both variables
         e = elliptic.EC([0,0,1,-1,0],17)
         P = [0,0]
         l = e.line(P,P)
-        assert l[0] == 2
-        assert l[1](x=P[0],y=P[1]) == finitefield.FinitePrimeFieldElement(0, 17)
+        self.assertEqual(2, l[0])
+        self.assert_(isinstance(l[1], polynomial.MultiVariableSparsePolynomial))
+        self.assertEqual(e.field.zero, l[1](x=P[0],y=P[1]))
+        # having y only
         P2 = e.mul(2,P)
         l2 = e.line(P,P2)
-        assert l2[0] == -1
-        assert l2[1](0) == finitefield.FinitePrimeFieldElement(0, 17)
+        self.assertEqual(-1, l2[0])
+        self.assert_(isinstance(l2[1], polynomial.OneVariablePolynomial))
+        self.assertEqual(e.field.zero, l2[1](0))
+        # having no variable
+        l3 = e.line([0])
+        self.assertEqual(0, l3[0])
+        self.assert_(isinstance(l3[1], finitefield.FinitePrimeFieldElement))
+        self.assertEqual(e.field.one, l3[1])
+        # having x only
+        l4 = e.line(P, [0])
+        self.assertEqual(1, l4[0])
+        self.assert_(isinstance(l4[1], polynomial.OneVariablePolynomial))
+        self.assertEqual(e.field.zero, l4[1](P[0]))
 
     def testWeilPairing(self):
         # this example was provided by Kim Nguyen.
