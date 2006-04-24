@@ -161,6 +161,14 @@ class Matrix:
 
     def __repr__(self):
         return_str = ""
+        for i in range(self.row):
+            return_str += str(self.compo[i])
+            if i+1 != self.row:
+                return_str += "+"
+        return return_str
+
+    def __str__(self):
+        return_str = ""
         width = [1] * self.column      # width of each column
         for j in range(self.column):
             for i in range(self.row):
@@ -171,9 +179,6 @@ class Matrix:
                 return_str += "%*s " % (width[j], str(self.compo[i][j]))
             return_str += "\n"
         return return_str[:-1]
-
-    def __str__(self):
-        return str(self.compo)
 
     def __call__(self, arg):
         return self * arg
@@ -313,6 +318,8 @@ class Matrix:
         """
         matrice = self.copy()
         matrice.column -= 1
+        for k in range(self.row):
+            del matrice.compo[k][j-1]
         return _selectMatrix(matrice)
 
     # Mathematical functions ---------------------------------------------
