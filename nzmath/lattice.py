@@ -106,3 +106,6 @@ class LatticeElement(Matrix):
 
     def getLattice(self):
         return self.lattice
+
+class VectorsNotIndependent(Exception):
+    pass
