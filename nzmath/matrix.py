@@ -820,7 +820,6 @@ class IntegerMatrix(Matrix):
                     lst.append(1)
                 n = 1
         import nzmath.gcd as gcd
-        import nzmath.vector as vector
         while n != 1:
             j = n
             c = 0
