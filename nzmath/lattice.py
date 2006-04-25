@@ -1,5 +1,6 @@
 from __future__ import division
 from nzmath.matrix import Matrix
+from nzmath.matrix import VectorsNotIndependent
 from nzmath.vector import *
 
 
@@ -107,5 +108,3 @@ class LatticeElement(Matrix):
     def getLattice(self):
         return self.lattice
 
-class VectorsNotIndependent(Exception):
-    pass
