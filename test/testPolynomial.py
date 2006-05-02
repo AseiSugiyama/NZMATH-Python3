@@ -311,7 +311,7 @@ class IntegerResidueClassPolynomialTest(unittest.TestCase):
 
 class ComplexPolynomialTest (unittest.TestCase):
     def testInit(self):
-        f = OneVariableDensePolynomial([1j,2], 'x')
+        f = OneVariableDensePolynomial([1j, 2], 'x')
         self.assertEqual(1, f.degree())
 
 
@@ -462,14 +462,11 @@ class PolynomialGCDTest(unittest.TestCase):
 
         d = B[B.degree()]
         Q, R = pseudoDivision(A, B)
-#        print "end"
-#        print "Q=", Q
-#        print "R=", R
-#        print pseudoDivision(f, g)
         assert d**(A.degree()-B.degree()+1) * A == B * Q + R
 
     def testSubResultantGCD(self):
-        assert subResultantGCD(self.f2, self.g2) == OneVariableDensePolynomial([-1,0,1], x)
+        self.assertEqual(subResultantGCD(self.f2, self.g2), OneVariableDensePolynomial([-1, 0, 1], x))
+
 
 class SquareFreeDecompositionChar0Test(unittest.TestCase):
     def setUp(self):
