@@ -162,7 +162,7 @@ def Newton(f,initial=1,repeat=250):
                 l = e1(tangent)
     return l
 
-def SimMethod(g, initials=None, newtoninitial=1.0, repeat=250):
+def SimMethod(g, initials=None, newtoninitial=None, repeat=250):
     """
     Return zeros of a polynomial given as a list.
 
@@ -170,11 +170,13 @@ def SimMethod(g, initials=None, newtoninitial=1.0, repeat=250):
     - initial (optional) is a list of initial approximations of zeros.
     - newtoninitial (optional) is an initial value for Newton method to
       obtain an initial approximations of zeros if 'initial' is not given.
-      default value is 1.0.
-    - repeat (optional) is the number of iteration. default is 250.
+    - repeat (optional) is the number of iteration. The default is 250.
     """
     if initials is None:
-        z = _initialize(g, newtoninitial)
+        if newtoninitial:
+            z = _initialize(g, newtoninitial)
+        else:
+            z = _initialize(g)
     else:
         z = initials
 
@@ -183,7 +185,7 @@ def SimMethod(g, initials=None, newtoninitial=1.0, repeat=250):
     df = f.differentiate('x')
 
     value_list = [f(z[i]) for i in range(deg)]
-    for loop in range(repeat*deg):
+    for loop in range(repeat):
         sigma_list = [0] * deg
         for i in range(deg):
             if not value_list[i]:
@@ -204,13 +206,16 @@ def SimMethod(g, initials=None, newtoninitial=1.0, repeat=250):
 
     return z
 
-def _initialize(g, newtoninitial=1):
+def _initialize(g, newtoninitial=None):
     """
     create initial values of equation given as a list g.
     """
     q = [-abs(c) for c in g[:-1]]
     q.append(abs(g[-1]))
-    r = Newton(q, newtoninitial)
+    if newtoninitial is None:
+        r = Newton(q, _upper_bound_of_roots(q))
+    else:
+        r = Newton(q, newtoninitial)
 
     deg = len(g) - 1
     center = -g[-2]/(deg*g[-1])
@@ -223,3 +228,11 @@ def _initialize(g, newtoninitial=1):
         angular_move *= angular_step
 
     return z
+
+def _upper_bound_of_roots(g):
+    """
+    Return an upper bound of roots.
+    """
+    weight = len(filter(None, g))
+    assert g[-1]
+    return max([pow(weight*abs(c/g[-1]), 1/len(g)) for c in g])
