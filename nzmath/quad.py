@@ -1,8 +1,21 @@
 import math
+import random
+import copy
 import nzmath.gcd
 import nzmath.arith1
+import nzmath.group
 import nzmath.rational
 import nzmath.factor.misc
+import nzmath.finitefield
+
+
+def ct_rqf(id_x):
+    a, b = computeClassNumber(id_x)
+    c = b[:]
+    d = []
+    for i in c:
+        d.append(ReducedQuadraticForm(i, b[0]))
+    return d
 
 class ReducedQuadraticForm:
     def __init__(self, element, unit):
@@ -30,7 +43,25 @@ class ReducedQuadraticForm:
             eltemp = computePDF(eltemp, self.element)
             exp = exp - 1
         return self.__class__(eltemp, self.unit)
+    
+    def __div__(self,other):
+        invel = other.inverse()
+        return computePDF(self.element, invel.element)
 
+    def __eq__(self, other):
+        if (self.element == other.element) and (self.unit == other.unit):
+            return True
+        else:
+            return False
+
+    def inverse(self):
+        if self.element == self.unit:
+            return copy.deepcopy(self)
+        else:
+            cpyel = self.element[:]
+            cpyel[1] = -cpyel[1]
+            return ReducedQuadraticForm(reducePDF(cpyel), self.unit[:])
+        
     def repOfModule(self):
         ld = self.element[1]**2 - 4*self.element[0]*self.element[2]
         a_m2 = 2*self.element[0]
@@ -251,5 +282,266 @@ def fundOrNot(disc):
     return False
 
 
+def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt):
+    '''
+    this is a submodule called by the module, bsgs.
+    check bsgs is finished or not yet.
+    '''
+    h[0] = h[0] * n[0]
+    if h[0] >= lwrbd:
+        return h[0]
+    uprbd_1[0] = uprbd_1[0] / n[0] # floor of uprbd_1[0] / n[0]
+    lwrbd_1[0] = lwrbd_1[0] / n[0]  + 1 # floor + 1 of lwrbd_1[0] / n[0]
+    q[0] = nzmath.arith1.floorsqrt(n[0])
+    lsl = ls[:]
+    ls = []
+    lll = ll[:]
+    ll = []
+    for r in range(q[0]):
+        for ss in lsl:
+            ls.append((nt[0]**r) * ss) # multiple of two elements of G
+    y = nt[0]**q[0]
+    for a in range(q[0]):
+        for eol in lll:
+            ll.append((y**a) * eol) # multiple of two elements of G
+    return -1
+
+def cptodr(n, x, c_s1, ls, ll):
+    # flg
+    flg_bk = 1
+    while flg_bk == 1:
+        flg_bk = 0
+#        print "&&&("
+        lst_p = nzmath.factor.misc.primeDivisors(n[0])
+        tp_ls = ls[:]
+#        print n[0]
+#        print lst_p
+#        print tp_ls
+
+        for tmpri in lst_p:
+            # initialize c_s1
+            c_s1 = []
+            for ttp_ls in tp_ls:
+                c_s1.append([(x[1] ** (n[0] / tmpri)) * ttp_ls, 0])
+            # sort
+            c_s1.sort()
+            co_cs = c_s1[:]
+            # check
+            tp_ll = ll[:]
+            for tmp_els in co_cs:
+                for tmp_ell in tp_ll:
+                    if tmp_els[0] == tmp_ell:
+                        flg_bk = 1
+                        n[0] = n[0] / tmpri
+                        break
+                if flg_bk == 1:
+                    break
+
+def cptgs(n, q, sz, sy, c_s1, uprbd_1, ll):
+    gsll = ll[:]
+    gscs = c_s1[:]
+
+    #print "611"
+    #print gsll
+    #print gscs
+    while 1:
+        for tpw in gsll:
+            sz1 = sz[0] * tpw
+            for tpcs in gscs:
+                if sz1 == tpcs[0]:
+                    n[0] = n[0] - tpcs[1]
+                    return True
+        # continue (sp. 5)
+
+        sz[0] = sy[0] * sz[0]
+        n[0] = n[0] + q[0]
+        if n[0] <= uprbd_1:
+            continue
+        else:
+            raise ValueError("the order is larger than lower bound")
+        
+    
+def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut):
+    # copy ls
+    tpls = ls[:]
+    flg_s = 0
+    # initialize
+    sy = [0]
+    sz = [0]
+    #print x[0] * x[1]
+    for tr in range(q[0]):
+        #print "#8821"
+        #print x[0] * x[1]
+        # compute 2 to q-1
+        if (tr != 0) and (tr != 1):
+            x[tr] = x[1] * x[tr - 1]
+            #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
+
+        for ttr in tpls:
+            print "###"
+            print x[tr]
+            print "###"
+            tmpx = x[tr]*ttr
+            if (flg_s == 0) and (tmpx == ut) and (tr != 0):
+                print "aaaaaa"
+                flg_s = 1
+                n[0] = tr
+                ##c_s1_r[tr].append(tmpx)
+            c_s1.append([tmpx, tr])
+                # sort ( if you want to sort it with your estimate,
+                # you have to implement '__ge__' method of the class with your way.)
+    c_s1.sort()
+    print "##991"
+    print c_s1
+    print "##991"
+
+    if flg_s == 1:
+        # 6
+        cptodr(n, x, c_s1, ls, ll)
+    else:
+        # step 4 to 5
+        print x[1]
+            
+        print x[q[0] -1 ]
+        
+        sy[0] = x[1] * x[q[0] - 1]
+        sz[0] = x[1] ** lwrbd_1[0]
+        n[0] = lwrbd_1[0]
+        #print "########"
+        #print n[0]
+        #print "########"
+        # compute giant steps
+        print "$$"
+        cptgs(n, q, sz, sy, c_s1, uprbd_1, ll)
+        print "$$$"
+        # 6
+        cptodr(n, x, c_s1, ls, ll)
+    
+        
+def bsgs(iordmel, lwrbd, uprbd):
+    '''
+    iordmel is a class. it return a random element of target infinite group.
+    it return a unit of the group too.
+    '''
+    # check of bounds
+    if lwrbd > uprbd:
+        raise TypeError("lower bound needs to be less than upper bound")
+    if lwrbd <= (uprbd / 2):
+        raise TypeError("upper bound / 2 needs to be more than lower bound")
+    
+    h = [1] # h is integer
+    lwrbd_1 = []
+    lwrbd_1.append(lwrbd)
+    uprbd_1 = []
+    uprbd_1.append(uprbd)
+
+    # get the unit
+    ut = iordmel.retunit()
+    # append the unit to subgroups of G
+    ls = [] # a subset of target group, G
+    ll = [] # a subset of G
+    ls.append(ut)
+    ll.append(ut)
+    # initialize variables
+    n = [0]
+    q = [0]
+    h = [1] # order
+    nt = [0] # next value
+    ret = -1
+    # take a new element of the group.
+    while ret == -1:
+        nt[0] = iordmel.retnext()
+        q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) + 1
+
+        print "RRR"
+        print nt[0] * ut
+        print ut * nt[0]
+        print "RRR"
+        print q[0]
+        print "RRRR"
+        # initialize variables
+        #x = range(q[0] + 1) # x is the set of elements of G
+        x = range(q[0]) # x is the set of elements of G
+        c_s1 = [] # a subset of G
+        # c_s1_r = range(q) # a set of subset of G
+        for i in range(q[0]):
+            x[i] = 0
+            ##c_s1_r[i] = 0
+        print "ttt"
+        print x
+        print "ttt"
+        # compute small steps        
+        x[0] =  ut # maybe, this code must not be here
+        print "www"
+        print q[0]
+        print x
+        print "www"
+        print nt[0]
+        print h[0]
+        x[1] = (nt[0] ** h[0])
+        print x[1]
+        print "uuu"
+        print x[0] * x[1]
+        print x[1].ope(x[0])
+        print "uuu"
+        
+        if x[1] == ut:
+            n[0] = 1
+        else:
+            # 3kara6
+            cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut)
+        
+        # finished?
+        ret = ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt)
+    print "!!!!!!!!!!!!!!!!!!!!!!!!!"
+    return ret
 
 
+def exp_p(a):
+    a.append(3)
+    
+def exp_s():
+    a = []
+    print a
+    exp_p(a)
+    print a
+    
+    
+class Groupforbsgs(nzmath.group.GroupElement):
+    def __init__(self, value):
+        nzmath.group.GroupElement.__init__(self, value, 1)
+        
+    def __mul__(self, other):
+        return Groupforbsgs(self.element * other.element)
+        #return self.ope(other)
+
+    def __pow__(self, other):
+        return Groupforbsgs(self.element ** other)
+        #return self.ope2(other)
+    
+class nxtel:
+    def __init__(self, odr):
+        if type(odr) != int:
+            raise TypeError("the value must be integer")
+        self.numlst = range(odr)
+        self.odr = odr
+        random.shuffle(self.numlst)
+        
+    def retunit(self):
+        return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(1, self.odr))
+    
+    def retnext(self):
+        while 1:
+            tpa =  self.numlst.pop()
+            if tpa == 1 or tpa == 0:
+                continue
+            #return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(tpa, self.odr))
+            return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(3, self.odr))
+
+
+
+# reload(quad)
+# a = quad.nxtel(31)
+# quad.bsgs(a, 26, 50)
+# a = quad.nxtel(99991)
+# quad.bsgs(a, 99999/2 + , 99999)
