@@ -9,14 +9,6 @@ import nzmath.factor.misc
 import nzmath.finitefield
 
 
-def ct_rqf(id_x):
-    a, b = computeClassNumber(id_x)
-    c = b[:]
-    d = []
-    for i in c:
-        d.append(ReducedQuadraticForm(i, b[0]))
-    return d
-
 class ReducedQuadraticForm:
     def __init__(self, element, unit):
         self.element = element
@@ -29,6 +21,8 @@ class ReducedQuadraticForm:
     def __mul__(self, other):
         if not isinstance(other, ReducedQuadraticForm):
             return NotImplemented
+        #print self.element
+        #print other.element
         return self.__class__(computePDF(self.element, other.element), self.unit)
 
     def __pow__(self, exp):
