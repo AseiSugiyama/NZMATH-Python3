@@ -797,17 +797,22 @@ class IntegerMatrix(Matrix):
                 i -= 1; k -= 1
                 # go to step 2
 
+class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
+    """
+    IntegerSquareMatrix is a class for square matrices
+    which coefficients are all integers.
+    """
+
+    import nzmath.gcd as gcd
+
     def smithNormalForm(self):
         """
-        To find the Smith Normal Form for square non-singular integral matrix.
+        Find the Smith Normal Form for square non-singular integral matrix.
         Return the list of diagonal elements.
         """
 
         M = self.copy()
         n = M.row
-        if M.row != M.column:
-            raise ValueError("not square matrix")
-
         R = int(M.determinant())
         if R < 0:
             R = -R
@@ -819,7 +824,6 @@ class IntegerMatrix(Matrix):
                 for x in range(n-1):
                     lst.append(1)
                 n = 1
-        import nzmath.gcd as gcd
         while n != 1:
             j = n
             c = 0
@@ -863,6 +867,72 @@ class IntegerMatrix(Matrix):
         lst.reverse()
         return lst
 
+    def extsmithNormalForm(self):
+        """
+        Find the Smith Normal Form M for square non-singular integral matrix,
+        Computing U,V which satisfied M=U*self*V.
+        Return matrices tuple,(U,V,M).
+        """
+        M = self.copy()
+        n = M.row
+        U = IntegerSquareMatrix(M.row)
+        V = IntegerSquareMatrix(M.row)
+        for i in range(M.row):
+            U.compo[i][i] = 1
+            V.compo[i][i] = 1
+        if R == 0:
+            raise ValueError("Don't input matrix whose determinant is 0")
+        if abs(M.determinant()) == 1:
+            V = M.inverse()
+            M = U
+            return (U, V, M)
+        while n != 1:
+            j = n
+            c = 0
+            while j != 1:
+                j = j-1
+                if M[n, j] != 0:
+                    u, v, d = gcd.extgcd(M[n, n], M[n, j])
+                    M_nn = M[n, n] // d
+                    M_nj = M[n, j] // d
+                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
+                    M.getColumn(n)))
+                    M.setColumn(n, B)
+                    B = u * V.getColumn(n) + v * V.getColumn(j)
+                    V.setColumn(j, (M_nn * V.getColumn(j) - M_nj *
+                    V.getColumn(n)))
+                    V.setColumn(n, B)
+            j = n
+            while j != 1:
+                j = j-1
+                if M[j, n] != 0:
+                    u, v, d = gcd.extgcd(M[n, n],M[j, n])
+                    M_nn = M[n, n] // d
+                    M_jn = M[j, n] // d
+                    B = u * M.getRow(n) + v * M.getRow(j)
+                    M.setRow(j, (M_nn * M.getRow(j) - M_jn * M.getRow(n)))
+                    M.setRow(n, B)
+                    B = u * U.getRow(n) + v * U.getRow(j)
+                    U.setRow(j, (M_nn * U.getRow(j) - M_jn * U.getRow(n)))
+                    U.setRow(n, B)
+                    c = c+1
+            if c <= 0:
+                b = int(M[n, n])
+                flag = False
+                for k in range(1, n):
+                    for l in range(1, n):
+                        if (M[k, l] % b) != 0:
+                            M.setRow(n, M.getRow(n) + M.getRow(k))
+                            U.setRow(n, U.getRow(n) + U.getRow(k))
+                            flag = True
+                if not flag:
+                    n = n-1
+        for j in range(1, M.column+1):
+            if M[j, j] < 0:
+                V[j] = -V[j]
+                M[j, j] = -M[j, j]
+        return (U, V, M)
 
 class MatrixRing:
     """
