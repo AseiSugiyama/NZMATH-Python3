@@ -803,8 +803,6 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
     which coefficients are all integers.
     """
 
-    import nzmath.gcd as gcd
-
     def smithNormalForm(self):
         """
         Find the Smith Normal Form for square non-singular integral matrix.
@@ -824,6 +822,7 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
                 for x in range(n-1):
                     lst.append(1)
                 n = 1
+        import nzmath.gcd as gcd
         while n != 1:
             j = n
             c = 0
@@ -869,7 +868,7 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
 
     def extsmithNormalForm(self):
         """
-        Find the Smith Normal Form M for square non-singular integral matrix,
+        Find the Smith Normal Form M for square matrix,
         Computing U,V which satisfied M=U*self*V.
         Return matrices tuple,(U,V,M).
         """
@@ -880,12 +879,11 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
         for i in range(M.row):
             U.compo[i][i] = 1
             V.compo[i][i] = 1
-        if R == 0:
-            raise ValueError("Don't input matrix whose determinant is 0")
         if abs(M.determinant()) == 1:
             V = M.inverse()
             M = U
             return (U, V, M)
+        import nzmath.gcd as gcd
         while n != 1:
             j = n
             c = 0
