@@ -2419,9 +2419,7 @@ class PolynomialResidueRing (ring.ResidueClassRing):
         variables of the ring.
 
         """
-        self.ring = aRing
-        self.ideal = ideal
-        self.properties = ring.CommutativeRingProperties()
+        ring.ResidueClassRing.__init__(self, aRing, ideal)
         if self.ring.isnoetherian():
             self.properties.setIsnoetherian(True)
         if self.ring.isfield():
