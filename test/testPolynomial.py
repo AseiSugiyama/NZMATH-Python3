@@ -619,6 +619,26 @@ class ResidueRingTest (unittest.TestCase):
         self.failUnless(isinstance(self.Zx_I7.createElement(f), ring.ResidueClass))
 
 
+class PolynomialResidueRingPowerTest (unittest.TestCase):
+    # Thanks to Bill Hale
+    def setUp(self):
+        p = 7
+        QX = PolynomialRing(Q, 'X')
+        X = QX.X
+        fX = X**p - 1
+        pX = fX / (X - 1)
+        IpX = OneVariablePolynomialIdeal(pX, QX)
+        self.K = PolynomialResidueRing(QX, IpX)
+        self.w = ring.ResidueClass(X, IpX)
+
+    def testPower(self):
+        w3 = self.w * self.w * self.w
+        w4 = self.w * self.w * self.w * self.w
+        w7 = w3 * w4
+        self.assert_(w7 in self.K)
+        self.assertEqual(1, w7.x)
+
+
 class OneVariablePolynomialCoefficientsTest (unittest.TestCase):
     def setUp(self):
         self.c1 = OneVariablePolynomialCoefficients()

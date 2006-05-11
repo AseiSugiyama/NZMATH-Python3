@@ -2352,7 +2352,7 @@ class OneVariablePolynomialIdeal (ring.Ideal):
                     lc = clist[-1]
                     clist = [R.zero] + clist[:-1]
                     f = OneVariableDensePolynomial(clist, x, R)
-                    self._cache[d] = f - lc * self._cache[g_degree]
+                    self._cache[d] = f + lc * self._cache[g_degree]
                 else:
                     clist = [R.zero] + clist
                     self._cache[d] = OneVariableDensePolynomial(clist, x, R)
