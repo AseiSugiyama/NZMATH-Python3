@@ -483,6 +483,12 @@ class RationalField (ring.QuotientField):
         except (TypeError, AttributeError):
             return False
 
+    def __eq__(self, other):
+        """
+        Equality test.
+        """
+        return isinstance(other, RationalField)
+
     def classNumber(self):
         """The class number of the rational field is one."""
         return 1
@@ -643,6 +649,9 @@ class Integer(long, ring.CommutativeRingElement):
     def __abs__(self):
         return Integer(abs(long(self)))
 
+    def __eq__(self, other):
+        return long(self) == long(other)
+
     def getRing(self):
         return theIntegerRing
 
@@ -706,6 +715,12 @@ class IntegerRing (ring.CommutativeRing):
             return isIntegerObject(+element)
         except (TypeError, AttributeError):
             return False
+
+    def __eq__(self, other):
+        """
+        Equality test.
+        """
+        return isinstance(other, IntegerRing)
 
     def getQuotientField(self):
         """

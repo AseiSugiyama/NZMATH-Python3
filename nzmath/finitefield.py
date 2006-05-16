@@ -326,6 +326,14 @@ class FiniteExtendedField (FiniteField):
         except:
             return False
 
+    def __eq__(self, other):
+        """
+        Equality test.
+        """
+        if isinstance(other, FiniteExtendedField):
+            return self.char == other.char and self.degree == other.degree
+        return False
+
     # properties
     def _getOne(self):
         "getter for one"

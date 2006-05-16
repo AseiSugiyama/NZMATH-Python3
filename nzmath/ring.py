@@ -190,7 +190,8 @@ class RingElement (object):
         """
         This class is abstract and cannot be instanciated.
         """
-        raise NotImplementedError
+        if self.__class__.__name__ == "RingElement":
+            raise NotImplementedError("RingElement is an abstract class.")
 
     def getRing(self):
         """
