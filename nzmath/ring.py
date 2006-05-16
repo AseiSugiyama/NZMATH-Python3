@@ -42,6 +42,18 @@ class Ring (object):
         """
         raise NotImplementedError
 
+    def __eq__(self, other):
+        """
+        Equality test.
+        """
+        raise NotImplementedError
+
+    def __ne__(self, other):
+        """
+        Inequality test.
+        """
+        return not (self == other)
+
 
 class CommutativeRing (Ring):
     """
@@ -187,6 +199,18 @@ class RingElement (object):
         """
         raise NotImplementedError
 
+    def __eq__(self, other):
+        """
+        Equality test.
+        """
+        raise NotImplementedError
+
+    def __ne__(self, other):
+        """
+        Inequality test.
+        """
+        return not (self == other)
+
 
 class CommutativeRingElement (RingElement):
     """
@@ -295,7 +319,7 @@ class Ideal (object):
         """
         I != J <=> I.__ne__(J)
         """
-        raise NotImplementedError
+        return not (self == other)
 
     def reduce(self, element):
         """
