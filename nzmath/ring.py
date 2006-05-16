@@ -353,11 +353,8 @@ class ResidueClassRing (CommutativeRing):
         return False
 
     def __eq__(self, other):
-        try:
-            if self.ideal == other.ideal:
-                return True
-        except:
-            pass
+        if isinstance(other, ResidueClassRing):
+            return self.ideal == other.ideal
         return False
 
     def __ne__(self, other):
