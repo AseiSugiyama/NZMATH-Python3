@@ -169,7 +169,7 @@ class QuotientField (Field):
         self.basedomain = domain
 
 
-class RingElement:
+class RingElement (object):
     """
     RingElement is an abstract class for elements of rings.
     """
@@ -253,7 +253,7 @@ class QuotientFieldElement (FieldElement):
         return self.numerator*other.denominator != self.denominator*other.numerator
 
 
-class Ideal:
+class Ideal (object):
     """
     Ideal class is an abstract class to represent the finitely
     generated ideals.  Because the finitely-generatedness is not a
@@ -382,7 +382,7 @@ class ResidueClass (CommutativeRingElement):
         return ResidueClassRing(self.ideal.ring, self.ideal)
 
 
-class CommutativeRingProperties:
+class CommutativeRingProperties (object):
     """
     boolean properties of ring.
 
