@@ -350,6 +350,9 @@ class ResidueClass (CommutativeRingElement):
         self.x = x
         self.ideal = ideal
 
+    def __pos__(self):
+        return self.__class__(self.ideal.reduce(self.x ), self.ideal)
+
     def __add__(self, other):
         assert self.ideal == other.ideal
         return self.__class__(self.ideal.reduce(self.x + other.x), self.ideal)
@@ -361,6 +364,15 @@ class ResidueClass (CommutativeRingElement):
     def __mul__(self, other):
         assert self.ideal == other.ideal
         return self.__class__(self.ideal.reduce(self.x * other.x), self.ideal)
+
+    def __eq__(self, other):
+        if isinstance(other, ResidueClass):
+            if self.ideal == other.ideal:
+                return (self.x - other.x) in self.ideal
+        return False
+
+    def __ne__(self, other):
+        return not (self == other)
 
     def getRing(self):
         """
