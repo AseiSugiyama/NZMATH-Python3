@@ -89,6 +89,33 @@ class GetRingTest (unittest.TestCase):
     def testComplex(self):
         self.assertEqual(theComplexField, ring.getRing(1+1j))
 
+
+class ResidueClassTest (unittest.TestCase):
+    def setUp(self):
+        class IntegerIdeal (ring.Ideal):
+            def __init__(self, generator):
+                self.generator = generator
+                self.ring = rational.theIntegerRing
+
+            def __eq__(self, other):
+                return abs(self.generator) == abs(other.generator)
+
+            def __contains__(self, element):
+                return not (element % self.generator)
+
+        self.I = IntegerIdeal(3)
+        self.R = ring.ResidueClassRing(rational.theIntegerRing, self.I)
+        self.C = ring.ResidueClass(1, self.I)
+
+    def testEq(self):
+        self.assert_(self.R == self.R)
+        self.assert_(self.C == self.C)
+        self.failIf(self.R != self.R)
+        self.failIf(self.C != self.C)
+        self.failIf(self.R == self.C)
+        self.failIf(self.C == self.R)
+
+
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
     all_names = globals()
