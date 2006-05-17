@@ -21,6 +21,8 @@ h2 = [1,1,0]
 
 h3 = [1,1,1]
 
+i = (IntegerMatrix(3,3,[2,1,3,-1,0,-1,1,0,0]),IntegerMatrix(3,3,[11,3,0,3,1,1,-10,-3,-1]),IntegerMatrix(3,3,[12,0,0,0,1,0,0,0,1]))
+
 class MatrixTest(unittest.TestCase):
     def testAdd(self):
         sum = createMatrix(2,2)
@@ -77,15 +79,6 @@ class MatrixTest(unittest.TestCase):
         assert UT.isUpperTriangularMatrix()
         assert not notUT.isUpperTriangularMatrix()
 
-
-    def testsmithNormalForm(self):
-        s1 = IntegerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
-        s2 = IntegerMatrix(3,3,[1,2,4,0,3,5,0,0,0])
-        s3 = IntegerMatrix(3,3,[1,0,0,9,1,0,5,6,1])
-        assert h1 == s1.smithNormalForm()
-        self.assertRaises(ValueError, s2.smithNormalForm)
-        assert h3 == s3.smithNormalForm()
-
     def testGetitem(self):
         self.assertEqual(2, a[1,2])
         self.assertRaises(IndexError, a.__getitem__, "wrong")
@@ -133,6 +126,19 @@ class SquareMatrixTest(unittest.TestCase):
         assert L * U == d
         assert L.isLowerTriangularMatrix()
         assert U.isUpperTriangularMatrix()
+
+class IntegerSquareTest(unittest.TestCase):
+    def testSmithNormalForm(self):
+        s1 = IntegerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
+        s2 = IntegerMatrix(3,3,[1,2,4,0,3,5,0,0,0])
+        s3 = IntegerMatrix(3,3,[1,0,0,9,1,0,5,6,1])
+        assert h1 == s1.smithNormalForm()
+        self.assertRaises(ValueError, s2.smithNormalForm)
+        assert h3 == s3.smithNormalForm()
+
+    def testExtSmithNormalForm(self):
+        s = integerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
+        assert i == s.extsmithNormalForm()
 
 class SubspaceTest(unittest.TestCase):
     def testSupplementBasis(self):
