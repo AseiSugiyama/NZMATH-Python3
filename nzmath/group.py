@@ -1,10 +1,11 @@
 """
 Group Theorical module
 """
-
+import math
 import nzmath.rational as rational
 import nzmath.factor.methods as facts
-
+import nzmath.vector as vector
+import nzmath.matrix as matrix
 
 class Group:
     """
@@ -51,7 +52,7 @@ class Group:
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) :
-            self.main = (value and 1)
+            self.main = (value & 1)
         else:
             raise TypeError("invalid input")
 
@@ -113,6 +114,8 @@ class GroupElement:
                     self.main = 1
                 if self.type_check(0):
                     self.main = 0
+                if self.main == -1:
+                    raise TypeError("This element isn't Group")
             self.classes = self.getGroup()
             self.setmain(self.main) # mainly operation
             self.class_name = self.classes.classes.__class__.__name__
@@ -137,7 +140,7 @@ class GroupElement:
         Check group type is value or not.
         """
         a = self.element
-        if not (value and 1):
+        if not (value & 1):
             if hasattr(a, "__add__") and hasattr(a, "__mul__"):
                 return True
             else:
@@ -153,7 +156,7 @@ class GroupElement:
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) and self.type_check(value):
-            self.main = (value and 1)
+            self.main = (value & 1)
         else:
             raise TypeError("invalid input")
         self.classes.setmain(self.main)
@@ -187,7 +190,7 @@ class GroupElement:
         cla = self.classes
         main = self.main
         if hasattr(cla.classes, "zero") and (ele == cla.classes.zero):
-                return self
+            return self
         else:
             if not main:
                 return GroupElement(-ele, main)
@@ -232,7 +235,7 @@ class GroupElement:
         j = 0
         b = a.ope2(2)
         t = 2 * v
-        while(1):
+        while True:
             for (c, k) in R:
                 if b == c:
                     return (t - k)
@@ -247,7 +250,6 @@ class GroupElement:
         Return the group which element belongs.
         """
         if self.type_check(0) and self.type_check(1):
-            import nzmath.ring as ring
             if hasattr(self.element, "getRing"):
                 return Group(self.element.getRing(), self.main)
             else:
@@ -292,7 +294,7 @@ class GenerateGroup(Group):
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) :
-            self.main = (value and 1)
+            self.main = (value & 1)
         else:
             raise TypeError("invalid input")
         for a in self.generator:
@@ -310,12 +312,8 @@ class AbelianGenerate(GenerateGroup):
         If B[j]=transpose(b[1,j],b[2,j],..,b[l,j]),
         it satisfies that product(generator[i]**b[i,j])=1 for each j.
         """
-        import nzmath.vector as vector
-        import nzmath.matrix as matrix
-        import math
-        import nzmath.sandbox.extsmith as extsmith
         l = len(self.generator)
-        b = extsmith.IntSquareMatrix(l)
+        b = matrix.IntegerSquareMatrix(l)
         H1 = [(self.identity(), vector.Vector([0] * l))]
         H2 = list(H1)
         m = 1
@@ -334,7 +332,7 @@ class AbelianGenerate(GenerateGroup):
             baby_e = GroupElement(g_gen[j - 1])
             giant_e = GroupElement(g_gen[j - 1])
             flag = False
-            while(not flag):
+            while not flag:
                 for (g_g, v) in giant_s:
                     for (g_b, w) in baby_s:
                         if g_g.ope(giant_e) == g_b:
@@ -397,7 +395,7 @@ class AbelianGenerate(GenerateGroup):
         Compute Finite Abelian Group Structure.
         """
         B = self.relationLattice()
-        U_d, V, M = B.smithNormalForm()
+        U_d, V, M = B.extsmithNormalForm()
         det = int(M.determinant())
         U = U_d.inverse()
         for i in range(U_d.row):
