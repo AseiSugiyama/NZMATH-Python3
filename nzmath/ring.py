@@ -274,9 +274,6 @@ class QuotientFieldElement (FieldElement):
     def __eq__(self, other):
         return self.numerator*other.denominator == self.denominator*other.numerator
 
-    def __ne__(self, other):
-        return self.numerator*other.denominator != self.denominator*other.numerator
-
 
 class Ideal (object):
     """
@@ -358,8 +355,26 @@ class ResidueClassRing (CommutativeRing):
             return self.ideal == other.ideal
         return False
 
-    def __ne__(self, other):
-        return not (self == other)
+    # properties
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            seed = self.ring.one
+            if seed is not None:
+                self._one = ResidueClass(seed, self.ideal)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            seed = self.ring.zero
+            if seed is not None:
+                self._zero = ResidueClass(seed, self.ideal)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
 
 
 class ResidueClass (CommutativeRingElement):
@@ -392,9 +407,6 @@ class ResidueClass (CommutativeRingElement):
             if self.ideal == other.ideal:
                 return (self.x - other.x) in self.ideal
         return False
-
-    def __ne__(self, other):
-        return not (self == other)
 
     def getRing(self):
         """
