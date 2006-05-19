@@ -298,6 +298,7 @@ def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt):
     for a in range(q[0]):
         for eol in lll:
             ll.append((y**a) * eol) # multiple of two elements of G
+    print h[0]
     return -1
 
 def cptodr(n, x, c_s1, ls, ll):
@@ -335,9 +336,9 @@ def cptgs(n, q, sz, sy, c_s1, uprbd_1, ll):
     gsll = ll[:]
     gscs = c_s1[:]
 
-    #print "611"
-    #print gsll
-    #print gscs
+    print "611"
+    print gsll
+    print gscs
     while 1:
         for tpw in gsll:
             sz1 = sz[0] * tpw
@@ -345,9 +346,17 @@ def cptgs(n, q, sz, sy, c_s1, uprbd_1, ll):
                 if sz1 == tpcs[0]:
                     n[0] = n[0] - tpcs[1]
                     return True
+                #else:
+                    #print "000"
+                    #print sz1
+                    #print tpcs[0]
         # continue (sp. 5)
 
         sz[0] = sy[0] * sz[0]
+        #print "!"
+        #print sy[0]
+        #print sz[0]
+        #print "!!"
         n[0] = n[0] + q[0]
         if n[0] <= uprbd_1:
             continue
@@ -372,12 +381,12 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut):
             #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
 
         for ttr in tpls:
-            print "###"
-            print x[tr]
-            print "###"
+            #print "###"
+            #print x[tr]
+            #print "###"
             tmpx = x[tr]*ttr
             if (flg_s == 0) and (tmpx == ut) and (tr != 0):
-                print "aaaaaa"
+                #print "aaaaaa"
                 flg_s = 1
                 n[0] = tr
                 ##c_s1_r[tr].append(tmpx)
@@ -385,27 +394,33 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut):
                 # sort ( if you want to sort it with your estimate,
                 # you have to implement '__ge__' method of the class with your way.)
     c_s1.sort()
-    print "##991"
-    print c_s1
-    print "##991"
+    #print "##991"
+    #print c_s1
+    #print "##991"
 
     if flg_s == 1:
         # 6
         cptodr(n, x, c_s1, ls, ll)
     else:
         # step 4 to 5
-        print x[1]
+        #print x[1]
             
-        print x[q[0] -1 ]
+        #print x[q[0] -1 ]
         
         sy[0] = x[1] * x[q[0] - 1]
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
-        #print "########"
+        print "########"
+        print lwrbd_1[0]
+        print x[1]
+        print sy[0]
+        print sz[0]
         #print n[0]
-        #print "########"
+        print "########"
         # compute giant steps
         print "$$"
+        print ll
+        print "$"
         cptgs(n, q, sz, sy, c_s1, uprbd_1, ll)
         print "$$$"
         # 6
@@ -436,6 +451,8 @@ def bsgs(iordmel, lwrbd, uprbd):
     ll = [] # a subset of G
     ls.append(ut)
     ll.append(ut)
+    #print '!!!'
+    #print ll
     # initialize variables
     n = [0]
     q = [0]
@@ -447,42 +464,49 @@ def bsgs(iordmel, lwrbd, uprbd):
         nt[0] = iordmel.retnext()
         q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) + 1
 
-        print "RRR"
-        print nt[0] * ut
-        print ut * nt[0]
-        print "RRR"
-        print q[0]
-        print "RRRR"
+        #print "RRR"
+        #print nt[0] * ut
+        #print ut * nt[0]
+        #print "RRR"
+        #print q[0]
+        #print "RRRR"
         # initialize variables
         #x = range(q[0] + 1) # x is the set of elements of G
-        x = range(q[0]) # x is the set of elements of G
+        #### caution!!!!
+        if q[0] <= 2:
+            x = [0,1]
+        else:
+            x = range(q[0]) # x is the set of elements of G
         c_s1 = [] # a subset of G
         # c_s1_r = range(q) # a set of subset of G
         for i in range(q[0]):
             x[i] = 0
             ##c_s1_r[i] = 0
-        print "ttt"
-        print x
-        print "ttt"
+        #print "ttt"
+        #print x
+        #print "ttt"
         # compute small steps        
         x[0] =  ut # maybe, this code must not be here
-        print "www"
-        print q[0]
-        print x
-        print "www"
-        print nt[0]
-        print h[0]
+        #print "www"
+        #print q[0]
+        #print x
+        #print "www"
+        #print nt[0]
+        #print h[0]
+        #print nt[0] ** h[0]
+        #print x[1]
         x[1] = (nt[0] ** h[0])
-        print x[1]
-        print "uuu"
-        print x[0] * x[1]
-        print x[1].ope(x[0])
-        print "uuu"
+        #print "uuu"
+        #print x[0] * x[1]
+        #print x[1].ope(x[0])
+        #print "uuu"
         
         if x[1] == ut:
             n[0] = 1
         else:
             # 3kara6
+            print "&&&"
+            print ll
             cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut)
         
         # finished?
@@ -539,3 +563,201 @@ class nxtel:
 # quad.bsgs(a, 26, 50)
 # a = quad.nxtel(99991)
 # quad.bsgs(a, 99999/2 + , 99999)
+
+
+def sqrPDF(frm):
+    '''
+    return the square of frm = (a, b, c)
+    '''
+    frm_1 = frm[:]
+    
+    # compute disc and etc
+    disc = frm_1[1]**2 - 4*frm_1[0]*frm_1[2]
+    ll = nzmath.arith1.floorpowerroot(abs(float(disc)/4), 4)
+    (u, v, d_1) = euclid_exd(frm_1[1], frm_1[0])
+
+    la = frm_1[0] / d_1
+    lb = frm_1[1] / d_1
+    lc = (-frm_1[2] * u) % la
+    c_1 = la - lc
+    if c_1 < lc:
+        lc = -c_1
+    # partial reduction
+    v_2, v_3, z, d , v = pareucl(la, lc, ll)
+
+    if z == 0:
+        g = (lb * v_3 + frm_1[2]) / d
+        a_2 = d**2
+        c_2 = v_3 ** 2
+        b_2 = frm_1[1] + (d + v_3)**2 - a_2 - c_2
+        #print c_2
+        c_2 = c_2 + g * d_1
+        #print c_2
+        #print d_1
+        #print g
+        f_2 = reducePDF([a_2, b_2, c_2])
+        #print "aa"
+        return f_2
+    e = (frm_1[2] * v + lb * d) / la
+    g = (e * v_2 - lb) / v
+    b_2 = e * v_2 + v * g
+    if d_1 > 1:
+        b_2 = d_1 * b_2
+        v = d_1 * v
+        v_2 = d_1 * v_2
+        
+    a_2 = d ** 2
+    c_2 = v_3 ** 2
+    b_2 = b_2 + (d + v_3) ** 2 - a_2 - c_2
+    a_2 = a_2 + e * v
+    c_2 = c_2 + g * v_2
+    f_2 = reducePDF([a_2, b_2, c_2])
+    #print "bb"
+    return f_2
+
+def pareucl(a, b, ll):
+    v = 0
+    d = a
+    v_2 = 1
+    v_3 = b
+    z = 0
+
+    while 1:
+        if abs(v_3) > ll:
+            # euclidean step
+            q = d / v_3
+            t_3 = d % v_3
+            t_2 = v - (q * v_2)
+            v = v_2
+            d = v_3
+            v_2 = t_2
+            v_3 = t_3
+            z = z + 1
+            continue
+        else:
+            if z % 2 != 0:
+                v_2 = -v_2
+                v_3 = -v_3
+            return (v_2, v_3, z, d, v)
+
+def nucomp(f_1, f_2):
+    print "RRRRRRRR"
+    print f_1
+    print f_2
+    print "RRRRRRRRR"
+    if dis_chk(f_1) != dis_chk(f_2):
+        raise ValueError(
+            "two quadratic forms must have same discriminant")
+    disc = f_1[1]**2 - 4*f_1[0]*f_1[2]
+    ll = nzmath.arith1.floorpowerroot(abs(float(disc)/4), 4)
+    # initialize
+    if f_1[0] < f_2[0]:
+        f_1, f_2 = f_2, f_1
+    s = (f_1[1] + f_2[1]) / 2
+    n = f_2[1] - s
+
+    # euclidean step
+    u, v, d = euclid_exd(f_2[0], f_1[0])
+    if d == 1:
+        la = -u*n
+        d_1 = d
+    else:
+        if (s % d) == 0:
+            la = -u*n
+            d_1 = d
+            f_1[0] = f_1[0] / d_1
+            f_2[0] = f_2[0] / d_1
+            s = s / d_1
+        else:
+            print "c"
+            # second euclidean step
+            u_1, v_1, d_1 = euclid_exd(s,d)
+            if d_1 > 1:
+                f_1[0] = f_1[0] / d_1
+                f_2[0] = f_2[0] / d_1
+                s = s / d_1
+                d = d / d_1
+            # initialization of reduction
+            f_1[2] = f_1[2] % d
+            f_2[2] = f_2[2] % d
+            l = ((-u_1*(u * f_1[2] + v * f_2[2])) % d)
+            la = -u*(u / d) + l*(f_1[0] / d)
+    # partial reduction
+    print "###"
+    print f_1[0]
+    print f_1
+    la = la % f_1[0]
+    la_1 = f_1[0] - la
+    if la_1 < la:
+        la = -la_1
+    v_2, v_3, z, d, v = pareucl(f_1[0], la, ll)
+    # special case
+    if z == 0:
+        lq_1 = f_2[0] * v_3
+        lq_2 = lq_1 + n
+        f = lq_2 / d
+        g = (v_3 * s + f_2[2]) / d
+        a_3 = d * f_2[0]
+        c_3 = v_3 * d + g * d_1
+        b_3 = 2 * lq_1 + f_2[1]
+        #print a_3
+        #print b_3
+        #print c_3
+        f_3 = reducePDF([a_3, b_3, c_3])
+        return f_3
+    # final computations
+    b = (f_2[0] * d + n * v) / f_1[0]
+    lq_1 = b * v_3
+    lq_2 = lq_1 + n
+    f = lq_2 / d
+    e = (s * d + f_2[2]) / f_1[0]
+    lq_3 = e * v_2
+    lq_4 = lq_3 - s
+    g = lq_4 / v
+    if d_1 > 1:
+        v_2 = d_1 * v_2
+        v = d_1 * v
+    a_3 = d * b + e * v
+    c_3 = v_3 * f + g * v_2
+    b_3 = lq_1 + lq_2 + d_1 * (lq_3 + lq_4)
+    f_3 = reducePDF([a_3, b_3, c_3])
+    return f_3
+
+def testquad(disc):
+    b, a = computeClassNumber(disc)
+    ccc = 0
+    for i in a:
+        aa = computePDF(i.element, i.element)
+        bb = sqrPDF(i.element)
+        print aa
+        print bb
+        if aa != bb:
+            ccc = 1
+            print "NO GOOD"
+    if ccc == 1:
+        print "NG"
+    else:
+        print "OK"
+        
+def testquad_0(disc):
+    b, a = computeClassNumber(disc)
+    ccc = 0
+    for i in a:
+        for j in a:
+            ie_0 = i.element[:]
+            ie_1 = j.element[:]
+            aa = computePDF(i.element, j.element)
+            bb = nucomp(ie_0, ie_1)
+            print aa
+            print bb
+            if aa != bb:
+                ccc = 1
+                print "NO GOOD"
+            else:
+                print "OOOK"
+    if ccc == 1:
+        print "NG"
+    else:
+        print "OK"
+        
+        
