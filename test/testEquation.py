@@ -62,6 +62,9 @@ class SimMethodTest (GlobalEquationTestBase):
     def test_degree4(self):
         self.assert_solve(equation.SimMethod, [-2, 0, 1, 0, 1])
 
+    def test_degree5(self):
+        self.assert_solve(equation.SimMethod, [-2, 1, 0, 0, 1, 1])
+
     def test_degree6(self):
         # example from H.Cohen's book p.169 (Olivier's example)
         self.assert_solve(equation.SimMethod, [4, 17, 10, -12, -7, 2, 1])
