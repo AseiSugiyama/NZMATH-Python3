@@ -3,9 +3,10 @@ A module for generating primes and testing primality.
 """
 
 import logging
+import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
-from nzmath.arith1 import floorsqrt, vp
+from nzmath.arith1 import vp
 
 _log = logging.getLogger('nzmath.prime')
 _log.setLevel(logging.DEBUG)
@@ -21,9 +22,9 @@ def trialDivision(n, bound=0):
     """
 
     if bound:
-        m = min(bound, floorsqrt(n))
+        m = min(bound, arith1.floorsqrt(n))
     else:
-        m = floorsqrt(n)
+        m = arith1.floorsqrt(n)
     p = 3
     while p <= m:
         if not (n % p):
@@ -31,13 +32,14 @@ def trialDivision(n, bound=0):
         p += 2
     return True
 
+
 def spsp(n, base, s=None, t=None):
     """
     Strong Pseudo-Prime test.  Optional third and fourth argument
     s and t are the numbers such that n-1 = 2**s * t and t is odd.
     """
     if not s or not t:
-        s, t = vp(n-1, 2)
+        s, t = arith1.vp(n-1, 2)
     z = pow(base, t, n)
     if z != 1 and z != n-1:
         j = 0
@@ -50,18 +52,20 @@ def spsp(n, base, s=None, t=None):
             return False
     return True
 
+
 def millerRabin(n, times = 20):
     """
     Miller-Rabin pseudo-primality test.  Optional second argument
     times (default to 20) is the number of repetition.  The error
     probability is at most 4**(-times).
     """
-    s, t = vp(n-1, 2)
+    s, t = arith1.vp(n-1, 2)
     for i in range(times):
         b = bigrandom.randrange(2, n-1)
         if not spsp(n, b, s, t):
             return False
     return True
+
 
 def bigprimeq(z):
     if long(z) != z:
@@ -71,6 +75,83 @@ def bigprimeq(z):
     elif gcd.gcd(z, 510510) > 1:
         return (z in (2, 3, 5, 7, 11, 13, 17))
     return millerRabin(z)
+
+
+def Lucas_chain(n, f, g, x_0, x_1):
+    """
+    Given an integer n, two functions f and g, and initial value (x_0, x_1),
+    compute (x_n, x_{n+1}), where the sequence {x_i} is defined as:
+      x_{2i} = f(x_i)
+      x_{2i+1} = g(x_i, x_{i+1})
+    """
+    binary = arith1.expand(n, 2)
+    u = x_0
+    v = x_1
+    while binary:
+        if 1 == binary.pop():
+            u, v = g(u, v), f(v)
+        else:
+            u, v = f(u), g(u, v)
+    return u, v
+
+
+def _lucas_test_sequence(n, a, b):
+    """
+    Return x_0, x_1, x_m, x_{m+1} of Lucas sequence of parameter a, b,
+    where m = (n - (a**2 - 4*b / n)) // 2.
+    """
+    d = a**2 - 4*b
+    if abs(gcd.gcd(n, 2*a*b*d)) != 1:
+        raise ValueError("Choose another parameters.")
+
+    x_0 = 2
+    inv_b = gcd.extgcd(b, n)[0]
+    x_1 = ((a**2)*inv_b - 2) % n
+
+    # Chain functions
+    def even_step(u):
+        """
+        'double' u.
+        """
+        return (u**2 - x_0) % n
+
+    def odd_step(u, v):
+        """
+        'add' u and v.
+        """
+        return (u*v - x_1) % n
+
+    m = (n - arith1.legendre(d, n)) // 2
+    x_m, x_mplus1 = Lucas_chain(m, even_step, odd_step, x_0, x_1)
+
+    return x_0, x_1, x_m, x_mplus1
+
+
+def lpsp(n, a, b):
+    """
+    Lucas test.
+    Return True if n is a Lucas pseudoprime of parameters a, b,
+    i.e. with respect to x**2-a*x+b.
+    """
+    x_0, x_1, x_m, x_mplus1 = _lucas_test_sequence(n, a, b)
+
+    return (x_1 * x_m - x_0 * x_mplus1) % n == 0
+
+
+def fpsp(n, a, b):
+    """
+    Frobenius test.
+    Return True if n is a Frobenius pseudoprime of parameters a, b,
+    i.e. with respect to x**2-a*x+b.
+    """
+    x_0, x_1, x_m, x_mplus1 = _lucas_test_sequence(n, a, b)
+
+    if (x_1 * x_m - x_0 * x_mplus1) % n == 0:
+        euler_pow = pow(b, (n-1)//2, n)
+        return (euler_pow * x_m) % n == 2
+    else:
+        return False
+
 
 def prime(s):
     """
@@ -88,6 +169,7 @@ def prime(s):
     # The following line should not be reached:
     raise ValueError, "Too big number %d for prime(i)." % s
 
+
 def generator():
     """
     Generate primes from 2 to infinity.
@@ -102,6 +184,7 @@ def generator():
             if primeq(i + times30):
                 yield i + times30
         times30 += 30
+
 
 def generator_eratosthenes(n):
     """
@@ -146,6 +229,7 @@ def generator_eratosthenes(n):
             yield k
         k, i = k+2, i+1
 
+
 def nextPrime(n):
     """
     Return the smallest prime bigger than the given integer.
@@ -158,6 +242,7 @@ def nextPrime(n):
     while not primeq(n):
         n += 2
     return n
+
 
 def randPrime(n):
     """
@@ -179,6 +264,7 @@ def randPrime(n):
         return randPrime(n) # very rare case or n is too small case
     return p+i
 
+
 def smallSpsp(n):
     """
     4 spsp tests are sufficient to determine whether an integer less
@@ -188,6 +274,7 @@ def smallSpsp(n):
         if not spsp(n, p):
             return False
     return True
+
 
 def primeq(n):
     """
@@ -205,9 +292,10 @@ def primeq(n):
         return trialDivision(n)
     if not smallSpsp(n):
         return False
-    if n < 10000000000000:
+    if n < 10 ** 12:
         return True
     return apr(n)
+
 
 # defs for APR algorithm
 
@@ -248,13 +336,13 @@ def _factor(n, bound=0):
 
     factors = []
     if not (n % 2):
-        v2, n = vp(n, 2)
+        v2, n = arith1.vp(n, 2)
         factors.append((2, v2))
     m = _calc_bound(n, bound)
     p = 3
     while p <= m:
         if not (n % p):
-            v, n = vp(n, p)
+            v, n = arith1.vp(n, p)
             factors.append((p, v))
             m = _calc_bound(n, bound)
         p += 2
@@ -264,9 +352,9 @@ def _factor(n, bound=0):
 
 def _calc_bound(n, bound=0):
     if bound:
-        m = min((bound, floorsqrt(n)))
+        m = min((bound, arith1.floorsqrt(n)))
     else:
-        m = floorsqrt(n)
+        m = arith1.floorsqrt(n)
     return m
 
 def primitive_root(p):
@@ -633,7 +721,7 @@ class Status:
                 if n%q == 0:
                     _log.info("%s divides %s.\n" % (q, n))
                     return False
-                k = vp(q-1,2)[0]
+                k = arith1.vp(q-1, 2)[0]
                 if k == 1:
                     if n%4 == 1 and not self.sub2(q,n):
                         return False
@@ -746,7 +834,7 @@ def apr(n):
     """
     L = Status()
 
-    rb = floorsqrt(n) + 1
+    rb = arith1.floorsqrt(n) + 1
     el = TestPrime()
     while el.et <= rb:
         el = el.next()
@@ -768,7 +856,7 @@ def apr(n):
                 continue
             if not L.subodd(p,q,n,J):
                 return False
-        k = vp(q-1,2)[0]
+        k = arith1.vp(q-1, 2)[0]
         if k == 1:
             if not L.sub2(q,n):
                 return False

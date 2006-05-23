@@ -58,8 +58,43 @@ class PrimeTest(unittest.TestCase):
         self.assertEqual(100, len([p for p in g]))
 
 
-def suite():
-    suite = unittest.makeSuite(PrimeTest, 'test')
+class LpspTest (unittest.TestCase):
+    def testLucasTestForPrime(self):
+        self.assert_(prime.lpsp(101, 2, 3))
+
+    def testLucasTestForPseudoPrime(self):
+        # Lucas but not Frobenius example
+        self.assert_(prime.lpsp(4187, 1, -1))
+        # Frobenius pseudoprime
+        self.assert_(prime.lpsp(5777, 1, -1))
+
+    def testLucasTestForDetectedComposite(self):
+        self.failIf(prime.lpsp(4181, 1, -1))
+
+
+class FpspTest (unittest.TestCase):
+    def testFrobeniusTestForPrime(self):
+        self.assert_(prime.fpsp(101, 2, 3))
+
+    def testFrobeniusTestForPseudoPrime(self):
+        # the smallest example with the parameter
+        self.assert_(prime.fpsp(5777, 1, -1))
+        # Shinohara's example
+        self.assert_(prime.fpsp(291409, 3, 8))
+
+    def testFrobeniusTestForDetectedComposite(self):
+        # not Lucas => not Frobenius
+        self.failIf(prime.fpsp(4181, 1, -1))
+        # Lucas pseudoprime but not Frobenius pseudoprime
+        self.failIf(prime.fpsp(4187, 1, -1))
+
+
+def suite(suffix="Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
