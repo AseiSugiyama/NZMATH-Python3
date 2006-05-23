@@ -452,7 +452,7 @@ class Matrix:
         """
         Return rank of self.
         """
-        return len(self.image())
+        return len(self.image().compo[0])
 
     def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
         """
