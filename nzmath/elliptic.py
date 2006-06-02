@@ -127,10 +127,10 @@ def powOrd(x,y,z):
     return C[0]
 
 
-class EC:
+class ECGeneric:
     """
-    Elliptic curves over Q and Fp.
-    # If you wanna use over other fields, just a moment please :-)
+    Elliptic curves for generic field.
+    this class is fundamental class, normally only called sub class.
     """
     def __init__(self,coefficient,character=None,index=None):
         """
@@ -142,6 +142,8 @@ class EC:
             self.coefficient=coefficient
             if not character:
                 self.ch=0
+            elif character == 1:
+                raise ValueError, "characteristic must be 0 or prime."
             else:
                 self.ch=character
                 if not index or index == 1: #field=F_p
@@ -152,7 +154,7 @@ class EC:
                     index is irred polynomial in F_p,deg=r
                     To add this, we must exchange field and element.
                     """
-                    raise NotImplementedError,"Now making (>_<),now we can use only over finite prime fields"
+                    raise NotImplementedError,"now we can use only over finite prime fields."
             if self.ch==0:
                 if len(self)==5:
                     self.a1=coefficient[0]
@@ -183,144 +185,23 @@ class EC:
                     self.c6=-864*self.b
                     self.disc=rational.IntegerIfIntOrLong(self.c4**3-self.c6**2)/1728
                 else:
-                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
+                    raise ValueError, "coefficient is less or more, can't defined EC."
                 if self.disc==0:
-                    raise ValueError, "singular curve (@_@)"
+                    raise ValueError, "this curve is singular."
                 self.j=rational.IntegerIfIntOrLong(self.c4**3)/self.disc
-            elif self.ch==1:
-                raise ValueError, "characteristic must be 0 or prime (-_-;)"
             elif self.ch==2: # y^2+x*y=x^3+a2*x^2+a6 or y^2+a3*y=x^3+a4*x+a6
-                for c in coefficient:
-                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError("you must input integer coefficients. m(__)m")
-                if len(self)==5:
-                    if coefficient[0]%2==1 and coefficient[2]%2==coefficient[3]%2==0:
-                        self.a1=finitefield.FinitePrimeFieldElement(1,2)
-                        self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],2)
-                        self.a3=finitefield.FinitePrimeFieldElement(0,2)
-                        self.a4=finitefield.FinitePrimeFieldElement(0,2)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],2)
-                        self.b2=finitefield.FinitePrimeFieldElement(1,2)
-                        self.b4=finitefield.FinitePrimeFieldElement(0,2)
-                        self.b6=finitefield.FinitePrimeFieldElement(0,2)
-                        self.b8=self.a6
-                        self.c4=finitefield.FinitePrimeFieldElement(1,2)
-                        self.c6=finitefield.FinitePrimeFieldElement(1,2)
-                        self.disc=self.a6
-                        if self.disc:
-                            self.j=self.disc.inverse()
-                    elif coefficient[0]%2==coefficient[1]%2==0:
-                        self.a1=finitefield.FinitePrimeFieldElement(0,2)
-                        self.a2=finitefield.FinitePrimeFieldElement(0,2)
-                        self.a3=finitefield.FinitePrimeFieldElement(coefficient[2],2)
-                        self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],2)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],2)
-                        self.b2=finitefield.FinitePrimeFieldElement(0,2)
-                        self.b4=finitefield.FinitePrimeFieldElement(0,2)
-                        self.b6=self.a3**2
-                        self.b8=self.a4**2
-                        self.c4=finitefield.FinitePrimeFieldElement(0,2)
-                        self.c6=finitefield.FinitePrimeFieldElement(0,2)
-                        self.disc=self.a3**4
-                        self.j=finitefield.FinitePrimeFieldElement(0,2)
-                    else:
-                        raise ValueError, "can't defined EC (-_-;)"
-                    if self.disc.n==0:
-                        raise ValueError, "singular curve (@_@)"
-                else:
-                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
-            elif self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
-                for c in coefficient:
-                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError("you must input integer coefficients. m(__)m")
-                if len(self)==5:
-                    if coefficient[0]%3==coefficient[2]%3==coefficient[3]%3==0:
-                        self.a1=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],3)
-                        self.a3=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a4=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],3)
-                        self.b2=self.a2
-                        self.b4=finitefield.FinitePrimeFieldElement(0,3)
-                        self.b6=self.a6
-                        self.b8=self.a2*self.a6
-                        self.c4=self.b2**2
-                        self.c6=2*self.b2**3
-                        self.disc=-self.a2**3*self.a6
-                        if self.disc.n:
-                            self.j=(-self.a2**3)*self.a6.inverse()
-                    elif coefficient[0]==coefficient[1]==coefficient[2]==0:
-                        self.a1=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a2=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a3=finitefield.FinitePrimeFieldElement(0,3)
-                        self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],3)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],3)
-                        self.b2=finitefield.FinitePrimeFieldElement(0,3)
-                        self.b4=2*self.a4
-                        self.b6=self.a6
-                        self.b8=2*self.a4**2
-                        self.c4=finitefield.FinitePrimeFieldElement(0,3)
-                        self.c6=finitefield.FinitePrimeFieldElement(0,3)
-                        self.disc=-self.a4**3
-                        self.j=finitefield.FinitePrimeFieldElement(0,3)
-                    else:
-                        raise ValueError, "can't defined EC (-_-;)"
-                    if self.disc.n==0:
-                        raise ValueError, "singular curve (@_@)"
-                else:
-                    raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
-            else:
-                for c in coefficient:
-                    if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                        raise ValueError("you must input integer coefficients. m(__)m")
-                if prime.millerRabin(self.ch): # why Miller-Rabin?
-                    if len(self)==5:
-                        self.a1=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
-                        self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
-                        self.a3=finitefield.FinitePrimeFieldElement(coefficient[2],self.ch)
-                        self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],self.ch)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],self.ch)
-                        self.b2=self.a1**2+4*self.a2
-                        self.b4=self.a1*self.a3+2*self.a4
-                        self.b6=self.a3**2+4*self.a6
-                        self.b8=self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2
-                        self.c4=self.b2**2-24*self.b4
-                        self.c6=-self.b2**3+36*self.b2*self.b4-216*self.b6
-                        self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
-                        if self.disc:
-                            self.j=self.c4**3*self.disc.inverse()
-                        else:
-                            raise ValueError, "singular curve (@_@)"
-                    elif len(self)==2:
-                        self.a=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
-                        self.b=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
-                        self.a1=finitefield.FinitePrimeFieldElement(0,self.ch)
-                        self.a2=finitefield.FinitePrimeFieldElement(0,self.ch)
-                        self.a3=finitefield.FinitePrimeFieldElement(0,self.ch)
-                        self.a4=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
-                        self.a6=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
-                        self.b2=finitefield.FinitePrimeFieldElement(0,self.ch)
-                        self.b4=2*self.a
-                        self.b6=4*self.b
-                        self.b8=-self.a**2
-                        self.c4=-48*self.a
-                        self.c6=-864*self.b
-                        self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
-                        if self.disc:
-                            self.j=self.c4**3*self.disc.inverse()
-                        else:
-                            raise ValueError, "singular curve (@_@)"
-                    else:
-                        raise ValueError, "coefficient is less or more, can't defined EC (-_-;)"
-                else:
-                    raise ValueError, "characteristic must be 0 or prime (-_-;)"
+                pass
         else:
-            raise ValueError, "you must input (coefficient,list) m(__)m"
+            raise ValueError, "you must input (coefficient, character, index)"
 
     def __len__(self):
         return len(self.coefficient)
 
     def __repr__(self):
+        """
+        return represantation form.
+        only defined generic representation.
+        """
         if self.ch==0:
             if len(self)==2 or self.a1==self.a2==self.a3==0:
                 return "EC(["+repr(self.a4)+","+repr(self.a6)+"],"+repr(self.ch)+")"
@@ -385,11 +266,11 @@ class EC:
                                   ((self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1)*v**6).n],self.ch)
                         return other
                 else:
-                    raise ValueError, "you must input nonzero u (-_-;)"
+                    raise ValueError, "you must input ([u, r, s, t]) with u != 0."
             else:
-                raise ValueError, "you must input (-_-;)"
+                raise ValueError, "you must input ([u, r, s, t]) with u != 0."
         else:
-            raise ValueError, "you must input (change,list) m(__)m"
+            raise ValueError, "you must input ([u, r, s, t]) with u != 0."
 
     def changePoint(self,P,V):
         """
@@ -409,58 +290,11 @@ class EC:
                 Q=[Q0,Q1]
                 return Q
             else:
-                raise ValueError, "(-_-;)"
+                raise ValueError, "you must input ([px, py], [u, r, s, t]) with u != 0."
         else:
-            raise ValueError, "m(__)m"
+            raise ValueError, "you must input ([px, py], [u, r, s, t]) with u != 0."
 
-    def point(self):
-        """
-        this returns a random point on eliiptic curve over ch(field)>3
-        """
-        if self.ch!=0:
-            if self.index!=1:
-                raise NotImplementedError,"Now making (>_<)"
-            if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):
-                t=0
-                while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch)
-                    t=(s**3+self.a4*s+self.a6).n
-                t=arith1.modsqrt(t,self.ch)
-                r=random.randint(0,1)
-                if r:
-                    return [s,self.ch-t]
-                else:
-                    return [s,t]
-            elif self.ch!=2 and self.ch!=3:
-                other=self.simple()
-                t=0
-                while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch)
-                    t=(s**3+other.a*s+other.b).n
-                x=(s-3*self.b2)/36
-                y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2
-                return [x.n,y.n]
-            elif self.ch==3:
-                t=0
-                while arith1.legendre(t,self.ch)!=1:
-                    s=random.randrange(0,self.ch)
-                    t=(s**3+self.a2*s**2+self.a4*s+self.a6).n
-                return [s,arith1.modsqrt(t,self.ch)]
-            else:
-                s=0
-                while self.coordinateY(s) is ValueError:
-                    s=random.randrange(0,self.ch)
-                return [s,self.coordinateY(s)]
-        else:
-            i=9
-            while i<1000:
-                s=random.randrange(1,i)
-                t=random.randrange(1,i)
-                y=self.coordinateY(rational.Rational(s,t))
-                if y!=False:
-                    return [s,self.coordinateY(s)]
-                i=i+10
-            raise ValueError,"I can't find m(__)m"
+
 
     def coordinateY(self,x):
         """
@@ -485,7 +319,7 @@ class EC:
                 else:
                     return False
         elif self.ch==2:
-            raise NotImplementedError, "Now making (>_<)"
+            raise NotImplementedError,"This is not implemented."
         else:
             Y=y1**2+4*y2
             if Y>=0:
@@ -531,9 +365,9 @@ class EC:
             elif P==[0]:
                 return True
             else:
-                raise ValueError, "you must input (len(point)==2) (-_-;)"
+                raise ValueError, "input must not be point on curve."
         else:
-            raise ValueError, "you must input (point,list) m(__)m"
+            raise ValueError, "you must input ([px, py])"
 
     def add(self,P,Q):
         """
@@ -579,11 +413,11 @@ class EC:
                 elif (P==[0]) and (Q==[0]):
                     return [0]
                 else:
-                    raise ValueError, "you must input (len(point)==2) (-_-;)"
+                    raise ValueError, "you must input ([px, py], [qx, qy])"
             else:
-                raise ValueError, "you must input point on curve (-_-;)"
+                raise ValueError, "input must not be point on curve."
         else:
-            raise ValueError, "you must input (point,list) m(__)m"
+            raise ValueError, "you must input ([px, py], [qx, qy])"
 
     def sub(self,P,Q):
         """
@@ -612,11 +446,11 @@ class EC:
                 elif (P==[0]) and (Q==[0]):
                     return [0]
                 else:
-                    raise ValueError, "you must input (len(point)==2) (-_-;)"
+                    raise ValueError, "you must input ([px, py], [qx, qy])"
             else:
-                raise ValueError, "you must input point on curve (-_-;)"
+                raise ValueError, "input must not be point on curve."
         else:
-            raise ValueError, "you must input (point,list) m(__)m"
+            raise ValueError, "you must input ([px, py], [qx, qy])"
 
     def mul(self,k,P):
         """
@@ -733,140 +567,298 @@ class EC:
                     i += 1
                 return f[Number]
 
+   
+
+class ECoverQ(ECGeneric):
+    """
+    Elliptic curves over Q.
+    """
+    def __init__(self,coefficient):
+        ECGeneric.__init__(self,coefficient,0)
+    def __repr__(self):
+        if len(self)==2 or self.a1==self.a2==self.a3==0:
+            return "ECoverQ(["+repr(self.a4)+","+repr(self.a6)+"])"
+        else:
+            return "ECoverQ(["+repr(self.a1)+","+repr(self.a2)+","+repr(self.a3)+","+repr(self.a4)+","+repr(self.a6)+"])"
+
+    def point(self, limit = 1000):
+        """
+        this returns a random point on eliiptic curve over Q.
+        limit set maximal find time.
+        """
+        i=9
+        while i<limit:
+            s=random.randrange(1,i)
+            t=random.randrange(1,i)
+            y=self.coordinateY(rational.Rational(s,t))
+            if y!=False:
+                return [s,self.coordinateY(s)]
+            i=i+10
+        raise ValueError,"Times exceeded for limit."
+
+class ECoverFp(ECGeneric):
+    """
+    Elliptic curves over Fp, p>2 .
+    """
+    def __init__(self,coefficient,character=None,index=None):
+        ECGeneric.__init__(self,coefficient,character,index)
+        if self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
+            for c in coefficient:
+                if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                    raise ValueError("you must input integer coefficients. m(__)m")
+            if len(self)==5:
+                if coefficient[0]%3==coefficient[2]%3==coefficient[3]%3==0:
+                    self.a1=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],3)
+                    self.a3=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a4=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],3)
+                    self.b2=self.a2
+                    self.b4=finitefield.FinitePrimeFieldElement(0,3)
+                    self.b6=self.a6
+                    self.b8=self.a2*self.a6
+                    self.c4=self.b2**2
+                    self.c6=2*self.b2**3
+                    self.disc=-self.a2**3*self.a6
+                    if self.disc.n:
+                        self.j=(-self.a2**3)*self.a6.inverse()
+                elif coefficient[0]==coefficient[1]==coefficient[2]==0:
+                    self.a1=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a2=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a3=finitefield.FinitePrimeFieldElement(0,3)
+                    self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],3)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],3)
+                    self.b2=finitefield.FinitePrimeFieldElement(0,3)
+                    self.b4=2*self.a4
+                    self.b6=self.a6
+                    self.b8=2*self.a4**2
+                    self.c4=finitefield.FinitePrimeFieldElement(0,3)
+                    self.c6=finitefield.FinitePrimeFieldElement(0,3)
+                    self.disc=-self.a4**3
+                    self.j=finitefield.FinitePrimeFieldElement(0,3)
+                else:
+                    raise ValueError, "can't defined EC."
+                if self.disc.n==0:
+                    raise ValueError, "this curve is singular."
+            else:
+                raise ValueError, "coefficient is less or more, can't defined EC."
+        else:
+            for c in coefficient:
+                if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                    raise ValueError, "you must input integer coefficients."
+            if prime.primeq(self.ch):
+                if len(self)==5:
+                    self.a1=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
+                    self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
+                    self.a3=finitefield.FinitePrimeFieldElement(coefficient[2],self.ch)
+                    self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],self.ch)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],self.ch)
+                    self.b2=self.a1**2+4*self.a2
+                    self.b4=self.a1*self.a3+2*self.a4
+                    self.b6=self.a3**2+4*self.a6
+                    self.b8=self.a1**2*self.a6+4*self.a2*self.a6-self.a1*self.a3*self.a4+self.a2*self.a3**2-self.a4**2
+                    self.c4=self.b2**2-24*self.b4
+                    self.c6=-self.b2**3+36*self.b2*self.b4-216*self.b6
+                    self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
+                    if self.disc:
+                        self.j=self.c4**3*self.disc.inverse()
+                    else:
+                        raise ValueError, "singular curve (@_@)"
+                elif len(self)==2:
+                    self.a=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
+                    self.b=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
+                    self.a1=finitefield.FinitePrimeFieldElement(0,self.ch)
+                    self.a2=finitefield.FinitePrimeFieldElement(0,self.ch)
+                    self.a3=finitefield.FinitePrimeFieldElement(0,self.ch)
+                    self.a4=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
+                    self.b2=finitefield.FinitePrimeFieldElement(0,self.ch)
+                    self.b4=2*self.a
+                    self.b6=4*self.b
+                    self.b8=-self.a**2
+                    self.c4=-48*self.a
+                    self.c6=-864*self.b
+                    self.disc=-self.b2**2*self.b8-8*self.b4**3-27*self.b6**2+9*self.b2*self.b4*self.b6
+                    if self.disc:
+                        self.j=self.c4**3*self.disc.inverse()
+                    else:
+                        raise ValueError, "this curve is singular."
+                else:
+                    raise ValueError, "coefficient is less or more, can't defined EC."
+            else:
+                raise ValueError, "characteristic must be prime."
+    def __repr__(self):
+        if len(self)==2 or self.a1.n==self.a2.n==self.a3.n==0:
+            return "ECoverFp(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+        else:
+            return "ECoverFp(["+repr(self.a1.n)+","+repr(self.a2.n)+","+repr(self.a3.n)+","+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+    def point(self):
+        """
+        this returns a random point on eliiptic curve over ch(field)>3
+        """
+        if self.index!=1:
+            raise NotImplementedError,"This is not implemented."
+        if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):
+            t=0
+            while arith1.legendre(t,self.ch)!=1:
+                s=random.randrange(0,self.ch)
+                t=(s**3+self.a4*s+self.a6).n
+            t=arith1.modsqrt(t,self.ch)
+            r=random.randint(0,1)
+            if r:
+                return [s,self.ch-t]
+            else:
+                return [s,t]
+        elif self.ch!=2 and self.ch!=3:
+            other=self.simple()
+            t=0
+            while arith1.legendre(t,self.ch)!=1:
+                s=random.randrange(0,self.ch)
+                t=(s**3+other.a*s+other.b).n
+            x=(s-3*self.b2)/36
+            y=(rational.Rational(arith1.modsqrt(t,self.ch),108)-self.a1*x-self.a3)/2
+            return [x.n,y.n]
+        elif self.ch==3:
+            t=0
+            while arith1.legendre(t,self.ch)!=1:
+                s=random.randrange(0,self.ch)
+                t=(s**3+self.a2*s**2+self.a4*s+self.a6).n
+            return [s,arith1.modsqrt(t,self.ch)]
+        else:
+            s=0
+            while self.coordinateY(s) is ValueError:
+                s=random.randrange(0,self.ch)
+            return [s,self.coordinateY(s)]
+
     def Schoof(self):
         """
         this return t=p+1-#E(F_p)
         """
-        if self.ch>3:
-            if len(self)!=2:
-                other=self.simple()
-            else:
-                other=self
-            E = polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1}, 'x', other.field)
-            x = polynomial.OneVariableMonomial("x", coeffring=other.field)
-            T = []
-            D, L = other.divPoly()
-            i=0
-            M=1
-            while i<len(L):
-                j=L[i]
-                M=M*j
-                u=PolyPow(x,other.ch,D[j]) #u=x^q
-                v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
-                g0=PolyPow(E,(other.ch-1)//2,D[j]) #y^(q-1)
-                k=other.ch%j
-                f0=PolyMulRed([D[k-1],D[k+1]],D[j])
-                f3=PolyMulRed([D[k],D[k]],D[j])
-                if k%2==0:
-                    f=v-x
-                    P=GCD(PolyMulRed([f,E,f3],D[j])+f0,D[j])
-                else:
-                    f=v-x
-                    P=GCD(PolyMulRed([f,f3],D[j])+PolyMulRed([f0,E],D[j]),D[j])
-                if P!=1:
-                    if arith1.legendre(other.ch,j)==-1:
-                        T.append((0,j))
-                        _log.debug("%s $" % str(T))
-                    else:
-                        w=arith1.modsqrt(k,j)
-                        if w%2==0:
-                            P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
-                        else:
-                            P=GCD(PolyMulRed([u-x,D[w],D[w]],D[j])+PolyMulRed([D[w-1],D[w+1],E],D[j]),D[j])
-                        if P!=1:
-                            if w%2==0:
-                                P=GCD(PolyMulRed([4,PolyMulRed([g0,E],D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
-                            else:
-                                P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
-                            if P!=1:
-                                T.append((2*w,j))
-                                _log.debug("%s $$" % str(T))
-                            else:
-                                T.append((-2*w,j))
-                                _log.debug("%s $$$" % str(T))
-                        else:
-                            T.append((0,j))
-                            _log.debug("%s $$$$" % str(T))
-                else:
-                    X=v+u+x
-                    Y=x-v
-                    Z=-2*v-x
-                    f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
-                    f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
-                    g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1)
-                    if k%2==0:
-                        g2=PolyMulRed([g1,E,E],D[j])
-                        f=f1-f2-4*PolyMulRed([g2,f3,D[k]],D[j])
-                        g=(PolyMulRed([Y,E,f3],D[j])-f0)*4
-                        h0=PolyMulRed([g,g],D[j])
-                        h1=PolyMulRed([f,f],D[j])
-                        X_d=PolyMulRed([E,f3,h0],D[j])
-                        X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([f0,h0],D[j])-h1
-                    else:
-                        f=f1-f2-4*PolyMulRed([g1,f3,D[k]],D[j])
-                        g=(PolyMulRed([Y,f3],D[j])-PolyMulRed([E,f0],D[j]))*4
-                        h0=PolyMulRed([g,g],D[j])
-                        h1=PolyMulRed([f,f],D[j])
-                        X_d=PolyMulRed([f3,h0],D[j])
-                        X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([E,f0,h0],D[j])-PolyMulRed([E,h1],D[j])
-                    t=1
-                    while t<=(j-1)/2:
-                        if t%2==0:
-                            Z_d_x=PolyPow(PolyMulRed([E,D[t],D[t]],D[j]),other.ch,D[j])
-                            Z_n_x=PolyPow(PolyMulRed([D[t-1],D[t+1]],D[j]),other.ch,D[j])
-                        else:
-                            Z_d_x=PolyPow(PolyMulRed([D[t],D[t]],D[j]),other.ch,D[j])
-                            Z_n_x=PolyPow(PolyMulRed([E,D[t-1],D[t+1]],D[j]),other.ch,D[j])
-                        P=PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j])
-                        if P==0:
-                            if k%2==0:
-                                Y_d=PolyMulRed([E,D[k],g,X_d],D[j])
-                                y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([f0,h0],D[j])+h1
-                                Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
-                                if t%2==0:
-                                    Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                    Z_n_y=PolyMulRed([g0,z0],D[j])
-                                else:
-                                    Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                    Z_n_y=PolyMulRed([g0,z0],D[j])
-                            else:
-                                Y_d=PolyMulRed([D[k],g,X_d],D[j])
-                                y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([E,f0,h0],D[j])+PolyMulRed([E,h1],D[j])
-                                Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
-                                if t%2==0:
-                                    Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                    Z_n_y=PolyMulRed([g0,z0],D[j])
-                                else:
-                                    Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
-                                    z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
-                                    Z_n_y=PolyMulRed([g0,z0],D[j])
-                            Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
-                            if Q==0:
-                                T.append((t,j))
-                                _log.debug("%s @" % str(T))
-                                break
-                            else:
-                                T.append((j-t,j))
-                                _log.debug("%s @@" % str(T))
-                                break
-                        t=t+1
-                        if t>(j-1)/2:
-                            T.append((0,j))
-                            _log.debug("%s @@@" % str(T))
-                i=i+1
-            tau=arith1.CRT(T)
-            if tau>M/2:
-                tau=tau-M
-            return tau
-        elif self.ch==2:
-            raise NotImplementedError, "Now making (>_<)"
+        if len(self)!=2:
+            other=self.simple()
         else:
-            raise NotImplementedError, "Now making (>_<)"
+            other=self
+        E = polynomial.OneVariableSparsePolynomial({0:other.b,1:other.a,3:1}, 'x', other.field)
+        x = polynomial.OneVariableMonomial("x", coeffring=other.field)
+        T = []
+        D, L = other.divPoly()
+        i=0
+        M=1
+        while i<len(L):
+            j=L[i]
+            M=M*j
+            u=PolyPow(x,other.ch,D[j]) #u=x^q
+            v=PolyPow(u,other.ch,D[j]) #v=x^{q^2}
+            g0=PolyPow(E,(other.ch-1)//2,D[j]) #y^(q-1)
+            k=other.ch%j
+            f0=PolyMulRed([D[k-1],D[k+1]],D[j])
+            f3=PolyMulRed([D[k],D[k]],D[j])
+            if k%2==0:
+                f=v-x
+                P=GCD(PolyMulRed([f,E,f3],D[j])+f0,D[j])
+            else:
+                f=v-x
+                P=GCD(PolyMulRed([f,f3],D[j])+PolyMulRed([f0,E],D[j]),D[j])
+            if P!=1:
+                if arith1.legendre(other.ch,j)==-1:
+                    T.append((0,j))
+                    _log.debug("%s $" % str(T))
+                else:
+                    w=arith1.modsqrt(k,j)
+                    if w%2==0:
+                        P=GCD(PolyMulRed([u-x,D[w],D[w],E],D[j])+PolyMulRed([D[w-1],D[w+1]],D[j]),D[j])
+                    else:
+                        P=GCD(PolyMulRed([u-x,D[w],D[w]],D[j])+PolyMulRed([D[w-1],D[w+1],E],D[j]),D[j])
+                    if P!=1:
+                        if w%2==0:
+                            P=GCD(PolyMulRed([4,PolyMulRed([g0,E],D[j]),PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
+                        else:
+                            P=GCD(PolyMulRed([4,g0,PolyPow(D[w],3,D[j])],D[j])-PolyMulRed([D[w-1],D[w-1],D[w+2]],D[j])+PolyMulRed([D[w-2],D[w+1],D[w+1]],D[j]),D[j])
+                        if P!=1:
+                            T.append((2*w,j))
+                            _log.debug("%s $$" % str(T))
+                        else:
+                            T.append((-2*w,j))
+                            _log.debug("%s $$$" % str(T))
+                    else:
+                        T.append((0,j))
+                        _log.debug("%s $$$$" % str(T))
+            else:
+                X=v+u+x
+                Y=x-v
+                Z=-2*v-x
+                f1=PolyMulRed([D[k-1],D[k-1],D[k+2]],D[j])
+                f2=PolyMulRed([D[k-2],D[k+1],D[k+1]],D[j])
+                g1=PolyPow(g0,int(other.ch+1),D[j]) #y^(q^2-1)
+                if k%2==0:
+                    g2=PolyMulRed([g1,E,E],D[j])
+                    f=f1-f2-4*PolyMulRed([g2,f3,D[k]],D[j])
+                    g=(PolyMulRed([Y,E,f3],D[j])-f0)*4
+                    h0=PolyMulRed([g,g],D[j])
+                    h1=PolyMulRed([f,f],D[j])
+                    X_d=PolyMulRed([E,f3,h0],D[j])
+                    X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([f0,h0],D[j])-h1
+                else:
+                    f=f1-f2-4*PolyMulRed([g1,f3,D[k]],D[j])
+                    g=(PolyMulRed([Y,f3],D[j])-PolyMulRed([E,f0],D[j]))*4
+                    h0=PolyMulRed([g,g],D[j])
+                    h1=PolyMulRed([f,f],D[j])
+                    X_d=PolyMulRed([f3,h0],D[j])
+                    X_n=PolyMulRed([X_d,X],D[j])-PolyMulRed([E,f0,h0],D[j])-PolyMulRed([E,h1],D[j])
+                t=1
+                while t<=(j-1)/2:
+                    if t%2==0:
+                        Z_d_x=PolyPow(PolyMulRed([E,D[t],D[t]],D[j]),other.ch,D[j])
+                        Z_n_x=PolyPow(PolyMulRed([D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                    else:
+                        Z_d_x=PolyPow(PolyMulRed([D[t],D[t]],D[j]),other.ch,D[j])
+                        Z_n_x=PolyPow(PolyMulRed([E,D[t-1],D[t+1]],D[j]),other.ch,D[j])
+                    P=PolyMulRed([X_n,Z_d_x],D[j])-PolyMulRed([X_d,Z_n_x],D[j])
+                    if P==0:
+                        if k%2==0:
+                            Y_d=PolyMulRed([E,D[k],g,X_d],D[j])
+                            y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([f0,h0],D[j])+h1
+                            Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                            if t%2==0:
+                                Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+                            else:
+                                Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+                        else:
+                            Y_d=PolyMulRed([D[k],g,X_d],D[j])
+                            y0=PolyMulRed([Z,X_d],D[j])+PolyMulRed([E,f0,h0],D[j])+PolyMulRed([E,h1],D[j])
+                            Y_n=-PolyMulRed([g1,Y_d],D[j])-PolyMulRed([f,y0],D[j])
+                            if t%2==0:
+                                Z_d_y=PolyPow(PolyMulRed([4,E,E,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+                            else:
+                                Z_d_y=PolyPow(PolyMulRed([4,D[t],D[t],D[t]],D[j]),other.ch,D[j])
+                                z0=PolyPow(PolyMulRed([D[t-1],D[t-1],D[t+2]],D[j])-PolyMulRed([D[t-2],D[t+1],D[t+1]],D[j]),other.ch,D[j])
+                                Z_n_y=PolyMulRed([g0,z0],D[j])
+                        Q=PolyMulRed([Y_n,Z_d_y],D[j])-PolyMulRed([Y_d,Z_n_y],D[j])
+                        if Q==0:
+                            T.append((t,j))
+                            _log.debug("%s @" % str(T))
+                            break
+                        else:
+                            T.append((j-t,j))
+                            _log.debug("%s @@" % str(T))
+                            break
+                    t=t+1
+                    if t>(j-1)/2:
+                        T.append((0,j))
+                        _log.debug("%s @@@" % str(T))
+            i=i+1
+        tau=arith1.CRT(T)
+        if tau>M/2:
+            tau=tau-M
+        return tau
 
-    def step(self,P,W):
+    def _step(self,P,W):
         """
         this use only for Shanks_Mestre,
         """
@@ -899,75 +891,69 @@ class EC:
         self.ch<=10**5+o(1)
         This returns t=self.ch+1-#E(F_p)
         """
-        if self.ch>3:
-            if self.ch<=229:
-                if len(self)!=2:
-                    other=self.simple()
-                else:
-                    other=self
-                k=0
-                for i in range(0,other.ch):
-                    k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
-                return -k
-            else: #E.ch>229
-                if len(self)!=2:
-                    other=self.simple()
-                else:
-                    other=self
-                g=0
-                while arith1.legendre(g,other.ch)!=-1:
-                    g=random.randint(2,other.ch-1)
-                W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
-                c,d=g**2*other.a,g**3*other.b
-                f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",other.field)
-                BOX=[]
-                i=0
-                while i<other.ch:
-                    BOX.append(1)
-                    i=i+1
-                k=0
-                while k==0:
-                    x=random.randint(0,other.ch-1)
-                    while BOX[x]==0 or arith1.legendre(f(x).n,other.ch)==0:
-                        BOX[x]=0
-                        x=random.randint(0,other.ch-1)
-                    BOX[x]=0
-                    if arith1.legendre(f(x).n,other.ch)==1:
-                        E=other
-                        cg=1
-                    else: #arith1.legendre(f(cg),other.ch)==-1
-                        E=EC([c.n,d.n],other.ch)
-                        cg=-1
-                        x=g*x%E.ch
-                    P=[x,E.coordinateY(x)]
-                    L=E.step(P,W)
-                    A=L[0]
-                    B=L[1]
-                    S=L[2]
-                    if len(S)==1:
-                        s=S.pop()
-                        if B.count(s)<=2:
-                            k=1
-                aa=A.index(s)
-                bb=B.index(s)
-                t=aa-bb*W
-                if E.mul(E.ch+1+t,P)==[0]:
-                    return -cg*t
-                else:
-                    t=aa+bb*W
-                    return -cg*t
-        else:
-            raise NotImplementedError,"Now making m(__)m"
-
-    def naive(self):
-        if self.ch>3:
-            other=self.simple()
+        if self.ch<=229:
+            if len(self)!=2:
+                other=self.simple()
+            else:
+                other=self
             k=0
             for i in range(0,other.ch):
                 k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
             return -k
-        else:
-            raise NotImplementedError,"Now making m(__)m"
+        else: #E.ch>229
+            if len(self)!=2:
+                other=self.simple()
+            else:
+                other=self
+            g=0
+            while arith1.legendre(g,other.ch)!=-1:
+                g=random.randint(2,other.ch-1)
+            W=int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
+            c,d=g**2*other.a,g**3*other.b
+            f=polynomial.OneVariableDensePolynomial([other.b,other.a,0,1],"X",other.field)
+            BOX=[]
+            i=0
+            while i<other.ch:
+                BOX.append(1)
+                i=i+1
+            k=0
+            while k==0:
+                x=random.randint(0,other.ch-1)
+                while BOX[x]==0 or arith1.legendre(f(x).n,other.ch)==0:
+                    BOX[x]=0
+                    x=random.randint(0,other.ch-1)
+                BOX[x]=0
+                if arith1.legendre(f(x).n,other.ch)==1:
+                    E=other
+                    cg=1
+                else: #arith1.legendre(f(cg),other.ch)==-1
+                    E=EC([c.n,d.n],other.ch)
+                    cg=-1
+                    x=g*x%E.ch
+                P=[x,E.coordinateY(x)]
+                L=E._step(P,W)
+                A=L[0]
+                B=L[1]
+                S=L[2]
+                if len(S)==1:
+                    s=S.pop()
+                    if B.count(s)<=2:
+                        k=1
+            aa=A.index(s)
+            bb=B.index(s)
+            t=aa-bb*W
+            if E.mul(E.ch+1+t,P)==[0]:
+                return -cg*t
+            else:
+                t=aa+bb*W
+                return -cg*t
+
+    def naive(self):
+        other=self.simple()
+        k=0
+        for i in range(0,other.ch):
+            k=k+arith1.legendre(i*(i**2+other.a.n)+other.b.n,other.ch)
+        return -k
 
     def order(self,flag=None):
         """
@@ -976,8 +962,8 @@ class EC:
         else:#E/F_{p^r}, E is defined over F_p
         """
         if self.ch<=3:
-            raise NotImplementedError,"Now making m(__)m"
-        elif self.ch<10**4:
+            raise NotImplementedError,"this is not implemented."
+        if self.ch<10**4:
             if flag:
                 return pow(self.ch,flag)+1-powOrd(self.naive(),flag,self.ch)
             elif not hasattr(self, "o"):
@@ -1002,55 +988,49 @@ class EC:
         self is E_{a,b}
         """
         p=self.ch
-        if p>3:
-            if self.index==1:
-                x = polynomial.OneVariableMonomial("x", coeffring=self.field)
-                y = polynomial.OneVariableMonomial("y", coeffring=self.field)
-                if not Q:
-                    if P!=[0]:
-                        return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
-                    else:
-                        return 0,x(1)
-                else:
-                    if P==Q:
-                        if P==[0]:
-                            return 0,x(1)
-                        s=finitefield.FinitePrimeFieldElement(P[0],p)
-                        t=finitefield.FinitePrimeFieldElement(P[1],p)
-                        f=(3*s**2+2*self.a2*s+self.a4-self.a1*t)*x-(2*t+self.a1*s+self.a3)*y
-                        f=f-(s**3)+self.a4*s+2*self.a6-self.a3*t
-                        if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
-                            return 0,f
-                        elif len(f.variable)==2:
-                            return 2,f
-                        elif 'x' in f.variable:
-                            return 1,f
-                        else:
-                            return -1,f
-                    elif P==[0] or Q==[0]:
-                        if P==[0]:
-                            return 1,x-finitefield.FinitePrimeFieldElement(Q[0],p)
-                        else:
-                            return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
-                    elif P[0]==Q[0]:
-                        f=x-finitefield.FinitePrimeFieldElement(P[0],p)
-                        return 1,f
-                    else:
-                        Q = [self.field.createElement(e) for e in Q]
-                        P = [self.field.createElement(e) for e in P]
-                        f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
-                        if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
-                            return 0,f
-                        elif len(f.variable)==2:
-                            return 2,f
-                        elif 'x' in f.variable:
-                            return 1,f
-                        else:
-                            return -1,f
+        x = polynomial.OneVariableMonomial("x", coeffring=self.field)
+        y = polynomial.OneVariableMonomial("y", coeffring=self.field)
+        if not Q:
+            if P!=[0]:
+                return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
             else:
-                raise NotImplementedError,"Now making m(__)m"
+                return 0,x(1)
         else:
-            raise NotImplementedError,"Now making m(__)m"
+            if P==Q:
+                if P==[0]:
+                    return 0,x(1)
+                s=finitefield.FinitePrimeFieldElement(P[0],p)
+                t=finitefield.FinitePrimeFieldElement(P[1],p)
+                f=(3*s**2+2*self.a2*s+self.a4-self.a1*t)*x-(2*t+self.a1*s+self.a3)*y
+                f=f-(s**3)+self.a4*s+2*self.a6-self.a3*t
+                if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):
+                    return 0,f
+                elif len(f.variable)==2:
+                    return 2,f
+                elif 'x' in f.variable:
+                    return 1,f
+                else:
+                    return -1,f
+            elif P==[0] or Q==[0]:
+                if P==[0]:
+                    return 1,x-finitefield.FinitePrimeFieldElement(Q[0],p)
+                else:
+                    return 1,x-finitefield.FinitePrimeFieldElement(P[0],p)
+            elif P[0]==Q[0]:
+                f=x-finitefield.FinitePrimeFieldElement(P[0],p)
+                return 1,f
+            else:
+                Q = [self.field.createElement(e) for e in Q]
+                P = [self.field.createElement(e) for e in P]
+                f=(Q[1]-P[1])*(x-P[0])-(Q[0]-P[0])*(y-P[1])
+                if isinstance(f,(int,finitefield.FinitePrimeFieldElement)):#
+                    return 0,f
+                elif len(f.variable)==2:
+                    return 2,f
+                elif 'x' in f.variable:
+                    return 1,f
+                else:
+                    return -1,f
 
     def pointorder(self,P,ord=None,f=None):
         """
@@ -1087,37 +1067,61 @@ class EC:
                         return P
         else:
             return self.point()
-        
+
     def Miller(self,P,m,Q,R):
         """
         this returns value of function
         with divisor f_P(Q)
         this use for only compute Weil pairing
         """
-        if self.ch>3 and self.index==1:
-            # check order
-            if m<2:
-                raise ValueError,"order more than 1"
-            if m==2:
-                if P==Q:
-                    return self.field.one
-                else:
-                    return -self.field.one
-
-            # check points are not infinity point
-            if P==Q==[0] or Q==[0]:
-                raise ValueError,"You must input not [0]"
-
-            # use cache
-            if hasattr(self,"dbMiller"):
-                if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1],R[0],R[1])):
-                    return self.dbMiller[(P[0],P[1],m,Q[0],Q[1],R[0],R[1])]
-
-            # initialize
-            # f0=self.field.one # Unused variable
-            f_d=0
-            Z=R
-            l=self.line(P,Z)
+        # check order
+        if m<2:
+            raise ValueError,"order more than 1"
+        if m==2:
+            if P==Q:
+                return self.field.one
+            else:
+                return -self.field.one
+        
+        # check points are not infinity point
+        if P==Q==[0] or Q==[0]:
+            raise ValueError,"You must input not [0]"
+        
+        # use cache
+        if hasattr(self,"dbMiller"):
+            if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1],R[0],R[1])):
+                return self.dbMiller[(P[0],P[1],m,Q[0],Q[1],R[0],R[1])]
+        
+        # initialize
+        # f0=self.field.one # Unused variable
+        f_d=0
+        Z=R
+        l=self.line(P,Z)
+        if l[0]==0:
+            f_n=l[1]
+        elif l[0]==1:
+            f_n=l[1](Q[0])
+        elif l[0]==-1:
+            f_n=l[1](Q[1])
+        else:
+            f_n=l[1](x=Q[0],y=Q[1])
+        Z=self.add(Z,P)
+        l=self.line(Z)
+        if l[0]==0:
+            f_d=l[1]
+        else:
+            f_d=l[1](Q[0])
+        if f_d==0:
+            return False
+        f1=f_n/f_d
+        f=f1
+        Z=P
+        
+        # make addition chain
+        M=arith1.expand(m,2)
+        i=len(M)-2
+        while i>=0:
+            l=self.line(Z,Z)
             if l[0]==0:
                 f_n=l[1]
             elif l[0]==1:
@@ -1126,7 +1130,7 @@ class EC:
                 f_n=l[1](Q[1])
             else:
                 f_n=l[1](x=Q[0],y=Q[1])
-            Z=self.add(Z,P)
+            Z=self.add(Z,Z)
             l=self.line(Z)
             if l[0]==0:
                 f_d=l[1]
@@ -1134,15 +1138,9 @@ class EC:
                 f_d=l[1](Q[0])
             if f_d==0:
                 return False
-            f1=f_n/f_d
-            f=f1
-            Z=P
-
-            # make addition chain
-            M=arith1.expand(m,2)
-            i=len(M)-2
-            while i>=0:
-                l=self.line(Z,Z)
+            f=f**2*f_n/f_d
+            if M[i]==1:
+                l=self.line(Z,P)
                 if l[0]==0:
                     f_n=l[1]
                 elif l[0]==1:
@@ -1151,7 +1149,7 @@ class EC:
                     f_n=l[1](Q[1])
                 else:
                     f_n=l[1](x=Q[0],y=Q[1])
-                Z=self.add(Z,Z)
+                Z=self.add(Z,P)
                 l=self.line(Z)
                 if l[0]==0:
                     f_d=l[1]
@@ -1159,37 +1157,18 @@ class EC:
                     f_d=l[1](Q[0])
                 if f_d==0:
                     return False
-                f=f**2*f_n/f_d
-                if M[i]==1:
-                    l=self.line(Z,P)
-                    if l[0]==0:
-                        f_n=l[1]
-                    elif l[0]==1:
-                        f_n=l[1](Q[0])
-                    elif l[0]==-1:
-                        f_n=l[1](Q[1])
-                    else:
-                        f_n=l[1](x=Q[0],y=Q[1])
-                    Z=self.add(Z,P)
-                    l=self.line(Z)
-                    if l[0]==0:
-                        f_d=l[1]
-                    else:
-                        f_d=l[1](Q[0])
-                    if f_d==0:
-                        return False
-                    f=f*f1*f_n/f_d
-                i=i-1
-
-            # cacheing
-            if hasattr(self,"dbenable"):
-                T=(P[0],P[1],m,Q[0],Q[1],R[0],R[1])
-                if hasattr(self,"dbMiller"):
-                    self.dbMiller[T]=f
-                else:
-                    self.dbMiller = {T:f}
-
-            return f
+                f=f*f1*f_n/f_d
+            i=i-1
+        
+        # cacheing
+        if hasattr(self,"dbenable"):
+            T=(P[0],P[1],m,Q[0],Q[1],R[0],R[1])
+            if hasattr(self,"dbMiller"):
+                self.dbMiller[T]=f
+            else:
+                self.dbMiller = {T:f}
+        
+        return f
 
     def WeilPairing(self,m,P,Q):
         """
@@ -1304,100 +1283,91 @@ class EC:
                 return False
 
     def allPoint(self,O):
-        if self.ch>3 and self.index==1:
-            p=self.ch
-            x = polynomial.OneVariableMonomial("x", coeffring=self.field)
-            other=self.simple()
-            Y=x**3+other.a*x+other.b
-            L=[]
-            i=0
-            while i<p:
-                y=Y(i).n
-                if arith1.legendre(y,p)==1:
-                    Q=[i,arith1.modsqrt(y,p)]
-                    R=[i,p-Q[1]]
-                    q=other.BSGS(O,Q,[0])
-                    r=other.BSGS(O,R,[0])
-                    if q==O or r==O:
-                        return (O,1)
-                    else:
-                        L.append(q)
-                        L.append(r)
-                i=i+1
-            L=max(L)
-            return (L,O//L)
+        p=self.ch
+        x = polynomial.OneVariableMonomial("x", coeffring=self.field)
+        other=self.simple()
+        Y=x**3+other.a*x+other.b
+        L=[]
+        i=0
+        while i<p:
+            y=Y(i).n
+            if arith1.legendre(y,p)==1:
+                Q=[i,arith1.modsqrt(y,p)]
+                R=[i,p-Q[1]]
+                q=other.BSGS(O,Q,[0])
+                r=other.BSGS(O,R,[0])
+                if q==O or r==O:
+                    return (O,1)
+                else:
+                    L.append(q)
+                    L.append(r)
+            i=i+1
+        L=max(L)
+        return (L,O//L)
 
     def structure(self):
         """
         returns group structure E(K)=Z_d x Z_m with d|m|#E(K)
         """
-        if self.ch>3:
-            if self.index==1:
-                if hasattr(self,"abelian"):
-                    return self.abelian
-
-                # step 1. find order E/F_p.
-                simplified=self.simple()
-                N=simplified.order()
-                if prime.primeq(N):
-                    return (1,N)
-                if simplified.issupersingular() and simplified.ch%4==1:
-                    return (1,N)
-
-                # step 2. decompose N.
-                r = gcd.gcd(simplified.ch - 1, N)
-                p = factor_methods.factor(r)
-                N0 = r
-                N1,N2 = 1,N
-                while N0 > 1:
-                    N0 = gcd.gcd(r,N2)
-                    N1,N2 = N1*N0,N2//N0
-                if N1 == 2:
-                    S = (N1,N2)
+        if hasattr(self,"abelian"):
+            return self.abelian
+        
+        # step 1. find order E/F_p.
+        simplified=self.simple()
+        N=simplified.order()
+        if prime.primeq(N):
+            return (1,N)
+        if simplified.issupersingular() and simplified.ch%4==1:
+            return (1,N)
+        
+        # step 2. decompose N.
+        r = gcd.gcd(simplified.ch - 1, N)
+        p = factor_methods.factor(r)
+        N0 = r
+        N1,N2 = 1,N
+        while N0 > 1:
+            N0 = gcd.gcd(r,N2)
+            N1,N2 = N1*N0,N2//N0
+        if N1 == 2:
+            S = (N1,N2)
+            if not hasattr(self,"abelian"):
+                self.abelian = S
+            return S
+        
+        while 1:
+            P1 = [0]
+            while P1 == [0]:
+                P1 = simplified.point()
+            P2 = [0]
+            while P2 == [0]:
+                P2 = simplified.point()
+            P1,P2=simplified.mul(N2,P1),simplified.mul(N2,P2)
+            s=simplified.pointorder(P1,r,p)
+            t=simplified.pointorder(P2,r,p)
+            m=gcd.lcm(s,t)
+            if m>1:
+                e=simplified.WeilPairing(m,P1,P2)
+                if e!=self.field.one:
+                    d=e.order()
+                else:
+                    d=1
+                #print m,d
+                if m*d==N1:
+                    S=(d,N//d)
                     if not hasattr(self,"abelian"):
                         self.abelian = S
                     return S
-
-                while 1:
-                    P1 = [0]
-                    while P1 == [0]:
-                        P1 = simplified.point()
-                    P2 = [0]
-                    while P2 == [0]:
-                        P2 = simplified.point()
-                    P1,P2=simplified.mul(N2,P1),simplified.mul(N2,P2)
-                    s=simplified.pointorder(P1,r,p)
-                    t=simplified.pointorder(P2,r,p)
-                    m=gcd.lcm(s,t)
-                    if m>1:
-                        e=simplified.WeilPairing(m,P1,P2)
-                        if e!=self.field.one:
-                            d=e.order()
-                        else:
-                            d=1
-                        #print m,d
-                        if m*d==N1:
-                            S=(d,N//d)
-                            if not hasattr(self,"abelian"):
-                                self.abelian = S
-                            return S
-            else:
-                raise NotImplementedError,"Now making m(__)m"
-        else:
-            raise NotImplementedError,"Now making m(__)m"
 
     def issupersingular(self):
         """
         returns supersingularities.
         """
-        if self.index==1 and self.ch>3:
-            if self.order()==self.ch+1:
-                return True
-            else:
-                return False
+        if self.order()==self.ch+1:
+            return True
         else:
-            raise NotImplementedError,"sorry, Now making."
+            return False
     
+
     def flush(self):
         """
         flush attribute of defined after initialization.
@@ -1424,3 +1394,87 @@ class EC:
         enaable cache for dependence of Miller.
         """
         self.dbenable=True
+
+class ECoverF2(ECoverFp):
+    """
+    Elliptic curves over F2.
+    """
+    def __init__(self,coefficient,character=None,index=None):
+        ECGeneric.__init__(self,coefficient,character,index)
+        for c in coefficient:
+            if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
+                raise ValueError, "you must input integer coefficients."
+            if len(self)==5:
+                if coefficient[0]%2==1 and coefficient[2]%2==coefficient[3]%2==0:
+                    self.a1=finitefield.FinitePrimeFieldElement(1,2)
+                    self.a2=finitefield.FinitePrimeFieldElement(coefficient[1],2)
+                    self.a3=finitefield.FinitePrimeFieldElement(0,2)
+                    self.a4=finitefield.FinitePrimeFieldElement(0,2)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],2)
+                    self.b2=finitefield.FinitePrimeFieldElement(1,2)
+                    self.b4=finitefield.FinitePrimeFieldElement(0,2)
+                    self.b6=finitefield.FinitePrimeFieldElement(0,2)
+                    self.b8=self.a6
+                    self.c4=finitefield.FinitePrimeFieldElement(1,2)
+                    self.c6=finitefield.FinitePrimeFieldElement(1,2)
+                    self.disc=self.a6
+                    if self.disc:
+                        self.j=self.disc.inverse()
+                elif coefficient[0]%2==coefficient[1]%2==0:
+                    self.a1=finitefield.FinitePrimeFieldElement(0,2)
+                    self.a2=finitefield.FinitePrimeFieldElement(0,2)
+                    self.a3=finitefield.FinitePrimeFieldElement(coefficient[2],2)
+                    self.a4=finitefield.FinitePrimeFieldElement(coefficient[3],2)
+                    self.a6=finitefield.FinitePrimeFieldElement(coefficient[4],2)
+                    self.b2=finitefield.FinitePrimeFieldElement(0,2)
+                    self.b4=finitefield.FinitePrimeFieldElement(0,2)
+                    self.b6=self.a3**2
+                    self.b8=self.a4**2
+                    self.c4=finitefield.FinitePrimeFieldElement(0,2)
+                    self.c6=finitefield.FinitePrimeFieldElement(0,2)
+                    self.disc=self.a3**4
+                    self.j=finitefield.FinitePrimeFieldElement(0,2)
+                else:
+                    raise ValueError, "can't defined EC."
+                if self.disc.n==0:
+                    raise ValueError, "this curve is singular."
+            else:
+                raise ValueError, "coefficient is less or more, can't defined EC."
+    def __repr__(self):
+        if len(self)==2 or self.a1.n==self.a2.n==self.a3.n==0:
+            return "ECoverF2(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+        else:
+            return "ECoverF2(["+repr(self.a1.n)+","+repr(self.a2.n)+","+repr(self.a3.n)+","+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+    def line(self,P,Q=None):
+        raise NotImplementedError,"This is not implemented."
+    def structure(self):
+        raise NotImplementedError,"This is not implemented."
+
+
+def EC(coefficient,character=None,index=None):
+    """
+    generate new elliptic curve class.
+    """
+    if isinstance(coefficient,list):
+        if not character:
+            return ECoverQ(coefficient)
+        elif character == 1:
+            raise ValueError, "characteristic must be 0 or prime."
+        elif character == 2:
+            if not index or index == 1: #field=F_2
+                return ECoverF2(coefficient, 2)
+            else: #field=F_q,q=2^r
+                """
+                index is irred polynomial in F_p,deg=r
+                To add this, we must exchange field and element.
+                """
+                raise NotImplementedError,"now we can use only over finite prime fields."
+        else:
+            if not index or index == 1: #field=F_p
+                return ECoverFp(coefficient, character)
+            else: #field=F_q,q=(character)^r
+                """
+                index is irred polynomial in F_p,deg=r
+                To add this, we must exchange field and element.
+                """
+                raise NotImplementedError,"now we can use only over finite prime fields."
