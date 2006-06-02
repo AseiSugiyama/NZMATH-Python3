@@ -1232,8 +1232,46 @@ class EC:
                                     else:
                                         self.dbWeilPairing = {T:Z}
                                 return Z
-       
-    def BSGS(self,n,P,Q):
+    def BSGS(self, P):
+        """
+        returns order of P such that kP=[0]
+        refered to Washington 4.3.4.
+        """
+        Q = self.mul(self.ch+1, P)
+        m = int(math.sqrt(math.sqrt(self.ch)))+1
+        Plist = [[0]]
+        R = P
+        j = 1
+        while j <= m:
+            Plist.append(R)
+            R = self.add(R, P)
+            j = j+1
+        R = self.mul(2*m, P)
+        k = -m
+        Plist_rev = map(self.mul,[-1]*(m+1), Plist) # make reverse point mapping
+        while k <= m:
+            S = self.add(Q, self.mul(k, R))
+            if S in Plist:
+                j = Plist.index(S)
+                break
+            elif S in Plist_rev:
+                j = -Plist_rev.index(S)
+                break
+            k = k+1
+        M = self.ch+1+2*m*k-j
+        Flist = factor_methods.factor(M)
+        sentinel = True
+        while M > 1 and sentinel:
+            sentinel = False
+            for p,e in Flist[:]:
+                if self.mul(M//p, P) == [0]:
+                    sentinel = True
+                    M = M//p
+                    Flist = factor_methods.factor(M)
+                    break
+        return M
+            
+    def DLP_BSGS(self,n,P,Q):
         """
         returns k such that Q=kP
         P,Q is the elements of the same group
