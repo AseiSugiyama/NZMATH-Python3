@@ -281,17 +281,27 @@ def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt, y):
     this is a submodule called by the module, bsgs.
     check bsgs is finished or not yet.
     '''
+    print "********    ckfn  **********"
     print "######################"
-    print n[0]
-    print h[0]
+    print "n[0]",n[0]
+    print "h[0]",h[0]
     print "######################"
     
     h[0] = h[0] * n[0]
     if h[0] >= lwrbd:
         return h[0]
+    #print "---------------=",uprbd_1[0],n[0]
     uprbd_1[0] = uprbd_1[0] / n[0] # floor of uprbd_1[0] / n[0]
-    lwrbd_1[0] = lwrbd_1[0] / n[0]  + 1 # floor + 1 of lwrbd_1[0] / n[0]
+    #print "----------------",uprbd_1[0]
+    #print "----------------",lwrbd_1[0],n[0]
+    #lwrbd_1[0] = lwrbd_1[0] / n[0] + 1 # floor + 1 of lwrbd_1[0] / n[0]
+    if lwrbd_1[0] % n[0] == 0:
+        lwrbd_1[0] = lwrbd_1[0] / n[0]
+    else:
+        lwrbd_1[0] = lwrbd_1[0] / n[0] + 1
+    #print "----------------",lwrbd_1[0]
     q[0] = nzmath.arith1.floorsqrt(n[0])
+    print "q[0]",q[0]
     lsl = ls[:]
     ls = []
     lll = ll[:]
@@ -303,7 +313,7 @@ def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt, y):
     for a in range(q[0]):
         for eol in lll:
             ll.append((y[0]**a) * eol) # multiple of two elements of G
-    print h[0]
+    print "h[0]",h[0]
     return -1
 
 def cptodr(n, x, ls, ll):
@@ -346,12 +356,14 @@ def cptgs(n, q, sz, y, c_s1, uprbd_1, ll):
 
     print "611"
     print gsll
-    print gscs
+    print "gscs",gscs
+    #if gscs == []:
+    #    raise ValueError("[]")
     print "y[0] is", y[0]
     print "sz[0] is", sz[0]
-    print n[0]
-    print q[0]
-    print uprbd_1
+    print "n[0]=",n[0]
+    print "q[0]=",q[0]
+    print "uprbd_1=",uprbd_1
     while 1:
         ########################### loop
         #print "sss"
@@ -361,6 +373,7 @@ def cptgs(n, q, sz, y, c_s1, uprbd_1, ll):
             print "sz[0] is", sz[0]
             for tpcs in gscs:
                 if sz1 == tpcs[0]:
+                    print "n[0],r",n[0],tpcs[1]
                     n[0] = n[0] - tpcs[1]
                     return True
                 else:
@@ -368,15 +381,18 @@ def cptgs(n, q, sz, y, c_s1, uprbd_1, ll):
                     #print sz1
                     #print tpcs[0]
         # continue (sp. 5)
+        print "n[0]=",n[0]
 
         sz[0] = y[0] * sz[0]
         #print "!"
         #print sy[0]
         #print sz[0]
         #print "!!"
+        print "n[0],q[0]:",n[0],q[0]
         n[0] = n[0] + q[0]
-        #print n[0]
+        print "n[0],uprbd_1:",n[0],uprbd_1[0]
         if n[0] <= uprbd_1[0]:
+            print gscs
             continue
         else:
             raise ValueError("the order is larger than upper bound")
@@ -393,7 +409,7 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
     print "YYY"
     print "x[0] is ", x[0]
     print "x[1] is ", x[1]
-    print q[0]
+    print "q[0]",q[0]
     for tr in range(q[0]):
         #print "#8821"
         #print x[0] * x[1]
@@ -425,6 +441,7 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
         cptodr(n, x, ls, ll)
     else:
         # step 4 to 5
+        print "step 4 to 5"
         #print x[1]
             
         #print x[q[0] -1 ]
@@ -433,22 +450,26 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
         print "########"
-        print lwrbd_1[0]
+        print "lwrbd_1=",lwrbd_1[0]
         print "x[1] is", x[1]
         print "y[0] is", y[0]
         print "sz[0] is", sz[0]
-        #print n[0]
+        print "n[0]=",n[0]
         print "########"
         # compute giant steps
         print "$$"
-        print ll
+        print "ll",ll
         print "$"
+        print "q[0]",q
         cptgs(n, q, sz, y, c_s1, uprbd_1, ll)
         print "$$$"
         # 6
+        print "n[0]=",n
         cptodr(n, x, ls, ll)
     
-        
+def testbsgs(n,l,u):
+    a = nxtel(n)
+    return bsgs(a,l,u)
 def bsgs(iordmel, lwrbd, uprbd):
     '''
     iordmel is a class. it return a random element of target infinite group.
@@ -483,17 +504,19 @@ def bsgs(iordmel, lwrbd, uprbd):
     y = [0]
     ret = -1
     # take a new element of the group.
+    q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) 
     while ret == -1:
         nt[0] = iordmel.retnext()
-        q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) + 1
-
+        #q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) 
+        if uprbd_1[0] - lwrbd_1[0] != q[0]**2 :
+            q[0] += 1
         print "RRR"
-        print h[0]
-        print nt[0]
+        print "h[0]",h[0]
+        print "nt[0]",nt[0]
         #print nt[0] * ut
         #print ut * nt[0]
         #print "RRR"
-        print q[0]
+        print "q[0]",q[0]
         print "RRRR"
         # initialize variables
         #x = range(q[0] + 1) # x is the set of elements of G
@@ -513,15 +536,15 @@ def bsgs(iordmel, lwrbd, uprbd):
         # compute small steps        
         x[0] =  ut # maybe, this code must not be here
         print "www"
-        print x[0]
+        print "x[0]",x[0]
         #print q[0]
         #print x
         #print "www"
         #print nt[0]
-        print h[0]
+        print "h[0]",h[0]
         #print nt[0] ** h[0]
         x[1] = (nt[0] ** h[0])
-        print x[1]
+        print "x[1]",x[1]
         print "uuu"
         #print x[0] * x[1]
         #print x[1].ope(x[0])
@@ -532,7 +555,8 @@ def bsgs(iordmel, lwrbd, uprbd):
         else:
             # 3kara6
             print "&&&"
-            print ll
+            print "ll",ll
+            #print "-----------",lwrbd_1,uprbd_1
             cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y)
         print "uuuuuuuuuuuuu"
         print "n[0] is ", n[0]
