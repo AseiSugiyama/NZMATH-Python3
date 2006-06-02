@@ -189,8 +189,6 @@ class ECGeneric:
                 if self.disc==0:
                     raise ValueError, "this curve is singular."
                 self.j=rational.IntegerIfIntOrLong(self.c4**3)/self.disc
-            elif self.ch==2: # y^2+x*y=x^3+a2*x^2+a6 or y^2+a3*y=x^3+a4*x+a6
-                pass
         else:
             raise ValueError, "you must input (coefficient, character, index)"
 
