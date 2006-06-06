@@ -1397,8 +1397,8 @@ class ECoverF2(ECoverFp):
     """
     Elliptic curves over F2.
     """
-    def __init__(self,coefficient,character=None,index=None):
-        ECGeneric.__init__(self,coefficient,character,index)
+    def __init__(self,coefficient, index=None):
+        ECGeneric.__init__(self, coefficient, 2, index)
         for c in coefficient:
             if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
                 raise ValueError, "you must input integer coefficients."
@@ -1460,7 +1460,7 @@ def EC(coefficient,character=None,index=None):
             raise ValueError, "characteristic must be 0 or prime."
         elif character == 2:
             if not index or index == 1: #field=F_2
-                return ECoverF2(coefficient, 2)
+                return ECoverF2(coefficient)
             else: #field=F_q,q=2^r
                 """
                 index is irred polynomial in F_p,deg=r
