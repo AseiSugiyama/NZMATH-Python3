@@ -599,11 +599,13 @@ class ECoverFp(ECGeneric):
     Elliptic curves over Fp, p>2 .
     """
     def __init__(self,coefficient,character=None,index=None):
+        if character<3:
+            raise ValueError, "ECoverFp accepts character > 2."
         ECGeneric.__init__(self,coefficient,character,index)
         if self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
             for c in coefficient:
                 if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                    raise ValueError("you must input integer coefficients. m(__)m")
+                    raise ValueError, "you must input integer coefficients."
             if len(self)==5:
                 if coefficient[0]%3==coefficient[2]%3==coefficient[3]%3==0:
                     self.a1=finitefield.FinitePrimeFieldElement(0,3)
