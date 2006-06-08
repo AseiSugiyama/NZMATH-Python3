@@ -1068,7 +1068,7 @@ class ECoverFp(ECGeneric):
         else:
             return self.point()
 
-    def Miller(self,P,m,Q,R):
+    def Miller(self,P,m,Q):
         """
         this returns value of function
         with divisor f_P(Q)
@@ -1089,39 +1089,14 @@ class ECoverFp(ECGeneric):
         
         # use cache
         if hasattr(self,"dbMiller"):
-            if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1],R[0],R[1])):
-                return self.dbMiller[(P[0],P[1],m,Q[0],Q[1],R[0],R[1])]
+            if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1])):
+                return self.dbMiller[(P[0],P[1],m,Q[0],Q[1])]
         
         # initialize
-        # f0=self.field.one # Unused variable
-        f_d=0
-        Z=R
-        l=self.line(P,Z)
-        if l[0]==0:
-            f_n=l[1]
-        elif l[0]==1:
-            f_n=l[1](Q[0])
-        elif l[0]==-1:
-            f_n=l[1](Q[1])
+        if P==Q:
+            f1=self.field.one
         else:
-            f_n=l[1](x=Q[0],y=Q[1])
-        Z=self.add(Z,P)
-        l=self.line(Z)
-        if l[0]==0:
-            f_d=l[1]
-        else:
-            f_d=l[1](Q[0])
-        if f_d==0:
-            return False
-        f1=f_n/f_d
-        f=f1
-        Z=P
-        
-        # make addition chain
-        M=arith1.expand(m,2)
-        i=len(M)-2
-        while i>=0:
-            l=self.line(Z,Z)
+            l=self.line(P,[0])
             if l[0]==0:
                 f_n=l[1]
             elif l[0]==1:
@@ -1130,17 +1105,25 @@ class ECoverFp(ECGeneric):
                 f_n=l[1](Q[1])
             else:
                 f_n=l[1](x=Q[0],y=Q[1])
-            Z=self.add(Z,Z)
-            l=self.line(Z)
+            l=self.line(P)
             if l[0]==0:
                 f_d=l[1]
             else:
                 f_d=l[1](Q[0])
             if f_d==0:
                 return False
-            f=f**2*f_n/f_d
-            if M[i]==1:
-                l=self.line(Z,P)
+            f1=f_n/f_d
+        f=f1
+        Z=P
+        
+        # make addition chain
+        M=arith1.expand(m,2)
+        i=len(M)-2
+        while i>=0:
+            if Z==Q:
+                f=f*f
+            else:
+                l=self.line(Z,Z)
                 if l[0]==0:
                     f_n=l[1]
                 elif l[0]==1:
@@ -1149,7 +1132,7 @@ class ECoverFp(ECGeneric):
                     f_n=l[1](Q[1])
                 else:
                     f_n=l[1](x=Q[0],y=Q[1])
-                Z=self.add(Z,P)
+                Z=self.add(Z,Z)
                 l=self.line(Z)
                 if l[0]==0:
                     f_d=l[1]
@@ -1157,12 +1140,34 @@ class ECoverFp(ECGeneric):
                     f_d=l[1](Q[0])
                 if f_d==0:
                     return False
-                f=f*f1*f_n/f_d
+                f=f*f*f_n/f_d
+            if M[i]==1:
+                if Z==Q:
+                    f=f*f1
+                else:
+                    l=self.line(Z,P)
+                    if l[0]==0:
+                        f_n=l[1]
+                    elif l[0]==1:
+                        f_n=l[1](Q[0])
+                    elif l[0]==-1:
+                        f_n=l[1](Q[1])
+                    else:
+                        f_n=l[1](x=Q[0],y=Q[1])
+                    Z=self.add(Z,P)
+                    l=self.line(Z)
+                    if l[0]==0:
+                        f_d=l[1]
+                    else:
+                        f_d=l[1](Q[0])
+                    if f_d==0:
+                        return False
+                    f=f*f1*f_n/f_d
             i=i-1
         
         # cacheing
         if hasattr(self,"dbenable"):
-            T=(P[0],P[1],m,Q[0],Q[1],R[0],R[1])
+            T=(P[0],P[1],m,Q[0],Q[1])
             if hasattr(self,"dbMiller"):
                 self.dbMiller[T]=f
             else:
@@ -1170,11 +1175,58 @@ class ECoverFp(ECGeneric):
         
         return f
 
+    def TatePairing_Trad(self,m,P,Q):
+        """
+        computing the traditional Tate-Lichetenbaum pairing with Miller's algorithm.
+        """
+        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
+            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+
+        if P==[0] or Q==[0]:
+            return self.field.one
+
+        while 1:
+            A=[0]
+            while A==[0]:
+                R1=self.findpoint(m)
+                A=self.add(Q,R1)
+
+            g=self.Miller(P,m,A)
+            if g:
+                h=self.Miller(P,m,R1)
+                if h:
+                    Z=g/h
+                    if Z.order()==m:
+                        return Z
+    def TatePairing(self,m,P,Q):
+        """
+        computing the Tate-Lichetenbaum pairing with traditional algorithm.
+        """
+        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
+            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+
+        if P==[0] or Q==[0]:
+            return self.field.one
+
+        return self.TatePairing_trad(m,P,Q)**((self.ch-1)/m)
+
+    def WeilPairing_Tate(self,m,P,Q):
+        """
+        computing the Weil pairing with traditional Tate pairing.
+        """
+        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
+            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+
+        if P==[0] or Q==[0] or P==Q:
+            return self.field.one
+
+        return self.TatePairing_Trad(m,Q,P)/self.TatePairing_Trad(m,P,Q)
+
     def WeilPairing(self,m,P,Q):
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        if self.mul(m,P)!=[0] or self.mul(m,Q)!=[0]:
+        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0] or P==Q:
@@ -1187,22 +1239,27 @@ class ECoverFp(ECGeneric):
                 
         while 1:
             A=[0]
-            B=[0]
-            while A==[0] or B==[0]:
+            while A==[0]:
                 R1=self.findpoint(m)
-                R2=self.findpoint(m)
-                A=self.add(P,R1)
-                B=self.add(Q,R2)
-            g=self.Miller(P,m,B,R1)
+                A=self.add(Q,R1)
+
+            if self.add(P,Q)==[0]:
+                R2=[0]
+                while R2==[0] or self.add(R2,P)==[0]:
+                    R2=self.findpoint(m)
+            else:
+                R2=P
+            B=self.add(Q,R2)
+            g=self.Miller(P,m,R1)
             if g:
-                G=self.Miller(Q,m,R1,R2)
+                G=self.Miller(Q,m,B)
                 if G:
-                    h=self.Miller(Q,m,A,R2)
+                    h=self.Miller(Q,m,R2)
                     if h:
-                        H=self.Miller(P,m,R2,R1)
+                        H=self.Miller(P,m,A)
                         if H:
                             Z=(g*G)/(h*H)
-                            if not (m%Z.order()):
+                            if Z.order()==m:
                                 # cacheing
                                 if hasattr(self,"dbenable"):
                                     T=(m,P[0],P[1],Q[0],Q[1])
@@ -1211,6 +1268,7 @@ class ECoverFp(ECGeneric):
                                     else:
                                         self.dbWeilPairing = {T:Z}
                                 return Z
+
     def BSGS(self, P):
         """
         returns order of P such that kP=[0]
@@ -1230,12 +1288,13 @@ class ECoverFp(ECGeneric):
         Plist_rev = map(self.mul,[-1]*(m+1), Plist) # make reverse point mapping
         while k <= m:
             S = self.add(Q, self.mul(k, R))
-            if S in Plist:
-                j = Plist.index(S)
-                break
-            elif S in Plist_rev:
-                j = -Plist_rev.index(S)
-                break
+            if S!=[0]:
+                if S in Plist:
+                    j = Plist.index(S)
+                    break
+                elif S in Plist_rev:
+                    j = -Plist_rev.index(S)
+                    break
             k = k+1
         M = self.ch+1+2*m*k-j
         Flist = factor_methods.factor(M)
