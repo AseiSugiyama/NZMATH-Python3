@@ -1053,20 +1053,17 @@ class ECoverFp(ECGeneric):
                 B=self.mul(p,B)
         return o
 
-    def findpoint(self,m=None):
+    def findpoint(self,m):
         """
         returns point P in E/F_p s.t mP == [0] .
         """
-        if m:
-            if self.order()%m:
-                raise ValueError,"point order does not divide group order."
-            else:
-                while 1:
-                    P=self.point()
-                    if self.mul(m,P)==[0]:
-                        return P
+        if self.order()%m:
+            raise ValueError,"point order does not divide group order."
         else:
-            return self.point()
+            while 1:
+                P=self.point()
+                if self.mul(m,P)==[0]:
+                    return P
 
     def Miller(self,P,m,Q):
         """
@@ -1093,10 +1090,17 @@ class ECoverFp(ECGeneric):
                 return self.dbMiller[(P[0],P[1],m,Q[0],Q[1])]
         
         # initialize
-        if P==Q:
-            f1=self.field.one
-        else:
-            l=self.line(P,[0])
+        f1=self.field.one
+        f=f1
+        Z=P
+        
+        # make addition chain
+        M=arith1.expand(m,2)
+        i=len(M)-2
+        sent=1
+        while i>=0:
+            sent=sent*2
+            l=self.line(Z,Z)
             if l[0]==0:
                 f_n=l[1]
             elif l[0]==1:
@@ -1105,25 +1109,19 @@ class ECoverFp(ECGeneric):
                 f_n=l[1](Q[1])
             else:
                 f_n=l[1](x=Q[0],y=Q[1])
-            l=self.line(P)
+            Z=self.add(Z,Z)
+            l=self.line(Z)
             if l[0]==0:
                 f_d=l[1]
             else:
                 f_d=l[1](Q[0])
             if f_d==0:
+                print "sentinel fault with",sent,P,Q
                 return False
-            f1=f_n/f_d
-        f=f1
-        Z=P
-        
-        # make addition chain
-        M=arith1.expand(m,2)
-        i=len(M)-2
-        while i>=0:
-            if Z==Q:
-                f=f*f
-            else:
-                l=self.line(Z,Z)
+            f=f*f*f_n/f_d
+            if M[i]==1:
+                sent=sent+1
+                l=self.line(Z,P)
                 if l[0]==0:
                     f_n=l[1]
                 elif l[0]==1:
@@ -1132,37 +1130,16 @@ class ECoverFp(ECGeneric):
                     f_n=l[1](Q[1])
                 else:
                     f_n=l[1](x=Q[0],y=Q[1])
-                Z=self.add(Z,Z)
+                Z=self.add(Z,P)
                 l=self.line(Z)
                 if l[0]==0:
                     f_d=l[1]
                 else:
                     f_d=l[1](Q[0])
                 if f_d==0:
+                    print "sentinel fault with",sent,P,Q
                     return False
-                f=f*f*f_n/f_d
-            if M[i]==1:
-                if Z==Q:
-                    f=f*f1
-                else:
-                    l=self.line(Z,P)
-                    if l[0]==0:
-                        f_n=l[1]
-                    elif l[0]==1:
-                        f_n=l[1](Q[0])
-                    elif l[0]==-1:
-                        f_n=l[1](Q[1])
-                    else:
-                        f_n=l[1](x=Q[0],y=Q[1])
-                    Z=self.add(Z,P)
-                    l=self.line(Z)
-                    if l[0]==0:
-                        f_d=l[1]
-                    else:
-                        f_d=l[1](Q[0])
-                    if f_d==0:
-                        return False
-                    f=f*f1*f_n/f_d
+                f=f*f1*f_n/f_d
             i=i-1
         
         # cacheing
@@ -1179,7 +1156,7 @@ class ECoverFp(ECGeneric):
         """
         computing the traditional Tate-Lichetenbaum pairing with Miller's algorithm.
         """
-        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
+        if m%self.BSGS(P) or m%self.BSGS(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0]:
@@ -1190,43 +1167,39 @@ class ECoverFp(ECGeneric):
             while A==[0]:
                 R1=self.findpoint(m)
                 A=self.add(Q,R1)
-
             g=self.Miller(P,m,A)
             if g:
                 h=self.Miller(P,m,R1)
                 if h:
                     Z=g/h
-                    if Z.order()==m:
-                        return Z
+                    return Z
+
     def TatePairing(self,m,P,Q):
         """
         computing the Tate-Lichetenbaum pairing with traditional algorithm.
         """
-        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
-            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
-
         if P==[0] or Q==[0]:
             return self.field.one
 
-        return self.TatePairing_trad(m,P,Q)**((self.ch-1)/m)
+        return self.TatePairing_Trad(m,P,Q)**((self.ch-1)//m)
 
     def WeilPairing_Tate(self,m,P,Q):
         """
         computing the Weil pairing with traditional Tate pairing.
         """
-        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
-            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
-
         if P==[0] or Q==[0] or P==Q:
             return self.field.one
 
-        return self.TatePairing_Trad(m,Q,P)/self.TatePairing_Trad(m,P,Q)
+        e=self.field.one
+        while e.order()!=m:
+            e=self.TatePairing_Trad(m,Q,P)/self.TatePairing_Trad(m,P,Q)
+        return e
 
     def WeilPairing(self,m,P,Q):
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        if self.BSGS(P)!=m or self.BSGS(Q)!=m:
+        if m%self.BSGS(P) or m%self.BSGS(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0] or P==Q:
@@ -1242,14 +1215,15 @@ class ECoverFp(ECGeneric):
             while A==[0]:
                 R1=self.findpoint(m)
                 A=self.add(Q,R1)
-
             if self.add(P,Q)==[0]:
-                R2=[0]
-                while R2==[0] or self.add(R2,P)==[0]:
-                    R2=self.findpoint(m)
+                B=[0]
+                while B==[0]:
+                    R2=self.findpoint()
+                    B=self.add(P,R2)
             else:
-                R2=P
-            B=self.add(Q,R2)
+                R2=Q
+                B=self.add(P,R2)
+
             g=self.Miller(P,m,R1)
             if g:
                 G=self.Miller(Q,m,B)
@@ -1274,6 +1248,9 @@ class ECoverFp(ECGeneric):
         returns order of P such that kP=[0]
         refered to Washington 4.3.4.
         """
+        if P==[0]:
+            return 1
+
         Q = self.mul(self.ch+1, P)
         m = int(math.sqrt(math.sqrt(self.ch)))+1
         Plist = [[0]]
