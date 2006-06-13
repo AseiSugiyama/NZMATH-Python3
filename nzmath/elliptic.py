@@ -1170,11 +1170,7 @@ class ECoverFp(ECGeneric):
             while S==[0]:
                 R=self.point()
                 S=self.add(Q,R)
-
             T=self.Miller(P,m,Q,R)
-            flag=True
-            if T:
-                print "order:",T.order(),"/",m
         return T
 
     def TatePairing_Extend(self,m,P,Q):
