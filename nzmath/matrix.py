@@ -789,10 +789,10 @@ class IntegerMatrix(Matrix):
                     A[j] = A[j] - q * A[k]
             # step 6 [Finished?]
             if i == l:
-                W = createMatrix(self.row, self.column-k+1)
-                for j in range(1, self.column-k+2):
-                    W[j] = A[j+k-1]
-                return W
+                #W = createMatrix(self.row, self.column-k+1)
+                #for j in range(1, self.column-k+2):
+                #    W[j] = A[j+k-1]
+                return A
             else:
                 i -= 1; k -= 1
                 # go to step 2
