@@ -1065,21 +1065,47 @@ class ECoverFp(ECGeneric):
                 if self.mul(m,P)==[0]:
                     return P
 
-    def Miller(self,P,m,Q):
+    def _divisor(self,k,j,P,R,S):
+        """
+        returns divisor value of function
+        use for compute Miller's Algorithm.
+        """
+        kP=self.mul(k,P)
+        jP=self.mul(j,P)
+        l=self.line(kP,jP)
+        if l[0]==0:
+            f_n1=l[1]
+            f_d2=l[1]
+        elif l[0]==1:
+            f_n1=l[1](S[0])
+            f_d2=l[1](R[0])
+        elif l[0]==-1:
+            f_n1=l[1](S[1])
+            f_d2=l[1](R[1])
+        else:
+            f_n1=l[1](x=S[0],y=S[1])
+            f_d2=l[1](x=R[0],y=R[1])
+        l=self.line(self.add(kP,jP))
+        if l[0]==0:
+            f_n2=l[1]
+            f_d1=l[1]
+        else:
+            f_n2=l[1](R[0])
+            f_d1=l[1](S[0])
+        if not f_d1*f_d2:
+            return False
+        return (f_n1*f_n2)/(f_d1*f_d2)
+
+    def Miller(self,P,m,Q,R,O=[0]):
         """
         this returns value of function
-        with divisor f_P(Q)
-        this use for only compute Weil pairing
+        with divisor f_P(D_Q)
+        this use for only compute Weil-Tate pairing
         """
         # check order
-        if m<2:
-            raise ValueError,"order more than 1"
-        if m==2:
-            if P==Q:
-                return self.field.one
-            else:
-                return -self.field.one
-        
+        if m<2 or self.ch%m:
+            raise ValueError,"order more than 1 and not divisible characteristic"
+
         # check points are not infinity point
         if P==Q==[0] or Q==[0]:
             raise ValueError,"You must input not [0]"
@@ -1090,93 +1116,76 @@ class ECoverFp(ECGeneric):
                 return self.dbMiller[(P[0],P[1],m,Q[0],Q[1])]
         
         # initialize
+        S=self.add(R,Q)
+        if S==[0]:
+            return False
+
+        f0=self.field.one
         f1=self.field.one
         f=f1
-        Z=P
-        
-        # make addition chain
-        M=arith1.expand(m,2)
-        i=len(M)-2
-        sent=1
-        while i>=0:
-            sent=sent*2
-            l=self.line(Z,Z)
-            if l[0]==0:
-                f_n=l[1]
-            elif l[0]==1:
-                f_n=l[1](Q[0])
-            elif l[0]==-1:
-                f_n=l[1](Q[1])
-            else:
-                f_n=l[1](x=Q[0],y=Q[1])
-            Z=self.add(Z,Z)
-            l=self.line(Z)
-            if l[0]==0:
-                f_d=l[1]
-            else:
-                f_d=l[1](Q[0])
-            if f_d==0:
-                print "sentinel fault with",sent,P,Q
-                return False
-            f=f*f*f_n/f_d
-            if M[i]==1:
-                sent=sent+1
-                l=self.line(Z,P)
-                if l[0]==0:
-                    f_n=l[1]
-                elif l[0]==1:
-                    f_n=l[1](Q[0])
-                elif l[0]==-1:
-                    f_n=l[1](Q[1])
-                else:
-                    f_n=l[1](x=Q[0],y=Q[1])
-                Z=self.add(Z,P)
-                l=self.line(Z)
-                if l[0]==0:
-                    f_d=l[1]
-                else:
-                    f_d=l[1](Q[0])
-                if f_d==0:
-                    print "sentinel fault with",sent,P,Q
+
+        M=m
+        j=0
+        k=1
+        vj=f0
+        vk=f1
+        while M>0:
+            if not (M%2):
+                f=self._divisor(k,k,P,R,S)
+                if not f:
                     return False
-                f=f*f1*f_n/f_d
-            i=i-1
-        
+                vk=vk**2*f
+                k=k*2
+                M=M//2
+            if M%2:
+                f=self._divisor(k,j,P,R,S)
+                if not f:
+                    return False
+                vj=vj*vk*f
+                j=j+k
+                M=M-1
+                        
         # cacheing
         if hasattr(self,"dbenable"):
             T=(P[0],P[1],m,Q[0],Q[1])
             if hasattr(self,"dbMiller"):
-                self.dbMiller[T]=f
+                self.dbMiller[T]=vj
             else:
-                self.dbMiller = {T:f}
+                self.dbMiller = {T:vj}
         
-        return f
+        return vj
 
-    def TatePairing_Trad(self,m,P,Q):
+    def TatePairing(self,m,P,Q):
         """
-        computing the traditional Tate-Lichetenbaum pairing with Miller's algorithm.
+        computing the Tate-Lichetenbaum pairing with Miller's algorithm.
         """
         if m%self.BSGS(P) or m%self.BSGS(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0]:
             return self.field.one
+        T=False
+        flag=False
+        while (not T) or (T.order()==1):
+            O=[0]
+            if flag:
+                O=P
+                while O==P:
+                    O=self.point()
+            S=[0]
+            while S==[0]:
+                R=self.point()
+                S=self.add(Q,R)
 
-        while 1:
-            A=[0]
-            while A==[0]:
-                R1=self.findpoint(m)
-                A=self.add(Q,R1)
-            g=self.Miller(P,m,A)
-            if g:
-                h=self.Miller(P,m,R1)
-                if h:
-                    Z=g/h
-                    return Z
+            T=self.Miller(P,m,Q,R,O)
+            flag=True
+            if T:
+                print "order:",T.order(),"/",m
+        return T
 
-    def TatePairing(self,m,P,Q):
+    def TatePairing_Extend(self,m,P,Q):
         """
-        computing the Tate-Lichetenbaum pairing with traditional algorithm.
+        computing the Tate-Lichtenbaum pairing extended original Tate Pairing.
         """
         if P==[0] or Q==[0]:
             return self.field.one
@@ -1185,15 +1194,15 @@ class ECoverFp(ECGeneric):
 
     def WeilPairing_Tate(self,m,P,Q):
         """
-        computing the Weil pairing with traditional Tate pairing.
+        computing the Weil pairing with Tate pairing.
         """
         if P==[0] or Q==[0] or P==Q:
             return self.field.one
 
-        e=self.field.one
-        while e.order()!=m:
-            e=self.TatePairing_Trad(m,Q,P)/self.TatePairing_Trad(m,P,Q)
-        return e
+        W=self.field.one
+        while m%W.order() or W.order==1:
+            W=self.TatePairing(m,Q,P)/self.TatePairing(m,P,Q)
+        return W
 
     def WeilPairing(self,m,P,Q):
         """
@@ -1209,39 +1218,22 @@ class ECoverFp(ECGeneric):
         if hasattr(self,"dbWeilPairing"):
             if self.dbWeilPairing.has_key((m,P[0],P[1],Q[0],Q[1])):
                 return self.dbWeilPairing[m,P[0],P[1],Q[0],Q[1]]
-                
-        while 1:
-            A=[0]
-            while A==[0]:
-                R1=self.findpoint(m)
-                A=self.add(Q,R1)
-            if self.add(P,Q)==[0]:
-                B=[0]
-                while B==[0]:
-                    R2=self.findpoint()
-                    B=self.add(P,R2)
-            else:
-                R2=Q
-                B=self.add(P,R2)
 
-            g=self.Miller(P,m,R1)
-            if g:
-                G=self.Miller(Q,m,B)
-                if G:
-                    h=self.Miller(Q,m,R2)
-                    if h:
-                        H=self.Miller(P,m,A)
-                        if H:
-                            Z=(g*G)/(h*H)
-                            if Z.order()==m:
-                                # cacheing
-                                if hasattr(self,"dbenable"):
-                                    T=(m,P[0],P[1],Q[0],Q[1])
-                                    if hasattr(self,"dbWeilPairing"):
-                                        self.dbWeilPairing[T] = Z
-                                    else:
-                                        self.dbWeilPairing = {T:Z}
-                                return Z
+
+        while 1:
+            T=U=False
+            while not isinstance(T,finitefield.FinitePrimeFieldElement):
+                R=self.point()
+                S=self.add(P,R)
+                if S!=[0]:
+                    T=self.Miller(Q,m,P,R)
+            while not isinstance(U,finitefield.FinitePrimeFieldElement):
+                R=self.point()
+                S=self.add(Q,R)
+                if S!=[0]:
+                    U=self.Miller(P,m,Q,R)
+            F=T/U
+            return F
 
     def BSGS(self, P):
         """
