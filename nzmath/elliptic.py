@@ -1096,7 +1096,7 @@ class ECoverFp(ECGeneric):
             return False
         return (f_n1*f_n2)/(f_d1*f_d2)
 
-    def Miller(self,P,m,Q,R,O=[0]):
+    def Miller(self,P,m,Q,R):
         """
         this returns value of function
         with divisor f_P(D_Q)
