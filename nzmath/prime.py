@@ -68,6 +68,10 @@ def millerRabin(n, times = 20):
 
 
 def bigprimeq(z):
+    """
+    Giving up rigorous proof of primality, return True for a probable
+    prime.
+    """
     if long(z) != z:
         raise ValueError, "non-integer for primeq()"
     elif z <= 1:
