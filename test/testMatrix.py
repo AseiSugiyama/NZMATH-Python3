@@ -136,6 +136,14 @@ class SquareMatrixTest(unittest.TestCase):
         zerovec = vector.Vector([0, 0])
         self.assertEqual(zerovec, h.getColumn(1))
 
+        square = IntegerMatrix(3, 3, [1, 0, 0, 0, 1, 1, 0, 1, 1])
+        h = square.hermiteNormalForm()
+        self.assertEqual(h.row, square.row)
+        self.assertEqual(h.column, square.column)
+        hermite = IntegerMatrix(3, 3, [0, 1, 0, 0, 0, 1, 0, 0, 0])
+        for i in (1, 2, 3):
+            self.assertEqual(hermite.getColumn(i), h.getColumn(i))
+
 
 class IntegerSquareTest(unittest.TestCase):
     def testSmithNormalForm(self):
