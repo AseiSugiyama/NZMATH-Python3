@@ -1165,19 +1165,13 @@ class ECoverFp(ECGeneric):
         if P==[0] or Q==[0]:
             return self.field.one
         T=False
-        flag=False
         while (not T) or (T.order()==1):
-            O=[0]
-            if flag:
-                O=P
-                while O==P:
-                    O=self.point()
             S=[0]
             while S==[0]:
                 R=self.point()
                 S=self.add(Q,R)
 
-            T=self.Miller(P,m,Q,R,O)
+            T=self.Miller(P,m,Q,R)
             flag=True
             if T:
                 print "order:",T.order(),"/",m
