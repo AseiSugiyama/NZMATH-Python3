@@ -127,6 +127,8 @@ class SquareMatrixTest(unittest.TestCase):
         assert L.isLowerTriangularMatrix()
         assert U.isUpperTriangularMatrix()
 
+
+class IntegerMatrixTest (unittest.TestCase):
     def testHermiteNormalForm(self):
         lessrank = IntegerMatrix(2, 3, [1, 0, 0, 0, 1, 0])
         h = lessrank.hermiteNormalForm()
@@ -140,7 +142,7 @@ class SquareMatrixTest(unittest.TestCase):
         h = square.hermiteNormalForm()
         self.assertEqual(h.row, square.row)
         self.assertEqual(h.column, square.column)
-        hermite = IntegerMatrix(3, 3, [0, 1, 0, 0, 0, 1, 0, 0, 0])
+        hermite = IntegerMatrix(3, 3, [0, 1, 0, 0, 0, 1, 0, 0, 1])
         for i in (1, 2, 3):
             self.assertEqual(hermite.getColumn(i), h.getColumn(i))
 
