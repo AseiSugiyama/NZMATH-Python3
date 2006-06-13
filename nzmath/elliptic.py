@@ -1190,7 +1190,7 @@ class ECoverFp(ECGeneric):
         if P==[0] or Q==[0]:
             return self.field.one
 
-        return self.TatePairing_Trad(m,P,Q)**((self.ch-1)//m)
+        return self.TatePairing(m,P,Q)**((self.ch-1)//m)
 
     def WeilPairing_Tate(self,m,P,Q):
         """
