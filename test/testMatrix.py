@@ -127,28 +127,44 @@ class SquareMatrixTest(unittest.TestCase):
         assert L.isLowerTriangularMatrix()
         assert U.isUpperTriangularMatrix()
 
+    def testHermiteNormalForm(self):
+        lessrank = IntegerMatrix(2, 3, [1, 0, 0, 0, 1, 0])
+        h = lessrank.hermiteNormalForm()
+        self.assertEqual(h.row, lessrank.row)
+        self.assertEqual(h.column, lessrank.column)
+        import nzmath.vector as vector
+        zerovec = vector.Vector([0, 0])
+        self.assertEqual(zerovec, h.getColumn(1))
+
+
 class IntegerSquareTest(unittest.TestCase):
     def testSmithNormalForm(self):
-        s1 = IntegerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
-        s2 = IntegerMatrix(3,3,[1,2,4,0,3,5,0,0,0])
-        s3 = IntegerMatrix(3,3,[1,0,0,9,1,0,5,6,1])
+        s1 = IntegerSquareMatrix(3,3,[1,3,2,4,6,5,6,8,9])
+        s2 = IntegerSquareMatrix(3,3,[1,2,4,0,3,5,0,0,0])
+        s3 = IntegerSquareMatrix(3,3,[1,0,0,9,1,0,5,6,1])
         assert h1 == s1.smithNormalForm()
         self.assertRaises(ValueError, s2.smithNormalForm)
         assert h3 == s3.smithNormalForm()
 
     def testExtSmithNormalForm(self):
-        s = integerMatrix(3,3,[1,3,2,4,6,5,6,8,9])
+        s = IntegerSquareMatrix(3,3,[1,3,2,4,6,5,6,8,9])
         assert i == s.extsmithNormalForm()
+
 
 class SubspaceTest(unittest.TestCase):
     def testSupplementBasis(self):
         b = Subspace(3, 2, [1,2,3,4,5,7])
         assert b.supplementBasis() == Matrix(3,3,[1,2,0,3,4,0,5,7,1])
 
-def suite():
-    suite = unittest.makeSuite(MatrixTest, "test")
-    suite.addTest(unittest.makeSuite(SubspaceTest, "test"))
+
+def suite(suffix="Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
+
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
