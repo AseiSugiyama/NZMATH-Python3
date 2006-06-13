@@ -1103,8 +1103,8 @@ class ECoverFp(ECGeneric):
         this use for only compute Weil-Tate pairing
         """
         # check order
-        if m<2 or self.ch%m:
-            raise ValueError,"order more than 1 and not divisible characteristic"
+        if m<2 or not (self.ch%m):
+            raise ValueError,"order more than 1 and divisible characteristic"
 
         # check points are not infinity point
         if P==Q==[0] or Q==[0]:
