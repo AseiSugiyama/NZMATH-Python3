@@ -1212,16 +1212,18 @@ class ECoverFp(ECGeneric):
 
         while 1:
             T=U=False
-            while not isinstance(T,finitefield.FinitePrimeFieldElement):
-                R=self.point()
+            while (not T) or (not U):
+                R=[0]
+                while R==P or R==Q or R==[0] or R==self.sub(Q,P):
+                    R=self.point()
                 S=self.add(P,R)
-                if S!=[0]:
-                    T=self.Miller(Q,m,P,R)
-            while not isinstance(U,finitefield.FinitePrimeFieldElement):
-                R=self.point()
-                S=self.add(Q,R)
-                if S!=[0]:
-                    U=self.Miller(P,m,Q,R)
+                if S==[0]:
+                    continue
+                T=self.Miller(Q,m,P,R)
+                S=self.sub(Q,R)
+                if S==[0]:
+                    continue
+                U=self.Miller(P,m,Q,self.mul(-1,R))
             F=T/U
             return F
 
