@@ -7,7 +7,9 @@ import nzmath.group
 import nzmath.rational
 import nzmath.factor.misc
 import nzmath.finitefield
+import sys
 
+sys.stdout = open('log.txt' , 'a')
 
 class ReducedQuadraticForm:
     def __init__(self, element, unit):
@@ -281,42 +283,43 @@ def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, ls, ll, q, nt, y):
     this is a submodule called by the module, bsgs.
     check bsgs is finished or not yet.
     '''
-    print "********    ckfn  **********"
-    print "######################"
-    print "n[0]",n[0]
-    print "h[0]",h[0]
-    print "######################"
+    print "ckfn===========>"
+    print "n[0] is ", n[0]
+    print "h[0] is ", h[0]
+    print "lwrbd is ", lwrbd
     
     h[0] = h[0] * n[0]
     if h[0] >= lwrbd:
         return h[0]
-    #print "---------------=",uprbd_1[0],n[0]
     uprbd_1[0] = uprbd_1[0] / n[0] # floor of uprbd_1[0] / n[0]
-    #print "----------------",uprbd_1[0]
-    #print "----------------",lwrbd_1[0],n[0]
-    #lwrbd_1[0] = lwrbd_1[0] / n[0] + 1 # floor + 1 of lwrbd_1[0] / n[0]
-    if lwrbd_1[0] % n[0] == 0:
-        lwrbd_1[0] = lwrbd_1[0] / n[0]
+    if (lwrbd_1[0] % n[0]) == 0:
+        lwrbd_1[0] = lwrbd_1[0] / n[0] # floor + 1 of lwrbd_1[0] / n[0]
     else:
-        lwrbd_1[0] = lwrbd_1[0] / n[0] + 1
-    #print "----------------",lwrbd_1[0]
+        lwrbd_1[0] = lwrbd_1[0] / n[0]  + 1 # floor + 1 of lwrbd_1[0] / n[0]
     q[0] = nzmath.arith1.floorsqrt(n[0])
-    print "q[0]",q[0]
     lsl = ls[:]
-    ls = []
+    del ls[:]
     lll = ll[:]
-    ll = []
+    del ll[:]
+    print "iiiiii"
+    print "lwrbd_1[0] is ", lwrbd_1[0]
+    print "uprbd_1[0] is ", uprbd_1[0]
+    print "q[0] is ", q[0]
     for r in range(q[0]):
         for ss in lsl:
             ls.append((nt[0]**r) * ss) # multiple of two elements of G
+    print "ls is ", ls
     y[0] = nt[0]**q[0]
-    for a in range(q[0]):
+    print "y[0] is ", y[0]
+    for a in range(q[0] + 1):
         for eol in lll:
             ll.append((y[0]**a) * eol) # multiple of two elements of G
-    print "h[0]",h[0]
+    print "ll is ", ll
+    print "h[0] is ", h[0]
     return -1
 
-def cptodr(n, x, ls, ll):
+def cptodr(n, x, ls, ll, c_s1):
+    print "cptodr====>"
     # flg
     flg_bk = 1
     while flg_bk == 1:
@@ -325,16 +328,16 @@ def cptodr(n, x, ls, ll):
         lst_p = nzmath.factor.misc.primeDivisors(n[0])
         tp_ls = ls[:]
         print "n[0] is", n[0]
-        print lst_p
-        print tp_ls
-        c_s1 = []
+        print "list of p is ", lst_p
+        print "list of temp L is ", tp_ls
+        del c_s1[:]
         for tmpri in lst_p:
             # initialize c_s1
             for ttp_ls in tp_ls:
                 c_s1.append([(x[1] ** (n[0] / tmpri)) * ttp_ls, 0])
             # sort
             print "mmmmmmmmmmmmmmmmmmmm"
-            print c_s1
+            print "c_s1 is ", c_s1
             c_s1.sort()
             co_cs = c_s1[:]
             # check
@@ -342,63 +345,72 @@ def cptodr(n, x, ls, ll):
             for tmp_els in co_cs:
                 for tmp_ell in tp_ll:
                     if tmp_els[0] == tmp_ell:
+                        print "found"
+                        print "tmp_els[0] is ", tmp_els[0]
+                        print "tmp_ell is ", tmp_ell
                         flg_bk = 1
+                        print "tmpri is ", tmpri
+                        print "n[0] is ", n[0]
                         n[0] = n[0] / tmpri
+                        print "after.... n[0] is ", n[0]
                         break
                 if flg_bk == 1:
                     break
             if flg_bk == 1:
                 break
+    print "end of cptodr"
 
 def cptgs(n, q, sz, y, c_s1, uprbd_1, ll):
+    print "cptgs===========>"
     gsll = ll[:]
     gscs = c_s1[:]
 
-    print "611"
-    print gsll
-    print "gscs",gscs
-    #if gscs == []:
-    #    raise ValueError("[]")
+    print "temp L is ", gsll
+    print "temp c_s1 is ", gscs
     print "y[0] is", y[0]
     print "sz[0] is", sz[0]
-    print "n[0]=",n[0]
-    print "q[0]=",q[0]
-    print "uprbd_1=",uprbd_1
+    print "n[0] is ", n[0]
+    print "q[0] is ", q[0]
+    print "uprbd_1 is ", uprbd_1[0]
     while 1:
         ########################### loop
-        #print "sss"
         for tpw in gsll:
             sz1 = sz[0] * tpw
+            print "w in L is", tpw
             print "sz1 is", sz1
             print "sz[0] is", sz[0]
             for tpcs in gscs:
                 if sz1 == tpcs[0]:
-                    print "n[0],r",n[0],tpcs[1]
                     n[0] = n[0] - tpcs[1]
+                    print "n[0] is ", n[0]
+                    print "sz1 is ", sz1
+                    print "tpcs[0] is ", tpcs[0]
+                    print "tpcs[1] is ", tpcs[1]
+                    print "FOUND"
                     return True
                 else:
                     print "000"
                     #print sz1
                     #print tpcs[0]
         # continue (sp. 5)
-        print "n[0]=",n[0]
 
         sz[0] = y[0] * sz[0]
-        #print "!"
-        #print sy[0]
-        #print sz[0]
+        print "!!!!!"
+        print "y[0] is ", y[0]
+        print "sz[0] is ", sz[0]
         #print "!!"
-        print "n[0],q[0]:",n[0],q[0]
+        print "before n[0] is ", n[0]
         n[0] = n[0] + q[0]
-        print "n[0],uprbd_1:",n[0],uprbd_1[0]
+        print "q[0] is ", q[0]
+        print "n[0] is ", n[0]
         if n[0] <= uprbd_1[0]:
-            print gscs
             continue
         else:
             raise ValueError("the order is larger than upper bound")
         
     
 def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
+    print "cptssp=====>"
     # copy ls
     tpls = ls[:]
     flg_s = 0
@@ -406,18 +418,15 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
     y[0] = 0
     sz = [0]
     #print x[0] * x[1]
-    print "YYY"
     print "x[0] is ", x[0]
     print "x[1] is ", x[1]
-    print "q[0]",q[0]
+    print "q[0] is ", q[0]
     for tr in range(q[0]):
-        #print "#8821"
         #print x[0] * x[1]
         # compute 2 to q-1
         if (tr != 0) and (tr != 1):
             x[tr] = x[1] * x[tr - 1]
             #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
-
         for ttr in tpls:
             #print "###"
             #print x[tr]
@@ -432,44 +441,42 @@ def cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y):
                 # sort ( if you want to sort it with your estimate,
                 # you have to implement '__ge__' method of the class with your way.)
     print "##991"
-    print c_s1
-    print "##991"
+    print "x is ", x
+    print "c_s1 is ", c_s1
+    print "##992"
     c_s1.sort()
     
     if flg_s == 1:
         # 6
-        cptodr(n, x, ls, ll)
+        print "flg_s is 1"
+        cptodr(n, x, ls, ll, c_s1)
     else:
+        print "flg_s is not 1"
         # step 4 to 5
-        print "step 4 to 5"
-        #print x[1]
-            
-        #print x[q[0] -1 ]
+        print "q[0] is ", q[0]
+        print "x[1] is ", x[1]
+        print "x[q-1] is ", x[q[0] -1 ]
         
         y[0] = x[1] * x[q[0] - 1]
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
         print "########"
-        print "lwrbd_1=",lwrbd_1[0]
+        print "lwrbd_1[0] is ", lwrbd_1[0]
         print "x[1] is", x[1]
         print "y[0] is", y[0]
         print "sz[0] is", sz[0]
-        print "n[0]=",n[0]
+        print "n[0] is ", n[0]
         print "########"
         # compute giant steps
         print "$$"
-        print "ll",ll
+        print "L is ", ll
         print "$"
-        print "q[0]",q
         cptgs(n, q, sz, y, c_s1, uprbd_1, ll)
         print "$$$"
         # 6
-        print "n[0]=",n
-        cptodr(n, x, ls, ll)
+        cptodr(n, x, ls, ll, c_s1)
     
-def testbsgs(n,l,u):
-    a = nxtel(n)
-    return bsgs(a,l,u)
+        
 def bsgs(iordmel, lwrbd, uprbd):
     '''
     iordmel is a class. it return a random element of target infinite group.
@@ -504,19 +511,29 @@ def bsgs(iordmel, lwrbd, uprbd):
     y = [0]
     ret = -1
     # take a new element of the group.
-    q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) 
     while ret == -1:
+        print "HERE is the first of the program"
         nt[0] = iordmel.retnext()
-        #q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) 
-        if uprbd_1[0] - lwrbd_1[0] != q[0]**2 :
-            q[0] += 1
+        print "uprbd_1 is " , uprbd_1[0]
+        print "lwrbd_1 is " , lwrbd_1[0]
+        mstp1 = uprbd_1[0] - lwrbd_1[0]
+        print mstp1
+        if (mstp1 == 0) or (mstp1 == 1):
+            q[0] = 1
+        else:
+            tppm = nzmath.factor.misc.primePowerTest(mstp1)
+            if tppm[1] == 2:
+                q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] )
+            else:
+                q[0] = nzmath.arith1.floorsqrt(uprbd_1[0] - lwrbd_1[0] ) + 1
+
         print "RRR"
-        print "h[0]",h[0]
-        print "nt[0]",nt[0]
+        print "h[0] is ", h[0]
+        print "nt[0] is ", nt[0]
         #print nt[0] * ut
         #print ut * nt[0]
         #print "RRR"
-        print "q[0]",q[0]
+        print "q[0] is ", q[0]
         print "RRRR"
         # initialize variables
         #x = range(q[0] + 1) # x is the set of elements of G
@@ -530,33 +547,27 @@ def bsgs(iordmel, lwrbd, uprbd):
         for i in range(q[0]):
             x[i] = 0
             ##c_s1_r[i] = 0
-        #print "ttt"
         #print x
-        #print "ttt"
         # compute small steps        
         x[0] =  ut # maybe, this code must not be here
         print "www"
-        print "x[0]",x[0]
-        #print q[0]
-        #print x
-        #print "www"
-        #print nt[0]
-        print "h[0]",h[0]
+        print "x[0] is ", x[0]
+        print "h[0] is ", h[0]
         #print nt[0] ** h[0]
         x[1] = (nt[0] ** h[0])
-        print "x[1]",x[1]
+        print "x[1] is ", x[1]
         print "uuu"
         #print x[0] * x[1]
         #print x[1].ope(x[0])
-        #print "uuu"
         
         if x[1] == ut:
+            print "skip 3 to 6"
             n[0] = 1
         else:
             # 3kara6
-            print "&&&"
-            print "ll",ll
-            #print "-----------",lwrbd_1,uprbd_1
+            print "3 to 6"
+            print "L is ", ll
+            print "S is ", ls
             cptssp(q, x , n, c_s1, lwrbd_1, uprbd_1, ls, ll, ut, y)
         print "uuuuuuuuuuuuu"
         print "n[0] is ", n[0]
@@ -599,6 +610,9 @@ class nxtel:
         
     def retunit(self):
         return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(1, self.odr))
+
+    #def retiis(self):
+        #return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(2, self.odr)) ** 0
     
     def retnext(self):
         while 1:
@@ -811,5 +825,26 @@ def testquad_0(disc):
         print "NG"
     else:
         print "OK"
-        
-        
+
+# 23, 31 square free
+import time
+def chkfn(tarnum):
+    c_time = time.localtime()
+    c_date = str(c_time[0]) + str(c_time[1]) + str(c_time[2]) + str(c_time[3]) + str(c_time[4])
+    t_file = '/home/saito/for_python/tmp/' + c_date + '.txt'
+    output = open(t_file, 'w')
+    sys.stdout = output
+    i = 0
+    while i < 3:
+        i = i + 1
+        a = nxtel(tarnum)
+        c_c = tarnum + (tarnum / 2)
+        b_b = (c_c / 2) +1
+        ret = bsgs(a, b_b, c_c)
+        if ret == tarnum - 1:
+            print "OK"
+        else:
+            print "NG"
+
+            sys.exit(1)
+
