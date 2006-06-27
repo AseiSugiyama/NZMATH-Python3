@@ -601,6 +601,9 @@ class SquareMatrix(Matrix):
     def isAlternateMatrix(self):
         return self.transpose() == -self
 
+    def isSymmetricMatrix(self):
+        return self.transpose() == self
+
     def commutator(self, other):
         """
         Return commutator defined as follows:
@@ -1023,16 +1026,23 @@ def _selectMatrix(matrice):
             return newmatrice
     return matrice
 
-def createMatrix(row, column = 0, compo = 0):
+def createMatrix(row, column = 0, compo = 0, Flag = None):
     """
     generate new Matrix or SquareMatrix class.
     """
-    if isinstance(column, list):
-        return SquareMatrix(row, column)
-    elif row == column or column == 0:
-        return SquareMatrix(row, compo)
-    return Matrix(row, column, compo)
-
+    if Flag == None:
+        if isinstance(column, list):
+            return SquareMatrix(row, column)
+        elif row == column or column == 0:
+            return SquareMatrix(row, compo)
+        return Matrix(row, column, compo)
+    else:
+        if isinstance(column, list):
+            return IntegerSquareMatrix(row, column)
+        elif row == column or column == 0:
+            return IntegerSquareMatrix(row, compo)
+        return IntegerMatrix(row, column, compo)
+        
 def unitMatrix(size):
     """
     return unit matrix of size .
