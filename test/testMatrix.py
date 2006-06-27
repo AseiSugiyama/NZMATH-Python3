@@ -130,6 +130,10 @@ class SquareMatrixTest(unittest.TestCase):
 
 class IntegerMatrixTest (unittest.TestCase):
     def testHermiteNormalForm(self):
+        already = IntegerMatrix(4, 3, [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1])
+        h = already.hermiteNormalForm()
+        self.assertEqual(h, already)
+
         lessrank = IntegerMatrix(2, 3, [1, 0, 0, 0, 1, 0])
         h = lessrank.hermiteNormalForm()
         self.assertEqual(h.row, lessrank.row)
