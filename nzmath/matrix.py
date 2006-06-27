@@ -749,6 +749,16 @@ class IntegerMatrix(Matrix):
                 self[i] = (self[i] % other)
             return self
 
+    def transpose(self):
+        """
+        Return transposed matrix of self.
+        """
+        trans = createMatrix(self.column, self.row,0,True)
+        for i in range(1, trans.row+1):
+            for j in range(1, trans.column+1):
+                trans[i,j] = self[j,i]
+        return trans
+
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
         A = self.copy()
