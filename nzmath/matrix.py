@@ -601,9 +601,6 @@ class SquareMatrix(Matrix):
     def isAlternateMatrix(self):
         return self.transpose() == -self
 
-    def isSymmetricMatrix(self):
-        return self.transpose() == self
-
     def commutator(self, other):
         """
         Return commutator defined as follows:
@@ -796,18 +793,16 @@ class IntegerMatrix(Matrix):
             b = A[i,k]
             if b == 0:
                 k += 1
-                if l > 1 and i == l :
-                    l -= 1
             else:
                 for j in range(k+1, self.column+1):
                     q = A[i,j] // b
                     A[j] = A[j] - q * A[k]
             # step 6 [Finished?]
             if i == l:
-                W = createMatrix(self.row, self.column-k+1)
-                for j in range(1, self.column-k+2):
-                    W[j] = A[j+k-1]
-                return W
+                #W = createMatrix(self.row, self.column-k+1)
+                #for j in range(1, self.column-k+2):
+                #    W[j] = A[j+k-1]
+                return A
             else:
                 i -= 1; k -= 1
                 # go to step 2
@@ -1036,23 +1031,16 @@ def _selectMatrix(matrice):
             return newmatrice
     return matrice
 
-def createMatrix(row, column = 0, compo = 0, Flag = None):
+def createMatrix(row, column = 0, compo = 0):
     """
     generate new Matrix or SquareMatrix class.
     """
-    if Flag == None:
-        if isinstance(column, list):
-            return SquareMatrix(row, column)
-        elif row == column or column == 0:
-            return SquareMatrix(row, compo)
-        return Matrix(row, column, compo)
-    else:
-        if isinstance(column, list):
-            return IntegerSquareMatrix(row, column)
-        elif row == column or column == 0:
-            return IntegerSquareMatrix(row, compo)
-        return IntegerMatrix(row, column, compo)
-        
+    if isinstance(column, list):
+        return SquareMatrix(row, column)
+    elif row == column or column == 0:
+        return SquareMatrix(row, compo)
+    return Matrix(row, column, compo)
+
 def unitMatrix(size):
     """
     return unit matrix of size .
