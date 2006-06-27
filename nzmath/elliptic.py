@@ -1036,7 +1036,7 @@ class ECoverFp(ECGeneric):
         """
         find point order of P and return order.
         """
-        # parameter ord and f are extension for structure.
+        # parameter ord and f are extension for structre.
         if ord:
             N = ord
         else:
@@ -1166,10 +1166,9 @@ class ECoverFp(ECGeneric):
             return self.field.one
         T=False
         while (not T) or (T.order()==1):
-            S=[0]
-            while S==[0]:
+            R=[0]
+            while R==P or R==Q or R==[0] or R==self.sub(Q,P):
                 R=self.point()
-                S=self.add(Q,R)
             T=self.Miller(P,m,Q,R)
         return T
 
@@ -1181,18 +1180,6 @@ class ECoverFp(ECGeneric):
             return self.field.one
 
         return self.TatePairing(m,P,Q)**((self.ch-1)//m)
-
-    def WeilPairing_Tate(self,m,P,Q):
-        """
-        computing the Weil pairing with Tate pairing.
-        """
-        if P==[0] or Q==[0] or P==Q:
-            return self.field.one
-
-        W=self.field.one
-        while m%W.order() or W.order==1:
-            W=self.TatePairing(m,Q,P)/self.TatePairing(m,P,Q)
-        return W
 
     def WeilPairing(self,m,P,Q):
         """
@@ -1348,11 +1335,6 @@ class ECoverFp(ECGeneric):
         while N0 > 1:
             N0 = gcd.gcd(r,N2)
             N1,N2 = N1*N0,N2//N0
-        if N1 == 2:
-            S = (N1,N2)
-            if not hasattr(self,"abelian"):
-                self.abelian = S
-            return S
         
         while 1:
             P1 = [0]
@@ -1362,8 +1344,8 @@ class ECoverFp(ECGeneric):
             while P2 == [0]:
                 P2 = simplified.point()
             P1,P2=simplified.mul(N2,P1),simplified.mul(N2,P2)
-            s=simplified.pointorder(P1,r,p)
-            t=simplified.pointorder(P2,r,p)
+            s=simplified.pointorder(P1)
+            t=simplified.pointorder(P2)
             m=gcd.lcm(s,t)
             if m>1:
                 e=simplified.WeilPairing(m,P1,P2)
