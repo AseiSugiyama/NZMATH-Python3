@@ -171,6 +171,26 @@ class SubspaceTest(unittest.TestCase):
         assert b.supplementBasis() == Matrix(3,3,[1,2,0,3,4,0,5,7,1])
 
 
+class MatrixRingTest (unittest.TestCase):
+    def setUp(self):
+        self.m2 = MatrixRing.getInstance(2)
+        # XXX coefficient ring should be able to be specified.
+
+    def testZero(self):
+        z = self.m2.zero
+        self.assertEqual(0, z[1, 1])
+        self.assertEqual(0, z[1, 2])
+        self.assertEqual(0, z[2, 1])
+        self.assertEqual(0, z[2, 2])
+
+    def testOne(self):
+        o = self.m2.one
+        self.assertEqual(1, o[1, 1])
+        self.assertEqual(0, o[1, 2])
+        self.assertEqual(0, o[2, 1])
+        self.assertEqual(1, o[2, 2])
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

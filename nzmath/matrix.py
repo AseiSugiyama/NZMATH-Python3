@@ -963,7 +963,21 @@ class MatrixRing:
     getInstance = classmethod(getInstance)
 
     def unitMatrix(self):
+        """
+        Return the unit matrix.
+        """
         return unitMatrix(self.size)
+
+    one = property(unitMatrix, None, None, "multiplicative unit")
+
+    def _getZero(self):
+        """
+        Return zero matrix.
+        """
+        return createMatrix(self.size)
+
+    zero = property(_getZero, None, None, "additive unit")
+
 
 class Subspace(Matrix):
     """
