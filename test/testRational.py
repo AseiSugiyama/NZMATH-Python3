@@ -244,6 +244,11 @@ class IntegerRingTest(unittest.TestCase):
         # repr
         self.assertEqual("IntegerRing()", repr(theIntegerRing))
 
+    def testHash(self):
+        dictionary = {}
+        dictionary[theIntegerRing] = 1
+        self.assertEqual(1, dictionary[IntegerRing()])
+
 
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
@@ -280,6 +285,11 @@ class RationalFieldTest(unittest.TestCase):
         self.assertEqual("Q", str(theRationalField))
         # repr
         self.assertEqual("RationalField()", repr(theRationalField))
+
+    def testHash(self):
+        dictionary = {}
+        dictionary[theRationalField] = 1
+        self.assertEqual(1, dictionary[RationalField()])
 
 
 class IntegerIfIntOrLongTest (unittest.TestCase):

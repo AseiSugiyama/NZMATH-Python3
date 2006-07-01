@@ -1,6 +1,7 @@
 """
 rational module provides Rational, Integer, RationalField, and IntegerRing.
 """
+
 import math
 import nzmath.ring as ring
 
@@ -511,6 +512,12 @@ class RationalField (ring.QuotientField):
     def __repr__(self):
         return "RationalField()"
 
+    def __hash__(self):
+        """
+        Return a hash number (always 1).
+        """
+        return 1
+
     def issubring(self, other):
         """
         reports whether another ring contains the rational field as
@@ -740,6 +747,12 @@ class IntegerRing (ring.CommutativeRing):
 
     def __repr__(self):
         return "IntegerRing()"
+
+    def __hash__(self):
+        """
+        Return a hash number (always 0).
+        """
+        return 0
 
     def issubring(self, other):
         """
