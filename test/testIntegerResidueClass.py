@@ -156,12 +156,22 @@ class IntegerResidueClassRingTest(unittest.TestCase):
         self.assertEqual(IntegerResidueClass(1, 4), Zmod4.one)
         self.assertEqual(IntegerResidueClass(0, 4), Zmod4.zero)
 
-def suite():
-    suite = unittest.TestSuite((
-        unittest.makeSuite(IntegerResidueClassTest, 'test'),
-        unittest.makeSuite(IntegerResidueClassRingTest, 'test')
-        ))
+    def testHash(self):
+        dictionary = {}
+        Zmod4 = IntegerResidueClassRing.getInstance(4)
+        dictionary[Zmod4] = 4
+        self.assertEqual(4, dictionary[IntegerResidueClassRing(4)])
+        self.assertRaises(KeyError, dictionary.__getitem__, IntegerResidueClassRing.getInstance(4 + 0xFFFFFFFF))
+
+
+def suite(suffix="Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
+
 
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()

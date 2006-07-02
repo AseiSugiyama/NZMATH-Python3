@@ -166,6 +166,9 @@ class IntegerResidueClassRing (CommutativeRing):
     def __str__(self):
         return "Z/%dZ" % self.m
 
+    def __hash__(self):
+        return self.m & 0xFFFFFFFF
+
     def getInstance(cls, modulus):
         """
 
