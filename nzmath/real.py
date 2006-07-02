@@ -1,9 +1,7 @@
 """
-
 The module `real' provides arbitrary precision real numbers and their
 utilities.  The functions provided are corresponding to the `math'
 standard module.
-
 """
 
 from __future__ import division, generators
@@ -17,10 +15,8 @@ import nzmath.ring as ring
 
 class RealField (ring.Field):
     """
-
     RealField is a class of the field of real numbers.
     The class has the single instance 'theRealField'.
-
     """
 
     def __init__(self):
@@ -49,6 +45,9 @@ class RealField (ring.Field):
     def __ne__(self, other):
         return not (self == other)
 
+    def __hash__(self):
+        return 2
+
     # property one
     def _getOne(self):
         "getter for one"
@@ -76,6 +75,10 @@ class RealField (ring.Field):
         elif rational.theRationalField.issuperring(aRing):
             return True
         return aRing.issubring(self)
+
+    def createElement(self, seed):
+        return float(seed)
+
 
 class RelativeError:
     def __init__(self, comparity, numerator, denominator=1):

@@ -190,6 +190,11 @@ class RealFieldTest (unittest.TestCase):
         self.failUnless(R.issubring(imaginary.theComplexField))
         self.failIf(R.issubring(rational.theRationalField))
 
+    def testHash(self):
+        dictionary = {}
+        dictionary[real.theRealField] = 1
+        self.assertEqual(1, dictionary[real.RealField()])
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
