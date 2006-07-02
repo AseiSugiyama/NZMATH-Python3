@@ -313,7 +313,7 @@ def sqrt(x, err=defaultError):
     """
     rx = rational.Rational(x)
     if rx.numerator < 0:
-        raise ValueError, "negative number is passed to sqrt"
+        raise ValueError("negative number is passed to sqrt")
     if rx.numerator == 0:
         return rational.Integer(0)
     if err <= defaultError:
@@ -335,9 +335,9 @@ def log(x, base=None, err=defaultError):
 
     """
     if isinstance(x, complex):
-        raise TypeError, "real.log is not for complex numbers."
+        raise TypeError("real.log is not for complex numbers.")
     if x <= 0:
-        raise ValueError, "log is not defined for %s" % str(x)
+        raise ValueError("log is not defined for %s" % str(x))
     if err <= defaultError:
         if base:
             d = log(base, err=err)
@@ -660,7 +660,7 @@ def acos(x, err= defaultError):
 
     """
     if x > 1 or x < -1:
-        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+        raise ValueError("%s is not in the range [-1, 1]." % str(x))
     if x == 0:
         return pi(err) / 2
     if err <= defaultError:
@@ -680,7 +680,7 @@ def asin(x, err=defaultError):
 
     """
     if x > 1 or x < -1:
-        raise ValueError, "%s is not in the range [-1, 1]." % str(x)
+        raise ValueError("%s is not in the range [-1, 1]." % str(x))
     if x < 0:
         return -asin(-x)
     if err <= defaultError:
