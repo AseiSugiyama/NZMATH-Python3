@@ -55,9 +55,9 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
             if index >= 0:
                 self.coefficient[index] = value
             else:
-                raise ValueError, "degree must be a non-negative integer."
+                raise ValueError("degree must be a non-negative integer.")
         else:
-            raise TypeError, "You must input an element of the coefficient ring for value."
+            raise TypeError("value must be an element of the coefficient ring.")
 
     def __getitem__(self, index):
         """
@@ -70,7 +70,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
         if isinstance(index, (int, long)) and index >= 0:
             return self.coefficient[index]
         else:
-            raise ValueError, "degree must be a non-negative integer."
+            raise ValueError("degree must be a non-negative integer.")
 
     def __eq__(self, other):
         if not self and not other:
@@ -169,7 +169,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
 
     def __divmod__(self, other):
         if not other:
-            raise ZeroDivisionError, "polynomial division or modulo by zero."
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
         coeffring = self.getCoefficientRing()
         x = self.getVariable()
         if isinstance(other, OneVariablePolynomial):
@@ -223,7 +223,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
 
     def __rdivmod__(self, other):
         if not self:
-            raise ZeroDivisionError, "polynomial division or modulo by zero."
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
         if not other:
             return (OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()),
                     OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing()))
@@ -260,7 +260,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
 
     def __rfloordiv__(self, other):
         if not self:
-            raise ZeroDivisionError, "polynomial division or modulo by zero."
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
         if not other:
             return OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
         if other in self.getCoefficientRing():
@@ -274,7 +274,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
 
     def __rmod__(self, other):
         if not self:
-            raise ZeroDivisionError, "polynomial division or modulo by zero."
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
         if not other:
             return OneVariableDensePolynomial([], self.getVariable(), self.getCoefficientRing())
         if other in self.getCoefficientRing():
@@ -285,9 +285,9 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
 
     def __pow__(self, index, mod = None):
         if not isinstance(index, (int, long)):
-            raise TypeError, "index must be an integer."
+            raise TypeError("index must be an integer.")
         if index < 0:
-            raise ValueError, "index must be a non-negative integer."
+            raise ValueError("index must be a non-negative integer.")
         if mod == None:
             power_product = self.getRing().one
             power_of_2 = self.copy()
@@ -349,7 +349,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
                                                    self.getVariableList(),
                                                    self.getCoefficientRing())
         else:
-            raise ValueError, "You must specify a variable."
+            raise ValueError("You must specify a variable.")
 
     def getRing(self):
         return self.ring
@@ -561,7 +561,7 @@ class MultiVariableSparsePolynomial:
             self.coefficient = coefficient
             self.variable = variable
         else:
-            raise ValueError, "You must input MultiVariableSparsePolynomial(dict,list) but (%s, %s)." % (coefficient.__class__, variable.__class__)
+            raise ValueError("You must input MultiVariableSparsePolynomial(dict,list) but (%s, %s)." % (coefficient.__class__, variable.__class__))
 
     def __add__(self, other):
         if isinstance(other, OneVariablePolynomial):
@@ -684,7 +684,7 @@ class MultiVariableSparsePolynomial:
                         power_of_2 = (power_of_2 * power_of_2) % mod
                         index = index // 2
                     return power_product.adjust()
-        raise ValueError, "You must input positive integer for index."
+        raise ValueError("You must input positive integer for index.")
 
     def __floordiv__(self, other):
         if isinstance(other, (int, long)) or isinstance(other, rational.Rational):
@@ -771,11 +771,11 @@ class MultiVariableSparsePolynomial:
                         return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
                         return return_polynomial
                 else:
-                    raise ValueError, "You must input a monomial for other."
+                    raise ValueError("You must input a monomial for other.")
             else:
-                raise ValueError, "You must input two Polynomial that have common kind of variable."
+                raise ValueError("You must input two Polynomial that have common kind of variable.")
         else:
-            raise ValueError, "You must input two MultiVariableSparsePolynomial."
+            raise ValueError("You must input two MultiVariableSparsePolynomial.")
 
     def __truediv__(self, other):
         if isinstance(other, (int, long)):
@@ -984,7 +984,7 @@ class MultiVariableSparsePolynomial:
 
     def arrange_variable(self, other):
         if not isinstance(other, list):
-            raise ValueError, "You must input list for other."
+            raise ValueError("You must input list for other.")
         else:
             result_polynomial = MultiVariableSparsePolynomial({}, other)
             index_list = self.coefficient.keys()[:]
@@ -1171,7 +1171,7 @@ class MultiVariableSparsePolynomial:
                 return_coefficient[i[0]] += origin_polynomial.coefficient[i]
             return OneVariableDensePolynomial(return_coefficient, origin_polynomial.variable[0])
         else:
-            raise ValueError, "You must input OneVariablePolynomial."
+            raise ValueError("You must input OneVariablePolynomial.")
 
     def toOneVariableSparsePolynomial(self):
         origin_polynomial = self.adjust()
@@ -1183,7 +1183,7 @@ class MultiVariableSparsePolynomial:
             return_coefficient.update(origin_polynomial.coefficient)
             return OneVariableSparsePolynomial(return_coefficient, return_variable)
         else:
-            raise ValueError, "You must input OneVariablePolynomial."
+            raise ValueError("You must input OneVariablePolynomial.")
 
     def getRing(self):
         ring = None
@@ -1444,7 +1444,7 @@ class OneVariablePolynomialChar0 (OneVariablePolynomial):
             primitive_function = self.integrate(var)
             return primitive_function(maxi) - primitive_function(mini)
         else:
-            raise ValueError, "You must call integrate with variable or with variable, min and max."
+            raise ValueError("You must call integrate with variable or with variable, min and max.")
 
 
 class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
@@ -1469,7 +1469,7 @@ class RationalOneVariablePolynomial (OneVariablePolynomialChar0):
         and only one variable polynomial.
         """
         if other == 0:
-            raise ZeroDivisionError, "division or modulo by zero."
+            raise ZeroDivisionError("division or modulo by zero.")
         elif isinstance(other, OneVariablePolynomial):
             if other.degree() == 0:
                 coeff = other[0]
@@ -1542,7 +1542,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
     def __divmod__(self, other):
         if not other:
-            raise ZeroDivisionError, "polynomial division or modulo by zero."
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
         theField = self.getCoefficientRing()
         x = self.getVariable()
         if isinstance(other, OneVariablePolynomial):
@@ -1585,9 +1585,9 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
     def __pow__(self, index, mod = None):
         if not isinstance(index, (int, long)):
-            raise TypeError, "index must be an integer."
+            raise TypeError("index must be an integer.")
         if index < 0:
-            raise ValueError, "index must be a non-negative integer."
+            raise ValueError("index must be a non-negative integer.")
         if index > 0:
             q = 1
             while index % self.ch == 0:
@@ -1837,9 +1837,9 @@ class OneVariablePolynomialCoefficients:
 
     def __getitem__(self, index):
         if not isinstance(index, (int, long)):
-            raise TypeError, "index must be an integer."
+            raise TypeError("index must be an integer.")
         if index < 0:
-            raise ValueError, "index must be a positive integer."
+            raise ValueError("index must be a positive integer.")
         if self._using == self.USING_LIST:
             if len(self._list) > index:
                 return self._list[index]
@@ -1850,9 +1850,9 @@ class OneVariablePolynomialCoefficients:
 
     def __setitem__(self, index, value):
         if not isinstance(index, (int, long)):
-            raise TypeError, "index must be an integer."
+            raise TypeError("index must be an integer.")
         if index < 0:
-            raise ValueError, "index must be a positive integer."
+            raise ValueError("index must be a positive integer.")
         if self._using == self.USING_LIST:
             if len(self._list) > index:
                 self._list[index] = value
@@ -1988,7 +1988,7 @@ class PolynomialRing (ring.CommutativeRing):
 
     def __init__(self, aRing, var):
         if not isinstance(aRing, ring.Ring):
-            raise TypeError, '%s should not be passed as ring' % aRing.__class__
+            raise TypeError("%s should not be passed as ring" % aRing.__class__)
         ring.CommutativeRing.__init__(self)
         self.coefficientRing = aRing
         if isinstance(var, str):
@@ -2034,7 +2034,7 @@ class PolynomialRing (ring.CommutativeRing):
         elif varsInRing:
             if len(varsInRing) == 1:
                 return self.coefficientRing
-            raise TypeError, "The meaning of `coefficient ring' is ambiguous."
+            raise TypeError("The meaning of `coefficient ring' is ambiguous.")
         else:
             # never happen
             pass
@@ -2173,7 +2173,7 @@ class PolynomialRing (ring.CommutativeRing):
             if isinstance(seed, OneVariablePolynomialCoefficients):
                 return OneVariablePolynomial(seed, variable, self.coefficientRing)
             # final judgement
-            raise TypeError, "larger ring element cannot be a seed."
+            raise TypeError("larger ring element cannot be a seed.")
         else:
             if seed in self.coefficientRing:
                 return MultiVariableSparsePolynomial({(0,)*len(self.vars):self.coefficientRing.createElement(seed)}, list(self.vars))
@@ -2434,7 +2434,7 @@ class PolynomialResidueRing (ring.ResidueClassRing):
         """
         if seed in self.ring:
             return ring.ResidueClass(seed, self.ideal)
-        raise ValueError, "seed is not valid."
+        raise ValueError("seed is not valid.")
 
 
     
