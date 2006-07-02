@@ -130,6 +130,9 @@ class FinitePrimeField (FiniteField):
     def __repr__(self):
         return "%s(%d)" % (self.__class__.__name__, self.char)
 
+    def __hash__(self):
+        return self.char & 0xFFFFFFFF
+
     def issubring(self, other):
         """
         Report whether another ring contains the field as a subring.
@@ -289,6 +292,9 @@ class FiniteExtendedField (FiniteField):
 
     def __str__(self):
         return "F_%d @(%s)" % (len(self), str(self.modulus.generators[0]))
+
+    def __hash__(self):
+        return (self.char ** self.degree) & 0xFFFFFFFF
 
     def issuperring(self, other):
         """

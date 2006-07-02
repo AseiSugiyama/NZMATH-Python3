@@ -117,6 +117,11 @@ class FinitePrimeFieldTest(unittest.TestCase):
         self.failIf(self.F17.issuperring(theRationalField))
         self.failIf(self.F17.issubring(theRationalField))
 
+    def testHash(self):
+        dictionary = {}
+        dictionary[self.F17] = 1
+        self.assertEqual(1, dictionary[FinitePrimeField(17)])
+
 
 class FiniteExtendedFieldTest (unittest.TestCase):
     def testInit(self):
@@ -150,6 +155,12 @@ class FiniteExtendedFieldTest (unittest.TestCase):
         F125 = FiniteExtendedField(5, 3)
         self.failIf(F125.issubring(rational.theRationalField))
         self.failIf(F125.issubring(rational.theIntegerRing))
+
+    def testHash(self):
+        dictionary = {}
+        F125 = FiniteExtendedField(5, 3)
+        dictionary[F125] = 1
+        self.assertEqual(1, dictionary[FiniteExtendedField(5, 3)])
 
 
 def suite(suffix = "Test"):
