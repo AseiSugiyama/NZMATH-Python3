@@ -2,10 +2,11 @@ from nzmath.gcd import extgcd
 from nzmath.rational import Integer
 from nzmath.rational import Rational
 
+
 class IntegerResidueClass:
     def __init__(self, representative, modulus):
         if modulus == 0:
-            raise ValueError, "modulus can not be zero"
+            raise ValueError("modulus can not be zero")
         elif modulus < 0:
             modulus = -modulus
         self.m = modulus
@@ -27,7 +28,7 @@ class IntegerResidueClass:
             elif other.m % self.m == 0:
                 return IntegerResidueClass(self.n * other.n, self.m)
             else:
-                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+                raise ValueError("incompatible modulus: %d and %d" % (self.m, other.m))
         try:
             return self.__class__(self.n * other, self.m)
         except:
@@ -62,7 +63,7 @@ class IntegerResidueClass:
             elif other.m % self.m == 0:
                 return IntegerResidueClass(self.n + other.n, self.m)
             else:
-                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+                raise ValueError("incompatible modulus: %d and %d" % (self.m, other.m))
         try:
             return self.__class__(self.n + other, self.m)
         except:
@@ -79,7 +80,7 @@ class IntegerResidueClass:
             elif other.m % self.m == 0:
                 return IntegerResidueClass(self.n - other.n, self.m)
             else:
-                raise ValueError, "incompatible modulus: %d and %d" % (self.m, other.m)
+                raise ValueError("incompatible modulus: %d and %d" % (self.m, other.m))
         try:
             return self.__class__(self.n - other, self.m)
         except:
@@ -125,7 +126,7 @@ class IntegerResidueClass:
     def inverse(self):
         t = extgcd(self.n, self.m)
         if t[2] != 1:
-            raise ValueError, "No inverse of %s." % self
+            raise ValueError("No inverse of %s." % self)
         return self.__class__(t[0], self.m)
 
     def getModulus(self):
@@ -136,10 +137,8 @@ class IntegerResidueClass:
 
     def toInteger(self):
         """
-
         Return the smallest non-negative representative element of the
         residue class.
-
         """
         return Integer(self.n % self.m)
 
@@ -155,7 +154,9 @@ class IntegerResidueClassRing (CommutativeRing):
     _instances = {}
 
     def __init__(self, modulus):
-        """The argument modulus m specifies an ideal mZ."""
+        """
+        The argument modulus m specifies an ideal mZ.
+        """
         self.m = modulus
         self.properties = CommutativeRingProperties()
         self._one = self._zero = None
@@ -171,10 +172,8 @@ class IntegerResidueClassRing (CommutativeRing):
 
     def getInstance(cls, modulus):
         """
-
         getInstance returns an instance of the class of specified
         modulus.
-
         """
 
         if modulus not in cls._instances:
@@ -189,7 +188,7 @@ class IntegerResidueClassRing (CommutativeRing):
         try:
             return IntegerResidueClass(seed, self.m)
         except:
-            raise ValueError, "%s can not be converted to an IntegerResidueClass object." % seed
+            raise ValueError("%s can not be converted to an IntegerResidueClass object." % seed)
 
     def __contains__(self, elem):
         if isinstance(elem, IntegerResidueClass) and \
@@ -199,11 +198,9 @@ class IntegerResidueClassRing (CommutativeRing):
 
     def isfield(self):
         """
-
         isfield returns True if the modulus is prime, False if not.
         Since a finite domain is a field, other ring property tests
         are merely aliases of isfield.
-
         """
         if None == self.properties.isfield():
             if primeq(self.m):
