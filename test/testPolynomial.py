@@ -417,6 +417,12 @@ class PolynomialRingTest(unittest.TestCase):
         self.assertEqual(("PolynomialRing(IntegerRing(), %s)" % set(['x'])), repr(self.Zx))
         self.assertEqual(("PolynomialRing(RationalField(), %s)" % set(['x', 'z'])), repr(self.Qxz))
 
+    def testHash(self):
+        dictionary = {}
+        dictionary[self.Zx] = 1
+        self.assertEqual(1, dictionary[PolynomialRing(Z, x)])
+        self.assertRaises(KeyError, dictionary.__getitem__, PolynomialRing(Q, x))
+
 
 class PolynomialCompilerTest(unittest.TestCase):
     def setUp(self):

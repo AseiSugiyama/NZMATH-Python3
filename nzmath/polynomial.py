@@ -2075,12 +2075,13 @@ class PolynomialRing (ring.CommutativeRing):
         retval += "]"
         return retval
 
+    def __hash__(self):
+        return hash(self.coefficientRing) ^ hash(repr(self.vars))
+
     def __contains__(self, element):
         """
-
         `in' operator is provided for checking the element be in the
         ring.
-
         """
         if element in self.coefficientRing:
             return True
