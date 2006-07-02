@@ -28,7 +28,7 @@ class Matrix:
                 for i in range(self.row):
                     self.compo.append(compo[self.column*i : self.column*(i+1)])
         else:
-            raise ValueError, "invalide value for matrix size"
+            raise ValueError, "invalid value for matrix size"
 
     def __getitem__(self, index):
         """
