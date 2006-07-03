@@ -21,6 +21,7 @@ class RationalFunctionTest (unittest.TestCase):
         assert isinstance(self.f.getRing(), RationalFunctionField)
         assert self.f.getRing() == RationalFunctionField(Q, "x")
 
+
 class RationalFunctionFieldTest (unittest.TestCase):
     def setUp(self):
         self.Qx = RationalFunctionField(Q, "x")
@@ -55,10 +56,22 @@ class RationalFunctionFieldTest (unittest.TestCase):
         self.assertEqual(Q.createElement(1), self.Qx.one)
         self.assertEqual(Q.createElement(0), self.Qx.zero)
 
-def suite():
+    def testHash(self):
+        dictionary = {}
+        dictionary[self.Qx] = 1
+        Zx = RationalFunctionField(Z, "x")
+        QX = RationalFunctionField(Q, "X")
+        self.assertEqual(1, dictionary[RationalFunctionField(Q, "x")])
+        self.assertRaises(KeyError, dictionary.__getitem__, Zx)
+        self.assertRaises(KeyError, dictionary.__getitem__, QX)
+        
+
+def suite(suffix="Test"):
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(RationalFunctionTest, 'test'))
-    suite.addTest(unittest.makeSuite(RationalFunctionFieldTest, 'test'))
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':

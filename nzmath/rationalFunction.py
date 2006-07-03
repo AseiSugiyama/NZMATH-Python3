@@ -57,6 +57,9 @@ class RationalFunctionField (ring.QuotientField):
             return True
         return False
 
+    def __hash__(self):
+        return hash(self.coefficientField) ^ hash(repr(self.vars))
+
     def getQuotientField(self):
         return self
 
