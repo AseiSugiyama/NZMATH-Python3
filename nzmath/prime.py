@@ -73,7 +73,7 @@ def bigprimeq(z):
     prime.
     """
     if long(z) != z:
-        raise ValueError, "non-integer for primeq()"
+        raise ValueError("non-integer for primeq()")
     elif z <= 1:
         return False
     elif gcd.gcd(z, 510510) > 1:
@@ -162,16 +162,16 @@ def prime(s):
     prime(n) returns the n-th prime number.
     """
     if s != long(s):
-        raise ValueError, "non-integer for prime()"
+        raise ValueError("non-integer for prime()")
     elif s <= 0:
-        raise ValueError, "non-positive-integer for prime()"
+        raise ValueError("non-positive-integer for prime()")
     i = 1
     for p in generator():
         if i == s:
             return p
         i += 1
     # The following line should not be reached:
-    raise ValueError, "Too big number %d for prime(i)." % s
+    raise ValueError("Too big number %d for prime(i)." % s)
 
 
 def generator():
@@ -253,7 +253,7 @@ def randPrime(n):
     Return a random n-digits prime
     """
     if n <= 0 :
-        raise ValueError,"input number must be natural number"
+        raise ValueError("input number must be natural number")
     else:
         p = bigrandom.randrange(10**(n-1), (10**n)-1)
         if not (p % 2):
@@ -286,7 +286,7 @@ def primeq(n):
     trialDivision, smallSpsp or apr depending on the size of n.
     """
     if long(n) != n:
-        raise ValueError, "non-integer for primeq()"
+        raise ValueError("non-integer for primeq()")
     if n <= 1:
         return False
 
