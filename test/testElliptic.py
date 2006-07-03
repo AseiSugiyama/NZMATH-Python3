@@ -159,11 +159,12 @@ class PairingTest (unittest.TestCase):
         assert g.structure() == (1,65538)
 
 
-def suite():
-    suite  = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(EllipticTest, 'test'))
-    suite.addTest(unittest.makeSuite(OrderTest, 'test'))
-    suite.addTest(unittest.makeSuite(PairingTest, 'test'))
+def suite(suffix="Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
