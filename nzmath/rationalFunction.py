@@ -137,13 +137,13 @@ class RationalFunction (ring.QuotientFieldElement):
             try:
                 self.numerator = kwd["numerator"]
             except:
-                raise ValueError, "numerator must be specified."
+                raise ValueError("numerator must be specified.")
             try:
                 self.denominator = kwd["denominator"]
             except:
                 self.denominator = rational.Integer(1)
         else:
-            raise ValueError, "numerator must be specified."
+            raise ValueError("numerator must be specified.")
 
     def __eq__(self, other):
         try:
