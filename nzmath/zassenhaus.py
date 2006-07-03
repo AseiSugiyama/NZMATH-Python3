@@ -258,7 +258,7 @@ def padicLiftList(f, factors, p, q):
             break
         u, v, w = extgcdp(g, gg, p)
         if w.degree() > 0:
-            raise ValueError, "factors must be pairwise coprime."
+            raise ValueError("factors must be pairwise coprime.")
         v_mod = ZpZx.createElement(v)
         t = v_mod * h // g_mod
         lifted.append(g + minimumAbsoluteInjection(v_mod * h - g_mod * t)*q)
@@ -311,7 +311,7 @@ def minimumAbsoluteInjection(f):
     elif isinstance(coefficientRing, finitefield.FinitePrimeField):
         p = coefficientRing.getCharacteristic()
     else:
-        raise TypeError, "unknown ring (%s)" % repr(coefficientRing)
+        raise TypeError("unknown ring (%s)" % repr(coefficientRing))
     half = p // 2
     g = polynomial.OneVariableSparsePolynomial({}, f.getVariable(), rational.theIntegerRing)
     for i, c in f.coefficient.iteritems():
@@ -407,7 +407,7 @@ def newMatrix(s, d):
             for j in range(d):
                 rand_list.append(random.randrange(d))
         return matrix.Matrix(s, d, rand_list)
-    raise ValueError, "s must not be smaller than d."
+    raise ValueError("s must not be smaller than d.")
 
 def tri(f):
     """
