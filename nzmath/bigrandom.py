@@ -3,20 +3,22 @@
 import random as _random
 
 def randrange(start,stop = "zero",step = 1):
-    """Choose a random item from range([start,] stop[, step]).
-(Return long integer.)"""
+    """
+    Choose a random item from range([start,] stop[, step]).
+    (Return long integer.)
+    """
     positiveStep = 1
     if stop == "zero":
         stop = start
         start = 0
     if step == 0:
-        raise ValueError, "zero step for randrange()"
+        raise ValueError("zero step for randrange()")
     elif start != long(start):
-        raise ValueError, "non-integer arg 1 for randrange()"
+        raise ValueError("non-integer arg 1 for randrange()")
     elif stop != long(stop):
-        raise ValueError, "non-integer stop for randrange()"
+        raise ValueError("non-integer stop for randrange()")
     elif step != long(step):
-        raise ValueError, "non-integer step for randrange()"
+        raise ValueError("non-integer step for randrange()")
 
     if step < 0:
         step = -step
@@ -24,7 +26,7 @@ def randrange(start,stop = "zero",step = 1):
         stop = -stop
         positiveStep = 0
     if start >= stop:
-        raise ValueError, "empty range for randrange()"
+        raise ValueError("empty range for randrange()")
 
     if (stop - start) % step != 0:
         v = (stop - start)//step + 1
