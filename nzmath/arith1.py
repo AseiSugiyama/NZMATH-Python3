@@ -30,7 +30,7 @@ def floorpowerroot(n, k):
         return floorsqrt(n)
     if n < 0:
         if not (k & 1):
-            raise ValueError, "%d has no real %d-th root." % (n, k)
+            raise ValueError("%d has no real %d-th root." % (n, k))
         else:
             sign = -1
             n = -n
@@ -108,7 +108,7 @@ def modsqrt(a, p):
     elif symbol == 0:
         return 0
     else:
-        raise ValueError,"There is no solution"
+        raise ValueError("There is no solution")
 
 def expand(n, m):
     """
