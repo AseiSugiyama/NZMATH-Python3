@@ -20,7 +20,7 @@ class Ring (object):
         """
         # This class is abstract and cannot be instanciated.
         if self.__class__.__name__ == "Ring":
-            raise NotImplementedError
+            raise NotImplementedError("class Ring is abstract")
         self._one = None
         self._zero = None
 
@@ -28,25 +28,25 @@ class Ring (object):
         """
         createElement returns an element of the ring with seed.
         """
-        raise NotImplementedError
+        raise NotImplementedError("derived class should override")
 
     def issubring(self, other):
         """
         Report whether another ring contains the ring as a subring.
         """
-        raise NotImplementedError
+        raise NotImplementedError("derived class should override")
 
     def issuperring(self, other):
         """
         Report whether the ring is a superring of another ring.
         """
-        raise NotImplementedError
+        raise NotImplementedError("derived class should override")
 
     def __eq__(self, other):
         """
         Equality test.
         """
-        raise NotImplementedError
+        raise NotImplementedError("derived class should override")
 
     def __ne__(self, other):
         """
@@ -68,9 +68,10 @@ class CommutativeRing (Ring):
         """
         # This class is abstract and cannot be instanciated.
         if self.__class__.__name__ == 'CommutativeRing':
-            raise NotImplementedError
+            raise NotImplementedError("class CommutativeRing is abstract")
         Ring.__init__(self)
         self.properties = CommutativeRingProperties()
+        self._actions = {}
 
     def getQuotientField(self):
         """
@@ -120,6 +121,25 @@ class CommutativeRing (Ring):
         False if not, or None if uncertain.
         """
         return self.properties.isfield()
+
+    def registerModuleAction(self, action_ring, action):
+        """
+        Register a ring 'action_ring', which act on the ring through
+        'action' so the ring be an 'action_ring' module.
+        """
+        self._actions[action_ring] = action
+
+    def hasaction(self, action_ring):
+        """
+        Return True if 'action_ring' is registered to provide action.
+        """
+        return action_ring in self._actions
+
+    def getaction(self, action_ring):
+        """
+        Return the registered action for 'action_ring'.
+        """
+        return self._actions[action_ring]
 
 
 class Field (CommutativeRing):
