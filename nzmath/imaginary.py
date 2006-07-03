@@ -226,6 +226,9 @@ class ComplexField (ring.Field):
     def __ne__(self, other):
         return not (self == other)
 
+    def __hash__(self):
+        return 3
+
     def createElement(self, seed):
         return Complex(seed)
 

@@ -126,6 +126,11 @@ class ComplexFieldTest (unittest.TestCase):
         self.failUnless(C.issuperring(real.theRealField))
         self.failUnless(C.issuperring(rational.theRationalField))
 
+    def testHash(self):
+        dictionary = {}
+        dictionary[imaginary.theComplexField] = 1
+        self.assertEqual(1, dictionary[imaginary.ComplexField()])
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
