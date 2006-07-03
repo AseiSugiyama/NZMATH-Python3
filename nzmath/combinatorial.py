@@ -17,15 +17,15 @@ def binomial(n, m):
     In other cases, it raises an exception.
     """
     if not isinstance(n, (int, long)):
-        raise TypeError, "integer is expected, %s detected." % n.__class__
+        raise TypeError("integer is expected, %s detected." % n.__class__)
     if not isinstance(m, (int, long)):
-        raise TypeError, "integer is expected, %s detected." % m.__class__
+        raise TypeError("integer is expected, %s detected." % m.__class__)
     if n == m >= 0 or m == 0 and n > 0:
         return 1
     if n <= 0:
-        raise ValueError, "non-positive number: %d" % n
+        raise ValueError("non-positive number: %d" % n)
     if m < 0:
-        raise ValueError, "negative number: %d" % m
+        raise ValueError("negative number: %d" % m)
     if n < m:
         return 0
     if m*2 > n:
@@ -41,9 +41,9 @@ def factorial(n):
     Return n! for non negative integer n.
     """
     if not isinstance(n, (int, long)):
-        raise TypeError, "integer is expected, %s detected." % n.__class__
+        raise TypeError("integer is expected, %s detected." % n.__class__)
     elif n < 0:
-        raise ValueError, "argument must not be a negative integer."
+        raise ValueError("argument must not be a negative integer.")
     elif n == 0 or n == 1:
         return Integer(1)
     l = range(1, n+1)
