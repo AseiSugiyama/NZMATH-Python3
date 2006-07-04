@@ -1159,7 +1159,9 @@ class ECoverFp(ECGeneric):
         """
         computing the Tate-Lichetenbaum pairing with Miller's algorithm.
         """
-        if m%self.BSGS(P) or m%self.BSGS(Q):
+        # debug: if revised BSGS, replace function.
+        #if m%self.BSGS(P) or m%self.BSGS(Q):
+        if m%self.pointorder(P) or m%self.pointorder(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0]:
@@ -1185,7 +1187,10 @@ class ECoverFp(ECGeneric):
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        if m%self.BSGS(P) or m%self.BSGS(Q):
+
+        # debug: if revised BSGS, replace function.
+        #if m%self.BSGS(P) or m%self.BSGS(Q):
+        if m%self.pointorder(P) or m%self.pointorder(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0] or P==Q:
@@ -1246,15 +1251,10 @@ class ECoverFp(ECGeneric):
             k = k+1
         M = self.ch+1+2*m*k-j
         Flist = factor_methods.factor(M)
-        sentinel = True
-        while M > 1 and sentinel:
-            sentinel = False
-            for p,e in Flist[:]:
+        for p,e in Flist:
+            for i in range(e):
                 if self.mul(M//p, P) == [0]:
-                    sentinel = True
                     M = M//p
-                    Flist = factor_methods.factor(M)
-                    break
         return M
             
     def DLP_BSGS(self,n,P,Q):
