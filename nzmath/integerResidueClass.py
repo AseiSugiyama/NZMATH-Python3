@@ -157,9 +157,8 @@ class IntegerResidueClassRing (CommutativeRing):
         """
         The argument modulus m specifies an ideal mZ.
         """
+        CommutativeRing.__init__(self)
         self.m = modulus
-        self.properties = CommutativeRingProperties()
-        self._one = self._zero = None
 
     def __repr__(self):
         return "IntegerResidueClassRing(%d)" % self.m
