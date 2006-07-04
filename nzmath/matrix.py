@@ -77,7 +77,7 @@ class Matrix:
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
-        sum = createMatrix(self.row, self.column)
+        sum = self.__init__(self.row, self.column)
 
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
@@ -89,7 +89,7 @@ class Matrix:
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
-        diff = createMatrix(self.row, self.column)
+        diff = self.__init__(self.row, self.column)
 
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
@@ -127,9 +127,9 @@ class Matrix:
 
     def __div__(self, other):
         """
-        division by a scalar
+        division by a scalar ``if defined''
         """
-        return self * (1 / rational.Rational(other))
+        return self / other
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -190,7 +190,7 @@ class Matrix:
         """
         Create a copy of the instance.
         """
-        copy = createMatrix(self.row, self.column)
+        copy = self.__init__(self.row, self.column)
         copy.row = self.row
         copy.column = self.column
         for i in range(1, self.column+1):
@@ -328,7 +328,7 @@ class Matrix:
         """
         Return transposed matrix of self.
         """
-        trans = createMatrix(self.column, self.row)
+        trans = self.__init__(self.column, self.row)
         for i in range(1, trans.row+1):
             for j in range(1, trans.column+1):
                 trans[i,j] = self[j,i]
@@ -350,9 +350,9 @@ class Matrix:
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                ratio = triangle.compo[k][i] / rational.Rational(triangle.compo[i][i])
+                ratio = triangle.compo[k][i] / triangle.compo[i][i]
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] -= rational.Rational(triangle.compo[i][l] * ratio)
+                    triangle.compo[k][l] -= triangle.compo[i][l] * ratio
 
         return triangle
 
@@ -387,7 +387,7 @@ class Matrix:
             else:           # not found j such that m(j,k)!=0 and c[j]==0
                 d[k] = 0
                 continue
-            top = (-1) / rational.Rational(self[j,k])
+            top = (-1) / self[j,k]
             self[j,k] = -1
             for s in range(k+1, self.column+1):
                 self[j,s] = top * self[j,s]
@@ -483,9 +483,9 @@ class Matrix:
                 for l in range(r):
                     t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t
             # step 5
-            d = 1 / rational.Rational(M.compo[j][j])
+            d = 1 / M.compo[j][j]
             for k in range(j+1, m):
-                ck = d * rational.Rational(M.compo[k][j])
+                ck = d * M.compo[k][j]
                 for l in range(j+1, n):
                     M.compo[k][l] -= ck * M.compo[j][l]
                 for l in range(r):
@@ -521,7 +521,7 @@ class Matrix:
                     break
             else:
                 continue
-            d = 1 / rational.Rational(M[i,j])
+            d = 1 / M[i,j]
             for l in range(1, i+1):
                 t = d * M[l,j]
                 M[l,j] = M[l,k]
@@ -656,7 +656,7 @@ class SquareMatrix(Matrix):
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
-            coeff[i] = (-1) * C.trace() / rational.Rational(i, 1)
+            coeff[i] = (-1) * C.trace() / i
             C = C + coeff[i] * unitMatrix(self.row)
         import nzmath.polynomial as polynomial
         coeff.reverse()
@@ -688,7 +688,7 @@ class SquareMatrix(Matrix):
 
         for i in range(n):
             for j in range(i+1, n):
-                L.compo[j][i] = U.compo[j][i] / rational.Rational(U.compo[i][i])
+                L.compo[j][i] = U.compo[j][i] / U.compo[i][i]
                 for k in range(i, n):
                     U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
 
@@ -714,7 +714,7 @@ class SquareMatrix(Matrix):
             # step 3
             for i in range(m+1,n+1):
                 if H[i,m-1] != 0:
-                    u = H[i,m-1] / rational.Rational(t)
+                    u = H[i,m-1] / t
                     for j in range(m,n+1):
                         H[i,j] -= u * H[m,j]
                         H[i,m-1] = 0
@@ -726,6 +726,40 @@ class IntegerMatrix(Matrix):
     IntegerMatrix is a class for matrices
     which coefficients are all integers.
     """
+
+    def __mul__(self, other):
+        """
+        multiplication with a Matrix or a scalar
+        """
+        if isinstance(other, Matrix):
+            if self.column != other.row:
+                raise MatrixSizeError
+            if self.row != other.column:
+                product = IntegerMatrix(self.row, other.column)
+            else:
+                product = IntegerSquareMatrix(self.row, other.column)
+            for i in range(1, self.row+1):
+                for j in range(1, other.column+1):
+                    for k in range(self.column):
+                        product[i,j] += self[i,k] * other[k,j]
+            return product
+        elif isinstance(other, vector.Vector):
+            if self.column != len(other):
+                raise vector.VectorSizeError
+            tmp = [0] * self.row
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    tmp[i-1] += self[i,j] * other[j]
+            return vector.Vector(tmp)
+        else:
+            if self.row != other.column:
+                product = IntegerMatrix(self.row, other.column)
+            else:
+                product = IntegerSquareMatrix(self.row, other.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i,j] = self[i,j] * other
+            return product
 
     def __div__(self, other):
         """
@@ -745,16 +779,6 @@ class IntegerMatrix(Matrix):
             for i in range(self.row):
                 self[i] = (self[i] % other)
             return self
-
-    def transpose(self):
-        """
-        Return transposed matrix of self.
-        """
-        trans = createMatrix(self.column, self.row,0,True)
-        for i in range(1, trans.row+1):
-            for j in range(1, trans.column+1):
-                trans[i,j] = self[j,i]
-        return trans
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -1005,7 +1029,7 @@ class Subspace(Matrix):
                     t += 1
             if not found:
                 raise VectorsNotIndependent
-            d = 1 / rational.Rational(M.compo[t][s])
+            d = 1 / M.compo[t][s]
             M.compo[t][s] = 1
             if t != s:
                 for i in range(n):
