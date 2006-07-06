@@ -137,20 +137,38 @@ class PairingTest (unittest.TestCase):
         self.assertEqual(e.field.zero, l4[1](P[0]))
 
     def testWeilPairing(self):
-        # this example was provided by Kim Nguyen.
+        # this example was refered to Washington.
+        e = elliptic.EC([0,2], 7)
+        P = [0,3]
+        Q = [5,1]
+        R = e.WeilPairing(3, P, Q)
+        assert R == finitefield.FinitePrimeFieldElement(2, 7)
+
+    def testTatePairing(self):
+        # this example was refered to Washington.
+        # note that Tate pairing is only defined
+        # up to a multiple by an lth power.
+        e = elliptic.EC([-1,1], 11)
+        l = map(finitefield.FinitePrimeFieldElement,[5,6],[11]*2)
+        P = [3,6]
+        R = e.TatePairing(5, P, P)
+        #assert R == finitefield.FinitePrimeFieldElement(5, 11)
+        assert R in l
+
+    def testTatePairing_Extend(self):
+        # this example was refered to Kim Nguyen.
         e = elliptic.EC([0,4], 997)
         P = [0,2]
         Q = [747,776]
-        R = e.WeilPairing(3, P, P)
-        W1 = e.WeilPairing(3, P, Q)
-        W2 = e.WeilPairing(3, Q, P)
-        assert R == finitefield.FinitePrimeFieldElement(1, 997)
+        R = e.TatePairing_Extend(3, P, P)
+        W1 = e.TatePairing_Extend(3, P, Q)
+        W2 = e.TatePairing_Extend(3, Q, P)
+        assert R == finitefield.FinitePrimeField(997).one
         assert W1 == finitefield.FinitePrimeFieldElement(304, 997)
         assert W1 == W2**-1
-        assert W1**3 == finitefield.FinitePrimeFieldElement(1, 997)
 
     def testStructure(self):
-        # this example was provided by magma.
+        # this example was rechecked by MAGMA.
         e = elliptic.EC([0,4], 997)
         f = elliptic.EC([-1,0], 65537)
         g = elliptic.EC([0,1], 65537)
