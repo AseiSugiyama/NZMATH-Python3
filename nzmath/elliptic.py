@@ -1159,9 +1159,7 @@ class ECoverFp(ECGeneric):
         """
         computing the Tate-Lichetenbaum pairing with Miller's algorithm.
         """
-        # debug: if revised BSGS, replace function.
-        #if m%self.BSGS(P) or m%self.BSGS(Q):
-        if m%self.pointorder(P) or m%self.pointorder(Q):
+        if m%self.BSGS(P) or m%self.BSGS(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0]:
@@ -1187,10 +1185,7 @@ class ECoverFp(ECGeneric):
         """
         computing the Weil pairing with Miller's algorithm.
         """
-
-        # debug: if revised BSGS, replace function.
-        #if m%self.BSGS(P) or m%self.BSGS(Q):
-        if m%self.pointorder(P) or m%self.pointorder(Q):
+        if m%self.BSGS(P) or m%self.BSGS(Q):
             raise ValueError,"sorry, not mP=[0] or mQ=[0]."
 
         if P==[0] or Q==[0] or P==Q:
@@ -1239,6 +1234,7 @@ class ECoverFp(ECGeneric):
         R = self.mul(2*m, P)
         k = -m
         Plist_rev = map(self.mul,[-1]*(m+1), Plist) # make reverse point mapping
+        j = 0
         while k <= m:
             S = self.add(Q, self.mul(k, R))
             if S!=[0]:
@@ -1333,7 +1329,7 @@ class ECoverFp(ECGeneric):
         N0 = r
         N1,N2 = 1,N
         while N0 > 1:
-            N0 = gcd.gcd(r,N2)
+            N0 = gcd.gcd(r, N2)
             N1,N2 = N1*N0,N2//N0
         
         while 1:
@@ -1343,7 +1339,7 @@ class ECoverFp(ECGeneric):
             P2 = [0]
             while P2 == [0]:
                 P2 = simplified.point()
-            P1,P2=simplified.mul(N2,P1),simplified.mul(N2,P2)
+            P1,P2=simplified.mul(N2,P1), simplified.mul(N2,P2)
             s=simplified.pointorder(P1)
             t=simplified.pointorder(P2)
             m=gcd.lcm(s,t)
