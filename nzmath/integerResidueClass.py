@@ -1,16 +1,21 @@
-from nzmath.gcd import extgcd
-from nzmath.rational import Integer
-from nzmath.rational import Rational
+import nzmath.gcd as gcd
+import nzmath.rational as rational
+import nzmath.ring as ring
+import nzmath.prime as prime
 
 
-class IntegerResidueClass:
+class IntegerResidueClass (ring.CommutativeRingElement):
+    """
+    A class for integer residue class.
+    """
     def __init__(self, representative, modulus):
+        ring.CommutativeRingElement.__init__(self)
         if modulus == 0:
             raise ValueError("modulus can not be zero")
         elif modulus < 0:
             modulus = -modulus
         self.m = modulus
-        if isinstance(representative, Rational):
+        if isinstance(representative, rational.Rational):
             t = IntegerResidueClass(representative.denominator, self.m).inverse().getResidue()
             self.n = representative.numerator * t % self.m
         else:
@@ -92,7 +97,7 @@ class IntegerResidueClass:
         except:
             return NotImplemented
 
-    def __pow__(self, other, mod=None):
+    def __pow__(self, other):
         if other < 0:
             inverse = self.inverse()
             return self.__class__(pow(inverse.n, -other, self.m), self.m)
@@ -124,7 +129,7 @@ class IntegerResidueClass:
         return not (self == other)
 
     def inverse(self):
-        t = extgcd(self.n, self.m)
+        t = gcd.extgcd(self.n, self.m)
         if t[2] != 1:
             raise ValueError("No inverse of %s." % self)
         return self.__class__(t[0], self.m)
@@ -140,15 +145,13 @@ class IntegerResidueClass:
         Return the smallest non-negative representative element of the
         residue class.
         """
-        return Integer(self.n % self.m)
+        return rational.Integer(self.n % self.m)
 
     def getRing(self):
         return IntegerResidueClassRing.getInstance(self.m)
 
-from nzmath.ring import CommutativeRing, CommutativeRingProperties
-from nzmath.prime import primeq
 
-class IntegerResidueClassRing (CommutativeRing):
+class IntegerResidueClassRing (ring.CommutativeRing):
     """IntegerResidueClassRing is also known as Z/mZ."""
 
     _instances = {}
@@ -157,7 +160,7 @@ class IntegerResidueClassRing (CommutativeRing):
         """
         The argument modulus m specifies an ideal mZ.
         """
-        CommutativeRing.__init__(self)
+        ring.CommutativeRing.__init__(self)
         self.m = modulus
 
     def __repr__(self):
@@ -202,7 +205,7 @@ class IntegerResidueClassRing (CommutativeRing):
         are merely aliases of isfield.
         """
         if None == self.properties.isfield():
-            if primeq(self.m):
+            if prime.primeq(self.m):
                 self.properties.setIsfield(True)
             else:
                 self.properties.setIsdomain(False)
