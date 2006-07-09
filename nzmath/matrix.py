@@ -15,7 +15,7 @@ class Matrix:
         if (rational.isIntegerObject(row)
             and rational.isIntegerObject(column)
             and row > 0
-            and column > 0 ):
+            and column > 0 ): # row and column check
             self.row = row
             self.column = column
             self.compo = []
@@ -63,13 +63,12 @@ class Matrix:
                     if self.compo[i][j] != other.compo[i][j]:
                         return False
             return True
-        elif isinstance(other, int):
-            if other == 0:  # zero matrix ?
-                for i in range(self.row):
-                    for j in range(self.column):
-                        if self.compo[i][j] != 0:
-                            return False
-                return True
+        elif isinstance(other, int) and other == 0: # zero matrix ?
+            for i in range(self.row):
+                for j in range(self.column):
+                    if self.compo[i][j] != 0:
+                        return False
+            return True
         else:
             raise TypeError
 
@@ -77,7 +76,7 @@ class Matrix:
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
-        sum = self.__init__(self.row, self.column)
+        sum = self.__class__(self.row, self.column)
 
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
@@ -89,7 +88,7 @@ class Matrix:
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
-        diff = self.__init__(self.row, self.column)
+        diff = self.__class__(self.row, self.column)
 
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
@@ -119,7 +118,7 @@ class Matrix:
                     tmp[i-1] += self[i,j] * other[j]
             return vector.Vector(tmp)
         else:
-            product = createMatrix(self.row, self.column)
+            product = self.__class__(self.row, self.column)
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
                     product[i,j] = self[i,j] * other
@@ -129,7 +128,7 @@ class Matrix:
         """
         division by a scalar ``if defined''
         """
-        return self / other
+        return (1/other) * self
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -190,11 +189,11 @@ class Matrix:
         """
         Create a copy of the instance.
         """
-        copy = self.__init__(self.row, self.column)
-        copy.row = self.row
-        copy.column = self.column
-        for i in range(1, self.column+1):
-            copy[i] = self[i]
+        copy = self.__class__(self.row, self.column)
+        compos = []
+        for k in range(len(self.compo)):
+            compos.append(self.compo[k][:])
+        copy.compo = compos
         return copy
 
     def set(self, list):
@@ -213,8 +212,7 @@ class Matrix:
         if isinstance(arg, list):
             self.compo[m-1] = arg[:]
         elif isinstance(arg, vector.Vector):
-            for i in range(self.column):
-                self.compo[m-1][i] = arg.compo[i]
+            self.compo[m-1] = arg.compo[:]
         else:
             raise TypeError, self.setRow.__doc__
 
@@ -226,8 +224,8 @@ class Matrix:
             for i in range(self.row):
                 self.compo[i][n-1] = arg[i]
         elif isinstance(arg, vector.Vector):
-            for j in range(self.row):
-                self.compo[j][n-1] = arg.compo[j]
+            for i in range(self.row):
+                self.compo[i][n-1] = arg.compo[i]
         else:
             raise TypeError, self.setColumn.__doc__
 
@@ -235,10 +233,7 @@ class Matrix:
         """
         getRow(i) : Return i-th row in form of Matrix
         """
-        row = []
-        for k in range(self.column):
-            row.append(self.compo[i-1][k])
-        return vector.Vector(row)
+        return vector.Vector(self.compo[i-1])
 
     def getColumn(self, j):
         """
@@ -261,9 +256,10 @@ class Matrix:
         """
         swapColumn(n1, n2) : Swap self's n1-th column and n2-th column.
         """
-        tmp = self[n1]
-        self.setColumn(n1, self[n2])
-        self.setColumn(n2, tmp)
+        for k in range(self.row):
+            tmp = self.compo[k][n1-1]
+            self.compo[k][n1-1] = self.compo[k][n2-1]
+            self.compo[k][n2-1] = tmp
 
     def insertRow(self, i, arg):
         """
@@ -328,7 +324,7 @@ class Matrix:
         """
         Return transposed matrix of self.
         """
-        trans = self.__init__(self.column, self.row)
+        trans = self.__class__(self.column, self.row)
         for i in range(1, trans.row+1):
             for j in range(1, trans.column+1):
                 trans[i,j] = self[j,i]
@@ -339,13 +335,13 @@ class Matrix:
         Return triangulated matrix of self.
         """
         triangle = self.copy()
+        flag = False # for calculation of determinant
         for i in range(triangle.row):
             if triangle.compo[i][i] == 0:
                 for k in range(i+1, triangle.row):
                     if triangle.compo[k][i] != 0:
                         triangle.swapRow(i+1, k+1)
-                        for l in range(triangle.column):     # for calculation of determinant
-                            triangle.compo[i+1][l] *= -1
+                        flag = not(flag)
                         break        # break the second loop
                 else:
                     continue         # the below components are all 0. Back to the first loop
@@ -354,6 +350,9 @@ class Matrix:
                 for l in range(i, triangle.column):
                     triangle.compo[k][l] -= triangle.compo[i][l] * ratio
 
+        if flag:
+            for j in range(triangle.row, triangle.column+1):
+                triangle[triangle.row, j] *= -1
         return triangle
 
     def isUpperTriangularMatrix(self):
@@ -594,9 +593,14 @@ class SquareMatrix(Matrix):
 
     def isDiagonalMatrix(self):
         return self.isUpperTriangularMatrix() & self.isLowerTriangularMatrix()
-
     def isScalarMatrix(self):
-        return unitMatrix(self.row) == self * self[1][1]
+        return self[1][1] * unitMatrix(self.row) == self
+
+    def isSymmetricMatrix(self):
+        return self.transpose() == self
+
+    def isOrthogonalMatrix(self):
+        return self * self.transpose() == unitMatrix(self.row)
 
     def isAlternateMatrix(self):
         return self.transpose() == -self
@@ -633,10 +637,12 @@ class SquareMatrix(Matrix):
         """
         Return cofactors matrix of self.
         """
-        cofactors = SquareMatrix(self.row)
+        cofactors = self.__class__(self.row)
         for i in range(cofactors.row):
             for j in range(cofactors.column):
-                cofactors.compo[j][i] = (-1)**(i+j) * (self.submatrix(i+1, j+1)).determinant()
+                cofactors.compo[j][i] = (self.submatrix(i+1, j+1)).determinant()
+                if (i+j) & 1:
+                    cofactors.compo[j][i] *= -1
         return cofactors
 
     def inverse(self):
@@ -770,15 +776,15 @@ class IntegerMatrix(Matrix):
         else:
             raise NoInverse
 
-    def __mod__(self,other):
-        if isinstance(other, vector.Vector):
-            return NotImplemented
-        else:
+    def __mod__(self, other):
+        if rational.isIntegerObject(other):
             if other == 0:
                 return ZeroDivisionError
             for i in range(self.row):
-                self[i] = (self[i] % other)
+                self[i] %= other
             return self
+        else:
+            return NotImplemented
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
