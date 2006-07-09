@@ -1186,19 +1186,16 @@ class MultiVariableSparsePolynomial:
             raise ValueError("You must input OneVariablePolynomial.")
 
     def getRing(self):
-        ring = None
+        myring = None
         for c in self.coefficient.values():
-            if isinstance(c, (int, long)):
-                cring = rational.theIntegerRing
-            else:
-                cring = c.getRing()
-            if not ring or ring != cring and ring.issubring(cring):
-                ring = cring
-            elif not cring.issubring(ring):
-                ring = ring * cring
-        if not ring:
+            cring = ring.getRing(c)
+            if not myring or myring != cring and myring.issubring(cring):
+                myring = cring
+            elif not cring.issubring(myring):
+                myring = myring.getCommonSuperring(cring)
+        if not myring:
             return rational.theIntegerRing
-        return PolynomialRing(ring, self.variable)
+        return PolynomialRing(myring, self.variable)
 
 
 def construct(polynomial, kwd={}):
