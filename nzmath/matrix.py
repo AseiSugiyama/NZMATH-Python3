@@ -128,7 +128,18 @@ class Matrix:
         """
         division by a scalar ``if defined''
         """
-        return (1/other) * self
+        if rational.isIntegerObject(other):
+            product = self.__class__(self.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    d, m = divmod(self[i,j], other)
+                    if not(m):
+                        product[i,j] = self[i,j] // other
+                    else:
+                        product[i,j] = rational.Rational(self[i,j], other)
+            return product
+        else:
+            return (1/other) * self
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -346,7 +357,14 @@ class Matrix:
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                ratio = triangle.compo[k][i] / triangle.compo[i][i]
+                if rational.isIntegerObject(triangle.compo[k][i]) and rational.isIntegerObject(triangle.compo[i][i]):
+                    d, m = divmod(triangle.compo[k][i], triangle.compo[i][i])
+                    if not(m):
+                            ratio = d
+                    else:
+                        ratio = rational.Rational(triangle.compo[k][i], triangle.compo[i][i])
+                else:
+                    ratio = triangle.compo[k][i] / triangle.compo[i][i]
                 for l in range(i, triangle.column):
                     triangle.compo[k][l] -= triangle.compo[i][l] * ratio
 
@@ -386,7 +404,13 @@ class Matrix:
             else:           # not found j such that m(j,k)!=0 and c[j]==0
                 d[k] = 0
                 continue
-            top = (-1) / self[j,k]
+            if rational.isIntegerObject(self[j,k]):
+                if self[j,k] == 1 or self[j,k] == -1:
+                    top = -self[j,k]
+                else:
+                    top = rational.Rational(-1, self[j,k])
+            else:
+                    top = (-1) / self[j,k]
             self[j,k] = -1
             for s in range(k+1, self.column+1):
                 self[j,s] = top * self[j,s]
@@ -482,7 +506,13 @@ class Matrix:
                 for l in range(r):
                     t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t
             # step 5
-            d = 1 / M.compo[j][j]
+            if rational.isIntegerObject(M.compo[j][j]):
+                if M.compo[j][j]== 1 or M.compo[j][j] == -1:
+                    d = M.compo[j][j]
+                else:
+                    d = rational.Rational(1, M.compo[j][j])
+            else:
+                    d = 1 / M.compo[j][j]
             for k in range(j+1, m):
                 ck = d * M.compo[k][j]
                 for l in range(j+1, n):
@@ -520,7 +550,13 @@ class Matrix:
                     break
             else:
                 continue
-            d = 1 / M[i,j]
+            if rational.isIntegerObject(M[i,j]):
+                if M[i,j]== 1 or M[i,j] == -1:
+                    d = M[i,j]
+                else:
+                    d = rational.Rational(1, M[i,j])
+            else:
+                    d = 1 / M[i,j]
             for l in range(1, i+1):
                 t = d * M[l,j]
                 M[l,j] = M[l,k]
@@ -662,7 +698,14 @@ class SquareMatrix(Matrix):
         coeff[0] = 1
         for i in range(1, self.row+1):
             C = self * C
-            coeff[i] = (-1) * C.trace() / i
+            if i == 1:
+                coeff[i] = (-1) * C.trace()
+            else:
+                d, m = divmod(C.trace(), i)
+                if not(m):
+                    coeff[i] = -d
+                else:
+                    coeff[i] = rational.Rational(-C.trace(), i)
             C = C + coeff[i] * unitMatrix(self.row)
         import nzmath.polynomial as polynomial
         coeff.reverse()
@@ -694,7 +737,14 @@ class SquareMatrix(Matrix):
 
         for i in range(n):
             for j in range(i+1, n):
-                L.compo[j][i] = U.compo[j][i] / U.compo[i][i]
+                if rational.isIntegerObject(U.compo[j][i]) and rational.isIntegerObject(U.compo[i][i]):
+                    d, m = divmod(U.compo[j][i], U.compo[i][i])
+                    if not(m):
+                            L.compo[j][i]= d
+                    else:
+                        L.compo[j][i] = rational.Rational(U.compo[j][i], U.compo[i][i])
+                else:
+                    L.compo[j][i] = U.compo[j][i] / U.compo[i][i]
                 for k in range(i, n):
                     U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
 
@@ -1035,7 +1085,13 @@ class Subspace(Matrix):
                     t += 1
             if not found:
                 raise VectorsNotIndependent
-            d = 1 / M.compo[t][s]
+            if rational.isIntegerObject(M.compo[t][s]):
+                if M.compo[t][s]== 1 or M.compo[t][s] == -1:
+                    d = M.compo[t][s]
+                else:
+                    d = rational.Rational(1, M.compo[t][s])
+            else:
+                    d = 1 / M.compo[t][s]
             M.compo[t][s] = 1
             if t != s:
                 for i in range(n):
