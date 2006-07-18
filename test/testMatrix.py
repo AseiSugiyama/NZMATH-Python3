@@ -55,7 +55,7 @@ class MatrixTest(unittest.TestCase):
 
     def testDiv(self):
         div = createMatrix(1,2)
-        div.set([1,float(rational.Rational(2,3))])
+        div.set([1,rational.Rational(2,3)])
         self.assertEqual(div, e / 3)
 
     def testGetRow(self):
@@ -86,7 +86,7 @@ class MatrixTest(unittest.TestCase):
 
     def testTriangulate(self):
         triangle = createMatrix(3,3)
-        triangle.set([1,2,3]+[0,5,-2]+[0,0,float(rational.Rational(-86,5))])
+        triangle.set([1,2,3]+[0,5,-2]+[0,0,rational.Rational(-86,5)])
         self.assertEqual(triangle, c.triangulate())
 
     def testIsUpperTriangularMatrix(self):
@@ -118,7 +118,7 @@ class SquareMatrixTest(unittest.TestCase):
         self.assertEqual(mul0, a ** 0)
         Ra = rational.Rational
         mulminus2 = createMatrix(2,2)
-        mulminus2.set([float(Ra(11,2)),float(Ra(-5,2)),float(Ra(-15,4)),float(Ra(7,4))])
+        mulminus2.set([Ra(11,2),Ra(-5,2),Ra(-15,4),Ra(7,4)])
         self.assertEqual(mulminus2, a ** (-2))
 
     def testIsDiagonalMatrix(self):
