@@ -485,7 +485,9 @@ class Matrix:
         self * X == V
         """
         M = self.copy()
-        m = M.row; n = M.column; r = V.column
+        m = M.row
+        n = M.column
+        r = V.column
         X = createMatrix(n,r)
 
         # step 1
@@ -502,9 +504,13 @@ class Matrix:
             # step 4
             if i > j:
                 for l in range(n):
-                    t = M.compo[i][l]; M.compo[i][l] = M.compo[j][l]; M.compo[j][l] = t
+                    t = M.compo[i][l]
+                    M.compo[i][l] = M.compo[j][l]
+                    M.compo[j][l] = t
                 for l in range(r):
-                    t = B.compo[i][l]; B.compo[i][l] = B.compo[j][l]; B.compo[j][l] = t
+                    t = B.compo[i][l]
+                    B.compo[i][l] = B.compo[j][l]
+                    B.compo[j][l] = t
             # step 5
             if rational.isIntegerObject(M.compo[j][j]):
                 if M.compo[j][j]== 1 or M.compo[j][j] == -1:
@@ -765,7 +771,9 @@ class SquareMatrix(Matrix):
             t = H[i,m-1]
             if i > m:
                 for j in range(m-1, n+1):
-                    tmp = H[i,j] ; H[i,j] = H[m,j] ; H[m,j] = tmp
+                    tmp = H[i,j]
+                    H[i,j] = H[m,j]
+                    H[m,j] = tmp
                 H.swapColumn(i,m)
             # step 3
             for i in range(m+1,n+1):
@@ -840,7 +848,8 @@ class IntegerMatrix(Matrix):
         """Return a Matrix in Hermite Normal Form."""
         A = self.copy()
         # step 1 [Initialize]
-        i = self.row; k = self.column
+        i = self.row
+        k = self.column
         if self.row <= self.column:
             l = 1
         else:
@@ -884,7 +893,8 @@ class IntegerMatrix(Matrix):
                 #    W[j] = A[j+k-1]
                 return A
             else:
-                i -= 1; k -= 1
+                i -= 1
+                k -= 1
                 # go to step 2
 
 class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
@@ -1078,7 +1088,8 @@ class Subspace(Matrix):
         B = unitMatrix(n)
 
         for s in range(k):
-            found = 0; t = s
+            found = 0
+            t = s
             while (not found and t < n):
                 found  = M.compo[t][s] != 0
                 if not found:
@@ -1104,7 +1115,9 @@ class Subspace(Matrix):
                         M.compo[i][j] = 0
             for j in range(s+1,k):
                 if t != s:
-                    tmp = M.compo[s][j]; M.compo[s][j] = M.compo[t][j]; M.compo[t][j] = tmp
+                    tmp = M.compo[s][j]
+                    M.compo[s][j] = M.compo[t][j]
+                    M.compo[t][j] = tmp
                 d *= M.compo[s][j]
                 for i in range(n):
                     if i != s and i != t:
