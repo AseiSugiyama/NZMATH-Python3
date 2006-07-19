@@ -1,7 +1,9 @@
 from __future__ import division
 
+import nzmath.gcd as gcd
 import nzmath.rational as rational
 import nzmath.vector as vector
+
 
 class Matrix:
     """
@@ -634,7 +636,8 @@ class SquareMatrix(Matrix):
         return MatrixRing.getInstance(self.row)
 
     def isDiagonalMatrix(self):
-        return self.isUpperTriangularMatrix() & self.isLowerTriangularMatrix()
+        return self.isUpperTriangularMatrix() and self.isLowerTriangularMatrix()
+
     def isScalarMatrix(self):
         return self[1][1] * unitMatrix(self.row) == self
 
@@ -829,7 +832,7 @@ class IntegerMatrix(Matrix):
         """
         division by a scalar
         """
-        if (other == 1) or (other == -1) :
+        if (other == 1) or (other == -1):
             return self * other
         else:
             raise NoInverse
@@ -837,7 +840,7 @@ class IntegerMatrix(Matrix):
     def __mod__(self, other):
         if rational.isIntegerObject(other):
             if other == 0:
-                return ZeroDivisionError
+                raise ZeroDivisionError
             for i in range(self.row):
                 self[i] %= other
             return self
@@ -897,6 +900,7 @@ class IntegerMatrix(Matrix):
                 k -= 1
                 # go to step 2
 
+
 class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
     """
     IntegerSquareMatrix is a class for square matrices
@@ -922,7 +926,6 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
                 for x in range(n-1):
                     lst.append(1)
                 n = 1
-        import nzmath.gcd as gcd
         while n != 1:
             j = n
             c = 0
@@ -983,7 +986,6 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
             V = M.inverse()
             M = U
             return (U, V, M)
-        import nzmath.gcd as gcd
         while n != 1:
             j = n
             c = 0
