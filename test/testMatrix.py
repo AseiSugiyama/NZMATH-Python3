@@ -215,18 +215,19 @@ class IntegerSquareTest(unittest.TestCase):
 
 class MatrixRingTest (unittest.TestCase):
     def setUp(self):
-        self.m2 = MatrixRing.getInstance(2)
+        import nzmath.rational as rational
+        self.m2z = MatrixRing.getInstance(2, rational.theIntegerRing)
         # XXX coefficient ring should be able to be specified.
 
     def testZero(self):
-        z = self.m2.zero
+        z = self.m2z.zero
         self.assertEqual(0, z[1, 1])
         self.assertEqual(0, z[1, 2])
         self.assertEqual(0, z[2, 1])
         self.assertEqual(0, z[2, 2])
 
     def testOne(self):
-        o = self.m2.one
+        o = self.m2z.one
         self.assertEqual(1, o[1, 1])
         self.assertEqual(0, o[1, 2])
         self.assertEqual(0, o[2, 1])
@@ -252,4 +253,3 @@ def suite(suffix="Test"):
 if __name__ == '__main__':
     runner = unittest.TextTestRunner()
     runner.run(suite())
-

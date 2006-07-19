@@ -2,6 +2,7 @@ from __future__ import division
 
 import nzmath.gcd as gcd
 import nzmath.rational as rational
+import nzmath.ring as ring
 import nzmath.vector as vector
 
 
@@ -577,6 +578,7 @@ class Matrix:
             k = k-1
         return M
 
+
 class SquareMatrix(Matrix):
     """
     SquareMatrix is a class for square matrices.
@@ -633,7 +635,15 @@ class SquareMatrix(Matrix):
             z = z*z
 
     def getRing(self):
-        return MatrixRing.getInstance(self.row)
+        scalars = None
+        for i in range(self.row):
+            for j in range(self.column):
+                cring = ring.getRing(self[i,j])
+                if scalars is None or scalars != cring and scalars.issubring(cring):
+                    scalars = cring
+                elif not scalars.issuperring(cring):
+                    scalars = scalars.getCommonSuperring(cring)
+        return MatrixRing.getInstance(self.row, scalars)
 
     def isDiagonalMatrix(self):
         return self.isUpperTriangularMatrix() and self.isLowerTriangularMatrix()
@@ -767,26 +777,27 @@ class SquareMatrix(Matrix):
         for m in range(2, H.row):
             # step 2
             for i in range(m+1, n+1):
-                if H[i,m-1] != 0:
+                if H[i, m-1] != 0:
                     break
             else:
                 continue
-            t = H[i,m-1]
+            t = H[i, m-1]
             if i > m:
                 for j in range(m-1, n+1):
-                    tmp = H[i,j]
-                    H[i,j] = H[m,j]
-                    H[m,j] = tmp
-                H.swapColumn(i,m)
+                    tmp = H[i, j]
+                    H[i, j] = H[m, j]
+                    H[m, j] = tmp
+                H.swapColumn(i, m)
             # step 3
-            for i in range(m+1,n+1):
-                if H[i,m-1] != 0:
-                    u = H[i,m-1] / t
-                    for j in range(m,n+1):
-                        H[i,j] -= u * H[m,j]
-                        H[i,m-1] = 0
-                    H.setColumn(m, H[m] + u * H[i] )
+            for i in range(m+1, n+1):
+                if H[i, m-1] != 0:
+                    u = H[i, m-1] / t
+                    for j in range(m, n+1):
+                        H[i, j] -= u * H[m, j]
+                        H[i, m-1] = 0
+                    H.setColumn(m, H[m] + u * H[i])
         return H
+
 
 class IntegerMatrix(Matrix):
     """
@@ -901,7 +912,7 @@ class IntegerMatrix(Matrix):
                 # go to step 2
 
 
-class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
+class IntegerSquareMatrix(SquareMatrix, IntegerMatrix, ring.RingElement):
     """
     IntegerSquareMatrix is a class for square matrices
     which coefficients are all integers.
@@ -916,16 +927,15 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
         M = self.copy()
         n = M.row
         R = int(M.determinant())
-        if R < 0:
-            R = -R
-        lst = []
         if R == 0:
             raise ValueError("Don't input matrix whose determinant is 0")
-        else :
-            if R == 1:
-                for x in range(n-1):
-                    lst.append(1)
-                n = 1
+        if R < 0:
+            R = -R
+        if R == 1:
+            lst = [1]*(n-1)
+            n = 1
+        else:
+            lst = []
         while n != 1:
             j = n
             c = 0
@@ -1034,23 +1044,45 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix):
                 M[j, j] = -M[j, j]
         return (U, V, M)
 
-class MatrixRing:
+    def getRing(self):
+        return MatrixRing.getInstance(self.row, rational.theIntegerRing)
+
+
+class MatrixRing (ring.Ring):
     """
     MatrixRing is a class for matrix rings.
     """
     _instances = {}
 
-    def __init__(self, size):
+    def __init__(self, size, scalars):
+        """
+        MatrixRing(size, scalars)
+
+        size: size of matrices (positive integer)
+        scalars: ring of scalars
+        """
+        ring.Ring.__init__(self)
         self.size = size
+        self.scalars = scalars
 
     def __repr__(self):
-        return "MatrixRing(%d)" % self.size
+        return "MatrixRing(%d, %s)" % (self.size, self.scalars)
 
-    def getInstance(cls, size):
-        if size not in cls._instances:
-            anInstance = MatrixRing(size)
-            cls._instances[size] = anInstance
-        return cls._instances[size]
+    def __str__(self):
+        return "M_%d(%s)" % (self.size, str(self.scalars))
+
+    def getInstance(cls, size, scalars):
+        """
+        Return the cached instance of the specified matrix ring.  If
+        the specified ring is not cached, it is created, cached and
+        returned.
+
+        The method is a class method.
+        """
+        if (size, scalars) not in cls._instances:
+            anInstance = MatrixRing(size, scalars)
+            cls._instances[size, scalars] = anInstance
+        return cls._instances[size, scalars]
 
     getInstance = classmethod(getInstance)
 
@@ -1060,15 +1092,38 @@ class MatrixRing:
         """
         return unitMatrix(self.size)
 
-    one = property(unitMatrix, None, None, "multiplicative unit")
+    def _getOne(self):
+        """
+        getter for one (unit matrix)
+        """
+        if self._one is None:
+            components = [self.scalars.zero] * (self.size**2)
+            for i in range(self.size):
+                components[i*self.size + i] = self.scalars.one
+            self._one = SquareMatrix(self.size, components)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit")
 
     def _getZero(self):
         """
         Return zero matrix.
         """
-        return createMatrix(self.size)
+        if self._zero is None:
+            components = [self.scalars.zero] * (self.size**2)
+            self._zero = SquareMatrix(self.size, components)
+        return self._zero
 
     zero = property(_getZero, None, None, "additive unit")
+
+    def createElement(self, compo):
+        """
+        Return a newly created matrix from 'compo'.
+
+        'compo' must be a list of n*n components in the scalar ring,
+        where n = self.size.
+        """
+        return createMatrix(self.size, compo)
 
 
 class Subspace(Matrix):

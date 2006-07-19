@@ -238,14 +238,35 @@ class CommutativeRingElement (RingElement):
     CommutativeRingElement is an abstract class for elements of
     commutative rings.
     """
-    pass
+    def __init__(self):
+        """
+        This class is abstract and cannot be instanciated.
+        """
+        if self.__class__.__name__ == "CommutativeRingElement":
+            raise NotImplementedError("CommutativeRingElement is an abstract class.")
+        RingElement.__init__(self)
+
+    def mul_module_action(self, other):
+        """
+        Return the result of a module action.
+        other must be in one of the action rings of self's ring.
+        """
+        self_ring = self.getRing()
+        other_ring = getRing(other)
+        return self.getRing().getaction(getRing(other))(other, self)
 
 
 class FieldElement (CommutativeRingElement):
     """
     FieldElement is an abstract class for elements of fields.
     """
-    pass
+    def __init__(self):
+        """
+        This class is abstract and cannot be instanciated.
+        """
+        if self.__class__.__name__ == "FieldElement":
+            raise NotImplementedError("FieldElement is an abstract class.")
+        CommutativeRingElement.__init__(self)
 
 
 class QuotientFieldElement (FieldElement):
@@ -255,6 +276,7 @@ class QuotientFieldElement (FieldElement):
     """
 
     def __init__(self, numerator, denominator):
+        FieldElement.__init__(self)
         self.numerator = numerator
         if denominator == 0:
             raise ZeroDivisionError
@@ -404,6 +426,7 @@ class ResidueClass (CommutativeRingElement):
     """
 
     def __init__(self, x, ideal):
+        CommutativeRingElement.__init__(self)
         self.x = x
         self.ideal = ideal
 

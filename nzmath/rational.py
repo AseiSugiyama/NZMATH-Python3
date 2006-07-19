@@ -569,6 +569,8 @@ class Integer(long, ring.CommutativeRingElement):
     Integer is a class of integer.  Since 'int' and 'long' do not
     return rational for division, it is needed to create a new class.
     """
+    def __init__(self, value):
+        ring.CommutativeRingElement.__init__(self)
 
     def __div__(self, other):
         if other in theIntegerRing:
