@@ -51,6 +51,13 @@ do
   cd ../
 done
 # 1.2. get module class document.
+for docs in elliptic
+do
+  for clses in ECGeneric ECoverF2 ECoverFp ECoverQ
+  do
+    wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
+  done
+done
 for docs in finitefield
 do
   for clses in FiniteField FinitePrimeField FiniteExtendedField FiniteFieldElement FinitePrimeFieldElement FiniteExtendedFieldElement
@@ -60,14 +67,14 @@ do
 done
 for docs in group
 do
-  for clses in Group GroupElement
+  for clses in AberianGenerate GenerateGroup Group GroupElement
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
 done
 for docs in imaginary
 do
-  for clses in Complex ComplexField AbsoluteError RelativeError ExponentialPowerSeries
+  for clses in AbsoluteError Complex ComplexField ExponentialPowerSeries RelativeError
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
@@ -79,9 +86,16 @@ do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
 done
+for docs in matrix
+do
+  for clses in Matrix SquareMatrix
+  do
+    wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
+  done
+done
 for docs in permute
 do
-  for clses in Permute ExPermute
+  for clses in ExPermute Permute
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
@@ -150,29 +164,29 @@ cd modules
 CSSNDAT="..\/$CSSNDAT"
 for htmlfile in *.html
 do
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)\" title=\"\1\""
-  CONVNDAT="href=\"\2html\" title=\"\1\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2html\" title=\"\1\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile>$htmlfile.sed
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\1\""
-  CONVNDAT="href=\"\2html#\3\" title=\"\1\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2html#\3\" title=\"\1\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile.sed>$htmlfile.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\3\""
-  CONVNDAT="href=\"\2html#\3\" title=\"\3\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\3\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2html#\3\" title=\"\3\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile.se>$htmlfile.sed
 
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)\" title=\"\1\/\3\""
-  CONVNDAT="href=\"\2_\3.html\" title=\"\1\/\3\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2_\3.html\" title=\"\1\/\3\">"
   cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\4\""
-  CONVNDAT="href=\"\2_\3.html#\4\" title=\"\4\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\4\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2_\3.html#\4\" title=\"\4\">"
   cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\1\/\3\""
-  CONVNDAT="href=\"\2_\3.html#\4\" title=\"\1\/\3\""
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
+  CONVNDAT="href=\"\2_\3.html#\4\" title=\"\1\/\3\">"
   cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
   CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
   CONVNDAT="href=\"..\/index.html\" "
-  cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/">$htmlfile.sed
-  cat $htmlfile.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">$htmlfile
+  cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
+  cat $htmlfile.sed|sed -e "s/$CSSBDAT/$CSSNDAT/"g>$htmlfile
 done
 
 # 2.2.3. edit submodule cores .
