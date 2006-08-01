@@ -212,6 +212,11 @@ class IntegerSquareTest(unittest.TestCase):
         s = IntegerSquareMatrix(3,3,[1,3,2,4,6,5,6,8,9])
         self.assertEqual(i, s.extsmithNormalForm())
 
+    def testDeterminant(self):
+        m = IntegerSquareMatrix(3, 3, [3,1,2,5,4,6,7,9,8])
+        self.assert_(isinstance(m.determinant(), (int, long)))
+        self.assertEqual(-30, m.determinant())
+
 
 class MatrixRingTest (unittest.TestCase):
     def setUp(self):

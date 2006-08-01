@@ -1044,6 +1044,15 @@ class IntegerSquareMatrix(SquareMatrix, IntegerMatrix, ring.RingElement):
                 M[j, j] = -M[j, j]
         return (U, V, M)
 
+    def determinant(self):
+        """
+        Return the determinant of the matrix.
+        
+        This overrides SquareMatrix.determinant so as to give the
+        result in integer.
+        """
+        return int(SquareMatrix.determinant(self))
+
     def getRing(self):
         return MatrixRing.getInstance(self.row, rational.theIntegerRing)
 
