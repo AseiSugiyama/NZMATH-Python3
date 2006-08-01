@@ -16,101 +16,55 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a></p>
-<h2 id="content_1_0">elliptic  <a class="anchor_super" id="dbd67520" href="elliptic.html#dbd67520" title="dbd67520">&dagger;</a></h2>
+<div id="body"><p><a href="../index.html" title="UserManual (157d)">UserManual</a></p>
+<h2 id="content_1_0">elliptic  <a class="anchor_super" id="index" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#index" title="index">&dagger;</a></h2>
+<p>elliptic module provides elliptic curves.</p>
 <div class="contents">
 <a id="contents_1"></a>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#dbd67520"> elliptic </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#a3d510e9"> Class EC </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#c61665ab"> Initialize </a></li>
-<li><a href="#uddc85fc"> Notation </a></li>
-<li><a href="#t8289a2f"> Methods </a></li></ul></li></ul></li></ul>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  elliptic </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cec"> EC(Weierstrass list form, characteristic, index) </a></li></ul></li>
+<li><a href="#class">  Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ecgen"> ECGeneric </a></li>
+<li><a href="#ecoverq"> ECoverQ </a></li>
+<li><a href="#ecoverfp"> ECoverFp </a></li>
+<li><a href="#ecoverf2"> ECoverF2 </a></li></ul></li></ul></li></ul>
 </div>
 
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Class EC  <a class="anchor_super" id="a3d510e9" href="elliptic.html#a3d510e9" title="a3d510e9">&dagger;</a></h3>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="function" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#function" title="function">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">Initialize  <a class="anchor_super" id="c61665ab" href="elliptic.html#c61665ab" title="c61665ab">&dagger;</a></h4>
-<p>How to asssign curves in <strong>Weierstrass form</strong> given by the equation:<br />
-E:</p>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">EC(<em>Weierstrass list form</em>, <em>characteristic</em>, <em>index</em>)  <a class="anchor_super" id="cec" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#cec" title="cec">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a> or <a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a> or <a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>. and their are subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>, see also as use.<br />
+If <em>characteristic</em> is set, create elliptic curve over finite field(<a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a> or <a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>). <del>if set <em>index</em>&gt;2, you should take elliptic curve over finite extended field(i.e. E/F_q, q=<em>characteristic</em>^<em>index</em>).</del> Elliptic curve over finite extended field is under construction(not implemented).<br />
+Otherwise (if <em>characteristic</em> not given or 0), create elliptic curve over rational field(<a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>) .<br /></p>
+<p>How to asssign curves in <strong><em>Weierstrass list form</em></strong> given by the equation:<br /></p>
 <blockquote><p class="quotation">
-y^2 + a1xy + a3y = x^3 + a2x^2 + a4x + a6<br /></p></blockquote>
+E: y^2 + a1 xy + a3 y = x^3 + a2 x^2 + a4 x + a6<br /></p></blockquote>
 
-<pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],p) </pre>
+<pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],characteristic) </pre>
 <p>or for</p>
 <blockquote><p class="quotation">
-y^2= x^3 + a4x + a6<br /></p></blockquote>
+E: y^2= x^3 + A x + B<br /></p></blockquote>
 
-<pre>&gt;&gt;&gt; E=EC([a,b],p)</pre>
-<p>If the parameter p is not given (p=None) then E is defined over Q.<br /></p>
+<pre>&gt;&gt;&gt; E=EC([A,B],characteristic)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">Notation  <a class="anchor_super" id="uddc85fc" href="elliptic.html#uddc85fc" title="uddc85fc">&dagger;</a></h4>
-<p>Note the points on E are represented as two-component vectors [x,y], except the point at infinity which is represented by the one-component vector [0] .<br />
-i.e., infinity point ([0, 1, 0]), as follows:<br /></p>
-<pre>&gt;&gt;&gt; infpoint = [0]</pre>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Classes  <a class="anchor_super" id="class" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#class" title="class">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">Methods  <a class="anchor_super" id="t8289a2f" href="elliptic.html#t8289a2f" title="t8289a2f">&dagger;</a></h4>
-<p>The following are the implemented methods in these module.<br /></p>
-<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>E.ch</dt>
-<dd>returns the characteristic of the field Fp. For this case, it gives ch=p .<br /></dd>
-<dt>E.a1, E.a2, E.a3, E.a4, E.a6</dt>
-<dd>returns the coefficients a1, a2, a3, a4, a6, resp.<br /></dd>
-<dt>E.b2, E.b4, E.b6, E.b8</dt>
-<dd>returns the coefficents b2, b4, b6, b8 .<br /></dd>
-<dt>E.c4, E.c6</dt>
-<dd>returns the coefficients c4 and c6 .<br /></dd>
-<dt>E.disc</dt>
-<dd>returns the discriminant of the curve E .<br /></dd>
-<dt>E.j</dt>
-<dd>returns the j-invariant of the curve E .<br /></dd>
-<dt>E.simple()</dt>
-<dd>changes the data of E given in the short Weierstrass form by changing the coordinates if E.ch&gt;3 .<br /></dd>
-<dt>E.changeCurve(V)</dt>
-<dd>changes the data of E by changing the coordinates using the vector V=[u,r,s,t] with u!= 0. i.e., if x' and y' are the new coordinates, then
-y^2 + a1xy + a3y = x^3 +a2x^2 + a4x + a6</dd>
-<dt>E.changePoint(P,V)</dt>
-<dd>changes the coordinates of the point using the vector V=[u,r,s,t], i.e., if x' and y' are the new coordinates, then
-y^2 + a1xy + a3y = x^3 +a2x^2 + a4x + a6
-by an admissible change in variables. <br /></dd>
-<dt>E.point()</dt>
-<dd>returns a random point on E.<br /></dd>
-<dt>E.coordinateY(x)</dt>
-<dd>returns a 1 or 2-component vector containing the y-coordinates of the points of E having x as x-coordinate.<br /></dd>
-<dt>E.whetherOn(P)</dt>
-<dd>returns True if the point P is on E, False otherwise.<br /></dd>
-<dt>E.add(P,Q)</dt>
-<dd>returns the sum of points P and Q on E.<br /></dd>
-<dt>E.sub(P,Q)</dt>
-<dd>returns the difference of points P and Q on E.<br /></dd>
-<dt>E.mul(k,P)</dt>
-<dd>returns k times P.<br /></dd>
-<dt>E.divPoly(m)</dt>
-<dd>computes the mth divisor polynomial. If m is odd, this method returns the usual division polynomial. If m is even, it returns the usual division polynomial divided by
-2y + a1x + a3 . If the parameter m is not specified (m=None), then this returns the list of division polynomials for Schoof's algorithm.<br /></dd></dl>
-<p>The following methods have been implemented only for elliptic curves over prime fields Fp except for 2 and 3.<br /></p>
-<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>E.Schoof()</dt>
-<dd>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of E over Fp. This uses the Schoof's method.<br /></dd>
-<dt>E.Shanks_Mestre()</dt>
-<dd>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of E over Fp. This uses the Shanks-Mestre method.<br /></dd>
-<dt>E.naive()</dt>
-<dd>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of E over Fp. This uses the Legendre-symbol method.<br /></dd>
-<dt>E.order(flag=0)</dt>
-<dd>computes #E(Fp). If p&lt;1000, this uses the Legendre method. If 10^4&lt;p&lt;10^30, this uses the Shanks-Mestre method. Otherwise, it uses Schoof's method. If flag=r, this computes #E(Fp^r) .<br /></dd>
-<dt>E.Miller(P,m,Q)</dt>
-<dd>returns the f_D_P such that (f_D_P)=D_P with P,Q in E[m] by using Miller's algorithm.<br /></dd>
-<dt>E.WeilPairing(m,P,Q)</dt>
-<dd>returns e_m(P,Q) by using E.Miller(P,m,Q).<br /></dd>
-<dt>E.BSGS(n,P,Q)</dt>
-<dd>returns m such that Q=mP. P,Q are in the subgroup of order n.<br /></dd>
-<dt>E.structure()</dt>
-<dd>returns the group structure (n1, n2) of the E(Fp) by using Miller's algorithm.<br /></dd></dl>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4"><a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>  <a class="anchor_super" id="ecgen" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#ecgen" title="ecgen">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5"><a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>  <a class="anchor_super" id="ecoverq" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#ecoverq" title="ecoverq">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6"><a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a>  <a class="anchor_super" id="ecoverfp" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#ecoverfp" title="ecoverfp">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7"><a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>  <a class="anchor_super" id="ecoverf2" href="http://hanaya.math.metro-u.ac.jp/nzmath/?elliptic.py#ecoverf2" title="ecoverf2">&dagger;</a></h4>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2005-12-18 (Цќ) 18:20:13  (67d)</div>
+ Last-modified: 2006-06-06 (Ва) 15:31:34  (56d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

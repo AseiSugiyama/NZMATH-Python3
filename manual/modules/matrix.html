@@ -16,56 +16,93 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a></p>
-<h2 id="content_1_0">matrix  <a class="anchor_super" id="sbbc83ad" href="matrix.html#sbbc83ad" title="sbbc83ad">&dagger;</a></h2>
-<p>A=Matrix(m,n,[a11,a12,...a1n,a21,...,am1,...amn])</p>
-<p>For example:</p>
-<pre>&gt;&gt;&gt; A = Matrix(2,2, [1,2,5,10]) </pre>
-<p>yields</p>
-<pre>&gt;&gt;&gt; A
-1  2 
-5  10</pre>
-<p>It is also possible to use the following syntax:</p>
-<p>B=Matrix(n,k,[b11,..,b1k]+....+[bn1,...,bnk])</p>
-<p>For example:</p>
-<pre>&gt;&gt;&gt; B = Matrix(2,3, [0,1,3]+[0,2,2])</pre>
-<p>giving:</p>
-<pre>&gt;&gt;&gt; B
-0 1 3
-0 2 2</pre>
-<p>It is possible to do operations on the matrices. Addition (+), Subtraction (-), Multiplication (*), as well as LU Decomposition:</p>
-<pre>&gt;&gt;&gt; M.LUDecomposition()</pre>
-<p>In the example, we should get:</p>
-<pre>( 1 0
-3/1 1 ,
-1   2
-0/1 4/1 )</pre>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="lfddfc74" href="matrix.html#lfddfc74" title="lfddfc74">&dagger;</a></h3>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">unitMatrix(<em>size</em>)  <a class="anchor_super" id="x848de02" href="matrix.html#x848de02" title="x848de02">&dagger;</a></h4>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">sumOfSubspaces(<em>L</em>, <em>M</em>)  <a class="anchor_super" id="ka1e173c" href="matrix.html#ka1e173c" title="ka1e173c">&dagger;</a></h4>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">intersectionOfSubspaces(<em>M</em>, <em>M_</em>)  <a class="anchor_super" id="wcf686f8" href="matrix.html#wcf686f8" title="wcf686f8">&dagger;</a></h4>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_5">Classes  <a class="anchor_super" id="x1163eef" href="matrix.html#x1163eef" title="x1163eef">&dagger;</a></h3>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li>Matrix</li>
-<li>IntegerMatrix</li>
-<li>MatrixRing</li>
-<li>Subspace</li>
-<li>MatrixSizeError</li>
-<li>VectorsNotIndependent</li>
-<li>NoInverseImage</li>
-<li>NoInverse</li>
-<li>NoRing</li></ul>
+<div id="body"><p><a href="../index.html" title="UserManual (157d)">UserManual</a></p>
+<h2 id="content_1_0">matrix  <a class="anchor_super" id="index" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#index" title="index">&dagger;</a></h2>
+<p>matrix module provides matrices.</p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  matrix </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cmatrix"> createMatrix(row, column, compo) </a></li>
+<li><a href="#unit"> unitMatrix(size) </a></li>
+<li><a href="#sumofssp"> sumOfSubspaces(L, M) </a></li>
+<li><a href="#intofssp"> intersectionOfSubspaces(L, M) </a></li></ul></li>
+<li><a href="#class">  Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#matrix"> Matrix </a></li>
+<li><a href="#sqmatrix"> SquareMatrix </a></li>
+<li><a href="#imatrix"> IntegerMatrix </a></li>
+<li><a href="#matring"> MatrixRing </a></li>
+<li><a href="#subspace"> Subspace </a></li></ul></li>
+<li><a href="#except">  Exception Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#sizeerr"> MatrixSizeError </a></li>
+<li><a href="#vecdep"> VectorsNotIndependent </a></li>
+<li><a href="#noinvimg"> NoInverseImage </a></li>
+<li><a href="#noinvs"> NoInverse </a></li>
+<li><a href="#noring"> NoRing </a></li></ul></li></ul></li></ul>
 </div>
 
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="function" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#function" title="function">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">createMatrix(<em>row</em>, <em>column</em>, <em>compo<a id="notetext_1" href="#notefoot_1" class="note_super" title="Of cource, compo means component.">*1</a></em>)  <a class="anchor_super" id="cmatrix" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#cmatrix" title="cmatrix">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="matrix_Matrix.html" title="matrix.py/Matrix">Matrix</a> or <a href="matrix_SquareMatrix.html" title="matrix.py/SquareMatrix">SquareMatrix</a>.<br />
+parameters are checked as follows:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>First, if <em>column</em>  are <strong>list form</strong>, return SquareMatrix of size <em>row</em>, coefficients are <em>column</em> <strong>list form</strong>.</li>
+<li>Or if <em>row</em> ==  <em>column</em>, return SquareMatrix of size <em>row</em>, coefficients are <em>compo</em> <strong>list form</strong>.</li>
+<li>If only <em>row</em> given, return SquareMatrix of size <em>row</em>, coefficients are all zero.</li>
+<li>Otherwise, return Matrix of size <em>row</em> x <em>column</em>, coefficients are <em>compo</em> <strong>list form</strong>.</li></ol>
+<p><a class="anchor" id="listform"></a><strong>list form</strong> is:</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>list concatenated lists as row vectors, such as:
+<pre>createMatrix(3,3,[1,2,3]+[4,5,6]+[7,8,9])</pre>
+represent matrix form as follows:
+<pre>1 2 3
+4 5 6
+7 8 9</pre></li>
+<li>or you can pass straight list, i.e. [1, 2, 3, 4, 5, 6, 7, 8, 9] .</li>
+<li>if you abbreviate list, it will be deemed to all zero list.</li></ul>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">unitMatrix(<em>size</em>)  <a class="anchor_super" id="unit" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#unit" title="unit">&dagger;</a></h4>
+<p>return unit matrix of <em>size</em>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">sumOfSubspaces(<em>L</em>, <em>M</em>)  <a class="anchor_super" id="sumofssp" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#sumofssp" title="sumofssp">&dagger;</a></h4>
+<p>Given columns span a subspace <em>m</em> x <em>n</em> matrix <em>L</em> and <em>M</em>, return a matrix whose columns form a basis for sum of two subspaces.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">intersectionOfSubspaces(<em>L</em>, <em>M</em>)  <a class="anchor_super" id="intofssp" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#intofssp" title="intofssp">&dagger;</a></h4>
+<p>Given columns span a subspace <em>m</em> x <em>n</em> matrix <em>L</em> and <em>M</em>, return a matrix whose columns form a basis for intersection of two subspaces.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_6">Classes  <a class="anchor_super" id="class" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#class" title="class">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7"><a href="matrix_Matrix.html" title="matrix.py/Matrix">Matrix</a>  <a class="anchor_super" id="matrix" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#matrix" title="matrix">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8"><a href="matrix_SquareMatrix.html" title="matrix.py/SquareMatrix">SquareMatrix</a>  <a class="anchor_super" id="sqmatrix" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#sqmatrix" title="sqmatrix">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">IntegerMatrix  <a class="anchor_super" id="imatrix" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#imatrix" title="imatrix">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">MatrixRing  <a class="anchor_super" id="matring" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#matring" title="matring">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">Subspace  <a class="anchor_super" id="subspace" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#subspace" title="subspace">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_12">Exception Classes  <a class="anchor_super" id="except" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#except" title="except">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_13">MatrixSizeError  <a class="anchor_super" id="sizeerr" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#sizeerr" title="sizeerr">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_14">VectorsNotIndependent  <a class="anchor_super" id="vecdep" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#vecdep" title="vecdep">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_15">NoInverseImage  <a class="anchor_super" id="noinvimg" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#noinvimg" title="noinvimg">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_16">NoInverse  <a class="anchor_super" id="noinvs" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#noinvs" title="noinvs">&dagger;</a></h4>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_17">NoRing  <a class="anchor_super" id="noring" href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py#noring" title="noring">&dagger;</a></h4>
+</div>
+
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">Of cource, <em>compo</em> means component.</span><br /></div>
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2005-12-18 (Цќ) 18:43:38  (67d)</div>
+ Last-modified: 2006-04-18 (Ва) 18:22:30  (104d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

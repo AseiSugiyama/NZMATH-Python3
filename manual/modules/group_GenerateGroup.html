@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>group.py/GenerateGroup - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup">group.py/GenerateGroup</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="group.html" title="group.py">group.py</a>
+<a href="group_Group.html" title="group.py/Group">Group</a></p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#f624283b"> GenerateGroup </a>
+<ul class="list3" style="padding-left:32px;margin-left:32px"><li><a href="#b055e6d9"> Initialize </a></li></ul>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#j43fdb0a"> Methods </a></li></ul></li></ul>
+</div>
+
+<h2 id="content_1_0">GenerateGroup  <a class="anchor_super" id="f624283b" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#f624283b" title="f624283b">&dagger;</a></h2>
+<p>This is a class for finite group with generator.<br class="spacer" />
+<em>Warning</em>:<br class="spacer" />
+This initialize is group 'including' the group elements, not group with generator now.<br class="spacer" />
+I can't recommend using this module <em>now</em>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_1">Initialize  <a class="anchor_super" id="b055e6d9" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#b055e6d9" title="b055e6d9">&dagger;</a></h4>
+<p>Initialize with generator list.</p>
+<pre>&gt;&gt;&gt;GenerateGroup([generator0, generator1,..,generatorN])</pre>
+<p>You can decide group(class).</p>
+<pre>&gt;&gt;&gt;GenerateGroup(([generator0, generator1,..,generatorN], group_instance))</pre>
+<p>You can decide main type.(See <a href="group_Group.html#Initialize" title="group.py/Group">Group(initialize)</a>)</p>
+<pre>&gt;&gt;&gt;GenerateGroup([generator0, generator1,..,generatorN], 1)</pre>
+<blockquote><p class="quotation">
+Example</p>
+<pre>&gt;&gt;&gt;Gg=GenerateGroup([integerResidueClass.IntegerResidueClass(2, 20), integerResidueClass.IntegerResidueClass(6, 20)])</pre>
+<p class="quotation">(See <a href="integerResidueClass.html" title="integerResidueClass.py">integerResidueClass.py</a>)</p></blockquote>
+
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="j43fdb0a" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#j43fdb0a" title="j43fdb0a">&dagger;</a></h3>
+<p>It is inherited <a href="group_Group.html" title="group.py/Group">Group</a> module.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2006-04-25 (火) 15:59:14  (97d)</div>
+
+<div id="footer">
+ Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

@@ -16,61 +16,63 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py" title="group.py (14d)">group.py</a></p>
+<div id="body"><p><a href="group.html" title="group.py">group.py</a></p>
 <div class="contents">
 <a id="contents_1"></a>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#dcd99982"> Group </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#c478ed02"> Methods </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ndec9e7b"> setmain(int) </a></li>
-<li><a href="#o1f54f91"> createElement(value) </a></li>
-<li><a href="#db67a226"> identity() </a></li>
-<li><a href="#cf0ef1d6"> grouporder() </a></li></ul></li></ul></li></ul>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#s32e2048"> Group </a>
+<ul class="list3" style="padding-left:32px;margin-left:32px"><li><a href="#wce54eb2"> Initialize </a></li></ul>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#w3d37864"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ab14fc58"> setmain(int) </a></li>
+<li><a href="#g498d780"> createElement(value) </a></li>
+<li><a href="#qcf32c6a"> identity() </a></li>
+<li><a href="#r23e0af5"> grouporder() </a></li></ul></li></ul></li></ul>
 </div>
 
-<h2 id="content_1_0">Group  <a class="anchor_super" id="dcd99982" href="group_Group.html#dcd99982" title="dcd99982">&dagger;</a></h2>
+<h2 id="content_1_0">Group  <a class="anchor_super" id="s32e2048" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#s32e2048" title="s32e2048">&dagger;</a></h2>
 <p>This is a class for finite group.
 <a class="anchor" id="Initialize"></a></p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_1">Initialize  <a class="anchor_super" id="wce54eb2" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#wce54eb2" title="wce54eb2">&dagger;</a></h4>
+<p>Initialize with group instance.</p>
+<pre>&gt;&gt;&gt;Group(group_instance)</pre>
+<p>You may decide operation type(addtive 0, multiplicative 1).<br class="spacer" />
+If you don't decide operation type, it regarted by additive group.</p>
+<pre>&gt;&gt;&gt;Group(group_instance, int)</pre>
 <blockquote><p class="quotation">
-<strong>Initialize</strong><br class="spacer" />
-Initialize with <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroupElement" title="group.py/GroupElement (14d)">GroupElment</a> or other group instance.</p>
-<pre>&gt;&gt;&gt;gr=Group(group_instance)</pre></blockquote>
+Example</p>
+<pre>&gt;&gt;&gt;G=Group(finitefield.FinitePrimeField(37), 1)</pre>
+<p class="quotation">(See <a href="finitefield.html" title="finitefield.py">finitefield.py</a>)</p></blockquote>
 
-<div class="spacer">&nbsp;</div>
-<p>Ring and Field is regarted by additive group at initialize step.</p>
-<div class="spacer">&nbsp;</div>
-<p>Example</p>
-<pre>&gt;&gt;&gt;a=Group(FinitePrimeField(37))</pre>
-<p>(see <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?finitefield.py" title="finitefield.py (67d)">finitefield.py</a>)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Methods  <a class="anchor_super" id="c478ed02" href="group_Group.html#c478ed02" title="c478ed02">&dagger;</a></h3>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="w3d37864" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#w3d37864" title="w3d37864">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">setmain(int)  <a class="anchor_super" id="ndec9e7b" href="group_Group.html#ndec9e7b" title="ndec9e7b">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">setmain(int)  <a class="anchor_super" id="ab14fc58" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#ab14fc58" title="ab14fc58">&dagger;</a></h4>
 <p>Change group type for additive(0) or multiplicative(1).</p>
-<pre>&gt;&gt;&gt;a.setmain(1)</pre>
+<pre>&gt;&gt;&gt;G.setmain(1)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">createElement(value)  <a class="anchor_super" id="o1f54f91" href="group_Group.html#o1f54f91" title="o1f54f91">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">createElement(value)  <a class="anchor_super" id="g498d780" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#g498d780" title="g498d780">&dagger;</a></h4>
 <p>Create group element with value.
 Return GroupElement instance.</p>
-<pre>&gt;&gt;&gt;a.createElement(20)
-FinitePrimeField,FinitePrimeFieldElement(20,37)</pre>
+<pre>&gt;&gt;&gt;G.createElement(20)
+FinitePrimeField,FinitePrimeFieldElement(20, 37)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">identity()  <a class="anchor_super" id="db67a226" href="group_Group.html#db67a226" title="db67a226">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">identity()  <a class="anchor_super" id="qcf32c6a" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#qcf32c6a" title="qcf32c6a">&dagger;</a></h4>
 <p>Return identity element(unit).<br class="spacer" />
 Return addtive 0 or multiplicative 1.</p>
-<pre>&gt;&gt;&gt;a.identity()
-FinitePrimeField,FinitePrimeFieldElement(0,37)</pre>
+<pre>&gt;&gt;&gt;G.identity()
+FinitePrimeField,FinitePrimeFieldElement(1, 37)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">grouporder()  <a class="anchor_super" id="cf0ef1d6" href="group_Group.html#cf0ef1d6" title="cf0ef1d6">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">grouporder()  <a class="anchor_super" id="r23e0af5" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGroup#r23e0af5" title="r23e0af5">&dagger;</a></h4>
 <p>Return group order(Cardinality).</p>
-<pre>&gt;&gt;&gt;a.grouporder()
-37</pre>
+<pre>&gt;&gt;&gt;G.grouporder()
+36</pre>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2006-02-10 (¶â) 15:14:52  (14d)</div>
+ Last-modified: 2006-04-25 (²Ð) 15:50:33  (97d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>

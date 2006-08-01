@@ -16,59 +16,40 @@
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual (52m)">UserManual</a><br /></p>
-<h2 id="content_1_0">lattice  <a class="anchor_super" id="u964d33d" href="lattice.html#u964d33d" title="u964d33d">&dagger;</a></h2>
-<p>Module lattice provides class lattice and functions.<br /></p>
+<div id="body"><p><a href="../index.html" title="UserManual (157d)">UserManual</a><br /></p>
+<h2 id="content_1_0">lattice  <a class="anchor_super" id="u964d33d" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#u964d33d" title="u964d33d">&dagger;</a></h2>
+<p>lattice module provides lattice.<br /></p>
 <div class="contents">
 <a id="contents_1"></a>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#u964d33d"> lattice </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#o698a276"> Classes </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#rec73389">  class Lattice </a></li>
-<li><a href="#ab3a093f">  class LatticeElement </a></li></ul></li>
-<li><a href="#pade704c"> DEPENDENCY </a></li>
-<li><a href="#x51de4fd"> BUGS(IMPLEMENT PROBLEMS, MAYBE) </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#tdb33280"> Implementation of Lattice </a></li>
-<li><a href="#aef62680"> Implementation of LLL </a></li></ul></li></ul></li></ul>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#u964d33d"> lattice </a></li>
+<li><a href="#jd7a7c72"> class Lattice </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#n6d369d4"> Constructor </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#s21a6e82"> Lattice(basis, quadraticForm) </a></li></ul></li>
+<li><a href="#f6cd31d8"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ncfbf6fe"> LLL() </a></li></ul></li></ul></li></ul>
 </div>
 
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Classes  <a class="anchor_super" id="o698a276" href="lattice.html#o698a276" title="o698a276">&dagger;</a></h3>
-<p>Module lattice provides classes as follows.<br /></p>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h2 id="content_1_1">class Lattice  <a class="anchor_super" id="jd7a7c72" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#jd7a7c72" title="jd7a7c72">&dagger;</a></h2>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">class Lattice  <a class="anchor_super" id="rec73389" href="lattice.html#rec73389" title="rec73389">&dagger;</a></h4>
-<p>Class Lattice is elemental class of lattice.<br /></p>
-<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Initialize</dt>
-<dd><pre>&gt;&gt;&gt; aLattice=Lattice(basis, quadraticForm)</pre></dd>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Constructor  <a class="anchor_super" id="n6d369d4" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#n6d369d4" title="n6d369d4">&dagger;</a></h3>
 
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">Lattice(basis, quadraticForm)  <a class="anchor_super" id="s21a6e82" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#s21a6e82" title="s21a6e82">&dagger;</a></h4>
+<p>basis and quadraticForm must be <a href="matrix.html#cmatrix" title="matrix.py">SquareMatrix</a>.</p>
 
-<dt>Method</dt>
-<dd>class Lattice defines methods as follows.<br />
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a class="anchor" id="lattice_f_LLL"></a><strong>aLattice.LLL()</strong><br />
-LLL transforms alattice.basis into LLL-reduced basis and returns its transformation matrix.<br />
-<dl class="list3" style="padding-left:16px;margin-left:16px"><dt>NOTE</dt>
-<dd>this method do self-modifying <em>alattice.basis</em>.<br /></dd></dl></li></ul></dd></dl>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_4">Methods  <a class="anchor_super" id="f6cd31d8" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#f6cd31d8" title="f6cd31d8">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">class LatticeElement  <a class="anchor_super" id="ab3a093f" href="lattice.html#ab3a093f" title="ab3a093f">&dagger;</a></h4>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_4">DEPENDENCY  <a class="anchor_super" id="pade704c" href="lattice.html#pade704c" title="pade704c">&dagger;</a></h3>
-<p>Module lattice are dependent on NZMATH modules.<br /></p>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?matrix.py" title="matrix.py (67d)">nzmath.matrix</a>.<br /></li>
-<li><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?vector.py" title="vector.py (67d)">nzmath.vector</a>.<br /></li></ul>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_5">BUGS(IMPLEMENT PROBLEMS, MAYBE)  <a class="anchor_super" id="x51de4fd" href="lattice.html#x51de4fd" title="x51de4fd">&dagger;</a></h3>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">Implementation of Lattice  <a class="anchor_super" id="tdb33280" href="lattice.html#tdb33280" title="tdb33280">&dagger;</a></h4>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li>Documents are under construction.</li></ul>
-
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">Implementation of LLL  <a class="anchor_super" id="aef62680" href="lattice.html#aef62680" title="aef62680">&dagger;</a></h4>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li>Integral LLL is not implemented.</li></ul>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">LLL()  <a class="anchor_super" id="ncfbf6fe" href="http://hanaya.math.metro-u.ac.jp/nzmath/?lattice.py#ncfbf6fe" title="ncfbf6fe">&dagger;</a></h4>
+<p>Transforms basis into LLL-reduced basis, and returns its transformation matrix.<br /></p>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>NOTE</dt>
+<dd>this method do self-modifying <em>alattice.basis</em>.<br /></dd></dl>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2006-01-10 (Ва) 15:07:22  (45d)</div>
+ Last-modified: 2006-05-02 (Ва) 14:38:34  (91d)</div>
 
 <div id="footer">
  Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
