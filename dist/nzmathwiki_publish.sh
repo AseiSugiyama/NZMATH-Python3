@@ -34,6 +34,7 @@ echo "start to document source download from nzmath-doc wiki..."
 cd $BASEDIR
 wget -q $WIKIBASE\?UserManual -O index.html
 wget -q $WIKIBASE\?Install -O install.html
+wget -q $WIKIBASE\?Tutorial -O tutorial.html
 # 1.1. get module core document.
 cd modules
 for docs in arith1 bigrandom combinatorial elliptic equation finitefield gcd group imaginary integerResidueClass lattice matrix multiplicative permute polynomial prime quad rational rationalFunction real ring vector zassenhaus
@@ -142,23 +143,31 @@ cd ../
 CSSBDAT="skin\/default\.ja\.css"
 CSSNDAT="default.css"
 # 2.1. edit index.html .
+cat index.html|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.sed
 CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\.\)py\" "
 CONVNDAT="href=\"modules\/\1html\" "
 
-cat index.html|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.sed
+cat index.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.se
 CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Install\" "
 CONVNDAT="href=\"install.html\" "
-cat index.html.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.se
-cat index.html.se|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.sed
-cat index.html.sed|sed -e "s/%2F/\//">index.html
+cat index.html.se|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.sed
+CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Tutorial\" "
+CONVNDAT="href=\"tutorial.html\" "
+cat index.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.se
+cat index.html.se|sed -e "s/%2F/\//">index.html
 
 # 2.2. edit all html link.
-# 2.2.1 edit install.html .
-CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
-CONVNDAT="href=\"index.html\" "
-cat install.html|sed -e "s/$CONVBDAT/$CONVNDAT/">install.html.sed
-cat install.html.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">install.html
-
+# 2.2.1 edit core htmls .
+for docs in install tutorial
+do
+  cat $docs.html|sed -e "s/$CSSBDAT/$CSSNDAT/">$docs.html.sed
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
+  CONVNDAT="href=\"index.html\" "
+  cat $docs.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">$docs.html.se
+  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Install\" "
+  CONVNDAT="href=\"install.html\" "
+  cat $docs.html.se|sed -e "s/$CONVBDAT/$CONVNDAT/">$docs.html
+done
 # 2.2.2. edit module cores .
 cd modules
 CSSNDAT="..\/$CSSNDAT"
