@@ -7,8 +7,8 @@ from nzmath.vector import *
 class Lattice:
 
     def __init__(self, basis, quadraticForm):
-        self.basis = basis  # in form of Matrix
-        self.quadraticForm = quadraticForm  # in form of Matrix
+        self.basis = basis.copy()  # in form of Matrix
+        self.quadraticForm = quadraticForm.copy()  # in form of Matrix
 
     def createElement(self, compo):
         return LatticeElement(self, compo)
