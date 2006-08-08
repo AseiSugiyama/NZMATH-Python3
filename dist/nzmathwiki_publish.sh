@@ -90,7 +90,7 @@ do
 done
 for docs in matrix
 do
-  for clses in Matrix SquareMatrix
+  for clses in Matrix SquareMatrix IntegerMatrix IntegerSquareMatrix
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
@@ -111,7 +111,7 @@ do
 done
 for docs in quad
 do
-  for clses in ReducedQuadraticForm
+  for clses in ReducedQuadraticForm NextElement
   do
     wget -q $WIKIBASE\?$docs.py%2F$clses -O $docs\_$clses.html
   done
