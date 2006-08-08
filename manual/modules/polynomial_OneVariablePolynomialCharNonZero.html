@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>polynomial.py/OneVariablePolynomialCharNonZero - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero">polynomial.py/OneVariablePolynomialCharNonZero</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p>nzmath.<a href="polynomial.html" title="polynomial.py">polynomial</a> | (<a href="http://nzmath.sourceforge.net/doc/?OneVariablePolynomialCharNonZero%20%28ja%29" title="OneVariablePolynomialCharNonZero (ja) (314d)">日本語</a>)</p>
+<h2 id="content_1_0">OneVariablePolynomialCharNonZero  <a class="anchor_super" id="q1d84870" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#q1d84870" title="q1d84870">&dagger;</a></h2>
+<p>OneVariablePolynomialCharNonZero is a class representing a polynomial with positive characteristic coefficient ring.
+It is a subclass of <a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Constructor  <a class="anchor_super" id="v77bce55" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#v77bce55" title="v77bce55">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">OneVariablePolynomialCharNonZero(<em>coefficient</em>, <em>variable</em>, <em>coeffring</em>)  <a class="anchor_super" id="h5772a75" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#h5772a75" title="h5772a75">&dagger;</a></h4>
+<p>Specify <em>coefficient</em> by <a href="polynomial_OneVariablePolynomialCoefficients.html" title="polynomial.py/OneVariablePolynomialCoefficients">OneVariablePolynomialCoefficients</a> or a list(see <a href="polynomial.html#u6fdaf78" title="polynomial.py">OneVariableDensePolynomial</a>).
+A dictionary (see <a href="polynomial.html#n249124e" title="polynomial.py">OneVariableSparsePolynomial</a>) cannot be used.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Methods  <a class="anchor_super" id="c937e797" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#c937e797" title="c937e797">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">distinctDegreeFactorization()  <a class="anchor_super" id="vaa663ce" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#vaa663ce" title="vaa663ce">&dagger;</a></h4>
+<p>Factor into each degree factors.
+The result is a dictionary with degrees as keys and their (product of) factors as value.</p>
+<p>When the method is called, the polynomial must be squarefree.
+The coefficient ring must be a finite field.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">factor()  <a class="anchor_super" id="c5d06b9b" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#c5d06b9b" title="c5d06b9b">&dagger;</a></h4>
+<p>Factor the polynomial.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">isIrreducible()  <a class="anchor_super" id="d6654e89" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#d6654e89" title="d6654e89">&dagger;</a></h4>
+<p>Return whether the polynomial is irreducible or not.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">pthroot()  <a class="anchor_super" id="qbca68b7" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#qbca68b7" title="qbca68b7">&dagger;</a></h4>
+<p>If the characteristic is p and the polynomial is powered to p, then return the p-th root polynomial.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">splitSameDegrees(<em>degree</em>)  <a class="anchor_super" id="z278630f" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#z278630f" title="z278630f">&dagger;</a></h4>
+<p>Factor a distinct degree factored polynomial into each polynomial having the degree <em>degree</em>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">squareFreeDecomposition()  <a class="anchor_super" id="p9535c0e" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#p9535c0e" title="p9535c0e">&dagger;</a></h4>
+<p>Decompose into squarefree factors.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_10">Operators  <a class="anchor_super" id="r09dde12" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#r09dde12" title="r09dde12">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">f ** i</td><td class="style_td">f to the i-th power</td></tr></tbody></table></div>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">Inherited Operators  <a class="anchor_super" id="p0844c33" href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero#p0844c33" title="p0844c33">&dagger;</a></h4>
+<p>The operators below are inherited from <a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a>:</p>
+<p>+(binary) , -(binary), *, /, divmod, //, %, -(unary), +(unary), ==, !=</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2005-10-26 (水) 16:39:27  (286d)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

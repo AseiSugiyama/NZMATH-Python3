@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>quad.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?quad.py">quad.py</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual (164d)">UserManual</a></p>
+<h2 id="content_1_0">quad  <a class="anchor_super" id="r5241eee" href="http://nzmath.sourceforge.net/doc/?quad.py#r5241eee" title="r5241eee">&dagger;</a></h2>
+<p>The module `quad' is for computations of imaginary quadratic fields.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="l4821c7a" href="http://nzmath.sourceforge.net/doc/?quad.py#l4821c7a" title="l4821c7a">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">computeClassNumber(<em>disc</em> [,<em>limit_of_disc</em>])  <a class="anchor_super" id="f980f4e6" href="http://nzmath.sourceforge.net/doc/?quad.py#f980f4e6" title="f980f4e6">&dagger;</a></h4>
+<p>Compute the class number of quadratic forms of discriminant 'disc' and return (a, b).
+'a' is the class number and 'b' is the list of representative reduced forms of classes; the forms are instances of the class <a href="quad_ReducedQuadraticForm.html" title="quad.py/ReducedQuadraticForm">ReducedQuadraticForm</a>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">computePDF(<em>f_1</em> ,<em>f_2</em>)  <a class="anchor_super" id="f33132bc" href="http://nzmath.sourceforge.net/doc/?quad.py#f33132bc" title="f33132bc">&dagger;</a></h4>
+<p>computePDF(<em>f_1</em> ,<em>f_2</em>) returns the composite of f_1 and f_2.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">reducePDF(<em>a</em>)  <a class="anchor_super" id="g6fdd27d" href="http://nzmath.sourceforge.net/doc/?quad.py#g6fdd27d" title="g6fdd27d">&dagger;</a></h4>
+<p>Return the unique reduced form equivalent to a,
+'a' is a positive definite quadratic form.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">bsgs(<em>group</em>, <em>lowerbound</em>, <em>upperbound</em>)  <a class="anchor_super" id="bsgs" href="http://nzmath.sourceforge.net/doc/?quad.py#bsgs" title="bsgs">&dagger;</a></h4>
+<p>bsgs(<em>group</em>, <em>lowerbound</em>, <em>upperbound</em>) returns the order of the group, using Shanks's Baby-Step Giant-Step Method.
+'group' is an object that returns an element of the group, when it is called.
+'lowerboud' is a lowerbound of the order of the group.
+'upperbound' is an upperbound of the order of the group.
+' lowerbound' and 'upperbound' have to keep a condition:</p>
+<blockquote><p class="quotation">
+upperbound / 2 &lt; lowerbound &lt;= the order &lt;= upperbound</p></blockquote>
+
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">sqrPDF(<em>frm</em>)  <a class="anchor_super" id="ed890c9a" href="http://nzmath.sourceforge.net/doc/?quad.py#ed890c9a" title="ed890c9a">&dagger;</a></h4>
+<p>sqrPDF returns a positive definite quadratic form that is a squar power of frm.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_7">Classes  <a class="anchor_super" id="c36f2624" href="http://nzmath.sourceforge.net/doc/?quad.py#c36f2624" title="c36f2624">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="quad_ReducedQuadraticForm.html" title="quad.py/ReducedQuadraticForm">ReducedQuadraticForm</a></li>
+<li><a href="quad_NextElement.html" title="quad.py/NextElement">NextElement</a></li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2006-08-08 (火) 18:14:43  (53m)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

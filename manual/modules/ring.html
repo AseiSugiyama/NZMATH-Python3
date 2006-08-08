@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>ring.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?ring.py">ring.py</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual (164d)">UserManual</a> | <a href="http://nzmath.sourceforge.net/doc/?ring.py.ja" title="ring.py.ja (284d)">日本語</a></p>
+<h2 id="content_1_0">ring  <a class="anchor_super" id="e2da54b4" href="http://nzmath.sourceforge.net/doc/?ring.py#e2da54b4" title="e2da54b4">&dagger;</a></h2>
+<p>The ring module is a module for rings.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Base Classes  <a class="anchor_super" id="c727b125" href="http://nzmath.sourceforge.net/doc/?ring.py#c727b125" title="c727b125">&dagger;</a></h3>
+<p>There are the following base classes defined.</p>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Ring</dt>
+<dd>The base class of all ring classes.</dd>
+<dt>CommutativeRing</dt>
+<dd>The base class of all commutative ring classes.</dd>
+<dt>Field</dt>
+<dd>The base class of all field classes.</dd>
+<dt>QuotientField</dt>
+<dd>The base classes of all field of quotients classes.</dd></dl>
+<p>These classes are used to make a derived classes, and thus have no direct instances.
+There are also classes for elements of them:</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>RingElement</li>
+<li>CommutativeRingElement</li>
+<li>FieldElement</li>
+<li>QuotientFieldElement</li></ul>
+<p>They also have no direct instances.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Properties of commutative rings  <a class="anchor_super" id="b725a7c5" href="http://nzmath.sourceforge.net/doc/?ring.py#b725a7c5" title="b725a7c5">&dagger;</a></h3>
+<p>There are some properties of commutative rings, algorithms should be chosen accordingly.
+To express such properties, there is a class CommutativeRingProperties.
+CommutativeRingProperties class treats</p>
+<p><em>Euclidean</em>（Euclidean domain）,<br class="spacer" /> <em>PID</em>（Principal Ideal Domain）,<br class="spacer" /> <em>UFD</em>（Unique Factorization Domain）,<br class="spacer" /> <em>Noetherian</em>（Noetherian ring (domain)）,<br class="spacer" /> <em>field</em>（Field）</p>
+<p>If one specify a stronger property, then it implies to weaker properties:</p>
+<pre>&gt;&gt;&gt; prop = CommutativeRingProperties()
+&gt;&gt;&gt; prop.setIspid(True)
+&gt;&gt;&gt; prop.ispid()
+True
+&gt;&gt;&gt; prop.isufd()
+True</pre>
+<p>Methods like ispid return three kinds of values;True, False, None.
+The meanings of True and False are obvious, but None means unknown here.
+When it is used like:</p>
+<pre>if prop.ispid():
+  do_something()</pre>
+<p>None means same as False i.e. negative, and do_something is done if the result is clearly True.
+We don't recommend but it is possible to write a code for each of False and None.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Ideal class  <a class="anchor_super" id="b0bbfcc2" href="http://nzmath.sourceforge.net/doc/?ring.py#b0bbfcc2" title="b0bbfcc2">&dagger;</a></h3>
+<p>The class represents an ideal of a commutative ring is Ideal<a id="notetext_1" href="#notefoot_1" class="note_super" title="Is CommutativeRingIdeal a more appropriate name?">*1</a><a id="notetext_2" href="#notefoot_2" class="note_super" title="In the future, it should have a caching mechanism.">*2</a>.</p>
+<p>Currently, the ideal should be represented by its generator elements.
+There are, therefore, irrepresentable ideals for non-Noetherian commutative rings.
+Moreover, ideals defined other than their generators cannot be instanciated without explicit generators.</p>
+<p>The class is also used as a base class.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_4">Ring of residue classes  <a class="anchor_super" id="zbf05498" href="http://nzmath.sourceforge.net/doc/?ring.py#zbf05498" title="zbf05498">&dagger;</a></h3>
+<p>A class defines a ring of residue classes by a ring and an ideal is ResidueClassRing.
+Its elements are ResidueClass.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_5">Function  <a class="anchor_super" id="heec42fa" href="http://nzmath.sourceforge.net/doc/?ring.py#heec42fa" title="heec42fa">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">getRing(<em>obj</em>)  <a class="anchor_super" id="i8f2c8cf" href="http://nzmath.sourceforge.net/doc/?ring.py#i8f2c8cf" title="i8f2c8cf">&dagger;</a></h4>
+<p>Return a ring to which 'obj' belongs.<br />
+Mainly for python built-in objects such as int or float.<br />
+(new in 0.4.1)</p>
+</div>
+
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">Is CommutativeRingIdeal a more appropriate name?</span><br />
+<a id="notefoot_2" href="#notetext_2" class="note_super">*2</a>
+<span class="small">In the future, it should have a caching mechanism.</span><br /></div>
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2005-12-18 (日) 17:50:23  (233d)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

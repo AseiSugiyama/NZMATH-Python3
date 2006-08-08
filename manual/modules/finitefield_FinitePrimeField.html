@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>finitefield.py/FinitePrimeField - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField">finitefield.py/FinitePrimeField</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="finitefield.html" title="finitefield.py">finitefield.py</a></p>
+<h2 id="content_1_0">FinitePrimeField class  <a class="anchor_super" id="v3225bc0" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#v3225bc0" title="v3225bc0">&dagger;</a></h2>
+<p>Finite prime field is also known as F_p or GF(p).
+It has prime number cardinality.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Constructor  <a class="anchor_super" id="hb14fc58" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#hb14fc58" title="hb14fc58">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">FinitePrimeField(<em>characteristic</em>)  <a class="anchor_super" id="ge82dd17" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#ge82dd17" title="ge82dd17">&dagger;</a></h4>
+<p>Create a FinitePrimeField instance with the given <em>characteristic</em>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Methods  <a class="anchor_super" id="o95cc244" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#o95cc244" title="o95cc244">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="lb4f39d1" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#lb4f39d1" title="lb4f39d1">&dagger;</a></h4>
+<p>Create <a href="finitefield_FinitePrimeFieldElement.html" title="finitefield.py/FinitePrimeFieldElement">FinitePrimeFieldElement</a> with <em>seed</em>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">getCharacteristic()  <a class="anchor_super" id="j6e2296a" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#j6e2296a" title="j6e2296a">&dagger;</a></h4>
+<p>Return the characteristic of the field.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">issubring(<em>other</em>)  <a class="anchor_super" id="b5d2756d" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#b5d2756d" title="b5d2756d">&dagger;</a></h4>
+<p>Report whether another ring contains the field as a subring.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">issuperring(<em>other</em>)  <a class="anchor_super" id="ha2356cd" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#ha2356cd" title="ha2356cd">&dagger;</a></h4>
+<p>Report whether the field is a superring of another ring.
+Since the field is a prime field, it can be a superring of
+itself only.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">Methods inherited from ring.Field  <a class="anchor_super" id="z7356307" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#z7356307" title="z7356307">&dagger;</a></h4>
+<p>gcd(<em>a</em>, <em>b</em>), getQuotientField(), isfield()</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">Methods inherited from ring.CommutativeRing.  <a class="anchor_super" id="i71438e6" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#i71438e6" title="i71438e6">&dagger;</a></h4>
+<p>isdomain(), iseuclidean(), isnoetherian(), ispid(), isufd()</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_10">Operators  <a class="anchor_super" id="lb88efc6" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#lb88efc6" title="lb88efc6">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">in</td><td class="style_td">membership test</td></tr><tr><td class="style_td">==</td><td class="style_td">equality</td></tr><tr><td class="style_td">len</td><td class="style_td">Cardinality of the field</td></tr></tbody></table></div>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_11">Properties  <a class="anchor_super" id="n3095155" href="http://nzmath.sourceforge.net/doc/?finitefield.py%2FFinitePrimeField#n3095155" title="n3095155">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>one (read only) The multiplicative unit of the field.</li>
+<li>zero (read only) The additive unit of the field.</li></ul>
+<p>(These properties are new in 0.4.1)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2005-10-26 (水) 16:11:29  (286d)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

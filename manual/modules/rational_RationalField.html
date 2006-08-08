@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>rational.py/RationalField - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField">rational.py/RationalField</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual (164d)">nzmath</a>.<a href="rational.html" title="rational.py">rational</a></p>
+<h2 id="content_1_0">RationalField class  <a class="anchor_super" id="xc8dbb74" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#xc8dbb74" title="xc8dbb74">&dagger;</a></h2>
+<p>RationalField is a class of field of rationals.
+The class has the single instance '<a href="rational.html#m81efa03" title="rational.py">theRationalField</a>'.</p>
+<p>superclass: nzmath.ring.QuotientField</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">constructor  <a class="anchor_super" id="x750ab9e" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#x750ab9e" title="x750ab9e">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">RationalField()  <a class="anchor_super" id="u7284904" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#u7284904" title="u7284904">&dagger;</a></h4>
+<p>Create an instance of RationalField.
+You may not want to create an instance, since there is already <a href="rational.html#m81efa03" title="rational.py">theRationalField</a>.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">methods  <a class="anchor_super" id="tda91a9d" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#tda91a9d" title="tda91a9d">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">classNumber()  <a class="anchor_super" id="lfda73de" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#lfda73de" title="lfda73de">&dagger;</a></h4>
+<p>Return 1, since the class number of the rational field is one.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">createElement(<em>numerator</em>, [<em>denominator</em>])  <a class="anchor_super" id="y903bd92" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#y903bd92" title="y903bd92">&dagger;</a></h4>
+<p>Create a Rational object.
+If the number of arguments is one, it must be an integer or a rational.
+If the number of arguments is two, they must be integers.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">getQuotientField()  <a class="anchor_super" id="m44d4943" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#m44d4943" title="m44d4943">&dagger;</a></h4>
+<p>Return the rational field itself.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">issubring(<em>other</em>)  <a class="anchor_super" id="g646185b" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#g646185b" title="g646185b">&dagger;</a></h4>
+<p>Report whether another ring contains the rational field as
+subring.<br />
+If <em>other</em> is also the rational field, the output is True.  If
+<em>other</em> is the integer ring, the output is False.  In other
+cases it depends on the implementation of another ring's
+issuperring method.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">issuperring(<em>other</em>)  <a class="anchor_super" id="ud6cb31b" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#ud6cb31b" title="ud6cb31b">&dagger;</a></h4>
+<p>Report whether the rational number field contains another
+ring as subring.<br />
+If <em>other</em> is also the rational number field or the ring of
+integer, the output is True.  In other cases it depends on the
+implementation of another ring's issubring method.</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">Method inherited from nzmath.ring.QuotientField  <a class="anchor_super" id="x650d43d" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#x650d43d" title="x650d43d">&dagger;</a></h4>
+<p>gcd, isfield</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">Method inherited from nzmath.ring.CommutativeRing  <a class="anchor_super" id="sfd2e809" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#sfd2e809" title="sfd2e809">&dagger;</a></h4>
+<p>isdomain, iseuclidean, isnoetherian, ispid, isufd</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_11">Operators  <a class="anchor_super" id="s2e51f94" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#s2e51f94" title="s2e51f94">&dagger;</a></h3>
+<p>in, str</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_12">Properties  <a class="anchor_super" id="y76c7218" href="http://nzmath.sourceforge.net/doc/?rational.py%2FRationalField#y76c7218" title="y76c7218">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>one  (read only) The multiplicative unit, namely Rational(1, 1).</li>
+<li>zero  (read only) The additive unit, namely Rational(0, 1).</li></ul>
+<p>(These properties are new in 0.4.1)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2005-09-28 (水) 13:50:47  (314d)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>permute.py/ExPermute - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute">permute.py/ExPermute</a></h1>
+</div>
+
+<hr class="full_hr" />
+<div id="body"><p><a href="permute.html" title="permute.py">permute.py</a></p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#y7a62830"> ExPermute </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#ccb5a355"> Operation </a></li>
+<li><a href="#q50bce06"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#gd23fd0e"> inverse() </a></li>
+<li><a href="#p8b4ca50"> identity() </a></li>
+<li><a href="#od432bd8"> grouporder() </a></li>
+<li><a href="#k7480ea1"> order() </a></li>
+<li><a href="#v0a82fbe"> ToNormal() </a></li>
+<li><a href="#nd1413ef"> simplify() </a></li></ul></li></ul></li></ul>
+</div>
+
+<h2 id="content_1_0">ExPermute  <a class="anchor_super" id="y7a62830" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#y7a62830" title="y7a62830">&dagger;</a></h2>
+<p>This is a class for permutation group.<br class="spacer" />
+Create element with 'cyclic' way.<br class="spacer" /></p>
+<pre>(σ1,σ2,...,σk)</pre>
+<p>(This is one-to-one mapping,σ1-&gt;σ2,σ2-&gt;σ3,..,σ(k-1)-&gt;σk,σk-&gt;σ1)<br class="spacer" />
+See <a href="permute_Permute.html" title="permute.py/Permute">Permute</a>.</p>
+<blockquote><p class="quotation">
+<strong>Initialize</strong><br class="spacer" />
+Initialize with dimension and list of 'cyclic' tuple.</p>
+<pre>&gt;&gt;&gt;ep=ExPermute(dimension,[cyclic tuple,..])</pre></blockquote>
+
+<div class="spacer">&nbsp;</div>
+<p>Example</p>
+<pre>&gt;&gt;&gt;a=ExPermute(5,[(1,2,3),(4,5)])</pre>
+<p>(This means multiplication of permutation, [2,3,1,4,5]*[1,2,3,5,4].)</p>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Operation  <a class="anchor_super" id="ccb5a355" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#ccb5a355" title="ccb5a355">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td></tr><tr><td class="style_td">*</td><td class="style_td">Multiplication</td></tr><tr><td class="style_td">/</td><td class="style_td">Division</td></tr><tr><td class="style_td">**</td><td class="style_td">Powering</td></tr></tbody></table></div>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="q50bce06" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#q50bce06" title="q50bce06">&dagger;</a></h3>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">inverse()  <a class="anchor_super" id="gd23fd0e" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#gd23fd0e" title="gd23fd0e">&dagger;</a></h4>
+<p>Return inverse(-1 powering).</p>
+<pre>&gt;&gt;&gt;a.inverse()
+[(4,5),(3,2,1)](5)</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">identity()  <a class="anchor_super" id="p8b4ca50" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#p8b4ca50" title="p8b4ca50">&dagger;</a></h4>
+<p>Return identity element(unit) of permutation group.</p>
+<pre>&gt;&gt;&gt;a.identity()
+[](5)</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">grouporder()  <a class="anchor_super" id="od432bd8" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#od432bd8" title="od432bd8">&dagger;</a></h4>
+<p>Return group order(Cardinality) of permutation group.</p>
+<pre>&gt;&gt;&gt;a.grouporder()
+120</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">order()  <a class="anchor_super" id="k7480ea1" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#k7480ea1" title="k7480ea1">&dagger;</a></h4>
+<p>Return order.<br class="spacer" />
+<a href="group_GroupElement.html" title="group.py/GroupElement">GroupElement</a> method faster with large dimension.</p>
+<pre>&gt;&gt;&gt;a.order()
+6</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">ToNormal()  <a class="anchor_super" id="v0a82fbe" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#v0a82fbe" title="v0a82fbe">&dagger;</a></h4>
+<p>Return the <a href="permute_Permute.html" title="permute.py/Permute">Permute</a> element.</p>
+<pre>&gt;&gt;&gt;a.ToNormal()
+[2,3,1,5,4]</pre>
+
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">simplify()  <a class="anchor_super" id="nd1413ef" href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute#nd1413ef" title="nd1413ef">&dagger;</a></h4>
+<p>Return the more simple cyclic element.</p>
+<pre>&gt;&gt;&gt;a*a
+[(1,2,3),(4,5),(1,2,3),(4,5)](5)
+&gt;&gt;&gt;(a*a).simplify()
+[(1,3,2)](5)</pre>
+</div>
+
+
+
+<hr class="full_hr" />
+<div id="lastmodified">
+ Last-modified: 2006-02-15 (水) 13:32:05  (174d)</div>
+
+<div id="footer">
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+</div>
+</body>
+</html>
