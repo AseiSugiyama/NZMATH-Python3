@@ -1,0 +1,350 @@
+import nzmath.rational as rational
+import nzmath.combinatorial as combinatorial
+import nzmath.matrix as matrix
+
+class Permute:
+
+    """
+    This is a class for 'normal' type element of permutation group.
+    Example, [2,3,1,5,4]
+    This means [1 2 3 4 5]
+               [2 3 1 5 4]
+    (It is 1:1 onto mapping, 1->2, 2->3, 3->1, 4->5, 5->4)
+    """
+
+    def __init__(self, value):
+        self.data = value
+        a = self.data
+        if not isinstance(a, list):
+            raise TypeError("This isn't normal form")
+        b = range(len(a))
+        for x in a:
+            if not rational.isIntegerObject(x):
+                raise TypeError("This number should be integer list")
+            elif x <= 0 or x > len(a):
+                raise TypeError("This isn't onto")
+            elif b[x-1] == -1:
+                raise ValueError("This isn't one-to-one")
+            else:
+                b[x-1] = -1
+
+    def __getitem__(self, other):
+        if not rational.isIntegerObject(other):
+            raise TypeError("This number should be integer")
+        elif other <= 0 or other > len(self.data):
+            raise IndexError("This is out of range")
+        return self.data[other - 1]
+
+    def __mul__(self, other):
+        """
+        Multiplication is with composite mapping way.
+        Self is calculated after other
+        """
+        a = self.data
+        b = other.data
+        c = []
+        if len(a) != len(b):
+            raise TypeError("This can't multiply")
+        for i in range(len(a)):
+            c.append(a[b[i] - 1])
+        return Permute(c)
+
+    def __rmul__(self, other):
+        return other * self
+
+    def __div__(self, other):
+        return self * (other.inverse())
+
+    def __rdiv__(self, other):
+        return other * (self.inverse())
+
+    def __pow__(self, other):
+        b = Permute(self.data)
+        if not rational.isIntegerObject(other):
+            raise TypeError("This can't calculate")
+        if other > 0:
+            for i in range(other - 1):
+                b = self * b
+        else:
+            c = self.inverse()
+            for i in range(abs(other) + 1):
+                b = c * b
+        return b
+
+    def inverse(self):
+        a = self.data
+        b = range(len(a))
+        for i in range(len(a)):
+            b[a[i] - 1] = i+1
+        return Permute(b)
+
+    def identity(self):
+        return Permute(range(1, len(self.data) + 1))
+
+    def numbering(self):
+        """
+        Return number of permutation element.
+        It is symmetrical arranging.
+        This is inductive definition for dimension.
+        Example,
+        2-dimension [1,2], [2,1]
+        3-dimension [1,2,3], [2,1,3], [1,3,2], [2,3,1], [3,1,2], [3,2,1]
+        4-dimension [1,2,3,4], [2,1,3,4], [1,3,2,4], [2,3,1,4], [3,1,2,4],
+                    [3,2,1,4], ..., [4,3,2,1]
+        """
+        a = self.data
+        b = []
+        for i in range(len(a)):
+            b.append(-1)
+        for i in range(len(a)):
+            b[a[i] - 1] = 0
+            for j in range(a[i], len(b)):
+                if b[j] != -1:
+                    b[j] += 1
+        c = 0
+        b[0] = 1
+        for j in range(len(b) - 1, -1, -1):
+            c = (j+1) * c + b[j]
+        return c
+
+    def grouporder(self):
+        return combinatorial.factorial(len(self.data))
+
+    def order(self):
+        """
+        This method returns order for permutation element.
+        """
+        b=Permute(self.data)
+        i = 1
+        while b != b.identity():
+            b = self * b
+            i += 1
+        return i
+
+    def ToTranspose(self):
+        """
+        This method returns
+         2-dimensional cyclic type element of permutation group.
+        It is recursive program.
+        """
+        a = list(self.data)
+        l = []
+        if len(a) == 1:
+            return ExPermute(1, [])
+        else:
+            if a[len(a) - 1] != len(a):
+                l.append((a[len(a) - 1], len(a)))
+                a[a.index(len(a))] = a[len(a) - 1]
+            b = Permute(a[:len(a) - 1]).ToTranspose()
+            l.extend(b.data)
+            return ExPermute(len(a), l)
+
+    def ToCyclic(self):
+        """
+        This method returns cyclic type element of permutation group.
+        """
+        a = self.data
+        b = list(self.data)
+        l = []
+        for i in range(len(a)):
+            if b[i] != '*':
+                k = [(i+1)]
+                b[i] = '*'
+                j = i
+                while a[j] != i+1:
+                    k.append(a[j])
+                    j = a[j] - 1
+                    b[j] = '*'
+                if len(k) != 1:
+                    l.append(tuple(k))
+        return ExPermute(len(a), l)
+
+    def sgn(self):
+        """
+        This method returns sign for permutation element.
+        """
+        a = self.data
+        k = l = 1
+        for j in range(len(a) - 1):
+            for i in range(j+1):
+                k *= cmp(i, j+1)  # cmp return sign of subtraction
+                l *= cmp(a[i], a[j+1])
+        return l/k
+
+    def types(self):
+        """
+        This method returns 'type' defined by each cyclic element length.
+        """
+        a = self.ToCyclic().data
+        c = []
+        for i in range(len(a)):
+            c.append(len(a[i]))
+        c.sort()
+        return repr(c) + ' type'
+
+    def ToMatrix(self):
+        """
+        This method returns permutation matrix
+        """
+        a = len(self.data)
+        A = matrix.SquareMatrix(a)
+        for j in range(a):
+            A[j+1, self.data[j]] = 1
+        return A
+
+    def __eq__(self, other):
+        a = self.data
+        b = other.data
+        if len(a) != len(b):
+            return False
+        for i in range(len(a)):
+            if a[i] != b[i]:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __repr__(self):
+        return repr(self.data)
+
+    def __str__(self):
+        return str(self.data)
+
+
+class ExPermute:
+
+    """
+    This is a class for cyclic type element of permutation group.
+    Example, (5, [(1, 2), (3, 4)])
+    This means (1, 2)(3, 4)=[2, 1, 4, 3, 5]
+    """
+
+    def __init__(self, val1, val2):
+        self.dim = val1
+        self.data = val2
+        if not (rational.isIntegerObject(val1) and isinstance(val2, list)):
+            raise TypeError("This isn't cyclic form")
+        for x in val2:
+            if not isinstance(x, tuple):
+                raise TypeError("This isn't cyclic form")
+            b = range(val1)
+            for y in x:
+                if not rational.isIntegerObject(val1):
+                    raise TypeError("This number should be integer")
+                if (y > val1) or (y <= 0):
+                    raise TypeError("This is out of range")
+                elif b[y-1] == -1:
+                    raise ValueError("This isn't one-to-one")
+                else:
+                    b[y-1] = -1
+
+    def __mul__(self, other):
+        if self.dim != other.dim:
+            raise TypeError("This can't multiply")
+        c = []
+        for x in self.data:
+            c.append(x)
+        for x in other.data:
+            c.append(x)
+        return ExPermute(self.dim, c)
+
+    def __rmul__(self, other):
+        return other * self
+
+    def __div__(self, other):
+        return self * other.inverse()
+
+    def __rdiv__(self, other):
+        return other * self.inverse()
+
+    def __pow__(self, other):
+        b = ExPermute(self.dim, self.data)  # other instance
+        if not rational.isIntegerObject(other):
+            raise TypeError("This can't calculate")
+        if other > 0:
+            for i in range(other - 1):
+                b = self * b
+        else:
+            c = self.inverse()
+            for i in range(abs(other) + 1):
+                b = c * b
+        return b
+
+    def inverse(self):
+        a = list(self.data)
+        a.reverse()
+        for i in range(len(a)):
+            b = list(a[i])
+            if len(a[i]) > 2:
+                b.reverse()
+            a[i] = tuple(b)
+        return ExPermute(self.dim, a)
+
+    def identity(self):
+        return ExPermute(self.dim, [])
+
+    def grouporder(self):
+        return combinatorial.factorial(self.dim)
+
+    def order(self):
+        """
+        This method returns order for permutation element.
+        """
+        return self.ToNormal().order()
+
+    def ToNormal(self):
+        """
+        This method returns normal type element of permutation group.
+        """
+        dim = self.dim
+        a = list(self.data)
+        a.reverse()
+        b = []
+        for i in range(dim):
+            b.append('*')
+        for x in a:
+            c = list(x)
+            c.append(c[0])
+            d = []
+            for y in x:
+                if b[y-1] != '*':
+                    d.append(b.index(y))
+                else:
+                    d.append(y-1)
+            for j in range(len(d)):
+                b[d[j]] = c[j+1]
+                if b[d[j]] == d[j] + 1:
+                    b[d[j]] = '*'
+        for i in range(dim):
+            if b[i] == '*':
+                b[i] = i+1
+        return Permute(b)
+
+    def simplify(self):
+        """
+        This method returns more simple element.
+        """
+        return self.ToNormal().ToCyclic()
+
+    def __eq__(self, other):
+        if self.dim != other.dim:
+            return False
+        a = (self.simplify()).data
+        b = (other.simplify()).data
+        if len(a) != len(b):
+            return False
+        for i in range(len(a)):
+            for j in range(len(a[i])):
+                if list(a[i])[j] != list(b[i])[j]:
+                    return False
+        return True
+
+    def __ne__(self, other):
+        return not self == other
+
+    def __repr__(self):
+        return repr(self.data) + "(" + repr(self.dim) + ")"
+
+    def __str__(self):
+        return str(self.simplify().data) + "(" + str(self.dim) + ")"
