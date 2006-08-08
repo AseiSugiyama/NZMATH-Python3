@@ -27,7 +27,8 @@ cd $TMP
 [ -d nzmath/manual/modules/factor ] || mkdir nzmath/manual/modules/factor
 BASEDIR="$TMP/nzmath/manual"
 echo "ok."
-WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
+#WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
+WIKIBASE="http://nzmath.sourceforge.net/doc/"
 
 echo "start to document source download from nzmath-doc wiki..."
 # 1. get base document.
