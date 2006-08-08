@@ -12,19 +12,19 @@
 <body>
 
 <div id="header">
- <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor%2Fmethods.py">factor/methods.py</a></h1>
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py">factor/methods.py</a></h1>
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?UserManual#nzmath" title="UserManual (157d)">nzmath</a> . <a href="http://hanaya.math.metro-u.ac.jp/nzmath/?factor" title="factor (173d)">factor</a></p>
-<h2 id="content_1_0">methods  <a class="anchor_super" id="c78661bb" href="../factor%2Fmethods.html#c78661bb" title="c78661bb">&dagger;</a></h2>
+<div id="body"><p><a href="http://nzmath.sourceforge.net/doc/?UserManual#nzmath" title="UserManual (164d)">nzmath</a> . <a href="http://nzmath.sourceforge.net/doc/?factor" title="factor (180d)">factor</a></p>
+<h2 id="content_1_0">methods  <a class="anchor_super" id="c78661bb" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#c78661bb" title="c78661bb">&dagger;</a></h2>
 <p>The module provides factoring methods.</p>
-<p>It uses methods of <a href="../factor%2Ffind.html" title="factor/find.py (225d)">find</a> module to find a factor
-and classes of <a href="../factor%2Futil.html" title="factor/util.py (225d)">util</a> module to track the factorization process.</p>
+<p>It uses methods of <a href="http://nzmath.sourceforge.net/doc/?factor%2Ffind.py" title="factor/find.py (233d)">find</a> module to find a factor
+and classes of <a href="http://nzmath.sourceforge.net/doc/?factor%2Futil.py" title="factor/util.py (233d)">util</a> module to track the factorization process.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="vd776077" href="../factor%2Fmethods.html#vd776077" title="vd776077">&dagger;</a></h3>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="vd776077" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#vd776077" title="vd776077">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2"><a class="anchor" id="factor"></a>factor(<em>n</em> [, <em>method</em>, **<em>options</em>])  <a class="anchor_super" id="k5b5918f" href="../factor%2Fmethods.html#k5b5918f" title="k5b5918f">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2"><a class="anchor" id="factor"></a>factor(<em>n</em> [, <em>method</em>, **<em>options</em>])  <a class="anchor_super" id="k5b5918f" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#k5b5918f" title="k5b5918f">&dagger;</a></h4>
 <p>Factor the given integer <em>n</em>.</p>
 <p>By default, use several methods internally.<br />
 Optional argument 'method' can be:</p>
@@ -34,21 +34,21 @@ Optional argument 'method' can be:</p>
 <li>'trialDivision': use TrialDivision.</li></ul>
 <p>(In fact, its initial letter suffice to specify.)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3"><a class="anchor" id="mpqs"></a>mpqs(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="x416eaed" href="../factor%2Fmethods.html#x416eaed" title="x416eaed">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3"><a class="anchor" id="mpqs"></a>mpqs(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="x416eaed" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#x416eaed" title="x416eaed">&dagger;</a></h4>
 <p>Factor the given integer <em>n</em> by multi-polynomial quadratic sieve method.<br />
-(see <a href="../factor%2Fmpqs.html#mpqsfind" title="factor/mpqs.py (225d)">mpqsfind</a> of mpqs module.)</p>
+(see <a href="http://nzmath.sourceforge.net/doc/?factor%2Fmpqs.py#mpqsfind" title="factor/mpqs.py (233d)">mpqsfind</a> of mpqs module.)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4"><a class="anchor" id="pmom"></a>pmom(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="kc47f766" href="../factor%2Fmethods.html#kc47f766" title="kc47f766">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4"><a class="anchor" id="pmom"></a>pmom(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="kc47f766" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#kc47f766" title="kc47f766">&dagger;</a></h4>
 <p>Factor the given integer <em>n</em> by Pollard's p-1 method.
 The method may fail unless <em>n</em> has an appropriate factor for the method.<br />
-(see <a href="../factor%2Ffind.html#pmom" title="factor/find.py (225d)">pmom</a> of find module.)</p>
+(see <a href="http://nzmath.sourceforge.net/doc/?factor%2Ffind.py#pmom" title="factor/find.py (233d)">pmom</a> of find module.)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5"><a class="anchor" id="rhomethod"></a>rhomethod(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="u74b494e" href="../factor%2Fmethods.html#u74b494e" title="u74b494e">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5"><a class="anchor" id="rhomethod"></a>rhomethod(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="u74b494e" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#u74b494e" title="u74b494e">&dagger;</a></h4>
 <p>Factor the given integer <em>n</em> by rho method.
 But the method is a probabilistic method, possibly fails in factorizations.<br />
-(see <a href="../factor%2Ffind.html#rhomethod" title="factor/find.py (225d)">rhomethod</a> of find module.)</p>
+(see <a href="http://nzmath.sourceforge.net/doc/?factor%2Ffind.py#rhomethod" title="factor/find.py (233d)">rhomethod</a> of find module.)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6"><a class="anchor" id="trialDivision"></a>trialDivision(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="q4d1dc88" href="../factor%2Fmethods.html#q4d1dc88" title="q4d1dc88">&dagger;</a></h4>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6"><a class="anchor" id="trialDivision"></a>trialDivision(<em>n</em> [, **<em>options</em>])  <a class="anchor_super" id="q4d1dc88" href="http://nzmath.sourceforge.net/doc/?factor%2Fmethods.py#q4d1dc88" title="q4d1dc88">&dagger;</a></h4>
 <p>Factor the given integer <em>n</em> by trial division.</p>
 <p>options for the trial sequence can be either:</p>
 <ol class="list1" style="padding-left:16px;margin-left:16px"><li>'start' and 'stop' as range parameters.</li>
@@ -56,17 +56,17 @@ But the method is a probabilistic method, possibly fails in factorizations.<br /
 <li>'eratosthenes' as an upper bound to make prime sequence by sieve.</li></ol>
 <p>If none of the options above are given, prime factor is
 searched from 2 to the square root of the given integer.<br />
-(see <a href="../factor%2Ffind.html#trailDivision" title="factor/find.py (225d)">trialDivision</a> of find module.)</p>
+(see <a href="http://nzmath.sourceforge.net/doc/?factor%2Ffind.py#trailDivision" title="factor/find.py (233d)">trialDivision</a> of find module.)</p>
 </div>
 
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2005-12-18 (Æü) 18:55:13  (225d)</div>
+ Last-modified: 2005-12-18 (Æü) 17:55:13  (233d)</div>
 
 <div id="footer">
- Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
 </div>
 </body>
 </html>

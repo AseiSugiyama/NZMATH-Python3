@@ -12,50 +12,53 @@
 <body>
 
 <div id="header">
- <h1 class="title"><a href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup">group.py/GenerateGroup</a></h1>
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?group.py%2FGenerateGroup">group.py/GenerateGroup</a></h1>
 </div>
 
 <hr class="full_hr" />
-<div id="body"><p><a href="group.html" title="group.py">group.py</a>
-<a href="group_Group.html" title="group.py/Group">Group</a></p>
+<div id="body"><p><a href="http://nzmath.sourceforge.net/doc/?group.py" title="group.py (105d)">group.py</a>
+<a href="http://nzmath.sourceforge.net/doc/?group.py%2FGroup" title="group.py/Group (5h)">Group</a></p>
 <div class="contents">
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#f624283b"> GenerateGroup </a>
-<ul class="list3" style="padding-left:32px;margin-left:32px"><li><a href="#b055e6d9"> Initialize </a></li></ul>
+<ul class="list3" style="padding-left:32px;margin-left:32px"><li><a href="#b055e6d9">  Initialize </a></li></ul>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#j43fdb0a"> Methods </a></li></ul></li></ul>
 </div>
 
-<h2 id="content_1_0">GenerateGroup  <a class="anchor_super" id="f624283b" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#f624283b" title="f624283b">&dagger;</a></h2>
-<p>This is a class for finite group with generator.<br class="spacer" />
+<h2 id="content_1_0">GenerateGroup  <a class="anchor_super" id="f624283b" href="http://nzmath.sourceforge.net/doc/?group.py%2FGenerateGroup#f624283b" title="f624283b">&dagger;</a></h2>
+<p>This is a class for finite group with generators.<br />
 <em>Warning</em>:<br class="spacer" />
-This initialize is group 'including' the group elements, not group with generator now.<br class="spacer" />
-I can't recommend using this module <em>now</em>.</p>
+This initializes a group 'including' the group elements, not a group with generators, now.<br class="spacer" />
+We don't recommend using this module <em>now</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_1">Initialize  <a class="anchor_super" id="b055e6d9" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#b055e6d9" title="b055e6d9">&dagger;</a></h4>
-<p>Initialize with generator list.</p>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_1">Initialize  <a class="anchor_super" id="b055e6d9" href="http://nzmath.sourceforge.net/doc/?group.py%2FGenerateGroup#b055e6d9" title="b055e6d9">&dagger;</a></h4>
+<p>Initialize with a list of generators.</p>
 <pre>&gt;&gt;&gt;GenerateGroup([generator0, generator1,..,generatorN])</pre>
-<p>You can decide group(class).</p>
+<p>You can specify a group(class) in a tuple with the generator list.</p>
 <pre>&gt;&gt;&gt;GenerateGroup(([generator0, generator1,..,generatorN], group_instance))</pre>
-<p>You can decide main type.(See <a href="group_Group.html#Initialize" title="group.py/Group">Group(initialize)</a>)</p>
+<p>You can specify a main type<a id="notetext_1" href="#notefoot_1" class="note_super" title="See Group(initialize) for main type.">*1</a> to the second argument.</p>
 <pre>&gt;&gt;&gt;GenerateGroup([generator0, generator1,..,generatorN], 1)</pre>
 <blockquote><p class="quotation">
-Example</p>
+Example:</p>
 <pre>&gt;&gt;&gt;Gg=GenerateGroup([integerResidueClass.IntegerResidueClass(2, 20), integerResidueClass.IntegerResidueClass(6, 20)])</pre>
-<p class="quotation">(See <a href="integerResidueClass.html" title="integerResidueClass.py">integerResidueClass.py</a>)</p></blockquote>
+<p class="quotation">(See <a href="http://nzmath.sourceforge.net/doc/?integerResidueClass.py" title="integerResidueClass.py (233d)">integerResidueClass.py</a>)</p></blockquote>
 
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="j43fdb0a" href="http://hanaya.math.metro-u.ac.jp/nzmath/?group.py%2FGenerateGroup#j43fdb0a" title="j43fdb0a">&dagger;</a></h3>
-<p>It is inherited <a href="group_Group.html" title="group.py/Group">Group</a> module.</p>
+<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="j43fdb0a" href="http://nzmath.sourceforge.net/doc/?group.py%2FGenerateGroup#j43fdb0a" title="j43fdb0a">&dagger;</a></h3>
+<p>Methods are inherited from the <a href="http://nzmath.sourceforge.net/doc/?group.py%2FGroup" title="group.py/Group (5h)">Group</a> class.</p>
 </div>
 
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">See <a href="http://nzmath.sourceforge.net/doc/?group.py%2FGroup#Initialize" title="group.py/Group (5h)">Group(initialize)</a> for main type.</span><br /></div>
 
 
 <hr class="full_hr" />
 <div id="lastmodified">
- Last-modified: 2006-04-25 (Ва) 15:59:14  (97d)</div>
+ Last-modified: 2006-08-08 (Ва) 14:13:44  (4h)</div>
 
 <div id="footer">
- Copyright 2003-2005, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH deveropment group</a>
+ Copyright 2003-2006, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
 </div>
 </body>
 </html>
