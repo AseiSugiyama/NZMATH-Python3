@@ -162,7 +162,19 @@ def Newton(f,initial=1,repeat=250):
                 l = e1(tangent)
     return l
 
-def SimMethod(g, initials=None, newtoninitial=None, repeat=250):
+
+def SimMethod(f, NewtonInitial=1, repeat=250):
+    """
+    Return zeros of a polynomial given as a list.
+    """
+    if NewtonInitial != 1:
+        ni = NewtonInitial
+    else:
+        ni = None
+    return _SimMethod(f, newtoninitial=ni, repeat=repeat)
+
+
+def _SimMethod(g, initials=None, newtoninitial=None, repeat=250):
     """
     Return zeros of a polynomial given as a list.
 
