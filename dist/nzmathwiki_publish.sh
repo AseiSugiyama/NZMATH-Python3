@@ -29,7 +29,7 @@ BASEDIR="$TMP/nzmath/manual"
 echo "ok."
 #WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
 WIKIBASE="http://nzmath.sourceforge.net/doc/"
-
+BASEEXPR="http:\/\/nzmath\.sourceforge\.net\/doc"
 echo "start to document source download from nzmath-doc wiki..."
 # 1. get base document.
 cd $BASEDIR
@@ -145,14 +145,14 @@ CSSBDAT="skin\/default\.ja\.css"
 CSSNDAT="default.css"
 # 2.1. edit index.html .
 cat index.html|sed -e "s/$CSSBDAT/$CSSNDAT/">index.html.sed
-CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\.\)py\" "
+CONVBDAT="href=\"$BASEEXPR\/?\(.*\.\)py\" "
 CONVNDAT="href=\"modules\/\1html\" "
 
 cat index.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.se
-CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Install\" "
+CONVBDAT="href=\"$BASEEXPR\/?Install\" "
 CONVNDAT="href=\"install.html\" "
 cat index.html.se|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.sed
-CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Tutorial\" "
+CONVBDAT="href=\"$BASEEXPR\/?Tutorial\" "
 CONVNDAT="href=\"tutorial.html\" "
 cat index.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">index.html.se
 cat index.html.se|sed -e "s/%2F/\//">index.html
@@ -162,10 +162,10 @@ cat index.html.se|sed -e "s/%2F/\//">index.html
 for docs in install tutorial
 do
   cat $docs.html|sed -e "s/$CSSBDAT/$CSSNDAT/">$docs.html.sed
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
+  CONVBDAT="href=\"$BASEEXPR\/?UserManual\" "
   CONVNDAT="href=\"index.html\" "
   cat $docs.html.sed|sed -e "s/$CONVBDAT/$CONVNDAT/">$docs.html.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?Install\" "
+  CONVBDAT="href=\"$BASEEXPR\/?Install\" "
   CONVNDAT="href=\"install.html\" "
   cat $docs.html.se|sed -e "s/$CONVBDAT/$CONVNDAT/">$docs.html
 done
@@ -174,26 +174,26 @@ cd modules
 CSSNDAT="..\/$CSSNDAT"
 for htmlfile in *.html
 do
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\.\)py\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2html\" title=\"\1\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile>$htmlfile.sed
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\1\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2html#\3\" title=\"\1\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile.sed>$htmlfile.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\3\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\.\)py\)#\(.*\)\" title=\"\3\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2html#\3\" title=\"\3\">"
   sed -e "s/$CONVBDAT/$CONVNDAT/g" $htmlfile.se>$htmlfile.sed
 
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\)\.py\)%2F\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2_\3.html\" title=\"\1\/\3\">"
   cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\4\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\4\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2_\3.html#\4\" title=\"\4\">"
   cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
+  CONVBDAT="href=\"$BASEEXPR\/?\(\(.*\)\.py\)%2F\(.*\)#\(.*\)\" title=\"\1\/\3\( ([0-9]*[mhd])\)\">"
   CONVNDAT="href=\"\2_\3.html#\4\" title=\"\1\/\3\">"
   cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
-  CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
+  CONVBDAT="href=\"$BASEEXPR\/?UserManual\" "
   CONVNDAT="href=\"..\/index.html\" "
   cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
   cat $htmlfile.sed|sed -e "s/$CSSBDAT/$CSSNDAT/"g>$htmlfile
@@ -206,19 +206,19 @@ do
   cd $subs
   for htmlfile in *.html
   do
-    CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\.\)py\" "
+    CONVBDAT="href=\"$BASEEXPR\/?\(.*\.\)py\" "
     CONVNDAT="href=\"..\/\1html\" "
     cat $htmlfile|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
-    CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\.\)\{1\}py#\(.*\)\" "
+    CONVBDAT="href=\"$BASEEXPR\/?\(.*\.\)\{1\}py#\(.*\)\" "
     CONVNDAT="href=\"..\/\1html#\2\" "
     cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
-    CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\)\.py%2F\(.*\)\" "
+    CONVBDAT="href=\"$BASEEXPR\/?\(.*\)\.py%2F\(.*\)\" "
     CONVNDAT="href=\"..\/\1_\2.html\" "
     cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.sed
-    CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?\(.*\)\.py%2F\(.*\)#\(.*\)\" "
+    CONVBDAT="href=\"$BASEEXPR\/?\(.*\)\.py%2F\(.*\)#\(.*\)\" "
     CONVNDAT="href=\"..\/\1_\2.html#\3\" "
     cat $htmlfile.sed|sed -e "s/$CONVBDAT/$CONVNDAT/g">$htmlfile.se
-    CONVBDAT="href=\"http:\/\/hanaya\.math\.metro-u\.ac\.jp\/nzmath\/?UserManual\" "
+    CONVBDAT="href=\"$BASEEXPR\/?UserManual\" "
     CONVNDAT="href=\"..\/..\/index.html\" "
     cat $htmlfile.se|sed -e "s/$CONVBDAT/$CONVNDAT/">$htmlfile.sed
     cat $htmlfile.sed|sed -e "s/$CSSBDAT/$CSSNDAT/">$htmlfile
