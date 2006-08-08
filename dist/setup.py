@@ -1,10 +1,10 @@
 from distutils.core import setup
 
-doc_prefix = "share/doc/NZMATH-0.5.0/"
+doc_prefix = "share/doc/NZMATH-0.5.1/"
 
 setup (
     name="NZMATH",
-    version="0.5.0",
+    version="0.5.1",
     url="http://tnt.math.metro-u.ac.jp/nzmath/",
     author="NZMATH development group",
     author_email="nzmath-user@tnt.math.metro-u.ac.jp",
@@ -31,6 +31,8 @@ setup (
                   'manual/modules/finitefield_FinitePrimeFieldElement.html',
                   'manual/modules/gcd.html',
                   'manual/modules/group.html',
+                  'manual/modules/group_AberianGenerate.html',
+                  'manual/modules/group_GenerateGroup.html',
                   'manual/modules/group_Group.html',
                   'manual/modules/group_GroupElement.html',
                   'manual/modules/imaginary.html',
@@ -44,10 +46,14 @@ setup (
                   'manual/modules/integerResidueClass_IntegerResidueClassRing.html',
                   'manual/modules/lattice.html',
                   'manual/modules/matrix.html',
+                  'manual/modules/matrix_IntegerMatrix.html',
+                  'manual/modules/matrix_IntegerSquareMatrix.html',
+                  'manual/modules/matrix_Matrix.html',
+                  'manual/modules/matrix_SquareMatrix.html',
                   'manual/modules/multiplicative.html',
                   'manual/modules/permute.html',
-                  'manual/modules/permute_Permute.html',
                   'manual/modules/permute_ExPermute.html',
+                  'manual/modules/permute_Permute.html',
                   'manual/modules/polynomial.html',
                   'manual/modules/polynomial_MultiVariablePolynomialIdeal.html',
                   'manual/modules/polynomial_MultiVariableSparsePolynomial.html',
@@ -61,6 +67,7 @@ setup (
                   'manual/modules/polynomial_RationalOneVariablePolynomial.html',
                   'manual/modules/prime.html',
                   'manual/modules/quad.html',
+                  'manual/modules/quad_NextElement.html',
                   'manual/modules/quad_ReducedQuadraticForm.html',
                   'manual/modules/rational.html',
                   'manual/modules/rationalFunction.html',
