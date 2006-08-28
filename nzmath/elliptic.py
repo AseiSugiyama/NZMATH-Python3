@@ -687,11 +687,15 @@ class ECoverFp(ECGeneric):
                     raise ValueError, "coefficient is less or more, can't defined EC."
             else:
                 raise ValueError, "characteristic must be prime."
+        self.o = False
+        self.abelian = False
+        
     def __repr__(self):
         if len(self)==2 or self.a1.n==self.a2.n==self.a3.n==0:
             return "ECoverFp(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
         else:
             return "ECoverFp(["+repr(self.a1.n)+","+repr(self.a2.n)+","+repr(self.a3.n)+","+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+
     def point(self):
         """
         this returns a random point on eliiptic curve over ch(field)>3
@@ -1110,11 +1114,6 @@ class ECoverFp(ECGeneric):
         if P==Q==[0] or Q==[0]:
             raise ValueError,"You must input not [0]"
         
-        # use cache
-        if hasattr(self,"dbMiller"):
-            if self.dbMiller.has_key((P[0],P[1],m,Q[0],Q[1])):
-                return self.dbMiller[(P[0],P[1],m,Q[0],Q[1])]
-        
         # initialize
         S=self.add(R,Q)
         if S==[0]:
@@ -1145,14 +1144,6 @@ class ECoverFp(ECGeneric):
                 j=j+k
                 M=M-1
                         
-        # cacheing
-        if hasattr(self,"dbenable"):
-            T=(P[0],P[1],m,Q[0],Q[1])
-            if hasattr(self,"dbMiller"):
-                self.dbMiller[T]=vj
-            else:
-                self.dbMiller = {T:vj}
-        
         return vj
 
     def TatePairing(self,m,P,Q):
@@ -1190,13 +1181,7 @@ class ECoverFp(ECGeneric):
 
         if P==[0] or Q==[0] or P==Q:
             return self.field.one
-
-        # use cache
-        if hasattr(self,"dbWeilPairing"):
-            if self.dbWeilPairing.has_key((m,P[0],P[1],Q[0],Q[1])):
-                return self.dbWeilPairing[m,P[0],P[1],Q[0],Q[1]]
-
-
+  
         while 1:
             T=U=False
             while (not T) or (not U):
@@ -1312,7 +1297,7 @@ class ECoverFp(ECGeneric):
         """
         returns group structure E(K)=Z_d x Z_m with d|m|#E(K)
         """
-        if hasattr(self,"abelian"):
+        if self.abelian:
             return self.abelian
         
         # step 1. find order E/F_p.
@@ -1351,10 +1336,8 @@ class ECoverFp(ECGeneric):
                     d=1
                 #print m,d
                 if m*d==N1:
-                    S=(d,N//d)
-                    if not hasattr(self,"abelian"):
-                        self.abelian = S
-                    return S
+                    self.abelian = (d,N//d)
+                    return self.abelian
 
     def issupersingular(self):
         """
@@ -1365,33 +1348,6 @@ class ECoverFp(ECGeneric):
         else:
             return False
     
-
-    def flush(self):
-        """
-        flush attribute of defined after initialization.
-        """
-        if hasattr(self,"o"):
-            del self.o
-        if hasattr(self,"dbMiller"):
-            del self.dbMiller
-        if hasattr(self,"dbWeilPairing"):
-            del self.dbWeilPairing
-        if hasattr(self,"abelian"):
-            del self.abelian
-
-    def disabledb(self):
-        """
-        disable cache for dependence of Miller.
-        """
-        self.flush()
-        if hasattr(self,"dbenable"):
-            del self.dbenable
-
-    def enabledb(self):
-        """
-        enaable cache for dependence of Miller.
-        """
-        self.dbenable=True
 
 class ECoverF2(ECoverFp):
     """
