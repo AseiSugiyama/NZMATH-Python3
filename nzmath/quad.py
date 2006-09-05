@@ -6,6 +6,7 @@ import nzmath.arith1
 import nzmath.group
 import nzmath.rational
 import nzmath.factor.misc
+import nzmath.factor.methods
 import nzmath.finitefield
 import nzmath.permute
 import nzmath.integerResidueClass
@@ -63,7 +64,60 @@ class ReducedQuadraticForm:
             return True
         else:
             return False
-
+    def __ge__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        for valueofel in range(3):
+            if (self.element[valueofel] > other.element[valueofel]):
+                return True
+            elif (self.element[valueofel] == other.element[valueofel]):
+                continue
+            else:
+                return False
+        return True
+    def __le__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        for valueofel in range(3):
+            if (self.element[valueofel] < other.element[valueofel]):
+                return True
+            elif (self.element[valueofel] == other.element[valueofel]):
+                continue
+            else:
+                return False
+        return True
+    
+    def __gt__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        for valueofel in range(3):
+            if (self.element[valueofel] > other.element[valueofel]):
+                return True
+            elif (self.element[valueofel] == other.element[valueofel]):
+                continue
+            else:
+                return False
+        return False
+    def __lt__(self, other):
+        if self.__class__ != other.__class__:
+            return False
+        for valueofel in range(3):
+            if (self.element[valueofel] < other.element[valueofel]):
+                return True
+            elif (self.element[valueofel] == other.element[valueofel]):
+                continue
+            else:
+                return False
+        return False
+    def __ne__(self, other):
+        if type(other) == list:
+            return True
+        if self.__class__ != other.__class__:
+            return True
+        if (self.element != other.element):
+            return True
+        else:
+            return False
     def inverse(self):
         if self.element == self.unit[:]:
             return copy.deepcopy(self)
@@ -658,3 +712,176 @@ def nucomp(f_1, f_2):
     b_3 = lq_1 + lq_2 + d_1 * (lq_3 + lq_4)
     f_3 = reducePDF([a_3, b_3, c_3])
     return f_3
+
+
+class nxtel_5:
+    def __init__(self, disc):
+        if type(disc) != int:
+            raise TypeError("the value must be integer")
+        self.numlst = computeClassNumber(disc)[1]
+        self.disc = disc
+        self.unit = self.numlst[0]
+        random.shuffle(self.numlst)
+        
+    def retunit(self):
+        return Groupforbsgs_5(self.unit)
+
+    #def retiis(self):
+        #return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(2, self.odr)) ** 0
+    
+    def retnext(self):
+        while 1:
+            tpa =  self.numlst.pop()
+
+            #return Groupforbsgs(nzmath.finitefield.FinitePrimeFieldElement(tpa, self.odr))
+            return Groupforbsgs_5(tpa)
+
+class Groupforbsgs_5(nzmath.group.GroupElement):
+    def __init__(self, value):
+        nzmath.group.GroupElement.__init__(self, value, 1)
+        
+    def __mul__(self, other):
+        return Groupforbsgs(self.element * other.element)
+    
+        #return self.ope(other)
+
+    def __pow__(self, other):
+        return Groupforbsgs(self.element ** other)
+    
+        #return self.ope2(other)
+    
+class QuadraticGroup:
+    '''
+    '''
+    def __init__(self, disc, classnum, elements = []):
+        # element is an element of some class (for example ReducedQuadraticForm
+        self.disc = disc
+        self.rootoftree = []
+        self.copyofroot = 0
+        self.rootornot = 0
+        self.elements = elements
+        self.classnum = classnum
+        if disc % 4 == 0:
+            a = 1
+            b = 0
+            c = disc // -4
+        elif disc % 4 == 1:
+            a = 1
+            b = 1
+            c = (disc - 1) // -4
+        else:
+            raise ValueError
+        self.expunit = [a, b, c]
+    def insertelements(self, newlist):
+        for newel in newlist:
+            self.insertelement(newel)
+    def insertelement(self, newel):
+        self.elements.append(newel)
+
+    def instelementstree(self, newlist):
+        for newel in newlist:
+            self.insertelementtree(newel)
+
+    def insertelementtree(self, newel):
+        #if type(newel) != list:
+        #    raise ValueError("this value must be list")
+        #if len(newel.element) != 3:
+        #    raise ValueError("this value must be list of three element")
+        dis = newel.element[1]**2 - 4*newel.element[0]*newel.element[2]
+        if dis != self.disc:
+            raise ValueError("this value is not an element of the discriminant")
+        if self.rootornot == 0:
+            self.rootoftree = [newel, [], []]
+            self.rootornot = 1
+            return True
+        else:
+            curntpnt = self.rootoftree
+        while curntpnt != []:
+            if newel.element == curntpnt[0].element:
+                # already inserted
+                return True
+            elif newel.element < curntpnt[0].element:
+                curntpnt = curntpnt[1]
+            else:
+                curntpnt = curntpnt[2]
+
+        curntpnt.append(newel)
+        curntpnt.append([])
+        curntpnt.append([])
+
+    def search(self, tarel):
+        curntpnt = self.rootoftree
+        while (curntpnt != []):
+            if tarel.element == curntpnt[0].element:
+                return True
+            elif tarel.element < curntpnt[0].element:
+                curntpnt = curntpnt[1]
+            else:
+                curntpnt = curntpnt[2]
+        return False
+    def retel(self):
+        if self.copyofroot == 0:
+            self.copyofroot = copy.deepcopy(self.rootoftree)
+            #self.copyofroot = 1
+        #print self.copyofroot
+        while not self.copyofroot == []:
+            #print self.copyofroot
+            curntpnt = self.copyofroot
+            while True:
+                if not curntpnt[1] == []:
+                    curntpnt = curntpnt[1]
+                    continue
+                elif not curntpnt[2] == []:
+                    curntpnt = curntpnt[2]
+                    continue
+                else:
+                    print curntpnt[0]
+                    del curntpnt[0]
+                    del curntpnt[0]
+                    del curntpnt[0]
+
+                    #return self.copyofroot
+                    break
+    def qpartofg(self,q):
+        gq = []
+        for elem in self.elements:
+            gq.append(elem ** q)
+            
+    def findind(self,qin):
+        q = qin[0]**qin[1]
+        #print q
+        while True:
+            elgt1 = self.randomele()
+            elg1 = elgt1 ** q
+            if elg1.element == elg1.unit:
+                continue
+            return elg1
+        
+    def retstructure(self):
+        q = nzmath.factor.methods.factor(self.classnum)
+        for qin in q:
+            a = self.findind(qin)
+            print a
+        
+    def randomele(self):
+        limita = long(math.sqrt(float(-self.disc) / 3))
+        while True:
+            a = int(limita * random.random()) + 1
+            ind = 0
+            while ind < a:
+                b = int(a*random.random()) + 1
+                ch = random.random()
+                if ch < 0.5:
+                    b = -b
+                tp = self.disc - b**2
+                if tp % (-4 * a) == 0:
+                    c = tp // (-4 * a)
+                    unit = self.expunit[:]
+                    red = reducePDF([a, b, c])
+                    if red == unit:
+                        ind = ind + 1
+                        continue
+                    return ReducedQuadraticForm(red, unit)
+                else:
+                    ind = ind + 1
+                    continue
