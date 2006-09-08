@@ -1310,12 +1310,12 @@ class ECoverFp(ECGeneric):
         
         # step 2. decompose N.
         r = gcd.gcd(simplified.ch - 1, N)
-        p = factor_methods.factor(r)
+        r_factor = factor_methods.factor(r)
         N0 = r
         N1,N2 = 1,N
-        while N0 > 1:
-            N0 = gcd.gcd(r, N2)
-            N1,N2 = N1*N0,N2//N0
+        for p,e in r_factor:
+            while gcd.gcd(p,N2) > 1:
+                N1,N2 = N1*p, N2//p
         
         while 1:
             P1 = [0]
@@ -1325,8 +1325,8 @@ class ECoverFp(ECGeneric):
             while P2 == [0]:
                 P2 = simplified.point()
             P1,P2=simplified.mul(N2,P1), simplified.mul(N2,P2)
-            s=simplified.pointorder(P1,N,p)
-            t=simplified.pointorder(P2,N,p)
+            s=simplified.pointorder(P1,r,r_factor)
+            t=simplified.pointorder(P2,r,r_factor)
             m=gcd.lcm(s,t)
             if m>1:
                 e=simplified.WeilPairing(m,P1,P2)
