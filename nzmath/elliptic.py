@@ -970,17 +970,17 @@ class ECoverFp(ECGeneric):
         if self.ch<10**4:
             if flag:
                 return pow(self.ch,flag)+1-powOrd(self.naive(),flag,self.ch)
-            elif not hasattr(self, "o"):
+            if not self.o:
                 self.o=self.ch+1-self.naive()
         elif self.ch<10**30:
             if flag:
                 return pow(self.ch,flag)+1-powOrd(self.Shanks_Mestre(),flag,self.ch)
-            elif not hasattr(self, "o"):
+            if not self.o:
                 self.o=self.ch+1-self.Shanks_Mestre()
         else: # self.ch>=10**30
             if flag:
                 return pow(self.ch,flag)+1-powOrd(self.Schoof(),flag,self.ch)
-            elif not hasattr(self, "o"):
+            if not self.o:
                 self.o=self.ch+1-self.Schoof()
         return self.o
 
@@ -1325,8 +1325,8 @@ class ECoverFp(ECGeneric):
             while P2 == [0]:
                 P2 = simplified.point()
             P1,P2=simplified.mul(N2,P1), simplified.mul(N2,P2)
-            s=simplified.pointorder(P1)
-            t=simplified.pointorder(P2)
+            s=simplified.pointorder(P1,N,p)
+            t=simplified.pointorder(P2,N,p)
             m=gcd.lcm(s,t)
             if m>1:
                 e=simplified.WeilPairing(m,P1,P2)
