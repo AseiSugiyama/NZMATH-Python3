@@ -759,7 +759,8 @@ class QuadraticGroup:
         self.rootoftree = []
         self.copyofroot = 0
         self.rootornot = 0
-        self.elements = elements
+        #print elements
+        self.elements = copy.deepcopy(elements)
         self.classnum = classnum
         if disc % 4 == 0:
             a = 1
@@ -772,17 +773,27 @@ class QuadraticGroup:
         else:
             raise ValueError
         self.expunit = [a, b, c]
-    def insertelements(self, newlist):
+        
+    def __repr__(self):
+        return_str = "class of QuadraticGroup:\n"
+        return_str = return_str + 'disc is %s\n' % self.disc
+        return_str = return_str + 'rootoftree is %s' % self.rootoftree
+        return return_str
+    
+    def inserels(self, newlist):
+        #print newlist
         for newel in newlist:
-            self.insertelement(newel)
-    def insertelement(self, newel):
-        self.elements.append(newel)
+            self.inserel(newel)
+    def inserel(self, newel):
+        newestl = copy.deepcopy(newel)
+        self.elements.append(newestl)
 
-    def instelementstree(self, newlist):
+    def inststree(self, newlist):
         for newel in newlist:
-            self.insertelementtree(newel)
+            self.insttree(newel)
 
-    def insertelementtree(self, newel):
+    def insttree(self, newel0):
+        newel = copy.deepcopy(newel0)
         #if type(newel) != list:
         #    raise ValueError("this value must be list")
         #if len(newel.element) != 3:
@@ -820,10 +831,11 @@ class QuadraticGroup:
                 curntpnt = curntpnt[2]
         return False
     def retel(self):
-        if self.copyofroot == 0:
-            self.copyofroot = copy.deepcopy(self.rootoftree)
-            #self.copyofroot = 1
+        #if self.copyofroot == 0:
+        self.copyofroot = copy.deepcopy(self.rootoftree)
+        ##self.copyofroot = 1
         #print self.copyofroot
+        tpa = []
         while not self.copyofroot == []:
             #print self.copyofroot
             curntpnt = self.copyofroot
@@ -835,53 +847,295 @@ class QuadraticGroup:
                     curntpnt = curntpnt[2]
                     continue
                 else:
-                    print curntpnt[0]
+                    #print curntpnt[0]
+                    tpa.append(curntpnt[0])
                     del curntpnt[0]
                     del curntpnt[0]
                     del curntpnt[0]
 
                     #return self.copyofroot
                     break
+            return tpa
+
     def qpartofg(self,q):
         gq = []
         for elem in self.elements:
             gq.append(elem ** q)
             
-    def findind(self,qin):
-        q = qin[0]**qin[1]
-        #print q
-        while True:
-            elgt1 = self.randomele()
-            elg1 = elgt1 ** q
-            if elg1.element == elg1.unit:
-                continue
-            return elg1
+def findind(disc, classnum, qin):
+    q = qin[0]**qin[1]
+    unit = gtut(disc)
+    #print unit
+    while True:
+        elgt1 = randomele(disc, unit)
+        print "elgt1 is", elgt1
+        print "q is", q
+        elg1 = elgt1 ** (classnum // q)
+        if elg1.element == elg1.unit:
+            print "elg1 is", elg1
+            continue
+        return elg1
         
-    def retstructure(self):
-        q = nzmath.factor.methods.factor(self.classnum)
-        for qin in q:
-            a = self.findind(qin)
-            print a
-        
-    def randomele(self):
-        limita = long(math.sqrt(float(-self.disc) / 3))
-        while True:
-            a = int(limita * random.random()) + 1
-            ind = 0
-            while ind < a:
-                b = int(a*random.random()) + 1
-                ch = random.random()
-                if ch < 0.5:
-                    b = -b
-                tp = self.disc - b**2
-                if tp % (-4 * a) == 0:
-                    c = tp // (-4 * a)
-                    unit = self.expunit[:]
-                    red = reducePDF([a, b, c])
-                    if red == unit:
-                        ind = ind + 1
-                        continue
-                    return ReducedQuadraticForm(red, unit)
-                else:
+def randomele(disc, unit):
+    limita = long(math.sqrt(float(-disc) / 3))
+    while True:
+        a = int(limita * random.random()) + 1
+        #print "a is ", a
+        ind = 0
+        while ind < 2*a:
+            b = int(a*random.random())
+            #print "b is ", b
+            ch = random.random()
+            if ch < 0.5:
+                b = -b
+            tp = disc - b**2
+            if tp % (-4 * a) == 0:
+                c = tp // (-4 * a)
+                #print "[a, b, c] is ", [a, b, c]
+                #unit = self.expunit[:]
+                if nzmath.gcd.gcd_of_list([a, b, c])[0] != 1:
+                    continue
+                red = reducePDF([a, b, c])
+                if red == unit:
                     ind = ind + 1
                     continue
+                return ReducedQuadraticForm(red, unit)
+            else:
+                ind = ind + 1
+                continue
+
+def gtgen(disc, classnum, q):
+    print "q is ", q
+    while True:
+        # mtx, gens = bsgscv(disc, classnum, q)
+        bsgscv(disc, classnum, q)
+        #elofq = findind(disc, classnum, q)
+        print "elofq is ", elofq
+
+def stoffag(disc):
+    # -51211
+    classnum, rqf = computeClassNumber(disc)
+    fcts = nzmath.factor.methods.factor(classnum)
+    for q in fcts:
+        mat, gene = gtgen(disc, classnum, q)
+    
+def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y):
+    '''
+    this is a submodule called by the module, bsgs.
+    check bsgs is finished or not yet.
+    '''
+    
+    h[0] = h[0] * n[0]
+    if h[0] >= lwrbd:
+        return h[0]
+    uprbd_1[0] = uprbd_1[0] // n[0] # floor of uprbd_1[0] // n[0]
+    if (lwrbd_1[0] % n[0]) == 0:
+        lwrbd_1[0] = lwrbd_1[0] // n[0] # floor + 1 of lwrbd_1[0] // n[0]
+    else:
+        lwrbd_1[0] = lwrbd_1[0] // n[0]  + 1 # floor + 1 of lwrbd_1[0] // n[0]
+    if n[0] == 1:
+        tpsq = [0, 2]
+    else:
+        tpsq = nzmath.factor.misc.primePowerTest(n[0])
+    if tpsq[1] == 2:
+        q[0] = nzmath.arith1.floorsqrt(n[0])
+    else:
+        q[0] = nzmath.arith1.floorsqrt(n[0]) + 1
+
+    lsl = sossp[:]
+    del sossp[:]
+    lll = sogsp[:]
+    del sogsp[:]
+
+    for r in range(q[0]):
+        for ss in lsl:
+            newel = (nt[0]**r) * ss
+            if newel not in sossp:
+                sossp.append(newel) # multiple of two elements of G
+
+    y[0] = nt[0]**q[0]
+
+    for a in range(q[0] + 1):
+        for eol in lll:
+            newel2 = (y[0]**a) * eol
+            if newel2 not in sogsp:
+                sogsp.append(newel2) # multiple of two elements of G
+    return -1
+
+def cptodrcv(n, x, sossp, sogsp, c_s1, nt):
+    # flg
+    flg_bk = 1
+    while flg_bk == 1:
+        flg_bk = 0
+        lst_p = nzmath.factor.misc.primeDivisors(n[0])
+        tp_ls = copy.deepcopy(sossp)
+        print "tp_ls is", tp_ls
+        ###del c_s1[:]
+        for tmpri in lst_p:
+            # initialize c_s1
+            ###########0913
+            for ttp_ls in tp_ls:
+                c_s1.append([(nt[0] ** (n[0] / tmpri)) * ttp_ls, 0])
+                #c_s1.append([(x[1] ** (n[0] / tmpri)) * ttp_ls, 0])
+            # sort
+            c_s1.sort()
+
+            for tmp_els in c_s1:
+                for tmp_ell in sogsp:
+                    if tmp_els[0] == tmp_ell:
+
+                        flg_bk = 1
+                        n[0] = n[0] / tmpri
+                        break
+                if flg_bk == 1:
+                    break
+            if flg_bk == 1:
+                break
+
+def cptgs(n, q, sz, y, c_s1, uprbd_1, sogsp):
+
+    while 1:
+        ########################### loop
+        for tpw in sogsp:
+            sz1 = sz[0] * tpw
+            for tpcs in c_s1:
+                if sz1 == tpcs[0]:
+                    n[0] = n[0] - tpcs[1]
+                    return True
+        # continue (sp. 5)
+        sz[0] = y[0] * sz[0]
+        n[0] = n[0] + q[0]
+        if n[0] -q [0] + 1 <= uprbd_1[0]:
+            continue
+        else:
+            raise ValueError("the order is larger than upper bound")
+    
+def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt):
+    '''
+    compute small steps
+    '''
+    print "x is", x
+    flg_s = 0
+    # initialize
+    y[0] = 0
+    sz = [0]
+    for tr in range(q[0]):
+        # compute 2 to q-1
+        if (tr != 0) and (tr != 1):
+            x[tr] = x[1] * x[tr - 1]
+            #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
+        sotp = sossp.retel()
+        print "sotp is ", sotp
+        ###############0913
+        for ttr in sotp:
+            tmpx = x[tr]*ttr
+            if (flg_s == 0) and (tmpx == ut) and (tr != 0):
+                flg_s = 1
+                n[0] = tr
+            c_s1.append([tmpx, tr])
+                # sort ( if you want to sort it with your estimate,
+                # you have to implement '__ge__' method of the class with your way.)
+
+    c_s1.sort()
+    
+    if flg_s != 1:
+        y[0] = x[1] * x[q[0] - 1]
+        sz[0] = x[1] ** lwrbd_1[0]
+        n[0] = lwrbd_1[0]
+        cptgs(n, q, sz, y, c_s1, uprbd_1, sogsp)
+    n[0] = h[0] * n[0] 
+        # 6
+    cptodr(n, x, sossp, sogsp, c_s1, nt)
+        
+def bsgscv(disc, classnum, qin):
+    '''
+    '''
+    # compute bounds
+    qpt = qin[0] ** qin[1]
+    uprbd = qpt + 1
+    lwrbd = uprbd // 2 + 1
+    print "uprbd is ", uprbd
+    print "lwrbd is ", lwrbd
+
+    if lwrbd > uprbd:
+        raise TypeError("lower bound needs to be less than upper bound")
+    if lwrbd <= (uprbd / 2):
+        raise TypeError("upper bound / 2 needs to be more than lower bound")
+    ##h = [1]  h is integer
+    lwrbd_1 = [lwrbd]
+    uprbd_1 = [uprbd]
+    # get the unit
+    uto = gtut(disc)
+    ut = ReducedQuadraticForm(uto, uto)
+    #print "ut is ", ut
+    # append the unit to subset of G
+    sossp = QuadraticGroup(disc, classnum, []) # a subset of target group, G
+    sogsp = QuadraticGroup(disc, classnum, []) # a subset of G
+    #print sossp
+    #print sogsp
+    sossp.insttree(ut)
+    sogsp.insttree(ut)
+    #print sossp.rootoftree
+    #print sogsp.rootoftree
+    # initialize variables
+    n = [0]
+    q = [0]
+    ###h = [1] # order
+    #nt = [0] # next value
+    y = [0]
+    ret = -1
+    # take a new element of the group.
+    while ret == -1:
+        # get next element
+        #####################################
+        nt = findind(disc, classnum, qin)
+        print "nt is", nt
+        mstp1 = uprbd_1[0] - lwrbd_1[0]
+        if (mstp1 == 0) or (mstp1 == 1):
+            q[0] = 1
+        else:
+            tppm = nzmath.factor.misc.primePowerTest(mstp1)
+            if tppm[1] == 2:
+                q[0] = nzmath.arith1.floorsqrt(mstp1)
+            else:
+                q[0] = nzmath.arith1.floorsqrt(mstp1) + 1
+        if q[0] <= 2:
+            x = [0,0]
+        else:
+            x = [0] * q[0] # x is the set of elements of G
+        ###c_s1 = [] # a subset of G
+        c_s1 = QuadraticGroup(disc, classnum, []) # a subset of G
+
+        # compute small steps        
+        x[0] =  ut # maybe, this code must not be here
+        ###x[1] = (nt[0] ** h[0])
+        x[1] = nt
+        if x[1] == ut:
+            print "x[1] == ut"
+            print "x[1] is", x[1]
+            print "ut is", ut
+            n[0] = 1
+            # initialize order
+            ###n[0] = h[0] * n[0]
+            # compute the order of nt[1]
+            cptodrcv(n, x, sossp, sogsp, c_s1, nt)
+        else:
+            print "point a"
+            ###cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt)
+            cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt)
+        # finished?
+        ret = ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y)
+    return ret
+
+def gtut(disc):
+    if disc % 4 == 0:
+        a = 1
+        b = 0
+        c = disc // -4
+    elif disc % 4 == 1:
+        a = 1
+        b = 1
+        c = (disc - 1) // -4
+    else:
+        raise ValueError
+    return [a, b, c]
