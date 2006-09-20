@@ -16,6 +16,9 @@ class ReducedQuadraticForm:
     def __init__(self, element, unit):
         self.element = element
         self.unit = unit
+        self.ind = -1
+        self.alpha = []
+        self.beta = []
 
     def __repr__(self):
         return_str = '%s' % self.element
@@ -824,7 +827,7 @@ class QuadraticGroup:
         curntpnt = self.rootoftree
         while (curntpnt != []):
             if tarel.element == curntpnt[0].element:
-                return True
+                return curntpnt[0]
             elif tarel.element < curntpnt[0].element:
                 curntpnt = curntpnt[1]
             else:
@@ -855,7 +858,7 @@ class QuadraticGroup:
 
                     #return self.copyofroot
                     break
-            return tpa
+        return tpa
 
     def qpartofg(self,q):
         gq = []
@@ -917,17 +920,26 @@ def stoffag(disc):
     classnum, rqf = computeClassNumber(disc)
     fcts = nzmath.factor.methods.factor(classnum)
     for q in fcts:
-        mat, gene = gtgen(disc, classnum, q)
+        gene, mat = bsgscv(disc, classnum, q)
     
-def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y):
+def ckfncv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, classnum, indofg):
     '''
     this is a submodule called by the module, bsgs.
     check bsgs is finished or not yet.
     '''
-    
-    h[0] = h[0] * n[0]
-    if h[0] >= lwrbd:
-        return h[0]
+    ############0915
+    ###h[0] = h[0] * n[0]
+    ###if h[0] >= lwrbd:
+    ###    return h[0]
+    print "chkncv n[0] is ", n[0]
+    lpt.append(n[0])
+    sumn = 1
+    for nid in lpt:
+        sumn = sumn * nid 
+    if sumn == qpt:
+        #######0917
+        print "sumn is ", sumn
+        return n[0]
     uprbd_1[0] = uprbd_1[0] // n[0] # floor of uprbd_1[0] // n[0]
     if (lwrbd_1[0] % n[0]) == 0:
         lwrbd_1[0] = lwrbd_1[0] // n[0] # floor + 1 of lwrbd_1[0] // n[0]
@@ -942,66 +954,103 @@ def ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y):
     else:
         q[0] = nzmath.arith1.floorsqrt(n[0]) + 1
 
-    lsl = sossp[:]
-    del sossp[:]
-    lll = sogsp[:]
-    del sogsp[:]
-
+    lsl = copy.deepcopy(sossp)
+    sossp = QuadraticGroup(disc, classnum, [])
+    lll = copy.deepcopy(sogsp)
+    sogsp = QuadraticGroup(disc, classnum, [])
+    ####0918
+    print "qqq"
+    tnt = copy.deepcopy(nt)
     for r in range(q[0]):
-        for ss in lsl:
-            newel = (nt[0]**r) * ss
-            if newel not in sossp:
-                sossp.append(newel) # multiple of two elements of G
+        ss = lsl.retel()
+        print "ss is ", ss
+        for ssi in ss:
+            newel = (tnt ** r) * ssi
+            if sossp.search(newel) == False:
+                newel.alpha.append([indofg, tnt, r])
+                print "newel is " , newel
+                print "alpha is ", newel.alpha
+                sossp.insttree(newel) # multiple of two elements of G
+    print "sossp is ", sossp
 
-    y[0] = nt[0]**q[0]
-
+    y[0] = nt ** q[0]
+    print "q[0] is ", q[0]
+    print "y[0] is ", y[0]
+    ####0919
     for a in range(q[0] + 1):
-        for eol in lll:
+        ltl = lll.retel()
+        print "ltl is ", ltl
+        for eol in ltl:
             newel2 = (y[0]**a) * eol
-            if newel2 not in sogsp:
-                sogsp.append(newel2) # multiple of two elements of G
+            print "newel2 tmp is ", newel2
+            if sogsp.search(newel2) == False:
+                newel.beta.append([indofg, tnt, q[0] * a])
+                print "newel2 is ", newel2
+                print "beta is ", newel.beta
+                sogsp.insttree(newel2) # multiple of two elements of G
+    print "sogsp is ", sogsp
     return -1
 
-def cptodrcv(n, x, sossp, sogsp, c_s1, nt):
+def cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs):
+    #tmp_ss = 
+    #tmp_gs = 
+    print "n is ", n
+    print "nt is ", nt
+    
     # flg
     flg_bk = 1
+    ##############
+    #tmp_ss = rete
+    #tmp_gs = tmp_ell
     while flg_bk == 1:
         flg_bk = 0
         lst_p = nzmath.factor.misc.primeDivisors(n[0])
         tp_ls = copy.deepcopy(sossp)
         print "tp_ls is", tp_ls
-        ###del c_s1[:]
+        print "iiiii"
+
+        c_s1 = QuadraticGroup(disc, classnum, []) # a subset of G
         for tmpri in lst_p:
             # initialize c_s1
-            ###########0913
-            for ttp_ls in tp_ls:
-                c_s1.append([(nt[0] ** (n[0] / tmpri)) * ttp_ls, 0])
+            lstp_ls = tp_ls.retel()
+            print "lstp_ls is", lstp_ls
+            for ttp_ls in lstp_ls:
+                ###c_s1.insttree([(nt[0] ** (n[0] / tmpri)) * ttp_ls, 0])
+                print "nt[0] is ", nt
+                print "n[0] is ", n[0]
+                print "(nt ** (n[0] / tmpri)) * ttp_ls) is", (nt ** (n[0] / tmpri)) * ttp_ls
+                c_s1.insttree((nt ** (n[0] / tmpri)) * ttp_ls)
                 #c_s1.append([(x[1] ** (n[0] / tmpri)) * ttp_ls, 0])
             # sort
-            c_s1.sort()
-
-            for tmp_els in c_s1:
-                for tmp_ell in sogsp:
-                    if tmp_els[0] == tmp_ell:
-
-                        flg_bk = 1
-                        n[0] = n[0] / tmpri
-                        break
-                if flg_bk == 1:
+            ###c_s1.sort()
+            #c_s1tp = c_s1.retel()
+            #for tmp_els in c_s1tp:
+            sogsptp = sogsp.retel()
+            for tmp_ell in sogsptp:
+                rete = c_s1.search(tmp_ell)
+                if rete != False:
+                    flg_bk = 1
+                    n[0] = n[0] / tmpri
+                    tmp_ss = rete
+                    tmp_gs = tmp_ell
                     break
             if flg_bk == 1:
                 break
-
-def cptgs(n, q, sz, y, c_s1, uprbd_1, sogsp):
+    ttmp_ss = copy.deepcopy(tmp_ss)
+    ttmp_gs = copy.deepcopy(tmp_gs)
+    return ttmp_ss, ttmp_gs
+def cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp):
 
     while 1:
         ########################### loop
-        for tpw in sogsp:
+        sotp = sogsp.retel()
+        print "sotp is ", sotp
+        for tpw in sotp:
             sz1 = sz[0] * tpw
-            for tpcs in c_s1:
-                if sz1 == tpcs[0]:
-                    n[0] = n[0] - tpcs[1]
-                    return True
+            rete = c_s1.search(sz1)
+            if rete != False:
+                n[0] = n[0] - rete.ind 
+                return rete, sz1
         # continue (sp. 5)
         sz[0] = y[0] * sz[0]
         n[0] = n[0] + q[0]
@@ -1010,7 +1059,8 @@ def cptgs(n, q, sz, y, c_s1, uprbd_1, sogsp):
         else:
             raise ValueError("the order is larger than upper bound")
     
-def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt):
+def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum):
+
     '''
     compute small steps
     '''
@@ -1026,32 +1076,48 @@ def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt):
             #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
         sotp = sossp.retel()
         print "sotp is ", sotp
+        
         ###############0913
         for ttr in sotp:
             tmpx = x[tr]*ttr
             if (flg_s == 0) and (tmpx == ut) and (tr != 0):
                 flg_s = 1
                 n[0] = tr
-            c_s1.append([tmpx, tr])
+            # index of the element
+            tmpx.ind = tr
+            c_s1.insttree(tmpx)
                 # sort ( if you want to sort it with your estimate,
                 # you have to implement '__ge__' method of the class with your way.)
 
-    c_s1.sort()
+    print "c_s1 is", c_s1
+    #c_s1.sort()
     
     if flg_s != 1:
         y[0] = x[1] * x[q[0] - 1]
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
-        cptgs(n, q, sz, y, c_s1, uprbd_1, sogsp)
-    n[0] = h[0] * n[0] 
+        tmp_ss, tmp_gs = cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp)
+    ###n[0] = h[0] * n[0] 
         # 6
-    cptodr(n, x, sossp, sogsp, c_s1, nt)
+    print "a2"
+    print "n is ", n
+    print "nt is ", nt
+    tmp_ss, tmp_gs = cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs)
+    return tmp_ss, tmp_gs
         
 def bsgscv(disc, classnum, qin):
     '''
     '''
+    ###
+    matla = []
+    lstofelg = []
+    ###
+    lpt = []
     # compute bounds
     qpt = qin[0] ** qin[1]
+    print "qin[0] is ", qin[0]
+    print "qin[1] is ", qin[1]
+    print "qpt is ", qpt
     uprbd = qpt + 1
     lwrbd = uprbd // 2 + 1
     print "uprbd is ", uprbd
@@ -1073,8 +1139,13 @@ def bsgscv(disc, classnum, qin):
     sogsp = QuadraticGroup(disc, classnum, []) # a subset of G
     #print sossp
     #print sogsp
-    sossp.insttree(ut)
-    sogsp.insttree(ut)
+    utwi = copy.deepcopy(ut)
+    utwi.alpha.append([0, ut, 1])
+    print "utwi.alpha is ", utwi.alpha
+    sossp.insttree(utwi)
+    sogsp.insttree(utwi)
+    print "sossp is ", sossp
+    print "sogsp is ", sogsp
     #print sossp.rootoftree
     #print sogsp.rootoftree
     # initialize variables
@@ -1085,6 +1156,7 @@ def bsgscv(disc, classnum, qin):
     y = [0]
     ret = -1
     # take a new element of the group.
+    indofg = 1
     while ret == -1:
         # get next element
         #####################################
@@ -1118,15 +1190,47 @@ def bsgscv(disc, classnum, qin):
             # initialize order
             ###n[0] = h[0] * n[0]
             # compute the order of nt[1]
-            cptodrcv(n, x, sossp, sogsp, c_s1, nt)
+            print "a1"
+            print "n is ", n
+            print "nt is ", nt
+            tmp_ss, tmp_gs = cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum)
         else:
             print "point a"
             ###cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt)
-            cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt)
+            tmp_ss, tmp_gs = cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum)
+        print "tmp_ss.alpha is ", tmp_ss.alpha
+        print "indofg is ", indofg
+        #if indofg != 1:
+        setind(tmp_ss, tmp_gs, matla)
         # finished?
-        ret = ckfn(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y)
-    return ret
+        #ret = ckfncv(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y)
+        ret = ckfncv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, classnum, indofg)
+        indofg = indofg + 1
+    return lstofelg, malta
 
+def setind(tmp_ss, tmp_gs, matla):
+    if tmp_ss.alpha[len(tmp_ss.alpha) - 1][0] >= tmp_gs.beta[len(tmp_gs.beta) - 1][0]:
+        lgtinlst = tmp_ss.alpha[len(tmp_ss.alpha) - 1][0]
+    else:
+        lgtinlst = tmp_gs.beta[len(tmp_gs.beta) - 1][0]
+    for idofel in lgtinlst:
+        tmp_mt = [n[:]]
+        if tmp_ss.alpha[idofel][0] == idofel:
+            ioind = tmp_ss.alpha[idofel][2]
+            lstofelg.append(tmp_ss.alpha[idofel][1])
+        else:
+            ioind = 0
+            lstofelg.append(0)
+        if tmp_gs.beta[idofel][0] == idofel:
+            joind = tmp_gs.beta[idofel][2]
+            if lstofelg[len(lstofelg) - 1] == 0:
+                lstofelg[len(lstofelg) - 1] = tmp_gs.beta[idofel][1]
+        else:
+            joind = 0
+        tmp_mt.append(ioind - joind)
+    matla.append(tmp_mt)
+    return True
+        
 def gtut(disc):
     if disc % 4 == 0:
         a = 1
