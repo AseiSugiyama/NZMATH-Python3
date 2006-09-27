@@ -974,18 +974,24 @@ def ckfncv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, c
     ####0918 -518172 156
     ####print "qqq"
     tnt = copy.deepcopy(nt)
+    ss = lsl.retel()
     for r in range(q[0]):
-        ss = lsl.retel()
+        ###ss = lsl.retel()
         ####print "ss is ", ss
+        print "EEEE indofg is ", indofg
         for ssi in ss:
             newel = (tnt ** r) * ssi
+            print "RRR newel is ", newel
             if sossp.search(newel) == False:
-                sfind = indofg - len(newel.alpha)
+                print "SSS newel is ", newel
+                newel.alpha = ssi.alpha[:]
+                lenal = len(newel.alpha)
+                sfind = indofg - lenal
                 for sit in range(sfind):
-                    newel.alpha.append([indofg, 0, 0])
+                    newel.alpha.append([lenal + sit, 0, 0])
                 newel.alpha.append([indofg, tnt, r])
                 ####print "newel is " , newel
-                ####print "alpha is ", newel.alpha
+                print "V alpha is ", newel.alpha
                 sossp.insttree(newel) # multiple of two elements of G
     print "CCCsossp is ", sossp
 
@@ -993,19 +999,23 @@ def ckfncv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, c
     ####print "q[0] is ", q[0]
     ####print "y[0] is ", y[0]
     ####0919
+    ltl = lll.retel()
     for a in range(q[0] + 1):
-        ltl = lll.retel()
+        ###ltl = lll.retel()
         ####print "ltl is ", ltl
         for eol in ltl:
             newel2 = (y[0]**(- a)) * eol
             ####print "newel2 tmp is ", newel2
             if sogsp.search(newel2) == False:
-                gfind = indofg - len(newel.beta)
+                print "VVV newel2 is ", newel2
+                newel2.beta = eol.beta[:]
+                lenbt = len(newel2.beta)
+                gfind = indofg - lenbt
                 for git in range(gfind):
-                    newel2.beta.append([indofg, 0, 0])
+                    newel2.beta.append([lenbt + git, 0, 0])
                 newel2.beta.append([indofg, tnt, q[0] * (- a)])
                 ####print "newel2 is ", newel2
-                ####print "beta is ", newel2.beta
+                print "V beta is ", newel2.beta
                 sogsp.insttree(newel2) # multiple of two elements of G
     ####print "sogsp is ", sogsp
     return -1, sossp
@@ -1013,8 +1023,8 @@ def ckfncv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, c
 def cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs):
     #tmp_ss = 
     #tmp_gs = 
-    print "n is ", n
-    print "nt is ", nt
+    print "HHn is ", n
+    print "HHnt is ", nt
     # flg
     flg_bk = 1
     ##############
@@ -1066,7 +1076,7 @@ def cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs):
     ####print "CCC tmp_ss is ", tmp_ss
     ####print "CCC tmp_gs is ", tmp_gs
     return tmp_ss, tmp_gs
-def cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp):
+def cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp, classnum):
 
     while 1:
         ########################### loop
@@ -1083,8 +1093,11 @@ def cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp):
         sz[0] = y[0] * sz[0]
         n[0] = n[0] + q[0]
         if n[0] -q [0] + 1 <= uprbd_1[0]:
+        #####if n[0] -q [0] + 1 <= classnum:
             continue
         else:
+            print "ERROR n[0] - q[0] +1 is ", n[0] - q[0] + 1
+            print "ERROR uprbd_1 is ", uprbd_1
             raise ValueError("the order is larger than upper bound")
     
 def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum):
@@ -1132,7 +1145,7 @@ def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, cl
         y[0] = x[1] * x[q[0] - 1]
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
-        tmp_ss, tmp_gs = cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp)
+        tmp_ss, tmp_gs = cptgscv(n, q, sz, y, c_s1, uprbd_1, sogsp, classnum)
         ####print "A tmp_ss is ", tmp_ss
         ####print "A tmp_gs is ", tmp_gs
         #return True
@@ -1153,6 +1166,9 @@ def cptsspcv(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, cl
 def bsgscv(disc, classnum, qin):
     '''
     '''
+    print "XXXXX the first of the program"
+    #### -998775 caution
+    #### -998776 caution
     ###
     matla = []
     lstofelg = []
@@ -1213,7 +1229,10 @@ def bsgscv(disc, classnum, qin):
         mstp1 = uprbd_1[0] - lwrbd_1[0]
         if (mstp1 == 0) or (mstp1 == 1):
             q[0] = 1
+        ###elif (mstp1 < 0):
+        ###    q[0] = 1
         else:
+            print "SSSSSSSSSS mstp1 is ", mstp1
             tppm = nzmath.factor.misc.primePowerTest(mstp1)
             if tppm[1] == 2:
                 q[0] = nzmath.arith1.floorsqrt(mstp1)
@@ -1239,7 +1258,7 @@ def bsgscv(disc, classnum, qin):
             # initialize order
             ###n[0] = h[0] * n[0]
             # compute the order of nt[1]
-            print "a1"
+            ###print "a1"
             print "n is ", n
             print "nt is ", nt
             tmp_ss, tmp_gs = cptodrcv(n, x, sossp, sogsp, c_s1, nt, disc, classnum)
@@ -1265,15 +1284,16 @@ def bsgscv(disc, classnum, qin):
     return lstofelg, matla
 
 def setind(n, indofg, tmp_ss, tmp_gs, matla):
-    ####print "tmp_ss.alpha is ",  tmp_ss.alpha
-    ####print "tmp_gs.beta is ",  tmp_gs.beta
+    print "setind tmp_ss.alpha is ",  tmp_ss.alpha
+    print "setind tmp_gs.beta is ",  tmp_gs.beta
+    print "setind tmp_gs is", tmp_gs
 
     #if tmp_ss.alpha[len(tmp_ss.alpha) - 1][0] >= tmp_gs.beta[len(tmp_gs.beta) - 1][0]:
     #    lgtinlst = tmp_ss.alpha[len(tmp_ss.alpha) - 1][0]
     #else:
     #    lgtinlst = tmp_gs.beta[len(tmp_gs.beta) - 1][0]
     ####print "lgtinlst is ", lgtinlst
-    print "CCCCC indofg is ", indofg
+    print "CCCBC indofg is ", indofg
     lgtinlst = indofg
     if lgtinlst == 1:
         #lstofelg.append(tmp_ss)
@@ -1309,7 +1329,9 @@ def setind(n, indofg, tmp_ss, tmp_gs, matla):
         except:
             raise ValueError
         tmp_mt.append(ioind - joind)
-        print "AAA tmp_mt is ", tmp_mt
+        print "ioind is ", ioind
+        print "joind is ", joind
+        #print "AAA tmp_mt is ", tmp_mt
     matla.append(tmp_mt)
     return True
         
@@ -1325,3 +1347,36 @@ def gtut(disc):
     else:
         raise ValueError
     return [a, b, c]
+
+
+def ckind(a, b):
+    for i in range(len(a)):
+        if a[i].element == b:
+            print "i = ", i
+
+def testofbsgs(genelist, mat):
+    for i in range(len(genelist)):
+        if type(mat[i]) == int:
+            geneted = genelist[i]** mat[i]
+        else:
+            geneted = genelist[i]** mat[i][0]
+        ab = geneted ** 0
+        print "ab is e", ab
+        print "mat[i] is ", mat[i]
+        if type(mat[i]) == int:
+            sss = 0
+        else:
+            sss = len(mat[i])
+        for j in range(len(mat[i])):
+            if j == 0:
+                contine
+            print "genelist[j] is ", genelist[j]
+            print "mat[i][j] is ", mat[i][j]
+            if type(mat[i] == int):
+                ab = ab * (genelist[j]**(- mat[i]))
+            else:
+                ab = ab * (genelist[j]**(- mat[i][j]))
+        print i, "AA geneted is ", geneted
+        print i, "AA ab is ", ab
+
+        
