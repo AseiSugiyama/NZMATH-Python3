@@ -25,7 +25,11 @@ def e1_Zn(x,n):
     """
     n is a element in Integer Sets.
     x = [a,b] <=> a*t = b (mod n)
+
+    Deprecated: use e1_ZnZ instead.
     """
+    import warnings
+    warnings.warn(DeprecationWarning("use e1_ZnZ instead"))
     (a,b,e,m) = (x[0],x[1],0,n)
     (c,d) = (m//a,m%a)
     while d :
@@ -36,17 +40,26 @@ def e1_Zn(x,n):
     else:
         return (b//a)%n
 
+def e1_ZnZ(x, n):
+    """
+    Return the solution of x[0] + x[1]*t = 0 (mod n).
+    x[0], x[1] and n must be positive integers.
+    """
+    try:
+        return (-x[0] * arith1.inverse(x[1], n)) % n
+    except ZeroDivisionError:
+        raise ValueError("No Solution")
+
 def e2(x):
     """
     0 = x[0] + x[1]*t + x[2]*t**2
     """
-    a = x[2]
-    b = x[1]
-    c = x[0]
-    if b**2 - 4*a*c >= 0:
-        sqrtd = math.sqrt(b**2 - 4*a*c)
+    c, b, a = x
+    d = b**2 - 4*a*c 
+    if d >= 0:
+        sqrtd = math.sqrt(d)
     else:
-        sqrtd = cmath.sqrt(b**2 - 4*a*c)
+        sqrtd = cmath.sqrt(d)
     return ((-b + sqrtd)/(2*a), (-b - sqrtd)/(2*a))
 
 def e2_Fp(x,p):
@@ -54,11 +67,9 @@ def e2_Fp(x,p):
     p is prime
     f = x[0] + x[1]*t + x[2]*t**2
     """
-    a = x[2]%p
-    b = x[1]%p
-    c = x[0]%p
+    c, b, a = (_x % p for _x in x)
     if a == 0:
-        return [e1_Zn([c, b], p)]
+        return [e1_ZnZ([c, b], p)]
     if p == 2:
         solutions = []
         if x[0] % 2 == 0:

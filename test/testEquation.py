@@ -71,6 +71,15 @@ class SimMethodTest (GlobalEquationTestBase):
 
 
 class LocalEquationTest (unittest.TestCase):
+    def test_e1_Zn(self):
+        solution = equation.e1_Zn([3, 1], 7) # 3*t = 1 (mod 7)
+        self.assertEqual(5, solution)
+
+    def test_e1_ZnZ(self):
+        solution = equation.e1_ZnZ([1, 3], 7) # 1 + 3*t = 0 (mod 7)
+        self.assertEqual(2, solution)
+        self.assertRaises(ValueError, equation.e1_ZnZ, [1, 6], 12)
+
     def test_e2_Fp(self):
         # mod 2
         solutions = equation.e2_Fp([0, 1, 1], 2) # single roots
@@ -92,6 +101,11 @@ class LocalEquationTest (unittest.TestCase):
         self.assertEqual(2, len(solutions))
         for s in solutions:
             self.assertEqual(0, (2 + 3*s**2) % 5)
+
+    def test_e2_Fp_degenerate(self):
+        solutions = equation.e2_Fp([1, 3, 7], 7)
+        self.assertEqual(1, len(solutions))
+        self.assertEqual(2, solutions[0])
 
     def test_e3_Fp(self):
         solutions = equation.e3_Fp([2, 0, 0, 1], 43)
