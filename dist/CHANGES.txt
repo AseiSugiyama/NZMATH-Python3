@@ -1,3 +1,16 @@
+version 0.5.0 to 0.5.1
+----------------------
+* restructure matrix module.
+* restructure ec module.
+* revise vector module.
+* add zero and one for ResidueClassRing (requested by Bill Hale).
+* add bsgs to quad.
+* add lpsp and fpsp (Lucas and Frobenius pseudoprime tests) to prime.
+* add __hash__ for several immutable classes.
+* fix a bug of SimMethod in equation.
+* fix bugs in polynomial.
+* fix bugs in ring.
+
 version 0.4.1 to 0.5.0
 ----------------------
 * rearrange modules in factor sub-package.

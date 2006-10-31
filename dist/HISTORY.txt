@@ -1,3 +1,7 @@
+2006-08-08
+----------
+The version 0.5.1 has been released.
+
 2006-02-24
 ----------
 The version 0.5.0 has been released.
