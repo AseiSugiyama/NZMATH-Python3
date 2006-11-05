@@ -1,16 +1,48 @@
 #bigrandom.py
 
 import random as _random
+import nzmath.arith1 as arith1
 
-def randrange(start,stop = "zero",step = 1):
+
+def randrange(start, stop=None, step=1):
     """
     Choose a random item from range([start,] stop[, step]).
     (Return long integer.)
+
+    see random.randrange
     """
-    positiveStep = 1
-    if stop == "zero":
-        stop = start
-        start = 0
+    negative_step = False
+    if stop is None:
+        start, stop = 0, start
+    if step < 0:
+        start, stop, step = -start, -stop, -step
+        negative_step = True
+
+    _validate_for_randrange(start, stop, step)
+
+    if (stop - start) % step != 0:
+        v = (stop - start)//step + 1
+    else:
+        v = (stop - start)//step
+
+    bitlength = arith1.log(v, base=2)
+    if v != 2**bitlength:
+        bitlength += 1
+    randomized = v + 1 # to pass the first test
+    while randomized >= v:
+        randomized = 0
+        for i in range(bitlength):
+            if random() < 0.5:
+                randomized += 1 << i
+    result = randomized * step + start
+    if negative_step:
+        return -result
+    return result
+
+def _validate_for_randrange(start, stop, step):
+    """
+    Check validity of arguments for randrange.
+    """
     if step == 0:
         raise ValueError("zero step for randrange()")
     elif start != long(start):
@@ -19,22 +51,8 @@ def randrange(start,stop = "zero",step = 1):
         raise ValueError("non-integer stop for randrange()")
     elif step != long(step):
         raise ValueError("non-integer step for randrange()")
-
-    if step < 0:
-        step = -step
-        start = -start
-        stop = -stop
-        positiveStep = 0
     if start >= stop:
         raise ValueError("empty range for randrange()")
-
-    if (stop - start) % step != 0:
-        v = (stop - start)//step + 1
-    else:
-        v = (stop - start)//step
-    if positiveStep:
-        return (long(random() * v) * step + start)
-    return -(long(random() * v) * step + start)
 
 random = _random.random
 seed = _random.seed
