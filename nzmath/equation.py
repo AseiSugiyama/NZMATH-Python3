@@ -6,6 +6,7 @@ import logging
 import nzmath.arith1 as arith1
 import nzmath.polynomial as polynomial
 import nzmath.finitefield as finitefield
+import nzmath.bigrange as bigrange
 
 _log = logging.getLogger('nzmath.equation')
 _log.setLevel(logging.DEBUG)
@@ -17,7 +18,7 @@ def e1(x):
     0 = x[0] + x[1]*t
     """
     if x[1] == 0:
-        raise ZeroDivisionError,"No Solution"
+        raise ZeroDivisionError("No Solution")
     else:
         return -x[0]/x[1]
 
@@ -36,7 +37,7 @@ def e1_Zn(x,n):
         (m,a,e,b) = (a,d,b,e-c*b)
         (c,d) = (m//a,m%a)
     if x[1]%a != 0:
-        raise ValueError, "No Solution"
+        raise ValueError("No Solution")
     else:
         return (b//a)%n
 
@@ -106,12 +107,12 @@ def e3(x):
     checker = [abs(3*m*n*z + p) for z in W]
     n = n * W[checker.index(min(checker))]
 
-    equ = []
+    sol = []
     for i in range(3):
-        equ.append(W[i]*m + W[-i]*n - a/3)
-    return equ
+        sol.append(W[i]*m + W[-i]*n - a/3)
+    return sol
 
-def e3_Fp(x,p):
+def e3_Fp(x, p):
     """
     p is prime
     0 = x[0] + x[1]*t + x[2]*t**2 + x[3]*t**3
@@ -121,51 +122,39 @@ def e3_Fp(x,p):
     coeff = []
     for c in x[1:]:
         coeff.append((c * lc_inv).n)
-    equ=[]
-    i=0
-    while i<p:
-        if (i**3+coeff[0]*i**2+coeff[1]*i+coeff[2])%p==0:
-            equ.append(i)
+    sol = []
+    for i in bigrange.range(p):
+        if (i**3 + coeff[0]*i**2 + coeff[1]*i + coeff[2]) % p == 0:
+            sol.append(i)
             break
-        else:
-            i=i+1
-    if len(equ)==0:
-        return equ
-    X=e2_Fp([coeff[1]+coeff[0]*equ[0]+equ[0]**2,coeff[0]+equ[0],1],p)
-    if len(X)!=0:
-        equ.append(X[0])
-        equ.append(X[1])
-    return equ
+    if len(sol) == 0:
+        return sol
+    X = e2_Fp([coeff[1] + (coeff[0] + sol[0])*sol[0], coeff[0] + sol[0], 1], p)
+    if len(X) != 0:
+        sol.extend(X)
+    return sol
 
-def Newton(f,initial=1,repeat=250):
+def Newton(f, initial=1, repeat=250):
     """
     f = a_n + a_(n-1) * x + ... + a_0 * x ** n
     """
     length = len(f)
     df = []
-    i = 1
-    j = 1
-    while i != length:
-        df.append(j*f[i])
-        i = i + 1
-        j = j + 1
+    for i in range(1, length):
+        df.append(i*f[i])
     l = initial
     for k in range(repeat):
-        i = 0
-        j = 0
         coeff = 0
         dfcoeff = 0
-        while i != length - 1:
-            coeff = coeff + f[i]*(l**j)
-            dfcoeff = dfcoeff + df[i]*(l**j)
-            i = i + 1
-            j = j + 1
-        coeff = coeff + f[i]*(l**j)
-        tangent = [coeff-l*dfcoeff,dfcoeff]
+        for i in range(length - 1):
+            coeff += f[i]*(l**i)
+            dfcoeff += df[i]*(l**i)
+        coeff += f[i]*(l**i)
+        tangent = [coeff - l*dfcoeff, dfcoeff]
         if coeff == 0:
             return l
         elif coeff != 0 and dfcoeff == 0:
-            raise ValueError,"There is not solution or Choose different initial"
+            raise ValueError("There is not solution or Choose different initial")
         else:
             if l == e1(tangent):
                 return l
