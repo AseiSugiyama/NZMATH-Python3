@@ -16,14 +16,8 @@ class QS:
             if n % i == 0:
                 _log.error("This number is divided by %d" % i)
                 raise ValueError
-        i = 1
-        while 1:
-            if self.number > 10**i:
-                i += 1
-            else:
-                self.digit = i
-                break
 
+        self.digit = arith1.log(self.number, 10) + 1
         self.Srange = sieverange
         self.FBN = factorbase
 
@@ -194,7 +188,7 @@ class MPQS:
         self.b_list = []
 
         #Decide prameters for each digits
-        self.digit = self.getNumberOfDigit()
+        self.digit = arith1.log(self.number, 10) + 1
 
         if sieverange != 0:
             self.Srange = sieverange
@@ -253,17 +247,13 @@ class MPQS:
         k = 0
         factor_base = [-1]
         FB_log = [0]
-        while True:
+        while k < self.FBN:
             ii = primes_table[i]
             if arith1.legendre(self.number,ii) == 1:
                 factor_base.append(ii)
                 FB_log.append(primes_log_table[i])
                 k += 1
-                i += 1
-                if k == self.FBN:
-                    break
-            else:
-                i += 1
+            i += 1
 
         self.FB = factor_base
         self.FB_log = FB_log
@@ -287,16 +277,16 @@ class MPQS:
             d = int(math.sqrt((math.sqrt(self.number)/(math.sqrt(2)*self.Srange))))
             if d%2 == 0:
                 if (d+1)%4 == 1: #case d=0 mod4
-                    d=d+3
+                    d += 3
                 else:
-                    d=d+1        #case d=2 mod4
+                    d += 1       #case d=2 mod4
             elif d%4 == 1:       #case d=1 mod4
-                d = d+2
+                d += 2
                                  #case d=3 mod4
         else:
             d = self.d_list[-1]
 
-        while d in self.d_list or prime.primeq(d) != 1 or \
+        while d in self.d_list or not prime.primeq(d) or \
               arith1.legendre(self.number,d) != 1 or d in self.FB:
             d += 4
         a = d**2
@@ -448,13 +438,6 @@ class MPQS:
         _log.info("Total time of getting enough smooth numbers = %f sec" % (time.time()-T))
         return smooth
 
-    def getNumberOfDigit(self):
-        i = 1
-        power_of_ten = 10
-        while self.number > power_of_ten:
-            i += 1
-            power_of_ten *= 10
-        return i
 
 class Elimination:
     def __init__(self, smooth):
