@@ -57,6 +57,12 @@ class PrimeTest(unittest.TestCase):
         g = prime.generator_eratosthenes(541)
         self.assertEqual(100, len([p for p in g]))
 
+    def testRandPrime(self):
+        for n in range(3, 52, 6):
+            p = prime.randPrime(n)
+            self.assert_(10**(n-1) < p < 10**n)
+            self.assert_(prime.smallSpsp(p)) # primeq is too heavy..
+
 
 class LpspTest (unittest.TestCase):
     def testLucasTestForPrime(self):
