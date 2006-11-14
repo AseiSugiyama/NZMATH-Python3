@@ -6,6 +6,7 @@ import logging
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
+import nzmath.bigrange as bigrange
 from nzmath.arith1 import vp
 
 _log = logging.getLogger('nzmath.prime')
@@ -25,11 +26,9 @@ def trialDivision(n, bound=0):
         m = min(bound, arith1.floorsqrt(n))
     else:
         m = arith1.floorsqrt(n)
-    p = 3
-    while p <= m:
+    for p in bigrange.range(3, m+1, 2):
         if not (n % p):
             return False
-        p += 2
     return True
 
 
@@ -53,7 +52,7 @@ def spsp(n, base, s=None, t=None):
     return True
 
 
-def millerRabin(n, times = 20):
+def millerRabin(n, times=20):
     """
     Miller-Rabin pseudo-primality test.  Optional second argument
     times (default to 20) is the number of repetition.  The error
