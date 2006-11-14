@@ -7,7 +7,6 @@ import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
 import nzmath.bigrange as bigrange
-from nzmath.arith1 import vp
 
 _log = logging.getLogger('nzmath.prime')
 _log.setLevel(logging.DEBUG)
@@ -59,7 +58,7 @@ def millerRabin(n, times=20):
     probability is at most 4**(-times).
     """
     s, t = arith1.vp(n-1, 2)
-    for i in range(times):
+    for _ in range(times):
         b = bigrandom.randrange(2, n-1)
         if not spsp(n, b, s, t):
             return False
@@ -305,10 +304,7 @@ def primeq(n):
 def _isprime(n):
     if gcd.gcd(n, 510510) > 1:
         return (n in (2, 3, 5, 7, 11, 13, 17))
-    for p in [2, 13, 23, 1662803]:
-        if not spsp(n, p):
-            return False
-    return True
+    return smallSpsp(n)
 
 def properDivisors(n):
     """
@@ -316,14 +312,13 @@ def properDivisors(n):
 
     It is only useful for a product of small primes.
     """
-    if n in (2,3,5,7,11,13,17,19,23):
+    if n in (2, 3, 5, 7, 11, 13, 17, 19, 23):
         return []
     else:
         l = [1]
-        d = _factor(n)
-        for (p,e) in d:
+        for (p, e) in _factor(n):
             for j in range(1, e+1):
-                l += [k*pow(p,j) for k in l if k % p != 0]
+                l += [k*pow(p, j) for k in l if k % p != 0]
         l.remove(1)
         l.remove(n)
         l.sort()
@@ -364,15 +359,14 @@ def primitive_root(p):
     """
     Return a primitive root of Z/pZ.
     """
-    i = 2
     pd = properDivisors(p-1)
-    while i < p:
+    for i in bigrange.range(2, p):
         for d in pd:
             if pow(i, (p-1)//d, p) == 1:
                 break
         else:
             return i
-        i += 1
+
 
 class Zeta:
     """
@@ -392,7 +386,7 @@ class Zeta:
                 zr_a.z[i] = self.z[i] + other.z[i]
             return zr_a
         else:
-            m = gcd.lcm(self.size,other.size)
+            m = gcd.lcm(self.size, other.size)
             return self.promote(m) + other.promote(m)
 
     def __mul__(self,other):
@@ -506,6 +500,7 @@ class Zeta:
     def mass(self):
         return sum(self.z)
 
+
 class FactoredInteger:
     def __init__(self, other):
         if isinstance(other, FactoredInteger):
@@ -551,8 +546,9 @@ class FactoredInteger:
     def __long__(self):
         return long(self.integer)
 
+
 class TestPrime:
-    primes = [2,3,5,7,11,13,17,19,23,29,31]
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
 
     def __init__(self, t=12):
         self.t = FactoredInteger(t)
@@ -561,7 +557,7 @@ class TestPrime:
         for p in self.t.factors:
             temp = smoothp[:]
             pp = 1
-            for i in range(self.t.factors[p]):
+            for _ in range(self.t.factors[p]):
                 pp *= p
                 smoothp += [x*pp for x in temp]
         for p in [x+1 for x in smoothp]:
@@ -574,11 +570,12 @@ class TestPrime:
     def next(self):
         eu = []
         for p in self.primes:
-            if self.t.factors.has_key(p):
-                eu.append((p-1)*(p**(self.t.factors[p]-1)))
+            if p in self.t.factors:
+                eu.append((p - 1) * (p**(self.t.factors[p] - 1)))
             else:
-                eu.append(p-1)
+                eu.append(p - 1)
         return self.__class__(self.t*self.primes[eu.index(min(eu))])
+
 
 class Status:
     """
@@ -594,31 +591,30 @@ class Status:
         self.d[key] = 1
 
     def yet_keys(self):
-        l = [k for k in self.d.keys() if not self.d[k]]
-        return l
+        return [k for k in self.d.keys() if not self.d[k]]
 
     def isDone(self, key):
         return self.d[key]
 
-    def subodd(self,p,q,n,J):
-        s = J.get(1,p,q)
-        Jpq = J.get(1,p,q)
+    def subodd(self, p, q, n, J):
+        s = J.get(1, p, q)
+        Jpq = J.get(1, p, q)
         m = s.size
-        for x in range(2,m):
+        for x in range(2, m):
             if x % p == 0:
                 continue
             sx = Zeta(m)
             i = x
             j = 1
-            while i>0:
+            while i > 0:
                 sx[j] = Jpq[i]
-                i = (i+x)%m
+                i = (i + x) % m
                 j += 1
             sx[0] = Jpq[0]
             sx = pow(sx, x, n)
-            s = s*sx%n
+            s = s*sx % n
         s = pow(s, n//m, n)
-        r = n%m
+        r = n % m
         t = 1
         for x in range(1, m):
             if x % p == 0:
@@ -630,22 +626,22 @@ class Status:
                 j = 1
                 while i > 0:
                     tx[j] = Jpq[i]
-                    i = (i+x)%m
+                    i = (i + x) % m
                     j += 1
                 tx[0] = Jpq[0]
                 tx = pow(tx, c, n)
-                t = t*tx%n
-        s = +(t*s%n)
+                t = t*tx % n
+        s = +(t*s % n)
         if s.weight() == 1 and s.mass() == 1:
-            for i in range(1,m):
-                if gcd.gcd(m,s.z.index(1)) == 1:
+            for i in range(1, m):
+                if gcd.gcd(m, s.z.index(1)) == 1:
                     self.done(p)
                 return True
         return False
 
-    def sub8(self,q,k,n,J):
-        s = J.get(3,q)
-        J3 = J.get(3,q)
+    def sub8(self, q, k, n, J):
+        s = J.get(3, q)
+        J3 = J.get(3, q)
         m = len(s)
         sx_z = {1:s}
         x = 3
@@ -656,7 +652,7 @@ class Status:
             j = 1
             while i != 0:
                 z_4b[j] = J3[i]
-                i = (i+x)%m
+                i = (i + x) % m
                 j += 1
             z_4b[0] = J3[0]
             sx_z[x] = z_4b
@@ -666,7 +662,7 @@ class Status:
 
         s = pow(s, n//m, n)
 
-        r = n%m
+        r = n % m
         step = 2
         x = 3
         while m > x:
@@ -675,10 +671,10 @@ class Status:
                 s = pow(sx_z[x], c//m, n) * s
             step = 8 - step
             x += step
-        r = r%8
+        r = r % 8
         if r == 5 or r == 7:
-            s = J.get(2,q).promote(m) * s
-        s = +(s%n)
+            s = J.get(2, q).promote(m) * s
+        s = +(s % n)
 
         if s.weight() == 1 and s.mass() == 1:
             if gcd.gcd(m, s.z.index(1)) == 1 and pow(q, (n-1)//2, n) == n-1:
@@ -690,13 +686,13 @@ class Status:
             return True
         return False
 
-    def sub4(self,q,n,J):
-        j2 = J.get(1,2,q)**2
-        s = q*j2%n
+    def sub4(self, q, n, J):
+        j2 = J.get(1, 2, q)**2
+        s = q*j2 % n
         s = pow(s, n//4, n)
         if n%4 == 3:
-            s = s*j2%n
-        s = +(s%n)
+            s = s*j2 % n
+        s = +(s % n)
         if s.weight() == 1 and s.mass() == 1:
             i = s.z.index(1)
             if (i == 1 or i == 3) and pow(q, (n-1)//2, n) == n-1:
@@ -704,136 +700,136 @@ class Status:
             return True
         return False
 
-    def sub2(self,q,n):
+    def sub2(self, q, n):
         s = pow(n-q, (n-1)//2, n)
         if s == n-1:
-            if n%4 == 1:
+            if n % 4 == 1:
                 self.done(2)
         elif s != 1:
             return False
         return True
 
-    def subrest(self,p,n,et,J,ub=200):
+    def subrest(self, p, n, et, J, ub=200):
         if p == 2:
             q = 5
-            c = 0
-            while c < ub:
+            while q < 2*ub + 5:
                 q += 2
-                if not _isprime(q) or et%q == 0:
+                if not _isprime(q) or et % q == 0:
                     continue
-                if n%q == 0:
+                if n % q == 0:
                     _log.info("%s divides %s.\n" % (q, n))
                     return False
                 k = arith1.vp(q-1, 2)[0]
                 if k == 1:
-                    if n%4 == 1 and not self.sub2(q,n):
+                    if n % 4 == 1 and not self.sub2(q, n):
                         return False
                 elif k == 2:
-                    if not self.sub4(q,n,J):
+                    if not self.sub4(q, n, J):
                         return False
                 else:
-                    if not self.sub8(q,k,n,J):
+                    if not self.sub8(q, k, n, J):
                         return False
                 if self.isDone(p):
                     return True
-                c += 1
             else:
                 raise ImplementLimit
         else:
             step = p*2
             q = 1
-            c = 0
-            while c < ub:
+            while q < step*ub + 1:
                 q += step
                 if not _isprime(q) or et % q == 0:
                     continue
                 if n % q == 0:
                     _log.info("%s divides %s.\n" % (q, n))
                     return False
-                if not self.subodd(p,q,n,J):
+                if not self.subodd(p, q, n, J):
                     return False
                 if self.isDone(p):
                     return True
-                c += 1
             else:
                 raise ImplementLimit
 
+
 class JacobiSum:
+    """
+    A repository of the Jacobi sums.
+    """
     def __init__(self):
         self.shelve = {}
+
     def get(self, group, p, q=None):
         if q:
             assert group == 1
-            if not self.shelve.has_key(str((group,long(p),long(q)))):
+            if (group, p, q) not in self.shelve:
                 self.make(q)
-            return self.shelve[str((group,long(p),long(q)))]
+            return self.shelve[group, p, q]
         else:
             assert group == 2 or group == 3
-            if not self.shelve.has_key(str((group,long(p)))):
+            if (group, p) not in self.shelve:
                 self.make(p)
-            return self.shelve[str((group,long(p)))]
+            return self.shelve[group, p]
 
-    def make(self,q):
+    def make(self, q):
         fx = self.makefx(q)
         qpred = q-1
         qt = _factor(qpred)
         qt2 = [k for (p, k) in qt if p == 2][0]
         k, pk = qt2, 2**qt2
         if k >= 2:
-            J2q = Zeta(pk, 1+fx[1])
+            J2q = Zeta(pk, 1 + fx[1])
             for j in range(2, qpred):
-                J2q[j+fx[j]] = J2q[j+fx[j]]+1
-            self.shelve[str((1,2L,long(q)))] = +J2q
+                J2q[j + fx[j]] = J2q[j + fx[j]] + 1
+            self.shelve[1, 2, q] = +J2q
             if k >= 3:
                 J2 = Zeta(8, 3+fx[1])
                 J3 = Zeta(pk, 2+fx[1])
                 for j in range(2,qpred):
-                    J2[j*3+fx[j]] = J2[j*3+fx[j]]+1
-                    J3[j*2+fx[j]] = J3[j*2+fx[j]]+1
-                self.shelve[str((3,long(q)))] = +(self.shelve[str((1,2L,long(q)))]*J3)
-                self.shelve[str((2,long(q)))] = +(J2*J2)
+                    J2[j*3 + fx[j]] = J2[j*3 + fx[j]]+1
+                    J3[j*2 + fx[j]] = J3[j*2 + fx[j]]+1
+                self.shelve[3, q] = +(self.shelve[1, 2, q]*J3)
+                self.shelve[2, q] = +(J2*J2)
         else:
-            self.shelve[str((1,2L,long(q)))] = 1
+            self.shelve[1, 2, q] = 1
         for (p, k) in qt:
             if p == 2:
                 continue
             pk = p**k
-            Jpq = Zeta(pk,1+fx[1])
-            for j in range(2,qpred):
-                Jpq[j+fx[j]] = Jpq[j+fx[j]]+1
-            self.shelve[str((1,long(p),long(q)))] = +Jpq
+            Jpq = Zeta(pk, 1 + fx[1])
+            for j in range(2, qpred):
+                Jpq[j + fx[j]] = Jpq[j + fx[j]] + 1
+            self.shelve[1, p, q] = +Jpq
         del fx
 
     def makefx(self, q):
         g = primitive_root(q)
         qpred = q-1
         qd2 = qpred//2
-        g_mf = [0,g]
-        for i in range(2,qpred):
-            g_mf.append((g_mf[-1]*g)%q)
+        g_mf = [0, g]
+        for _ in range(2, qpred):
+            g_mf.append((g_mf[-1]*g) % q)
         fx = {}
-        for i in range(1,qpred):
-            if fx.has_key(i):
+        for i in range(1, qpred):
+            if i in fx:
                 continue
             j = 1
-            while g_mf[j]+g_mf[i]-1 != q:
+            while g_mf[j] + g_mf[i] - 1 != q:
                 j += 1
             fx[i] = j
             fx[j] = i
-            fx[qpred-i] = (j-i+qd2)%qpred
-            fx[fx[qpred-i]] = qpred-i
-            fx[qpred-j] = (i-j+qd2)%qpred
-            fx[fx[qpred-j]] = qpred-j
+            fx[qpred - i] = (j - i + qd2) % qpred
+            fx[fx[qpred - i]] = qpred - i
+            fx[qpred - j] = (i - j + qd2) % qpred
+            fx[fx[qpred - j]] = qpred - j
         del g_mf
         return fx
 
+
 def apr(n):
     """
-
     apr is the main function for Adleman-Pomerance-Rumery primality test.
     Assuming n has no prime factors less than 32.
     Assuming n is spsp for several bases.
-
     """
     L = Status()
 
@@ -857,30 +853,29 @@ def apr(n):
         for p in plist:
             if (q-1) % p != 0:
                 continue
-            if not L.subodd(p,q,n,J):
+            if not L.subodd(p, q, n, J):
                 return False
         k = arith1.vp(q-1, 2)[0]
         if k == 1:
-            if not L.sub2(q,n):
+            if not L.sub2(q, n):
                 return False
         elif k == 2:
-            if not L.sub4(q,n,J):
+            if not L.sub4(q, n, J):
                 return False
         else:
-            if not L.sub8(q,k,n,J):
+            if not L.sub8(q, k, n, J):
                 return False
     for p in L.yet_keys():
-        if not L.subrest(p,n,el.et,J):
+        if not L.subrest(p, n, el.et, J):
             return False
     r = long(n)
-    i = 1
-    while i < el.t.integer:
+    for _ in bigrange.range(1, el.t.integer):
         r = (r*n) % el.et.integer
         if n % r == 0 and r != 1 and r != n:
             _log.info("%s divide %s.\n" %(r, n))
             return False
-        i += 1
     return True
+
 
 class ImplementLimit (Exception):
     """
