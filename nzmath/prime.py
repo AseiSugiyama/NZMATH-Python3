@@ -253,19 +253,19 @@ def randPrime(n):
     """
     if n <= 0 :
         raise ValueError("input number must be natural number")
-    else:
-        p = bigrandom.randrange(10**(n-1), (10**n)-1)
-        if not (p % 2):
-            p += 1
-        i = 0
-        while True:
-            if primeq(p+i):
-                break
-            else:
-                i += 2
-    if p+i >= 10**n:
-        return randPrime(n) # very rare case or n is too small case
-    return p+i
+
+    p = bigrandom.randrange(10**(n-1)+1, 10**n, 2)
+    while not primeq(p):
+        p += 2
+    if p < 10**n:
+        return p
+
+    # in very rare case or n is too small case,
+    # search continues from the lower bound.
+    p = 10**(n-1) + 1
+    while not primeq(p):
+        p += 2
+    return p
 
 
 def smallSpsp(n):
