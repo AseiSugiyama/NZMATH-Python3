@@ -78,6 +78,10 @@ class Arith1Test (unittest.TestCase):
         self.failIf(arith1.issquare(0))
         self.assertEqual(0, arith1.issquare(0))
 
+    def testAGM(self):
+        self.assertAlmostEqual(1.4567910310469068692, arith1.AGM(1, 2))
+        self.assertAlmostEqual(1.8636167832448965424, arith1.AGM(1, 3))
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()

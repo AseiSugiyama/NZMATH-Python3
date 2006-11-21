@@ -166,11 +166,10 @@ def AGM(a, b):
     """
     Arithmetic-Geometric Mean.
     """
-    x = (a+b) / 2.0
+    x = (a+b) * 0.5
     y = math.sqrt(a*b)
     while abs(x-y) > y*1e-15:
-        x = (x+y) / 2.0
-        y = math.sqrt(x*y)
+        x, y = (x+y) * 0.5, math.sqrt(x*y)
     return x
 
 def _BhaskaraBrouncker(n):
