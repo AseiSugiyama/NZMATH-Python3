@@ -124,6 +124,27 @@ class PartitionTest (unittest.TestCase):
         self.assertEqual(11, len([p for p in partitionGenerator(6, 12)]))
 
 
+class PartitionNumberTest (unittest.TestCase):
+    def testPartitionNumbersUpto(self):
+        self.assertEqual([1], partition_numbers_upto(0))
+        self.assertEqual([1, 1, 2], partition_numbers_upto(2))
+        # Ramanujan
+        p_upto_1000 = partition_numbers_upto(1000)
+        self.failIf([p for p in p_upto_1000[4::5] if p % 5]) 
+        self.failIf([p for p in p_upto_1000[5::7] if p % 7]) 
+        self.failIf([p for p in p_upto_1000[6::11] if p % 11]) 
+
+    def testPartitionNumber(self):
+        self.assertEqual(1, partition_number(0))
+        self.assertEqual(1, partition_number(1))
+        self.assertEqual(2, partition_number(2))
+        self.assertEqual(3, partition_number(3))
+        self.assertEqual(5, partition_number(4))
+        self.assertEqual(30, partition_number(9))
+        self.assertEqual(partition_numbers_upto(100)[100],
+                         partition_number(100))
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
