@@ -190,39 +190,32 @@ def partitionGenerator(n, maxi=None):
             # partition==[1]*n: it means all partitions have been generated.
             raise StopIteration
 
-def _alter_odd_nat():
+def _pentagonal():
     """
-    Yield odd numbers and  natural numbers alternatingly.
-    (1, 1, 3, 2, 5, 3, 7, ... )
+    Generates pentagonal and skew pentagonal numbers.
+    (1, 2, 5, 7, 12, 15, ...)
     """
-    odd = 1
-    nat = 1
+    j = 1
     while True:
-        yield odd
-        yield nat
-        odd += 2
-        nat += 1
+        yield j*(3*j - 1)//2
+        yield j*(3*j + 1)//2
+        j += 1
 
 def partition_numbers_upto(n):
     """
     Return the partition numbers for 0 to '''n''' (inclusive).
     """
+    penta = list(itertools.izip(
+        itertools.takewhile(lambda k: k <= n, _pentagonal()),
+        itertools.cycle((1, 1, -1, -1))))                 
     p = [1]
-    d = 0
-    penta = []
-    for delta in _alter_odd_nat():
-        d += delta
-        if d > n:
-            break
-        penta.append(d)
-    for i in range(n):
-        p.append(
-            sum(
-              [sign * p[i + 1 - k] for sign, k in itertools.izip(
-                itertools.cycle((1, 1, -1, -1)),
-                [k for k in penta if k <= i + 1])]
-            )
-        )
+    for i in range(1, n + 1):
+        s = 0
+        for k, sign in penta:
+            if k > i:
+                break
+            s += sign * p[i - k]
+        p.append(s)
     return p
 
 def partition_number(n):

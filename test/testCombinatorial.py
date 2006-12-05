@@ -141,8 +141,11 @@ class PartitionNumberTest (unittest.TestCase):
         self.assertEqual(3, partition_number(3))
         self.assertEqual(5, partition_number(4))
         self.assertEqual(30, partition_number(9))
-        self.assertEqual(partition_numbers_upto(100)[100],
+        upto_101 = partition_numbers_upto(101)
+        self.assertEqual(upto_101[100],
                          partition_number(100))
+        self.assertEqual(upto_101[101],
+                         partition_number(101))
 
 
 def suite(suffix="Test"):
