@@ -1,3 +1,11 @@
+version 0.5.1 to X.X.X
+----------------------
+* add a new module bigrange for simplifying loops.
+* add partition_numbers_upto and partition_number functions in combinatorial.
+* fix a bug of arith1.AGM function. (sf bug #1600223)
+* fix a bug of bigrandom.random function. (sf bug #1590692)
+* fix a bug of equation.e2_Fp and add e1_ZnZ to the module.
+
 version 0.5.0 to 0.5.1
 ----------------------
 * restructure matrix module.
