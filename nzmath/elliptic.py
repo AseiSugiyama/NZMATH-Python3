@@ -143,7 +143,7 @@ class ECGeneric:
             if not character:
                 self.ch=0
             elif character == 1:
-                raise ValueError, "characteristic must be 0 or prime."
+                raise ValueError("characteristic must be 0 or prime.")
             else:
                 self.ch=character
                 if not index or index == 1: #field=F_p
@@ -154,7 +154,7 @@ class ECGeneric:
                     index is irred polynomial in F_p,deg=r
                     To add this, we must exchange field and element.
                     """
-                    raise NotImplementedError,"now we can use only over finite prime fields."
+                    raise NotImplementedError("now we can use only over finite prime fields.")
             if self.ch==0:
                 if len(self)==5:
                     self.a1=coefficient[0]
@@ -185,12 +185,12 @@ class ECGeneric:
                     self.c6=-864*self.b
                     self.disc=rational.IntegerIfIntOrLong(self.c4**3-self.c6**2)/1728
                 else:
-                    raise ValueError, "coefficient is less or more, can't defined EC."
+                    raise ValueError("coefficient is less or more, can't defined EC.")
                 if self.disc==0:
-                    raise ValueError, "this curve is singular."
+                    raise ValueError("this curve is singular.")
                 self.j=rational.IntegerIfIntOrLong(self.c4**3)/self.disc
         else:
-            raise ValueError, "you must input (coefficient, character, index)"
+            raise ValueError("you must input (coefficient, character, index)")
 
     def __len__(self):
         return len(self.coefficient)
@@ -255,7 +255,7 @@ class ECGeneric:
                     else:
                         for v in V:
                             if not isinstance(v,(int,long)):
-                                raise ValueError, "you must input integer m(__)m"
+                                raise ValueError("you must input integer m(__)m")
                         v=finitefield.FinitePrimeFieldElement(V[0],self.ch).inverse()
                         other=EC([(self.a1+2*V[2])*v.n,
                                   ((self.a2-V[2]*self.a1+3*V[1]-V[2]**2)*v**2).n,
@@ -264,11 +264,11 @@ class ECGeneric:
                                   ((self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1)*v**6).n],self.ch)
                         return other
                 else:
-                    raise ValueError, "you must input ([u, r, s, t]) with u != 0."
+                    raise ValueError("you must input ([u, r, s, t]) with u != 0.")
             else:
-                raise ValueError, "you must input ([u, r, s, t]) with u != 0."
+                raise ValueError("you must input ([u, r, s, t]) with u != 0.")
         else:
-            raise ValueError, "you must input ([u, r, s, t]) with u != 0."
+            raise ValueError("you must input ([u, r, s, t]) with u != 0.")
 
     def changePoint(self,P,V):
         """
@@ -281,16 +281,16 @@ class ECGeneric:
                     Q1=rational.IntegerIfIntOrLong(P[1]-V[2]*(P[0]-V[1])-V[3])/rational.IntegerIfIntOrLong(V[0]**3)
                 else:
                     if self.index!=1:
-                        raise NotImplementedError,"Now making (>_<)"
+                        raise NotImplementedError("Now making (>_<)")
                     v=finitefield.FinitePrimeFieldElement(V[0],self.ch).inverse()
                     Q0=((P[0]-V[1])*v**2).n
                     Q1=((P[1]-V[2]*(P[0]-V[1])-V[3])*v**3).n
                 Q=[Q0,Q1]
                 return Q
             else:
-                raise ValueError, "you must input ([px, py], [u, r, s, t]) with u != 0."
+                raise ValueError("you must input ([px, py], [u, r, s, t]) with u != 0.")
         else:
-            raise ValueError, "you must input ([px, py], [u, r, s, t]) with u != 0."
+            raise ValueError("you must input ([px, py], [u, r, s, t]) with u != 0.")
 
 
 
@@ -317,7 +317,7 @@ class ECGeneric:
                 else:
                     return False
         elif self.ch==2:
-            raise NotImplementedError,"This is not implemented."
+            raise NotImplementedError("This is not implemented.")
         else:
             Y=y1**2+4*y2
             if Y>=0:
@@ -355,7 +355,7 @@ class ECGeneric:
                         return False
                 else:
                     if self.index!=1:
-                        raise NotImplementedError,"Now making (>_<)"
+                        raise NotImplementedError("Now making (>_<)")
                     if P[1]**2+self.a1*P[0]*P[1]+self.a3*P[1]==P[0]**3+self.a2*P[0]**2+self.a4*P[0]+self.a6:
                         return True
                     else:
@@ -363,9 +363,9 @@ class ECGeneric:
             elif P==[0]:
                 return True
             else:
-                raise ValueError, "input must not be point on curve."
+                raise ValueError("input must not be point on curve.")
         else:
-            raise ValueError, "you must input ([px, py])"
+            raise ValueError("you must input ([px, py])")
 
     def add(self,P,Q):
         """
@@ -390,7 +390,7 @@ class ECGeneric:
                         return R
                     else:
                         if self.index!=1:
-                            raise NotImplementedError,"Now making (>_<)"
+                            raise NotImplementedError("Now making (>_<)")
                         if P[0]==Q[0]:
                             if P[1]+Q[1]+self.a1*Q[0]+self.a3==0:
                                 return [0]
@@ -411,11 +411,11 @@ class ECGeneric:
                 elif (P==[0]) and (Q==[0]):
                     return [0]
                 else:
-                    raise ValueError, "you must input ([px, py], [qx, qy])"
+                    raise ValueError("you must input ([px, py], [qx, qy])")
             else:
-                raise ValueError, "input must not be point on curve."
+                raise ValueError("input must not be point on curve.")
         else:
-            raise ValueError, "you must input ([px, py], [qx, qy])"
+            raise ValueError("you must input ([px, py], [qx, qy])")
 
     def sub(self,P,Q):
         """
@@ -444,11 +444,11 @@ class ECGeneric:
                 elif (P==[0]) and (Q==[0]):
                     return [0]
                 else:
-                    raise ValueError, "you must input ([px, py], [qx, qy])"
+                    raise ValueError("you must input ([px, py], [qx, qy])")
             else:
-                raise ValueError, "input must not be point on curve."
+                raise ValueError("input must not be point on curve.")
         else:
-            raise ValueError, "you must input ([px, py], [qx, qy])"
+            raise ValueError("you must input ([px, py], [qx, qy])")
 
     def mul(self,k,P):
         """
@@ -592,7 +592,7 @@ class ECoverQ(ECGeneric):
             if y!=False:
                 return [s,self.coordinateY(s)]
             i=i+10
-        raise ValueError,"Times exceeded for limit."
+        raise ValueError("Times exceeded for limit.")
 
 class ECoverFp(ECGeneric):
     """
@@ -600,12 +600,12 @@ class ECoverFp(ECGeneric):
     """
     def __init__(self,coefficient,character=None,index=None):
         if character<3:
-            raise ValueError, "ECoverFp accepts character > 2."
+            raise ValueError("ECoverFp accepts character > 2.")
         ECGeneric.__init__(self,coefficient,character,index)
         if self.ch==3: # y^2=x^3+a2*x^2+a6 or y^2=x^3+a4*x+a6
             for c in coefficient:
                 if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                    raise ValueError, "you must input integer coefficients."
+                    raise ValueError("you must input integer coefficients.")
             if len(self)==5:
                 if coefficient[0]%3==coefficient[2]%3==coefficient[3]%3==0:
                     self.a1=finitefield.FinitePrimeFieldElement(0,3)
@@ -637,15 +637,15 @@ class ECoverFp(ECGeneric):
                     self.disc=-self.a4**3
                     self.j=finitefield.FinitePrimeFieldElement(0,3)
                 else:
-                    raise ValueError, "can't defined EC."
+                    raise ValueError("can't defined EC.")
                 if self.disc.n==0:
-                    raise ValueError, "this curve is singular."
+                    raise ValueError("this curve is singular.")
             else:
-                raise ValueError, "coefficient is less or more, can't defined EC."
+                raise ValueError("coefficient is less or more, can't defined EC.")
         else:
             for c in coefficient:
                 if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                    raise ValueError, "you must input integer coefficients."
+                    raise ValueError("you must input integer coefficients.")
             if prime.primeq(self.ch):
                 if len(self)==5:
                     self.a1=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
@@ -663,7 +663,7 @@ class ECoverFp(ECGeneric):
                     if self.disc:
                         self.j=self.c4**3*self.disc.inverse()
                     else:
-                        raise ValueError, "singular curve (@_@)"
+                        raise ValueError("singular curve (@_@)")
                 elif len(self)==2:
                     self.a=finitefield.FinitePrimeFieldElement(coefficient[0],self.ch)
                     self.b=finitefield.FinitePrimeFieldElement(coefficient[1],self.ch)
@@ -682,11 +682,11 @@ class ECoverFp(ECGeneric):
                     if self.disc:
                         self.j=self.c4**3*self.disc.inverse()
                     else:
-                        raise ValueError, "this curve is singular."
+                        raise ValueError("this curve is singular.")
                 else:
-                    raise ValueError, "coefficient is less or more, can't defined EC."
+                    raise ValueError("coefficient is less or more, can't defined EC.")
             else:
-                raise ValueError, "characteristic must be prime."
+                raise ValueError("characteristic must be prime.")
         self.o = False
         self.abelian = False
         
@@ -701,7 +701,7 @@ class ECoverFp(ECGeneric):
         this returns a random point on eliiptic curve over ch(field)>3
         """
         if self.index!=1:
-            raise NotImplementedError,"This is not implemented."
+            raise NotImplementedError("This is not implemented.")
         if len(self)==2 or (self.a1.n==self.a2.n==self.a3.n==0):
             t=0
             while arith1.legendre(t,self.ch)!=1:
@@ -966,7 +966,7 @@ class ECoverFp(ECGeneric):
         else:#E/F_{p^r}, E is defined over F_p
         """
         if self.ch<=3:
-            raise NotImplementedError,"this is not implemented."
+            raise NotImplementedError("this is not implemented.")
         if self.ch<10**4:
             if flag:
                 return pow(self.ch,flag)+1-powOrd(self.naive(),flag,self.ch)
@@ -1062,7 +1062,7 @@ class ECoverFp(ECGeneric):
         returns point P in E/F_p s.t mP == [0] .
         """
         if self.order()%m:
-            raise ValueError,"point order does not divide group order."
+            raise ValueError("point order does not divide group order.")
         else:
             while 1:
                 P=self.point()
@@ -1108,11 +1108,11 @@ class ECoverFp(ECGeneric):
         """
         # check order
         if m<2 or not (self.ch%m):
-            raise ValueError,"order more than 1 and divisible characteristic"
+            raise ValueError("order more than 1 and divisible characteristic")
 
         # check points are not infinity point
         if P==Q==[0] or Q==[0]:
-            raise ValueError,"You must input not [0]"
+            raise ValueError("You must input not [0]")
         
         # initialize
         S=self.add(R,Q)
@@ -1151,7 +1151,7 @@ class ECoverFp(ECGeneric):
         computing the Tate-Lichetenbaum pairing with Miller's algorithm.
         """
         if m%self.BSGS(P) or m%self.BSGS(Q):
-            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+            raise ValueError("sorry, not mP=[0] or mQ=[0].")
 
         if P==[0] or Q==[0]:
             return self.field.one
@@ -1177,7 +1177,7 @@ class ECoverFp(ECGeneric):
         computing the Weil pairing with Miller's algorithm.
         """
         if m%self.BSGS(P) or m%self.BSGS(Q):
-            raise ValueError,"sorry, not mP=[0] or mQ=[0]."
+            raise ValueError("sorry, not mP=[0] or mQ=[0].")
 
         if P==[0] or Q==[0] or P==Q:
             return self.field.one
@@ -1357,7 +1357,7 @@ class ECoverF2(ECoverFp):
         ECGeneric.__init__(self, coefficient, 2, index)
         for c in coefficient:
             if not isinstance(c, (int,long,finitefield.FinitePrimeFieldElement)):
-                raise ValueError, "you must input integer coefficients."
+                raise ValueError("you must input integer coefficients.")
             if len(self)==5:
                 if coefficient[0]%2==1 and coefficient[2]%2==coefficient[3]%2==0:
                     self.a1=finitefield.FinitePrimeFieldElement(1,2)
@@ -1389,20 +1389,22 @@ class ECoverF2(ECoverFp):
                     self.disc=self.a3**4
                     self.j=finitefield.FinitePrimeFieldElement(0,2)
                 else:
-                    raise ValueError, "can't defined EC."
+                    raise ValueError("can't defined EC.")
                 if self.disc.n==0:
-                    raise ValueError, "this curve is singular."
+                    raise ValueError("this curve is singular.")
             else:
-                raise ValueError, "coefficient is less or more, can't defined EC."
+                raise ValueError("coefficient is less or more, can't defined EC.")
     def __repr__(self):
         if len(self)==2 or self.a1.n==self.a2.n==self.a3.n==0:
             return "ECoverF2(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
         else:
             return "ECoverF2(["+repr(self.a1.n)+","+repr(self.a2.n)+","+repr(self.a3.n)+","+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
+
     def line(self,P,Q=None):
-        raise NotImplementedError,"This is not implemented."
+        raise NotImplementedError("This is not implemented.")
+
     def structure(self):
-        raise NotImplementedError,"This is not implemented."
+        raise NotImplementedError("This is not implemented.")
 
 
 def EC(coefficient,character=None,index=None):
@@ -1413,7 +1415,7 @@ def EC(coefficient,character=None,index=None):
         if not character:
             return ECoverQ(coefficient)
         elif character == 1:
-            raise ValueError, "characteristic must be 0 or prime."
+            raise ValueError("characteristic must be 0 or prime.")
         elif character == 2:
             if not index or index == 1: #field=F_2
                 return ECoverF2(coefficient)
@@ -1422,7 +1424,7 @@ def EC(coefficient,character=None,index=None):
                 index is irred polynomial in F_p,deg=r
                 To add this, we must exchange field and element.
                 """
-                raise NotImplementedError,"now we can use only over finite prime fields."
+                raise NotImplementedError("now we can use only over finite prime fields.")
         else:
             if not index or index == 1: #field=F_p
                 return ECoverFp(coefficient, character)
@@ -1431,4 +1433,4 @@ def EC(coefficient,character=None,index=None):
                 index is irred polynomial in F_p,deg=r
                 To add this, we must exchange field and element.
                 """
-                raise NotImplementedError,"now we can use only over finite prime fields."
+                raise NotImplementedError("now we can use only over finite prime fields.")
