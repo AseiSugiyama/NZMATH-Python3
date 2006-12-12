@@ -56,10 +56,10 @@ def PolyPow(f, d, g):
     l = arith1.expand(d, 2)
     l.reverse()
     poly = ring.getRing(f).one
-    for i in range(len(l)):
+    for bit in l:
         poly = poly*poly
         poly = PolyMod(poly, g)
-        if l[i]:
+        if bit:
             poly = poly*f
             poly = PolyMod(poly, g)
     return poly
