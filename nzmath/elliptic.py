@@ -1,5 +1,4 @@
 from __future__ import division
-import math
 import random
 import sets
 import logging
@@ -317,22 +316,15 @@ class ECGeneric:
             Y = y1**2+4*y2
             if Y >= 0:
                 if isinstance(Y, rational.Rational):
-                    yn = Y.numerator
-                    yn = math.sqrt(yn)
-                    yd = Y.denominator
-                    yd = math.sqrt(yd)
-                    if int(yn) == yn and int(yd) == yd:
-                        return rational.Rational((-1)*y1+rational.Rational(yn, yd), 2)
-                    else:
-                        return False
+                    yn = arith1.issquare(Y.numerator)
+                    yd = arith1.issquare(Y.denominator)
+                    if yn and yd:
+                        return ((-1)*y1 + rational.Rational(yn, yd)) / 2
                 else:
-                    Z = math.sqrt(Y)
-                    if int(Z) == Z:
-                        return rational.Rational((-1)*y1+int(Z), 2)
-                    else:
-                        return False
-            else:
-                return False
+                    Z = arith1.issquare(Y)
+                    if Z:
+                        return rational.Rational((-1)*y1 + Z, 2)
+            return False
 
     def whetherOn(self, P):
         """
@@ -906,7 +898,7 @@ class ECoverFp(ECGeneric):
             g = 0
             while arith1.legendre(g, sform.ch) != -1:
                 g = random.randrange(2, sform.ch)
-            W = int(math.sqrt(math.sqrt(sform.ch))*math.sqrt(2))+1
+            W = arith1.floorsqrt(2 * (arith1.floorsqrt(sform.ch) + 1)) + 1
             c, d = g**2*sform.a, g**3*sform.b
             f = polynomial.OneVariableDensePolynomial([sform.b, sform.a, 0, 1], "X", sform.field)
             BOX = []
@@ -1202,7 +1194,7 @@ class ECoverFp(ECGeneric):
             return 1
 
         Q = self.mul(self.ch+1, P)
-        m = int(math.sqrt(math.sqrt(self.ch)))+1
+        m = arith1.floorpowerroot(self.ch, 4) + 1
         Plist = [[0]]
         R = P
         j = 1
@@ -1238,7 +1230,7 @@ class ECoverFp(ECGeneric):
         P,Q is the elements of the same group
         """
         B = []
-        m = int(math.sqrt(n))+1
+        m = arith1.floorsqrt(n) + 1
         R = Q
         B.append(Q)
         i = 1
@@ -1247,7 +1239,7 @@ class ECoverFp(ECGeneric):
             if R == [0]:
                 return i
             B.append(R)
-            i = i+1
+            i += 1
         R = self.mul(m, P)
         P = R
         if R in B:
