@@ -224,8 +224,7 @@ class ECGeneric:
             if len(self) == 2 or (self.a1 == self.a2 == self.a3 == 0):
                 return self
             else:
-                other = EC([-27*self.c4, -54*self.c6], self.ch)
-                return other
+                return EC([-27*self.c4, -54*self.c6], self.ch)
         else:
             if len(self) == 2 or (self.a1.n == self.a2.n == self.a3.n == 0):
                 return self
@@ -233,34 +232,32 @@ class ECGeneric:
                 if self.ch == 2 or self.ch == 3:
                     return self
                 else:
-                    other = EC([-27*self.c4.n, -54*self.c6.n], self.ch)
-                    return other
+                    return EC([-27*self.c4.n, -54*self.c6.n], self.ch)
 
     def changeCurve(self, V):
         """
-        this transforms E to E' by V=[u,r,s,t] ; x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t
+        this transforms E to E' by V=[u,r,s,t]
+          x->u^2*x'+r,y->u^3*y'+s*u^2*x'+t
         """
         if isinstance(V, list):
             if len(V) == 4:
                 if V[0] != 0:
                     if self.ch == 0:
-                        other = EC([rational.Rational(self.a1+2*V[2], V[0]),
+                        return EC([rational.Rational(self.a1+2*V[2], V[0]),
                               rational.Rational(self.a2-V[2]*self.a1+3*V[1]-V[2]**2, V[0]**2),
                               rational.Rational(self.a3+V[1]*self.a1+2*V[3], V[0]**3),
                               rational.Rational(self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3], V[0]**4),
                               rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1, V[0]**6)], 0)
-                        return other
                     else:
                         for v in V:
                             if not isinstance(v, (int, long)):
                                 raise ValueError("you must input integer m(__)m")
                         v = finitefield.FinitePrimeFieldElement(V[0], self.ch).inverse()
-                        other = EC([(self.a1+2*V[2])*v.n,
+                        return EC([(self.a1+2*V[2])*v.n,
                                   ((self.a2-V[2]*self.a1+3*V[1]-V[2]**2)*v**2).n,
                                   ((self.a3+V[1]*self.a1+2*V[3])*v**3).n,
                                   ((self.a4-V[2]*self.a3+2*V[1]*self.a2-(V[3]+V[1]*V[2])*self.a1+3*V[1]**2-2*V[2]*V[3])*v**4).n,
                                   ((self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1)*v**6).n], self.ch)
-                        return other
                 else:
                     raise ValueError("you must input ([u, r, s, t]) with u != 0.")
             else:
@@ -702,33 +699,33 @@ class ECoverFp(ECGeneric):
         if len(self) == 2 or (self.a1.n == self.a2.n == self.a3.n == 0):
             t = 0
             while arith1.legendre(t, self.ch) != 1:
-                s = random.randrange(0, self.ch)
+                s = random.randrange(self.ch)
                 t = (s**3+self.a4*s+self.a6).n
             t = arith1.modsqrt(t, self.ch)
-            r = random.randint(0, 1)
+            r = random.randrange(2)
             if r:
                 return [s, self.ch-t]
             else:
                 return [s, t]
         elif self.ch != 2 and self.ch != 3:
-            other = self.simple()
+            sform = self.simple()
             t = 0
             while arith1.legendre(t, self.ch) != 1:
-                s = random.randrange(0, self.ch)
-                t = (s**3+other.a*s+other.b).n
+                s = random.randrange(self.ch)
+                t = (s**3+sform.a*s+sform.b).n
             x = (s-3*self.b2)/36
             y = (rational.Rational(arith1.modsqrt(t, self.ch), 108)-self.a1*x-self.a3)/2
             return [x.n, y.n]
         elif self.ch == 3:
             t = 0
             while arith1.legendre(t, self.ch) != 1:
-                s = random.randrange(0, self.ch)
+                s = random.randrange(self.ch)
                 t = (s**3+self.a2*s**2+self.a4*s+self.a6).n
             return [s, arith1.modsqrt(t, self.ch)]
         else:
             s = 0
             while self.coordinateY(s) is ValueError:
-                s = random.randrange(0, self.ch)
+                s = random.randrange(self.ch)
             return [s, self.coordinateY(s)]
 
     def Schoof(self):
@@ -736,22 +733,22 @@ class ECoverFp(ECGeneric):
         this return t=p+1-#E(F_p)
         """
         if len(self) != 2:
-            other = self.simple()
+            sform = self.simple()
         else:
-            other = self
-        E = polynomial.OneVariableSparsePolynomial({0:other.b, 1:other.a, 3:1}, 'x', other.field)
-        x = polynomial.OneVariableMonomial("x", coeffring=other.field)
+            sform = self
+        E = polynomial.OneVariableSparsePolynomial({0:sform.b, 1:sform.a, 3:1}, 'x', sform.field)
+        x = polynomial.OneVariableMonomial("x", coeffring=sform.field)
         T = []
-        D, L = other.divPoly()
+        D, L = sform.divPoly()
         i = 0
         M = 1
         while i < len(L):
             j = L[i]
             M = M*j
-            u = PolyPow(x, other.ch, D[j]) #u=x^q
-            v = PolyPow(u, other.ch, D[j]) #v=x^{q^2}
-            g0 = PolyPow(E, (other.ch-1)//2, D[j]) #y^(q-1)
-            k = other.ch % j
+            u = PolyPow(x, sform.ch, D[j]) #u=x^q
+            v = PolyPow(u, sform.ch, D[j]) #v=x^{q^2}
+            g0 = PolyPow(E, (sform.ch-1)//2, D[j]) #y^(q-1)
+            k = sform.ch % j
             f0 = PolyMulRed([D[k-1], D[k+1]], D[j])
             f3 = PolyMulRed([D[k], D[k]], D[j])
             if k % 2 == 0:
@@ -761,7 +758,7 @@ class ECoverFp(ECGeneric):
                 f = v-x
                 P = GCD(PolyMulRed([f, f3], D[j])+PolyMulRed([f0, E], D[j]), D[j])
             if P != 1:
-                if arith1.legendre(other.ch, j) == -1:
+                if arith1.legendre(sform.ch, j) == -1:
                     T.append((0, j))
                     _log.debug("%s $" % str(T))
                 else:
@@ -790,7 +787,7 @@ class ECoverFp(ECGeneric):
                 Z = -2*v-x
                 f1 = PolyMulRed([D[k-1], D[k-1], D[k+2]], D[j])
                 f2 = PolyMulRed([D[k-2], D[k+1], D[k+1]], D[j])
-                g1 = PolyPow(g0, int(other.ch+1), D[j]) #y^(q^2-1)
+                g1 = PolyPow(g0, int(sform.ch+1), D[j]) #y^(q^2-1)
                 if k % 2 == 0:
                     g2 = PolyMulRed([g1, E, E], D[j])
                     f = f1-f2-4*PolyMulRed([g2, f3, D[k]], D[j])
@@ -809,11 +806,11 @@ class ECoverFp(ECGeneric):
                 t = 1
                 while t <= (j-1)/2:
                     if t % 2 == 0:
-                        Z_d_x = PolyPow(PolyMulRed([E, D[t], D[t]], D[j]), other.ch, D[j])
-                        Z_n_x = PolyPow(PolyMulRed([D[t-1], D[t+1]], D[j]), other.ch, D[j])
+                        Z_d_x = PolyPow(PolyMulRed([E, D[t], D[t]], D[j]), sform.ch, D[j])
+                        Z_n_x = PolyPow(PolyMulRed([D[t-1], D[t+1]], D[j]), sform.ch, D[j])
                     else:
-                        Z_d_x = PolyPow(PolyMulRed([D[t], D[t]], D[j]), other.ch, D[j])
-                        Z_n_x = PolyPow(PolyMulRed([E, D[t-1], D[t+1]], D[j]), other.ch, D[j])
+                        Z_d_x = PolyPow(PolyMulRed([D[t], D[t]], D[j]), sform.ch, D[j])
+                        Z_n_x = PolyPow(PolyMulRed([E, D[t-1], D[t+1]], D[j]), sform.ch, D[j])
                     P = PolyMulRed([X_n, Z_d_x], D[j])-PolyMulRed([X_d, Z_n_x], D[j])
                     if P == 0:
                         if k % 2 == 0:
@@ -821,24 +818,24 @@ class ECoverFp(ECGeneric):
                             y0 = PolyMulRed([Z, X_d], D[j])+PolyMulRed([f0, h0], D[j])+h1
                             Y_n = -PolyMulRed([g1, Y_d], D[j])-PolyMulRed([f, y0], D[j])
                             if t % 2 == 0:
-                                Z_d_y = PolyPow(PolyMulRed([4, E, E, D[t], D[t], D[t]], D[j]), other.ch, D[j])
-                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), other.ch, D[j])
+                                Z_d_y = PolyPow(PolyMulRed([4, E, E, D[t], D[t], D[t]], D[j]), sform.ch, D[j])
+                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), sform.ch, D[j])
                                 Z_n_y = PolyMulRed([g0, z0], D[j])
                             else:
-                                Z_d_y = PolyPow(PolyMulRed([4, D[t], D[t], D[t]], D[j]), other.ch, D[j])
-                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), other.ch, D[j])
+                                Z_d_y = PolyPow(PolyMulRed([4, D[t], D[t], D[t]], D[j]), sform.ch, D[j])
+                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), sform.ch, D[j])
                                 Z_n_y = PolyMulRed([g0, z0], D[j])
                         else:
                             Y_d = PolyMulRed([D[k], g, X_d], D[j])
                             y0 = PolyMulRed([Z, X_d], D[j])+PolyMulRed([E, f0, h0], D[j])+PolyMulRed([E, h1], D[j])
                             Y_n = -PolyMulRed([g1, Y_d], D[j])-PolyMulRed([f, y0], D[j])
                             if t % 2 == 0:
-                                Z_d_y = PolyPow(PolyMulRed([4, E, E, D[t], D[t], D[t]], D[j]), other.ch, D[j])
-                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), other.ch, D[j])
+                                Z_d_y = PolyPow(PolyMulRed([4, E, E, D[t], D[t], D[t]], D[j]), sform.ch, D[j])
+                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), sform.ch, D[j])
                                 Z_n_y = PolyMulRed([g0, z0], D[j])
                             else:
-                                Z_d_y = PolyPow(PolyMulRed([4, D[t], D[t], D[t]], D[j]), other.ch, D[j])
-                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), other.ch, D[j])
+                                Z_d_y = PolyPow(PolyMulRed([4, D[t], D[t], D[t]], D[j]), sform.ch, D[j])
+                                z0 = PolyPow(PolyMulRed([D[t-1], D[t-1], D[t+2]], D[j])-PolyMulRed([D[t-2], D[t+1], D[t+1]], D[j]), sform.ch, D[j])
                                 Z_n_y = PolyMulRed([g0, z0], D[j])
                         Q = PolyMulRed([Y_n, Z_d_y], D[j])-PolyMulRed([Y_d, Z_n_y], D[j])
                         if Q == 0:
@@ -894,41 +891,41 @@ class ECoverFp(ECGeneric):
         """
         if self.ch <= 229:
             if len(self) != 2:
-                other = self.simple()
+                sform = self.simple()
             else:
-                other = self
+                sform = self
             k = 0
-            for i in range(0, other.ch):
-                k = k+arith1.legendre(i*(i**2+other.a.n)+other.b.n, other.ch)
+            for i in range(sform.ch):
+                k += arith1.legendre(i*(i**2+sform.a.n)+sform.b.n, sform.ch)
             return -k
         else: #E.ch>229
             if len(self) != 2:
-                other = self.simple()
+                sform = self.simple()
             else:
-                other = self
+                sform = self
             g = 0
-            while arith1.legendre(g, other.ch) != -1:
-                g = random.randint(2, other.ch-1)
-            W = int(math.sqrt(math.sqrt(other.ch))*math.sqrt(2))+1
-            c, d = g**2*other.a, g**3*other.b
-            f = polynomial.OneVariableDensePolynomial([other.b, other.a, 0, 1], "X", other.field)
+            while arith1.legendre(g, sform.ch) != -1:
+                g = random.randrange(2, sform.ch)
+            W = int(math.sqrt(math.sqrt(sform.ch))*math.sqrt(2))+1
+            c, d = g**2*sform.a, g**3*sform.b
+            f = polynomial.OneVariableDensePolynomial([sform.b, sform.a, 0, 1], "X", sform.field)
             BOX = []
             i = 0
-            while i < other.ch:
+            while i < sform.ch:
                 BOX.append(1)
                 i = i+1
             k = 0
             while k == 0:
-                x = random.randint(0, other.ch-1)
-                while BOX[x] == 0 or arith1.legendre(f(x).n, other.ch) == 0:
+                x = random.randrange(sform.ch)
+                while BOX[x] == 0 or arith1.legendre(f(x).n, sform.ch) == 0:
                     BOX[x] = 0
-                    x = random.randint(0, other.ch-1)
+                    x = random.randrange(sform.ch)
                 BOX[x] = 0
-                if arith1.legendre(f(x).n, other.ch) == 1:
-                    E = other
+                if arith1.legendre(f(x).n, sform.ch) == 1:
+                    E = sform
                     cg = 1
-                else: #arith1.legendre(f(cg),other.ch)==-1
-                    E = EC([c.n, d.n], other.ch)
+                else: #arith1.legendre(f(cg),sform.ch)==-1
+                    E = EC([c.n, d.n], sform.ch)
                     cg = -1
                     x = g*x % E.ch
                 P = [x, E.coordinateY(x)]
@@ -950,10 +947,10 @@ class ECoverFp(ECGeneric):
                 return -cg*t
 
     def naive(self):
-        other = self.simple()
+        sform = self.simple()
         k = 0
-        for i in range(0, other.ch):
-            k = k+arith1.legendre(i*(i**2+other.a.n)+other.b.n, other.ch)
+        for i in range(0, sform.ch):
+            k = k+arith1.legendre(i*(i**2+sform.a.n)+sform.b.n, sform.ch)
         return -k
 
     def order(self, flag=None):
@@ -1270,8 +1267,8 @@ class ECoverFp(ECGeneric):
     def allPoint(self, O):
         p = self.ch
         x = polynomial.OneVariableMonomial("x", coeffring=self.field)
-        other = self.simple()
-        Y = x**3+other.a*x+other.b
+        sform = self.simple()
+        Y = x**3+sform.a*x+sform.b
         L = []
         i = 0
         while i < p:
@@ -1279,8 +1276,8 @@ class ECoverFp(ECGeneric):
             if arith1.legendre(y, p) == 1:
                 Q = [i, arith1.modsqrt(y, p)]
                 R = [i, p-Q[1]]
-                q = other.BSGS(O, Q, [0])
-                r = other.BSGS(O, R, [0])
+                q = sform.BSGS(O, Q, [0])
+                r = sform.BSGS(O, R, [0])
                 if q == O or r == O:
                     return (O, 1)
                 else:
