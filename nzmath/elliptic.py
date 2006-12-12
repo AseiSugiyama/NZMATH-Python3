@@ -150,10 +150,8 @@ class ECGeneric:
                     self.field = finitefield.FinitePrimeField.getInstance(self.ch)
                     self.index = 1
                 else: #field=F_q,q=(character)^r
-                    """
-                    index is irred polynomial in F_p,deg=r
-                    To add this, we must exchange field and element.
-                    """
+                    # index is irred polynomial in F_p,deg=r
+                    # To add this, we must exchange field and element.
                     raise NotImplementedError("now we can use only over finite prime fields.")
             if self.ch == 0:
                 if len(self) == 5:
@@ -1419,17 +1417,13 @@ def EC(coefficient, character=None, index=None):
             if not index or index == 1: #field=F_2
                 return ECoverF2(coefficient)
             else: #field=F_q,q=2^r
-                """
-                index is irred polynomial in F_p,deg=r
-                To add this, we must exchange field and element.
-                """
+                # index is irred polynomial in F_p,deg=r
+                # To add this, we must exchange field and element.
                 raise NotImplementedError("now we can use only over finite prime fields.")
         else:
             if not index or index == 1: #field=F_p
                 return ECoverFp(coefficient, character)
             else: #field=F_q,q=(character)^r
-                """
-                index is irred polynomial in F_p,deg=r
-                To add this, we must exchange field and element.
-                """
+                # index is irred polynomial in F_p,deg=r
+                # To add this, we must exchange field and element.
                 raise NotImplementedError("now we can use only over finite prime fields.")
