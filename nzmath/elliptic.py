@@ -1344,42 +1344,43 @@ class ECoverF2(ECoverFp):
         for c in coefficient:
             if not isinstance(c, (int, long, finitefield.FinitePrimeFieldElement)):
                 raise ValueError("you must input integer coefficients.")
-            if len(self) == 5:
-                if coefficient[0] % 2 == 1 and coefficient[2] % 2 == coefficient[3] % 2 == 0:
-                    self.a1 = finitefield.FinitePrimeFieldElement(1, 2)
-                    self.a2 = finitefield.FinitePrimeFieldElement(coefficient[1], 2)
-                    self.a3 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.a4 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.a6 = finitefield.FinitePrimeFieldElement(coefficient[4], 2)
-                    self.b2 = finitefield.FinitePrimeFieldElement(1, 2)
-                    self.b4 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.b6 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.b8 = self.a6
-                    self.c4 = finitefield.FinitePrimeFieldElement(1, 2)
-                    self.c6 = finitefield.FinitePrimeFieldElement(1, 2)
-                    self.disc = self.a6
-                    if self.disc:
-                        self.j = self.disc.inverse()
-                elif coefficient[0] % 2 == coefficient[1] % 2 == 0:
-                    self.a1 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.a2 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.a3 = finitefield.FinitePrimeFieldElement(coefficient[2], 2)
-                    self.a4 = finitefield.FinitePrimeFieldElement(coefficient[3], 2)
-                    self.a6 = finitefield.FinitePrimeFieldElement(coefficient[4], 2)
-                    self.b2 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.b4 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.b6 = self.a3**2
-                    self.b8 = self.a4**2
-                    self.c4 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.c6 = finitefield.FinitePrimeFieldElement(0, 2)
-                    self.disc = self.a3**4
-                    self.j = finitefield.FinitePrimeFieldElement(0, 2)
-                else:
-                    raise ValueError("can't defined EC.")
-                if self.disc.n == 0:
-                    raise ValueError("this curve is singular.")
+        if len(self) == 5:
+            if coefficient[0] % 2 == 1 and coefficient[2] % 2 == coefficient[3] % 2 == 0:
+                self.a1 = finitefield.FinitePrimeFieldElement(1, 2)
+                self.a2 = finitefield.FinitePrimeFieldElement(coefficient[1], 2)
+                self.a3 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.a4 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.a6 = finitefield.FinitePrimeFieldElement(coefficient[4], 2)
+                self.b2 = finitefield.FinitePrimeFieldElement(1, 2)
+                self.b4 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.b6 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.b8 = self.a6
+                self.c4 = finitefield.FinitePrimeFieldElement(1, 2)
+                self.c6 = finitefield.FinitePrimeFieldElement(1, 2)
+                self.disc = self.a6
+                if self.disc:
+                    self.j = self.disc.inverse()
+            elif coefficient[0] % 2 == coefficient[1] % 2 == 0:
+                self.a1 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.a2 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.a3 = finitefield.FinitePrimeFieldElement(coefficient[2], 2)
+                self.a4 = finitefield.FinitePrimeFieldElement(coefficient[3], 2)
+                self.a6 = finitefield.FinitePrimeFieldElement(coefficient[4], 2)
+                self.b2 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.b4 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.b6 = self.a3**2
+                self.b8 = self.a4**2
+                self.c4 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.c6 = finitefield.FinitePrimeFieldElement(0, 2)
+                self.disc = self.a3**4
+                self.j = finitefield.FinitePrimeFieldElement(0, 2)
             else:
-                raise ValueError("coefficient is less or more, can't defined EC.")
+                raise ValueError("can't defined EC.")
+            if self.disc.n == 0:
+                raise ValueError("this curve is singular.")
+        else:
+            raise ValueError("coefficient is less or more, can't defined EC.")
+
     def __repr__(self):
         if len(self) == 2 or self.a1.n == self.a2.n == self.a3.n == 0:
             return "ECoverF2(["+repr(self.a4.n)+","+repr(self.a6.n)+"],"+repr(self.ch)+","+repr(self.index)+")"
