@@ -229,14 +229,24 @@ class Rational (ring.QuotientFieldElement):
         else:
             return False
 
+    def __hash__(self):
+        """
+        a==b => hash(a)==hash(b)
+        """
+        hashed = hash(self.__class__.__name__)
+        if self.numerator % self.denominator == 0:
+            hashed ^= hash(self.numerator // self.denominator)
+        else:
+            hashed ^= hash(self.numerator)
+            hashed ^= hash(self.denominator)
+        return hashed
+
     def expand(self, base, limit):
         """
-
         r.expand(k, limit) returns the nearest rational number whose
         denominator is a power of k and at most limit, if k > 0.  if
         k==0, it returns the nearest rational number whose denominator
         is at most limit, i.e. r.expand(0, limit) == r.trim(limit).
-
         """
         if base == 0:
             return self.trim(limit)
