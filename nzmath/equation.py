@@ -68,7 +68,7 @@ def e2_Fp(x,p):
     p is prime
     f = x[0] + x[1]*t + x[2]*t**2
     """
-    c, b, a = (_x % p for _x in x)
+    c, b, a = [_x % p for _x in x]
     if a == 0:
         return [e1_ZnZ([c, b], p)]
     if p == 2:
