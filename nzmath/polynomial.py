@@ -831,22 +831,20 @@ class MultiVariableSparsePolynomial:
             return True
         return False
 
-    def __call__(self, **other):
+    def __call__(self, **substitutions):
         adjust_polynomial = self.adjust()
         if not isinstance(adjust_polynomial, MultiVariableSparsePolynomial):
-            return adjust_polynomial(**other)
-        substitutions = other
+            return adjust_polynomial(**substitutions)
         basecoefficientring = self.getRing().getCoefficientRing(self.getRing().getVars())
-        for i in adjust_polynomial.variable:
-            if i in substitutions and not isinstance(substitutions[i], (str, OneVariablePolynomial, MultiVariableSparsePolynomial)):
-                variable_position = adjust_polynomial.variable.index(i)
+        for var in adjust_polynomial.variable:
+            if var in substitutions and not isinstance(substitutions[var], (str, OneVariablePolynomial, MultiVariableSparsePolynomial)):
+                variable_position = adjust_polynomial.variable.index(var)
                 new_coefficient = {}
-                for j in adjust_polynomial.coefficient:
-                    new_value = adjust_polynomial.coefficient[j]
+                for j, new_value in adjust_polynomial.coefficient.items():
                     new_key = list(j)
                     new_key[variable_position] = 0
-                    new_value *= substitutions[i]**j[variable_position]
                     new_key = tuple(new_key)
+                    new_value = new_value * substitutions[var]**j[variable_position]
                     if new_key in new_coefficient:
                         new_coefficient[new_key] += new_value
                     else:
@@ -856,7 +854,7 @@ class MultiVariableSparsePolynomial:
         if adjust_polynomial in basecoefficientring:
             return adjust_polynomial
         elif not adjust_polynomial:
-            return basecoefficientring.createElement(0)
+            return basecoefficientring.zero
         variable_to_variable_back_dict = {}
         variable_to_polynomial_back_dict = {}
         new_variable_parameter = 0
@@ -1001,15 +999,15 @@ class MultiVariableSparsePolynomial:
             return result_polynomial
 
     def adjust(self):
-        if len(self.variable) == 0 or len(self.coefficient.keys()) == 0:
-            return 0
+        if not self.variable or not self.coefficient:
+            return self.getRing().zero
         result_polynomial = self.sort_variable()
         result_polynomial = result_polynomial.merge_variable()
         result_polynomial = result_polynomial.delete_zero_value()
         result_polynomial = result_polynomial.delete_zero_variable()
         result_coefficient = result_polynomial.coefficient
-        if len(result_coefficient) == 0:
-            return 0
+        if not result_coefficient:
+            return result_polynomial.getRing().zero
         zero_test = (0,)*len(result_polynomial.variable)
         if (len(result_coefficient) == 1) and (zero_test in result_coefficient):
             return result_coefficient[zero_test]
@@ -1019,33 +1017,31 @@ class MultiVariableSparsePolynomial:
 
     def sort_variable(self):
         positions = {}
-        for i in range(len(self.variable)):
-            if self.variable[i] in positions:
-                positions[self.variable[i]] = tuple(list(positions[self.variable[i]]) + [i])
+        for i, v in enumerate(self.variable):
+            if v in positions:
+                positions[v] = positions[v] + (i,)
             else:
-                positions[self.variable[i]] = (i,)
+                positions[v] = (i,)
         result_variable = self.variable[:]
         result_polynomial = MultiVariableSparsePolynomial({}, result_variable)
         result_polynomial.variable.sort()
-        for i in self.coefficient.keys():
+        for i in self.coefficient:
             new_index_list = []
-            old_index_list = list(i)
-            old_position_keys = positions.copy()
-            for j in range(len(old_index_list)):
-                if len(positions[result_polynomial.variable[j]]) == 1:
-                    new_index_list += [old_index_list[positions[result_polynomial.variable[j]][0]]]
+            old_positions = positions.copy()
+            for j in range(len(i)):
+                jth_variable = result_polynomial.variable[j]
+                jth_position = positions[jth_variable]
+                if len(jth_position) == 1:
+                    new_index_list.append(i[jth_position[0]])
                 else:
-                    new_index_list += [old_index_list[positions[result_polynomial.variable[j]][0]]]
-                    old_position_key = list(positions[result_polynomial.variable[j]])
-                    del(old_position_key[0])
-                    new_position_key = tuple(old_position_key)
-                    positions[result_polynomial.variable[j]] = new_position_key
-            if tuple(new_index_list) in result_polynomial.coefficient:
-                result_polynomial.coefficient[tuple(new_index_list)] += self.coefficient[i]
+                    new_index_list.append(i[jth_position[0]])
+                    positions[jth_variable] = jth_position[1:]
+            new_index = tuple(new_index_list)
+            if new_index in result_polynomial.coefficient:
+                result_polynomial.coefficient[new_index] += self.coefficient[i]
             else:
-                result_polynomial.coefficient[tuple(new_index_list)] = self.coefficient[i]
-            for l in old_position_keys:
-                positions[l] = old_position_keys[l]
+                result_polynomial.coefficient[new_index] = self.coefficient[i]
+            positions.update(old_positions)
         return result_polynomial
 
     def merge_variable(self):
@@ -1053,37 +1049,33 @@ class MultiVariableSparsePolynomial:
         merge_variable = [old_variable_list[0]]
         for i in range(len(old_variable_list) - 1):
             if old_variable_list[i+1] != old_variable_list[i]:
-                merge_variable += [old_variable_list[i+1]]
+                merge_variable.append(old_variable_list[i+1])
         variable_position = {}
-        for i in range(len(merge_variable)):
+        for i, merging in enumerate(merge_variable):
             position_list = []
-            for j in range(len(old_variable_list)):
-                if old_variable_list[j] == merge_variable[i]:
-                    position_list += [j]
-            variable_position[merge_variable[i]] = position_list
-        result_polynomial = MultiVariableSparsePolynomial({}, merge_variable)
-        old_coefficient_keys = self.coefficient.keys()
-        old_coefficient_values = self.coefficient.values()
-        for i in range(len(old_coefficient_keys)):
+            for j, older in enumerate(old_variable_list):
+                if older == merging:
+                    position_list.append(j)
+            variable_position[merging] = position_list
+        result_coefficient = {}
+        for key, coeff in self.coefficient.items():
             new_coefficient_key = []
             for j in merge_variable:
-                new_value = 0
-                for k in variable_position[j]:
-                    new_value += old_coefficient_keys[i][k]
-                new_coefficient_key += [new_value]
-            if tuple(new_coefficient_key) in result_polynomial.coefficient:
-                result_polynomial.coefficient[tuple(new_coefficient_key)] += old_coefficient_values[i]
+                new_value = sum([key[k] for k in variable_position[j]])
+                new_coefficient_key.append(new_value)
+            new_key_tuple = tuple(new_coefficient_key)
+            if new_key_tuple in result_coefficient:
+                result_coefficient[new_key_tuple] += coeff
             else:
-                result_polynomial.coefficient[tuple(new_coefficient_key)] = old_coefficient_values[i]
-        return result_polynomial
+                result_coefficient[new_key_tuple] = coeff
+        return self.__class__(result_coefficient, merge_variable)
 
     def delete_zero_value(self):
         result_coefficient = {}
         for i in self.coefficient:
-            if self.coefficient[i] != 0:
+            if self.coefficient[i]:
                 result_coefficient[i] = self.coefficient[i]
-        result_polynomial = MultiVariableSparsePolynomial(result_coefficient, self.variable)
-        return result_polynomial
+        return self.__class__(result_coefficient, self.variable)
 
     def delete_zero_variable(self):
         old_coefficient_keys = self.coefficient.keys()
@@ -1091,9 +1083,9 @@ class MultiVariableSparsePolynomial:
         old_variable = self.variable
         exist_position_list = []
         for i in range(len(old_variable)):
-            for j in range(len(old_coefficient_keys)):
-                if old_coefficient_keys[j][i] != 0:
-                    exist_position_list += [i]
+            for k in old_coefficient_keys:
+                if k[i]:
+                    exist_position_list.append(i)
                     break
         new_variable = [old_variable[position] for position in exist_position_list]
         new_coefficient = {}
@@ -1102,8 +1094,7 @@ class MultiVariableSparsePolynomial:
             for j in exist_position_list:
                 new_coefficient_key += [old_coefficient_keys[i][j]]
             new_coefficient[tuple(new_coefficient_key)] = old_coefficient_values[i]
-        result_polynomial = MultiVariableSparsePolynomial(new_coefficient, new_variable)
-        return result_polynomial
+        return self.__class__(new_coefficient, new_variable)
 
     def differentiate(self, var):
         """
