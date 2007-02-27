@@ -48,7 +48,7 @@ def c_root_p(a, p):
             b_pow = (b_pow ** 3) % p
             m += 1
         if m == r:
-            raise ValueError, "there is no cubic root mod p"
+            raise ValueError ("there is no cubic root mod p")
         # Reduce exponent
         if sym == pow(b, pow(3, m - 1, p), p):
             t = pow(y, 2, p)
@@ -170,10 +170,10 @@ def cornacchia(d, p):
     p be a prime and d be an integer such that 0 < d < p.
     """
     if (d <= 0) or (d >= p):
-        raise ValueError, "invalid input"
+        raise ValueError ("invalid input")
     k = arith1.legendre(-d, p)
     if k == -1:
-        raise ValueError, "no solution"
+        raise ValueError ("no solution")
     x0 = arith1.modsqrt(-d, p)
     if x0 < (p / 2):
         x0 = p - x0
@@ -184,10 +184,10 @@ def cornacchia(d, p):
         a, b = b, a % b
     c, r = divmod(p - b * b, d)
     if r:
-        raise ValueError,  "no slution"
+        raise ValueError ("no slution")
     t = square_test(c)
-    if t < 0:
-        raise ValueError, "no solution"
+    if t == False:
+        raise ValueError ("no solution")
     else:
         return (b, t)
 
