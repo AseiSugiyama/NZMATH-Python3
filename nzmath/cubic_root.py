@@ -185,32 +185,8 @@ def cornacchia(d, p):
     c, r = divmod(p - b * b, d)
     if r:
         raise ValueError ("no slution")
-    t = square_test(c)
-    if t == False:
+    t = arith1.issquare(c)
+    if t == 0:
         raise ValueError ("no solution")
     else:
         return (b, t)
-
-def square_test(c):
-    """
-    Determine whether c is a square or not
-    """
-    q11 = [1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0]
-    q63 = [1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-    q64 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-    q65 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1]
-    t = c % 64
-    if q64[t] == 0:
-        return False
-    r = c % 45045
-    if q63[r % 63] == 0:
-        return False
-    if q65[r % 65] == 0:
-        return False
-    if q11[r % 11] == 0:
-        return False
-    t = arith1.floorsqrt(c)
-    if t ** 2 == c:
-        return t
-    else:
-        return False
