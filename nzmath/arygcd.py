@@ -4,7 +4,7 @@ def binarygcd(a, b):
    """
     Return the greatest common divisor of 2 integers a and b
     by binary gcd algorithm.
-    """
+   """
    a,b = b, a % b
    if a < b:
       a,b = b,a
@@ -33,7 +33,7 @@ def binarygcd(a, b):
 
 
 def arygcd_i(a1,a2,b1,b2):
-   """
+    """
     Return the greatest common divisor of 2 gauss-integers a1+a2*i and b1+b2*i
     by (1+i)-ary gcd algorithm.
     """
@@ -62,9 +62,9 @@ def arygcd_i(a1,a2,b1,b2):
 
 
 def FormAdj_i(a, b):
-   """
-   transform gaussInteger a+b*i ->  form 1+2(1+i)*(x+y*i)
-   """
+    """
+    transform gaussInteger a+b*i ->  form 1+2(1+i)*(x+y*i)
+    """
     if a % 2 == 0:
         a, b = -b, a
     if (b - a + 1) % 4 == 0:
@@ -99,9 +99,9 @@ def arygcd_w( a1, a2, b1, b2):
     return k1*b1 - k2*b2, k1*b2 + k2*b1 - k2*b2
 
 def n_pow_w(n):
-	"""
-	return (1-w)**k
-	"""
+    """
+    return (1-w)**k
+    """
     x, y = divmod(n, 2)
     k1 = 3**x
     if y == 1:
@@ -111,9 +111,9 @@ def n_pow_w(n):
     return k1, k2
 
 def FormAdj_w( a1, a2):
-   """
-   transform eisensteinInteger a1+a2*w ->  form 1+3*(x+y*w)
-   """
+    """
+    transform eisensteinInteger a1+a2*w ->  form 1+3*(x+y*w)
+    """
     if a1 % 3 == 0:
         if a2 % 3 == -1 or a2 % 3 == 2:
             return a1 - a2, a1
@@ -132,9 +132,9 @@ def FormAdj_w( a1, a2):
 
 
 def ap_norm( a, b, c, d):
-	"""
-	 Return approximately norm of 2 eisensteinInteger a+b*w and c+d*w  
-	"""
+    """
+    Return approximately norm of 2 eisensteinInteger a+b*w and c+d*w  
+    """
     a, b, c, d = abs(a), abs(b), abs(c), abs(d)
     max_dig = max( dig_num(a), dig_num(b), dig_num(c), dig_num(d))
     if max_dig > 6:
@@ -146,9 +146,9 @@ def ap_norm( a, b, c, d):
         return a*a + b*b + (a - b)*(a - b), c*c + d*d + (c -d)*(c -d)
 
 def ap_norm_g(a, b, c, d):
-	"""
-	 Return approximately norm of 2 gaussInteger a+b*i and c+d*i  
-	"""
+    """
+    Return approximately norm of 2 gaussInteger a+b*i and c+d*i  
+    """
     a, b, c, d = abs(a),abs(b),abs(c),abs(d)
     max_dig = max( dig_num(a), dig_num(b), dig_num(c), dig_num(d))
     if max_dig > 6:
@@ -165,9 +165,9 @@ def dig_num(a):
         return int(log(a,2)) + 1
 
 def n_pow_i( a, b, n):
-	"""
-	return (1+i)**k 
-	"""
+    """
+    return (1+i)**k 
+    """
     x = a
     y = b
 
@@ -177,4 +177,4 @@ def n_pow_i( a, b, n):
         x = x1
         y = y1
     return x, y
-    
+ 
