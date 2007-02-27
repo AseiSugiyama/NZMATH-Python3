@@ -1,7 +1,7 @@
 import arith1
 import random
 import math
-import arygcd.py
+import arygcd
 
 def c_root_p(a, p):
     """
