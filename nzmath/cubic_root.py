@@ -73,7 +73,7 @@ def rational_c_symbol(a1, b1):
 
 def c_symbol(a1, a2, b1, b2):
     """
-    Return the cubic residue symbol of 2 EisensteinIntegers ((a1+a2*w)/(b1+b2*w))
+    Return the cubic residue symbol of 2 Eisenstein Integers ((a1+a2*w)/(b1+b2*w))
     """
     if ((b1 == 3) and (b2 == 0)) and (((a1 == 1) or (a1 == 2) or (a1 == 3)) and (a2 == 0)):
         return 1
@@ -116,7 +116,7 @@ def c_symbol(a1, a2, b1, b2):
 
 def FormAdj_w(a1, a2):
     """
-    Transform EisensteinInteger a1+a2*w  ->  (-w)^i * (x+y*w)
+    Transform Eisenstein Integer a1+a2*w  ->  (-w)^i * (x+y*w)
     x+y*w is primary element
     assume that a1+a2*w is not divisible 1-w
     """
