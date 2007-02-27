@@ -5,13 +5,15 @@ It is developed at Tokyo Metropolitan University.
 NZMATH is distributed under the BSD license.  See LICENSE.txt for
 detail.
 
-Copyright (c) 2003-2005, NZMATH development group, all right reserved.
+Copyright (c) 2003-2007, NZMATH development group, all right reserved.
 """
 
 __all__ = [
     "arith1",
+    "arygcd",
     "bigrandom",
     "combinatorial",
+    "cubic_root",
     "elliptic",
     "factor",
     "finitefield",
