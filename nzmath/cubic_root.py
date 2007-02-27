@@ -62,7 +62,7 @@ def c_root_p(a, p):
         b = (b * y) % p
     return [x, (x * sym) % p, (x * pow(sym, 2, p)) % p]
 
-def rational_cubic_symbol_binary(a1, b1):
+def rational_c_symbol(a1, b1):
     """
     Return the cubic residue symbol of (a1/b1)
     (a1:rational integer, b1:prime)
@@ -71,7 +71,7 @@ def rational_cubic_symbol_binary(a1, b1):
         return 1
     return cubic_symbol(a1, 0, b1, 0)
 
-def cubic_symbol(a1, a2, b1, b2):
+def c_symbol(a1, a2, b1, b2):
     """
     Return the cubic residue symbol of 2 eisensteinIntegers ((a1+a2*w)/(b1+b2*w))
     """
