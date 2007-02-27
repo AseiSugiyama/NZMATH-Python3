@@ -69,7 +69,7 @@ def rational_c_symbol(a1, b1):
     """
     if a1 == b1:
         return 1
-    return cubic_symbol(a1, 0, b1, 0)
+    return c_symbol(a1, 0, b1, 0)
 
 def c_symbol(a1, a2, b1, b2):
     """
