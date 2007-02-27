@@ -115,11 +115,11 @@ def cubic_symbol(a1, a2, b1, b2):
         return -1
 
 def FormAdj_w(a1, a2):
-   """
-   Transform eisensteinInteger a1+a2*w  ->  (-w)^i * (x+y*w)
-   x+y*w is primary element
-   assume that a1+a2*w is not divisible 1-w
-   """
+    """
+    Transform eisensteinInteger a1+a2*w  ->  (-w)^i * (x+y*w)
+    x+y*w is primary element
+    assume that a1+a2*w is not divisible 1-w
+    """
     if a1 % 3 == 0:
         if ((a2 % 3) == 2) or ((a2 % 3) == -1):
             return a1 - a2, a1, 1
