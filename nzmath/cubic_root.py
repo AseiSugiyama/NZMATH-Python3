@@ -1,4 +1,4 @@
-import nzmth.arith1 as arith1
+import nzmath.arith1 as arith1
 import random
 import math
 import arygcd
