@@ -29,6 +29,9 @@ class BasicPolynomialTest (unittest.TestCase):
         h = univar.BasicPolynomial({0:-1, 2:6})
         self.assertEqual(h, self.g.differentiate())
 
+    def testSubstitution(self):
+        self.assertEqual(45, self.f(-2))
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()

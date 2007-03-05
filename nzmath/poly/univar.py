@@ -159,3 +159,16 @@ class BasicPolynomial:
         Return the formal differentiation of self.
         """
         return self.__class__([(d - 1, d*c) for (d,c) in self.coefficients.iteritems() if d > 0])
+
+    def __call__(self, val):
+        """
+        substitution
+        """
+        items = self.coefficients.items()
+        if not items:
+            return 0*val
+        d, c = items.pop()
+        result = c * val**d
+        for d, c in items:
+            result += c * val**d
+        return result
