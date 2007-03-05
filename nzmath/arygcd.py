@@ -5,7 +5,6 @@ def binarygcd(a, b):
     Return the greatest common divisor of 2 integers a and b
     by binary gcd algorithm.
    """
-   a,b = b, a % b
    if a < b:
       a,b = b,a
    if b == 0:
@@ -37,6 +36,10 @@ def arygcd_i(a1,a2,b1,b2):
     Return the greatest common divisor of 2 gauss-integers a1+a2*i and b1+b2*i
     by (1+i)-ary gcd algorithm.
     """
+    if a1 == 0 and a2 == 0:
+       return b1, b2
+    elif b1 == 0 and b2 == 0:
+       return a1, a2
     ap,bp = 0,0
     while (a1-a2)&1 == 0:
         a1,a2 = (a1+a2) >> 1, (a2-a1) >> 1
@@ -78,6 +81,10 @@ def arygcd_w( a1, a2, b1, b2):
     Return the greatest common divisor of 2 eisensteinIntegers a1+a2*w and b1+b2*w
     by (1-w)-ary gcd algorithm.
     """
+    if a1 == 0 and a2 == 0:
+       return b1, b2
+    elif b1 == 0 and b2 == 0:
+       return a1, a2
     ap, bp = 0, 0
     while (a1 + a2) % 3 == 0:
         a1, a2 = (a1 + a1 - a2) / 3, (a1 + a2) / 3
