@@ -9,11 +9,11 @@ def c_root_p(a, p):
     (i.e. a^3 = x (mod p))
     """
     if (a % p) == 0:
-        return 0
+        return [0]
     if p == 2 or p == 3 : 
-        return a % p
+        return [a % p]
     if (p % 3) == 2:
-        return pow(a, (((2 * p) - 1) / 3) ,p)
+        return [pow(a, (((2 * p) - 1) / 3) ,p)]
     p_div_3, p_mod_3 = divmod((p - 1), 3)
     # Compute e,q
     e = 0
@@ -48,7 +48,7 @@ def c_root_p(a, p):
             b_pow = (b_pow ** 3) % p
             m += 1
         if m == r:
-            raise ValueError ("there is no cubic root mod p")
+            raise ValueError("there is no cubic root mod p")
         # Reduce exponent
         if sym == pow(b, pow(3, m - 1, p), p):
             t = pow(y, 2, p)
@@ -60,25 +60,31 @@ def c_root_p(a, p):
         r = m
         x = (x * t) % p
         b = (b * y) % p
-    return [x, (x * sym) % p, (x * pow(sym, 2, p)) % p]
+    return [ x, (x * sym) % p, (x * pow(sym, 2, p)) % p ]
 
-def rational_c_symbol(a1, b1):
+def c_residue(a1, b1):
     """
-    Return the cubic residue symbol of (a1/b1)
-    (a1:rational integer, b1:prime)
+    Check whether rational integer a1 is cubic residue mod prime b1.
+    If a1 % b1 == 0, then return 0,
+    elif cubic residue, then return 1,
+    elif cubic non-residue, then return -1.
     """
-    if a1 == b1:
-        return 1
-    return c_symbol(a1, 0, b1, 0)
+    if b1 == 3:
+        if a1 % p == 0:
+            return 0
+        else:
+            return 1
+    elif b1 % 3 == 1:
+        b1, b2 = decomposite_p(b1)
+        return c_symbol(a1, 0, b1, b2)
+    else:
+        return c_symbol(a1, 0, b1, 0)
 
 def c_symbol(a1, a2, b1, b2):
     """
-    Return the cubic residue symbol of 2 Eisenstein Integers ((a1+a2*w)/(b1+b2*w))
+    Return the (Jacobi) cubic residue symbol of 2 Eisenstein Integers ((a1+a2*w)/(b1+b2*w)).
+    assume that b1+b2*w is not divisable 1-w. 
     """
-    if ((b1 == 3) and (b2 == 0)) and (((a1 == 1) or (a1 == 2) or (a1 == 3)) and (a2 == 0)):
-        return 1
-    if a2 == 0 and b2 == 0 and b1 % 3 == 1:
-        b1, b2 = decomposite_p(b1)
     r1, r2, j1 = divides(a1, a2)
     r1, r2, i1 = FormAdj_w(r1, r2)
     d1, d2, i2 = FormAdj_w(b1, b2)
@@ -108,7 +114,7 @@ def c_symbol(a1, a2, b1, b2):
             m = (b1 - 1) / 3
             n = b2 / 3
     if not ((a1 == 1) and (a2 == 0)) :
-        return -1
+        return 0
     elif t  == 0:
         return 1
     else:
@@ -170,10 +176,10 @@ def cornacchia(d, p):
     p be a prime and d be an integer such that 0 < d < p.
     """
     if (d <= 0) or (d >= p):
-        raise ValueError ("invalid input")
+        raise ValueError("invalid input")
     k = arith1.legendre(-d, p)
     if k == -1:
-        raise ValueError ("no solution")
+        raise ValueError("no solution")
     x0 = arith1.modsqrt(-d, p)
     if x0 < (p / 2):
         x0 = p - x0
@@ -184,9 +190,9 @@ def cornacchia(d, p):
         a, b = b, a % b
     c, r = divmod(p - b * b, d)
     if r:
-        raise ValueError ("no slution")
+        raise ValueError("no slution")
     t = arith1.issquare(c)
     if t == 0:
-        raise ValueError ("no solution")
+        raise ValueError("no solution")
     else:
         return (b, t)
