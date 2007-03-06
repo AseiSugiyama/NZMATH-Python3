@@ -23,7 +23,7 @@ class BasicPolynomial:
                 sum_coeff[term] += coeff
             else:
                 sum_coeff[term] = coeff
-        return self.__class__(sum_coeff)
+        return self.__class__([(d, c) for (d, c) in sum_coeff.iteritems() if c])
 
     def __sub__(self, other):
         """
@@ -35,7 +35,7 @@ class BasicPolynomial:
                 dif_coeff[term] -= coeff
             else:
                 dif_coeff[term] = -coeff
-        return self.__class__(dif_coeff)
+        return self.__class__([(d, c) for (d, c) in dif_coeff.iteritems() if c])
 
     def __mul__(self, other):
         """
@@ -54,8 +54,7 @@ class BasicPolynomial:
         """
         -self
         """
-        neg_coeff = dict([(d, -c) for (d, c) in self.coefficients.iteritems()])
-        return self.__class__(neg_coeff)
+        return self.__class__([(d, -c) for (d, c) in self.coefficients.iteritems()])
 
     def __pos__(self):
         """
@@ -97,7 +96,7 @@ class BasicPolynomial:
                     one = ring.getRing(c).one
             else:
                 one = 1
-            return self.__class__({0: 1})
+            return self.__class__({0: one})
         elif index == 1:
             return self
         elif index == 2:
@@ -158,7 +157,7 @@ class BasicPolynomial:
         """
         Return the formal differentiation of self.
         """
-        return self.__class__([(d - 1, d*c) for (d,c) in self.coefficients.iteritems() if d > 0])
+        return self.__class__([(d - 1, d*c) for (d, c) in self.coefficients.iteritems() if d > 0])
 
     def __call__(self, val):
         """
