@@ -78,7 +78,7 @@ class BasicPolynomial:
             return self.__class__({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2})
         # general (inefficient)
         items = self.coefficients.items()
-        mono = self.__class__(items.pop())
+        mono = self.__class__([items.pop()])
         rest = self.__class__(items)
         mid = mono*rest
         return mono**2 + mid + mid + rest**2
