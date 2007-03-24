@@ -30,6 +30,12 @@ class FactorTest (unittest.TestCase):
         result = mthd.mpqs(p*154858631)
         self.assertEqual([(p,1), (154858631,1)], result)
 
+    def testEllipticCurveMethod(self):
+        #self.assertEqual([(19,1), (101,1)], mthd.ecm(1919))
+        # 6133 = prime.prime(800) > sqrt(B) & 800 == 0 mod 20
+        p = 4 * 6133 + 1
+        self.assertEqual([(p,1), (154858631,1)], mthd.ecm(p*154858631))
+
     def testFactor(self):
         # default method
         p = 4 * 6133 + 1
@@ -43,6 +49,7 @@ class FactorTest (unittest.TestCase):
         self.assertEqual([(19,1), (101,1)], mthd.factor(1919, method='pmom'))
         p = 4 * 6133 + 1
         self.assertEqual([(p,1), (154858631,1)], mthd.factor(p*154858631, 'm'))
+        self.assertEqual([(p,1), (154858631,1)], mthd.factor(p*154858631, 'e'))
         self.assertEqual([(2,2),(3,1),(5,1)], mthd.factor(60, method='r'))
 
     def testVerbosity(self):

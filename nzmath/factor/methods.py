@@ -7,6 +7,7 @@ import nzmath.prime as prime
 import nzmath.factor.util as util
 import nzmath.factor.find as find
 from nzmath.factor.mpqs import mpqsfind
+from nzmath.factor.ecm import ecm as ecmfind
 
 class DefaultMethod (util.FactoringMethod):
     """
@@ -198,6 +199,21 @@ class MPQSMethod (util.FactoringMethod):
             limited_options['verbose'] = options['verbose']
         return mpqsfind(target, **limited_options)
 
+
+class EllipticCurveMethod (util.FactoringMethod):
+    """
+    Class for Elliptic Curve Method
+    """
+    def __init__(self):
+        util.FactoringMethod.__init__(self)
+
+    def find(self, target, **options):
+        """
+        Find a factor from the target number.
+        """
+        return ecmfind(target, **options)
+
+
 def trialDivision(n, **options):
     """
     Factor the given integer by trial division.
@@ -240,12 +256,22 @@ def mpqs(n, **options):
     options['need_sort'] = True
     return method.factor(n, **options)
 
+def ecm(n, **options):
+    """
+    Factor the given integer by elliptic curve method.
+    """
+    method = EllipticCurveMethod()
+    options['return_type'] = 'list'
+    options['need_sort'] = True
+    return method.factor(n, **options)
+
 def factor(n, method='default', **options):
     """
     Factor the given integer.
 
     By default, use several methods internally.
     Optional argument 'method' can be:
+      'ecm': use EllipticCurveMethod
       'mpqs': use MPQSMethod.
       'pmom': use PMinusOneMethod.
       'rhomethod': use RhoMethod.
@@ -253,6 +279,7 @@ def factor(n, method='default', **options):
     (In fact, its initial letter suffice to specify.)
     """
     method_table = {'d': DefaultMethod,
+                    'e': EllipticCurveMethod,
                     'm': MPQSMethod,
                     'p': PMinusOneMethod,
                     'r': RhoMethod,
