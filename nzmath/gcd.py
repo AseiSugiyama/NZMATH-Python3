@@ -2,6 +2,8 @@
 funtions related to the greatest common divisor of integers.
 """
 
+import nzmath.arygcd as arygcd
+
 def gcd(a, b):
     """
     Return the greatest common divisor of 2 integers a and b.
@@ -15,32 +17,8 @@ def binarygcd(a, b):
     Return the greatest common divisor of 2 integers a and b
     by binary gcd algorithm.
     """
-    if a < b:
-        a, b = b, a
-    if b == 0:
-        return a
-    a, b = b, a % b
-    if b == 0:
-        return a
-    k = 0
-    while not a & 1 and not b & 1:
-        k += 1
-        a >>= 1
-        b >>= 1
-    while not a & 1:
-        a >>= 1
-    while not b & 1:
-        b >>= 1
-    t = (a - b) >> 1
-    while t:
-        while not t & 1:
-            t >>= 1
-        if t > 0:
-            a = t
-        else:
-            b = -t
-        t = (a - b) >> 1
-    return a << k
+    # use arygcd version
+    return arygcd.binarygcd(a, b)
 
 def extgcd(x, y):
     """
