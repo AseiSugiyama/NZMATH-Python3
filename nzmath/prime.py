@@ -376,7 +376,7 @@ class Zeta:
         self.size = size
         self.z = [0]*self.size
         if pos != None:
-            self.z[pos%self.size] = val
+            self.z[pos % self.size] = val
 
     def __add__(self, other):
         if self.size == other.size:
@@ -412,34 +412,47 @@ class Zeta:
     __rmul__ = __mul__
 
     def __lshift__(self, offset):
-        """The name is shift but the meaning of function is rotation."""
+        """
+        The name is shift but the meaning of function is rotation.
+        """
         new = Zeta(self.size)
         new.z = self.z[-offset:] + self.z[:-offset]
         return new
 
     def __pow__(self, e, mod=0):
+        if mod:
+            return self._pow_mod(e, mod)
+
         r = Zeta(self.size, 0)
         if e == 0:
             return r
-        if mod:
-            z = self % mod
-        else:
-            z = +self
+        z = +self
         while True:
-            if e&1 == 1:
+            if e & 1:
                 r = z*r
-                if mod:
-                    r = r % mod
                 if e == 1:
                     return r
             e //= 2
-            z = z.square(mod)
+            z = z._square()
 
-    def square(self, mod=0):
-        zr_sq = self*self
-        if mod:
-            zr_sq = zr_sq % mod
-        return zr_sq
+    def _pow_mod(self, e, mod):
+        r = Zeta(self.size, 0)
+        if e == 0:
+            return r
+        z = self % mod
+        while True:
+            if e & 1:
+                r = z * r % mod
+                if e == 1:
+                    return r
+            e //= 2
+            z = z._square_mod(mod)
+
+    def _square(self):
+        return self * self
+
+    def _square_mod(self, mod):
+        return self * self % mod
 
     def __pos__(self):
         m = self.size
@@ -453,15 +466,15 @@ class Zeta:
                     z_p.z[i+mp] = self.z[i+mp] - self.z[i]
         else:
             p = 3
-            while m%p:
+            while m % p:
                 p += 2
             mp = m//p
             for i in range(mp):
                 min = self.z[i]
-                for j in range(mp+i, m, mp):
+                for j in range(mp + i, m, mp):
                     if min > self.z[j]:
                         min = self.z[j]
-                for j in range(i,m,mp):
+                for j in range(i, m, mp):
                     z_p.z[j] = self.z[j] - min
         return z_p
 
@@ -585,18 +598,34 @@ class Status:
         self.d = {}
 
     def yet(self, key):
+        """
+        set key's status be 'yet'.
+        """
         self.d[key] = 0
 
     def done(self, key):
+        """
+        set key's status be 'done'.
+        """
         self.d[key] = 1
 
     def yet_keys(self):
-        return [k for k in self.d.keys() if not self.d[k]]
+        """
+        Return keys whose stati are 'yet'.
+        """
+        return [k for k in self.d if not self.d[k]]
 
     def isDone(self, key):
+        """
+        Return whether key's status is 'done' or not.
+        """
         return self.d[key]
 
     def subodd(self, p, q, n, J):
+        """
+        Return the sub result for odd key 'p'.
+        If it is True, the status of 'p' is flipped to 'done'.
+        """
         s = J.get(1, p, q)
         Jpq = J.get(1, p, q)
         m = s.size
@@ -772,7 +801,7 @@ class JacobiSum:
 
     def make(self, q):
         fx = self.makefx(q)
-        qpred = q-1
+        qpred = q - 1
         qt = _factor(qpred)
         qt2 = [k for (p, k) in qt if p == 2][0]
         k, pk = qt2, 2**qt2
@@ -782,11 +811,11 @@ class JacobiSum:
                 J2q[j + fx[j]] = J2q[j + fx[j]] + 1
             self.shelve[1, 2, q] = +J2q
             if k >= 3:
-                J2 = Zeta(8, 3+fx[1])
-                J3 = Zeta(pk, 2+fx[1])
-                for j in range(2,qpred):
-                    J2[j*3 + fx[j]] = J2[j*3 + fx[j]]+1
-                    J3[j*2 + fx[j]] = J3[j*2 + fx[j]]+1
+                J2 = Zeta(8, 3 + fx[1])
+                J3 = Zeta(pk, 2 + fx[1])
+                for j in range(2, qpred):
+                    J2[j*3 + fx[j]] = J2[j*3 + fx[j]] + 1
+                    J3[j*2 + fx[j]] = J3[j*2 + fx[j]] + 1
                 self.shelve[3, q] = +(self.shelve[1, 2, q]*J3)
                 self.shelve[2, q] = +(J2*J2)
         else:
@@ -802,19 +831,24 @@ class JacobiSum:
         del fx
 
     def makefx(self, q):
+        """
+        Return a dict called 'fx'.
+        The dict stores the information that fx[i] == j iff
+          g**i + g**j = 1 mod q
+        for g, a primitive root of the prime q.
+        """
         g = primitive_root(q)
-        qpred = q-1
+        qpred = q - 1
         qd2 = qpred//2
         g_mf = [0, g]
         for _ in range(2, qpred):
             g_mf.append((g_mf[-1]*g) % q)
         fx = {}
-        for i in range(1, qpred):
+        for i in range(1, qd2):
             if i in fx:
                 continue
-            j = 1
-            while g_mf[j] + g_mf[i] - 1 != q:
-                j += 1
+            # search j s.t. g**j + g**i = 1 mod q
+            j = g_mf.index(q + 1 - g_mf[i])
             fx[i] = j
             fx[j] = i
             fx[qpred - i] = (j - i + qd2) % qpred
@@ -872,7 +906,7 @@ def apr(n):
     for _ in bigrange.range(1, el.t.integer):
         r = (r*n) % el.et.integer
         if n % r == 0 and r != 1 and r != n:
-            _log.info("%s divide %s.\n" %(r, n))
+            _log.info("%s divides %s.\n" %(r, n))
             return False
     return True
 
