@@ -1,6 +1,9 @@
-version 0.5.1 to X.X.X
+version 0.5.1 to 0.6.0
 ----------------------
+* add a new module arygcd for efficient gcds for some integer rings of imaginary quadratic fields.
 * add a new module bigrange for simplifying loops.
+* add a new module cubic_root for cubic residues and cubic roots for some integer rings of imaginary quadratic fields.
+* add a new module factor.ecm for elliptic curve method factorization.
 * add partition_numbers_upto and partition_number functions in combinatorial.
 * fix a bug of arith1.AGM function. (sf bug #1600223)
 * fix a bug of bigrandom.random function. (sf bug #1590692)
