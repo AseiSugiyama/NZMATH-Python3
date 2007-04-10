@@ -1,6 +1,9 @@
 from __future__ import generators
 import unittest
+import logging
 import nzmath.prime as prime
+
+logging.basicConfig()
 
 class PrimeTest(unittest.TestCase):
     def testPrimeqComposite(self):
