@@ -4,6 +4,7 @@ import logging
 import testArith1
 import testArygcd
 import testBigrandom
+import testBigrange
 import testCombinatorial
 import testCubic_root
 import testElliptic
