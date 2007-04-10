@@ -2,12 +2,15 @@ import unittest
 import logging
 
 import testArith1
+import testArygcd
 import testBigrandom
 import testCombinatorial
+import testCubic_root
 import testElliptic
 import testEquation
 import testFactorUtil
 import testFactorMpqs
+import testFactorEcm
 import testFactorMethods
 import testFactorMisc
 import testFiniteField
