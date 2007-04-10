@@ -46,7 +46,7 @@ done
 for subs in factor
 do
   cd $subs
-  for docs in find ecm methods misc mpqs util
+  for docs in ecm find methods misc mpqs util
   do
     wget -q $WIKIBASE\?$subs%2F$docs.py -O $docs.html
   done
