@@ -38,7 +38,7 @@ wget -q $WIKIBASE\?Install -O install.html
 wget -q $WIKIBASE\?Tutorial -O tutorial.html
 # 1.1. get module core document.
 cd modules
-for docs in arith1 bigrandom combinatorial elliptic equation finitefield gcd group imaginary integerResidueClass lattice matrix multiplicative permute polynomial prime quad rational rationalFunction real ring vector zassenhaus
+for docs in arith1 arygcd bigrandom bigrange combinatorial cubic_root elliptic equation finitefield gcd group imaginary integerResidueClass lattice matrix multiplicative permute polynomial prime quad rational rationalFunction real ring vector zassenhaus
 do
   wget -q $WIKIBASE\?$docs.py -O $docs.html
 done
@@ -46,7 +46,7 @@ done
 for subs in factor
 do
   cd $subs
-  for docs in find methods misc mpqs util
+  for docs in find ecm methods misc mpqs util
   do
     wget -q $WIKIBASE\?$subs%2F$docs.py -O $docs.html
   done
