@@ -1,7 +1,6 @@
-import nzmath.arith1 as arith1
 import random
-import math
-import arygcd
+import nzmath.arith1 as arith1
+import nzmath.arygcd as arygcd
 
 def c_root_p(a, p):
     """
@@ -13,20 +12,20 @@ def c_root_p(a, p):
     if p == 2 or p == 3 : 
         return [a % p]
     if (p % 3) == 2:
-        return [pow(a, (((2 * p) - 1) / 3) ,p)]
+        return [pow(a, (((2 * p) - 1) / 3), p)]
     p_div_3, p_mod_3 = divmod((p - 1), 3)
     # Compute e,q
     e = 0
     temp = p_div_3
     tempmod = p_mod_3
-    
-    while  tempmod == 0:
+
+    while tempmod == 0:
         e += 1
         temp, tempmod = divmod(temp, 3)
     q = (p - 1) / (3 ** e)
     search_range = (p - 1) / 2
     h = 2
-    while pow(h, p_div_3 ,p) == 1:
+    while pow(h, p_div_3, p) == 1:
         h = random.randrange(2, search_range)
     sym = pow(h, p_div_3, p)
     g = pow(h, q, p)
@@ -70,7 +69,7 @@ def c_residue(a1, b1):
     elif cubic non-residue, then return -1.
     """
     if b1 == 3:
-        if a1 % p == 0:
+        if a1 % b1 == 0:
             return 0
         else:
             return 1
@@ -93,7 +92,7 @@ def c_symbol(a1, a2, b1, b2):
     t = ((m * j1) + (-(m + n) * i1)) % 3
     a1, a2 = r1, r2
     b1, b2 = d1, d2    
-    nrm_a, nrm_b =arygcd.ap_norm(a1, a2, b1, b2)
+    nrm_a, nrm_b = arygcd.ap_norm(a1, a2, b1, b2)
     if nrm_a < nrm_b:
         tmpre, tmpim = a1, a2
         a1, a2 = b1, b2

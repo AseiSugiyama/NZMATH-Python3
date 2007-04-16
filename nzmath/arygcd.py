@@ -1,37 +1,36 @@
-from math import log
+import math
 
 def binarygcd(a, b):
-   """
+    """
     Return the greatest common divisor of 2 integers a and b
     by binary gcd algorithm.
-   """
-   if a < b:
-      a,b = b,a
-   if b == 0:
-      return a
-   a,b = b, a % b
-   if b == 0:
-      return a
-   k = 0
-   while not a&1 and not b&1:
-      k += 1
-      a >>= 1
-      b >>= 1
-   while not a&1:
-      a >>= 1
-   while not b&1:
-      b >>= 1
-   while a:
-      while not a & 1:
-         a >>= 1
-      if abs(a) < abs(b):
-         a,b = b,a
-      a = (a - b) >> 1
-   return b << k
+    """
+    if a < b:
+        a, b = b, a
+    if b == 0:
+        return a
+    a, b = b, a % b
+    if b == 0:
+        return a
+    k = 0
+    while not a&1 and not b&1:
+        k += 1
+        a >>= 1
+        b >>= 1
+    while not a&1:
+        a >>= 1
+    while not b&1:
+        b >>= 1
+    while a:
+        while not a & 1:
+            a >>= 1
+        if abs(a) < abs(b):
+            a, b = b, a
+        a = (a - b) >> 1
+    return b << k
 
 
-
-def arygcd_i(a1,a2,b1,b2):
+def arygcd_i(a1, a2, b1, b2):
     """
     Return the greatest common divisor of 2 gauss-integers a1+a2*i and b1+b2*i
     by (1+i)-ary gcd algorithm.
@@ -40,27 +39,27 @@ def arygcd_i(a1,a2,b1,b2):
        return b1, b2
     elif b1 == 0 and b2 == 0:
        return a1, a2
-    ap,bp = 0,0
+    ap, bp = 0, 0
     while (a1-a2)&1 == 0:
-        a1,a2 = (a1+a2) >> 1, (a2-a1) >> 1
+        a1, a2 = (a1+a2) >> 1, (a2-a1) >> 1
         ap += 1
     while (b1-b2)&1 == 0:
-        b1,b2 = (b1+b2) >> 1, (b2-b1) >> 1
+        b1, b2 = (b1+b2) >> 1, (b2-b1) >> 1
         bp += 1
-    k = min(ap,bp)
+    k = min(ap, bp)
     while a1 != 0 or a2 != 0:
         while (a1-a2) & 1 == 0:
-            a1,a2 = (a1+a2) >> 1, (a2-a1) >> 1
-        norm_a,norm_b = ap_norm_g(a1,a2,b1,b2)
+            a1, a2 = (a1+a2) >> 1, (a2-a1) >> 1
+        norm_a, norm_b = ap_norm_g(a1, a2, b1, b2)
         if norm_a < norm_b:
-            a1,a2,b1,b2 = b1,b2,a1,a2
-        a1,a2 = FormAdj_i(a1,a2)
-        b1,b2 = FormAdj_i(b1,b2)
-        a1,a2 = a1-b1, a2-b2
-    if 0 in (ap,bp):
-        return b1,b2
+            a1, a2, b1, b2 = b1, b2, a1, a2
+        a1, a2 = FormAdj_i(a1, a2)
+        b1, b2 = FormAdj_i(b1, b2)
+        a1, a2 = a1-b1, a2-b2
+    if 0 in (ap, bp):
+        return b1, b2
     else:
-        s,t = n_pow_i(1,1,k)
+        s, t = n_pow_i(1, 1, k)
         return (b1*s)-(b2*t), (b1*t)+(b2*s)
 
 
@@ -76,7 +75,7 @@ def FormAdj_i(a, b):
         return -a, -b
 
 
-def arygcd_w( a1, a2, b1, b2):
+def arygcd_w(a1, a2, b1, b2):
     """
     Return the greatest common divisor of 2 eisensteinIntegers a1+a2*w and b1+b2*w
     by (1-w)-ary gcd algorithm.
@@ -117,7 +116,7 @@ def n_pow_w(n):
         k2 = 0
     return k1, k2
 
-def FormAdj_w( a1, a2):
+def FormAdj_w(a1, a2):
     """
     transform eisensteinInteger a1+a2*w ->  form 1+3*(x+y*w)
     """
@@ -138,16 +137,16 @@ def FormAdj_w( a1, a2):
             return -a1, -a2
 
 
-def ap_norm( a, b, c, d):
+def ap_norm(a, b, c, d):
     """
     Return approximately norm of 2 eisensteinInteger a+b*w and c+d*w  
     """
     a, b, c, d = abs(a), abs(b), abs(c), abs(d)
-    max_dig = max( dig_num(a), dig_num(b), dig_num(c), dig_num(d))
+    max_dig = max(dig_num(a), dig_num(b), dig_num(c), dig_num(d))
     if max_dig > 6:
         sft_num = max_dig - 6
         a, b, c, d = a >> sft_num, b >> sft_num, c >> sft_num, d >> sft_num
-        subst1, subst2 = ( a - b) >> sft_num, (c - d) >> sft_num
+        subst1, subst2 = (a - b) >> sft_num, (c - d) >> sft_num
         return a*a + b*b + subst1*subst1, c*c + d*d + subst2*subst2
     else:
         return a*a + b*b + (a - b)*(a - b), c*c + d*d + (c -d)*(c -d)
@@ -156,22 +155,22 @@ def ap_norm_g(a, b, c, d):
     """
     Return approximately norm of 2 gaussInteger a+b*i and c+d*i  
     """
-    a, b, c, d = abs(a),abs(b),abs(c),abs(d)
-    max_dig = max( dig_num(a), dig_num(b), dig_num(c), dig_num(d))
+    a, b, c, d = abs(a), abs(b), abs(c), abs(d)
+    max_dig = max(dig_num(a), dig_num(b), dig_num(c), dig_num(d))
     if max_dig > 6:
         sft_num = max_dig - 6
         a, b, c, d = a >> sft_num, b >> sft_num, c >> sft_num, d >> sft_num
         return a*a + b*b, c*c + d*d
     else:
         return a*a + b*b, c*c + d*d
-    
+
 def dig_num(a):
     if a == 0:
         return 1
     else:
-        return int(log(a,2)) + 1
+        return int(math.log(a, 2)) + 1
 
-def n_pow_i( a, b, n):
+def n_pow_i(a, b, n):
     """
     return (1+i)**k 
     """
@@ -184,4 +183,3 @@ def n_pow_i( a, b, n):
         x = x1
         y = y1
     return x, y
- 
