@@ -244,7 +244,7 @@ $ECHOCMD
 
 $ECHOCMD "Ok, now created nzmath-current manual located to"
 $ECHOCMD "/tmp/nzmath ."
-$ECHOCMD "if you check difference between nzmath-cvs manual,"
+$ECHOCMD "if you check difference between nzmath-cvs manual, with GNU diff,"
 $ECHOCMD "$ diff -ubBr /tmp/nzmath/manual {your-nzmathcvs-repo}/manual"
 $ECHOCMD "or you check only new version files,"
 $ECHOCMD "$ diff -r --brief /tmp/nzmath/manual {your-nzmathcvs-repo}/manual ."
