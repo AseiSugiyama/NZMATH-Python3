@@ -1,13 +1,16 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
 HTMLPY = $(PYTHON) /home/tetsushi/work/docutils/tools/rst2html.py
-OLD_VER = 0.5.0
-NEW_VER = 0.5.1
+OLD_VER = 0.5.1
+NEW_VER = 0.6.0
 
 all: html sdist
 
-sdist: files
+sdist: files setup.py
 	(cd $(TMPDIR); $(PYTHON) setup.py sdist)
+
+setup.py: files
+	(cd $(TMPDIR); ls -R manual/ | awk -f makesetuppy.awk $(NEW_VER) > setup.py)
 
 html: files
 	(cd $(TMPDIR); $(HTMLPY) README.txt | \
@@ -17,7 +20,7 @@ html: files
 
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
-	cp *.txt setup.py MANIFEST.in $(TMPDIR)
+	cp *.txt MANIFEST.in makesetuppy.awk $(TMPDIR)
 	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
