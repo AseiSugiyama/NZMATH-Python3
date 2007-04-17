@@ -9,28 +9,35 @@
 # or you check only new version files,
 # $ diff -r --brief /tmp/nzmath/manual {your-nzmathcvs-repo}/manual
 
+if [ "x`uname`" = "xSunOS" ]; then
+    ECHOCMD="/usr/ucb/echo"
+else
+    ECHOCMD="echo"
+fi
+
 # 0. check options. if set, cleanup and exit.
+
 if [ "x$1" != "x" ]; then
-    echo -n "Cleanup and remove /tmp/nzmath/manual ..."
+    $ECHOCMD -n "Cleanup and remove /tmp/nzmath/manual ..."
     rm -rf /tmp/nzmath/manual
-    echo "Done."
+    $ECHOCMD "Done."
     exit 0
 fi
 
 # 0.1 structure directory tree.
 TMP="/tmp"
-echo -n "Check directory /tmp ..."
+$ECHOCMD -n "Check directory /tmp ..."
 cd $TMP
 [ -d nzmath ] || mkdir nzmath
 [ -d nzmath/manual ] || mkdir nzmath/manual
 [ -d nzmath/manual/modules ] || mkdir nzmath/manual/modules
 [ -d nzmath/manual/modules/factor ] || mkdir nzmath/manual/modules/factor
 BASEDIR="$TMP/nzmath/manual"
-echo "ok."
+$ECHOCMD "ok."
 #WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
 WIKIBASE="http://nzmath.sourceforge.net/doc/"
 BASEEXPR="http:\/\/nzmath\.sourceforge\.net\/doc"
-echo "start to document source download from nzmath-doc wiki..."
+$ECHOCMD "start to document source download from nzmath-doc wiki..."
 # 1. get base document.
 cd $BASEDIR
 wget -q $WIKIBASE\?UserManual -O index.html
@@ -138,7 +145,7 @@ do
   done
 done
 
-echo "automatically document parse and convert..."
+$ECHOCMD "automatically document parse and convert..."
 # 2. edit document.
 cd ../
 CSSBDAT="skin\/default\.ja\.css"
@@ -227,9 +234,19 @@ do
 done
 cd ../
 
-echo "cleanup temporary files ..."
+$ECHOCMD "cleanup temporary files ..."
 # 3. cleanup temporary file .
 rm -rf *.se *.sed modules/*.se modules/*.sed modules/*/*.se modules/*/*.sed
 
-echo "Done."
+$ECHOCMD "Done."
+
+$ECHOCMD
+
+$ECHOCMD "Ok, now created nzmath-current manual located to"
+$ECHOCMD "/tmp/nzmath ."
+$ECHOCMD "if you check difference between nzmath-cvs manual,"
+$ECHOCMD "$ diff -ubBr /tmp/nzmath/manual {your-nzmathcvs-repo}/manual"
+$ECHOCMD "or you check only new version files,"
+$ECHOCMD "$ diff -r --brief /tmp/nzmath/manual {your-nzmathcvs-repo}/manual ."
+
 exit 0
