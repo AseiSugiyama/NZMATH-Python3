@@ -269,6 +269,11 @@ span.size7
 	display:inline;
 }
 
+div#navigator
+{
+        display:none;
+}
+
 div#body
 {
 	padding:0px;
@@ -284,18 +289,21 @@ div#note
 
 div#lastmodified
 {
-	font-size:80%;
-	padding:0px;
-	margin:0px;
+        display:none;
 }
 
 .anchor
 {
 }
+
 .anchor_super
 {
-	font-size:xx-small;
-	vertical-align:super;
+        display:none;
+}
+
+.jumpmenu
+{
+        display:none;
 }
 
 br.spacer
