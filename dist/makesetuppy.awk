@@ -39,6 +39,7 @@ BEGIN {
     cont = 1;
 }
 END {
+    print "        ]),";
     print "    ]";
     print ")";
 }
