@@ -34,5 +34,4 @@ tag:
 	done
 
 version:
-	sed -i -e 's/$(OLD_VER)/$(NEW_VER)/g' setup.py
 	sed -i -e 's/$(OLD_VER)/$(NEW_VER)/g' README.txt
