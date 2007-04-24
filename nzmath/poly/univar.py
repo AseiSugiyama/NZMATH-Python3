@@ -1,7 +1,7 @@
-import nzmath.ring as ring
+import nzmath.ring as _ring
 
 
-class BasicPolynomial:
+class BasicPolynomial (object):
     """
     Basic polynomial data type ignoring a variable name and the ring.
     """
@@ -40,15 +40,55 @@ class BasicPolynomial:
     def __mul__(self, other):
         """
         self * other
+
+        If type of other is BasicPolynomial, do multiplication
+        in ring.  Otherwise, do scalar multiplication.
+        """
+        if isinstance(other, BasicPolynomial):
+            return self.ring_mul(other)
+        else:
+            return self.scalar_mul(other)
+
+    def ring_mul(self, other):
+        """
+        Return the result of ring multiplication.
         """
         mul_coeff = {}
         for ds, cs in self.coefficients.iteritems():
             for do, co in other.coefficients.iteritems():
-                if ds + do in mul_coeff:
-                    mul_coeff[ds + do] += cs*co
+                term_degree = ds + do
+                if term_degree in mul_coeff:
+                    mul_coeff[term_degree] += cs*co
                 else:
-                    mul_coeff[ds + do] = cs*co
+                    mul_coeff[term_degree] = cs*co
         return self.__class__([(d, c) for (d, c) in mul_coeff.iteritems() if c])
+
+    def scalar_mul(self, scale):
+        """
+        Return the result of scalar multiplication.
+        """
+        return self.__class__([(d, c * scale) for (d, c) in self.coefficients.iteritems() if c])
+
+    def term_mul(self, term):
+        """
+        Return the result of multiplication with the given term.
+        The term can be given as a tuple (degree, coeff) or as a
+        BasicPolynomial instance.
+        """
+        if isinstance(term, BasicPolynomial):
+            degree, coeff = term.coefficients.items()[0]
+        else:
+            degree, coeff = term
+        return self.__class__([(d + degree, c * coeff) for (d, c) in self.coefficients.iteritems()])
+
+    def __rmul__(self, other):
+        """
+        other * self
+
+        Scalar multiplication, since other cannot be a BasicPolynomial
+        instance.
+        """
+        return self.scalar_mul(other)
 
     def __neg__(self):
         """
@@ -62,26 +102,36 @@ class BasicPolynomial:
         """
         return self.__class__(self.coefficients)
 
-    def _square(self):
+    def square(self):
         """
         Return the square of self.
         """
         # zero
         if not self:
             return self
+        data_length = len(self.coefficients)
         # monomial
-        if len(self.coefficients) == 1:
+        if data_length == 1:
             return self.__class__([(d*2, c**2) for (d, c) in self.coefficients.iteritems()])
         # binomial
-        if len(self.coefficients) == 2:
+        if data_length == 2:
             (d1, c1), (d2, c2) = [(d, c) for (d, c) in self.coefficients.iteritems()]
             return self.__class__({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2})
         # general (inefficient)
         items = self.coefficients.items()
-        mono = self.__class__([items.pop()])
-        rest = self.__class__(items)
-        mid = mono*rest
-        return mono**2 + mid + mid + rest**2
+        fst, snd = {}, {}
+        if data_length % 2 == 1:
+            b, c = items.pop()
+            fst[b] = c
+        while items:
+            b, c = items.pop()
+            fst[b] = c
+            b, c = items.pop()
+            snd[b] = c
+        fst = self.__class__(fst)
+        snd = self.__class__(snd)
+        mid = fst.ring_mul(snd.scalar_mul(2))
+        return fst.square() + mid + snd.square()
 
     def __pow__(self, index):
         """
@@ -93,14 +143,15 @@ class BasicPolynomial:
         elif index == 0:
             for c in self.coefficients.itervalues():
                 if c:
-                    one = ring.getRing(c).one
+                    one = _ring.getRing(c).one
+                    break
             else:
                 one = 1
             return self.__class__({0: one})
         elif index == 1:
             return self
         elif index == 2:
-            return self._square()
+            return self.square()
         # special polynomials
         if not self:
             return self
@@ -114,7 +165,7 @@ class BasicPolynomial:
                 power_product *= power_of_2
             index //= 2
             if index:
-                power_of_2 = power_of_2._square()
+                power_of_2 = power_of_2.square()
         return power_product
 
     def __nonzero__(self):
@@ -151,7 +202,7 @@ class BasicPolynomial:
         return sum([hash(c)*d for (d, c) in self.coefficients.iteritems()]) & 0x7fff
 
     def __repr__(self): # for debug
-        return repr(self.coefficients)
+        return "%s(%s)" % (self.__class__.__name__, repr(self.coefficients))
 
     def differentiate(self):
         """

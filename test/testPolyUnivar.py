@@ -20,6 +20,8 @@ class BasicPolynomialTest (unittest.TestCase):
         h = univar.BasicPolynomial({1:-1, 2:-2, 3:2, 4:4, 5:-3, 7:6})
         self.assertEqual(h, self.f * self.g)
         self.assertEqual(h, self.g * self.f)
+        self.assertEqual(-self.g, self.g*(-1))
+        self.assertEqual(-self.g, (-1)*self.g)
 
     def testPow(self):
         h1 = univar.BasicPolynomial({0:1, 1:4, 2:4, 4:6, 5:12, 8:9})
