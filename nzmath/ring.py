@@ -253,7 +253,7 @@ class CommutativeRingElement (RingElement):
         """
         self_ring = self.getRing()
         other_ring = getRing(other)
-        return self.getRing().getaction(getRing(other))(other, self)
+        return self_ring.getaction(other_ring)(other, self)
 
 
 class FieldElement (CommutativeRingElement):
