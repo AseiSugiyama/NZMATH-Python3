@@ -395,19 +395,38 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         return self.field
 
     def __add__(self, other):
-        assert self.field == other.field
-        sum_ = self.field.modulus.reduce(self.rep + other.rep)
+        if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
+            seed = self.field.createElement(other.n)
+            sum_ = self.field.modulus.reduce(self.rep + seed.rep)
+        elif other.field == self.field:
+            sum_ = self.field.modulus.reduce(self.rep + other.rep)
+        else:
+            raise NotImplementedError
         return self.__class__(sum_, self.field)
 
+    __radd__ = __add__
+
     def __sub__(self, other):
-        assert self.field == other.field
-        dif = self.field.modulus.reduce(self.rep - other.rep)
+        if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
+            seed = self.field.createElement(other.n)
+            dif = self.field.modulus.reduce(self.rep - seed.rep)
+        elif other.field == self.field:
+            dif = self.field.modulus.reduce(self.rep - other.rep)
+        else:
+            raise NotImplementedError
         return self.__class__(dif, self.field)
 
     def __mul__(self, other):
-        assert self.field == other.field
-        prod = self.field.modulus.reduce(self.rep * other.rep)
+        if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
+            seed = self.field.createElement(other.n)
+            prod = self.field.modulus.reduce(self.rep * seed.rep)
+        elif other.field == self.field:
+            prod = self.field.modulus.reduce(self.rep * other.rep)
+        else:
+            raise NotImplementedError
         return self.__class__(prod, self.field)
+
+    __rmul__ = __mul__
 
     def __truediv__(self, other):
         return self * other.inverse()
