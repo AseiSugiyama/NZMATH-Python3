@@ -64,7 +64,11 @@ class RationalFunctionFieldTest (unittest.TestCase):
         self.assertEqual(1, dictionary[RationalFunctionField(Q, "x")])
         self.assertRaises(KeyError, dictionary.__getitem__, Zx)
         self.assertRaises(KeyError, dictionary.__getitem__, QX)
-        
+
+    def testStr(self):
+        strQx = "Q(x)"
+        self.assertEqual(strQx, str(self.Qx))
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()

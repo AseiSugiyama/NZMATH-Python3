@@ -7,7 +7,7 @@ import nzmath.ring as ring
 import nzmath.polynomial as polynomial
 
 try:
-    # Python 2.4 has set type
+    # Python >=2.4 has set type
     set
 except NameError:
     # Python 2.3 has Set class in sets
@@ -33,9 +33,8 @@ class RationalFunctionField (ring.QuotientField):
     def __str__(self):
         retval = str(self.coefficientField)
         retval += "("
-        for v in self.vars:
-            retval += str(v) + ", "
-        retval = retval[:-2] + ")"
+        retval += ", ".join([str(v) for v in self.vars])
+        retval += ")"
         return retval
 
     def __eq__(self, other):
@@ -50,7 +49,7 @@ class RationalFunctionField (ring.QuotientField):
         return False
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self.__eq__(other)
 
     def __contains__(self, element):
         if ring.getRing(element).issubring(self):
@@ -118,9 +117,7 @@ class RationalFunctionField (ring.QuotientField):
 
 class RationalFunction (ring.QuotientFieldElement):
     """
-
     The class of rational functions.
-
     """
     def __init__(self, *arg, **kwd):
         if len(arg) == 1:
