@@ -232,7 +232,7 @@ class FiniteExtendedField (FiniteField):
             # randomly chosen irreducible polynomial
             seed = bigrandom.randrange(self.char ** self.degree)
             cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField.getInstance(self.char))
-            while cand.degree() < self.degree and not cand.isIrreducible():
+            while cand.degree() < self.degree or not cand.isIrreducible():
                 seed = bigrandom.randrange(self.char ** self.degree)
                 cand = polynomial.OneVariableDensePolynomial(arith1.expand(seed, self.char)+[1], "#1", FinitePrimeField.getInstance(self.char))
             self.modulus = polynomial.OneVariablePolynomialIdeal(cand, cand.getRing())

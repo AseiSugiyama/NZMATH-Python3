@@ -128,6 +128,11 @@ class FiniteExtendedFieldTest (unittest.TestCase):
         self.assertEqual(8, len(FiniteExtendedField(2, 3)))
         f = poly([1, 1, 0, 1], "x", FinitePrimeField.getInstance(2))
         self.assertEqual(8, len(FiniteExtendedField(2, f)))
+        for i in range(10): # 10 might be enough to check random moduli
+            F8 = FiniteExtendedField(2, 3)
+            defining_polynomial = F8.modulus.generators[0]
+            self.assert_(defining_polynomial.degree() == 3)
+            self.assert_(defining_polynomial.isIrreducible())
 
     def testCreateElement(self):
         F125 = FiniteExtendedField(5, 3)
