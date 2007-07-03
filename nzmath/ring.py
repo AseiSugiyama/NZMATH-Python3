@@ -2,6 +2,9 @@
 base classes for rings.
 """
 
+from __future__ import division
+
+
 class Ring (object):
     """
     Ring is an abstract class which expresses that
@@ -613,3 +616,29 @@ def getRing(obj):
             import nzmath.imaginary as imaginary
             return imaginary.theComplexField
     return None
+
+def inverse(obj):
+    """
+    Return the inverse of 'obj'.  The inverse can be in the quatient
+    field, if the 'obj' is an element of non-field domain.
+
+    Mainly for python built-in objects such as int or float.
+    """
+    try:
+        # if obj has its inverse method, use it.
+        return obj.inverse()
+    except AttributeError:
+        # OK, try next
+        pass
+    # special cases
+    if isinstance(obj, (int, long)):
+        import nzmath.rational as rational
+        return rational.Rational(1, obj)
+    elif isinstance(obj, (float, complex)):
+        return 1 / obj
+    # final trial
+    try:
+        # if true division does not fail, it should return the inverse
+        return getRing(obj).one / obj
+    except TypeError:
+        raise NotImplementedError("no inversion method found")

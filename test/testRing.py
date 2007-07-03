@@ -4,6 +4,7 @@ import nzmath.rational as rational
 from nzmath.real import theRealField
 from nzmath.imaginary import theComplexField
 
+
 class CommutativeRingPropertiesTest (unittest.TestCase):
     def setUp(self):
         self.rp = ring.CommutativeRingProperties()
@@ -76,20 +77,6 @@ class CommutativeRingPropertiesTest (unittest.TestCase):
         assert True == self.rp.isdomain()
 
 
-class GetRingTest (unittest.TestCase):
-    def testInt(self):
-        Z = rational.theIntegerRing
-        self.assertEqual(Z, ring.getRing(1))
-        self.assertEqual(Z, ring.getRing(1L))
-        self.assertEqual(rational.Integer(1).getRing(), ring.getRing(rational.Integer(1)))
-
-    def testFloat(self):
-        self.assertEqual(theRealField, ring.getRing(1.0))
-
-    def testComplex(self):
-        self.assertEqual(theComplexField, ring.getRing(1+1j))
-
-
 class ResidueClassTest (unittest.TestCase):
     def setUp(self):
         class IntegerIdeal (ring.Ideal):
@@ -114,6 +101,33 @@ class ResidueClassTest (unittest.TestCase):
         self.failIf(self.C != self.C)
         self.failIf(self.R == self.C)
         self.failIf(self.C == self.R)
+
+
+class GetRingTest (unittest.TestCase):
+    def testInt(self):
+        Z = rational.theIntegerRing
+        self.assertEqual(Z, ring.getRing(1))
+        self.assertEqual(Z, ring.getRing(1L))
+        self.assertEqual(rational.Integer(1).getRing(), ring.getRing(rational.Integer(1)))
+
+    def testFloat(self):
+        self.assertEqual(theRealField, ring.getRing(1.0))
+
+    def testComplex(self):
+        self.assertEqual(theComplexField, ring.getRing(1+1j))
+
+class InverseTest (unittest.TestCase):
+    def testInt(self):
+        self.assertEqual(rational.Rational(1, 2), ring.inverse(2))
+
+    def testFloat(self):
+        self.assertEqual(0.5, ring.inverse(2.0))
+
+    def testComplex(self):
+        self.assertEqual(-1j, ring.inverse(1j))
+
+    def testRational(self):
+        self.assertEqual(rational.Rational(3, 2), ring.inverse(rational.Rational(2, 3)))
 
 
 def suite(suffix = "Test"):
