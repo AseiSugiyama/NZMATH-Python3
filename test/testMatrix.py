@@ -1,3 +1,4 @@
+from __future__ import division
 import unittest
 from nzmath.matrix import *
 import nzmath.vector as vector

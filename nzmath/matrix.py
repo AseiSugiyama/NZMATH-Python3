@@ -127,22 +127,13 @@ class Matrix:
                     product[i,j] = self[i,j] * other
             return product
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         division by a scalar ``if defined''
         """
-        if rational.isIntegerObject(other):
-            product = self.__class__(self.row, self.column)
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    d, m = divmod(self[i,j], other)
-                    if not(m):
-                        product[i,j] = self[i,j] // other
-                    else:
-                        product[i,j] = rational.Rational(self[i,j], other)
-            return product
-        else:
-            return (1/other) * self
+        return ring.inverse(other) * self
+
+    __div__ = __truediv__ # backward compatibility?
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -351,23 +342,17 @@ class Matrix:
         triangle = self.copy()
         flag = False # for calculation of determinant
         for i in range(triangle.row):
-            if triangle.compo[i][i] == 0:
+            if not triangle.compo[i][i]:
                 for k in range(i+1, triangle.row):
-                    if triangle.compo[k][i] != 0:
+                    if triangle.compo[k][i]:
                         triangle.swapRow(i+1, k+1)
                         flag = not(flag)
                         break        # break the second loop
                 else:
                     continue         # the below components are all 0. Back to the first loop
             for k in range(i+1, triangle.row):
-                if rational.isIntegerObject(triangle.compo[k][i]) and rational.isIntegerObject(triangle.compo[i][i]):
-                    d, m = divmod(triangle.compo[k][i], triangle.compo[i][i])
-                    if not(m):
-                            ratio = d
-                    else:
-                        ratio = rational.Rational(triangle.compo[k][i], triangle.compo[i][i])
-                else:
-                    ratio = triangle.compo[k][i] / triangle.compo[i][i]
+                inv_i_i = ring.inverse(triangle.compo[i][i])
+                ratio = triangle.compo[k][i] * inv_i_i
                 for l in range(i, triangle.column):
                     triangle.compo[k][l] -= triangle.compo[i][l] * ratio
 
@@ -407,13 +392,7 @@ class Matrix:
             else:           # not found j such that m(j,k)!=0 and c[j]==0
                 d[k] = 0
                 continue
-            if rational.isIntegerObject(self[j,k]):
-                if self[j,k] == 1 or self[j,k] == -1:
-                    top = -self[j,k]
-                else:
-                    top = rational.Rational(-1, self[j,k])
-            else:
-                    top = (-1) / self[j,k]
+            top = -ring.inverse(self[j, k])
             self[j,k] = -1
             for s in range(k+1, self.column+1):
                 self[j,s] = top * self[j,s]
@@ -515,13 +494,7 @@ class Matrix:
                     B.compo[i][l] = B.compo[j][l]
                     B.compo[j][l] = t
             # step 5
-            if rational.isIntegerObject(M.compo[j][j]):
-                if M.compo[j][j]== 1 or M.compo[j][j] == -1:
-                    d = M.compo[j][j]
-                else:
-                    d = rational.Rational(1, M.compo[j][j])
-            else:
-                    d = 1 / M.compo[j][j]
+            d = ring.inverse(M.compo[j][j])
             for k in range(j+1, m):
                 ck = d * M.compo[k][j]
                 for l in range(j+1, n):
@@ -559,13 +532,7 @@ class Matrix:
                     break
             else:
                 continue
-            if rational.isIntegerObject(M[i,j]):
-                if M[i,j]== 1 or M[i,j] == -1:
-                    d = M[i,j]
-                else:
-                    d = rational.Rational(1, M[i,j])
-            else:
-                    d = 1 / M[i,j]
+            d = ring.inverse(M[i,j])
             for l in range(1, i+1):
                 t = d * M[l,j]
                 M[l,j] = M[l,k]
@@ -584,13 +551,13 @@ class SquareMatrix(Matrix):
     SquareMatrix is a class for square matrices.
     """
 
-    def __init__(self, row, column = 0, compo = 0):
+    def __init__(self, row, column=0, compo=0):
         """
         SquareMatrix(row, column [,components])
         SquareMatrix must be row == column .
         """
-        if (column !=0) and (row != column) and (not isinstance(column, list)):
-            raise ValueError, self.__doc__
+        if (column != 0) and (row != column) and (not isinstance(column, list)):
+            raise ValueError("incorrect initializer")
         elif (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = row
             self.compo = []
@@ -614,8 +581,8 @@ class SquareMatrix(Matrix):
 
     def __pow__(self, other):
         n = +other
-        if not n in rational.theIntegerRing:
-            raise ValueError
+        if not isinstance(n, (int, long)):
+            raise TypeError("index must be an integer")
 
         power = unitMatrix(self.row)
         if n == 0:
@@ -718,13 +685,9 @@ class SquareMatrix(Matrix):
         for i in range(1, self.row+1):
             C = self * C
             if i == 1:
-                coeff[i] = (-1) * C.trace()
+                coeff[i] = -C.trace()
             else:
-                d, m = divmod(C.trace(), i)
-                if not(m):
-                    coeff[i] = -d
-                else:
-                    coeff[i] = rational.Rational(-C.trace(), i)
+                coeff[i] = -C.trace() * ring.inverse(i)
             C = C + coeff[i] * unitMatrix(self.row)
         import nzmath.polynomial as polynomial
         coeff.reverse()
@@ -756,14 +719,7 @@ class SquareMatrix(Matrix):
 
         for i in range(n):
             for j in range(i+1, n):
-                if rational.isIntegerObject(U.compo[j][i]) and rational.isIntegerObject(U.compo[i][i]):
-                    d, m = divmod(U.compo[j][i], U.compo[i][i])
-                    if not(m):
-                            L.compo[j][i]= d
-                    else:
-                        L.compo[j][i] = rational.Rational(U.compo[j][i], U.compo[i][i])
-                else:
-                    L.compo[j][i] = U.compo[j][i] / U.compo[i][i]
+                L.compo[j][i] = U.compo[j][i] * ring.inverse(U.compo[i][i])
                 for k in range(i, n):
                     U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
 
@@ -839,7 +795,7 @@ class IntegerMatrix(Matrix):
                     product[i,j] = self[i,j] * other
             return product
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         """
         division by a scalar
         """
@@ -848,15 +804,14 @@ class IntegerMatrix(Matrix):
         else:
             raise NoInverse
 
+    __div__ = __truediv__ # backward compatibility
+
     def __mod__(self, other):
-        if rational.isIntegerObject(other):
-            if other == 0:
-                raise ZeroDivisionError
-            for i in range(self.row):
-                self[i] %= other
-            return self
-        else:
-            return NotImplemented
+        if not other:
+            raise ZeroDivisionError
+        for i in range(self.row):
+            self[i] %= other
+        return self
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -1162,13 +1117,7 @@ class Subspace(Matrix):
                     t += 1
             if not found:
                 raise VectorsNotIndependent
-            if rational.isIntegerObject(M.compo[t][s]):
-                if M.compo[t][s]== 1 or M.compo[t][s] == -1:
-                    d = M.compo[t][s]
-                else:
-                    d = rational.Rational(1, M.compo[t][s])
-            else:
-                    d = 1 / M.compo[t][s]
+            d = ring.inverse(M.compo[t][s])
             M.compo[t][s] = 1
             if t != s:
                 for i in range(n):
