@@ -136,30 +136,26 @@ def e3_Fp(x, p):
 
 def Newton(f, initial=1, repeat=250):
     """
-    f = a_n + a_(n-1) * x + ... + a_0 * x ** n
+    Compute x s.t. 0 = f[0] + f[1] * x + ... + f[n] * x ** n
     """
     length = len(f)
     df = []
     for i in range(1, length):
-        df.append(i*f[i])
+        df.append(i * f[i])
     l = initial
     for k in range(repeat):
-        coeff = 0
-        dfcoeff = 0
-        for i in range(length - 1):
-            coeff += f[i]*(l**i)
-            dfcoeff += df[i]*(l**i)
-        coeff += f[i]*(l**i)
-        tangent = [coeff - l*dfcoeff, dfcoeff]
+        coeff = 0.0
+        dfcoeff = 0.0
+        for i in range(1, length):
+            coeff = coeff * l + f[-i]
+            dfcoeff += dfcoeff * l + df[-i]
+        coeff = coeff * l + f[0]
         if coeff == 0:
             return l
-        elif coeff != 0 and dfcoeff == 0:
+        elif dfcoeff == 0: # Note coeff != 0
             raise ValueError("There is not solution or Choose different initial")
         else:
-            if l == e1(tangent):
-                return l
-            else:
-                l = e1(tangent)
+            l = l - coeff / dfcoeff
     return l
 
 
