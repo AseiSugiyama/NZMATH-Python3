@@ -339,7 +339,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
     def differentiate(self, var):
         if isinstance(var, str):
             if self.degree() < 1 or var != self.getVariable():
-                return self.getCoefficientRing().createElement(0)
+                return self.getCoefficientRing().zero
             else:
                 return_coefficient = {}
                 for i, c in self.coefficient.iteritems():
@@ -1768,7 +1768,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
 
         """
         result = []
-        if self[self.degree()] != self.getCoefficientRing().createElement(1):
+        if self[self.degree()] != self.getCoefficientRing().one:
             lc = self[self.degree()]
             self /= lc
             result.append((lc, 1))
@@ -2204,7 +2204,7 @@ class PolynomialRing (ring.CommutativeRing):
                 variable = [v for v in self.vars][0]
                 self._one = OneVariableDensePolynomial([1], variable, self.coefficientRing)
             else:
-                self._one = MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.createElement(1)}, list(self.vars))
+                self._one = MultiVariableSparsePolynomial({(0,)*len(self.vars): self.coefficientRing.one}, list(self.vars))
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit")
@@ -2423,6 +2423,3 @@ class PolynomialResidueRing (ring.ResidueClassRing):
         if seed in self.ring:
             return ring.ResidueClass(seed, self.ideal)
         raise ValueError("seed is not valid.")
-
-
-    

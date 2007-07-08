@@ -279,12 +279,11 @@ def extgcdp(f, g, p):
     f_zpz = polynomial.OneVariableSparsePolynomial(f_coeff, "x", zpz)
     g_coeff = g.coefficient.getAsDict()
     g_zpz = polynomial.OneVariableSparsePolynomial(g_coeff, "x", zpz)
-    u, v, w, x, y, z = (zpz.createElement(1), zpz.createElement(0), f_zpz,
-                        zpz.createElement(0), zpz.createElement(1), g_zpz,)
+    u, v, w, x, y, z = zpz.one, zpz.zero, f_zpz, zpz.zero, zpz.one, g_zpz
     while z:
         q = w // z
         u, v, w, x, y, z = x, y, z, u - q*x, v - q*y, w - q*z
-    if w.degree() == 0 and w != zpz.createElement(1):
+    if w.degree() == 0 and w != zpz.one:
         u = u / w
         v = v / w
         w = w / w
