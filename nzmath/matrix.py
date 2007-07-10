@@ -1029,6 +1029,14 @@ class MatrixRing (ring.Ring):
         self.size = size
         self.scalars = scalars
 
+    def __eq__(self, other):
+        """
+        self == other
+        """
+        return (self.__class__ == other.__class__ and
+                self.size == other.size and
+                self.scalars == other.scalars)
+
     def __repr__(self):
         return "MatrixRing(%d, %s)" % (self.size, self.scalars)
 

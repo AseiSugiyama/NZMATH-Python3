@@ -3,6 +3,10 @@ import unittest
 from nzmath.matrix import *
 import nzmath.vector as vector
 
+# sub test
+from nzmath.test.testMatrixFiniteField import *
+
+
 a = createMatrix(2,2,[1,2,3,4])
 
 b = createMatrix(2,2,[0,-1,1,-2])
