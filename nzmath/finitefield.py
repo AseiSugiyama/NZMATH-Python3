@@ -332,6 +332,18 @@ class FiniteExtendedField (FiniteField):
         except:
             return False
 
+    def __contains__(self, elem):
+        """
+        Report whether elem is in field.
+        """
+        if isinstance(elem, FiniteExtendedFieldElement) and \
+               elem.getRing().modulus.generators == self.modulus.generators:
+            return True
+        elif isinstance(elem, FinitePrimeFieldElement) and \
+                 elem.getRing().getCharacteristic() == self.getCharacteristic():
+            return True
+        return False
+
     def __eq__(self, other):
         """
         Equality test.
