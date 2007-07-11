@@ -167,6 +167,27 @@ class FiniteExtendedFieldTest (unittest.TestCase):
         dictionary[F125] = 1
         self.assertEqual(1, dictionary[FiniteExtendedField(5, 3)])
 
+    def testContains(self):
+        # elements of the field
+        F125 = FiniteExtendedField(5, 3)
+        self.assert_(F125.one in F125)
+        self.assert_(F125.createElement(17) in F125)
+        # elements of prime fields
+        self.assert_(FinitePrimeField.getInstance(5).one in F125)
+        # different characteristic
+        self.failIf(FinitePrimeFieldElement(3, 7) in F125)
+        # elements of disjoint fields
+        F25 = FiniteExtendedField(5, 2)
+        self.failIf(F25.one in F125)
+        self.failIf(F25.createElement(17) in F125)
+        F625 = FiniteExtendedField(5, 4)
+        self.failIf(F625.one in F125)
+        self.failIf(F625.createElement(17) in F125)
+        # We don't expect an element of extended fields be in the field
+        # even if it actually is.
+        F15625 = FiniteExtendedField(5, 6)
+        self.failIf(F15625.one in F125)
+
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
