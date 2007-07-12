@@ -459,6 +459,13 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         power = self.field.modulus.reduce(self.rep ** index) # slow
         return self.__class__(power, self.field)
 
+    def __neg__(self):
+        negative = self.field.modulus.reduce(self.field.zero.rep - self.rep)
+        return self.__class__(negative, self.field)
+
+    def __pos__(self):
+        return self.__class__(self.rep, self.field)
+
     def __eq__(self, other):
         if self.field == other.field:
             if not self.field.modulus.reduce(self.rep - other.rep):
