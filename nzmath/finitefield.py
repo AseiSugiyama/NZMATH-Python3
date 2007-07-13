@@ -277,6 +277,8 @@ class FiniteExtendedField (FiniteField):
                 self)
         elif isinstance(seed, polynomial.OneVariablePolynomial):
             return FiniteExtendedFieldElement(seed("#1"), self)
+        elif isinstance(seed, FiniteExtendedFieldElement) and seed.field == self:
+            return seed
         else:
             try:
                 # lastly check sequence
@@ -407,6 +409,8 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         return self.field
 
     def __add__(self, other):
+        if isinstance(other, (int, long)) and (not other):
+            return self.__class__(self.rep, self.field)
         if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
             seed = self.field.createElement(other.n)
             sum_ = self.field.modulus.reduce(self.rep + seed.rep)
@@ -419,6 +423,8 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
     __radd__ = __add__
 
     def __sub__(self, other):
+        if isinstance(other, (int, long)) and (not other):
+            return self.__class__(self.rep, self.field)
         if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
             seed = self.field.createElement(other.n)
             dif = self.field.modulus.reduce(self.rep - seed.rep)
@@ -429,7 +435,10 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         return self.__class__(dif, self.field)
 
     def __mul__(self, other):
-        if other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
+        if isinstance(other, (int, long)):
+            seed = self.field.createElement(other % self.field.getCharacteristic())
+            prod = self.field.modulus.reduce(self.rep * seed.rep)
+        elif other.getRing() == FinitePrimeField.getInstance(self.field.getCharacteristic()):
             seed = self.field.createElement(other.n)
             prod = self.field.modulus.reduce(self.rep * seed.rep)
         elif other.field == self.field:
