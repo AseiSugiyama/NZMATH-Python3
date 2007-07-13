@@ -1,3 +1,4 @@
+from __future__ import division
 import unittest
 from nzmath.finitefield import *
 from nzmath.rational import Integer, Rational, theRationalField
@@ -121,6 +122,41 @@ class FinitePrimeFieldTest(unittest.TestCase):
         dictionary = {}
         dictionary[self.F17] = 1
         self.assertEqual(1, dictionary[FinitePrimeField(17)])
+
+
+class FiniteExtendedFieldElementTest (unittest.TestCase):
+    def testPos(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, +F289.one)
+
+    def testNeg(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.zero, -F289.zero)
+
+    def testAdd(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, F289.zero + F289.one)
+
+    def testSub(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, F289.one - F289.zero)
+        self.assertEqual(F289.zero, F289.one - F289.one)
+
+    def testInverse(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, F289.one.inverse())
+        self.assertRaises(ZeroDivisionError, F289.zero.inverse)
+
+    def testMul(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, F289.one * F289.one)
+        self.assertEqual(F289.zero, F289.one * F289.zero)
+
+    def testDiv(self):
+        F289 = FiniteExtendedField(17, 2)
+        self.assertEqual(F289.one, F289.one / F289.one)
+        self.assertEqual(F289.zero, F289.zero / F289.one)
+        self.assertRaises(ZeroDivisionError, F289.one.__truediv__, F289.zero)
 
 
 class FiniteExtendedFieldTest (unittest.TestCase):
