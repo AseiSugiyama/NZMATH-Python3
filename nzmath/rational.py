@@ -508,6 +508,10 @@ class RationalField (ring.QuotientField):
         """getQuotientField returns the rational field itself."""
         return self
 
+    def getCharacteristic(self):
+        """The characteristic of the rational field is zero."""
+        return 0
+
     def createElement(self, numerator, denominator=1):
         """
         createElement returns a Rational object.
