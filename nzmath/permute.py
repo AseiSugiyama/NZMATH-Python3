@@ -560,6 +560,18 @@ class PermGroup:
     def __str__(self):
         return str(self.key)
 
+    def __eq__(self, other):
+        if self.key == other.key:
+            return True
+        else:
+            return False
+
+    def __ne__(self, other):
+        return not(self == other)
+
+    def __len__(self):
+        return self.grouporder()
+
     def createElement(self, seed):
         """
         Create Permute or ExPermute with seed.
