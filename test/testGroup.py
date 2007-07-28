@@ -2,7 +2,7 @@ import unittest
 from nzmath.group import *
 from nzmath.finitefield import FinitePrimeFieldElement, FinitePrimeField
 from nzmath.integerResidueClass import *
-from nzmath.permute import Permute
+from nzmath.permute import Permute, PermGroup
 
 a1 = GroupElement(Permute([2, 4, 1, 3])) #Multiplication Group
 a2 = GroupElement(Permute([3, 1, 4, 2]))
@@ -80,7 +80,7 @@ class GroupElementTest(unittest.TestCase):
         assert(36 == c1_m.t_order())
 
     def testGetGroup(self):
-        assert(Group(Permute([2, 4, 1, 3]), 1) == a1.getGroup())
+        assert(Group(PermGroup([1, 2, 3, 4]), 1) == a1.getGroup())
         assert(Group(IntegerResidueClassRing(30)) == b1.getGroup())
         assert(Group(FinitePrimeField(37)) == c1_a.getGroup())
         assert(Group(FinitePrimeField(37), 1) == c1_m.getGroup())
