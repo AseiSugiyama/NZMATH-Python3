@@ -1,6 +1,8 @@
-import nzmath.rational as rational
+import random
 import nzmath.combinatorial as combinatorial
+import nzmath.gcd as gcd
 import nzmath.matrix as matrix
+import nzmath.rational as rational
 
 class Permute:
 
@@ -12,42 +14,83 @@ class Permute:
     (It is 1:1 onto mapping, 1->2, 2->3, 3->1, 4->5, 5->4)
     """
 
-    def __init__(self, value):
-        self.data = value
-        a = self.data
-        if not isinstance(a, list):
-            raise TypeError("This isn't normal form")
-        b = range(len(a))
-        for x in a:
+    def __init__(self, value, key=None, flag=False):
+        """
+        You can initialize with various one-to-one onto mapping.
+        Example,
+        Permute([2,3,4,5,1]) -> normal type
+        Permute([3,4,2,1,0], 0) -> [4,5,3,2,1]-normal type(index start with 0)
+        Permute(['b','c','d','e','a'], 1) -> [2,3,4,5,1]-normal type(identity is ascending order)
+        Permute(['b','c','d','e','a'], -1) -> [4,3,2,1,5]-normal type(identity is descending order)
+        Permute(['b','c','d','e','a'], ['b','a', 'c','d','e']) -> [1,3,4,5,2]-normal type(identity=key)
+        Permute({'a':'b','b':'c','c':'d','d':'e','e':'a'}) -> [2,3,4,5,1]-normal type
+        """
+        if isinstance(value, dict):
+            if key:
+                raise TypeError("key isn't need when dict type is used")
+            data = value.values()
+            key = value.keys()
+        elif isinstance(value, (list, tuple)):
+            data = list(value)
+        else:
+            raise TypeError("Not normal form")
+        if key == 0:
+            self.data = [i + 1 for i in data]
+            self.key = range(len(data))
+        elif key:
+            if isinstance(key, (list, tuple)):
+                self.key = list(key)
+                if len(value) != len(key):
+                    raise TypeError("Length error")
+            elif key == 1:
+                p_key = list(data)
+                p_key.sort()
+                self.key = p_key
+            elif key == -1:
+                p_key = list(data)
+                p_key.sort(reverse=True)
+                self.key = p_key
+            else:
+                raise TypeError("Input sequence type")
+            key = self.key
+            if flag:
+                self.data = data
+            else:
+                self.data = [key.index(x) + 1 for x in data]
+        else:
+            self.data = data
+            self.key = range(1, len(data) + 1)
+        data = self.data
+        p_data = range(len(data))
+        for x in data:
             if not rational.isIntegerObject(x):
                 raise TypeError("This number should be integer list")
-            elif x <= 0 or x > len(a):
+            elif x <= 0 or x > len(data):
                 raise TypeError("This isn't onto")
-            elif b[x-1] == -1:
+            elif p_data[x-1] == -1:
                 raise ValueError("This isn't one-to-one")
             else:
-                b[x-1] = -1
+                p_data[x-1] = -1
 
     def __getitem__(self, other):
-        if not rational.isIntegerObject(other):
-            raise TypeError("This number should be integer")
-        elif other <= 0 or other > len(self.data):
-            raise IndexError("This is out of range")
-        return self.data[other - 1]
+        try:
+            idx = self.key.index(other)
+        except ValueError:
+            raise ValueError("Input key element")
+        return self.key[self.data[idx]  - 1]
 
     def __mul__(self, other):
         """
         Multiplication is with composite mapping way.
         Self is calculated after other
         """
-        a = self.data
-        b = other.data
-        c = []
-        if len(a) != len(b):
+        s_data = self.data
+        o_data = other.data
+        lth = len(s_data)
+        if self.key != other.key or lth != len(o_data):
             raise TypeError("This can't multiply")
-        for i in range(len(a)):
-            c.append(a[b[i] - 1])
-        return Permute(c)
+        sol = [s_data[o_data[i] - 1] for i in range(lth)]
+        return Permute(sol, self.key, flag=True)
 
     def __rmul__(self, other):
         return other * self
@@ -59,27 +102,62 @@ class Permute:
         return other * (self.inverse())
 
     def __pow__(self, other):
-        b = Permute(self.data)
+        sol = self.__class__(self.data, self.key, flag=True)
         if not rational.isIntegerObject(other):
             raise TypeError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
-                b = self * b
+                sol = self * sol
         else:
-            c = self.inverse()
+            inv = self.inverse()
             for i in range(abs(other) + 1):
-                b = c * b
-        return b
+                sol = inv * sol
+        return sol
+
+    def __call__(self, other):
+        return self.permute(other)
+
+    def setKey(self, key=None):
+        """
+        Set other key.
+        this is used when you want to permute different sequence by
+        same permutation.
+        """
+        if key == 0:
+            self.key = range(len(data))
+        elif key:
+            if len(key) != len(self.key):
+                raise TypeError, "Invalid length"
+            else:
+                if key[0] in self.key: # key transformation
+                    data = list(self.data)
+                    keys = self.key
+                    sol = [0] * len(data)
+                    try:
+                        for i in range(len(data)):
+                            sol[key.index(keys[i])] = key.index(keys[data[i]-1]) + 1
+                        self.data = sol
+                    except ValueError:
+                        pass
+                self.key = key
+        else:
+            self.key = range(1, len(data) + 1)
+
+    def getData(self):
+        """
+        Get data expressed by key
+        """
+        return [self.key[self.data[i] - 1] for i in range(len(self.data))]
 
     def inverse(self):
-        a = self.data
-        b = range(len(a))
-        for i in range(len(a)):
-            b[a[i] - 1] = i+1
-        return Permute(b)
+        s_data = self.data
+        sol = [0] * len(s_data)
+        for i in range(len(s_data)):
+            sol[s_data[i] - 1] = i+1
+        return Permute(sol, self.key, flag=True)
 
-    def identity(self):
-        return Permute(range(1, len(self.data) + 1))
+    def getGroup(self):
+        return PermGroup(self.key)
 
     def numbering(self):
         """
@@ -92,34 +170,24 @@ class Permute:
         4-dimension [1,2,3,4], [2,1,3,4], [1,3,2,4], [2,3,1,4], [3,1,2,4],
                     [3,2,1,4], ..., [4,3,2,1]
         """
-        a = self.data
-        b = []
-        for i in range(len(a)):
-            b.append(-1)
-        for i in range(len(a)):
-            b[a[i] - 1] = 0
-            for j in range(a[i], len(b)):
-                if b[j] != -1:
-                    b[j] += 1
-        c = 0
-        b[0] = 1
-        for j in range(len(b) - 1, -1, -1):
-            c = (j+1) * c + b[j]
-        return c
-
-    def grouporder(self):
-        return combinatorial.factorial(len(self.data))
+        s_data = self.data
+        val = [-1] * (len(s_data))
+        for i in range(len(s_data)):
+            val[s_data[i] - 1] = 0
+            for j in range(s_data[i], len(val)):
+                if val[j] != -1:
+                    val[j] += 1
+        sol = 0
+        val[0] = 1
+        for j in range(len(val) - 1, -1, -1):
+            sol = (j+1) * sol + val[j]
+        return sol
 
     def order(self):
         """
         This method returns order for permutation element.
         """
-        b=Permute(self.data)
-        i = 1
-        while b != b.identity():
-            b = self * b
-            i += 1
-        return i
+        return self.ToCyclic().order()
 
     def ToTranspose(self):
         """
@@ -127,78 +195,89 @@ class Permute:
          2-dimensional cyclic type element of permutation group.
         It is recursive program.
         """
-        a = list(self.data)
-        l = []
-        if len(a) == 1:
+        s_data = list(self.data)
+        lth = len(s_data)
+        if lth == 1:
             return ExPermute(1, [])
         else:
-            if a[len(a) - 1] != len(a):
-                l.append((a[len(a) - 1], len(a)))
-                a[a.index(len(a))] = a[len(a) - 1]
-            b = Permute(a[:len(a) - 1]).ToTranspose()
-            l.extend(b.data)
-            return ExPermute(len(a), l)
+            sol = []
+            if s_data[lth - 1] != lth:
+                sol.append((s_data[lth - 1], lth))
+                s_data[s_data.index(lth)] = s_data[lth - 1]
+            sol.extend((Permute(s_data[:lth - 1]).ToTranspose()).data)
+            return ExPermute(lth, sol, self.key, flag=True)
 
     def ToCyclic(self):
         """
         This method returns cyclic type element of permutation group.
         """
-        a = self.data
-        b = list(self.data)
-        l = []
-        for i in range(len(a)):
-            if b[i] != '*':
-                k = [(i+1)]
-                b[i] = '*'
+        s_data = self.data
+        box = list(self.data)
+        sol = []
+        for i in range(len(s_data)):
+            if box[i] != '*':
+                p_sol = [(i+1)]
+                box[i] = '*'
                 j = i
-                while a[j] != i+1:
-                    k.append(a[j])
-                    j = a[j] - 1
-                    b[j] = '*'
-                if len(k) != 1:
-                    l.append(tuple(k))
-        return ExPermute(len(a), l)
+                while s_data[j] != i+1:
+                    p_sol.append(s_data[j])
+                    j = s_data[j] - 1
+                    box[j] = '*'
+                if len(p_sol) != 1:
+                    sol.append(tuple(p_sol))
+        return ExPermute(len(s_data), sol, self.key, flag=True)
 
     def sgn(self):
         """
         This method returns sign for permutation element.
         """
-        a = self.data
-        k = l = 1
-        for j in range(len(a) - 1):
-            for i in range(j+1):
-                k *= cmp(i, j+1)  # cmp return sign of subtraction
-                l *= cmp(a[i], a[j+1])
-        return l/k
+        return self.ToCyclic().sgn()
 
     def types(self):
         """
         This method returns 'type' defined by each cyclic element length.
         """
-        a = self.ToCyclic().data
-        c = []
-        for i in range(len(a)):
-            c.append(len(a[i]))
-        c.sort()
-        return repr(c) + ' type'
+        c_data = self.ToCyclic().data
+        sol = [len(c_data[i]) for i in range(len(c_data))]
+        sol.sort()
+        return repr(sol) + ' type'
 
     def ToMatrix(self):
         """
         This method returns permutation matrix
         """
-        a = len(self.data)
-        A = matrix.SquareMatrix(a)
-        for j in range(a):
+        lth = len(self.data)
+        A = matrix.SquareMatrix(lth)
+        for j in range(lth):
             A[j+1, self.data[j]] = 1
         return A
 
+    def permute(self, lists):
+        """
+        permute list following with self permutation
+        Warning: this permutation is independent on key (except dict type)
+        """
+        if len(lists) != len(self.data):
+            raise TypeError, "invalid data size"
+        if isinstance(lists, dict):
+            sol = {}
+            key = self.key
+            for x in lists.keys():
+                sol[key[self.data[key.index(x)] - 1]] = lists[x]
+        elif isinstance(lists, (list, tuple)):
+            sol = [0] * len(lists)
+            for i in range(len(lists)):
+                sol[self.data[i] - 1] = lists[i]
+        return sol
+
     def __eq__(self, other):
-        a = self.data
-        b = other.data
-        if len(a) != len(b):
+        s_data = self.data
+        o_data = other.data
+        lth = len(s_data)
+        if self.key != other.key or lth != len(o_data):
             return False
-        for i in range(len(a)):
-            if a[i] != b[i]:
+        for i in range(lth):
+            if s_data[i] != o_data[i]:
                 return False
         return True
 
@@ -206,10 +285,10 @@ class Permute:
         return not self == other
 
     def __repr__(self):
-        return repr(self.data)
+        return repr(self.key)+" -> "+repr(self.getData())
 
     def __str__(self):
-        return str(self.data)
+        return str(self.key)+" -> "+str(self.getData())
 
 
 class ExPermute:
@@ -220,34 +299,67 @@ class ExPermute:
     This means (1, 2)(3, 4)=[2, 1, 4, 3, 5]
     """
 
-    def __init__(self, val1, val2):
-        self.dim = val1
-        self.data = val2
-        if not (rational.isIntegerObject(val1) and isinstance(val2, list)):
+    def __init__(self, dim, value, key=None, flag=False):
+        if not (rational.isIntegerObject(dim) and isinstance(value, list)):
             raise TypeError("This isn't cyclic form")
-        for x in val2:
+        self.dim = dim
+        data = value
+        self.data = []
+        if key == 0:
+            self.key = range(dim)
+            for x in data:
+                ele = [ y + 1 for y in x ]
+                self.data.append(tuple(ele))
+        elif key:
+            if isinstance(key, (list, tuple)):
+                self.key = list(key)
+                if dim != len(key):
+                    raise TypeError("Length error")
+            else:
+                raise TypeError("Input sequence type")
+            key = self.key
+            if flag:
+                self.data = data
+            else:
+                for x in data:
+                    ele = [key.index(x[i]) + 1 for i in range(len(x))]
+                    self.data.append(tuple(ele))
+        else:
+            self.data = data
+            self.key = range(1, dim + 1)
+        data = self.data
+        for x in data:
             if not isinstance(x, tuple):
                 raise TypeError("This isn't cyclic form")
-            b = range(val1)
+            box = range(dim)
             for y in x:
-                if not rational.isIntegerObject(val1):
-                    raise TypeError("This number should be integer")
-                if (y > val1) or (y <= 0):
+                if (y > dim) or (y <= 0):
                     raise TypeError("This is out of range")
-                elif b[y-1] == -1:
+                elif box[y-1] == -1:
                     raise ValueError("This isn't one-to-one")
                 else:
-                    b[y-1] = -1
+                    box[y-1] = -1
+
+    def __getitem__(self, other):
+        try:
+            idx = self.key.index(other)
+        except ValueError:
+            raise ValueError("Input key element")
+        val = idx + 1
+        for i in range(len(self.data) - 1, -1, -1):
+            data_i = list(self.data[i])
+            try:
+                pla = data_i.index(val)
+                val = data_i[(pla+1) % len(data_i)]
+            except ValueError:
+                pass
+        return self.key[val - 1]
 
     def __mul__(self, other):
-        if self.dim != other.dim:
+        if self.key != other.key or self.dim != other.dim:
             raise TypeError("This can't multiply")
-        c = []
-        for x in self.data:
-            c.append(x)
-        for x in other.data:
-            c.append(x)
-        return ExPermute(self.dim, c)
+        sol = [x for x in self.data] + [x for x in other.data]
+        return ExPermute(self.dim, sol, self.key, flag=True)
 
     def __rmul__(self, other):
         return other * self
@@ -259,67 +371,107 @@ class ExPermute:
         return other * self.inverse()
 
     def __pow__(self, other):
-        b = ExPermute(self.dim, self.data)  # other instance
+        sol = ExPermute(self.dim, self.data, self.key, flag=True)  # other instance
         if not rational.isIntegerObject(other):
             raise TypeError("This can't calculate")
         if other > 0:
             for i in range(other - 1):
-                b = self * b
+                sol = self * sol
         else:
-            c = self.inverse()
+            inv = self.inverse()
             for i in range(abs(other) + 1):
-                b = c * b
-        return b
+                sol = inv * sol
+        return sol
+
+    def __call__(self, other):
+        return self.permute(other)
+
+    def setKey(self, key=None):
+        """
+        Set other key.
+        this is used when you want to permute different sequence by
+        same permutation.
+        """
+        if key == 0:
+            self.key = range(self.dim)
+        elif key:
+            if len(key) != self.dim:
+                raise TypeError, "Invalid length"
+            else:
+                if key[0] in self.key: # key transformation
+                    data = list(self.data)
+                    keys = self.key
+                    sol = []
+                    try:
+                        for x in data:
+                            p_ele = []
+                            for i in range(len(x)):
+                                p_ele.append(key.index(keys[x[i]-1])+1)
+                            sol.append(tuple(p_ele))
+                        self.data = sol
+                    except ValueError:
+                        pass
+                self.key = key
+        else:
+            self.key = range(1, self.dim + 1)
+
+    def getData(self):
+        """
+        Get data expressed by key
+        """
+        out = []
+        for x in self.data:
+            out.append(tuple([self.key[x[i] - 1] for i in range(len(x))]))
+        return out
 
     def inverse(self):
-        a = list(self.data)
-        a.reverse()
-        for i in range(len(a)):
-            b = list(a[i])
-            if len(a[i]) > 2:
-                b.reverse()
-            a[i] = tuple(b)
-        return ExPermute(self.dim, a)
+        s_data = list(self.data)
+        s_data.reverse()
+        for i in range(len(s_data)):
+            ele_data = list(s_data[i])
+            if len(s_data[i]) > 2:
+                ele_data.reverse()
+            s_data[i] = tuple(ele_data)
+        return ExPermute(self.dim, s_data, self.key, flag=True)
 
-    def identity(self):
-        return ExPermute(self.dim, [])
-
-    def grouporder(self):
-        return combinatorial.factorial(self.dim)
+    def getGroup(self):
+        return PermGroup(self.key)
 
     def order(self):
         """
         This method returns order for permutation element.
         """
-        return self.ToNormal().order()
+        data = self.simplify().data
+        sol = 1
+        for x in data:
+            sol = gcd.lcm(sol, len(x))
+        return sol
 
     def ToNormal(self):
         """
         This method returns normal type element of permutation group.
         """
         dim = self.dim
-        a = list(self.data)
-        a.reverse()
-        b = []
-        for i in range(dim):
-            b.append('*')
-        for x in a:
-            c = list(x)
-            c.append(c[0])
-            d = []
+        s_data = list(self.data)
+        s_data.reverse()
+        sol = ['*'] * dim
+        for x in s_data:
+            ele_data = list(x)
+            ele_data.append(ele_data[0])
+            trans_data = []
             for y in x:
-                if b[y-1] != '*':
-                    d.append(b.index(y))
+                if sol[y-1] != '*':
+                    trans_data.append(sol.index(y))
                 else:
-                    d.append(y-1)
-            for j in range(len(d)):
-                b[d[j]] = c[j+1]
-                if b[d[j]] == d[j] + 1:
-                    b[d[j]] = '*'
+                    trans_data.append(y-1)
+            for j in range(len(trans_data)):
+                sol[trans_data[j]] = ele_data[j+1]
+                if sol[trans_data[j]] == trans_data[j] + 1:
+                    sol[trans_data[j]] = '*'
         for i in range(dim):
-            if b[i] == '*':
-                b[i] = i+1
-        return Permute(b)
+            if sol[i] == '*':
+                sol[i] = i+1
+        return Permute(sol, self.key, flag=True)
 
     def simplify(self):
         """
@@ -327,16 +479,54 @@ class ExPermute:
         """
         return self.ToNormal().ToCyclic()
 
+    def sgn(self):
+        """
+        This method returns sign for permutation element.
+        """
+        sol = 1
+        for x in self.data:
+            if len(x) % 2 == 0:
+                sol = -sol
+        return sol
+
+    def permute(self, lists):
+        """
+        permute list following with self permutation
+        Warning: this permutation is independent on key (except dict type)
+        """
+        if len(lists) != self.dim:
+            raise TypeError, "invalid data size"
+        if isinstance(lists, dict):
+            sol = dict(lists)
+            key = self.key
+            data = self.data
+            for i in range(len(data) - 1, -1, -1):
+                data_i = data[i]
+                first = key[data_i[0] - 1]
+                for j in range(len(data_i) - 1):
+                    idx = key[data_i[j+1] - 1]
+                    sol[first], sol[idx] = sol[idx], sol[first]
+        elif isinstance(lists, (list, tuple)):
+            sol = list(lists)
+            data = self.data
+            for i in range(len(data) - 1, -1, -1):
+                data_i = data[i]
+                first = data_i[0] - 1
+                for j in range(len(data[i]) - 1):
+                    idx = data_i[j+1] - 1
+                    sol[first], sol[idx] = sol[idx], sol[first]
+        return sol
+
     def __eq__(self, other):
-        if self.dim != other.dim:
+        if self.key != other.key or self.dim != other.dim:
             return False
-        a = (self.simplify()).data
-        b = (other.simplify()).data
-        if len(a) != len(b):
+        s_data = (self.simplify()).data
+        o_data = (other.simplify()).data
+        if len(s_data) != len(o_data):
             return False
-        for i in range(len(a)):
-            for j in range(len(a[i])):
-                if list(a[i])[j] != list(b[i])[j]:
+        for i in range(len(s_data)):
+            for j in range(len(s_data[i])):
+                if s_data[i][j] != o_data[i][j]:
                     return False
         return True
 
@@ -344,7 +534,72 @@ class ExPermute:
         return not self == other
 
     def __repr__(self):
-        return repr(self.data) + "(" + repr(self.dim) + ")"
+        return repr(self.getData()) + " <" + repr(self.key) + ">"
 
     def __str__(self):
-        return str(self.simplify().data) + "(" + str(self.dim) + ")"
+        self.data = self.simplify().data
+        return str(self.getData()) + " <" + str(self.key) + ">"
+
+class PermGroup:
+    """
+    This is a class for permutation group.
+    """
+    def __init__(self, key):
+        if isinstance(key, (int, long)):
+            self.key = range(1, key + 1)
+        elif isinstance(key, (list, tuple)):
+            self.key = list(key)
+        elif isinstance(key, dict):
+            self.key = dict.keys()
+        else:
+            raise TypeError, "input int or sequence"
+
+    def __repr__(self):
+        return repr(self.key)
+
+    def __str__(self):
+        return str(self.key)
+
+    def createElement(self, seed):
+        """
+        Create Permute or ExPermute with seed.
+        createElement(dict) -> Permute(dict)
+        createElement(tuple) -> Permute(list(tuple), self.key)
+        createElement(key_element_list) -> Permute(key_element_list, self.key)
+        createElement([cyclic_tuple,...]) -> ExPermute(len(self.key), [cyclic_tuple,...], self.key)
+        """
+        if isinstance(seed, dict):
+            if set(self.key) == set(dict.keys()):
+                return Permute(seed)
+            else:
+                raise TypeError, "key type is contradict"
+        elif isinstance(seed, tuple):
+            return Permute(list(seed). self.key)
+        elif isinstance(seed, list):
+            if seed[0] in self.key:
+                return Permute(seed, self.key)
+            elif isinstance(seed[0], tuple):
+                return ExPermute(len(self.key), seed, self.key)
+        raise TypeError, "input Normal type or Cyclic type seed."
+
+    def identity(self):
+        return Permute(self.key, self.key)
+
+    def identity_c(self):
+        """
+        Return identity for cyclic type.
+        """
+        return ExPermute(len(self.key), [], self.key)
+
+    def grouporder(self):
+        return combinatorial.factorial(len(self.key))
+
+    def randElement(self):
+        """
+        Create random Permute type element.
+        """
+        copy = list(self.key)
+        sol = []
+        while copy:
+            sol.append(copy.pop(random.randrange(len(copy))))
+        return Permute(sol, self.key)
