@@ -48,7 +48,8 @@ class Permute:
                 self.key = p_key
             elif key == -1:
                 p_key = list(data)
-                p_key.sort(reverse=True)
+                p_key.sort()
+                p_key.reverse()
                 self.key = p_key
             else:
                 raise TypeError("Input sequence type")
