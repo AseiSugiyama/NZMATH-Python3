@@ -298,7 +298,7 @@ div#lastmodified
 
 .anchor_super
 {
-        display:none;
+        visibility:hidden;
 }
 
 .jumpmenu
