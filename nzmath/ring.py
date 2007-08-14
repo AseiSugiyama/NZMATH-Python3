@@ -45,6 +45,12 @@ class Ring (object):
         """
         raise NotImplementedError("derived class should override")
 
+    def getCommonSuperring(self, other):
+        """
+        Return common super ring of self and another ring.
+        """
+        raise NotImplementedError("derived class should override")
+
     def __eq__(self, other):
         """
         Equality test.
@@ -302,6 +308,8 @@ class QuotientFieldElement (FieldElement):
         numerator = self.numerator * other.numerator
         denominator = self.denominator * other.denominator
         return self.__class__(numerator, denominator)
+
+    __rmul__ = __mul__
 
     def __pow__(self, index):
         return self.__class__(self.numerator ** index, self.denominator ** index)
@@ -619,7 +627,7 @@ def getRing(obj):
 
 def inverse(obj):
     """
-    Return the inverse of 'obj'.  The inverse can be in the quatient
+    Return the inverse of 'obj'.  The inverse can be in the quotient
     field, if the 'obj' is an element of non-field domain.
 
     Mainly for python built-in objects such as int or float.
