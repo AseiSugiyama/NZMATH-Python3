@@ -152,13 +152,20 @@ class RationalFunction (ring.QuotientFieldElement):
             return NotImplemented
 
     def getRing(self):
-        nvars = self.numerator.getVariableList()
-        if len(nvars) > 1:
-            nring = self.numerator.getCoefficientRing(nvars)
+        if hasattr(self.numerator, "getVariableList"):
+            nvars = self.numerator.getVariableList()
+            if len(nvars) > 1:
+                nring = self.numerator.getCoefficientRing(nvars)
+            else:
+                nring = self.numerator.getCoefficientRing()
         else:
-            nring = self.numerator.getCoefficientRing()
-        dvars = self.denominator.getVariableList()
+            nvars = []
+            nring = ring.getRing(self.numerator)
+        if hasattr(self.denominator, "getVariableList"):
+            total_vars = set(nvars + self.denominator.getVariableList())
+        else:
+            total_vars = set(nvars)
         if nring.isfield():
-            return RationalFunctionField(nring, set(nvars+dvars))
+            return RationalFunctionField(nring, total_vars)
         else:
-            return RationalFunctionField(nring.getQuotientField(), set(nvars+dvars))
+            return RationalFunctionField(nring.getQuotientField(), total_vars)
