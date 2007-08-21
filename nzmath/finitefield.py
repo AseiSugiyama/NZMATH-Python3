@@ -18,8 +18,8 @@ class FiniteField (ring.Field):
     """
     def __init__(self, characteristic):
         # This class is abstract and can not be instanciated.
-        if self.__class__.__name__ == "FiniteField":
-            raise NotImplementedError
+        if type(self) is FiniteField:
+            raise NotImplementedError("class is abstract")
         ring.Field.__init__(self)
         self.char = characteristic
 
