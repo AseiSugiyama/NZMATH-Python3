@@ -262,7 +262,31 @@ class CommutativeRingElement (RingElement):
         """
         self_ring = self.getRing()
         other_ring = getRing(other)
-        return self_ring.getaction(other_ring)(other, self)
+        if self_ring.hasaction(other_ring):
+            return self_ring.getaction(other_ring)(other, self)
+        raise TypeError("no module action with %s" % str(other_ring))
+
+    def exact_division(self, other):
+        """
+        In UFD, if other divides self, return the quotient as a UFD
+        element.  The main difference with / is that / may return the
+        quotient as an element of quotient field.
+
+        Simple cases:
+        - in a euclidean domain, if remainder of euclidean division
+          is zero, the division // is exact.
+        - in a field, there's no difference with /.
+
+        If other doesn't divide self, raise ValueError.
+        """
+        if self.getRing().iseuclidean():
+            quotient, remainder = divmod(self, other)
+            if not remainder:
+                return quotient
+            raise ValueError("division is not exact")
+        elif self.getRing().isfield():
+            return self / other
+        raise NotImplementedError("exact division is not defined")
 
 
 class FieldElement (CommutativeRingElement):
@@ -277,6 +301,11 @@ class FieldElement (CommutativeRingElement):
             raise NotImplementedError("FieldElement is an abstract class.")
         CommutativeRingElement.__init__(self)
 
+    def exact_division(self, other):
+        """
+        in a field, all divisions are exact (without remainder).
+        """
+        return self / other
 
 class QuotientFieldElement (FieldElement):
     """
