@@ -256,6 +256,13 @@ class ComplexField (ring.Field):
             return True
         return aRing.issubring(self)
 
+    def getCharacteristic(self):
+        """
+        The characteristic of the real field is zero.
+        """
+        return 0
+
+
 theComplexField = ComplexField()
 
 pi = real.pi

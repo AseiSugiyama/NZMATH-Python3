@@ -79,6 +79,12 @@ class RealField (ring.Field):
     def createElement(self, seed):
         return float(seed)
 
+    def getCharacteristic(self):
+        """
+        The characteristic of the real field is zero.
+        """
+        return 0
+
 
 class RelativeError:
     def __init__(self, comparity, numerator, denominator=1):
