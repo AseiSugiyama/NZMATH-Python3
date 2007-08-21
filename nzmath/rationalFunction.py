@@ -83,6 +83,13 @@ class RationalFunctionField (ring.QuotientField):
     def createElement(self, *seedarg, **seedkwd):
         return RationalFunction(*seedarg, **seedkwd)
 
+    def getCharacteristic(self):
+        """
+        The characteristic of a rational function field is same as of
+        its coefficient field.
+        """
+        return self.coefficientField.getCharacteristic()
+
     def unnest(self):
         """
 

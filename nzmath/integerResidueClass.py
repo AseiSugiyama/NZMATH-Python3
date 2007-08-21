@@ -192,6 +192,12 @@ class IntegerResidueClassRing (ring.CommutativeRing):
         except:
             raise ValueError("%s can not be converted to an IntegerResidueClass object." % seed)
 
+    def getCharacteristic(self):
+        """
+        The characteristic of Z/mZ is m.
+        """
+        return self.m
+
     def __contains__(self, elem):
         if isinstance(elem, IntegerResidueClass) and \
            elem.getModulus() == self.m:

@@ -488,17 +488,12 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
     else:
         _coefficientRing = coeffring
         _coefficient.setList([coeffring.createElement(c) for c in coefficient])
-    try:
-        if _coefficientRing.getCharacteristic() > 0:
-            return OneVariablePolynomialCharNonZero(_coefficient, _variable, _coefficientRing)
-    except AttributeError:
-        if _coefficientRing == rational.theRationalField:
-            return RationalOneVariablePolynomial(_coefficient, _variable)
-        elif _coefficientRing == rational.theIntegerRing:
-            return OneVariablePolynomialChar0(_coefficient, _variable, rational.theIntegerRing)
-    except:
-        raise
-    return OneVariablePolynomial(_coefficient, _variable, _coefficientRing)
+
+    polynomial_type = _select_polynomial_type(_coefficientRing)
+    if polynomial_type is not RationalOneVariablePolynomial:
+        return polynomial_type(_coefficient, _variable, _coefficientRing)
+    else:
+        return polynomial_type(_coefficient, _variable)
 
 def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     "OneVariableSparsePolynomial(coefficient, variable)"
@@ -516,17 +511,12 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
         _coefficientRing = coeffring
         for i, c in coefficient.iteritems():
             _coefficient[i] = coeffring.createElement(c)
-    try:
-        if _coefficientRing.getCharacteristic() > 0:
-            return OneVariablePolynomialCharNonZero(_coefficient, variable, _coefficientRing)
-    except AttributeError:
-        if _coefficientRing == rational.theRationalField:
-            return RationalOneVariablePolynomial(_coefficient, variable)
-        elif _coefficientRing == rational.theIntegerRing:
-            return OneVariablePolynomialChar0(_coefficient, variable, rational.theIntegerRing)
-    except:
-        raise
-    return OneVariablePolynomial(_coefficient, variable, _coefficientRing)
+
+    polynomial_type = _select_polynomial_type(_coefficientRing)
+    if polynomial_type is not RationalOneVariablePolynomial:
+        return polynomial_type(_coefficient, variable, _coefficientRing)
+    else:
+        return polynomial_type(_coefficient, variable)
 
 
 def OneVariableMonomial(variable, index=1, coefficient=1, coeffring=None):
@@ -545,12 +535,27 @@ def OneVariableMonomial(variable, index=1, coefficient=1, coeffring=None):
         coefficient = coeffring.one
     _coefficient = OneVariablePolynomialCoefficients()
     _coefficient.setDict({index: coefficient})
+
+    polynomial_type = _select_polynomial_type(coeffring)
+    if polynomial_type is not RationalOneVariablePolynomial:
+        return polynomial_type(_coefficient, variable, coeffring)
+    else:
+        return polynomial_type(_coefficient, variable)
+
+def _select_polynomial_type(_coefficientRing):
     try:
-        if coeffring.getCharacteristic() > 0:
-            return OneVariablePolynomialCharNonZero(_coefficient, variable, coeffring)
+        if _coefficientRing.getCharacteristic() > 0:
+            if _coefficientRing.isfield():
+                return OneVariablePolynomialCharNonZero
+            else:
+                return OneVariablePolynomial
+        elif _coefficientRing == rational.theRationalField:
+            return RationalOneVariablePolynomial
+        elif _coefficientRing is rational.theIntegerRing:
+            return OneVariablePolynomialChar0
     except AttributeError:
         pass
-    return OneVariablePolynomial(_coefficient, variable, coeffring)
+    return OneVariablePolynomial
 
 
 class MultiVariableSparsePolynomial:
@@ -1267,35 +1272,21 @@ def pseudoDivision(A, B):
             degR = R.degree()
         else:
             degR = 0
-        if isinstance(B, OneVariablePolynomial):
-            degB = B.degree()
-        else:
-            degB = 0
 
-        if degR < degB:
+        if degR < n:
             q = d ** e
             Q = q * Q
             R = q * R
             return (Q, R)
         # step 3
         if isinstance(R, OneVariablePolynomial):
-            degR = R.degree()
-        else:
-            degR = 0
-
-        if isinstance(B, OneVariablePolynomial):
-            degB = B.degree()
-        else:
-            degB = 0
-
-        if isinstance(R, OneVariablePolynomial):
             lR = R[degR]
         else:
             lR = R
 
-        tmp = [0] * (degR - degB)
-        tmp.append(1)
-        S = lR * OneVariableDensePolynomial(tmp, A.variable)
+        tmp = [0] * (degR - n)
+        tmp.append(lR)
+        S = OneVariableDensePolynomial(tmp, A.variable)
         Q = d * Q + S
         R = d * R - S * B
         e -= 1
@@ -2184,6 +2175,13 @@ class PolynomialRing (ring.CommutativeRing):
         # seed cannot be a multi-variable polynomial now
         raise NotImplementedError
 
+    def getCharacteristic(self):
+        """
+        The characteristic of a polynomial ring is the same as of its
+        coefficient ring.
+        """
+        return self.getCoefficientRing().getCharacteristic()
+
     def __getattr__(self, attr):
         """
         __getattr__
@@ -2416,9 +2414,7 @@ class PolynomialResidueRing (ring.ResidueClassRing):
 
     def createElement(self, seed):
         """
-
         Create an element of the ring with seed.
-
         """
         if seed in self.ring:
             return ring.ResidueClass(seed, self.ideal)

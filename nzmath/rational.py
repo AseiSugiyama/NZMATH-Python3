@@ -546,7 +546,11 @@ class RationalField (ring.QuotientField):
             return True
         elif isinstance(other, IntegerRing):
             return False
-        return other.issuperring(self)
+        try:
+            return other.issuperring(self)
+        except RuntimeError:
+            # reached recursion limit by calling on each other
+            raise NotImplementedError("no common super ring")
 
     def issuperring(self, other):
         """
@@ -559,7 +563,25 @@ class RationalField (ring.QuotientField):
         """
         if isinstance(other, (RationalField, IntegerRing)):
             return True
-        return other.issubring(self)
+        try:
+            return other.issubring(self)
+        except RuntimeError:
+            # reached recursion limit by calling on each other
+            raise NotImplementedError("no common super ring")
+
+    def getCommonSuperring(self, other):
+        """
+        Return common superring of the ring and another ring.
+        """
+        if self.issubring(other):
+            return other
+        elif self.issuperring(other):
+            return self
+        try:
+            return other.getCommonSuperring(self)
+        except RuntimeError:
+            # reached recursion limit by calling on each other
+            raise NotImplementedError("no common super ring")
 
     def _getOne(self):
         "getter for one"
@@ -767,6 +789,12 @@ class IntegerRing (ring.CommutativeRing):
     def __hash__(self):
         """
         Return a hash number (always 0).
+        """
+        return 0
+
+    def getCharacteristic(self):
+        """
+        The characteristic of the integer ring is zero.
         """
         return 0
 

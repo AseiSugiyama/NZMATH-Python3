@@ -33,6 +33,16 @@ class Ring (object):
         """
         raise NotImplementedError("derived class should override")
 
+    def getCharacteristic(self):
+        """
+        Return the characteristic of the ring.
+
+        The Characteristic of a ring is the smallest positive integer
+        n s.t. n * a = 0 for any element a of the ring, or 0 if there
+        is no such natural number.
+        """
+        raise NotImplementedError("derived class should override")
+
     def issubring(self, other):
         """
         Report whether another ring contains the ring as a subring.
