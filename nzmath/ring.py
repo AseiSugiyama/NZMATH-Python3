@@ -375,13 +375,19 @@ class Ideal (object):
     Noetherian rings are used, it is general enough.
     """
 
-    def __init__(self, generators, ring):
+    def __init__(self, generators, aring):
         """
         Ideal(generators, ring) creates an ideal of the ring genarated
         by the generators.  generators must be an element of the ring
         or a list of elements of the ring.
         """
-        raise NotImplementedError
+        if type(self) is Ideal:
+            raise NotImplementedError("class Ideal is abstract")
+        self.ring = aring
+        if generators in self.ring:
+            self.generators = [generators]
+        else:
+            self.generators = list(generators)
 
     def __add__(self, other):
         """
@@ -389,7 +395,10 @@ class Ideal (object):
 
         where I+J = {i+j | i in I and j in J}
         """
-        raise NotImplementedError
+        assert self.ring is other.ring
+        if self == other:
+            return self
+        return self.__class__(self.generators + other.generators, self.ring)
 
     def __mul__(self, other):
         """
@@ -397,25 +406,59 @@ class Ideal (object):
 
         where I*J = {sum of i*j | i in I and j in J}
         """
-        raise NotImplementedError
+        assert self.ring is other.ring
+        generators = []
+        for i in self.generators:
+            for j in other.generators:
+                generators.append(i * j)
+        return self.__class__(generators, self.ring)
 
     def __eq__(self, other):
         """
         I == J <=> I.__eq__(J)
         """
-        raise NotImplementedError
+        assert type(self) is type(other)
+        if self is other:
+            return True
+        if self.ring is not other.ring:
+            return False
+        return self.issubset(other) and self.issuperset(other):
 
     def __ne__(self, other):
         """
         I != J <=> I.__ne__(J)
         """
-        return not (self == other)
+        return not self.__eq__(other)
+
+    def __contains__(self, element):
+        """
+        e in I  <=>  I.__contains__(e)
+
+        for e in the ring, to which the ideal I belongs.
+        """
+        raise NotImplementedError("should be overridden")
+
+    def issubset(self, other):
+        """
+        Report whether another ideal contains this ideal.
+        """
+        if self is other:
+            return True
+        raise NotImplementedError("should be overridden")
+
+    def issuperset(self, other):
+        """
+        Report whether this ideal contains another ideal.
+        """
+        if self is other:
+            return True
+        raise NotImplementedError("should be overridden")
 
     def reduce(self, element):
         """
         Reduce an element with the ideal to simpler representative.
         """
-        raise NotImplementedError
+        raise NotImplementedError("should be overridden")
 
 
 class ResidueClassRing (CommutativeRing):

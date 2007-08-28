@@ -447,7 +447,7 @@ class OneVariablePolynomial (ring.CommutativeRingElement):
     def getVariableList(self):
         if not isinstance(self.variable, list):
             return [self.variable]
-        return self.variable[:]
+        return list(self.variable)
 
     def copy(self):
         "Copy the structure"
@@ -575,7 +575,7 @@ class MultiVariableSparsePolynomial:
             if self.variable == other.variable:
                 temp = self.coefficient.copy()
                 return_coefficient = temp
-                return_variable = self.variable[:]
+                return_variable = list(self.variable)
                 for i in other.coefficient:
                     if i in return_coefficient:
                         return_coefficient[i] = return_coefficient[i]+other.coefficient[i]
@@ -596,7 +596,7 @@ class MultiVariableSparsePolynomial:
                 return self_adjust.arrange_variable(sum_variable) + other_adjust.arrange_variable(sum_variable)
         elif other in self.getRing():
             return_coefficient = self.coefficient.copy()
-            return_variable = self.variable[:]
+            return_variable = list(self.variable)
             zero_key = (0,) * len(return_variable)
             if zero_key in return_coefficient:
                 return_coefficient[zero_key] += other
@@ -617,7 +617,7 @@ class MultiVariableSparsePolynomial:
         for i, c in self.coefficient.iteritems():
             if c != 0:
                 return_coefficient[i] = -c
-        return MultiVariableSparsePolynomial(return_coefficient, self.variable[:])
+        return MultiVariableSparsePolynomial(return_coefficient, list(self.variable))
 
     def __mul__(self, other):
         if isinstance(other, OneVariablePolynomial):
@@ -625,7 +625,7 @@ class MultiVariableSparsePolynomial:
         elif isinstance(other, MultiVariableSparsePolynomial):
             if self.variable == other.variable:
                 result_coefficient = {}
-                result_variable = self.variable[:]
+                result_variable = list(self.variable)
                 for skey, sval in self.coefficient.iteritems():
                     for okey, oval in other.coefficient.iteritems():
                         index_list = []
@@ -653,7 +653,7 @@ class MultiVariableSparsePolynomial:
                 return self_adjust.arrange_variable(sum_variable) * other_adjust.arrange_variable(sum_variable)
         elif other in self.getRing():
             return_coefficient = {}
-            return_variable = self.variable[:]
+            return_variable = list(self.variable)
             for i in self.coefficient:
                 return_coefficient[i] = other * self.coefficient[i]
             return MultiVariableSparsePolynomial(return_coefficient, return_variable).adjust()
@@ -694,7 +694,7 @@ class MultiVariableSparsePolynomial:
     def __floordiv__(self, other):
         if isinstance(other, (int, long)) or isinstance(other, rational.Rational):
             return_coefficient = {}
-            return_variable = self.variable[:]
+            return_variable = list(self.variable)
             for i in self.coefficient:
                 return_coefficient[i] = self.coefficient[i] // other
             return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
@@ -716,7 +716,7 @@ class MultiVariableSparsePolynomial:
                 else:
                     return_polynomial = 0
                     remainder_coefficient = self.coefficient.copy()
-                    remainder_variable = self.variable[:]
+                    remainder_variable = list(self.variable)
                     remainder_polynomial = MultiVariableSparsePolynomial(remainder_coefficient, remainder_variable)
                     quotient_term = remainder_polynomial.calc_quotioent_by_monomial(typical_term_of_other).search_typical_term() // typical_term_of_other.coefficient.values()[0]
                     return_polynomial += quotient_term
@@ -758,7 +758,7 @@ class MultiVariableSparsePolynomial:
             if self.variable == other.variable:
                 if len(other.coefficient.keys()) == 1:
                     return_coefficient = {}
-                    return_variable = self.variable[:]
+                    return_variable = list(self.variable)
                     for i in self.coefficient:
                         flag = 1
                         addition_term = []
@@ -785,7 +785,7 @@ class MultiVariableSparsePolynomial:
     def __truediv__(self, other):
         if isinstance(other, (int, long)):
             return_coefficient = {}
-            return_variable = self.variable[:]
+            return_variable = list(self.variable)
             for i in self.coefficient:
                 if isinstance(self.coefficient[i], (int, long)):
                     return_coefficient[i] = rational.Rational(self.coefficient[i], other)
@@ -795,7 +795,7 @@ class MultiVariableSparsePolynomial:
             return return_polynomial
         elif isinstance(other, rational.Rational):
             return_coefficient = {}
-            return_variable = self.variable[:]
+            return_variable = list(self.variable)
             for i in self.coefficient:
                 return_coefficient[i] = self.coefficient[i] / other
             return_polynomial = MultiVariableSparsePolynomial(return_coefficient, return_variable)
@@ -864,7 +864,7 @@ class MultiVariableSparsePolynomial:
         variable_to_polynomial_back_dict = {}
         new_variable_parameter = 0
         new_variable_parameter_of_polynomial = 0
-        new_variable = adjust_polynomial.variable[:]
+        new_variable = list(adjust_polynomial.variable)
         for i in adjust_polynomial.variable:
             variable_position = adjust_polynomial.variable.index(i)
             if i in substitutions and isinstance(substitutions[i], str):
@@ -896,7 +896,7 @@ class MultiVariableSparsePolynomial:
                 for j in adjust_polynomial.coefficient:
                     if j[variable_position] >= 1:
                         add_polynomial_coefficient = {}
-                        add_polynomial_variable = adjust_polynomial.variable[:]
+                        add_polynomial_variable = list(adjust_polynomial.variable)
                         new_key = list(j)
                         new_key[variable_position] = 0
                         new_key = tuple(new_key)
@@ -906,7 +906,7 @@ class MultiVariableSparsePolynomial:
                     else:
                         add_polynomial_coefficient = {}
                         add_polynomial_coefficient[j] = adjust_polynomial.coefficient[j]
-                        add_polynomial_variable = adjust_polynomial.variable[:]
+                        add_polynomial_variable = list(adjust_polynomial.variable)
                         add_polynomial = MultiVariableSparsePolynomial(add_polynomial_coefficient, add_polynomial_variable)
                         new_polynomial += add_polynomial
         if test_key == 0:
@@ -939,9 +939,9 @@ class MultiVariableSparsePolynomial:
                 return_coefficient[i[0]] += disp_polynomial.coefficient[i]
             return str(OneVariableDensePolynomial(return_coefficient, disp_polynomial.variable[0]))
         else:
-            old_variable = disp_polynomial.variable[:]
+            old_variable = list(disp_polynomial.variable)
             reverse_coefficient = disp_polynomial.coefficient.copy()
-            reverse_variable = old_variable[:]
+            reverse_variable = list(old_variable)
             reverse_variable.reverse()
             reverse_polynomial = MultiVariableSparsePolynomial(reverse_coefficient, reverse_variable)
             reverse_polynomial = reverse_polynomial.sort_variable()
@@ -990,8 +990,8 @@ class MultiVariableSparsePolynomial:
             raise ValueError("You must input list for other.")
         else:
             result_polynomial = MultiVariableSparsePolynomial({}, other)
-            index_list = self.coefficient.keys()[:]
-            values_list = self.coefficient.values()[:]
+            index_list = self.coefficient.keys()
+            values_list = self.coefficient.values()
             position_infomation = []
             for i in range(len(other)):
                 if other[i] in self.variable:
@@ -1027,7 +1027,7 @@ class MultiVariableSparsePolynomial:
                 positions[v] = positions[v] + (i,)
             else:
                 positions[v] = (i,)
-        result_variable = self.variable[:]
+        result_variable = list(self.variable)
         result_polynomial = MultiVariableSparsePolynomial({}, result_variable)
         result_polynomial.variable.sort()
         for i in self.coefficient:
@@ -1175,7 +1175,7 @@ class MultiVariableSparsePolynomial:
             return origin_polynomial
         elif len(origin_polynomial.variable) == 1:
             return_coefficient = {}
-            return_variable = origin_polynomial.variable[:]
+            return_variable = list(origin_polynomial.variable)
             return_coefficient.update(origin_polynomial.coefficient)
             return OneVariableSparsePolynomial(return_coefficient, return_variable)
         else:
@@ -2244,44 +2244,16 @@ class OneVariablePolynomialIdeal (ring.Ideal):
         in the ring, which must be a polynomial ring with one
         variable, with the given generators.
         """
-        if generators in aRing:
-            self.generators = [generators]
-        elif isinstance(generators, list) and len(generators) > 0:
-            if aRing.ispid():
-                g = generators[0]
-                for t in generators:
-                    g = aRing.gcd(t, g)
-                if aRing.getCoefficientRing().isfield():
-                    if g.leadingCoefficient() != aRing.getCoefficientRing().one:
-                        g = g * g.leadingCoefficient().inverse()
-                self.generators = [g]
-            else:
-                self.generators = generators[:]
-        else:
-            raise TypeError("generators of ideal must be elements of the ring.")
-        self.ring = aRing
+        ring.Ideal.__init__(self, generators, aRing)
+        if self.ring.ispid():
+            g = self.generators[0]
+            for t in self.generators:
+                g = self.ring.gcd(t, g)
+            if self.ring.getCoefficientRing().isfield():
+                if g.leadingCoefficient() != aRing.getCoefficientRing().one:
+                    g = g * g.leadingCoefficient().inverse()
+            self.generators = [g]
         self._cache = {}
-
-    def __eq__(self, other):
-        """
-        I == J  <=>  I.__eq__(J)
-        """
-        assert self.__class__ == other.__class__
-        if self is other:
-            return True
-        for i in self.generators:
-            if i not in other:
-                return False
-        for j in other.generators:
-            if j not in other:
-                return False
-        return True
-
-    def __ne__(self, other):
-        """
-        I != J  <=>  I.__ne__(J)
-        """
-        return not (self == other)
 
     def __contains__(self, element):
         """
@@ -2297,6 +2269,28 @@ class OneVariablePolynomialIdeal (ring.Ideal):
             return False
         else:
             raise NotImplementedError
+
+    def issubset(self, other):
+        """
+        Report whether another ideal contains this ideal.
+        """
+        if self is other:
+            return True
+        for g in self.generators:
+            if g not in other:
+                return False
+        return True
+
+    def issuperset(self, other):
+        """
+        Report whether this ideal contains another ideal.
+        """
+        if self is other:
+            return True
+        for g in other.generators:
+            if g not in self:
+                return False
+        return True
 
     def reduce(self, element):
         """
@@ -2373,38 +2367,25 @@ class OneVariablePolynomialIdeal (ring.Ideal):
 
 class MultiVariablePolynomialIdeal (ring.Ideal):
     """
-
     MultiVariablePolynomialIdeal is a class to represent an ideal of
     multi variable polynomial ring.
-
     """
-    def __init__(self, generators, ring):
-        if isinstance(generators, list):
-            self.generators = generators[:]
-        elif generators in ring:
-            self.generators = [generators]
-        self.ring = ring
+    def __init__(self, generators, aring):
+        ring.Ideal.__init__(self, generators, aring)
 
-    def reduce(self, element):
-        "reduction have not been provided yet."
-        raise NotImplementedError
 
 class PolynomialResidueRing (ring.ResidueClassRing):
     """
-
     PolynomialResidueRing is a ring of polynomial residues by an
     ideal.
-
     """
     def __init__(self, aRing, ideal):
         """
-
         PolynomialResidueRing(ring, ideal) creates a resudue class
         ring.  The ring should be a polynomial ring, and ideal must be
         an instance of OneVariablePolynomialIdeal or
         MultiVariablePolynomialIdeal according to the number of
         variables of the ring.
-
         """
         ring.ResidueClassRing.__init__(self, aRing, ideal)
         if self.ring.isnoetherian():
