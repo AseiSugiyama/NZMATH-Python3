@@ -422,7 +422,7 @@ class Ideal (object):
             return True
         if self.ring is not other.ring:
             return False
-        return self.issubset(other) and self.issuperset(other):
+        return self.issubset(other) and self.issuperset(other)
 
     def __ne__(self, other):
         """
