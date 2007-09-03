@@ -96,6 +96,41 @@ class MultinomialTest (unittest.TestCase):
         self.assertRaises(ValueError, multinomial, 2, [-1, 2, 1])
 
 
+class StirlingTest (unittest.TestCase):
+    def testStirling1(self):
+        self.assertEqual(1, stirling1(0, 0))
+        self.assertEqual(-1, stirling1(2, 1))
+        self.assertEqual(-3, stirling1(3, 2))
+        self.assertEqual(stirling1(4, 2), stirling1(3, 1) - 3*stirling1(3, 2))
+        self.assertEqual(stirling1(5, 2), stirling1(4, 1) - 4*stirling1(4, 2))
+        self.assertEqual(-50, stirling1(5, 2))
+        self.assertEqual(35, stirling1(5, 3))
+        self.assertEqual(-16669653, stirling1(14, 9))
+        self.assertEqual(1474473, stirling1(14, 10))
+        # (x)_n = \sum_{i=0}^{n} s(n, i) * x**i
+        self.assertEqual(fallingfactorial(10, 5), sum([stirling1(5, i) * 10**i for i in range(6)]))
+
+    def testStirling2(self):
+        self.assertEqual(1, stirling2(0, 0))
+        self.assertEqual(1, stirling2(1, 1))
+        self.assertEqual(3, stirling2(3, 2))
+        self.assertEqual(65, stirling2(6, 4))
+        # x**n = \sum_{i=0}^{n} S(n, i) * (x)_i
+        self.assertEqual(10**5, sum([stirling2(5, i) * fallingfactorial(10, i) for i in range(6)]))
+        # negative numbers
+        self.assertEqual(factorial(3), stirling2(-1, -4))
+        self.assertEqual(85, stirling2(-4, -6))
+        # directly calling underlying function
+        self.assertEqual(factorial(3), stirling2_negative(4, 1))
+        self.assertEqual(85, stirling2_negative(6, 4))
+
+    def testBell(self):
+        self.assertEqual(1, bell(0))
+        self.assertEqual(1, bell(1))
+        self.assertEqual(2, bell(2))
+        self.assertEqual(52, bell(5))
+
+
 class PartitionTest (unittest.TestCase):
     def testForOne(self):
         self.assertEqual([(1,)], [p for p in partitionGenerator(1)])

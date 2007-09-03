@@ -154,6 +154,126 @@ def multinomial(n, parts):
             result //= factorial(part)
     return result
 
+def stirling1(n, m):
+    """
+    Stirling number of the first kind.
+
+    Let s denote the Stirling number, (x)_n falling factorial, then
+      (x)_n = \sum_{i=0}^{n} s(n, i) * x**i
+    and s satisfies the recurrence relation:
+      s(n, m) = s(n-1, m-1) - (n-1)*S(n-1, m)
+    """
+    if n == m:
+        return 1
+    elif n < m or n*m < 0:
+        return 0
+    elif m == 0:
+        return 0
+    elif m == 1:
+        if n % 2:
+            sign = 1
+        else:
+            sign = -1
+        return sign * factorial(n - 1)
+    elif m == n - 1:
+        return -binomial(n, 2)
+    else:
+        # recursively calculate by s(n, m) = s(n-1, m-1) - (n-1)*S(n-1, m)
+        slist = (1,) # S(1, 1) = 1
+        for i in range(1, n):
+            l, u = max(1, m - n + i + 1), min(i + 2, m + 1)
+            if l == 1 and len(slist) < n - l:
+                nlist = [-i * slist[0]]
+            else:
+                nlist = []
+            for j in range(len(slist) - 1):
+                nlist.append(slist[j] - i * slist[j + 1])
+            if len(slist) <= u - l:
+                nlist.append(slist[-1])
+            slist = tuple(nlist)
+        return slist[0]
+
+def stirling2(n, m):
+    """
+    Stirling number of the second kind.
+
+    Let S denote the Stirling number, (x)_i falling factorial, then:
+      x**n = \sum_{i=0}^{n} S(n, i) * (x)_i
+    S satisfies:
+      S(n, m) = S(n-1, m-1) + m*S(n-1, m)
+    """
+    if n == m:
+        return 1
+    elif n < m or n * m <= 0:
+        return 0
+    elif n < 0:
+        return stirling2_negative(-m, -n)
+    elif m == 1:
+        return 1
+    elif m == 2:
+        return 2**(n - 1) - 1
+    elif m == n - 1:
+        return n * m // 2
+    else:
+        r = 0
+        b = m
+        l = 1
+        while 1:
+            if l & 1:
+                r -= b * l**n
+            else:
+                r += b * l**n
+            if l == m:
+                break
+            b = (b * (m - l)) // (l + 1)
+            l += 1
+        if m & 1:
+            r = -r
+        return r // factorial(m)
+
+def stirling2_negative(n, m):
+    """
+    Stiring number of the second kind extended to negative numbers.
+
+    Let S# denote the extended Stirling number, S the original, then
+    S#(n, m) = S(-m, -n) and extended by the recurrence relation:
+      S#(n, m) = S#(n-1, m-1) + (n-1)*S#(n-1, m)
+    """
+    if n == m:
+        return 1
+    elif n < m or n * m <= 0:
+        return 0
+    elif n < 0:
+        return stirling2(-m, -n)
+    elif m == 1:
+        return factorial(n - 1)
+    else: # return S(n-1,m-1)+(n-1)*S(n-1,m)
+        slist = [1]
+        i = 1
+        while i < n:
+            l, u = max(1, m - n + i + 1), min(i + 2, m + 1)
+            if len(slist) < u - l:
+                nlist = [i * slist[0]]
+            else:
+                nlist = []
+            for j in range(len(slist) - 1):
+                nlist.append(slist[j] + i * slist[j + 1])
+            if len(slist) <= u - l:
+                nlist.append(slist[-1])
+            slist = nlist
+            i += 1
+        return slist[-1]
+
+def bell(n):
+    """
+    Bell number.
+
+    The Bell number b is defined by:
+      b(n) = \sum_{i=0}^{n} S(n, i)
+    where S denotes Stirling number of the second kind.
+    """
+    return sum([stirling2(n, i) for i in range(n + 1)])
+
 def partitionGenerator(n, maxi=None):
     """
     Generate partitions of n.
