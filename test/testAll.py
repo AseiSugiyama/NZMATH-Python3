@@ -6,6 +6,7 @@ import testArygcd
 import testBigrandom
 import testBigrange
 import testCombinatorial
+import testCompatibility
 import testCubic_root
 import testElliptic
 import testEquation
@@ -32,6 +33,12 @@ import testRing
 import testVector
 import testMultiplicative
 import testZassenhaus
+import testFormalsum
+import testTermOrder
+import testUnivar
+import testUniutil
+import testMultivar
+import testMultiutil
 
 def suite():
     suite = unittest.TestSuite()
