@@ -3,6 +3,7 @@ rational module provides Rational, Integer, RationalField, and IntegerRing.
 """
 
 import math
+import nzmath.gcd as gcd
 import nzmath.ring as ring
 
 
@@ -826,18 +827,25 @@ class IntegerRing (ring.CommutativeRing):
 
     def gcd(self, n, m):
         """
-        gcd returns the greatest common divisor of given 2 integers.
+        Return the greatest common divisor of given 2 integers.
         """
-        import nzmath.gcd as gcd
         a, b = abs(n), abs(m)
         return Integer(gcd.gcd(a, b))
 
     def lcm(self, a, b):
         """
-        lcm returns the lowest common multiple of given 2 integers.
+        Return the least common multiple of given 2 integers.
         If both are zero, it raises an exception.
         """
         return a // self.gcd(a, b) * b
+
+    def extgcd(self, a, b):
+        """
+        Return a tuple (u, v, d); they are the greatest common divisor
+        d of two given integers x and y and u, v such that
+        d = x * u + y * v.
+        """
+        return tuple(map(Integer, gcd.extgcd(a, b)))
 
     def _getOne(self):
         "getter for one"

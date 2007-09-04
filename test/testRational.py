@@ -193,7 +193,9 @@ class IntegerTest(unittest.TestCase):
         self.assertEqual(1, 4 % self.three)
 
     def testTruediv(self):
-        self.assertEqual(Rational(1,3), 1 / self.three)
+        self.assertEqual(Rational(1, 3), 1 / self.three)
+        self.assertEqual(Rational(2, 1), 2 / Integer(1))
+        self.assertEqual(Rational, type(2 / Integer(1)))
 
     def testGetRing(self):
         self.assertEqual(theIntegerRing, self.three.getRing())
@@ -248,6 +250,9 @@ class IntegerRingTest(unittest.TestCase):
         self.assertEqual(0, theIntegerRing.lcm(0, 10))
         self.assertEqual(0, theIntegerRing.lcm(10, 0))
         self.assertEqual(273, theIntegerRing.lcm(13, 21))
+
+    def testExtGcd(self):
+        self.assertEqual((1, 0, 1), theIntegerRing.extgcd(1, 2))
 
     def testConstants(self):
         self.assertEqual(1, theIntegerRing.one)
