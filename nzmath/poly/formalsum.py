@@ -136,6 +136,35 @@ class FormalSumContainerInterface (object):
                 sub_coeff[base] = -coeff
         return self.__class__([(b, c) for (b, c) in sub_coeff.iteritems() if c])
 
+    def __neg__(self):
+        """
+        -self
+        """
+        raise NotImplementedError("method '__neg__' should be overridden")
+
+    def __pos__(self):
+        """
+        +self
+        """
+        raise NotImplementedError("method '__pos__' should be overridden")
+
+    def __mul__(self, other):
+        """
+        self * other
+
+        Only scalar multiplication is defined.
+        """
+        raise NotImplementedError("method '__mul__' should be overridden")
+
+    def __rmul__(self, other):
+        """
+        other * self
+
+        This method is invoked only when type of other does not
+        support multiplication with FormalSumContainerInterface
+        """
+        raise NotImplementedError("method '__rmul__' should be overridden")
+
     def iterterms(self):
         """
         iterator for (degree, coefficient) pairs.
@@ -238,7 +267,7 @@ class DictFormalSum (FormalSumContainerInterface):
         other * self
 
         This method is invoked only when type of other does not
-        support multiplication with FormalSum.
+        support multiplication with FormalSumContainerInterface.
         """
         return self.rscalar_mul(other)
 
