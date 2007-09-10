@@ -38,6 +38,12 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         oterms.sort()
         return sterms == oterms
 
+    def __pow__(self, index):
+        """
+        self ** index
+        """
+        raise NotImplementedError("should be overridden")
+
     def ring_mul(self, other):
         """
         Multiplication of two polynomials in the same ring.
@@ -69,6 +75,12 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         else:
             degree, coeff = term
         return self.__class__([(d + degree, c * coeff) for (d, c) in self], **self._init_kwds)
+
+    def square(self):
+        """
+        Return square of this polynomial.
+        """
+        raise NotImplementedError("should be overridden")
 
     def differentiate(self):
         """
