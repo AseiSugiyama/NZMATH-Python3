@@ -870,11 +870,11 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
 
     _instances = {}
 
-    def __init__(self, aRing):
-        if not isinstance(aRing, ring.Ring):
-            raise TypeError("%s should not be passed as ring" % aRing.__class__)
+    def __init__(self, coeffring):
+        if not isinstance(coeffring, ring.CommutativeRing):
+            raise TypeError("%s should not be passed as ring" % coeffring.__class__)
         ring.CommutativeRing.__init__(self)
-        self._coefficient_ring = aRing
+        self._coefficient_ring = coeffring
         if self._coefficient_ring.isfield():
             self.properties.setIseuclidean(True)
         else:
@@ -895,9 +895,8 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
 
     def getQuotientField(self):
         """
-        getQuotientField returns the quotient field of the ring
-        if coefficient ring has its quotient field.  Otherwise,
-        an exception will be raised.
+        Return the quotient field of the ring if coefficient ring has
+        its quotient field.  Otherwise, an exception will be raised.
         """
         try:
             coefficientField = self._coefficient_ring.getQuotientField()
@@ -965,7 +964,7 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
 
     def issuperring(self, other):
         """
-        reports whether this polynomial ring contains another ring.
+        Report whether this polynomial ring contains another ring.
         """
         if self._coefficient_ring.issuperring(other):
             return True
