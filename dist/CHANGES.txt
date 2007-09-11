@@ -1,3 +1,15 @@
+version 0.6.0 to 0.7.0
+----------------------
+* add a new sub-package poly for new implementation of polynomials.
+* add a new module compatibility for easier treatment of sets compatibility.
+* add new functions bell, stirling1 and stirling2 in combinatorial.
+* add a new function inverse in ring.
+* add a new method  exact_division to ring.CommutativeRingElement.
+* add new methods getCharacteristic and getCommonSuperring to ring.Ring. 
+* fix a bug of equation.Newton.
+* fix bugs in finitefield (including #1751708, #1752666).
+* update matrix to get rid of special treatment of rational integers.
+
 version 0.5.1 to 0.6.0
 ----------------------
 * add a new module arygcd for efficient gcds for some integer rings of imaginary quadratic fields.
