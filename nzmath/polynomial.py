@@ -10,13 +10,7 @@ import logging
 import nzmath.bigrandom as bigrandom
 import nzmath.rational as rational
 import nzmath.ring as ring
-
-try:
-    # Python 2.4 has set type
-    set
-except NameError:
-    # Python 2.3 has Set class in sets
-    from sets import Set as set
+import nzmath.compatibility
 
 _log = logging.getLogger('nzmath.polynomial')
 

@@ -3,14 +3,8 @@ import logging
 
 import nzmath.ring as ring
 import nzmath.integerResidueClass as integerResidueClass
+import nzmath.compatibility
 from nzmath.polynomial import *
-
-try:
-    # Python 2.4 has set type
-    set
-except NameError:
-    # Python 2.3 has Set class in sets
-    from sets import Set as set
 
 x, y, z = "xyz"
 Z = rational.theIntegerRing

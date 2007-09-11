@@ -5,13 +5,7 @@ rational functions and fields of rational functions
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.polynomial as polynomial
-
-try:
-    # Python >=2.4 has set type
-    set
-except NameError:
-    # Python 2.3 has Set class in sets
-    from sets import Set as set
+import nzmath.compatibility
 
 
 class RationalFunctionField (ring.QuotientField):

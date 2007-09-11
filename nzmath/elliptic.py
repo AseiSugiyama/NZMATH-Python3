@@ -1,6 +1,5 @@
 from __future__ import division
 import random
-import sets
 import logging
 
 import nzmath.arith1 as arith1
@@ -12,6 +11,7 @@ import nzmath.prime as prime
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.factor.methods as factor_methods
+import nzmath.compatibility
 
 _log = logging.getLogger('nzmath.elliptic')
 
@@ -870,7 +870,7 @@ class ECoverFp(ECGeneric):
             Q = self.add(Q, R)
             j = j+1
         L.append(B)
-        L.append(sets.Set(A).intersection(sets.Set(B)))
+        L.append(set(A).intersection(set(B)))
         return L
 
     def Shanks_Mestre(self):
