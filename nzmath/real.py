@@ -195,6 +195,13 @@ class AbsoluteError:
             return True
         return False
 
+    def __le__(self, other):
+        if not isinstance(other, AbsoluteError):
+            return False
+        if self.absoluteerrorrange <= other.absoluteerrorrange and (self.comparity == other.comparity or self.comparity * other.comparity == 0):
+            return True
+        return False
+
     def __div__(self, other):
         return self.__class__(self.comparity, self.absoluteerrorrange, other)
 
