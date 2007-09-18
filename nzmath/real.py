@@ -4,7 +4,7 @@ utilities.  The functions provided are corresponding to the `math'
 standard module.
 """
 
-from __future__ import division, generators
+from __future__ import division
 import math
 import itertools
 
