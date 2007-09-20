@@ -1,4 +1,5 @@
 from HTMLParser import HTMLParser
+import datetime
 import os
 import sys
 import urllib
@@ -14,56 +15,62 @@ HPpla = 'tnt.math.metro-u.ac.jp'
 HPdoc = '/nzmath/'
 
 # normal option
-ad_list = set(['UserManual'])
-p_out = True
-sleeptime = 1
+ad_list = set(['UserManual']) # start page's list
+ja_flag = False # japanese manual
+p_out = True # output intermediate steps
+sleeptime = 1 # sleep time
 
 #------ utility function
 def back_to_tag(tag, attrs):
-    str = '<' + tag
+    sol = '<' + tag
     for (prop, val) in attrs:
-         str += ' ' + prop + '="' + val + '"'
-    str += '>'
-    return str
+         sol += ' ' + prop + '="' + val + '"'
+    sol += '>'
+    return sol
 
 def getHeader(files):
-    str = '<div id="header">' + '\n'
-    str += ' <h1 class="title">'
-    str += '<a href="'
-    str += convertDocURL(files)
-    str += '">?' + urllib.unquote(files) + '</a></h1>' + '\n'
-    str += '</div>' + '\n'
-    return str
+    head = '<div id="header">' + '\n'
+    head += ' <h1 class="title">'
+    head += '<a href="'
+    head += convertDocURL(files)
+    head += '">?' + urllib.unquote(files) + '</a></h1>' + '\n'
+    head += '</div>' + '\n'
+    return head
 
 def getFooter():
-    str = '<div id="footer">' + '\n'
-    str += ' Copyright &copy; 2003-2007,'
-    str += '<a href="'
-    str += convertHPURL('')
-    str += '">' + 'NZMATH</a> deveropment group' + '\n'
-    str += '</div>' + '\n'
-    return str
+    foot = '<div id="footer">' + '\n'
+    foot += ' Copyright &copy; 2003-' + str(datetime.datetime.today().year) + ','
+    foot += '<a href="'
+    foot += convertHPURL('')
+    foot += '">' + 'NZMATH</a> deveropment group' + '\n'
+    foot += '</div>' + '\n'
+    return foot
 
 def convertFileName(url):
     split_url = urlparse.urlparse(url)
     if split_url[1] == basepla:
-        if split_url[4] == 'UserManual':
-            sol = "index.html"
-        elif split_url[4] == 'Install':
-            sol = "install.html"
-        elif split_url[4] == 'Tutorial':
-            sol = "tutorial.html"
-        elif split_url[4] in ('BracketName', 'InterWikiName', 'References'):
+        if split_url[4] in ('BracketName', 'InterWikiName', 'References'):
             return url
         elif split_url[4][:8] == 'cmd=edit':
             return url
-        else: # modules
-            sol = str(split_url[4])
-            sol = sol.replace('.py', '').replace('%2F', '_').replace('%20%28ja%29', '.ja')
-            sol = 'modules/' + sol + '.html'
+        else:
+            sol = FileNameToFile(str(split_url[4]))
+            if not(ja_flag) and '.ja.html' in sol:
+                return url
         return (sol, split_url[5], split_url[4])
     else:
         return url
+
+def FileNameToFile(files):
+    if files == 'UserManual':
+        return "index.html"
+    elif files == 'Install':
+        return "install.html"
+    elif files == 'Tutorial':
+        return "tutorial.html"
+    else: # modules
+        sol = files.replace('.py', '').replace('%2F', '_').replace('%20%28ja%29', '.ja')
+        return 'modules/' + sol + '.html'
 
 def convertWikiURL(files):
     return urlparse.urlunsplit( ('http', basepla, basewiki, files, '') )
@@ -233,9 +240,13 @@ def main(basepath):
                 else:
                     raise InputError
         dirname = os.path.join(basepath, 'nzmath/manual/modules')
-        os.makedirs(dirname)
+        if not(os.path.exists(dirname)):
+            os.makedirs(dirname)
         os.chdir(os.path.join(basepath, 'nzmath/manual/'))
-        urllib.urlretrieve(convertHPURL('manual/default.css'), 'default.css')
+        csspage = convertHPURL('manual/default.css')
+        if p_out:
+            print "get css from " + csspage
+        urllib.urlretrieve(csspage, 'default.css')
         while ad_list:
             files = ad_list.pop()
             os.system('sleep ' +  str(sleeptime))
