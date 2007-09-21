@@ -15,7 +15,7 @@ HPpla = 'tnt.math.metro-u.ac.jp'
 HPdoc = '/nzmath/'
 
 # normal option
-ad_list = set(['UserManual']) # start page's list
+ad_list = set(['UserManual', 'bigrange.py']) # start page's list
 ja_flag = False # japanese manual
 p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
@@ -33,7 +33,8 @@ def getHeader(files):
     head += ' <h1 class="title">'
     head += '<a href="'
     head += convertDocURL(files)
-    head += '">?' + urllib.unquote(files) + '</a></h1>' + '\n'
+    #head += '">?' + urllib.unquote(files) + '</a></h1>' + '\n'
+    head += '">' + urllib.unquote(files) + '</a></h1>' + '\n'
     head += '</div>' + '\n'
     return head
 
