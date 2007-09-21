@@ -1,16 +1,16 @@
 from distutils.core import setup
 
-doc_prefix = "share/doc/NZMATH-0.5.1/"
+doc_prefix = "share/doc/NZMATH-0.7.0/"
 
 setup (
     name="NZMATH",
-    version="0.5.1",
+    version="0.7.0",
     url="http://tnt.math.metro-u.ac.jp/nzmath/",
     author="NZMATH development group",
     author_email="nzmath-user@tnt.math.metro-u.ac.jp",
     description="number theory oriented calculation system",
 
-    packages=["nzmath", "nzmath.factor"],
+    packages=["nzmath", "nzmath.factor", "nzmath.poly"],
 
     data_files=[(doc_prefix + "manual",
                  ['manual/default.css',

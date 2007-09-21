@@ -20,7 +20,7 @@ BEGIN {
     print "    author_email = 'nzmath-user@tnt.math.metro-u.ac.jp',";
     print "    description = 'number theory oriented calculation system',";
     print "";
-    print "    packages = ['nzmath', 'nzmath.factor'],";
+    print "    packages = ['nzmath', 'nzmath.factor', 'nzmath.poly'],";
     print "";
     print "    data_files = ["
 }
