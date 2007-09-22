@@ -15,7 +15,7 @@ HPpla = 'tnt.math.metro-u.ac.jp'
 HPdoc = '/nzmath/'
 
 # normal option
-ad_list = set(['UserManual', 'bigrange.py']) # start page's list
+ad_list = set(['UserManual']) # start page's list
 ja_flag = False # japanese manual
 p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
@@ -40,7 +40,7 @@ def getHeader(files):
 
 def getFooter():
     foot = '<div id="footer">' + '\n'
-    foot += ' Copyright &copy; 2003-' + str(datetime.datetime.today().year) + ','
+    foot += ' Copyright &copy; 2003-' + str(datetime.datetime.today().year) + ', '
     foot += '<a href="'
     foot += convertHPURL('')
     foot += '">' + 'NZMATH</a> deveropment group' + '\n'
