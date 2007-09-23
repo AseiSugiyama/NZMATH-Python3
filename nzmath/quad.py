@@ -440,6 +440,7 @@ def class_number_bsgs(disc, retelq = 0):
         # compute small steps        
         x[0] =  ut # maybe, this code must not be here
         x[1] = (nt[0] ** h[0])
+        print x[1], ut
         if x[1] == ut:
             n[0] = 1
             # initialize order
@@ -447,7 +448,7 @@ def class_number_bsgs(disc, retelq = 0):
             # compute the order of nt[1]
             sossp, sogsp = trorder(n, x, sossp, sogsp, c_s1, nt, disc)
         else:
-            ret_val, sossp, sogsp = trbabysp(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
+            ret_val, sossp, sogsp = trbabysp(q, x, n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
 
         # finished?
         ret, sossp, sogsp = isfinished_trbsgs(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y, disc)
@@ -1151,7 +1152,6 @@ def trbabysp(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
         # compute 2 to q-1
         if (tr != 0) and (tr != 1):
             x[tr] = x[1] * x[tr - 1]
-            #ttpx[tr] = ttpx[tr - 1] * ttpx[1]
         sotp = sossp.retel()
         for ttr in sotp:
             tmpx = x[tr]*ttr
@@ -1168,7 +1168,7 @@ def trbabysp(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
         sz[0] = x[1] ** lwrbd_1[0]
         n[0] = lwrbd_1[0]
         sogsp = trgiantsp(n, q, sz, y, c_s1, uprbd_1, sogsp)
-    n[0] = h[0] * n[0] 
+    n[0] = h[0] * n[0]
     sossp, sogsp = trorder(n, x, sossp, sogsp, c_s1, nt, disc)
     return True, sossp, sogsp
 
@@ -1186,7 +1186,7 @@ def trgiantsp(n, q, sz, y, c_s1, uprbd_1, sogsp):
                 return sogsp
         sz[0] = y[0] * sz[0]
         n[0] = n[0] + q[0]
-        if n[0] -q [0] + 1 <= uprbd_1[0]:
+        if n[0] - q[0] + 1 <= uprbd_1[0]:
             continue
         else:
             raise ValueError("the order is larger than upper bound")
