@@ -440,7 +440,6 @@ def class_number_bsgs(disc, retelq = 0):
         # compute small steps        
         x[0] =  ut # maybe, this code must not be here
         x[1] = (nt[0] ** h[0])
-        print x[1], ut
         if x[1] == ut:
             n[0] = 1
             # initialize order
