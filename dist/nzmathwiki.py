@@ -49,18 +49,21 @@ def getFooter():
 
 def convertFileName(url):
     split_url = urlparse.urlparse(url)
-    if split_url[1] == basepla:
-        if split_url[4] in ('BracketName', 'InterWikiName', 'References'):
-            return url
-        elif split_url[4][:8] == 'cmd=edit':
-            return url
+    try:
+        if split_url[1] == basepla:
+            if split_url[4] in ('BracketName', 'InterWikiName', 'References'):
+                raise InputError
+            elif split_url[4][:8] == 'cmd=edit':
+                raise InputError
+            else:
+                sol = FileNameToFile(str(split_url[4]))
+                if not(ja_flag) and '.ja.html' in sol:
+                    raise InputError
+            return (sol, split_url[5], split_url[4])
         else:
-            sol = FileNameToFile(str(split_url[4]))
-            if not(ja_flag) and '.ja.html' in sol:
-                return url
-        return (sol, split_url[5], split_url[4])
-    else:
-        return url
+            raise InputError
+    except InputError:
+        return url.replace('&', '&amp;')
 
 def FileNameToFile(files):
     if files == 'UserManual':
@@ -148,6 +151,8 @@ class MyWikiParser(HTMLParser):
                                 p_attrs[0] = (attrs[0][0], p_f_name)
                             if not(os.path.exists(f_name[0])):
                                 ad_list.add(f_name[2])
+                        else:
+                            p_attrs[0] = (attrs[0][0], f_name)
                     if attrs[0][0] == 'class':
                         if attrs[0][1] == 'anchor_super':
                             del p_attrs[3]
