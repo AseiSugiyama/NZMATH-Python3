@@ -1,3 +1,4 @@
+from __future__ import division
 import sys
 import math
 import random
@@ -246,9 +247,11 @@ class retnext1:
         self.cnt = 1
         self.previous = []
         self.elhash = range(int(math.sqrt(abs(disc) // 3)) + 2)
+
     def unit(self):
         utt = ReducedQuadraticForm(self.utroot[:], self.utroot[:])
         return utt
+
     def retnext(self):
         while True:
             next, self.cnt, self.previous = randomele1(self.disc, self.cnt, self.previous)
@@ -270,7 +273,7 @@ def class_formula(disc, uprbd):
     factors = mpqs.eratosthenes(uprbd)
 
     for factor in factors:
-        ml = ml * (1 -(float(kronecker(disc, factor)) / factor))**(-1)
+        ml = ml * (1 - (kronecker(disc, factor) / factor))**(-1)
     return int(ht * ml)
 
 def class_number(disc, limit_dis=100000):
@@ -286,41 +289,41 @@ def class_number(disc, limit_dis=100000):
 
     h = 1
     b = disc % 2
-    c_b = long(math.sqrt(float(- disc) / 3))
+    c_b = long(math.sqrt(-disc / 3))
 
     if disc < limit_dis:
         ret_list = []
         f_a = 1
         if disc % 4 == 0:
             f_b = 0
-            f_c = -(disc / 4)
+            f_c = -(disc // 4)
         else:
             f_b = 1
-            f_c = -((disc - 1) / 4)
+            f_c = -((disc - 1) // 4)
 
     while b <= c_b:
         chk_f = 0
-        q = (b**2 - disc) / 4
+        q = (b**2 - disc) // 4
         a = b
         if a <= 1:
             a = 1
             chk_f = 1
         while 1:
             if chk_f == 0:
-                if (q % a == 0) and gcd.gcd_of_list([a, b, q/a])[0] == 1:
+                if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
                     if (a == b) or (a**2 == q) or (b == 0):
                         h += 1
                         if disc < limit_dis:
                             f_a = a
                             f_b = b
-                            f_c = -(disc - f_b*f_b)/(4*f_a)
+                            f_c = -(disc - f_b*f_b)//(4*f_a)
                             ###ret_list.append([f_a, f_b, f_c])
                     else:
                         h += 2
                         if disc < limit_dis:
                             f_a = a
                             f_b = b
-                            f_c = -(disc - f_b*f_b)/(4*f_a)
+                            f_c = -(disc - f_b*f_b)//(4*f_a)
             chk_f = 0
             a += 1
             if a**2 > q:
@@ -341,42 +344,42 @@ def class_group(disc, limit_dis=100000):
 
     h = 1
     b = disc % 2
-    c_b = long(math.sqrt(float(- disc) / 3))
+    c_b = long(math.sqrt(-disc / 3))
 
     if disc < limit_dis:
         ret_list = []
         f_a = 1
         if disc % 4 == 0:
             f_b = 0
-            f_c = -(disc / 4)
+            f_c = -(disc // 4)
         else:
             f_b = 1
-            f_c = -((disc - 1) / 4)
+            f_c = -((disc - 1) // 4)
         ret_list.append([f_a, f_b, f_c])
 
     while b <= c_b:
         chk_f = 0
-        q = (b**2 - disc) / 4
+        q = (b**2 - disc) // 4
         a = b
         if a <= 1:
             a = 1
             chk_f = 1
         while 1:
             if chk_f == 0:
-                if (q % a == 0) and gcd.gcd_of_list([a, b, q/a])[0] == 1:
+                if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
                     if (a == b) or (a**2 == q) or (b == 0):
                         h += 1
                         if disc < limit_dis:
                             f_a = a
                             f_b = b
-                            f_c = -(disc - f_b*f_b)/(4*f_a)
+                            f_c = -(disc - f_b*f_b)//(4*f_a)
                             ret_list.append([f_a, f_b, f_c])
                     else:
                         h += 2
                         if disc < limit_dis:
                             f_a = a
                             f_b = b
-                            f_c = -(disc - f_b*f_b)/(4*f_a)
+                            f_c = -(disc - f_b*f_b)//(4*f_a)
                             ret_list.append([f_a, f_b, f_c])
                             ret_list.append([f_a, -f_b, f_c])
             chk_f = 0
@@ -395,8 +398,8 @@ def class_number_bsgs(disc, retelq = 0):
     Return the class number with the given discriminant.
     """
     lx = max(arith1.floorpowerroot(abs(disc), 5), 500 * (math.log(abs(disc)))**2)
-    uprbd = int(class_formula(disc, int(lx)) * float(3) / 2)
-    lwrbd = uprbd / 2 - 1
+    uprbd = int(class_formula(disc, int(lx)) * 3 / 2)
+    lwrbd = uprbd // 2 - 1
     h = [1]
     lwrbd_1 = [lwrbd]
     uprbd_1 = [uprbd]
@@ -561,12 +564,12 @@ def reducePDF(f):
                 a[1] = -a[1]
             return [a[0], a[1], a[2]]
     while 1:
-        q = a[1] / (2*a[0])
+        q = a[1] // (2*a[0])
         r = a[1] - q*(2*a[0])
         if r > a[0]:
             r = r - 2*a[0]
             q = q + 1
-        a[2] = a[2] - ((a[1] + r)/2)*q
+        a[2] = a[2] - ((a[1] + r)//2)*q
         a[1] = r
         if a[0] > a[2]:
             a[1] = -a[1]
@@ -585,11 +588,11 @@ def sqrPDF(f):
     
     # compute disc and etc
     D = disc(f)
-    sogsp = arith1.floorpowerroot(abs(float(D)/4), 4)
+    sogsp = arith1.floorpowerroot(int(abs(D / 4)), 4)
     (u, v, d_1) = euclid_exd(f_1[1], f_1[0])
 
-    la = f_1[0] / d_1
-    lb = f_1[1] / d_1
+    la = f_1[0] // d_1
+    lb = f_1[1] // d_1
     lc = (-f_1[2] * u) % la
     c_1 = la - lc
     if c_1 < lc:
@@ -599,7 +602,7 @@ def sqrPDF(f):
     v_2, v_3, z, d , v = parteucl(la, lc, sogsp)
 
     if z == 0:
-        g = (lb * v_3 + f_1[2]) / d
+        g = (lb * v_3 + f_1[2]) // d
         a_2 = d**2
         c_2 = v_3 ** 2
         b_2 = f_1[1] + (d + v_3)**2 - a_2 - c_2
@@ -607,8 +610,8 @@ def sqrPDF(f):
         f_2 = reducePDF([a_2, b_2, c_2])
         return f_2
 
-    e = (f_1[2] * v + lb * d) / la
-    g = (e * v_2 - lb) / v
+    e = (f_1[2] * v + lb * d) // la
+    g = (e * v_2 - lb) // v
     b_2 = e * v_2 + v * g
     if d_1 > 1:
         b_2 = d_1 * b_2
@@ -670,7 +673,7 @@ def compositePDF(f_1, f_2):
     if f_1[0] > f_2[0]:
         f_1, f_2 = f_2, f_1
 
-    s = (f_1[1] + f_2[1])/2
+    s = (f_1[1] + f_2[1]) // 2
     n = f_2[1] - s
 
     if f_2[0] % f_1[0] == 0:
@@ -689,13 +692,13 @@ def compositePDF(f_1, f_2):
         x_2 = u
         y_2 = -v
 
-    v_1 = (f_1[0] / d_1)
-    v_2 = (f_2[0] / d_1)
+    v_1 = f_1[0] // d_1
+    v_2 = f_2[0] // d_1
     r = (y_1*y_2*n - x_2*f_2[2]) % v_1
 
     b_3 = f_2[1] + 2*v_2*r
     a_3 = v_1*v_2
-    c_3 = (f_2[2]*d_1 + r*(f_2[1] + v_2*r))/v_1
+    c_3 = (f_2[2]*d_1 + r*(f_2[1] + v_2*r)) // v_1
     f_3 = [a_3, b_3, c_3]
 
     return reducePDF(f_3)
@@ -877,7 +880,7 @@ def randomele(disc, unit):
     Return a reduced random form with the given discriminant and the given unit.
     Also random element is not unit.
     """
-    limit = long(math.sqrt(float(-disc) / 3))
+    limit = long(math.sqrt(-disc / 3))
     while True:
         a = int(limit * random.random()) + 1
         ind = 0
@@ -945,9 +948,9 @@ def euclid_exd(a, b):
 
         while 1:
             if v_3 == 0:
-                v = (d - a*u)/b
+                v = (d - a*u) // b
                 return (u, v, d)
-            q = d/v_3
+            q = d // v_3
             t_3 = d % v_3
             t_1 = u - q*v_1
             u = v_1
@@ -968,7 +971,7 @@ def parteucl(a, b, sogsp):
     while 1:
         if abs(v_3) > sogsp:
             # euclidean step
-            q = d / v_3
+            q = d // v_3
             t_3 = d % v_3
             t_2 = v - (q * v_2)
             v = v_2
@@ -1071,14 +1074,14 @@ def ordercv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs):
         sogsptp = sogsp.retel()
         for tmpri in lst_p:
             for ttp_ls in lstp_ls:
-                tmp_c_s1 = (nt ** (n[0] / tmpri)) * ttp_ls
+                tmp_c_s1 = (nt ** (n[0] // tmpri)) * ttp_ls
                 tmp_c_s1.s_parent = ttp_ls
                 c_s1.insttree(tmp_c_s1)
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
                     flg_bk = 1
-                    n[0] = n[0] / tmpri
+                    n[0] = n[0] // tmpri
                     tmp_ss = rete.s_parent
                     tmp_gs = tmp_ell
                     break
@@ -1159,8 +1162,8 @@ def trbabysp(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
                 n[0] = tr
             tmpx.ind = tr
             c_s1.insttree(tmpx)
-                # sort ( if you want to sort it with your estimate,
-                # you have to implement '__ge__' method of the class with your way.)
+            # sort ( if you want to sort it with your estimate,
+            # you have to implement '__ge__' method of the class with your way.)
 
     if flg_s != 1:
         y[0] = x[1] * x[q[0] - 1]
@@ -1189,7 +1192,7 @@ def trgiantsp(n, q, sz, y, c_s1, uprbd_1, sogsp):
             continue
         else:
             raise ValueError("the order is larger than upper bound")
-        
+
 def trorder(n, x, sossp, sogsp, c_s1, nt, disc):
     """
     Compute the order. 
@@ -1206,13 +1209,13 @@ def trorder(n, x, sossp, sogsp, c_s1, nt, disc):
         for tmpri in lst_p:
             # initialize c_s1
             for ttp_ls in lstp_ls:
-                tmp_c_s1 = (nt[0] ** (n[0] / tmpri)) * ttp_ls
+                tmp_c_s1 = (nt[0] ** (n[0] // tmpri)) * ttp_ls
                 c_s1.insttree(tmp_c_s1)
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
                     flg_bk = 1
-                    n[0] = n[0] / tmpri
+                    n[0] = n[0] // tmpri
                     break
             if flg_bk == 1:
                 break
