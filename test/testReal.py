@@ -1,6 +1,5 @@
 import unittest
 import math
-import time
 import nzmath.real as real
 import nzmath.rational as rational
 import nzmath.imaginary as imaginary
