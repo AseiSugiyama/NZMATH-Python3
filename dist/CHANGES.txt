@@ -1,6 +1,7 @@
 version 0.6.0 to 0.7.0
 ----------------------
 * add a new sub-package poly for new implementation of polynomials.
+* enhance quad module; class group structure, etc.
 * add a new module compatibility for easier treatment of sets compatibility.
 * add new functions bell, stirling1 and stirling2 in combinatorial.
 * add a new function inverse in ring.
