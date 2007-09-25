@@ -4,6 +4,7 @@ import os
 import sys
 import urllib
 import urlparse
+import nzmath.compatibility
 
 #------ global variable
 
@@ -269,14 +270,12 @@ def main(basepath):
         if p_out:
             print 'end.'
     except InputError:
-        raise ValueError, "Invalid input!"
+        print "Invalid input!"
     except:
         if p_out:
             print "Check" + basepath + "(dir? truly path? and so on.)\n"
         print sys.exc_info()[0]
-        raise
-    finally:
-        os.chdir(current)
+    os.chdir(current)
 
 #------ start!
 if __name__ == '__main__':
