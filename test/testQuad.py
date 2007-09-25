@@ -31,11 +31,11 @@ class ClassNumberTest (unittest.TestCase):
 
     def testClassNumberBsgs(self):
         self.assertEqual(1, quad.class_number_bsgs(-3))
-        #self.assertEqual(2, quad.class_number_bsgs(-15))
-        #self.assertEqual(3, quad.class_number_bsgs(-23))
+        self.assertEqual(2, quad.class_number_bsgs(-15))
+        self.assertEqual(3, quad.class_number_bsgs(-23))
         self.assertEqual(4, quad.class_number_bsgs(-39))
         self.assertEqual(5, quad.class_number_bsgs(-47))
-        #self.assertEqual(6, quad.class_number_bsgs(-87))
+        self.assertEqual(6, quad.class_number_bsgs(-87))
         self.assertEqual(7, quad.class_number_bsgs(-71))
         # -1 % 4 == 3
         self.assertRaises(ValueError, quad.class_number_bsgs, -1)

@@ -1,11 +1,9 @@
 from __future__ import division
-import sys
 import math
 import random
 import copy
 import nzmath.gcd as gcd
 import nzmath.arith1 as arith1
-import nzmath.group as group
 import nzmath.prime as prime
 import nzmath.factor.misc as misc
 import nzmath.factor.mpqs as mpqs
@@ -269,12 +267,12 @@ def class_formula(disc, uprbd):
     h = sqrt(|D|)/pi (1 - (D/p)(1/p))^{-1} where p is less than ubound.
     """
     ht = math.sqrt(abs(disc)) / math.pi
-    ml = 1
+    ml = number_unit(disc)/2
     factors = mpqs.eratosthenes(uprbd)
 
     for factor in factors:
         ml = ml * (1 - (kronecker(disc, factor) / factor))**(-1)
-    return int(ht * ml)
+    return int(ht * ml + 0.5)
 
 def class_number(disc, limit_dis=100000):
     """
@@ -291,7 +289,7 @@ def class_number(disc, limit_dis=100000):
     b = disc % 2
     c_b = long(math.sqrt(-disc / 3))
 
-    if disc < limit_dis:
+    if abs(disc) < limit_dis:
         ret_list = []
         f_a = 1
         if disc % 4 == 0:
@@ -313,14 +311,13 @@ def class_number(disc, limit_dis=100000):
                 if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
                     if (a == b) or (a**2 == q) or (b == 0):
                         h += 1
-                        if disc < limit_dis:
+                        if abs(disc) < limit_dis:
                             f_a = a
                             f_b = b
                             f_c = -(disc - f_b*f_b)//(4*f_a)
-                            ###ret_list.append([f_a, f_b, f_c])
                     else:
                         h += 2
-                        if disc < limit_dis:
+                        if abs(disc) < limit_dis:
                             f_a = a
                             f_b = b
                             f_c = -(disc - f_b*f_b)//(4*f_a)
@@ -346,7 +343,7 @@ def class_group(disc, limit_dis=100000):
     b = disc % 2
     c_b = long(math.sqrt(-disc / 3))
 
-    if disc < limit_dis:
+    if abs(disc) < limit_dis:
         ret_list = []
         f_a = 1
         if disc % 4 == 0:
@@ -369,14 +366,14 @@ def class_group(disc, limit_dis=100000):
                 if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
                     if (a == b) or (a**2 == q) or (b == 0):
                         h += 1
-                        if disc < limit_dis:
+                        if abs(disc) < limit_dis:
                             f_a = a
                             f_b = b
                             f_c = -(disc - f_b*f_b)//(4*f_a)
                             ret_list.append([f_a, f_b, f_c])
                     else:
                         h += 2
-                        if disc < limit_dis:
+                        if abs(disc) < limit_dis:
                             f_a = a
                             f_b = b
                             f_c = -(disc - f_b*f_b)//(4*f_a)
@@ -397,9 +394,15 @@ def class_number_bsgs(disc, retelq = 0):
     """
     Return the class number with the given discriminant.
     """
+    if disc % 4 not in (0, 1):
+        raise ValueError("a discriminant must be 0 or 1 mod 4")
+
+    if disc >= 0:
+        raise ValueError("a discriminant must be negative")
+
     lx = max(arith1.floorpowerroot(abs(disc), 5), 500 * (math.log(abs(disc)))**2)
     uprbd = int(class_formula(disc, int(lx)) * 3 / 2)
-    lwrbd = uprbd // 2 - 1
+    lwrbd = uprbd // 2 + 1
     h = [1]
     lwrbd_1 = [lwrbd]
     uprbd_1 = [uprbd]
@@ -461,6 +464,12 @@ def class_group_bsgs(disc, classnum, qin):
     """
     Return the construction of the class group with the given discriminant.
     """
+    if disc % 4 not in (0, 1):
+        raise ValueError("a discriminant must be 0 or 1 mod 4")
+
+    if disc >= 0:
+        raise ValueError("a discriminant must be negative")
+
     matla = []
     lstofelg = []
     lpt = []
@@ -497,8 +506,13 @@ def class_group_bsgs(disc, classnum, qin):
     indofg = 1
     while ret == -1:
         # get next element
-        nt = generator(disc, classnum, qin)
-        lstofelg.append(nt)
+        while True:
+            nt = rand_generator(disc, classnum, qin)
+            if nt not in lstofelg:
+                lstofelg.append(nt)
+                break
+        #else:
+            #indofg = indofg - 1
         mstp1 = uprbd_1[0] - lwrbd_1[0]
         if (mstp1 == 0) or (mstp1 == 1):
             q[0] = 1
@@ -515,13 +529,10 @@ def class_group_bsgs(disc, classnum, qin):
         c_s1 = ClassGroup(disc, classnum, []) # a subset of G
 
         # compute small steps
-        x[0] =  ut # maybe, this code must not be here
+        x[0] = ut # maybe, this code must not be here
         x[1] = nt
         if x[1] == ut:
             raise ValueError
-            n[0] = 1
-            # initialize order
-            tmp_ss, tmp_gs = ordercv(n, x, sossp, sogsp, c_s1, nt, disc, classnum)
         else:
             tmp_ss, tmp_gs = babyspcv(utwi, q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum)
         setind(n, indofg, tmp_ss, tmp_gs, matla)
@@ -529,9 +540,9 @@ def class_group_bsgs(disc, classnum, qin):
         indofg = indofg + 1
     return lstofelg, matla
 
-########################################################
-# following function is sub function for above module. #
-########################################################
+##############################################################
+# following functions are sub functions for above functions. #
+##############################################################
 
 def disc(f):
     """
@@ -822,7 +833,7 @@ def crt(inlist):
         ktp = ktp - 1
     return outp
 
-def generator(disc, classnum, qin):
+def rand_generator(disc, classnum, qin):
     """
     Return the reduced random quadratic form with given discriminant and order t, 
     where t = classnum / a ** b and qin = [a, b].
@@ -1296,6 +1307,7 @@ def setind(n, indofg, tmp_ss, tmp_gs, matla):
         except:
             raise ValueError
         tmp_mt.append(ioind - joind)
+    #if tmp_mt != [1] * n[0]:  
     matla.append(tmp_mt)
     return True
         
