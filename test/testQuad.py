@@ -43,7 +43,27 @@ class ClassNumberTest (unittest.TestCase):
         self.assertRaises(ValueError, quad.class_number_bsgs, 5)
 
     def testClassGroupBsgs(self):
-        pass
+        unit1 = quad.ReducedQuadraticForm(quad.unit_form(-15), quad.unit_form(-15))
+        subgroup1 = quad.class_group_bsgs(-15, 2, [2,1])
+
+        unit2 = quad.ReducedQuadraticForm(quad.unit_form(-23), quad.unit_form(-23))
+        subgroup2 = quad.class_group_bsgs(-23, 3, [3,1])
+
+        unit3 = quad.ReducedQuadraticForm(quad.unit_form(-87), quad.unit_form(-87))
+        subgroup3_1 = quad.class_group_bsgs(-87, 6, [2,1])
+        subgroup3_2 = quad.class_group_bsgs(-87, 6, [3,1])        
+
+        unit4 = quad.ReducedQuadraticForm(quad.unit_form(-1200), quad.unit_form(-1200))
+        subgroup4_1 = quad.class_group_bsgs(-1200, 12, [2,2])
+        subgroup4_2 = quad.class_group_bsgs(-1200, 12, [3,1])
+        
+        self.assertEqual(unit1, subgroup1[0][0]**subgroup1[1][0][0])
+        self.assertEqual(unit2, subgroup2[0][0]**subgroup2[1][0][0])
+        self.assertEqual(unit3, subgroup3_1[0][0]**subgroup3_1[1][0][0])
+        self.assertEqual(unit3, subgroup3_2[0][0]**subgroup3_2[1][0][0])        
+        self.assertEqual(unit4, subgroup4_1[0][0]**subgroup4_1[1][0][0])
+        self.assertEqual(unit4, subgroup4_1[0][1]**subgroup4_1[1][1][0] * subgroup4_1[0][0]**subgroup4_1[1][1][1])
+        self.assertEqual(unit4, subgroup4_2[0][0]**subgroup4_2[1][0][0])
         
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
