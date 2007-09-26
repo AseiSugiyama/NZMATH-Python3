@@ -57,6 +57,13 @@ class ClassNumberTest (unittest.TestCase):
         subgroup4_1 = quad.class_group_bsgs(-1200, 12, [2,2])
         subgroup4_2 = quad.class_group_bsgs(-1200, 12, [3,1])
         
+        unit5 = quad.ReducedQuadraticForm(quad.unit_form(-12000), quad.unit_form(-12000))
+        subgroup5_1 = quad.class_group_bsgs(-12000, 40, [2,3])
+        order5_1 = 1
+        for i in range(len(subgroup5_1[1])):
+            order5_1 = order5_1 * subgroup5_1[1][i][0]
+        subgroup5_2 = quad.class_group_bsgs(-12000, 40, [5,1])
+
         self.assertEqual(unit1, subgroup1[0][0]**subgroup1[1][0][0])
         self.assertEqual(unit2, subgroup2[0][0]**subgroup2[1][0][0])
         self.assertEqual(unit3, subgroup3_1[0][0]**subgroup3_1[1][0][0])
@@ -64,6 +71,8 @@ class ClassNumberTest (unittest.TestCase):
         self.assertEqual(unit4, subgroup4_1[0][0]**subgroup4_1[1][0][0])
         self.assertEqual(unit4, subgroup4_1[0][1]**subgroup4_1[1][1][0] * subgroup4_1[0][0]**subgroup4_1[1][1][1])
         self.assertEqual(unit4, subgroup4_2[0][0]**subgroup4_2[1][0][0])
+        self.assertEqual(2**3, order5_1)
+        self.assertEqual(unit5, subgroup5_2[0][0]**subgroup5_2[1][0][0])
         
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
