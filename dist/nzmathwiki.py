@@ -4,6 +4,7 @@ import os
 import sys
 import urllib
 import urlparse
+import htmlentitydefs
 import nzmath.compatibility
 
 #------ global variable
@@ -86,6 +87,20 @@ def convertDocURL(files):
 def convertHPURL(files):
     return urlparse.urlunsplit( ('http', HPpla, HPdoc + files, '', '') )
 
+def convertEntity(data):
+    txt = unicode(str(data), 'euc_jp')
+    sol = u''
+    for char in txt:
+        num = ord(char)
+        if num > 127:
+            try:
+                sol += '&' + htmlentitydefs.codepoint2name[num] + ';'
+            except:
+                sol += char
+        else:
+            sol += char
+    return sol.encode('euc_jp')
+
 #------ Error Class
 class NoneOutput(Exception):
     pass
@@ -111,7 +126,7 @@ class MyWikiParser(HTMLParser):
 
     def handle_data(self, data):
         if not(self.deal):
-            p_data = data.replace('NZMATHWiki', 'NZMATH')
+            p_data = convertEntity(data.replace('NZMATHWiki', 'NZMATH'))
             self.f.write(p_data)
 
     def handle_starttag(self, tag, attrs):
