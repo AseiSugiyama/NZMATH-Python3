@@ -1,6 +1,10 @@
+2007-10-02
+----------
+The version 0.7.0 is released.
+
 2007-04-17
 ----------
-The version 0.6.0 is released.
+The version 0.6.0 has been released.
 
 2006-08-08
 ----------
