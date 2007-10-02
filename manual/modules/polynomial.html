@@ -15,63 +15,64 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?polynomial.py">polynomial.py</a></h1>
 </div>
 
+
 <hr class="full_hr" />
 <div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | (<a href="http://nzmath.sourceforge.net/doc/?polynomial%20%28ja%29" title="polynomial (ja)">ÆüËÜ¸ì</a>)</p>
-<h2 id="content_1_0">polynomial  <a class="anchor_super" id="gafe1edd" href="http://nzmath.sourceforge.net/doc/?polynomial.py#gafe1edd" title="gafe1edd">&dagger;</a></h2>
+<h2 id="content_1_0">polynomial  <a class="anchor_super" id="gafe1edd">&dagger;</a></h2>
 <p>polynomial module provides polynomials.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="k18fe329" href="http://nzmath.sourceforge.net/doc/?polynomial.py#k18fe329" title="k18fe329">&dagger;</a></h3>
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="k18fe329">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">OneVariableDensePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])  <a class="anchor_super" id="u6fdaf78" href="http://nzmath.sourceforge.net/doc/?polynomial.py#u6fdaf78" title="u6fdaf78">&dagger;</a></h4>
-<p>A factory function to create an instance of <a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomial" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
+<h4 id="content_1_2">OneVariableDensePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])  <a class="anchor_super" id="u6fdaf78">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
 For <em>coefficient</em>, specify a sequence of coefficients in ascending order from degree 0.
 <em>variable</em> is a name string of the variable.
 <em>coeffring</em> should be, if it is given, an objent of nzmath.ring.Ring, which represents the coefficient ring.
 If it is not given, the coefficient ring is speculated from <em>coefficient</em>.
 If <em>coefficient</em> is empty, then the speculation is impossible, thus in such cases <em>coeffring</em> must be given.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">OneVariableSparsePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])  <a class="anchor_super" id="n249124e" href="http://nzmath.sourceforge.net/doc/?polynomial.py#n249124e" title="n249124e">&dagger;</a></h4>
-<p>A factory function to create an instance of <a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomial" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
+<h4 id="content_1_3">OneVariableSparsePolynomial(<em>coefficient</em>, <em>variable</em> [, <em>coeffring</em>])  <a class="anchor_super" id="n249124e">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants.
 For <em>coefficient</em>, specify a dictionary, whose keys are degrees and values are coefficients.
-The explanations for <em>variable</em> and <em>coeffring</em> of <a href="http://nzmath.sourceforge.net/doc/?polynomial.py#u6fdaf78" title="polynomial.py">OneVariableDensePolynomial</a> are valid for here.</p>
+The explanations for <em>variable</em> and <em>coeffring</em> of <a href="polynomial.html#u6fdaf78" title="polynomial.py">OneVariableDensePolynomial</a> are valid for here.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">construct(<em>polynomial</em> [, <em>kwd</em>])  <a class="anchor_super" id="rb0bc777" href="http://nzmath.sourceforge.net/doc/?polynomial.py#rb0bc777" title="rb0bc777">&dagger;</a></h4>
-<p>Create an object of <a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomial" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants with giving a valid Python code string of polynomial to <em>polynomial</em> argument.
+<h4 id="content_1_4">construct(<em>polynomial</em> [, <em>kwd</em>])  <a class="anchor_super" id="rb0bc777">&dagger;</a></h4>
+<p>Create an object of <a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a> or its descendants with giving a valid Python code string of polynomial to <em>polynomial</em> argument.
 The identifiers appearing <em>polynomial</em>, which should not be interpreted as polynomial variables can be handed in <em>kwd</em> as a dictionary.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">pseudoDivision(<em>A</em>, <em>B</em>)  <a class="anchor_super" id="cc64ae97" href="http://nzmath.sourceforge.net/doc/?polynomial.py#cc64ae97" title="cc64ae97">&dagger;</a></h4>
+<h4 id="content_1_5">pseudoDivision(<em>A</em>, <em>B</em>)  <a class="anchor_super" id="cc64ae97">&dagger;</a></h4>
 <p>Return the result of pseudo-division Q and R such that</p>
 <pre>d**(deg(A)-deg(B)+1) * A == B * Q + R,</pre>
 <p>where d is the leading coefficient of <em>B</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">resultant(<em>f</em>, <em>g</em>)  <a class="anchor_super" id="gc69dbdc" href="http://nzmath.sourceforge.net/doc/?polynomial.py#gc69dbdc" title="gc69dbdc">&dagger;</a></h4>
+<h4 id="content_1_6">resultant(<em>f</em>, <em>g</em>)  <a class="anchor_super" id="gc69dbdc">&dagger;</a></h4>
 <p>Return the resultant of <em>f</em> and <em>g</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">subResultantGCD(<em>A</em>, <em>B</em>)  <a class="anchor_super" id="q86ed787" href="http://nzmath.sourceforge.net/doc/?polynomial.py#q86ed787" title="q86ed787">&dagger;</a></h4>
+<h4 id="content_1_7">subResultantGCD(<em>A</em>, <em>B</em>)  <a class="anchor_super" id="q86ed787">&dagger;</a></h4>
 <p>Compute the gcd of <em>A</em> and <em>B</em> using sub-resultant algorithm.
 The coefficient ring of polynomials must be a UFD.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_8">Classes  <a class="anchor_super" id="m7a68a38" href="http://nzmath.sourceforge.net/doc/?polynomial.py#m7a68a38" title="m7a68a38">&dagger;</a></h3>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FMultiVariableSparsePolynomial" title="polynomial.py/MultiVariableSparsePolynomial">MultiVariableSparsePolynomial</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomial" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialChar0" title="polynomial.py/OneVariablePolynomialChar0">OneVariablePolynomialChar0</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FRationalOneVariablePolynomial" title="polynomial.py/RationalOneVariablePolynomial">RationalOneVariablePolynomial</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCharNonZero" title="polynomial.py/OneVariablePolynomialCharNonZero">OneVariablePolynomialCharNonZero</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialCoefficients" title="polynomial.py/OneVariablePolynomialCoefficients">OneVariablePolynomialCoefficients</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FPolynomialRing" title="polynomial.py/PolynomialRing">PolynomialRing</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FMultiVariablePolynomialIdeal" title="polynomial.py/MultiVariablePolynomialIdeal">MultiVariablePolynomialIdeal</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FOneVariablePolynomialIdeal" title="polynomial.py/OneVariablePolynomialIdeal">OneVariablePolynomialIdeal</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?polynomial.py%2FPolynomialResidueRing" title="polynomial.py/PolynomialResidueRing">PolynomialResidueRing</a></li></ul>
+<h3 id="content_1_8">Classes  <a class="anchor_super" id="m7a68a38">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="polynomial_MultiVariableSparsePolynomial.html" title="polynomial.py/MultiVariableSparsePolynomial">MultiVariableSparsePolynomial</a></li>
+<li><a href="polynomial_OneVariablePolynomial.html" title="polynomial.py/OneVariablePolynomial">OneVariablePolynomial</a></li>
+<li><a href="polynomial_OneVariablePolynomialChar0.html" title="polynomial.py/OneVariablePolynomialChar0">OneVariablePolynomialChar0</a></li>
+<li><a href="polynomial_RationalOneVariablePolynomial.html" title="polynomial.py/RationalOneVariablePolynomial">RationalOneVariablePolynomial</a></li>
+<li><a href="polynomial_OneVariablePolynomialCharNonZero.html" title="polynomial.py/OneVariablePolynomialCharNonZero">OneVariablePolynomialCharNonZero</a></li>
+<li><a href="polynomial_OneVariablePolynomialCoefficients.html" title="polynomial.py/OneVariablePolynomialCoefficients">OneVariablePolynomialCoefficients</a></li>
+<li><a href="polynomial_PolynomialRing.html" title="polynomial.py/PolynomialRing">PolynomialRing</a></li>
+<li><a href="polynomial_MultiVariablePolynomialIdeal.html" title="polynomial.py/MultiVariablePolynomialIdeal">MultiVariablePolynomialIdeal</a></li>
+<li><a href="polynomial_OneVariablePolynomialIdeal.html" title="polynomial.py/OneVariablePolynomialIdeal">OneVariablePolynomialIdeal</a></li>
+<li><a href="polynomial_PolynomialResidueRing.html" title="polynomial.py/PolynomialResidueRing">PolynomialResidueRing</a></li></ul>
 </div>
 
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2005-12-18 (Sun) 08:46:15 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>

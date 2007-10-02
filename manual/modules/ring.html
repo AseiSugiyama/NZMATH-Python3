@@ -15,12 +15,13 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?ring.py">ring.py</a></h1>
 </div>
 
+
 <hr class="full_hr" />
-<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | <a href="http://nzmath.sourceforge.net/doc/?ring.py.ja" title="ring.py.ja">日本語</a></p>
-<h2 id="content_1_0">ring  <a class="anchor_super" id="e2da54b4" href="http://nzmath.sourceforge.net/doc/?ring.py#e2da54b4" title="e2da54b4">&dagger;</a></h2>
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | <a href="http://nzmath.sourceforge.net/doc/?ring%20%28ja%29" title="ring (ja)">日本語</a></p>
+<h2 id="content_1_0">ring  <a class="anchor_super" id="e2da54b4">&dagger;</a></h2>
 <p>The ring module is a module for rings.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Base Classes  <a class="anchor_super" id="c727b125" href="http://nzmath.sourceforge.net/doc/?ring.py#c727b125" title="c727b125">&dagger;</a></h3>
+<h3 id="content_1_1">Base Classes  <a class="anchor_super" id="c727b125">&dagger;</a></h3>
 <p>There are the following base classes defined.</p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Ring</dt>
 <dd>The base class of all ring classes.</dd>
@@ -38,7 +39,7 @@ There are also classes for elements of them:</p>
 <li>QuotientFieldElement</li></ul>
 <p>They also have no direct instances.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Properties of commutative rings  <a class="anchor_super" id="b725a7c5" href="http://nzmath.sourceforge.net/doc/?ring.py#b725a7c5" title="b725a7c5">&dagger;</a></h3>
+<h3 id="content_1_2">Properties of commutative rings  <a class="anchor_super" id="b725a7c5">&dagger;</a></h3>
 <p>There are some properties of commutative rings, algorithms should be chosen accordingly.
 To express such properties, there is a class CommutativeRingProperties.
 CommutativeRingProperties class treats</p>
@@ -58,29 +59,29 @@ When it is used like:</p>
 <p>None means same as False i.e. negative, and do_something is done if the result is clearly True.
 We don't recommend but it is possible to write a code for each of False and None.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Ideal class  <a class="anchor_super" id="b0bbfcc2" href="http://nzmath.sourceforge.net/doc/?ring.py#b0bbfcc2" title="b0bbfcc2">&dagger;</a></h3>
+<h3 id="content_1_3">Ideal class  <a class="anchor_super" id="b0bbfcc2">&dagger;</a></h3>
 <p>The class represents an ideal of a commutative ring is Ideal<a id="notetext_1" href="#notefoot_1" class="note_super" title="Is CommutativeRingIdeal a more appropriate name?">*1</a><a id="notetext_2" href="#notefoot_2" class="note_super" title="In the future, it should have a caching mechanism.">*2</a>.</p>
 <p>Currently, the ideal should be represented by its generator elements.
 There are, therefore, irrepresentable ideals for non-Noetherian commutative rings.
 Moreover, ideals defined other than their generators cannot be instanciated without explicit generators.</p>
 <p>The class is also used as a base class.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_4">Ring of residue classes  <a class="anchor_super" id="zbf05498" href="http://nzmath.sourceforge.net/doc/?ring.py#zbf05498" title="zbf05498">&dagger;</a></h3>
+<h3 id="content_1_4">Ring of residue classes  <a class="anchor_super" id="zbf05498">&dagger;</a></h3>
 <p>A class defines a ring of residue classes by a ring and an ideal is ResidueClassRing.
 Its elements are ResidueClass.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_5">Function  <a class="anchor_super" id="heec42fa" href="http://nzmath.sourceforge.net/doc/?ring.py#heec42fa" title="heec42fa">&dagger;</a></h3>
+<h3 id="content_1_5">Function  <a class="anchor_super" id="heec42fa">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">getRing(<em>obj</em>)  <a class="anchor_super" id="i8f2c8cf" href="http://nzmath.sourceforge.net/doc/?ring.py#i8f2c8cf" title="i8f2c8cf">&dagger;</a></h4>
+<h4 id="content_1_6">getRing(<em>obj</em>)  <a class="anchor_super" id="i8f2c8cf">&dagger;</a></h4>
 <p>Return a ring to which 'obj' belongs.<br />
 Mainly for python built-in objects such as int or float.<br />
 (new in 0.4.1)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">inverse(<em>obj</em>)  <a class="anchor_super" id="r44b799c" href="http://nzmath.sourceforge.net/doc/?ring.py#r44b799c" title="r44b799c">&dagger;</a></h4>
+<h4 id="content_1_7">inverse(<em>obj</em>)  <a class="anchor_super" id="r44b799c">&dagger;</a></h4>
 <p>Return the inverse of 'obj'.  The inverse can be in the quotient
 field, if the 'obj' is an element of non-field domain.<br />
 Mainly for python built-in objects such as int or float.<br />
-(new in 0.*.*)</p>
+(new in 0.7.0)</p>
 </div>
 
 <div id="note">
@@ -91,11 +92,11 @@ Mainly for python built-in objects such as int or float.<br />
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2007-07-03 (Tue) 11:41:45 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>

@@ -15,27 +15,32 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute">permute.py/Permute</a></h1>
 </div>
 
+
 <hr class="full_hr" />
-<div id="body"><p><a href="http://nzmath.sourceforge.net/doc/?permute.py" title="permute.py">permute.py</a></p>
-<h2 id="content_1_0">Permute  <a class="anchor_super" id="s87302fa" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#s87302fa" title="s87302fa">&dagger;</a></h2>
+<div id="body"><p><a href="permute.html" title="permute.py">permute.py</a></p>
+<h2 id="content_1_0">Permute  <a class="anchor_super" id="s87302fa">&dagger;</a></h2>
 <div class="contents">
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#s87302fa"> Permute </a>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#b93ae3f4"> Operation </a></li>
 <li><a href="#p558013b"> Methods </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#fb9b3cf6"> inverse() </a></li>
-<li><a href="#t0a21b7f"> identity() </a></li>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#lfa6d38e"> setKey(key) </a></li>
+<li><a href="#ac6796ff"> getData() </a></li>
+<li><a href="#k00fe019"> getGroup() </a></li>
+<li><a href="#fb9b3cf6"> inverse() </a></li>
+<li><a href="#t0a21b7f"> identity()&lt;Moved&gt; </a></li>
 <li><a href="#m7274706"> numbering() </a></li>
-<li><a href="#ya2da006"> grouporder() </a></li>
+<li><a href="#ya2da006"> grouporder()&lt;Moved&gt; </a></li>
 <li><a href="#reaf052e"> order() </a></li>
 <li><a href="#v089fb7c"> ToTranspose() </a></li>
 <li><a href="#zc819ca2"> ToCyclic() </a></li>
 <li><a href="#o35e39b1"> sgn() </a></li>
 <li><a href="#j1e52ca5"> types() </a></li>
-<li><a href="#tc789b17"> ToMatrix() </a></li></ul></li></ul></li></ul>
+<li><a href="#tc789b17"> ToMatrix() </a></li>
+<li><a href="#t2bba965"> permute(list) </a></li></ul></li></ul></li></ul>
 </div>
 
-<p>This is a class for permutation group.<br class="spacer" />
+<p>This is a class for permutation group element.<br class="spacer" />
 Create element with 'normal' way.<br class="spacer" />
 For example,<br class="spacer" /></p>
 <pre>  [考1,考2,考3,考4,考5]</pre>
@@ -43,35 +48,82 @@ For example,<br class="spacer" /></p>
 <blockquote><p class="quotation">
 <strong>Initialize</strong><br class="spacer" />
 Initialize with 'normal' list.</p>
-<pre>&gt;&gt;&gt;pm=Permute([考1,考2,...,考n])</pre></blockquote>
+<pre>&gt;&gt;&gt;pm=Permute([考1,考2,...,考n])</pre>
+<p class="quotation">Or, you can specify key as list.</p>
+<pre>&gt;&gt;&gt;pm=Permute([key(考1),key(考2),...,key(考n)], key_list)</pre></blockquote>
 
 <div class="spacer">&nbsp;</div>
 <p>Example</p>
-<pre>&gt;&gt;&gt;a=Permute([2,3,1,5,4])</pre>
+<pre>&gt;&gt;&gt;Pr=Permute([2,3,1,5,4])
+&gt;&gt;&gt;Pr
+[1, 2, 3, 4, 5] -&gt; [2, 3, 1, 5, 4]
+&gt;&gt;&gt;Prk=Permute(['b','c','d','a','e'],['a','b','c','d','e'])
+Or,
+&gt;&gt;&gt;Prk=Permute({'a':'b','b':'c','c':'d','d':'a','e':'e'})
+&gt;&gt;&gt;Prk
+['a', 'b', 'c', 'd', 'e'] -&gt; ['b', 'c', 'd', 'a', 'e']</pre>
+<p><strong>Special key</strong> <br class="spacer" />
+We define some special key.</p>
+<pre>&gt;&gt;&gt;d1=Permute([3,4,2,0,1],0)
+&gt;&gt;&gt;d1
+[0, 1, 2, 3, 4] -&gt; [3, 4, 2, 0, 1]</pre>
+<pre>&gt;&gt;&gt;d2=Permute(['b','c','a','e','d'], 1)
+&gt;&gt;&gt;d2
+['a', 'b', 'c', 'd', 'e'] -&gt; ['b', 'c', 'a', 'e', 'd']
+(key is Python sorted list.)</pre>
+<pre>&gt;&gt;&gt;d3=Permute(['b','c','a','e','d'], -1)
+&gt;&gt;&gt;d3
+['e', 'd', 'c', 'b', 'a'] -&gt; ['b', 'c', 'a', 'e', 'd']
+(key is Python reverse sorted list.)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Operation  <a class="anchor_super" id="b93ae3f4" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#b93ae3f4" title="b93ae3f4">&dagger;</a></h3>
+<h3 id="content_1_1">Operation  <a class="anchor_super" id="b93ae3f4">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td></tr><tr><td class="style_td">*</td><td class="style_td">Multiplication</td></tr><tr><td class="style_td">/</td><td class="style_td">Division</td></tr><tr><td class="style_td">**</td><td class="style_td">Powering</td></tr></tbody></table></div>
-<p>Multiplication with normal mapping way.<br class="spacer" />
+<p>Multiplication with normal mapping way(right multiply).<br class="spacer" />
 i.e. 考=[考1,考2,..,考n],而=[而1,而2,..,而n], 考*而 is mapping,而i-&gt;考i.<br class="spacer" /></p>
 <div class="spacer">&nbsp;</div>
 <p>You can get 考i.<br class="spacer" /></p>
-<pre>&gt;&gt;&gt;a[3]
-1</pre>
+<pre>&gt;&gt;&gt;Pr[3]
+1
+&gt;&gt;&gt;Prk['b']
+'c'</pre>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>WARNING!</dt>
+<dd>Equality test checks only value and key(list)'s equality because of efficiency.<br class="spacer" />
+So, for example, Permute([2,3,1])!=Permute([3,1,2],[2,3,1]).(despite the mapping is same)<br class="spacer" />
+If you want to test equality precisely, use setKey for key's normalization.<br class="spacer" />
+(Or, use only Permute instance for same key.)</dd></dl>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Methods  <a class="anchor_super" id="p558013b" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#p558013b" title="p558013b">&dagger;</a></h3>
+<h3 id="content_1_2">Methods  <a class="anchor_super" id="p558013b">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">inverse()  <a class="anchor_super" id="fb9b3cf6" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#fb9b3cf6" title="fb9b3cf6">&dagger;</a></h4>
+<h4 id="content_1_3">setKey(key)  <a class="anchor_super" id="lfa6d38e">&dagger;</a></h4>
+<p>Set other key.<br class="spacer" />
+(other key order.)</p>
+<pre>&gt;&gt;&gt;Prk.setKey(['a','c','b','d','e'])
+&gt;&gt;&gt;Prk
+['a', 'c', 'b', 'd', 'e'] -&gt; ['b', 'd', 'c', 'a', 'e']</pre>
+<p>(normal representation.)</p>
+<pre>&gt;&gt;&gt;Prk.setKey([1,2,3,4,5])
+&gt;&gt;&gt;Prk
+[1, 2, 3, 4, 5] -&gt; [2, 3, 4, 1, 5]</pre>
+<p>Normal representation can be simply done by setKey().</p>
+
+<h4 id="content_1_4">getData()  <a class="anchor_super" id="ac6796ff">&dagger;</a></h4>
+<p>Get data(don't return key).</p>
+<pre>&gt;&gt;&gt;Pr.getData()
+[2,3,1,5,4]</pre>
+
+<h4 id="content_1_5">getGroup()  <a class="anchor_super" id="k00fe019">&dagger;</a></h4>
+<p>Return group(<a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> instance) belonged to self.</p>
+
+<h4 id="content_1_6">inverse()  <a class="anchor_super" id="fb9b3cf6">&dagger;</a></h4>
 <p>Return inverse(-1 powering).</p>
-<pre>&gt;&gt;&gt;a.inverse()
+<pre>&gt;&gt;&gt;Pr.inverse()
 [3,1,2,5,4]</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">identity()  <a class="anchor_super" id="t0a21b7f" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#t0a21b7f" title="t0a21b7f">&dagger;</a></h4>
-<p>Return identity element(unit) of permutation group.</p>
-<pre>&gt;&gt;&gt;a.identity()
-[1,2,3,4,5]</pre>
+<h4 id="content_1_7">identity()&lt;Moved&gt;  <a class="anchor_super" id="t0a21b7f">&dagger;</a></h4>
+<p>(In current version, moved to <a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> as identity)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">numbering()  <a class="anchor_super" id="m7274706" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#m7274706" title="m7274706">&dagger;</a></h4>
-<p>Return number of permutation element.<br class="spacer" />
+<h4 id="content_1_8">numbering()  <a class="anchor_super" id="m7274706">&dagger;</a></h4>
+<p>Return number of permutation element.(Slow method)<br class="spacer" />
 It is symmetrical arranging.</p>
 <div class="spacer">&nbsp;</div>
 <p>This is inductive definition for dimension.<br class="spacer" /><br class="spacer" />
@@ -79,61 +131,71 @@ If (n-1) dimension numbering of [考1,考2,...,考(n-2),考(n-1)] is k,<br class="sp
 numbering of [考1,考2,...,考(n-2),考(n-1),n] is k and<br class="spacer" />
 numbering of [考1,考2,...,考(n-2),n,考(n-1)] is k+(n-1)! and so on.<br class="spacer" />
 (Goto <a href="http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm" rel="nofollow">鰾午瞬及朿盒 鎔わ朿鎔蝸詭懍鎔わ濡</a>)</p>
-<pre>&gt;&gt;&gt;a.numbering()
+<pre>&gt;&gt;&gt;Pr.numbering()
 28</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">grouporder()  <a class="anchor_super" id="ya2da006" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#ya2da006" title="ya2da006">&dagger;</a></h4>
-<p>Return group order(Cardinality) of permutation group.</p>
-<pre>&gt;&gt;&gt;a.grouporder()
-120</pre>
+<h4 id="content_1_9">grouporder()&lt;Moved&gt;  <a class="anchor_super" id="ya2da006">&dagger;</a></h4>
+<p>(In current version, moved to <a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> as grouporder)</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">order()  <a class="anchor_super" id="reaf052e" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#reaf052e" title="reaf052e">&dagger;</a></h4>
+<h4 id="content_1_10">order()  <a class="anchor_super" id="reaf052e">&dagger;</a></h4>
 <p>Return element order.<br class="spacer" />
-<a href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement" title="group.py/GroupElement">GroupElement</a> method faster than this for large dimension.</p>
-<pre>&gt;&gt;&gt;a.order()
+This method is faster than general group method.</p>
+<pre>&gt;&gt;&gt;Pr.order()
 6</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">ToTranspose()  <a class="anchor_super" id="v089fb7c" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#v089fb7c" title="v089fb7c">&dagger;</a></h4>
-<p>Return the <a href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute" title="permute.py/ExPermute">ExPermute</a> element with transpose(2-dimensional cyclic) type.<br class="spacer" />
+<h4 id="content_1_11">ToTranspose()  <a class="anchor_super" id="v089fb7c">&dagger;</a></h4>
+<p>Return the <a href="permute_ExPermute.html" title="permute.py/ExPermute">ExPermute</a> element with transpose(2-dimensional cyclic) type.<br class="spacer" />
 It is recursive program,and it takes more time than ToCyclic module.</p>
-<pre>&gt;&gt;&gt;a.ToTranspose()
+<pre>&gt;&gt;&gt;Pr.ToTranspose()
 [(4,5)(1,3)(1,2)](5)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">ToCyclic()  <a class="anchor_super" id="zc819ca2" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#zc819ca2" title="zc819ca2">&dagger;</a></h4>
-<p>Return the <a href="http://nzmath.sourceforge.net/doc/?permute.py%2FExPermute" title="permute.py/ExPermute">ExPermute</a> element.</p>
-<pre>&gt;&gt;&gt;a.ToCyclic()
+<h4 id="content_1_12">ToCyclic()  <a class="anchor_super" id="zc819ca2">&dagger;</a></h4>
+<p>Return the <a href="permute_ExPermute.html" title="permute.py/ExPermute">ExPermute</a> element.This method decomposite self into coprime cyclic permutation, so each cyclic is commutable.</p>
+<pre>&gt;&gt;&gt;Pr.ToCyclic()
 [(1,2,3)(4,5)](5)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">sgn()  <a class="anchor_super" id="o35e39b1" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#o35e39b1" title="o35e39b1">&dagger;</a></h4>
+<h4 id="content_1_13">sgn()  <a class="anchor_super" id="o35e39b1">&dagger;</a></h4>
 <p>Return the sign of permutation group element.<br class="spacer" />
 It returns even permutation is 1,odd one is -1.</p>
-<pre>&gt;&gt;a.sgn()
+<pre>&gt;&gt;Pr.sgn()
 -1</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">types()  <a class="anchor_super" id="j1e52ca5" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#j1e52ca5" title="j1e52ca5">&dagger;</a></h4>
+<h4 id="content_1_14">types()  <a class="anchor_super" id="j1e52ca5">&dagger;</a></h4>
 <p>Return cyclic type defined by each cyclic permutation element length.<br class="spacer" /></p>
-<pre>&gt;&gt;&gt;a.types()
+<pre>&gt;&gt;&gt;Pr.types()
 '(2,3)type'</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_12">ToMatrix()  <a class="anchor_super" id="tc789b17" href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute#tc789b17" title="tc789b17">&dagger;</a></h4>
+<h4 id="content_1_15">ToMatrix()  <a class="anchor_super" id="tc789b17">&dagger;</a></h4>
 <p>Return permutation matrix,A.<br class="spacer" />
 A[i,考i]=1,other A[k,j]=0.</p>
-<pre>&gt;&gt;&gt;a.ToMatrix()
+<pre>&gt;&gt;&gt;Pr.ToMatrix()
 0 0 1 0 0
 1 0 0 0 0
 0 1 0 0 0
 0 0 0 0 1
 0 0 0 1 0</pre>
+
+<h4 id="content_1_16">permute(list)  <a class="anchor_super" id="t2bba965">&dagger;</a></h4>
+<p>Permute list following with self permutation.<br class="spacer" />
+Warning: This permutation is independent on key (except dict type)</p>
+<pre>&gt;&gt;&gt;Pr.permute(['a','b','c','d','e'])
+['c', 'a', 'b', 'e', 'd']</pre>
+<p>d1 type permutation is usuful for this method.(index starts 0)</p>
+<pre>&gt;&gt;&gt;d1.permute(['a','b','c','d','e'])
+['d', 'e', 'c', 'a', 'b']</pre>
+<p>You can use simply __call__ method.</p>
+<pre>&gt;&gt;&gt;Pr(['a','b','c','d','e'])
+['c', 'a', 'b', 'e', 'd']</pre>
 </div>
 
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2006-02-24 (Fri) 07:17:44 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>

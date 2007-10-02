@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/termorder.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Ftermorder.py">poly/termorder.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a></p>
+<h2 id="content_1_0">termorder  <a class="anchor_super" id="gd45110d">&dagger;</a></h2>
+<p>Term order for polynomials.</p>
+
+<h3 id="content_1_1">classes  <a class="anchor_super" id="gb028c16">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="poly_termorder_TermOrderInterface.html" title="poly/termorder.py/TermOrderInterface">TermOrderInterface</a></li>
+<li><a href="poly_termorder_UnivarTermOrder.html" title="poly/termorder.py/UnivarTermOrder">UnivarTermOrder</a></li>
+<li><a href="poly_termorder_MultivarTermOrder.html" title="poly/termorder.py/MultivarTermOrder">MultivarTermOrder</a></li></ul>
+
+<h3 id="content_1_2">constants  <a class="anchor_super" id="s0f9f862">&dagger;</a></h3>
+
+<h4 id="content_1_3">ascending_order  <a class="anchor_super" id="a23f8db0">&dagger;</a></h4>
+<p>The order for univariate polynomial.</p>
+
+<h4 id="content_1_4">lexicographic_order  <a class="anchor_super" id="a499a13e">&dagger;</a></h4>
+<p>An order for multivariate polynomial.
+The lexicograpic order is defined for two terms (i_0,...,i_n) &lt; (j_0,...,j_n):<br /></p>
+<blockquote><p class="quotation">there exists a number k (0 &le; k &le; n) s.t.<br /></p>
+<blockquote><p class="quotation">i_0 = j_0 ,..., i_{k-1} = j_{k-1} and i_k &lt; j_k</p></blockquote></blockquote>
+
+<h4 id="content_1_5">total_degree_lexicographic_order  <a class="anchor_super" id="sa2a218a">&dagger;</a></h4>
+<p>An order for multivariate polynomial.
+Total degree lexicographic (or graded lexicographic) term order:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>i_0 +...+ i_n &lt; j_0 +...+ j_n or</li>
+<li>i_0 +...+ i_n = j_0 +...+ j_n and<br />
+there exists k s.t.<br />
+<blockquote><p class="quotation">i_0 = j_0 ,..., i_{k-1} = j_{k-1} and i_k &lt; j_k</p></blockquote></li></ol>
+
+<h4 id="content_1_6">total_degree_reverse_lexicographic_order  <a class="anchor_super" id="pcf4210c">&dagger;</a></h4>
+<p>An order for multivariate polynomial.
+Total degree reverse lexicographic (or graded reverse lexicographic) term order:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>i_0 +...+ i_n &lt; j_0 +...+ j_n or</li>
+<li>i_0 +...+ i_n = j_0 +...+ j_n and<br />
+there exists k s.t.<br />
+<blockquote><p class="quotation">i_0 = j_0 ,..., i_{k-1} = j_{k-1} and i_k &gt; j_k</p></blockquote></li></ol>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

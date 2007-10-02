@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/multiutil.py/UniqueFactorizationDomainPolynomial - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fmultiutil.py%2FUniqueFactorizationDomainPolynomial">poly/multiutil.py/UniqueFactorizationDomainPolynomial</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_multiutil.html" title="poly/multiutil.py">multiutil</a></p>
+<h2 id="content_1_0">DomainPolynomial  <a class="anchor_super" id="hb08275e">&dagger;</a></h2>
+<p>Polynomial with unique factorization domain (UFD) coefficients.</p>
+<p>This class inherits <a href="poly_multiutil_DomainPolynomial.html" title="poly/multiutil.py/DomainPolynomial">DomainPolynomial</a> and
+GcdProvider.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="z24edab2">&dagger;</a></h3>
+
+<h4 id="content_1_2">UniqueFactorizationDomainPolynomail(<em>coefficients</em> [,keyword arguments])  <a class="anchor_super" id="p6584b90">&dagger;</a></h4>
+<p>Initialize the polynomial.</p>
+<p>Required argument:</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><em>coefficients</em>: initializer for polynomial coefficients</li></ul>
+<p>Keyword arguments should include:</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><em>coeffring</em>: unique factorization domain</li>
+<li><em>number_of_variables</em>: the number of variables</li>
+<li><em>order</em>: term order</li></ul>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="y52d4fe1">&dagger;</a></h3>
+
+<h4 id="content_1_4">gcd(<em>other</em>)  <a class="anchor_super" id="o372ebdc">&dagger;</a></h4>
+<p>Return gcd.
+The nested polynomials' gcd is used.<br />
+(This method is inherited from GcdProvider.)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

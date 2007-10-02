@@ -15,9 +15,10 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?prime.py">prime.py</a></h1>
 </div>
 
+
 <hr class="full_hr" />
 <div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
-<h2 id="content_1_0">prime  <a class="anchor_super" id="ye8e4e76" href="http://nzmath.sourceforge.net/doc/?prime.py#ye8e4e76" title="ye8e4e76">&dagger;</a></h2>
+<h2 id="content_1_0">prime  <a class="anchor_super" id="ye8e4e76">&dagger;</a></h2>
 <p><em>prime</em> module provides functions of primarity tests.<br /></p>
 <p>The simplest way of primality test is to call <a href="#primeq">primeq</a>, which automatically calls appropriate function according to the given number.<br /></p>
 <p>If there is no need for rigorous proof, pseudoprime tests can be used.
@@ -29,75 +30,75 @@ For smaller numbers less than a million, say, <a href="#generator_eratosthenes">
 For more information about generators and iterators, please refer Python document.
 There are <a href="#prime">prime</a> function to obtain n-th prime, <a href="#nextPrime">nextPrime</a> function to obtain the next bigger prime, etc.<br /></p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="oab1ba09" href="http://nzmath.sourceforge.net/doc/?prime.py#oab1ba09" title="oab1ba09">&dagger;</a></h3>
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="oab1ba09">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">apr(<em>n</em>)  <a class="anchor_super" id="apr" href="http://nzmath.sourceforge.net/doc/?prime.py#apr" title="apr">&dagger;</a></h4>
+<h4 id="content_1_2">apr(<em>n</em>)  <a class="anchor_super" id="apr">&dagger;</a></h4>
 <p>apr is the main function for Adleman-Pomerance-Rumery primality test or the Jacobi sum test.
 Assuming <em>n</em> has no prime factors less than 32.
 Assuming <em>n</em> is spsp for several bases.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">bigprimeq(<em>z</em>)  <a class="anchor_super" id="bigprimeq" href="http://nzmath.sourceforge.net/doc/?prime.py#bigprimeq" title="bigprimeq">&dagger;</a></h4>
+<h4 id="content_1_3">bigprimeq(<em>z</em>)  <a class="anchor_super" id="bigprimeq">&dagger;</a></h4>
 <p>Giving up a rigorous proof of the primality of <em>z</em>, return True if <em>z</em> is a probable prime.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">fpsp(<em>n</em>, <em>a</em>, <em>b</em>)  <a class="anchor_super" id="fpsp" href="http://nzmath.sourceforge.net/doc/?prime.py#fpsp" title="fpsp">&dagger;</a></h4>
+<h4 id="content_1_4">fpsp(<em>n</em>, <em>a</em>, <em>b</em>)  <a class="anchor_super" id="fpsp">&dagger;</a></h4>
 <p>Frobenius test.<br />
 Return True if <em>n</em> is a Frobenius pseudoprime of parameters <em>a</em>, <em>b</em>,
 i.e. with respect to x**2-<em>a</em>*x+<em>b</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">generator()  <a class="anchor_super" id="generator" href="http://nzmath.sourceforge.net/doc/?prime.py#generator" title="generator">&dagger;</a></h4>
+<h4 id="content_1_5">generator()  <a class="anchor_super" id="generator">&dagger;</a></h4>
 <p>Generate primes from 2 to infinity.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">generator_eratosthenes(<em>n</em>)  <a class="anchor_super" id="generator_eratosthenes" href="http://nzmath.sourceforge.net/doc/?prime.py#generator_eratosthenes" title="generator_eratosthenes">&dagger;</a></h4>
+<h4 id="content_1_6">generator_eratosthenes(<em>n</em>)  <a class="anchor_super" id="generator_eratosthenes">&dagger;</a></h4>
 <p>Generate primes up to <em>n</em> using Eratosthenes sieve.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">lpsp(<em>n</em>, <em>a</em>, <em>b</em>)  <a class="anchor_super" id="lpsp" href="http://nzmath.sourceforge.net/doc/?prime.py#lpsp" title="lpsp">&dagger;</a></h4>
+<h4 id="content_1_7">lpsp(<em>n</em>, <em>a</em>, <em>b</em>)  <a class="anchor_super" id="lpsp">&dagger;</a></h4>
 <p>Lucas test.<br />
 Return True if <em>n</em> is a Lucas pseudoprime of parameters <em>a</em>, <em>b</em>,
 i.e. with respect to x**2-<em>a</em>*x+<em>b</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">millerRabin(<em>n</em>, <em>times</em>=20)  <a class="anchor_super" id="millerRabin" href="http://nzmath.sourceforge.net/doc/?prime.py#millerRabin" title="millerRabin">&dagger;</a></h4>
+<h4 id="content_1_8">millerRabin(<em>n</em>, <em>times</em>=20)  <a class="anchor_super" id="millerRabin">&dagger;</a></h4>
 <p>Miller-Rabin pseudo-primality test.  Optional second argument
 <em>times</em> (default to 20) is the number of repetition.  The error
 probability is at most 4**(-<em>times</em>).</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_9">nextPrime(<em>n</em>)  <a class="anchor_super" id="nextPrime" href="http://nzmath.sourceforge.net/doc/?prime.py#nextPrime" title="nextPrime">&dagger;</a></h4>
+<h4 id="content_1_9">nextPrime(<em>n</em>)  <a class="anchor_super" id="nextPrime">&dagger;</a></h4>
 <p>returns the smallest prime bigger than the given integer.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_10">prime(<em>s</em>)  <a class="anchor_super" id="prime" href="http://nzmath.sourceforge.net/doc/?prime.py#prime" title="prime">&dagger;</a></h4>
+<h4 id="content_1_10">prime(<em>s</em>)  <a class="anchor_super" id="prime">&dagger;</a></h4>
 <p>returns the <em>s</em>-th prime number.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_11">primeq(<em>n</em>)  <a class="anchor_super" id="primeq" href="http://nzmath.sourceforge.net/doc/?prime.py#primeq" title="primeq">&dagger;</a></h4>
+<h4 id="content_1_11">primeq(<em>n</em>)  <a class="anchor_super" id="primeq">&dagger;</a></h4>
 <p>A convinient function for primatilty test.
 It uses one of <a href="#trialDivision">trialDivision</a>, <a href="#smallSpsp">smallSpsp</a> or <a href="#apr">apr</a>
 depending on the size of <em>n</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_12">primitive_root(<em>p</em>)  <a class="anchor_super" id="primitive_root" href="http://nzmath.sourceforge.net/doc/?prime.py#primitive_root" title="primitive_root">&dagger;</a></h4>
+<h4 id="content_1_12">primitive_root(<em>p</em>)  <a class="anchor_super" id="primitive_root">&dagger;</a></h4>
 <p>return a primitive root of the odd prime <em>p</em>.
 If <em>p</em> is not an odd prime, the returned value is nonsense.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_13">properDivisors(<em>n</em>)  <a class="anchor_super" id="properDivisors" href="http://nzmath.sourceforge.net/doc/?prime.py#properDivisors" title="properDivisors">&dagger;</a></h4>
+<h4 id="content_1_13">properDivisors(<em>n</em>)  <a class="anchor_super" id="properDivisors">&dagger;</a></h4>
 <p>Return proper divisors of <em>n</em> (divisors of n excluding 1 and <em>n</em>).<br />
 It is only useful for a product of small primes.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_14">randPrime(<em>n</em>)  <a class="anchor_super" id="randPrime" href="http://nzmath.sourceforge.net/doc/?prime.py#randPrime" title="randPrime">&dagger;</a></h4>
+<h4 id="content_1_14">randPrime(<em>n</em>)  <a class="anchor_super" id="randPrime">&dagger;</a></h4>
 <p>returns a random <em>n</em>-digits prime</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_15">smallSpsp(<em>n</em>)  <a class="anchor_super" id="smallSpsp" href="http://nzmath.sourceforge.net/doc/?prime.py#smallSpsp" title="smallSpsp">&dagger;</a></h4>
+<h4 id="content_1_15">smallSpsp(<em>n</em>)  <a class="anchor_super" id="smallSpsp">&dagger;</a></h4>
 <p>4 spsp tests are sufficient to determine whether an integer less
 than 10**12 is prime or not.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_16">spsp(<em>n</em>, <em>base</em>, <em>s</em>=None, <em>t</em>=None)  <a class="anchor_super" id="spsp" href="http://nzmath.sourceforge.net/doc/?prime.py#spsp" title="spsp">&dagger;</a></h4>
+<h4 id="content_1_16">spsp(<em>n</em>, <em>base</em>, <em>s</em>=None, <em>t</em>=None)  <a class="anchor_super" id="spsp">&dagger;</a></h4>
 <p>Strong Pseudo-Prime test.  Optional third and fourth argument
 <em>s</em> and <em>t</em> are the numbers such that <em>n</em>-1 = 2**<em>s</em> * <em>t</em> and <em>t</em> is odd.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_17">trialDivision(<em>n</em>, <em>bound</em>=0)  <a class="anchor_super" id="trialDivision" href="http://nzmath.sourceforge.net/doc/?prime.py#trialDivision" title="trialDivision">&dagger;</a></h4>
+<h4 id="content_1_17">trialDivision(<em>n</em>, <em>bound</em>=0)  <a class="anchor_super" id="trialDivision">&dagger;</a></h4>
 <p>Trial division primality test for an odd natural number.
 Optional second argument is a search bound of primes.
 If the <em>bound</em> is given and less than the sqaure root of <em>n</em>
 and 1 is returned, it only means there is no prime factor
 less than the bound.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_18">Classes  <a class="anchor_super" id="dae017b7" href="http://nzmath.sourceforge.net/doc/?prime.py#dae017b7" title="dae017b7">&dagger;</a></h3>
+<h3 id="content_1_18">Classes  <a class="anchor_super" id="dae017b7">&dagger;</a></h3>
 <p>These are the classes for Jacobi sum test.</p>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>FactoredInteger</li>
 <li>JacobiSum</li>
@@ -109,11 +110,11 @@ less than the bound.</p>
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2006-06-13 (Tue) 05:29:57 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>

@@ -15,8 +15,9 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement">group.py/GroupElement</a></h1>
 </div>
 
+
 <hr class="full_hr" />
-<div id="body"><p><a href="http://nzmath.sourceforge.net/doc/?group.py" title="group.py">group.py</a></p>
+<div id="body"><p><a href="group.html" title="group.py">group.py</a></p>
 <div class="contents">
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#g07f1f0a"> GroupElement </a>
@@ -30,10 +31,10 @@
 <li><a href="#w0a1c2c7"> getGroup() </a></li></ul></li></ul></li></ul>
 </div>
 
-<h2 id="content_1_0">GroupElement  <a class="anchor_super" id="g07f1f0a" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#g07f1f0a" title="g07f1f0a">&dagger;</a></h2>
+<h2 id="content_1_0">GroupElement  <a class="anchor_super" id="g07f1f0a">&dagger;</a></h2>
 <p>This is a class for finite group element.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_1">Initialize  <a class="anchor_super" id="gc68be7a" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#gc68be7a" title="gc68be7a">&dagger;</a></h4>
+<h4 id="content_1_1">Initialize  <a class="anchor_super" id="gc68be7a">&dagger;</a></h4>
 <p>Initialize with group element instance.</p>
 <pre>&gt;&gt;&gt;GroupElement(element_instance)</pre>
 <p>You may decide operation type(addtive 0, multiplicative 1).<br class="spacer" />
@@ -42,38 +43,38 @@ If you don't decide operation type, it checks and sets proper type.<br class="sp
 <blockquote><p class="quotation">
 Example</p>
 <pre>&gt;&gt;&gt;Ge=GroupElement(finitefield.FinitePrimeFieldElement(18, 37), 1)</pre>
-<p class="quotation">(See <a href="http://nzmath.sourceforge.net/doc/?finitefield.py" title="finitefield.py">finitefield.py</a>)</p></blockquote>
+<p class="quotation">(See <a href="finitefield.html" title="finitefield.py">finitefield.py</a>)</p></blockquote>
 
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_2">Operator  <a class="anchor_super" id="y5f68be0" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#y5f68be0" title="y5f68be0">&dagger;</a></h3>
+<h3 id="content_1_2">Operator  <a class="anchor_super" id="y5f68be0">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><thead><tr><td class="style_td"></td><td class="style_td"></td><td class="style_td">add</td><td class="style_td">mul</td></tr></thead><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td><td class="style_td"></td><td class="style_td"></td></tr><tr><td class="style_td">ope</td><td class="style_td">Basic operation</td><td class="style_td">+</td><td class="style_td">*</td></tr><tr><td class="style_td">ope2</td><td class="style_td">Ext operation</td><td class="style_td">*</td><td class="style_td">**</td></tr></tbody></table></div>
 <p>Operation changes with group type, additive,0(add) or multiplicative,1(mul).</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_3">Methods  <a class="anchor_super" id="c99be403" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#c99be403" title="c99be403">&dagger;</a></h3>
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="c99be403">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">setmain(int)  <a class="anchor_super" id="z6c4777f" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#z6c4777f" title="z6c4777f">&dagger;</a></h4>
+<h4 id="content_1_4">setmain(int)  <a class="anchor_super" id="z6c4777f">&dagger;</a></h4>
 <p>Change group type for additive(0) or multiplicative(1).</p>
 <pre>&gt;&gt;&gt;Ge.setmain(1)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">inverse()  <a class="anchor_super" id="a21bb4c9" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#a21bb4c9" title="a21bb4c9">&dagger;</a></h4>
+<h4 id="content_1_5">inverse()  <a class="anchor_super" id="a21bb4c9">&dagger;</a></h4>
 <p>Return inverse element.</p>
 <pre>&gt;&gt;&gt;Ge.inverse()
 FinitPrimeField,FinitePrimeFieldElement(35, 37)</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">order()  <a class="anchor_super" id="a7fca482" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#a7fca482" title="a7fca482">&dagger;</a></h4>
+<h4 id="content_1_6">order()  <a class="anchor_super" id="a7fca482">&dagger;</a></h4>
 <p>Return group element order.
 It uses grouporder factorization.</p>
 <pre>&gt;&gt;&gt;Ge.order()
 36</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_7">t_order()  <a class="anchor_super" id="m0edcd70" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#m0edcd70" title="m0edcd70">&dagger;</a></h4>
+<h4 id="content_1_7">t_order()  <a class="anchor_super" id="m0edcd70">&dagger;</a></h4>
 <p>Return group element order.
 It uses Terr's baby-step giant-step argorithm.<br class="spacer" />
 You can put number of baby-step.(default: 2 times)</p>
 <pre>&gt;&gt;&gt;Ge.t_order()
 36</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_8">getGroup()  <a class="anchor_super" id="w0a1c2c7" href="http://nzmath.sourceforge.net/doc/?group.py%2FGroupElement#w0a1c2c7" title="w0a1c2c7">&dagger;</a></h4>
+<h4 id="content_1_8">getGroup()  <a class="anchor_super" id="w0a1c2c7">&dagger;</a></h4>
 <p>Return group this element belongs.</p>
 <pre>&gt;&gt;&gt;Ge.getGroup()
 FinitePrimeField(37)</pre>
@@ -82,11 +83,11 @@ FinitePrimeField(37)</pre>
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2006-04-25 (Tue) 06:52:21 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>

@@ -15,50 +15,75 @@
  <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?quad.py">quad.py</a></h1>
 </div>
 
+
 <hr class="full_hr" />
 <div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
-<h2 id="content_1_0">quad  <a class="anchor_super" id="r5241eee" href="http://nzmath.sourceforge.net/doc/?quad.py#r5241eee" title="r5241eee">&dagger;</a></h2>
+<h2 id="content_1_0">quad  <a class="anchor_super" id="r5241eee">&dagger;</a></h2>
 <p>The module `quad' is for computations of imaginary quadratic fields.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_1">Functions  <a class="anchor_super" id="l4821c7a" href="http://nzmath.sourceforge.net/doc/?quad.py#l4821c7a" title="l4821c7a">&dagger;</a></h3>
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="l4821c7a">&dagger;</a></h3>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_2">computeClassNumber(<em>disc</em> [,<em>limit_of_disc</em>])  <a class="anchor_super" id="f980f4e6" href="http://nzmath.sourceforge.net/doc/?quad.py#f980f4e6" title="f980f4e6">&dagger;</a></h4>
-<p>Compute the class number of quadratic forms of discriminant 'disc' and return (a, b).
-'a' is the class number and 'b' is the list of representative reduced forms of classes; the forms are instances of the class <a href="http://nzmath.sourceforge.net/doc/?quad.py%2FReducedQuadraticForm" title="quad.py/ReducedQuadraticForm">ReducedQuadraticForm</a>.</p>
+<h4 id="content_1_2">class_formula(<em>disc</em>, <em>uprbd</em>)  <a class="anchor_super" id="kbde6640">&dagger;</a></h4>
+<p>Return the approximation of the class number 'h' with the given discriminant by the formula:
+h = w sqrt(|D|)/(2 &pi;) &Pi;(1 - (D/p)(1/p))^{-1}
+approximated by computing only prime p's less than <em>uprbd</em>.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_3">computePDF(<em>f_1</em> ,<em>f_2</em>)  <a class="anchor_super" id="f33132bc" href="http://nzmath.sourceforge.net/doc/?quad.py#f33132bc" title="f33132bc">&dagger;</a></h4>
-<p>computePDF(<em>f_1</em> ,<em>f_2</em>) returns the composite of f_1 and f_2.</p>
+<h4 id="content_1_3">class_number(<em>disc</em>, [<em>limit_of_disc</em>])  <a class="anchor_super" id="f980f4e6">&dagger;</a></h4>
+<p>Return the class number with the given discriminant by counting reduced forms.
+Not only fundamental discriminant.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_4">reducePDF(<em>a</em>)  <a class="anchor_super" id="g6fdd27d" href="http://nzmath.sourceforge.net/doc/?quad.py#g6fdd27d" title="g6fdd27d">&dagger;</a></h4>
-<p>Return the unique reduced form equivalent to a,
-'a' is a positive definite quadratic form.</p>
+<h4 id="content_1_4">class_number_bsgs(<em>disc</em>)  <a class="anchor_super" id="d1149532">&dagger;</a></h4>
+<p>Return the class number with the given discriminant
+using Shanks's Baby-Step Giant-Step Method.</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_5">bsgs(<em>group</em>, <em>lowerbound</em>, <em>upperbound</em>)  <a class="anchor_super" id="bsgs" href="http://nzmath.sourceforge.net/doc/?quad.py#bsgs" title="bsgs">&dagger;</a></h4>
-<p>bsgs(<em>group</em>, <em>lowerbound</em>, <em>upperbound</em>) returns the order of the group, using Shanks's Baby-Step Giant-Step Method.
-'group' is an object that returns an element of the group, when it is called.
-'lowerboud' is a lowerbound of the order of the group.
-'upperbound' is an upperbound of the order of the group.
-' lowerbound' and 'upperbound' have to keep a condition:</p>
-<blockquote><p class="quotation">
-upperbound / 2 &lt; lowerbound &lt;= the order &lt;= upperbound</p></blockquote>
+<h4 id="content_1_5">class_group(<em>disc</em>, [<em>limit_of_disc</em>])  <a class="anchor_super" id="rf6f4db7">&dagger;</a></h4>
+<p>Return the class number and the class group element with the given discriminant
+by counting reduced forms.  Not only fundamental discriminant.</p>
 
+<h4 id="content_1_6">class_group_bsgs(<em>disc</em>, <em>classnum</em>, <em>qin</em>)  <a class="anchor_super" id="j896d8b4">&dagger;</a></h4>
+<p>Return the construction of the class group of order p**exp with the given discriminant using Shanks's Baby-Step Giant-Step Method,
+where 'qin' = [p, exp] and p**exp divides 'classnum'.</p>
+<p>Example1:</p>
+<pre>&gt;&gt;&gt;quad.class_group_bsgs(-1200, 12, [2, 2]) 
+[12, 0, 25], [3, 0, 100]], [[2], [2, 0]]</pre>
+<p>This means 2*[12, 0, 25] = 1 and 2*[3, 0, 100] = 1,
+i.e. group of order 4 is direct sum of cyclic groups of order 2. And
+[12, 0, 25] and [3, 0, 100] are generators of cyclic groups.</p>
+<p>Example2:</p>
+<pre>
+&gt;&gt;&gt;quad.class_group_bsgs(-120000, 120, [2, 3])</pre>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h4 id="content_1_6">sqrPDF(<em>frm</em>)  <a class="anchor_super" id="ed890c9a" href="http://nzmath.sourceforge.net/doc/?quad.py#ed890c9a" title="ed890c9a">&dagger;</a></h4>
-<p>sqrPDF returns a positive definite quadratic form that is a squar power of frm.</p>
+<h4 id="content_1_7">disc(<em>f</em>)  <a class="anchor_super" id="qda13d81">&dagger;</a></h4>
+<p>Return the discriminant of the given quadratic form.
+f = [a[0], a[1], a[2]].</p>
 
-<div class="jumpmenu"><a href="#navigator">&uarr;</a></div><h3 id="content_1_7">Classes  <a class="anchor_super" id="c36f2624" href="http://nzmath.sourceforge.net/doc/?quad.py#c36f2624" title="c36f2624">&dagger;</a></h3>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="http://nzmath.sourceforge.net/doc/?quad.py%2FReducedQuadraticForm" title="quad.py/ReducedQuadraticForm">ReducedQuadraticForm</a></li>
-<li><a href="http://nzmath.sourceforge.net/doc/?quad.py%2FNextElement" title="quad.py/NextElement">NextElement</a></li></ul>
+<h4 id="content_1_8">compositePDF(<em>f_1</em> ,<em>f_2</em>)  <a class="anchor_super" id="f33132bc">&dagger;</a></h4>
+<p>Return the reduced form of composition of the given forms.
+'f_1' and 'f_2' are quadratic forms with same disc.</p>
+
+<h4 id="content_1_9">reducePDF(<em>f</em>)  <a class="anchor_super" id="g6fdd27d">&dagger;</a></h4>
+<p>Return the reduced form of the given quadratic form.
+f = (a[0], a[1], a[2]).</p>
+
+<h4 id="content_1_10">sqrPDF(<em>f</em>)  <a class="anchor_super" id="w6c03c1c">&dagger;</a></h4>
+<p>Return the square of the given quadratic form.</p>
+
+<h4 id="content_1_11">powPDF(<em>f</em>, <em>exp</em>)  <a class="anchor_super" id="d8e08e2c">&dagger;</a></h4>
+<p>Return the powering 'exp' of the given quadratic form.</p>
+
+<h3 id="content_1_12">Classes  <a class="anchor_super" id="c36f2624">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="quad_ReducedQuadraticForm.html" title="quad.py/ReducedQuadraticForm">ReducedQuadraticForm</a></li>
+<li><a href="quad_ClassGroup.html" title="quad.py/ClassGroup">ClassGroup</a></li></ul>
 </div>
 
 
 
 <hr class="full_hr" />
-<div id="lastmodified">
- Last-modified: 2006-08-08 (Tue) 09:14:43 </div>
+
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://nzmath.sourceforge.net/wiki/">NZMATH deveropment group</a>
+ Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
+
 </body>
 </html>
