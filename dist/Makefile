@@ -2,7 +2,7 @@ TMPDIR = /tmp/nzmath-build
 PYTHON = python2.3
 HTMLPY = $(PYTHON) rst2html.py
 OLD_VER = 0.6.0
-NEW_VER = 0.7.0_beta0
+NEW_VER = 0.7.0
 
 all: html sdist
 
