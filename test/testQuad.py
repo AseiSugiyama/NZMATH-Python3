@@ -1,13 +1,8 @@
 import unittest
+import warnings
 import nzmath.quad as quad
 
 class ClassNumberTest (unittest.TestCase):
-    def setUp(self):
-        pass
-
-    def tearDown(self):
-        pass
-
     def testClassNumber(self):
         self.assert_(quad.class_number(-4))
         #self.assertEqual("[1, 0, 1]", repr(quad.class_number(-4)))
@@ -28,6 +23,9 @@ class ClassNumberTest (unittest.TestCase):
         self.assertEqual("[[1, 1, 1]]", repr(quad.class_group(-3)[1]))
         self.assertEqual("[[1, 1, 4], [2, 1, 2]]", repr(quad.class_group(-15)[1]))
         self.assertEqual("[[1, 1, 6], [2, 1, 3], [2, -1, 3]]", repr(quad.class_group(-23)[1]))
+        warnings.filterwarnings("error")
+        self.assertRaises(UserWarning, quad.class_group, -400000)
+        warnings.resetwarnings()
 
     def testClassNumberBsgs(self):
         self.assertEqual(1, quad.class_number_bsgs(-3))
@@ -37,6 +35,7 @@ class ClassNumberTest (unittest.TestCase):
         self.assertEqual(5, quad.class_number_bsgs(-47))
         self.assertEqual(6, quad.class_number_bsgs(-87))
         self.assertEqual(7, quad.class_number_bsgs(-71))
+        self.assertEqual(120, quad.class_number_bsgs(-120000))
         # -1 % 4 == 3
         self.assertRaises(ValueError, quad.class_number_bsgs, -1)
         # 5 > 0
@@ -73,7 +72,31 @@ class ClassNumberTest (unittest.TestCase):
         self.assertEqual(unit4, subgroup4_2[0][0]**subgroup4_2[1][0][0])
         self.assertEqual(2**3, order5_1)
         self.assertEqual(unit5, subgroup5_2[0][0]**subgroup5_2[1][0][0])
-        
+
+
+class KroneckerTest (unittest.TestCase):
+    def testOddPrimes(self):
+        # odd primes (same as Jacobi)
+        self.assertEqual(-1, quad.kronecker(2, 5))
+        self.assertEqual(1, quad.kronecker(2, 7))
+
+    def testEvenPrime(self):
+        # 2
+        self.assertEqual(-1, quad.kronecker(5, 2))
+        self.assertEqual(0, quad.kronecker(6, 2))
+        self.assertEqual(1, quad.kronecker(7, 2))
+
+    def testMinusOne(self):
+        # -1
+        self.assertEqual(1, quad.kronecker(2, -1))
+        self.assertEqual(1, quad.kronecker(0, -1))
+        self.assertEqual(-1, quad.kronecker(-2, -1))
+
+    def testComposites(self):
+        # composite
+        self.assertEqual(-1, quad.kronecker(77, 30))
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

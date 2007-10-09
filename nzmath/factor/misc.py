@@ -55,7 +55,7 @@ def primeDivisors(n):
     primeDivisors(n) returns the list of primes that divides n.
     """
     result = []
-    for d,e in methods.factor(n):
+    for d, e in methods.factor(n):
         result.append(d)
     return result
 

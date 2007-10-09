@@ -2,9 +2,11 @@ from __future__ import division
 import math
 import random
 import copy
+import warnings
 import nzmath.gcd as gcd
 import nzmath.arith1 as arith1
 import nzmath.prime as prime
+import nzmath.factor.methods as methods
 import nzmath.factor.misc as misc
 import nzmath.factor.mpqs as mpqs
 
@@ -14,7 +16,7 @@ class ReducedQuadraticForm:
     """
     def __init__(self, element, unit):
         self.element = element # form = [a_1, a_2, a_3]
-        self.unit = unit 
+        self.unit = list(unit)
         self.ind = -1
         self.alpha = []
         self.beta = []
@@ -28,10 +30,10 @@ class ReducedQuadraticForm:
     def __mul__(self, other):
         if not isinstance(other, ReducedQuadraticForm):
             return NotImplemented
-        return self.__class__(compositePDF(self.element[:], other.element[:]), self.unit[:])
+        return self.__class__(compositePDF(self.element[:], other.element[:]), self.unit)
 
     def __pow__(self, exp):
-        sy = self.unit[:]
+        sy = self.unit
         if not isinstance(exp, (int, long)):
             raise TypeError("powering index must be an integer.")
         # Right-Left Binary algorithm
@@ -46,25 +48,26 @@ class ReducedQuadraticForm:
             lexp = exp
             sz = self.element[:]
         while True:
-            if (lexp % 2) == 1:
+            if lexp % 2:
                 sy = compositePDF(sz, sy)
             lexp = lexp // 2
             if lexp == 0:
-                return self.__class__(sy, self.unit[:])
+                return self.__class__(sy, self.unit)
             else:
                 sz = sqrPDF(sz)
 
-    def __div__(self,other):
+    def __div__(self, other):
         invel = other.inverse()
         return compositePDF(self.element[:], invel.element[:])
 
     def __eq__(self, other):
         if self.__class__ != other.__class__:
             return False
-        if (self.element == other.element) and (self.unit == other.unit):
+        if self.element == other.element and self.unit == other.unit:
             return True
         else:
             return False
+
     def __ge__(self, other):
         if self.__class__ != other.__class__:
             return False
@@ -88,7 +91,7 @@ class ReducedQuadraticForm:
             else:
                 return False
         return True
-    
+
     def __gt__(self, other):
         if self.__class__ != other.__class__:
             return False
@@ -114,23 +117,16 @@ class ReducedQuadraticForm:
         return False
 
     def __ne__(self, other):
-        if type(other) == list:
-            return True
-        if self.__class__ != other.__class__:
-            return True
-        if (self.element != other.element):
-            return True
-        else:
-            return False
+        return not self.__eq__(other)
 
     def inverse(self):
-        if self.element == self.unit[:]:
+        if self.element == self.unit:
             return copy.deepcopy(self)
         else:
             cpyel = self.element[:]
             cpyel[1] = -cpyel[1]
-            return ReducedQuadraticForm(reducePDF(cpyel), self.unit[:])
-        
+            return ReducedQuadraticForm(reducePDF(cpyel), self.unit)
+
     def repOfModule(self):
         ld = self.element[1]**2 - 4*self.element[0]*self.element[2]
         a_m2 = 2*self.element[0]
@@ -147,28 +143,17 @@ class ClassGroup:
         # element is an element of some class (for example ReducedQuadraticForm
         self.disc = disc
         self.rootoftree = []
-        self.copyofroot = 0
         self.rootornot = 0
         self.elements = copy.deepcopy(elements)
         self.classnum = classnum
-        if disc % 4 == 0:
-            a = 1
-            b = 0
-            c = disc // -4
-        elif disc % 4 == 1:
-            a = 1
-            b = 1
-            c = (disc - 1) // -4
-        else:
-            raise ValueError
-        self.expunit = [a, b, c]
-        
+        self.expunit = unit_form(disc)
+
     def __repr__(self):
         return_str = "class of ClassGroup:\n"
         return_str = return_str + 'disc is %s\n' % self.disc
         return_str = return_str + 'rootoftree is %s' % self.rootoftree
         return return_str
-    
+
     def inserels(self, newlist):
         for newel in newlist:
             self.inserel(newel)
@@ -217,49 +202,20 @@ class ClassGroup:
         return False
 
     def retel(self):
-        self.copyofroot = copy.deepcopy(self.rootoftree)
+        copyofroot = copy.deepcopy(self.rootoftree)
         tpa = []
-        while not self.copyofroot == []:
-            curntpnt = self.copyofroot
+        while copyofroot:
+            curntpnt = copyofroot
             while True:
-                if not curntpnt[1] == []:
+                if curntpnt[1]:
                     curntpnt = curntpnt[1]
-                    continue
-                elif not curntpnt[2] == []:
+                elif curntpnt[2]:
                     curntpnt = curntpnt[2]
-                    continue
                 else:
                     tpa.append(curntpnt[0])
-                    del curntpnt[0]
-                    del curntpnt[0]
-                    del curntpnt[0]
+                    del curntpnt[:3]
                     break
         return tpa
-
-class retnext1:
-    """
-    """
-    def __init__(self, disc):
-        self.disc = disc
-        self.utroot = unit_form(disc)
-        self.cnt = 1
-        self.previous = []
-        self.elhash = range(int(math.sqrt(abs(disc) // 3)) + 2)
-
-    def unit(self):
-        utt = ReducedQuadraticForm(self.utroot[:], self.utroot[:])
-        return utt
-
-    def retnext(self):
-        while True:
-            next, self.cnt, self.previous = randomele1(self.disc, self.cnt, self.previous)
-            self.cnt = self.cnt + 1
-            next1 = ReducedQuadraticForm(next, self.utroot[:])
-            rettp = ckhash1(self.elhash, next1)
-            if type(rettp) == int:
-                mkhash1(self.elhash, next1)
-                return next1
-        return next1
 
 def class_formula(disc, uprbd):
     """
@@ -274,14 +230,13 @@ def class_formula(disc, uprbd):
         ml = ml * (1 - (kronecker(disc, factor) / factor))**(-1)
     return int(ht * ml + 0.5)
 
-def class_number(disc, limit_dis=100000):
+def class_number(disc):
     """
     Return class number with the given discriminant by counting reduced forms.
     Not only fundamental discriminant.
     """
     if disc % 4 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
-
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
 
@@ -289,44 +244,20 @@ def class_number(disc, limit_dis=100000):
     b = disc % 2
     c_b = long(math.sqrt(-disc / 3))
 
-    if abs(disc) < limit_dis:
-        ret_list = []
-        f_a = 1
-        if disc % 4 == 0:
-            f_b = 0
-            f_c = -(disc // 4)
-        else:
-            f_b = 1
-            f_c = -((disc - 1) // 4)
-
     while b <= c_b:
-        chk_f = 0
         q = (b**2 - disc) // 4
         a = b
         if a <= 1:
-            a = 1
-            chk_f = 1
-        while 1:
-            if chk_f == 0:
-                if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
-                    if (a == b) or (a**2 == q) or (b == 0):
-                        h += 1
-                        if abs(disc) < limit_dis:
-                            f_a = a
-                            f_b = b
-                            f_c = -(disc - f_b*f_b)//(4*f_a)
-                    else:
-                        h += 2
-                        if abs(disc) < limit_dis:
-                            f_a = a
-                            f_b = b
-                            f_c = -(disc - f_b*f_b)//(4*f_a)
-            chk_f = 0
+            a = 2
+        while a**2 <= q:
+            if q % a == 0 and gcd.gcd_of_list([a, b, q//a])[0] == 1:
+                if a == b or a**2 == q or b == 0:
+                    h += 1
+                else:
+                    h += 2
             a += 1
-            if a**2 > q:
-                break
         b += 2
-    return (h)
+    return h
 
 def class_group(disc, limit_dis=100000):
     """
@@ -335,54 +266,42 @@ def class_group(disc, limit_dis=100000):
     """
     if disc % 4 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
-    
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
+    if -disc >= limit_dis:
+        warnings.warn("the discriminant seems to have too big absolute value")
 
     h = 1
     b = disc % 2
     c_b = long(math.sqrt(-disc / 3))
 
-    if abs(disc) < limit_dis:
-        ret_list = []
-        f_a = 1
-        if disc % 4 == 0:
-            f_b = 0
-            f_c = -(disc // 4)
-        else:
-            f_b = 1
-            f_c = -((disc - 1) // 4)
-        ret_list.append([f_a, f_b, f_c])
+    ret_list = []
+    f_a = 1
+    if disc % 4 == 0:
+        f_b = 0
+        f_c = -(disc // 4)
+    else:
+        f_b = 1
+        f_c = -((disc - 1) // 4)
+    ret_list.append([f_a, f_b, f_c])
 
     while b <= c_b:
-        chk_f = 0
         q = (b**2 - disc) // 4
         a = b
         if a <= 1:
-            a = 1
-            chk_f = 1
-        while 1:
-            if chk_f == 0:
-                if (q % a == 0) and gcd.gcd_of_list([a, b, q//a])[0] == 1:
-                    if (a == b) or (a**2 == q) or (b == 0):
-                        h += 1
-                        if abs(disc) < limit_dis:
-                            f_a = a
-                            f_b = b
-                            f_c = -(disc - f_b*f_b)//(4*f_a)
-                            ret_list.append([f_a, f_b, f_c])
-                    else:
-                        h += 2
-                        if abs(disc) < limit_dis:
-                            f_a = a
-                            f_b = b
-                            f_c = -(disc - f_b*f_b)//(4*f_a)
-                            ret_list.append([f_a, f_b, f_c])
-                            ret_list.append([f_a, -f_b, f_c])
-            chk_f = 0
+            a = 2
+        while a**2 <= q:
+            if q % a == 0 and gcd.gcd_of_list([a, b, q//a])[0] == 1:
+                if a == b or a**2 == q or b == 0:
+                    h += 1
+                    f_c = (b**2 - disc) // (4 * a)
+                    ret_list.append([a, b, f_c])
+                else:
+                    h += 2
+                    f_c = (b**2 - disc) // (4 * a)
+                    ret_list.append([a, b, f_c])
+                    ret_list.append([a, -b, f_c])
             a += 1
-            if a**2 > q:
-                break
         b += 2
 
     eounit = ret_list[0]
@@ -390,7 +309,7 @@ def class_group(disc, limit_dis=100000):
         ret_list[i] = ReducedQuadraticForm(t_lt, eounit)
     return (h, ret_list)
 
-def class_number_bsgs(disc, retelq = 0):
+def class_number_bsgs(disc):
     """
     Return the class number with the given discriminant.
     """
@@ -403,12 +322,10 @@ def class_number_bsgs(disc, retelq = 0):
     lx = max(arith1.floorpowerroot(abs(disc), 5), 500 * (math.log(abs(disc)))**2)
     uprbd = int(class_formula(disc, int(lx)) * 3 / 2)
     lwrbd = uprbd // 2 + 1
-    h = [1]
-    lwrbd_1 = [lwrbd]
-    uprbd_1 = [uprbd]
+    bounds = [lwrbd, uprbd]
 
     # get the unit
-    element = retnext1(disc)
+    element = RetNext(disc)
     ut = element.unit()
 
     # append the unit to subset of G
@@ -417,48 +334,33 @@ def class_number_bsgs(disc, retelq = 0):
     sossp.insttree(ut)
     sogsp.insttree(ut)
 
-    # initialize variables
-    n = [0]
-    q = [0]
-    h = [1] # order
-    nt = [0] # next value
-    y = [0]
-    ret = -1
-
-    # take a new element of the group.
-    while ret == -1:
+    h = 1 # order
+    finished = False
+    while not finished:
+        mstp1 = bounds[1] - bounds[0]
+        if mstp1 <= 1:
+            q = 1
+        else:
+            q = arith1.floorsqrt(mstp1)
+            if misc.primePowerTest(mstp1)[1] != 2:
+                q += 1
         # get next element
-        nt[0] = element.retnext()
-        mstp1 = uprbd_1[0] - lwrbd_1[0]
-        if (mstp1 == 0) or (mstp1 == 1):
-            q[0] = 1
-        else:
-            tppm = misc.primePowerTest(mstp1)
-            if tppm[1] == 2:
-                q[0] = arith1.floorsqrt(mstp1)
-            else:
-                q[0] = arith1.floorsqrt(mstp1) + 1
-        if q[0] <= 2:
-            x = [0,0]
-        else:
-            x = [0] * q[0] # x is the set of elements of G
-        c_s1 = ClassGroup(disc, 0, []) # a subset of G
-        # compute small steps        
-        x[0] =  ut # maybe, this code must not be here
-        x[1] = (nt[0] ** h[0])
+        nt = element.retnext()
+        # x is the set of elements of G
+        x = [ut, nt ** h]
+        if q > 2:
+            x.extend([0] * (q - 2))
+        # compute small steps
         if x[1] == ut:
-            n[0] = 1
-            # initialize order
-            n[0] = h[0] * n[0]
-            # compute the order of nt[1]
-            sossp, sogsp = trorder(n, x, sossp, sogsp, c_s1, nt, disc)
+            # compute the order of nt
+            n = trorder(h, sossp, sogsp, nt, disc)
         else:
-            ret_val, sossp, sogsp = trbabysp(q, x, n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc)
+            n = trbabysp(q, x, bounds, sossp, sogsp, ut, h, nt, disc)
 
         # finished?
-        ret, sossp, sogsp = isfinished_trbsgs(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y, disc)
-    
-    return ret
+        finished, h, sossp, sogsp = isfinished_trbsgs(lwrbd, bounds, h, n, sossp, sogsp, nt, disc)
+
+    return h
 
 def class_group_bsgs(disc, classnum, qin):
     """
@@ -466,7 +368,6 @@ def class_group_bsgs(disc, classnum, qin):
     """
     if disc % 4 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
-
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
 
@@ -482,8 +383,7 @@ def class_group_bsgs(disc, classnum, qin):
         raise TypeError("lower bound needs to be less than upper bound")
     if lwrbd <= (uprbd / 2):
         raise TypeError("upper bound / 2 needs to be more than lower bound")
-    lwrbd_1 = [lwrbd]
-    uprbd_1 = [uprbd]
+    bounds = [lwrbd, uprbd]
 
     # get the unit
     uto = unit_form(disc)
@@ -497,46 +397,23 @@ def class_group_bsgs(disc, classnum, qin):
     utwi.beta.append([0, ut, 1])
     sossp.insttree(utwi)
     sogsp.insttree(utwi)
-    n = [0]
-    q = [0]
-    y = [0]
-    ret = -1
+    finished = False
 
     # take a new element of the group.
     indofg = 1
-    while ret == -1:
+    while not finished:
         # get next element
         while True:
             nt = rand_generator(disc, classnum, qin)
             if nt not in lstofelg:
                 lstofelg.append(nt)
                 break
-        #else:
-            #indofg = indofg - 1
-        mstp1 = uprbd_1[0] - lwrbd_1[0]
-        if (mstp1 == 0) or (mstp1 == 1):
-            q[0] = 1
-        else:
-            tppm = misc.primePowerTest(mstp1)
-            if (tppm[1] != 0) and ((tppm[1] % 2) == 0):
-                q[0] = arith1.floorsqrt(mstp1)
-            else:
-                q[0] = arith1.floorsqrt(mstp1) + 1
-        if q[0] <= 2:
-            x = [0,0]
-        else:
-            x = [0] * q[0] # x is the set of elements of G
-        c_s1 = ClassGroup(disc, classnum, []) # a subset of G
 
         # compute small steps
-        x[0] = ut # maybe, this code must not be here
-        x[1] = nt
-        if x[1] == ut:
-            raise ValueError
-        else:
-            tmp_ss, tmp_gs = babyspcv(utwi, q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum)
-        setind(n, indofg, tmp_ss, tmp_gs, matla)
-        ret, sossp, sogsp = isfinished_bsgscv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, classnum, indofg)
+        assert nt != ut, "random element may not be equal to unit"
+        n, tmp_ss, tmp_gs = babyspcv(bounds, sossp, sogsp, utwi, nt, disc, classnum)
+        matla.append(setind(n, indofg, tmp_ss, tmp_gs))
+        finished, sossp, sogsp = isfinished_bsgscv(n, sossp, sogsp, nt, lpt, qpt, disc, classnum, indofg)
         indofg = indofg + 1
     return lstofelg, matla
 
@@ -544,16 +421,77 @@ def class_group_bsgs(disc, classnum, qin):
 # following functions are sub functions for above functions. #
 ##############################################################
 
+class RetNext:
+    """
+    Next element producer.
+    """
+    def __init__(self, disc):
+        self.disc = disc
+        self.utroot = unit_form(disc)
+        self._unit = ReducedQuadraticForm(self.utroot, self.utroot)
+        self.cnt = 1
+        self.previous = []
+        self.elhash = range(int(math.sqrt(abs(disc) // 3)) + 2)
+
+    def unit(self):
+        """
+        Return reduced quadratic unit form.
+        """
+        return self._unit
+
+    def retnext(self):
+        """
+        Return the next random element.
+        """
+        while True:
+            next_form = ReducedQuadraticForm(self._randomele1(), self.utroot)
+            if not self.has_in_hash(next_form):
+                self.add_to_hash(next_form)
+                return next_form
+
+    def _randomele1(self):
+        """
+        Return a reduced random form with the given discriminant.
+        """
+        while True:
+            nextp = prime.nextPrime(self.cnt)
+            self.cnt += 1
+            if kronecker(self.disc, nextp) == 1:
+                nxtfm = sqroot(self.disc, nextp)
+                if not self.previous or nxtfm != self.previous:
+                    self.previous = nxtfm
+                    return nxtfm
+
+    def add_to_hash(self, form):
+        """
+        Add a form to hash
+        """
+        key = form.element[0]
+        if isinstance(self.elhash[key], (int, long)):
+            self.elhash[key] = [form]
+        else:
+            self.elhash[key].append(form)
+
+    def has_in_hash(self, form):
+        """
+        check hash
+        """
+        key = form.element[0]
+        if isinstance(self.elhash[key], (int, long)):
+            return False
+        return form in self.elhash[key]
+
+
 def disc(f):
     """
     Return the discriminant of the given quadratic form 'f'.
     f = [a, b, c]
     """
     if len(f) != 3:
-        raise ValueError
+        raise TypeError("form must be composed of 3 integers")
     for i in f:
-        if (type(i) != int) and (type(i) != long):
-            raise ValueError
+        if not isinstance(i, (int, long)):
+            raise TypeError("all components must be integers")
     return (f[1]*f[1] - 4*f[0]*f[2])
 
 def reducePDF(f):
@@ -561,7 +499,7 @@ def reducePDF(f):
     Return the reduced form of the given positive definite form 'f'.
     f = (a[0], a[1], a[2])
     """
-    a = f[:]
+    a = list(f)
     if a[0] < 0:
         raise ValueError("a must be positive in quadratic form f=(a,b,c).")
     if (a[1]**2 - 4*a[0]*a[2]) >= 0:
@@ -589,14 +527,14 @@ def reducePDF(f):
         else:
             if (a[0] == a[2]) and (a[1] < 0):
                 a[1] = -a[1]
-            return [a[0], a[1], a[2]]
+            return a
 
 def sqrPDF(f):
     """
     Return the square of the given quadratic form 'f'.
     """
-    f_1 = f[:]
-    
+    f_1 = list(f)
+
     # compute disc and etc
     D = disc(f)
     sogsp = arith1.floorpowerroot(int(abs(D / 4)), 4)
@@ -608,9 +546,9 @@ def sqrPDF(f):
     c_1 = la - lc
     if c_1 < lc:
         lc = -c_1
-        
+
     # partial reduction
-    v_2, v_3, z, d , v = parteucl(la, lc, sogsp)
+    v_2, v_3, z, d, v = parteucl(la, lc, sogsp)
 
     if z == 0:
         g = (lb * v_3 + f_1[2]) // d
@@ -618,8 +556,7 @@ def sqrPDF(f):
         c_2 = v_3 ** 2
         b_2 = f_1[1] + (d + v_3)**2 - a_2 - c_2
         c_2 = c_2 + g * d_1
-        f_2 = reducePDF([a_2, b_2, c_2])
-        return f_2
+        return reducePDF([a_2, b_2, c_2])
 
     e = (f_1[2] * v + lb * d) // la
     g = (e * v_2 - lb) // v
@@ -628,35 +565,34 @@ def sqrPDF(f):
         b_2 = d_1 * b_2
         v = d_1 * v
         v_2 = d_1 * v_2
-        
+
     a_2 = d ** 2
     c_2 = v_3 ** 2
     b_2 = b_2 + (d + v_3) ** 2 - a_2 - c_2
     a_2 = a_2 + e * v
     c_2 = c_2 + g * v_2
-    f_2 = reducePDF([a_2, b_2, c_2])
-    return f_2
+    return reducePDF([a_2, b_2, c_2])
 
 def powPDF(f, exp):
     """
-    Return the powering 'exp' of the given quadratic form 'f'. 
+    Return the powering 'exp' of the given quadratic form 'f'.
     """
     D = disc(f)
     ut = unit_form(D)
 
     if exp == 0:
-        return ut[:]
+        return ut
     elif exp == 1:
         return f[:]
     elif f == ut:
-        return f[:]
+        return ut
     if exp < 0:
         lexp = -exp
-        sz = [f[0] , - f[1], f[2]]
+        sz = [f[0], - f[1], f[2]]
     else:
         lexp = exp
         sz = f[:]
-    sy = ut[:]
+    sy = ut
     while True:
         if (lexp % 2) == 1:
             sy = compositePDF(sz, sy)
@@ -672,14 +608,11 @@ def compositePDF(f_1, f_2):
     'f_1' and 'f_2' are quadratic forms with same disc.
     """
     if gcd.gcd_of_list(f_1)[0] != 1:
-        raise ValueError(
-            "coefficients of a quadratic form must be relativery prime")
+        raise ValueError("coefficients of a quadratic form must be relatively prime")
     if gcd.gcd_of_list(f_2)[0] != 1:
-        raise ValueError(
-            "coefficients of a quadratic form must be relativery prime")
+        raise ValueError("coefficients of a quadratic form must be relatively prime")
     if disc(f_1) != disc(f_2):
-        raise ValueError(
-            "two quadratic forms must have same discriminant")
+        raise ValueError("two quadratic forms must have same discriminant")
 
     if f_1[0] > f_2[0]:
         f_1, f_2 = f_2, f_1
@@ -710,9 +643,8 @@ def compositePDF(f_1, f_2):
     b_3 = f_2[1] + 2*v_2*r
     a_3 = v_1*v_2
     c_3 = (f_2[2]*d_1 + r*(f_2[1] + v_2*r)) // v_1
-    f_3 = [a_3, b_3, c_3]
 
-    return reducePDF(f_3)
+    return reducePDF([a_3, b_3, c_3])
 
 def unit_form(disc):
     """
@@ -727,55 +659,45 @@ def unit_form(disc):
         b = 1
         c = (disc - 1) // -4
     else:
-        raise ValueError
+        raise ValueError("discriminant is not 0 or 1 mod 4.")
     return [a, b, c]
 
 def kronecker(a, b):
     """
     Compute the Kronecker symbol (a/b) using algo 1.4.10 in Cohen's book.
     """
-    tab2 = [0, 1, 0, -1, 0, -1, 0, 1]
+    tab2 = (0, 1, 0, -1, 0, -1, 0, 1)
     if b == 0:
         if abs(a) != 1:
             return 0
         if abs(a) == 1:
             return 1
-    if (a % 2 == 0) and (b % 2 == 0):
+    if a % 2 == 0 and b % 2 == 0:
         return 0
 
-    v = 0
-    while (b % 2 == 0):
-        v = v + 1
-        b = b // 2
-    if (v % 2 == 0):
+    v, b = arith1.vp(b, 2)
+    if v % 2 == 0:
         k = 1
     else:
-        tp1 = a & 7
-        k = tab2[tp1]
+        k = tab2[a & 7]
     if b < 0:
         b = -b
         if a < 0:
             k = -k
-    while True:
-        if a == 0:
-            if b > 1:
-                return 0
-            if b == 1:
-                return k
-        v = 0
-        while (a % 2) == 0:
-            v = v + 1
-            a = a // 2
-        if (v % 2) == 1:
-            tt = b & 7
-            k = tab2[tt] * k
-        tpa = a & b
-        tpa2 = tpa & 2
-        if (a & b & 2) != 0:
+    while a:
+        v, a = arith1.vp(a, 2)
+        if v % 2 == 1:
+            k *= tab2[b & 7]
+        if a & b & 2:
+            # both a and b are 3 mod 4
             k = -k
         r = abs(a)
         a = b % r
         b = r
+    if b > 1:
+        # a and be are not coprime
+        return 0
+    return k
 
 def number_unit(disc):
     """
@@ -794,48 +716,34 @@ def crt(inlist):
     """
     Chinese Remainder Theorem, Algo. 1.3.11 of Cohen's Book.
     """
-    j = 2
     k = len(inlist)
-    ccj = range(k+1)
-    ccj[1] = 1
-    inlist.sort()
-    ellist = [()] + inlist
     if k < 2:
-        raise ValueError
-    yj = range(k+1)
-    while j <= k:
-        p = 1
-        for inj in range(1, j):
-            p = p * ellist[inj][1]
-        p = p % ellist[j][1]
-        tpl = gcd.gcd_of_list([p, ellist[j][1]])
-        d = tpl[0]
-        u = tpl[1][0]
-        v = tpl[1][1]
+        raise ValueError("nothing to be done for one element")
+    ccj = [None] # gabage to simplify loop index
+    ellist = list(inlist)
+    ellist.sort()
+    modulus = 1
+    for j in range(1, k):
+        modulus *= ellist[j - 1][1]
+        d, tpl = gcd.gcd_of_list([modulus % ellist[j][1], ellist[j][1]])
         if d > 1:
-            raise ValueError
-        ccj[j] = u
-        j = j + 1
-    
-    yj[1] = (ellist[1][0] % ellist[1][1])
-    for indj in range(2, k + 1):
-        intp = indj
-        intp = intp - 1
-        ctp = yj[intp]
-        while intp > 1:
-            ctp = yj[intp - 1] + ellist[intp - 1][1] * ctp
-            intp = intp - 1
-        yj[indj] = ((ellist[indj][0] - ctp) * ccj[indj]) % ellist[indj][1]
-    ktp = k
-    outp = yj[ktp]
-    while ktp > 1:
-        outp = yj[ktp - 1] + (ellist[ktp - 1][1]) * outp
-        ktp = ktp - 1
+            raise ValueError("moduli are not pairwise coprime")
+        ccj.append(tpl[0])
+
+    yj = [ellist[0][0] % ellist[0][1]]
+    for j in range(1, k):
+        ctp = yj[-1]
+        for i in range(j - 2, -1, -1):
+            ctp = yj[i] + ellist[i][1] * ctp
+        yj.append(((ellist[j][0] - ctp) * ccj[j]) % ellist[j][1])
+    outp = yj.pop()
+    for j in range(k - 2, -1, -1):
+        outp = yj.pop() + (ellist[j][1]) * outp
     return outp
 
 def rand_generator(disc, classnum, qin):
     """
-    Return the reduced random quadratic form with given discriminant and order t, 
+    Return the reduced random quadratic form with given discriminant and order t,
     where t = classnum / a ** b and qin = [a, b].
     """
     q = qin[0]**qin[1]
@@ -868,24 +776,10 @@ def sqroot(disc, p):
         bp = crt([(bpf1, p), (bpf2, 4)])
     if bp > p:
         bp = 2 * p - bp
-        
-    fpt = reducePDF([p, bp, ((bp ** 2) - disc) // (4 * p)])    
+
+    fpt = reducePDF([p, bp, ((bp ** 2) - disc) // (4 * p)])
     return fpt
 
-def randomele1(disc, cnt, previous):
-    """
-    Return a reduced random form with the given discriminant.
-    'cnt' is count.
-    """
-    while True:
-        nextp = prime.nextPrime(cnt)
-        cnt = cnt + 1
-        if (kronecker(disc, nextp) == 1):
-            nxtfm = sqroot(disc, nextp)
-            if (previous == []) or (nxtfm != previous):
-                previous = nxtfm
-                return nxtfm, cnt, previous
-        
 def randomele(disc, unit):
     """
     Return a reduced random form with the given discriminant and the given unit.
@@ -997,303 +891,320 @@ def parteucl(a, b, sogsp):
                 v_3 = -v_3
             return (v_2, v_3, z, d, v)
 
-def mkhash1(hsh, sosp):
-    """
-    """
-    if type(hsh[sosp.element[0]]) == int :
-        hsh[sosp.element[0]] = [sosp]
-    else:
-        hsh[sosp.element[0]].append(sosp)
-    return True
-
-def ckhash1(hsh, sosp):
-    """
-    """
-    if type(hsh[sosp.element[0]]) == int :
-        return -1
-    for tel in hsh[sosp.element[0]]:
-        if sosp == tel:
-            return tel
-    return -1
-
-def isfinished_bsgscv(lwrbd, lwrbd_1, uprbd_1, n, sossp, sogsp, q, nt, y, lpt, qpt, disc, classnum, indofg):
+def isfinished_bsgscv(n, sossp, sogsp, nt, lpt, qpt, disc, classnum, indofg):
     """
     Determine whether the bsgs algorithm is finished or not yet.
     This is a submodule called by the bsgs module.
     """
-    lpt.append(n[0])
+    lpt.append(n)
     sumn = 1
     for nid in lpt:
-        sumn = sumn * nid 
+        sumn = sumn * nid
     if sumn == qpt:
-        return n[0], sossp, sogsp
+        return True, sossp, sogsp
     elif sumn > qpt:
         raise ValueError
-    
-    if n[0] == 1:
-        tpsq = [0, 2]
-    else:
-        tpsq = misc.primePowerTest(n[0])
-    if (tpsq[1] != 0) and ((tpsq[1] % 2) == 0):
-        q[0] = arith1.floorsqrt(n[0])
-    else:
-        q[0] = arith1.floorsqrt(n[0]) + 1
 
-    lsl = copy.deepcopy(sossp)
-    sossp = ClassGroup(disc, classnum, [])
-    lll = copy.deepcopy(sogsp)
-    sogsp = ClassGroup(disc, classnum, [])
+    if n == 1:
+        return False, sossp, sogsp
+    else:
+        tpsq = misc.primePowerTest(n)
+        if (tpsq[1] != 0) and ((tpsq[1] % 2) == 0):
+            q = arith1.floorsqrt(n)
+        else:
+            q = arith1.floorsqrt(n) + 1
+
+    ss = sossp.retel()
+    new_sossp = ClassGroup(disc, classnum, [])
     tnt = copy.deepcopy(nt)
-    ss = lsl.retel()
-    for r in range(q[0]):
+    for i in range(q):
+        base = tnt ** i
         for ssi in ss:
-            newel = (tnt ** r) * ssi
-            if sossp.search(newel) == False:
+            newel = base * ssi
+            if new_sossp.search(newel) is False:
                 newel.alpha = ssi.alpha[:]
                 lenal = len(newel.alpha)
                 sfind = indofg - lenal
                 for sit in range(sfind):
                     newel.alpha.append([lenal + sit, 0, 0])
-                newel.alpha.append([indofg, tnt, r])
-                sossp.insttree(newel) # multiple of two elements of G
+                newel.alpha.append([indofg, tnt, i])
+                new_sossp.insttree(newel) # multiple of two elements of G
 
-    y[0] = nt ** q[0]
-    ltl = lll.retel()
-    for a in range(q[0] + 1):
+    y = nt ** q
+    ltl = sogsp.retel()
+    new_sogsp = ClassGroup(disc, classnum, [])
+    for i in range(q + 1):
+        base = y ** (-i)
         for eol in ltl:
-            newel2 = (y[0]**(- a)) * eol
-            if sogsp.search(newel2) == False:
+            newel2 = base * eol
+            if new_sogsp.search(newel2) is False:
                 newel2.beta = eol.beta[:]
                 lenbt = len(newel2.beta)
                 gfind = indofg - lenbt
                 for git in range(gfind):
                     newel2.beta.append([lenbt + git, 0, 0])
-                newel2.beta.append([indofg, tnt, q[0] * (- a)])
-                sogsp.insttree(newel2) # multiple of two elements of G
-    return -1, sossp, sogsp
+                newel2.beta.append([indofg, tnt, q * (-i)])
+                new_sogsp.insttree(newel2) # multiple of two elements of G
 
-def ordercv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs):
+    return False, new_sossp, new_sogsp
+
+def ordercv(n, sossp, sogsp, nt, disc, classnum, tmp_ss, tmp_gs):
     """
+    n: int
     """
-    flg_bk = 1
-    while flg_bk == 1:
-        flg_bk = 0
-        lst_p = misc.primeDivisors(n[0])
-        tp_ls = copy.deepcopy(sossp)
+    lst_p = methods.factor(n)
+    n_is_changing = True
+    while n_is_changing:
+        n_is_changing = False
         c_s1 = ClassGroup(disc, classnum, []) # a subset of G
-        lstp_ls = tp_ls.retel()
+        lstp_ls = sossp.retel()
         sogsptp = sogsp.retel()
-        for tmpri in lst_p:
+        for p, e in lst_p:
+            base = nt ** (n // p)
             for ttp_ls in lstp_ls:
-                tmp_c_s1 = (nt ** (n[0] // tmpri)) * ttp_ls
+                tmp_c_s1 = base * ttp_ls
                 tmp_c_s1.s_parent = ttp_ls
                 c_s1.insttree(tmp_c_s1)
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
-                    flg_bk = 1
-                    n[0] = n[0] // tmpri
+                    n_is_changing = True
+                    n //= p
+                    if e > 1:
+                        lst_p[lst_p.index((p, e))] = (p, e - 1)
+                    else:
+                        lst_p.remove((p, e))
                     tmp_ss = rete.s_parent
                     tmp_gs = tmp_ell
                     break
-            if flg_bk == 1:
-                break
-    return tmp_ss, tmp_gs
+            else:
+                continue
+            break
+    return n, tmp_ss, tmp_gs
 
-def giantspcv(n, q, sz, y, c_s1, uprbd_1, sogsp, classnum):
+def giantspcv(q, sz, y, c_s1, bounds, sogsp):
     """
+    giant step called from babyspcv.
+
+    q: int
+    sz, y: element
     """
+    n = bounds[0]
+    # sz == x[1] ** n
+    # y  == x[1] ** q
     while 1:
-        sotp = sogsp.retel()
-        for tpw in sotp:
-            sz1 = sz[0] * tpw
+        for tpw in sogsp.retel():
+            sz1 = sz * tpw
             sz1.g_parent = tpw
             rete = c_s1.search(sz1)
-            if rete != False:
-                n[0] = n[0] - rete.ind
-                return rete.s_parent, sz1.g_parent
+            if rete is not False:
+                return n - rete.ind, rete.s_parent, sz1.g_parent
         # continue (sp. 5)
-        sz[0] = y[0] * sz[0]
-        n[0] = n[0] + q[0]
-        if n[0] -q [0] + 1 <= uprbd_1[0]:
-        #####if n[0] -q [0] + 1 <= classnum:
-            continue
-        else:
+        sz = sz * y
+        n = n + q
+        if n - q + 1 > bounds[1]:
             raise ValueError("the order is larger than upper bound")
-    
-def babyspcv(utwi, q, x, n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, nt, disc, classnum):
+
+def babyspcv(bounds, sossp, sogsp, utwi, nt, disc, classnum):
     """
     Compute small steps
     """
-    flg_s = 0
+    mstp1 = bounds[1] - bounds[0]
+    if (mstp1 == 0) or (mstp1 == 1):
+        q = 1
+    else:
+        tppm = misc.primePowerTest(mstp1)
+        q = arith1.floorsqrt(mstp1)
+        if (tppm[1] == 0) or (tppm[1] % 2):
+            q += 1
+
+    n_should_be_set = True
     # initialize
-    y[0] = 0
-    sz = [0]
-    for tr in range(q[0]):
-        # compute 2 to q-1
-        if (tr != 0) and (tr != 1):
-            x[tr] = x[1] * x[tr - 1]
-        sotp = sossp.retel()
-        for ttr in sotp:
-            tmpx = x[tr]*ttr
+    c_s1 = ClassGroup(disc, classnum, []) # a subset of G
+
+    # extracting i = 0 case of main loop
+    for ttr in sossp.retel():
+        tmpx = ttr
+        tmpx.s_parent = ttr # tmpx belongs ttr in the set of smallstep
+        # index of the element
+        tmpx.ind = 0
+        c_s1.insttree(tmpx)
+
+    # main loop
+    x_i = nt
+    for i in range(1, q):
+        for ttr in sossp.retel():
+            tmpx = x_i * ttr
             tmpx.s_parent = ttr # tmpx belongs ttr in the set of smallstep
-            if (flg_s == 0) and (tmpx == ut) and (tr != 0):
-                flg_s = 1
-                n[0] = tr
+            if n_should_be_set and tmpx == utwi:
+                n = i
                 tmp_ss = tmpx.s_parent
                 tmp_gs = utwi
+                n_should_be_set = False
             # index of the element
-            tmpx.ind = tr
+            tmpx.ind = i
             c_s1.insttree(tmpx)
-    if flg_s != 1:
-        y[0] = x[1] * x[q[0] - 1]
-        sz[0] = x[1] ** lwrbd_1[0]
-        n[0] = lwrbd_1[0]
-        tmp_ss, tmp_gs = giantspcv(n, q, sz, y, c_s1, uprbd_1, sogsp, classnum)
-    tmp_ss, tmp_gs = ordercv(n, x, sossp, sogsp, c_s1, nt, disc, classnum, tmp_ss, tmp_gs)
-    return tmp_ss, tmp_gs
+        x_i = nt * x_i
+    assert x_i == nt ** q
 
-def trbabysp(q, x , n, c_s1, lwrbd_1, uprbd_1, sossp, sogsp, ut, y, h, nt, disc):
+    if n_should_be_set:
+        sz = nt ** bounds[0]
+        n, tmp_ss, tmp_gs = giantspcv(q, sz, x_i, c_s1, bounds, sogsp)
+    return ordercv(n, sossp, sogsp, nt, disc, classnum, tmp_ss, tmp_gs)
+
+def trbabysp(q, x, bounds, sossp, sogsp, ut, h, nt, disc):
     """
     Compute small steps.
+
+    q, h: int
+    ut: unit element
+    nt: element
     """
-    flg_s = 0
-    # initialize
-    y[0] = 0
-    sz = [0]
-    for tr in range(q[0]):
-        # compute 2 to q-1
-        if (tr != 0) and (tr != 1):
-            x[tr] = x[1] * x[tr - 1]
-        sotp = sossp.retel()
-        for ttr in sotp:
-            tmpx = x[tr]*ttr
-            if (flg_s == 0) and (tmpx == ut) and (tr != 0):
-                flg_s = 1
-                n[0] = tr
-            tmpx.ind = tr
+    c_s1 = ClassGroup(disc, 0, []) # a subset of G
+    n_should_be_set = True
+
+    # extracting i = 0 case simplifies the main loop
+    for tmpx in sossp.retel():
+        tmpx.ind = 0
+        c_s1.insttree(tmpx)
+
+    # main loop
+    x_i = x[1]
+    for i in range(1, q):
+        for ttr in sossp.retel():
+            tmpx = x_i * ttr
+            if n_should_be_set and tmpx == ut:
+                n = i
+                n_should_be_set = False
+            tmpx.ind = i
             c_s1.insttree(tmpx)
             # sort ( if you want to sort it with your estimate,
             # you have to implement '__ge__' method of the class with your way.)
+        x_i = x[1] * x_i
 
-    if flg_s != 1:
-        y[0] = x[1] * x[q[0] - 1]
-        sz[0] = x[1] ** lwrbd_1[0]
-        n[0] = lwrbd_1[0]
-        sogsp = trgiantsp(n, q, sz, y, c_s1, uprbd_1, sogsp)
-    n[0] = h[0] * n[0]
-    sossp, sogsp = trorder(n, x, sossp, sogsp, c_s1, nt, disc)
-    return True, sossp, sogsp
+    if n_should_be_set:
+        n = trgiantsp(q, x[1] ** bounds[0], x_i, c_s1, bounds, sogsp)
+    return trorder(n * h, sossp, sogsp, nt, disc)
 
-def trgiantsp(n, q, sz, y, c_s1, uprbd_1, sogsp):
+def trgiantsp(stride_index, pivot, stride, c_s1, bounds, sogsp):
     """
     Compute giant steps.
+
+    stride_index: int
+    pivot, stride: element
     """
-    while 1:
-        sotp = sogsp.retel()
-        for tpw in sotp:
-            sz1 = sz[0] * tpw
-            rete = c_s1.search(sz1)
-            if rete != False:
-                n[0] = n[0] - rete.ind
-                return sogsp
-        sz[0] = y[0] * sz[0]
-        n[0] = n[0] + q[0]
-        if n[0] - q[0] + 1 <= uprbd_1[0]:
-            continue
-        else:
+    pivot_index = bounds[0]
+    # pivot == x[1] ** pivot_index
+    # stride = x[1] ** stride_index
+    while True:
+        for tpw in sogsp.retel():
+            rete = c_s1.search(pivot * tpw)
+            if rete is not False:
+                return pivot_index - rete.ind
+        pivot, pivot_index = pivot * stride, pivot_index + stride_index
+        if pivot_index - stride_index + 1 > bounds[1]:
             raise ValueError("the order is larger than upper bound")
 
-def trorder(n, x, sossp, sogsp, c_s1, nt, disc):
+def trorder(n, sossp, sogsp, nt, disc):
     """
-    Compute the order. 
+    Compute the order.
+
+    n: int
+    nt: element
     """
-    # flg
-    flg_bk = 1
-    while flg_bk == 1:
-        flg_bk = 0
-        lst_p = misc.primeDivisors(n[0])
-        tp_ls = copy.deepcopy(sossp)
+    divisors = methods.factor(n)
+    while True:
         c_s1 = ClassGroup(disc, 0, [])
-        lstp_ls = tp_ls.retel()
+        lstp_ls = sossp.retel()
         sogsptp = sogsp.retel()
-        for tmpri in lst_p:
+        for p, e in divisors:
             # initialize c_s1
+            base = nt ** (n // p)
             for ttp_ls in lstp_ls:
-                tmp_c_s1 = (nt[0] ** (n[0] // tmpri)) * ttp_ls
-                c_s1.insttree(tmp_c_s1)
+                c_s1.insttree(base * ttp_ls)
+            # search in c_s1
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
-                    flg_bk = 1
-                    n[0] = n[0] // tmpri
+                    n //= p
+                    if e > 1:
+                        divisors[divisors.index((p, e))] = (p, e - 1)
+                    else:
+                        divisors.remove((p, e))
                     break
-            if flg_bk == 1:
-                break
+            else:
+                continue
+            break
+        else:
+            return n
 
-    return sossp, sogsp
-
-def isfinished_trbsgs(lwrbd, lwrbd_1, uprbd_1, h, n, sossp, sogsp, q, nt, y, disc):
+def isfinished_trbsgs(lwrbd, bounds, h, n, sossp, sogsp, nt, disc):
     """
     Determine whether bsgs is finished or not yet.
     This is a submodule called by the bsgs module.
+
+    lwrbd, h, n: int
+    nt: element
     """
-    h[0] = h[0] * n[0]
-    if h[0] >= lwrbd:
-        return h[0], sossp, sogsp
-    uprbd_1[0] = uprbd_1[0] // n[0] # floor of uprbd_1[0] // n[0]
-    if (lwrbd_1[0] % n[0]) == 0:
-        lwrbd_1[0] = lwrbd_1[0] // n[0] # floor + 1 of lwrbd_1[0] // n[0]
+    h *= n
+    if h >= lwrbd:
+        result = True
+    elif n == 1:
+        result = False
     else:
-        lwrbd_1[0] = lwrbd_1[0] // n[0]  + 1 # floor + 1 of lwrbd_1[0] // n[0]
-    if n[0] == 1:
-        tpsq = [0, 2]
-    else:
-        tpsq = misc.primePowerTest(n[0])
-    if tpsq[1] == 2:
-        q[0] = arith1.floorsqrt(n[0])
-    else:
-        q[0] = arith1.floorsqrt(n[0]) + 1
-        
-    lsl = copy.deepcopy(sossp)
-    sossp = ClassGroup(disc, 0, [])
-    lll = copy.deepcopy(sogsp)
-    sogsp = ClassGroup(disc, 0, [])
-    tnt = copy.deepcopy(nt[0])
-    ss = lsl.retel()
+        bounds[0] = (bounds[0] + n - 1) // n # ceil of lower bound // n
+        bounds[1] = bounds[1] // n # floor of upper bound // n
+        q = arith1.floorsqrt(n)
+        if misc.primePowerTest(n)[1] != 2:
+            q = arith1.floorsqrt(n) + 1 # ceil of sqrt
+        sossp, sogsp = _update_subgrps(q, nt, sossp, sogsp, disc)
+        result = False
 
-    for r in range(q[0]):
-        for ssi in ss:
-            newel = (tnt ** r ) * ssi
-            if sossp.search(newel) == False:
-                sossp.insttree(newel)
+    return result, h, sossp, sogsp
 
-    y[0] = nt[0]**q[0]
-    ltl = lll.retel()
-    for a in range(q[0] + 1):
-        for eol in ltl:
-            newel2 = (y[0]**a) * eol
-            if sogsp.search(newel2) == False:
-                sogsp.insttree(newel2) # multiple of two elements of G
-    return -1, sossp, sogsp
+def _update_subgrps(q, element, sossp, sogsp, discriminant):
+    """
+    update sossp and sogsp
+    """
+    new_sossp = ClassGroup(discriminant, 0, [])
+    new_sogsp = ClassGroup(discriminant, 0, [])
 
-def setind(n, indofg, tmp_ss, tmp_gs, matla):
+    unit = element ** 0
+    ithpow = unit
+    for i in range(q):
+        for ssi in sossp.retel():
+            newel = ithpow * ssi
+            if new_sossp.search(newel) is False:
+                new_sossp.insttree(newel)
+        ithpow = ithpow * element
+    assert ithpow == element ** q
+
+    qithpow = unit
+    for i in range(q + 1):
+        for eol in sogsp.retel():
+            newel = qithpow * eol
+            if new_sogsp.search(newel) is False:
+                new_sogsp.insttree(newel)
+        qithpow *= ithpow
+
+    return new_sossp, new_sogsp
+
+def setind(n, indofg, tmp_ss, tmp_gs):
     """
     """
     lgtinlst = indofg
     if lgtinlst == 1:
-        matla.append([n[0]])
-        return True
-    tmp_mt = [n[0]]
+        return [n]
+    tmp_mt = [n]
     for idofel in range(lgtinlst):
         if idofel == 0:
             continue
         try:
-            if type(tmp_ss.alpha[idofel][1]) != int: 
+            if type(tmp_ss.alpha[idofel][1]) != int:
                 ioind = tmp_ss.alpha[idofel][2]
             else:
                 ioind = 0
-        except IndexError :
+        except IndexError:
             ioind = 0
         except:
             raise ValueError
@@ -1302,12 +1213,9 @@ def setind(n, indofg, tmp_ss, tmp_gs, matla):
                 joind = tmp_gs.beta[idofel][2]
             else:
                 joind = 0
-        except IndexError :
+        except IndexError:
             joind = 0
         except:
             raise ValueError
         tmp_mt.append(ioind - joind)
-    #if tmp_mt != [1] * n[0]:  
-    matla.append(tmp_mt)
-    return True
-        
+    return tmp_mt
