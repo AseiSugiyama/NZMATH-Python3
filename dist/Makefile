@@ -30,12 +30,11 @@ html: files
 
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
-	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py $(TMPDIR)
+	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py logo.bmp $(TMPDIR)
 	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
 	cp -a ../poly $(TMPDIR)/nzmath/
-	cp -a logo.bmp $(TMPDIR)
 
 clean:
 	rm -fr $(TMPDIR)
