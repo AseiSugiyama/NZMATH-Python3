@@ -4,13 +4,23 @@ HTMLPY = $(PYTHON) rst2html.py
 OLD_VER = 0.6.0
 NEW_VER = 0.7.0
 
-all: html sdist
+all: html sdist zip wininst
 
 sdist: files setup.py
 	(cd $(TMPDIR); $(PYTHON) setup.py sdist)
 
+zip: files setup.py
+	(cd $(TMPDIR); $(PYTHON) setup.py sdist --formats=zip)
+
+wininst: files setup.py
+	(cd $(TMPDIR); $(PYTHON) setup.py bdist_wininst -d dist_wininst -b logo.bmp; mv build build_wininst)
+	for i in $(TMPDIR)/dist_wininst/*; do\
+		chmod 755 $$i; \
+		mv $$i `echo $$i | sed 's/.exe/Install.exe/'`; \
+	done
+
 setup.py: files
-	(cd $(TMPDIR); ls -R manual/ | awk -f makesetuppy.awk $(NEW_VER) > setup.py)
+	(cd $(TMPDIR); ls -R manual | awk -f makesetuppy.awk $(NEW_VER) > setup.py)
 
 html: files
 	(cd $(TMPDIR); $(HTMLPY) README.txt | \
@@ -25,6 +35,7 @@ files: clean
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/
 	cp -a ../poly $(TMPDIR)/nzmath/
+	cp -a logo.bmp $(TMPDIR)
 
 clean:
 	rm -fr $(TMPDIR)
