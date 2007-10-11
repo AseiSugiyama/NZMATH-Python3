@@ -1,7 +1,7 @@
 # Make setup.py the install script
 #
 # usage:
-# % ls -R manual/ | awk -f makesetuppy.awk VERSION
+# % ls -R manual | awk -f makesetuppy.awk VERSION
 
 BEGIN {
     version = ARGV[1];
