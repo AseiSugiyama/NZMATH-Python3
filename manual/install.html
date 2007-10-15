@@ -34,7 +34,7 @@ do it with a single command:</p>
 it as:</p>
 <pre>% gzip -cd NZMATH-0.7.0.tar.gz | tar xf -</pre>
 <p>Then, you have a child directory named NZMATH-0.7.0.</p>
-<p>The last step is to install NZMATH to the standard
+<p><a class="anchor" id="setup"></a>The last step is to install NZMATH to the standard
 python path. Usually, this translates to writing files somewhere under
 /usr/lib or /usr/local/lib, and thus you have to have appropriate
 write permission.  Typically, do as the following:</p>
@@ -58,7 +58,7 @@ You can retrieve the overlay through layman (app-portage/layman).</p>
 <p>Then emerge it as usual if you are of ~x86 user.
 Other arch user have to cast a spell on your /etc/portage or the ebuild.
 If you succeed to emerge on non-~x86 arch, please post a comment in
-<a href="http://ebuild.gentoo.gr.jp/view.php?cat=sci-mathematics&app=nzmath&visible=" rel="nofollow">nzmath page</a>
+<a href="http://ebuild.gentoo.gr.jp/view.php?cat=sci-mathematics&amp;app=nzmath&amp;visible=" rel="nofollow">nzmath page</a>
 of ebuildjp site.</p>
 
 <h4 id="content_1_5">Mac OS X (Tiger)  <a class="anchor_super" id="i5c56650">&dagger;</a></h4>
@@ -72,15 +72,33 @@ You can use it by following instruction:</p>
 <li>expand it.</li>
 <li>move resulting NZMATH.app to Application Folder.</li>
 <li>double click the NZMATH.app.</li></ol>
+
+<h4 id="content_1_6">Windows (32bit)  <a class="anchor_super" id="t20efe9f">&dagger;</a></h4>
+<p>A NZMATH 0.7.0 for Windows is released.
+The installer(.exe file) is in <a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.7.0.win32Install.exe" rel="nofollow">NZMATH-0.7.0.win32Install.exe</a>,
+and the zipped binary files are in
+<a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.7.0.zip" rel="nofollow">NZMATH-0.7.0.zip</a>.</p>
+<p>To install, decompress the zip file and see <a href="#setup">Basic installation</a> with setup.py in it.</p>
+<p>Or, perform the simple task described below(use installer):</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>download .exe file.</li>
+<li>open it.</li>
+<li>on Windows Vista, UAC asks if you run the program. click &quot;Allow&quot;.</li>
+<li>the setup window will open. follow the steps in the setup wizard.</li></ol>
+<p>The manuals are installed in
+<em>prefix</em><a id="notetext_1" href="#notefoot_1" class="note_super" title="prefix usually means C:\Python as default for Windows.">*1</a>
+\share\doc\NZMATH-0.7.0\manual.</p>
 </div>
 
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">prefix usually means C:\Python as default for Windows.</span><br /></div>
 
 
 <hr class="full_hr" />
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2007, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>
