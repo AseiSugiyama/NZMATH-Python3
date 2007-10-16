@@ -17,6 +17,9 @@ class ClassNumberTest (unittest.TestCase):
         self.assertRaises(ValueError, quad.class_number, -1)
         # 5 > 0
         self.assertRaises(ValueError, quad.class_number, 5)
+        warnings.filterwarnings("error")
+        self.assertRaises(UserWarning, quad.class_group, -400000000)
+        warnings.resetwarnings()
 
     def testClassGroup(self):
         self.assert_(quad.class_group(-4))
@@ -24,7 +27,7 @@ class ClassNumberTest (unittest.TestCase):
         self.assertEqual("[[1, 1, 4], [2, 1, 2]]", repr(quad.class_group(-15)[1]))
         self.assertEqual("[[1, 1, 6], [2, 1, 3], [2, -1, 3]]", repr(quad.class_group(-23)[1]))
         warnings.filterwarnings("error")
-        self.assertRaises(UserWarning, quad.class_group, -400000)
+        self.assertRaises(UserWarning, quad.class_group, -400000000)
         warnings.resetwarnings()
 
     def testClassNumberBsgs(self):

@@ -230,7 +230,7 @@ def class_formula(disc, uprbd):
         ml = ml * (1 - (kronecker(disc, factor) / factor))**(-1)
     return int(ht * ml + 0.5)
 
-def class_number(disc):
+def class_number(disc, limit_of_disc=100000000):
     """
     Return class number with the given discriminant by counting reduced forms.
     Not only fundamental discriminant.
@@ -239,6 +239,8 @@ def class_number(disc):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
+    if -disc >= limit_of_disc:
+        warnings.warn("the discriminant seems to have too big absolute value")
 
     h = 1
     b = disc % 2
@@ -259,7 +261,7 @@ def class_number(disc):
         b += 2
     return h
 
-def class_group(disc, limit_dis=100000):
+def class_group(disc, limit_of_disc=100000000):
     """
     Return the class number and the class group with the given discriminant
     by counting reduced forms. Not only fundamental discriminant.
@@ -268,7 +270,7 @@ def class_group(disc, limit_dis=100000):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
-    if -disc >= limit_dis:
+    if -disc >= limit_of_disc:
         warnings.warn("the discriminant seems to have too big absolute value")
 
     h = 1
