@@ -53,6 +53,15 @@ class IntegerResidueClass (ring.CommutativeRingElement):
 
     __floordiv__ = __truediv__ = __div__
 
+    def __mod__(self, other):
+        """
+        Return zero if division by other is allowed
+        """
+        return self - (self // other) * other
+
+    def __divmod__(self, other):
+        return (self // other, self % other)
+
     def __rdiv__(self, other):
         if not other:
             return self.__class__(0, self.m)
