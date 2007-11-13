@@ -20,20 +20,20 @@ def zassenhaus(f):
     Factor a squarefree monic integer coefficient polynomial f with
     Berlekamp-Zassenhaus method.
     """
-    p, fp_factors = padicFactorization(f)
+    p, fp_factors = padic_factorization(f)
     if len(fp_factors) == 1:
         return [f]
     # lift to Mignotte bound
-    blm = upperBoundOfCoefficient(f)
+    blm = upper_bound_of_coefficient(f)
     q = p
     while q < 2*blm:
-        fp_factors = padicLiftList(f, fp_factors, p, q)
+        fp_factors = padic_lift_list(f, fp_factors, p, q)
         q *= p
-    return bruteForceSearch(f, fp_factors, q)
+    return brute_force_search(f, fp_factors, q)
 
-def padicFactorization(f):
+def padic_factorization(f):
     """
-    padicFactorization(f) -> p, factors
+    padic_factorization(f) -> p, factors
 
     Return a prime p and a p-adic factorization of given integer
     coefficient squarefree polynomial f. The result factors have
@@ -63,12 +63,12 @@ def padicFactorization(f):
     fp_factors = []
     for (fp_factor, m) in stock[1]:
         assert m == 1 # since squarefree
-        fp_factors.append(minimumAbsoluteInjection(fp_factor))
+        fp_factors.append(minimum_absolute_injection(fp_factor))
     return (p, fp_factors)
 
-def bruteForceSearch(f, fp_factors, q):
+def brute_force_search(f, fp_factors, q):
     """
-    bruteForceSearch(f, fp_factors, q) -> [factors]
+    brute_force_search(f, fp_factors, q) -> [factors]
 
     Find the factorization of f by searching a factor which is a
     product of some combination in fp_factors.  The combination is
@@ -77,7 +77,7 @@ def bruteForceSearch(f, fp_factors, q):
     factors = []
     d, r = 1, len(fp_factors)
     while 2*d <= r:
-        found, combination = findCombination(f, d, fp_factors, q)
+        found, combination = find_combination(f, d, fp_factors, q)
         if found:
             factors.append(found)
             for picked in combination:
@@ -89,7 +89,7 @@ def bruteForceSearch(f, fp_factors, q):
     factors.append(f)
     return factors
 
-def padicLiftList(f, factors, p, q):
+def padic_lift_list(f, factors, p, q):
     """
     padicLift(f, factors, p, q) -> lifted_factors
 
@@ -116,11 +116,11 @@ def padicLiftList(f, factors, p, q):
             raise ValueError("factors must be pairwise coprime.")
         v_mod = ZpZx.createElement(v)
         t = v_mod * h // g_mod
-        lifted.append(g + minimumAbsoluteInjection(v_mod * h - g_mod * t)*q)
+        lifted.append(g + minimum_absolute_injection(v_mod * h - g_mod * t)*q)
         u_mod = ZpZx.createElement(u)
         gg_mod = ZpZx.createElement(gg)
         h = u_mod * h + gg_mod * t
-    lifted.append(g + minimumAbsoluteInjection(h)*q)
+    lifted.append(g + minimum_absolute_injection(h)*q)
     return lifted
 
 def extgcdp(f, g, p):
@@ -141,14 +141,14 @@ def extgcdp(f, g, p):
         u = u.scalar_exact_division(w[0]) # u / w
         v = v.scalar_exact_division(w[0]) # v / w
         w = w.getRing().one # w / w
-    u = minimumAbsoluteInjection(u)
-    v = minimumAbsoluteInjection(v)
-    w = minimumAbsoluteInjection(w)
+    u = minimum_absolute_injection(u)
+    v = minimum_absolute_injection(v)
+    w = minimum_absolute_injection(w)
     return u, v, w
 
-def minimumAbsoluteInjection(f):
+def minimum_absolute_injection(f):
     """
-    minimumAbsoluteInjection(f) -> F
+    minimum_absolute_injection(f) -> F
 
     Return an integer coefficient polynomial F by injection of a Z/pZ
     coefficient polynomial f with sending each coefficient to minimum
@@ -171,9 +171,9 @@ def minimumAbsoluteInjection(f):
     return uniutil.polynomial(g, rational.theIntegerRing)
 
 
-def upperBoundOfCoefficient(f):
+def upper_bound_of_coefficient(f):
     """
-    upperBoundOfCoefficient(polynomial) -> int
+    upper_bound_of_coefficient(polynomial) -> int
 
     Compute Landau-Mignotte bound of coefficients of factors, whose
     degree is no greater than half of the given polynomial.  The given
@@ -194,9 +194,9 @@ def upperBoundOfCoefficient(f):
             bound = b
     return bound
 
-def findCombination(f, d, factors, q):
+def find_combination(f, d, factors, q):
     """
-    findCombination(f, d, factors, q) -> g, list
+    find_combination(f, d, factors, q) -> g, list
 
     Find a combination of d factors which divides f (or its
     complement).  The returned values are: the product g of the
@@ -205,7 +205,7 @@ def findCombination(f, d, factors, q):
     """
     if d == 1:
         for g in factors:
-            if divisibilityTest(f, g):
+            if divisibility_test(f, g):
                 return (g, [g])
     else:
         ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
@@ -213,12 +213,12 @@ def findCombination(f, d, factors, q):
         for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]
             product = reduce(operator.mul, picked, 1)
-            product = minimumAbsoluteInjection(ZqZX.createElement(product))
-            if divisibilityTest(f, product):
+            product = minimum_absolute_injection(ZqZX.createElement(product))
+            if divisibility_test(f, product):
                 return (product, picked)
     return 0, [] # nothing found
 
-def divisibilityTest(f, g):
+def divisibility_test(f, g):
     """
     Return boolean value whether f is divisible by g or not, for polynomials.
     """
@@ -229,18 +229,3 @@ def divisibilityTest(f, g):
     elif isinstance(f, uniutil.UniqueFactorizationDomainPolynomial) and f.pseudo_mod(g):
         return False
     return True
-
-def complexRootAbsoluteUpperBound(f):
-    """
-    complexRootAbsoluteUpperBound(f) -> m
-
-    Return an upper bound of absolute value of complex root of given
-    (complex coefficient) polynomial f.
-    """
-    n = 0
-    for i, c in f.coefficient.iteritems():
-        if i == f.degree():
-            d = abs(c)
-        elif n < abs(c):
-            n = abs(c)
-    return int(2 + n/d)

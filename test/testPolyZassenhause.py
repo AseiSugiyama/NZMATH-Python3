@@ -30,7 +30,7 @@ class ZassenhausTest (unittest.TestCase):
 class PadicFactorizationTest (unittest.TestCase):
     def testRegular(self):
         f = uniutil.polynomial(enumerate([12, 7, 1]), Z)
-        r = zassenhaus.padicFactorization(f)
+        r = zassenhaus.padic_factorization(f)
         self.assert_(isinstance(r, tuple))
         self.assertEqual(2, len(r))
         self.assert_(prime.primeq(r[0]))
@@ -39,7 +39,7 @@ class PadicFactorizationTest (unittest.TestCase):
 
     def testIrreducible(self):
         f = uniutil.polynomial(enumerate([12, 6, 1]), Z)
-        r = zassenhaus.padicFactorization(f)
+        r = zassenhaus.padic_factorization(f)
         self.assert_(isinstance(r, tuple), r)
 
 
