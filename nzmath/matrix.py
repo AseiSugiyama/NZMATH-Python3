@@ -79,13 +79,13 @@ class Matrix:
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
 
-        sum = self.__class__(self.row, self.column)
+        sums = self.__class__(self.row, self.column)
 
         for i in range(1, self.row+1):
             for j in range(1, self.column+1):
-                sum[i,j] = self[i,j] + other[i,j]
+                sums[i,j] = self[i,j] + other[i,j]
 
-        return sum
+        return sums
 
     def __sub__(self, other):
         if (self.row != other.row) or (self.column != other.column):
@@ -110,7 +110,7 @@ class Matrix:
             for i in range(1, self.row+1):
                 for j in range(1, other.column+1):
                     for k in range(self.column):
-                        product[i,j] += self[i,k] * other[k,j]
+                        product[i,j] = product[i,j] + self[i,k] * other[k,j]
             return product
         elif isinstance(other, vector.Vector):
             if self.column != len(other):
@@ -118,7 +118,7 @@ class Matrix:
             tmp = [0] * self.row
             for i in range(1, self.row+1):
                 for j in range(1, self.column+1):
-                    tmp[i-1] += self[i,j] * other[j]
+                    tmp[i-1] = tmp[i-1] + self[i,j] * other[j]
             return vector.Vector(tmp)
         else:
             product = self.__class__(self.row, self.column)
@@ -150,7 +150,7 @@ class Matrix:
             tmp = [0] * self.column
             for j in range(1, self.column+1):
                 for i in range(1, self.row+1):
-                    tmp[j-1] += other[i] * self[i,j]
+                    tmp[j-1] = tmp[j-1] + other[i] * self[i,j]
             return vector.Vector(tmp)
         else:
             product = createMatrix(self.row, self.column)
@@ -354,11 +354,11 @@ class Matrix:
                 inv_i_i = ring.inverse(triangle.compo[i][i])
                 ratio = triangle.compo[k][i] * inv_i_i
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] -= triangle.compo[i][l] * ratio
+                    triangle.compo[k][l] = triangle.compo[k][l] - triangle.compo[i][l] * ratio
 
         if flag:
             for j in range(triangle.row, triangle.column+1):
-                triangle[triangle.row, j] *= -1
+                triangle[triangle.row, j] = triangle[triangle.row, j] * (-1)
         return triangle
 
     def isUpperTriangularMatrix(self):
@@ -498,23 +498,23 @@ class Matrix:
             for k in range(j+1, m):
                 ck = d * M.compo[k][j]
                 for l in range(j+1, n):
-                    M.compo[k][l] -= ck * M.compo[j][l]
+                    M.compo[k][l] = M.compo[k][l] - ck * M.compo[j][l]
                 for l in range(r):
-                    B.compo[k][l] -= ck * B.compo[j][l]
+                    B.compo[k][l] = B.compo[k][l] - ck * B.compo[j][l]
         # step 6
         for i in range(n-1, -1, -1):
             for k in range(r):
-                sum = 0
+                sums = 0
                 for j in range(i+1, n):
-                    sum += M.compo[i][j] * X.compo[j][k]
-                X.compo[i][k] = (B.compo[i][k] - sum) / M.compo[i][i]
+                    sums = sums + M.compo[i][j] * X.compo[j][k]
+                X.compo[i][k] = (B.compo[i][k] - sums) / M.compo[i][i]
 
         for k in range(n+1, m):
             for j in range(r):
-                sum = 0
+                sums = 0
                 for i in range(n):
-                    sum += M.compo[k][i] * X.compo[i][j]
-                if (sum != B.compo[k][j]):
+                    sums = sums + M.compo[k][i] * X.compo[i][j]
+                if (sums != B.compo[k][j]):
                     raise NoInverseImage, "some vectors are not in the inverse image"
 
         return X
@@ -595,7 +595,7 @@ class SquareMatrix(Matrix):
 
         while 1:
             if n % 2 == 1:
-                power *= z
+                power = power * z
             n //= 2
             if n == 0:
                 return power
@@ -640,7 +640,7 @@ class SquareMatrix(Matrix):
         """
         trace = 0
         for i in range(self.row):
-            trace += self.compo[i][i]
+            trace = trace + self.compo[i][i]
         return trace
 
     def determinant(self):
@@ -652,7 +652,7 @@ class SquareMatrix(Matrix):
             raise MatrixSizeError, "not square matrix"
         triangle = self.triangulate()
         for i in range(self.row):
-            det *= triangle.compo[i][i]
+            det = det * triangle.compo[i][i]
         return det
 
     def cofactors(self):
@@ -664,7 +664,7 @@ class SquareMatrix(Matrix):
             for j in range(cofactors.column):
                 cofactors.compo[j][i] = (self.submatrix(i+1, j+1)).determinant()
                 if (i+j) & 1:
-                    cofactors.compo[j][i] *= -1
+                    cofactors.compo[j][i] = cofactors.compo[j][i] * (-1)
         return cofactors
 
     def inverse(self):
@@ -749,7 +749,7 @@ class SquareMatrix(Matrix):
                 if H[i, m-1] != 0:
                     u = H[i, m-1] / t
                     for j in range(m, n+1):
-                        H[i, j] -= u * H[m, j]
+                        H[i, j] = H[i, j] - u * H[m, j]
                         H[i, m-1] = 0
                     H.setColumn(m, H[m] + u * H[i])
         return H
@@ -810,7 +810,7 @@ class IntegerMatrix(Matrix):
         if not other:
             raise ZeroDivisionError
         for i in range(self.row):
-            self[i] %= other
+            self[i] = self[i] % other
         return self
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
@@ -1144,7 +1144,7 @@ class Subspace(Matrix):
                 d *= M.compo[s][j]
                 for i in range(n):
                     if i != s and i != t:
-                        M.compo[i][j] -= M.compo[i][s] * d
+                        M.compo[i][j] = M.compo[i][j] - M.compo[i][s] * d
                     else:
                         M.compo[i][j] = 0
         return B
