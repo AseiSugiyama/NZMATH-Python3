@@ -170,6 +170,19 @@ class SquareMatrixTest(unittest.TestCase):
         self.assertEqual(cinverse, c.inverse())
         self.assertRaises(VectorsNotIndependent, noinverse.inverse)
 
+    def testInverseNoChange(self):
+        # sf bug#1849220
+        M1 = SquareMatrix(2, 2, [rational.Rational(1, 2),
+                                 rational.Rational(1, 2),
+                                 rational.Rational(1, 1),
+                                 rational.Rational(-3, 2)])
+        M1.inverse()
+        M2 = SquareMatrix(2, 2, [rational.Rational(1, 2),
+                                 rational.Rational(1, 2),
+                                 rational.Rational(1, 1),
+                                 rational.Rational(-3, 2)])
+        self.assertEqual(M2, M1)
+
     def testCharacteristicPolynomial(self):
         assert a.characteristicPolynomial()
 
