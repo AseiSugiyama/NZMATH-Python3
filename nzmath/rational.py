@@ -323,65 +323,6 @@ class Rational (ring.QuotientFieldElement):
         if common_divisor != 1:
             self.numerator //= common_divisor
             self.denominator //= common_divisor
-
-    def __iadd__(self, other):
-        if isinstance(other, Rational):
-            self.numerator = self.numerator*other.denominator + self.denominator*other.numerator
-            self.denominator = self.denominator*other.denominator
-        elif isIntegerObject(other):
-            self.numerator += self.denominator*other
-        else:
-            return NotImplemented
-        self._reduce()
-        return self
-
-    def __isub__(self, other):
-        if isinstance(other, Rational):
-            self.numerator = self.numerator*other.denominator - self.denominator*other.numerator
-            self.denominator = self.denominator*other.denominator
-        elif isIntegerObject(other):
-            self.numerator -= self.denominator*other
-        else:
-            return NotImplemented
-        self._reduce()
-        return self
-
-    def __imul__(self, other):
-        if isinstance(other, Rational):
-            self.numerator *= other.numerator
-            self.denominator *= other.denominator
-        elif isIntegerObject(other):
-            self.numerator *= other
-        else:
-            return NotImplemented
-        self._reduce()
-        return self
-
-    def __itruediv__(self, other):
-        if isinstance(other, Rational):
-            self.numerator *= other.denominator
-            self.denominator *= other.numerator
-        elif isIntegerObject(other):
-            self.denominator *= other
-        else:
-            return NotImplemented
-        self._reduce()
-        return self
-
-    __idiv__ = __itruediv__
-    __ifloordiv__ = __itruediv__
-
-    def __ipow__(self, index):
-        assert isIntegerObject(index)
-        if index > 0:
-            self.numerator **= index
-            self.denominator **= index
-        elif index < 0:
-            self.numerator, self.denominator = self.denominator ** (-index), self.numerator ** (-index)
-        else:
-            self = Integer(1)
-        return self
-
     def __float__(self):
         return float(self.decimalString(17))
 
