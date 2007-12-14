@@ -9,9 +9,9 @@ class CountTest (unittest.TestCase):
         from_maxint = [maxint, maxint+1, maxint+2]
         self.assertEqual(from_maxint,
                          [i for i in itertools.islice(bigrange.count(maxint), 3)])
-        # otoh, itertools.count
-        self.assertNotEqual(from_maxint,
-                         [i for i in itertools.islice(itertools.count(maxint), 3)])
+        # otoh, itertools.count raises ...
+        self.assertRaises(OverflowError,
+                          itertools.islice(itertools.count(maxint), 3).next)
 
 
 class ProgressionTest (unittest.TestCase):
