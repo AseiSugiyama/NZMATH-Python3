@@ -96,6 +96,9 @@ class ImaginaryTest (unittest.TestCase):
         assert imaginary.pi ==real.pi
         assert (0,1) == (imaginary.j.real, imaginary.j.imag)
 
+    def testGetRing(self):
+        self.assertEqual(imaginary.theComplexField, imaginary.Complex(1).getRing())
+
 
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):

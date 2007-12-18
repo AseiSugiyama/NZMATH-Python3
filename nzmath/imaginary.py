@@ -8,7 +8,7 @@ import nzmath.real as real
 import nzmath.rational as rational
 import nzmath.ring as ring
 
-class Complex:
+class Complex (ring.FieldElement):
     """
     Complex is a class for complex numbers.  Each instance has a coupled
     numbers; real and imaginary part of the number.
@@ -194,6 +194,12 @@ class Complex:
 
     def __complex__(self):
         return complex(float(self.real), float(self.imag))
+
+    def getRing(self):
+        """
+        Return the complex field instance.
+        """
+        return theComplexField
 
 
 class ComplexField (ring.Field):
