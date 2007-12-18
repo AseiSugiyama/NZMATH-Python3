@@ -70,6 +70,18 @@ class CatalanTest (unittest.TestCase):
         self.assertEqual([1, 1, 2, 5, 14], [catalan(i) for i in range(5)])
 
 
+class EulerTest (unittest.TestCase):
+    def testOdd(self):
+        self.assertEqual(0, euler(1))
+        self.assertEqual(0, euler(101))
+
+    def testEven(self):
+        self.assertEqual(1, euler(0))
+        self.assertEqual(-1, euler(2))
+        self.assertEqual(5, euler(4))
+        self.assertEqual(-61, euler(6))
+
+
 class MultinomialTest (unittest.TestCase):
     def testBinomial(self):
         """

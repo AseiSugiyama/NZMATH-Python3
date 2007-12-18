@@ -58,14 +58,14 @@ def bernoulli(n):
     Return n-th Bernoulli number.
     """
     if n != 1 and n & 1:
-        return 0
+        return Integer(0)
     B = {0:Integer(1),
          1:Rational(-1, 2)}
-    for i in range(2, n+1, 2):
-        a = B[0] + (i+1)*B[1]
+    for i in range(2, n + 1, 2):
+        a = B[0] + (i + 1) * B[1]
         for j in range(2, i, 2):
-            a += binomial(i+1, j) * B[j]
-        B[i] = -a / (i+1)
+            a += binomial(i + 1, j) * B[j]
+        B[i] = -a / (i + 1)
     return B[n]
 
 def catalan(n):
@@ -73,6 +73,17 @@ def catalan(n):
     Return n-th Catalan number.
     """
     return binomial(2*n, n) // (n+1)
+
+def euler(n):
+    """
+    Return n-th Euler number.
+    """
+    if n & 1:
+        return Integer(0)
+    E = {0:Integer(1)}
+    for i in range(2, n + 1, 2):
+        E[i] = sum([-binomial(i, j) * E[j] for j in range(0, i, 2)])
+    return E[n]
 
 def combinationIndexGenerator(n, m):
     """
