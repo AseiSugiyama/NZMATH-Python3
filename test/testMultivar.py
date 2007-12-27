@@ -46,6 +46,14 @@ class BasicPolynomialTest (unittest.TestCase):
         self.assertEqual(sprod, self.f * 7)
         self.assertEqual(sprod, 7 * self.f)
 
+    def testTermMul(self):
+        """
+        multiplication by a term.
+        """
+        prod1 = multivar.BasicPolynomial({(2, 4, 6): 36})
+        self.assertEqual(prod1, self.f.term_mul(self.g))
+        self.assertEqual(prod1, self.f.term_mul(((1, 2, 3), 9)))
+
     def testSquare(self):
         """
         squaring

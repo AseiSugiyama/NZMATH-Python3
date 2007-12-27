@@ -126,6 +126,26 @@ class TermIndeces (object):
         index = self.__class__(self._tuple[:pos] + self._tuple[pos + 1:])
         return self._tuple[pos], index
 
+    def gcd(self, other):
+        """
+        Return the greatest common divisor.
+
+        gcd((i1, ..., in), (j1, ..., jn)) = (min(i1, j1), ..., min(in, jn))
+        """
+        if len(self) != len(other):
+            raise TypeError("different length indeces")
+        return self.__class__([min(i, j) for (i, j) in zip(self, other)])
+
+    def lcm(self, other):
+        """
+        Return the least common multiple.
+        
+        lcm((i1, ..., in), (j1, ..., jn)) = (max(i1, j1), ..., max(in, jn))
+        """
+        if len(self) != len(other):
+            raise TypeError("different length indeces")
+        return self.__class__([max(i, j) for (i, j) in zip(self, other)])
+
 
 class PolynomialInterface (formalsum.FormalSumContainerInterface):
     """
@@ -240,6 +260,20 @@ class BasicPolynomial (PolynomialInterface):
         Return the result of scalar multiplication.
         """
         return self.__class__([(i, c * scale) for (i, c) in self if c],
+                              number_of_variables=self.number_of_variables,
+                              **self._init_kwds)
+
+    def term_mul(self, term):
+        """
+        Return the result of multiplication with the given term.
+        The term can be given as a tuple (degree indeces, coeff)
+        or as a Polynomial instance.
+        """
+        if isinstance(term, PolynomialInterface):
+            degrees, coeff = iter(term).next()
+        else:
+            degrees, coeff = term
+        return self.__class__([(d + degrees, c * coeff) for (d, c) in self],
                               number_of_variables=self.number_of_variables,
                               **self._init_kwds)
 
