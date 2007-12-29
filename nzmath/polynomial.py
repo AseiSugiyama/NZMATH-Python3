@@ -2239,9 +2239,9 @@ class OneVariablePolynomialIdeal (ring.Ideal):
         variable, with the given generators.
         """
         ring.Ideal.__init__(self, generators, aRing)
-        if self.ring.ispid():
+        if self.ring.ispid() and len(self.generators) > 1:
             g = self.generators[0]
-            for t in self.generators:
+            for t in self.generators[1:]:
                 g = self.ring.gcd(t, g)
             if self.ring.getCoefficientRing().isfield():
                 if g.leadingCoefficient() != aRing.getCoefficientRing().one:
@@ -2256,6 +2256,8 @@ class OneVariablePolynomialIdeal (ring.Ideal):
         for e in the ring, to which the ideal I belongs.
         """
         assert self.ring == element.getRing()
+        if self.generators == [self.ring.zero]:
+            return element == self.ring.zero
         for g in self.generators:
             if not element % g:
                 return True

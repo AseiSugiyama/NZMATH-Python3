@@ -216,7 +216,7 @@ class PolynomialIdealTest (unittest.TestCase):
         f_ideal = uniutil.PolynomialIdeal(f, self.zx)
         self.failIf(whole.reduce(f))
         self.assert_(f_ideal.reduce(self.Z.one))
-        # yet to be implemented
+
         two_generators = uniutil.PolynomialIdeal([f, self.zx.createElement(5)], self.zx)
         self.failIf(two_generators.reduce(f))
         self.assert_(two_generators.reduce(self.Z.one))
@@ -227,6 +227,11 @@ class PolynomialIdealTest (unittest.TestCase):
         i2 = uniutil.PolynomialIdeal([self.zx.createElement(5), f], self.zx)
         self.assertEqual(i1.generators, i2.generators)
         self.assertEqual(i1, i2)
+
+    def testZeroIdeal(self):
+        null = uniutil.PolynomialIdeal(self.zx.zero, self.zx)
+        self.assert_(self.zx.zero in null)
+        self.failIf(self.zx.one in null)
 
 
 def suite(suffix="Test"):

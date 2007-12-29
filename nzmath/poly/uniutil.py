@@ -1073,8 +1073,10 @@ class PolynomialIdeal (ring.Ideal):
         """
         Return whether elem is in the ideal or not.
         """
-        if elem.getRing() != self.ring:
+        if not elem.getRing().issubring(self.ring):
             return False
+        if self.generators == [self.ring.zero]:
+            return elem == self.ring.zero
         return not self.reduce(elem)
 
     def __nonzero__(self):

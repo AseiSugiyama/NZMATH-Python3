@@ -13,7 +13,7 @@ import nzmath.ring as _ring
 import nzmath.poly.formalsum as formalsum
 
 
-_log = logging.getLogger('nzmath.sandbox.multivar')
+_log = logging.getLogger('nzmath.poly.multivar')
 
 
 class TermIndeces (object):

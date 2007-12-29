@@ -384,7 +384,9 @@ class Ideal (object):
         if type(self) is Ideal:
             raise NotImplementedError("class Ideal is abstract")
         self.ring = aring
-        if generators in self.ring:
+        if not generators:
+            self.generators = [self.ring.zero]
+        elif generators in self.ring:
             self.generators = [generators]
         else:
             self.generators = list(generators)

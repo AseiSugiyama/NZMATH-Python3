@@ -689,7 +689,7 @@ class OneVariablePolynomialCoefficientsTest (unittest.TestCase):
 
 class PolynomialIdealTest (unittest.TestCase):
     def setUp(self):
-        QX = PolynomialRing(Q, 'X')
+        QX = self.QX = PolynomialRing(Q, 'X')
         self.g = OneVariableDensePolynomial([3, 0, 0, 1], 'X', Q)
         self.I = OneVariablePolynomialIdeal(self.g, QX)
 
@@ -703,6 +703,11 @@ class PolynomialIdealTest (unittest.TestCase):
         f = OneVariableSparsePolynomial({13: 1, 100: 2}, 'X', Q)
         self.I.reduce(f)
         self.assertEqual(self.I.reduce(f), f % self.g)
+
+    def testZeroIdeal(self):
+        null = OneVariablePolynomialIdeal(self.QX.zero, self.QX)
+        self.assert_(self.QX.zero in null)
+        self.failIf(self.QX.one in null)
 
 
 class OneVariableMonomialTest (unittest.TestCase):
