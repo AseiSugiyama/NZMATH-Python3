@@ -204,6 +204,9 @@ class PolynomialIdealTest (unittest.TestCase):
         self.zx = uniutil.PolynomialRingAnonymousVariable(self.Z)
         self.qx = uniutil.PolynomialRingAnonymousVariable(self.Q)
 
+    def testNonzero(self):
+        self.failIf(uniutil.PolynomialIdeal(self.Q.zero, self.qx))
+
     def testReduceFieldPolynomial(self):
         whole = uniutil.PolynomialIdeal(self.Q.one, self.qx)
         f = uniutil.polynomial([(1, self.Q.createElement(3, 4))], self.Q)
