@@ -175,6 +175,48 @@ class GcdProviderTest (unittest.TestCase):
         self.assertEqual(self.g, self.fz.gcd(self.gz))
 
 
+class PolynomialRingAnonymousVariablesTest (unittest.TestCase):
+    def setUp(self):
+        Z = self.Z = rational.theIntegerRing
+        self.Z2 = multiutil.PolynomialRingAnonymousVariables(Z, 2)
+
+    def testTrivial(self):
+        self.assertEqual(self.Z2, self.Z2)
+        self.assertEqual("Z[][]", str(self.Z2))
+
+    def testCreateElement(self):
+        """
+        createElement method is tweaked in uniutil.
+        """
+        one = multiutil.polynomial({(0, 0): 1}, self.Z)
+        self.assertEqual(one, self.Z2.createElement(1))
+
+    def testOne(self):
+        one = multiutil.polynomial({(0, 0): 1}, self.Z)
+        self.assertEqual(one, self.Z2.one)
+        
+    def testZero(self):
+        zero = multiutil.polynomial({}, self.Z, 2)
+        self.assertEqual(zero, self.Z2.zero)
+
+
+class PolynomialIdealTest (unittest.TestCase):
+    def setUp(self):
+        self.Z = rational.theIntegerRing
+        self.Q = rational.theRationalField
+        self.Z2 = multiutil.PolynomialRingAnonymousVariables(self.Z, 2)
+        self.Q3 = multiutil.PolynomialRingAnonymousVariables(self.Q, 3)
+
+    def testNonzero(self):
+        self.failIf(multiutil.PolynomialIdeal(self.Q3.zero, self.Q3))
+        self.assert_(multiutil.PolynomialIdeal([self.Q3.one], self.Q3))
+
+    def testZeroIdeal(self):
+        null = multiutil.PolynomialIdeal(self.Z2.zero, self.Z2)
+        self.assert_(self.Z2.zero in null)
+        self.failIf(self.Z2.one in null)
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

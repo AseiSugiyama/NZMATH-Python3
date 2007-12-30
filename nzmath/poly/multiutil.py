@@ -6,7 +6,6 @@ from __future__ import division
 import nzmath.rational as rational
 import nzmath.rationalFunction as rationalfunction
 import nzmath.ring as ring
-import nzmath.poly.univar as univar
 import nzmath.poly.termorder as termorder
 import nzmath.poly.uniutil as uniutil
 import nzmath.poly.multivar as multivar
@@ -522,7 +521,7 @@ class PolynomialRingAnonymousVariables (ring.CommutativeRing):
         "getter for zero"
         if self._zero is None:
             self._zero = self.createElement(self._coefficient_ring.zero)
-        return self._one
+        return self._zero
 
     zero = property(_getZero, None, None, "additive unit")
 
@@ -560,6 +559,46 @@ class PolynomialRingAnonymousVariables (ring.CommutativeRing):
         return cls._instances[coeffring, number_of_variables]
 
     getInstance = classmethod(getInstance)
+
+
+class PolynomialIdeal (ring.Ideal):
+    """
+    Multivariate polynomial ideal.
+    """
+    def __init__(self, generators, aring):
+        """
+        Initialize a polynomial ideal.
+        """
+        ring.Ideal.__init__(self, generators, aring)
+
+    def __contains__(self, elem):
+        """
+        Return whether elem is in the ideal or not.
+        """
+        if not elem.getRing().issubring(self.ring):
+            return False
+        if self.generators == [self.ring.zero]:
+            return elem == self.ring.zero
+        return not self.reduce(elem)
+
+    def __nonzero__(self):
+        """
+        Report whether the ideal is zero ideal or not.  Of course,
+        False is for zero ideal.
+        """
+        return self.generators and self.generators != [self.ring.zero]
+
+    def __repr__(self):
+        """
+        Return repr string.
+        """
+        return "%s(%r, %r)" % (self.__class__.__name__, self.generators, self.ring)
+
+    def __str__(self):
+        """
+        Return str string.
+        """
+        return "(%s)%s" % (", ".join([str(g) for g in self.generators]), self.ring)
 
 
 # factories

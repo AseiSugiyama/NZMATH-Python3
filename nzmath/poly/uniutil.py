@@ -1082,9 +1082,21 @@ class PolynomialIdeal (ring.Ideal):
     def __nonzero__(self):
         """
         Report whether the ideal is zero ideal or not.  Of course,
-        False is for null ideal.
+        False is for zero ideal.
         """
         return self.generators and self.generators != [self.ring.zero]
+
+    def __repr__(self):
+        """
+        Return repr string.
+        """
+        return "%s(%r, %r)" % (self.__class__.__name__, self.generators, self.ring)
+
+    def __str__(self):
+        """
+        Return str string.
+        """
+        return "(%s)%s" % (", ".join([termorder.ascending_order.format(g) for g in self.generators]), self.ring)
 
     def issubset(self, other):
         """
