@@ -146,6 +146,12 @@ class TermIndeces (object):
             raise TypeError("different length indeces")
         return self.__class__([max(i, j) for (i, j) in zip(self, other)])
 
+    def total_degree(self):
+        """
+        Return the total degree of indeces, i.e. the sum of indeces.
+        """
+        return sum(self)
+
 
 class PolynomialInterface (formalsum.FormalSumContainerInterface):
     """
@@ -158,6 +164,12 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         if not isinstance(other, PolynomialInterface):
             warnings.warn("comparison falls back to that of formal sum.")
         return formalsum.FormalSumContainerInterface.__eq__(self, other)
+
+    def total_degree(self):
+        """
+        Return the maximum total degree of terms.
+        """
+        return max([b.total_degree() for b in self.iterbases()])
 
 
 class BasicPolynomial (PolynomialInterface):
