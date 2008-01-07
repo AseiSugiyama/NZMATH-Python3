@@ -196,6 +196,32 @@ class PolynomialRingAnonymousVariableTest (unittest.TestCase):
         one = uniutil.polynomial({0: 1}, rational.theIntegerRing)
         self.assertEqual(one, self.zx.createElement(1))
 
+    def testOne(self):
+        one = uniutil.polynomial({0: 1}, rational.theIntegerRing)
+        self.assertEqual(one, self.zx.one)
+        try:
+            self.zx.one = 0
+        except AttributeError:
+            # should be raised.
+            pass
+        except:
+            self.failIf(False, "unexcepted error is raised")
+        else:
+            self.failIf(False, "assignment should be prohibited")
+
+    def testZero(self):
+        zero = uniutil.polynomial((), rational.theIntegerRing)
+        self.assertEqual(zero, self.zx.zero)
+        try:
+            self.zx.zero = 0
+        except AttributeError:
+            # should be raised.
+            pass
+        except:
+            self.failIf(False, "unexcepted error is raised")
+        else:
+            self.failIf(False, "assignment should be prohibited")
+
 
 class PolynomialIdealTest (unittest.TestCase):
     def setUp(self):
@@ -235,6 +261,15 @@ class PolynomialIdealTest (unittest.TestCase):
         null = uniutil.PolynomialIdeal(self.zx.zero, self.zx)
         self.assert_(self.zx.zero in null)
         self.failIf(self.zx.one in null)
+
+
+class FieldPolynomialTest (unittest.TestCase):
+    def testDivision(self):
+        f = uniutil.FieldPolynomial([(1, 1)], rational.theRationalField)
+        g = uniutil.FieldPolynomial([(1, 1)], rational.theRationalField)
+        q = uniutil.FieldPolynomial([(0, 1)], rational.theRationalField)
+        self.assertEqual(q, f // g)
+        self.assertEqual(f.getRing().zero, f % g)
 
 
 def suite(suffix="Test"):

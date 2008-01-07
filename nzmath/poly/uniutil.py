@@ -998,7 +998,9 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
         """
         if ring.getRing(seed) == self:
             return seed
-        if seed in self._coefficient_ring:
+        elif not seed:
+            return polynomial((), self._coefficient_ring)
+        elif seed in self._coefficient_ring:
             return polynomial([(0, seed)], self._coefficient_ring)
         else:
             return polynomial(seed, self._coefficient_ring)
