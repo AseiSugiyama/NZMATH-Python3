@@ -18,6 +18,8 @@ HPdoc = '/nzmath/'
 
 # normal option
 ad_list = set(['UserManual']) # start page's list
+del_list = set(['FrontPage', 'OtherProjects', 'BracketName', 'InterWikiName', 'References'])
+up_list = set(['UserManual', 'Install', 'Tutorial', 'FAQ'])
 ja_flag = False # japanese manual
 p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
@@ -53,7 +55,7 @@ def convertFileName(url):
     split_url = urlparse.urlparse(url)
     try:
         if split_url[1] == basepla:
-            if split_url[4] in ('BracketName', 'InterWikiName', 'References'):
+            if split_url[4] in del_list:
                 raise InputError
             elif split_url[4][:8] == 'cmd=edit':
                 raise InputError
@@ -68,12 +70,11 @@ def convertFileName(url):
         return url.replace('&', '&amp;')
 
 def FileNameToFile(files):
-    if files == 'UserManual':
-        return "index.html"
-    elif files == 'Install':
-        return "install.html"
-    elif files == 'Tutorial':
-        return "tutorial.html"
+    if files in up_list:
+        if  files == 'UserManual':
+            return "index.html"
+        else:
+            return files.lower() + ".html"
     else: # modules
         sol = files.replace('.py', '').replace('%2F', '_').replace('%20%28ja%29', '.ja')
         return 'modules/' + sol + '.html'
@@ -285,7 +286,9 @@ def main(basepath):
         if p_out:
             print 'end.'
     except InputError:
-        print "Invalid input!"
+        print "Error: Invalid input!"
+    except LookupError:
+        print "Error: Maybe, Japanese encodings(ex.euc_jp) is not supported"
     except:
         if p_out:
             print "Check" + basepath + "(dir? truly path? and so on.)\n"
