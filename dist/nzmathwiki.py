@@ -18,8 +18,8 @@ HPdoc = '/nzmath/'
 
 # normal option
 ad_list = set(['UserManual']) # start page's list
-del_list = set(['FrontPage', 'OtherProjects', 'BracketName', 'InterWikiName', 'References'])
-up_list = set(['UserManual', 'Install', 'Tutorial', 'FAQ'])
+del_list = set(['', 'FrontPage', 'OtherProjects', 'BracketName', 'InterWikiName', 'References']) # not use as local file
+up_list = set(['UserManual', 'Install', 'Tutorial', 'FAQ']) # not module page
 ja_flag = False # japanese manual
 p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
