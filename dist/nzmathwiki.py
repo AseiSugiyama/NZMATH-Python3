@@ -25,7 +25,7 @@ p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
 
 # for japanese up_list
-up_list =  up_list + [x+'%20%28ja%29' for x in up_list] + [x+'.ja' for x in up_list]
+up_list =  set(list(up_list) + [x+'%20%28ja%29' for x in up_list] + [x+'.ja' for x in up_list])
 
 
 #------ utility function
