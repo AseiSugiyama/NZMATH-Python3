@@ -1,3 +1,7 @@
+"""
+This program creates manual for NZMATH from NZMATH wiki.
+"""
+
 from HTMLParser import HTMLParser
 import datetime
 import os
@@ -25,18 +29,25 @@ p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
 
 # for japanese up_list
-up_list =  set(list(up_list) + [x+'%20%28ja%29' for x in up_list] + [x+'.ja' for x in up_list])
+if ja_flag:
+    up_list =  set(list(up_list) + [x+'.ja' for x in up_list])
 
 
 #------ utility function
 def back_to_tag(tag, attrs):
+    """
+    recover tag from tag name and attributes.
+    """
     sol = '<' + tag
     for (prop, val) in attrs:
-         sol += ' ' + prop + '="' + val + '"'
+        sol += ' ' + prop + '="' + val + '"'
     sol += '>'
     return sol
 
 def getHeader(files):
+    """
+    create header
+    """
     head = '<div id="header">' + '\n'
     head += ' <h1 class="title">'
     head += '<a href="'
@@ -47,6 +58,9 @@ def getHeader(files):
     return head
 
 def getFooter():
+    """
+    create footer
+    """
     foot = '<div id="footer">' + '\n'
     foot += ' Copyright &copy; 2003-' + str(datetime.datetime.today().year) + ', '
     foot += '<a href="'
@@ -56,6 +70,9 @@ def getFooter():
     return foot
 
 def convertFileName(url):
+    """
+    convert url to local file name.(FileNameToFile is essential)
+    """
     split_url = urlparse.urlparse(url)
     try:
         if split_url[1] == basepla:
@@ -74,25 +91,43 @@ def convertFileName(url):
         return url.replace('&', '&amp;')
 
 def FileNameToFile(files):
+    """
+    convert url to file name essentially.
+    """
+    files = files.replace('%20%28ja%29', '.ja')
     if files in up_list:
         if  files == 'UserManual':
             return "index.html"
+        elif files == 'UserManual.ja':
+            return "index.ja.html"
         else:
             return files.lower() + ".html"
     else: # modules
-        sol = files.replace('.py', '').replace('%2F', '_').replace('%20%28ja%29', '.ja')
+        sol = files.replace('.py', '').replace('%2F', '_')
         return 'modules/' + sol + '.html'
 
 def convertWikiURL(files):
+    """
+    convert file to wiki address.
+    """
     return urlparse.urlunsplit( ('http', basepla, basewiki, files, '') )
 
 def convertDocURL(files):
+    """
+    convert file to document(manual address) address.
+    """
     return urlparse.urlunsplit( ('http', basepla, basedoc, files, '') )
 
 def convertHPURL(files):
+    """
+    convert file to NZMATH homepage address.
+    """
     return urlparse.urlunsplit( ('http', HPpla, HPdoc + files, '', '') )
 
 def convertEntity(data):
+    """
+    convert 2byte character to HTML entity. 
+    """
     txt = unicode(str(data), 'euc_jp')
     sol = u''
     for char in txt:
@@ -108,13 +143,22 @@ def convertEntity(data):
 
 #------ Error Class
 class NoneOutput(Exception):
+    """
+    Exception class for no output(simillar to GoTo statement)
+    """
     pass
 
 class InputError(Exception):
+    """
+    for Input Exception
+    """
     pass
 
 #------ create modified html
 class MyWikiParser(HTMLParser):
+    """
+    create modified html(main module)
+    """
     def __init__(self, files):
         self.files = files
         self.url = convertDocURL(files)
@@ -167,7 +211,8 @@ class MyWikiParser(HTMLParser):
                                 else:
                                     p_f_name = p_f_name[8:]
                             if f_name[1] != '':
-                                p_attrs[0] = (attrs[0][0], p_f_name + '#' + f_name[1])
+                                p_attrs[0] = (attrs[0][0], p_f_name +
+                                              '#' + f_name[1])
                             else:
                                 p_attrs[0] = (attrs[0][0], p_f_name)
                             if not(os.path.exists(f_name[0])):
@@ -233,13 +278,16 @@ class MyWikiParser(HTMLParser):
         HTMLParser.feed(self, urllib.urlopen(self.url).read())
 
 #------ preparation
-def main(basepath):
+def main(base_path):
+    """
+    preparation for creating files.
+    """
     current = os.getcwd()
     try:
-        if not(os.path.exists(basepath)):
+        if not(os.path.exists(base_path)):
             ans = 'y'
             if p_out:
-                print "Do you want to create " + basepath + "?(y/n)"
+                print "Do you want to create " + base_path + "?(y/n)"
                 ans = sys.stdin.read(1)
                 print ""
             if ans in ('y', 'Y'):
@@ -249,7 +297,7 @@ def main(basepath):
             else:
                 raise InputError
         else:
-            m_path = os.path.join(basepath, 'nzmath/manual')
+            m_path = os.path.join(base_path, 'nzmath/manual')
             if os.path.exists(m_path):
                 ans = 'y'
                 if p_out:
@@ -266,10 +314,10 @@ def main(basepath):
                     raise NoneOutput
                 else:
                     raise InputError
-        dirname = os.path.join(basepath, 'nzmath/manual/modules')
+        dirname = os.path.join(base_path, 'nzmath/manual/modules')
         if not(os.path.exists(dirname)):
             os.makedirs(dirname)
-        os.chdir(os.path.join(basepath, 'nzmath/manual/'))
+        os.chdir(os.path.join(base_path, 'nzmath/manual/'))
         csspage = convertHPURL('manual/default.css')
         if p_out:
             print "get css from " + csspage
@@ -281,7 +329,7 @@ def main(basepath):
         if p_out:
             print "\n" + "All process is done!" + "\n"
             print "Ok, now created nzmath-current manual located to"
-            print os.path.join(basepath, "nzmath")
+            print os.path.join(base_path, "nzmath")
             print "if you check difference between nzmath-cvs manual, with GNU diff,"
             print "$ diff -ubBr /tmp/nzmath/manual {your-nzmathcvs-repo}/manual"
             print "or you check only new version files,"
@@ -292,10 +340,12 @@ def main(basepath):
     except InputError:
         print "Error: Invalid input!"
     except LookupError:
-        print "Error: Maybe, Japanese encodings(ex.euc_jp) is not supported"
+        print "Error: Maybe, Japanese encodings(ex.euc_jp) is not supported."
     except:
         if p_out:
-            print "Check" + basepath + "(dir? truly path? and so on.)\n"
+            print "Check" + base_path + "(dir? truly path? and so on.)"
+            print "Delete" + base_path + "and try again."
+            print "(Maybe, caused by problem of network connection)\n"
         print sys.exc_info()[0]
     os.chdir(current)
 
