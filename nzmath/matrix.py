@@ -1117,13 +1117,10 @@ class Subspace(Matrix):
         B = unitMatrix(n)
 
         for s in range(k):
-            found = 0
-            t = s
-            while (not found and t < n):
-                found  = M.compo[t][s] != 0
-                if not found:
-                    t += 1
-            if not found:
+            for t in range(s, n):
+                if M.compo[t][s]:
+                    break
+            else:
                 raise VectorsNotIndependent
             d = ring.inverse(M.compo[t][s])
             M.compo[t][s] = 1
@@ -1132,21 +1129,15 @@ class Subspace(Matrix):
                     B.compo[i][t] = B.compo[i][s]
             for i in range(n):
                 B.compo[i][s] = self.compo[i][s]
-            for j in range(k):
-                for i in range(n):
-                    if i != s and i != t and i != j:
-                        M.compo[i][j] = 0
             for j in range(s+1,k):
                 if t != s:
                     tmp = M.compo[s][j]
                     M.compo[s][j] = M.compo[t][j]
                     M.compo[t][j] = tmp
-                d *= M.compo[s][j]
+                M.compo[s][j] *= d
                 for i in range(n):
                     if i != s and i != t:
-                        M.compo[i][j] = M.compo[i][j] - M.compo[i][s] * d
-                    else:
-                        M.compo[i][j] = 0
+                        M.compo[i][j] = M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
         return B
 
 
