@@ -263,6 +263,12 @@ class SubspaceTest(unittest.TestCase):
         supbase = createMatrix(3,3,[1,2,0,3,4,0,5,7,1])
         self.assertEqual(supbase, ba.supplementBasis())
 
+    def testSupplementBasisF2(self):
+        import nzmath.finitefield as finitefield
+        F2 = finitefield.FinitePrimeField.getInstance(2)
+        ba = Subspace(3, 2, [F2.one, F2.one, F2.one, F2.zero, F2.zero, F2.one])
+        self.assertEqual(3, ba.supplementBasis().column)
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
