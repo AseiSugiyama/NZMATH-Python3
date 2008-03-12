@@ -1,4 +1,5 @@
 from __future__ import division
+from math import floor
 from nzmath.matrix import Matrix
 from nzmath.matrix import VectorsNotIndependent
 from nzmath.vector import *
@@ -16,84 +17,90 @@ class Lattice:
     def bilinearForm(self, v1, v2):
         return v2.transpose() * self.quadraticForm * v1
 
-    def LLL(self):
-        """LLL transforms self.basis into LLL-reduced basis
-        and returns its transformation matrix."""
-        k=2
-        self.kmax = 1
-        self.bstar = [0] *( self.basis.column+1)
-        self.bstar[1] = self.basis[1].copy()
-        self.B = [0] * (self.basis.column+1)
-        self.B[1] = innerProduct(self.basis[1],self.basis[1])
-        self.H = self.basis.getRing().unitMatrix()
+def LLL(_basis, delta = 0.75):
+    """LLL transforms self.basis into LLL-reduced basis
+    and returns its transformation matrix."""
+    basis = _basis.copy()
+    k=2
+    kmax = 1
+    bstar = [0] * ( basis.column + 1)
+    bstar[1] = basis[1].copy()
+    B = [0] * (basis.column + 1)
+    B[1] = innerProduct(basis[1], basis[1])
+    H = basis.getRing().unitMatrix()
+    mu = []
+    for i in range(basis.column + 1):
+        mu.append( [0] * i)
 
-        #step2
-        self.mu = {}
-        while 1:
-            if (k > self.kmax):
-                self.kmax = k
-                self.bstar[k] = self.basis[k].copy()
-                for j in range(1, k):
-                    self.mu[(k,j)] = innerProduct(self.basis[k],self.bstar[j]) / self.B[j]
-                    self.bstar[k] = self.bstar[k] - self.mu[(k,j)] * self.bstar[j]
-                    self.B[k] = innerProduct(self.bstar[k],self.bstar[k])
-                    if (self.B[k] == 0):
-                        raise VectorsNotIndependent
-            #step3
-            while 1:
-                self._RED(k,k-1)
-                if self.B[k] < (0.75-self.mu[(k,k-1)]*self.mu[(k,k-1)]) * self.B[k-1]:
-                    self._SWAP(k)
-                    k = max([2,k-1])
-                else:
-                    for l in range(k-2,0,-1):
-                        self._RED(k,l)
-                    k += 1
-                    break
-            #step4
-            if k <= self.basis.column:
-                pass
-            else:
-                del self.kmax
-                del self.bstar
-                del self.B
-                del self.mu
-
-                return self.H
-
-    def _RED(self,k,l):
-        from math import floor
-        if abs(self.mu[(k,l)]) <= 0.5:
+    def _RED(k, l):
+        if 2 * abs(mu[k][l]) <= 1:
             return
-        q = floor(0.5+self.mu[(k,l)])
-        self.basis[k] = self.basis[k] - q*self.basis[l]
-        self.H.setColumn(k, self.H[k] - q*self.H[l])
-        self.mu[(k,l)] -= q
+        q = int( floor(0.5 + mu[k][l]) )
+        basis[k] -= q * basis[l]
+        H[k] -= q * H[l] 
+        mu[k][l] -= q
         for i in range(1, l):
-            self.mu[(k,i)] -= q*self.mu[(l,i)]
+            mu[k][i] -= q * mu[l][i]
         return
 
-    def _SWAP(self, k):
-        self.basis.swapColumn(k,k-1)
-        self.H.swapColumn(k,k-1)
+    def _SWAP(k):
+        basis.swapColumn(k, k-1)
+        H.swapColumn(k, k-1)
         if k > 2:
-            for j in range(1,k-1):
-                self.mu[(k,j)],self.mu[(k-1,j)] = self.mu[(k-1,j)],self.mu[(k,j)]
-        _mu = self.mu[(k,k-1)]
-        _B = self.B[k] + _mu*_mu*self.B[k-1]
-        self.mu[(k,k-1)] = _mu*self.B[k-1]/_B
-        _b = self.bstar[k-1].copy()
-        self.bstar[k-1] = self.bstar[k] + _mu*_b
-        self.bstar[k] = -self.mu[(k,k-1)]*self.bstar[k] + (self.B[k]/_B)*_b
-        self.B[k] = self.B[k-1]*self.B[k]/_B
-        self.B[k-1] = _B
-        for i in range(k+1,self.kmax+1):
-            t = self.mu[(i,k)]
-            self.mu[(i,k)] = self.mu[(i,k-1)] - _mu*t
-            self.mu[(i,k-1)]  = t+self.mu[(k,k-1)]*self.mu[(i,k)]
+            for j in range(1, k-1):
+                mu[k][j], mu[k-1][j] = mu[k-1][j], mu[k][j]
+        _mu = mu[k][k-1]
+        _B = B[k] + _mu * _mu * B[k-1]
+        
+        if abs(_B) < (2**(-30)):
+            B[k], B[k-1] = B[k-1], B[k]
+            bstar[k], bstar[k-1] = bstar[k-1], bstar[k]
+            for i in range(k+1, kmax+1):
+                mu[i][k], mu[i][k-1] = mu[i][k-1], mu[i][k]
+        elif abs(B[k]) < (2**(-30)) and _mu != 0:
+            B[k-1] = _B
+            bstar[k-1] = _mu * bstar[k-1]
+            mu[k][k-1] = 1 / _mu
+            for i in range(k+1, kmax+1):
+                mu[i][k-1] = mu[i][k-1] / _mu
+        elif B[k] != 0:
+            t = B[k-1] / _B
+            mu[k][k-1] = _mu * t
+            _b = bstar[k-1].copy()
+            bstar[k-1] = bstar[k] + _mu * _b
+            bstar[k] = -mu[k][k-1]*bstar[k] + (B[k]/_B) * _b
+            B[k] = B[k] * t
+            B[k-1] = _B
+            for i in range(k+1, kmax+1):
+                t = mu[i][k]
+                mu[i][k] = mu[i][k-1] - _mu * t
+                mu[i][k-1]  = t + mu[k][k-1] * mu[i][k]
         return
-
-
+    
+    #step2
+    while k <= basis.column :
+        if (k > kmax):
+            kmax = k
+            bstar[k] = basis[k].copy()
+            for j in range(1, k):
+                if abs(B[j]) < (2**(-30)):
+                    mu[k][j] = 0
+                else:
+                    mu[k][j] = innerProduct(basis[k], bstar[j]) / B[j]
+                bstar[k] -= mu[k][j] * bstar[j]
+            B[k] = innerProduct(bstar[k], bstar[k])
+        #step3
+        while 1:
+            _RED(k,k-1)
+            if B[k] < (delta - mu[k][k-1] ** 2) * B[k-1]:
+                _SWAP(k)
+                k = max([2,k-1])
+            else:
+                for l in range(k-2, 0, -1):
+                    _RED(k, l)
+                k += 1
+                break
+    return basis, H
 
 class LatticeElement(Matrix):
 
