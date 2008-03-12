@@ -13,8 +13,8 @@ class Lattice:
     def createElement(self, compo):
         return LatticeElement(self, compo)
 
-#    def bilinearForm(self, v1, v2):
-#        return v2.transpose() * self.quadraticForm * v1
+    def bilinearForm(self, v1, v2):
+        return v2.transpose() * self.quadraticForm * v1
 
     def LLL(self):
         """LLL transforms self.basis into LLL-reduced basis
