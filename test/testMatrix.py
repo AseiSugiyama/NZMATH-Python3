@@ -2,24 +2,27 @@ from __future__ import division
 import unittest
 from nzmath.matrix import *
 import nzmath.vector as vector
+import nzmath.rational as rational
 
 # sub test
 from nzmath.test.testMatrixFiniteField import *
 
+Ra = rational.Rational
 
-a = createMatrix(2,2,[1,2,3,4])
 
-b = createMatrix(2,2,[0,-1,1,-2])
+a = createMatrix(2,2,[Ra(1,1), 2, 3, 4])
 
-c = createMatrix(3,3,[1,2,3]+[0,5,-2]+[7,1,9])
+b = createMatrix(2,2,[Ra(0,1), -1, 1, -2])
 
-d = createMatrix(6,6,[4,2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
+c = createMatrix(3,3,[Ra(1,1), 2, 3]+[0,5,-2]+[7,1,9])
 
-e = createMatrix(1,2,[3,2])
+d = createMatrix(6,6,[Ra(4,1), 2,5,0,2,1]+[5,1,2,5,1,1]+[90,7,54,8,4,6]+[7,5,0,8,2,5]+[8,2,6,5,-4,2]+[4,1,5,6,3,1])
 
-f = createMatrix(4,4,[1,1,1,1]+[0,0,0,0]+[3,3,3,3]+[-1,-1,-1,-1])
+e = createMatrix(1,2,[Ra(3,1), 2])
 
-g = createMatrix(3,3,[7,2,8,0,5,-2,0,1,9])
+f = createMatrix(4,4,[Ra(1,1), 1, 1, 1]+[0, 0, 0, 0]+[3, 3, 3, 3]+[-1, -1, -1, -1])
+
+g = createMatrix(3,3,[Ra(7,1), 2, 8, 0, 5, -2, 0, 1, 9])
 
 h1 = [12,1,1]
 
@@ -108,9 +111,9 @@ class MatrixTest(unittest.TestCase):
         self.assertEqual(3, c.rank())
 
     def testInverseImage(self):
-        M = createMatrix(4,4,[2,-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
-        V = createMatrix(4,4,[1,2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
-        noinverse = createMatrix(3,3,[1,2,3]+[4,5,6]+[5,7,9])
+        M = createMatrix(4,4,[Ra(2),-1,0,0]+[-1,2,-1,0]+[0,-1,2,-1]+[0,0,-1,2])
+        V = createMatrix(4,4,[Ra(1),2,3,4]+[2,3,4,5]+[3,4,5,6]+[4,5,6,7])
+        noinverse = createMatrix(3,3,[Ra(1),2,3]+[4,5,6]+[5,7,9])
         self.assertEqual(V, M * M.inverseImage(V))
         self.assertRaises(VectorsNotIndependent, noinverse.inverseImage, unitMatrix(3))
 
@@ -121,7 +124,6 @@ class SquareMatrixTest(unittest.TestCase):
         self.assertEqual(mul2, a ** 2)
         mul0 = createMatrix(2,2,[1,0,0,1])
         self.assertEqual(mul0, a ** 0)
-        Ra = rational.Rational
         mulminus2 = createMatrix(2,2)
         mulminus2.set([Ra(11,2),Ra(-5,2),Ra(-15,4),Ra(7,4)])
         self.assertEqual(mulminus2, a ** (-2))
@@ -139,7 +141,6 @@ class SquareMatrixTest(unittest.TestCase):
         assert symmetric.isSymmetricMatrix()
 
     def testIsOrthogonalMatrix(self):
-        Ra = rational.Rational
         orthogonal = createMatrix(2,2,[Ra(3,5),Ra(4,5),Ra(-4,5),Ra(3,5)])
         assert orthogonal.isOrthogonalMatrix()
 
@@ -162,11 +163,10 @@ class SquareMatrixTest(unittest.TestCase):
         self.assertEqual(cofactors, c.cofactors())
 
     def testInverse(self):
-        Ra = rational.Rational
         cinverse = createMatrix(3,3)
         cinverse.set([Ra(-47,86),Ra(15,86),Ra(19,86),
         Ra(7,43),Ra(6,43),Ra(-1,43),Ra(35,86),Ra(-13,86),Ra(-5,86)])
-        noinverse = createMatrix(3,3,[1,2,3]+[4,5,6]+[5,7,9])
+        noinverse = createMatrix(3,3,[Ra(1,1),2,3]+[4,5,6]+[5,7,9])
         self.assertEqual(cinverse, c.inverse())
         self.assertRaises(VectorsNotIndependent, noinverse.inverse)
 
