@@ -1213,26 +1213,29 @@ def construct(polynomial, kwd={}):
 
 import nzmath.matrix as matrix
 
+
 def resultant(f, g):
     """
-    Return the resultant of 2 polynomials.
+    Return the resultant of 2 (one variable) polynomials.
+    Kida's paper p.17
     """
-    m = f.degree()
-    n = g.degree()
-    full_size = m + n
+    if f.degree() >= g.degree():
+        f_cp, g_cp = f.copy(), g.copy()
+    else:
+        f_cp, g_cp = g.copy(), f.copy()
+    m, n = f.degree(), g.degree()
+    sol = 1
+    a = b = 1
+    while g_cp.degree():
+        delta = f_cp.degree() - g_cp.degree()
+        if (f_cp.degree() % 2) == 1 and (g_cp.degree() % 2) == 1:
+            sol = -sol
+        h = ((g_cp.leadingCoefficient() ** (delta+1)) * f_cp) % g_cp
+        f_cp, g_cp = g_cp, h // (a * (b ** delta))
+        a = f_cp.leadingCoefficient()
+        b = ((a ** delta) * b) // (b ** delta)
+    return sol * (b ** (1-f_cp.degree())) * (g_cp[0] ** f_cp.degree())
 
-    f_row = f.coefficient.getAsList()[::-1] + [0] * (n - 1)
-    upper = []
-    for i in range(n):
-        upper += f_row[-i:] + f_row[:-i]
-    g_row = g.coefficient.getAsList()[::-1] + [0] * (m - 1)
-    lower = []
-    for i in range(m):
-        lower += g_row[-i:] + g_row[:-i]
-
-    assert len(upper) + len(lower) == full_size ** 2
-    M = matrix.createMatrix(full_size, upper + lower)
-    return M.determinant()
 
 # Algorithm 3.1.2 of Cohen's book
 def pseudoDivision(A, B):
