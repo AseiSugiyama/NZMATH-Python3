@@ -17,21 +17,30 @@ class Lattice:
     def bilinearForm(self, v1, v2):
         return v2.transpose() * self.quadraticForm * v1
 
-def LLL(_basis, delta = 0.75):
-    """LLL transforms self.basis into LLL-reduced basis
-    and returns its transformation matrix."""
+def LLL(_basis, quadraticForm=None ,delta = 0.75):
+    """
+    LLL returns LLL-reduced basis
+    """
     basis = _basis.copy()
-    k=2
+    k=2 
     kmax = 1
-    bstar = [0] * ( basis.column + 1)
-    bstar[1] = basis[1].copy()
-    B = [0] * (basis.column + 1)
-    B[1] = innerProduct(basis[1], basis[1])
-    H = basis.getRing().unitMatrix()
     mu = []
     for i in range(basis.column + 1):
         mu.append( [0] * i)
 
+    def _innerProduct(v1, v2):
+        if quadraticForm:
+            val =  ((v1 * quadraticForm) * v2.toMatrix().transpose())
+            return val.compo[0]
+        else:
+            return innerProduct(v1, v2)
+    
+    bstar = [0] * ( basis.column + 1)
+    bstar[1] = basis[1].copy()
+    B = [0] * (basis.column + 1)
+    B[1] = _innerProduct(basis[1], basis[1])
+    H = basis.getRing().unitMatrix()
+    
     def _RED(k, l):
         if 2 * abs(mu[k][l]) <= 1:
             return
@@ -86,9 +95,9 @@ def LLL(_basis, delta = 0.75):
                 if abs(B[j]) < (2**(-30)):
                     mu[k][j] = 0
                 else:
-                    mu[k][j] = innerProduct(basis[k], bstar[j]) / B[j]
+                    mu[k][j] = _innerProduct(basis[k], bstar[j]) / B[j]
                 bstar[k] -= mu[k][j] * bstar[j]
-            B[k] = innerProduct(bstar[k], bstar[k])
+            B[k] = _innerProduct(bstar[k], bstar[k])
         #step3
         while 1:
             _RED(k,k-1)
