@@ -38,6 +38,12 @@ class VectorTest(unittest.TestCase):
 ##         print v.indexOfNoneZero()
         assert v.indexOfNoneZero() == 2
 
+    def testIterator(self):
+        v = vector.Vector([2, 0, -9])
+	l = list(v)
+	self.assertEqual(3, len(l), str(l))
+
+
 def suite():
     suite = unittest.makeSuite(VectorTest, 'test')
     return suite

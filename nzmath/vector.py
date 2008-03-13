@@ -1,6 +1,6 @@
 from __future__ import division
 
-class Vector:
+class Vector (object):
 
     def __init__(self, compo):
         if isinstance(compo, list):
@@ -16,6 +16,9 @@ class Vector:
 
     def __len__(self):
         return len(self.compo)
+
+    def __iter__(self):
+        return iter(self.compo)
 
     def __eq__(self, other):
         return self.compo == other.compo
