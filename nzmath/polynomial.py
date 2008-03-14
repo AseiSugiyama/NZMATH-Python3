@@ -1230,7 +1230,7 @@ def resultant(f, g):
         delta = f_cp.degree() - g_cp.degree()
         if (f_cp.degree() % 2) == 1 and (g_cp.degree() % 2) == 1:
             sol = -sol
-        h = ((g_cp.leadingCoefficient() ** (delta+1)) * f_cp) % g_cp
+        h = pseudoDivision(f_cp, g_cp)[1]
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
         a = f_cp.leadingCoefficient()
         b = ((a ** delta) * b) // (b ** delta)
