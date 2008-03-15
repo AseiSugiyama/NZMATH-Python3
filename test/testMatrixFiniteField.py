@@ -52,6 +52,13 @@ class FiniteFieldMatrixTest (unittest.TestCase):
         self.assertNotEqual(M3F7, invertible.getRing())
 
 
+class SubspaceTest(unittest.TestCase):
+    def testSupplementBasisF2(self):
+        F2 = _finitefield.FinitePrimeField.getInstance(2)
+        ba = _matrix.Subspace(3, 2, [F2.one, F2.one, F2.one, F2.zero, F2.zero, F2.one])
+        self.assertEqual(3, ba.supplementBasis().column)
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

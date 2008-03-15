@@ -234,6 +234,10 @@ class IntegerSquareTest(unittest.TestCase):
         m = IntegerSquareMatrix(3, 3, [3,1,2,5,4,6,7,9,8])
         self.assert_(isinstance(m.determinant(), (int, long)))
         self.assertEqual(-30, m.determinant())
+        # sf bug #1914349
+        m2 = IntegerSquareMatrix(3, 3, [0,1,2,5,4,6,7,9,8])
+        self.assert_(isinstance(m2.determinant(), (int, long)))
+        self.assertEqual(36, m2.determinant())
 
 
 class MatrixRingTest (unittest.TestCase):
@@ -262,12 +266,6 @@ class SubspaceTest(unittest.TestCase):
         ba = Subspace(3, 2, [1,2,3,4,5,7])
         supbase = createMatrix(3,3,[1,2,0,3,4,0,5,7,1])
         self.assertEqual(supbase, ba.supplementBasis())
-
-    def testSupplementBasisF2(self):
-        import nzmath.finitefield as finitefield
-        F2 = finitefield.FinitePrimeField.getInstance(2)
-        ba = Subspace(3, 2, [F2.one, F2.one, F2.one, F2.zero, F2.zero, F2.one])
-        self.assertEqual(3, ba.supplementBasis().column)
 
 
 def suite(suffix="Test"):
