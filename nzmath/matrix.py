@@ -16,8 +16,7 @@ class Matrix(object):
         Matrix(row, column [,components])
         """
         self._initialize(row, column, compo)
-        checkele = self.compo[0]
-        if hasattr(checkele, 'getRing') and checkele.getRing().isfield():
+        if ring.getRing(self.compo[0][0]).isfield():
             if row == column:
                 self.__class__ = FieldSquareMatrix
             else:
@@ -371,8 +370,7 @@ class SquareMatrix(Matrix):
         SquareMatrix must be row == column .
         """
         self._initialize(row, column, compo)
-        checkele = self.compo[0][0]
-        if hasattr(checkele, 'getRing') and checkele.getRing().isfield():
+        if ring.getRing(self.compo[0][0]).isfield():
             self.__class__ = FieldSquareMatrix
         else:
             self.__class__ = RingSquareMatrix        
@@ -550,19 +548,21 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                         return 0
                     else:
                         i += 1
-                if i > k:
-                    for j in range(k, n+1):
-                        tmp = M[k, j]
-                        M[i, j] = M[k, j]
-                        M[k, j] = M[i, j]
-                    sign = not(sign)
+                for j in range(k, n+1):
+                    tmp = M[i, j]
+                    M[i, j] = M[k, j]
+                    M[k, j] = tmp
+                sign = not(sign)
                 p = M[k, k]
             for i in range(k+1, n+1):
                 for j in range(k+1, n+1):
                     t = p * M[i, j] - M[i, k] * M[k, j]
                     M[i, j] = t // c
             c = p
-        return sign *  M[n, n]
+        if sign:
+            return M[n,n]
+        else:
+            return -M[n, n]
 
 
 class FieldMatrix(RingMatrix):
