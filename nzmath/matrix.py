@@ -74,6 +74,10 @@ class Matrix(object):
             raise TypeError, self.__setitem__.__doc__
 
     def __eq__(self, other):
+        """
+        Check self == other.
+        self == 0 means whether self == zeromatrix or not.
+        """
         if isinstance(other, Matrix):
             if (self.row != other.row) or (self.column != other.column):
                 return False
@@ -90,86 +94,6 @@ class Matrix(object):
             return True
         else:
             raise TypeError
-
-    def __add__(self, other):
-        if (self.row != other.row) or (self.column != other.column):
-            raise MatrixSizeError
-
-        sums = self.__class__(self.row, self.column)
-
-        for i in range(1, self.row+1):
-            for j in range(1, self.column+1):
-                sums[i, j] = self[i, j] + other[i, j]
-
-        return sums
-
-    def __sub__(self, other):
-        if (self.row != other.row) or (self.column != other.column):
-            raise MatrixSizeError
-
-        diff = self.__class__(self.row, self.column)
-
-        for i in range(1, self.row+1):
-            for j in range(1, self.column+1):
-                diff[i, j] = self[i, j] - other[i, j]
-
-        return diff
-
-    def __mul__(self, other):
-        """
-        multiplication with a Matrix or a scalar
-        """
-        if isinstance(other, Matrix):
-            if self.column != other.row:
-                raise MatrixSizeError
-            product = self.__class__(self.row, other.column)
-            for i in range(1, self.row+1):
-                for j in range(1, other.column+1):
-                    for k in range(self.column):
-                        product[i, j] = product[i, j] + self[i, k] * other[k, j]
-            return product
-        elif isinstance(other, vector.Vector):
-            if self.column != len(other):
-                raise vector.VectorSizeError
-            tmp = [0] * self.row
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    tmp[i-1] = tmp[i-1] + self[i, j] * other[j]
-            return vector.Vector(tmp)
-        else:
-            product = self.__class__(self.row, self.column)
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    product[i, j] = self[i, j] * other
-            return product
-
-    def __rmul__(self, other):
-        if isinstance(other, Matrix):
-            if self.row != other.column:
-                raise MatrixSizeError
-            product = self.__class__(other.row, self.column)
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    product[i, j] = self[i, j] * other
-            return product
-        elif isinstance(other, vector.Vector):
-            if self.row != len(other):
-                raise vector.VectorSizeError
-            tmp = [0] * self.column
-            for j in range(1, self.column+1):
-                for i in range(1, self.row+1):
-                    tmp[j-1] = tmp[j-1] + other[i] * self[i, j]
-            return vector.Vector(tmp)
-        else:
-            product = self.__class__(self.row, self.column)
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    product[i, j] = self[i, j] * other
-            return product
-
-    def __neg__(self):
-        return (-1) * self
-
 
     def __repr__(self):
         return_str = ""
@@ -193,7 +117,15 @@ class Matrix(object):
         return return_str[:-1]
 
     def __call__(self, arg):
-        return self * arg
+        """
+        Return matrix applied __call__ to each elements.
+        """
+        sol = self.__class__(self.row, self.column)
+        for i in range(self.row):
+            for j in range(self.column):
+                if callable(self.compo[i][j]):
+                    sol.compo[i][j] = (self.compo[i][j])(arg)
+        return sol
 
 
     # utility methods ----------------------------------------------------
@@ -311,7 +243,7 @@ class Matrix(object):
         else:
             raise TypeError
         return _selectMatrix(matrice)
-    
+
     def deleteRow(self, i):
         """
         deleteRow(i) : return matrix deleted i-th row
@@ -343,16 +275,6 @@ class Matrix(object):
                 trans[i, j] = self[j, i]
         return trans
 
-    def isUpperTriangularMatrix(self):
-        for j in range(self.column):
-            for i in range(j+1, self.row):
-                if self.compo[i][j]:
-                    return False
-        return True
-
-    def isLowerTriangularMatrix(self):
-        return self.transpose().isUpperTriangularMatrix()
-
     def submatrix(self, i, j):
         """
         Return submatrix which deleted i-th row and j-th column from self.
@@ -364,6 +286,7 @@ class SquareMatrix(Matrix):
     """
     SquareMatrix is a class for square matrices.
     """
+
     def __init__(self, row, column=0, compo=0):
         """
         SquareMatrix(row, column [,components])
@@ -373,7 +296,7 @@ class SquareMatrix(Matrix):
         if ring.getRing(self.compo[0][0]).isfield():
             self.__class__ = FieldSquareMatrix
         else:
-            self.__class__ = RingSquareMatrix        
+            self.__class__ = RingSquareMatrix
 
     def _initialize(self, row, column=0, compo=0):
         """
@@ -401,110 +324,54 @@ class SquareMatrix(Matrix):
         else:
             raise ValueError, "invalid value for matrix size"
 
-    def __pow__(self, other):
-        n = +other
-        if not isinstance(n, (int, long)):
-            raise TypeError("index must be an integer")
+    def isUpperTriangularMatrix(self):
+        """
+        Check whether self is upper triangular matrix or not.
+        """
+        for j in range(self.column):
+            for i in range(j+1, self.row):
+                if self.compo[i][j]:
+                    return False
+        return True
 
-        power = unitMatrix(self.row)
-        if n == 0:
-            return power
-        if n > 0:
-            z = self.copy()
-        else:
-            n = abs(n)
-            z = self.inverse()
-
-        while 1:
-            if n % 2 == 1:
-                power = power * z
-            n //= 2
-            if n == 0:
-                return power
-            z = z*z
-
-    def getRing(self):
-        scalars = None
+    def isLowerTriangularMatrix(self):
+        """
+        Check whether self is lower triangular matrix or not.
+        """
         for i in range(self.row):
-            for j in range(self.column):
-                cring = ring.getRing(self[i, j])
-                if scalars is None or scalars != cring and scalars.issubring(cring):
-                    scalars = cring
-                elif not scalars.issuperring(cring):
-                    scalars = scalars.getCommonSuperring(cring)
-        return MatrixRing.getInstance(self.row, scalars)
+            for j in range(i+1, self.column):
+                if self.compo[i][j]:
+                    return False
+        return True
 
     def isDiagonalMatrix(self):
+        """
+        Check whether self is diagonal matrix or not.
+        """
         return self.isUpperTriangularMatrix() and self.isLowerTriangularMatrix()
 
     def isScalarMatrix(self):
-        return self[1][1] * unitMatrix(self.row) == self
+        """
+        Check whether self is scalar matrix or not.
+        Scalar matrix is matrix which is unit matrix times some scalar.
+        """
+        if not(self.isDiagonalMatrix()):
+            return False
+        chk = self.compo[0][0]
+        for i in range(1, self.row):
+            if self.compo[i][i] != chk:
+                return False
+        return True
 
     def isSymmetricMatrix(self):
-        return self.transpose() == self
-
-    def isOrthogonalMatrix(self):
-        return self * self.transpose() == unitMatrix(self.row)
-
-    def isAlternateMatrix(self):
-        return self.transpose() == -self
-
-    def commutator(self, other):
         """
-        Return commutator defined as follows:
-        [self, other] = self * other - other * self .
+        Check whether self is symmetric matrix or not.
         """
-        return self*other-other*self
-
-    def trace(self):
-        """
-        Return trace of self.
-        """
-        trace = 0
         for i in range(self.row):
-            trace = trace + self.compo[i][i]
-        return trace
-
-    def cofactors(self):
-        """
-        Return cofactors matrix of self.
-        """
-        cofactors = self.__class__(self.row)
-        for i in range(cofactors.row):
-            for j in range(cofactors.column):
-                cofactors.compo[j][i] = (self.submatrix(i+1, j+1)).determinant()
-                if (i+j) & 1:
-                    cofactors.compo[j][i] = cofactors.compo[j][i] * (-1)
-        return cofactors
-
-    def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
-        n = self.row
-
-        # step 1
-        H = self.copy()
-        for m in range(2, H.row):
-            # step 2
-            for i in range(m+1, n+1):
-                if H[i, m-1] != 0:
-                    break
-            else:
-                continue
-            t = H[i, m-1]
-            if i > m:
-                for j in range(m-1, n+1):
-                    tmp = H[i, j]
-                    H[i, j] = H[m, j]
-                    H[m, j] = tmp
-                H.swapColumn(i, m)
-            # step 3
-            for i in range(m+1, n+1):
-                if H[i, m-1] != 0:
-                    u = H[i, m-1] / t
-                    for j in range(m, n+1):
-                        H[i, j] = H[i, j] - u * H[m, j]
-                        H[i, m-1] = 0
-                    H.setColumn(m, H[m] + u * H[i])
-        return H
+            for j in range(i+1, self.column):
+                if self.compo[i][j] != self.compo[j][i]:
+                    return False
+        return True
 
 
 class RingMatrix(Matrix):
@@ -518,12 +385,156 @@ class RingMatrix(Matrix):
         """
         self._initialize(row, column, compo)
 
+    def __add__(self, other):
+        """
+        Return matrix addition.
+        """
+        if (self.row != other.row) or (self.column != other.column):
+            raise MatrixSizeError
+        sums = self.__class__(self.row, self.column)
+        for i in range(self.row):
+            for j in range(self.column):
+                sums.compo[i][j] = self.compo[i][j] + other.compo[i][j]
+        return sums
+
+    def __sub__(self, other):
+        """
+        Return matrix subtraction.
+        """
+        if (self.row != other.row) or (self.column != other.column):
+            raise MatrixSizeError
+        diff = self.__class__(self.row, self.column)
+        for i in range(self.row):
+            for j in range(self.column):
+                diff.compo[i][j] = self.compo[i][j] - other.compo[i][j]
+        return diff
+
+    def __mul__(self, other):
+        """
+        multiplication with a Matrix or a scalar
+        """
+        if isinstance(other, Matrix):
+            if self.column != other.row:
+                raise MatrixSizeError
+            product = self.__class__(self.row, other.column)
+            for i in range(1, self.row+1):
+                for j in range(1, other.column+1):
+                    for k in range(self.column):
+                        product[i, j] = product[i, j] + self[i, k] * other[k, j]
+            return product
+        elif isinstance(other, vector.Vector):
+            if self.column != len(other):
+                raise vector.VectorSizeError
+            tmp = [0] * self.row
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    tmp[i-1] = tmp[i-1] + self[i, j] * other[j]
+            return vector.Vector(tmp)
+        else: #scalar mul
+            product = self.__class__(self.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i, j] = self[i, j] * other
+            return product
+
+    def __rmul__(self, other):
+        if isinstance(other, Matrix):
+            if self.row != other.column:
+                raise MatrixSizeError
+            product = self.__class__(other.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i, j] = self[i, j] * other
+            return product
+        elif isinstance(other, vector.Vector):
+            if self.row != len(other):
+                raise vector.VectorSizeError
+            tmp = [0] * self.column
+            for j in range(1, self.column+1):
+                for i in range(1, self.row+1):
+                    tmp[j-1] = tmp[j-1] + other[i] * self[i, j]
+            return vector.Vector(tmp)
+        else:
+            product = self.__class__(self.row, self.column)
+            for i in range(1, self.row+1):
+                for j in range(1, self.column+1):
+                    product[i, j] = self[i, j] * other
+            return product
+
+    def __mod__(self, other):
+        """
+        return self modulo other.
+        """
+        mod = self.__class__(self.row, self.column)
+        if not bool(other):
+            raise ZeroDivisionError
+        for i in range(self.row):
+            for j in range(self.column):
+                mod[i, j] = self[i, j] % other
+        return mod
+
+    def __neg__(self):
+        return (-1) * self
+
+    def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
+        """Return a Matrix in Hermite Normal Form."""
+        A = self.copy()
+        # step 1 [Initialize]
+        i = self.row
+        k = self.column
+        if self.row <= self.column:
+            l = 1
+        else:
+            l = self.row - self.column + 1
+        while 1:
+            while 1:
+                # step 2 [Row finished?]
+                for j in range(1, k):
+                    if A[i, j]:
+                        break
+                else:       # i.e. all the A[i, j] with j<k are zero
+                    if A[i, k] < 0:
+                        A[k] = -A[k]
+                    break   # go to step 5
+                # step 3 [Choose non-zero entry]
+                j0 = j  # the first non-zero's index
+                for j in range(2, k+1): # Pick among the non-zero A[i,j] for j <= k one with the smallest absolute value
+                    if  0 < abs(A[i, j]) < abs(A[i, j0]):
+                        j0 = j
+                if j0 < k:
+                    A.swapColumn(k, j0)
+                if A[i, k] < 0:
+                    A[k] = -A[k]
+                b = A[i,k]
+                # step 4 [Reduce]
+                for j in range(1, k):
+                    q = A[i, j] // b
+                    A[j] = A[j] - q * A[k]
+            # step5 [Final reductions]
+            b = A[i, k]
+            if not bool(b):
+                k += 1
+            else:
+                for j in range(k+1, self.column+1):
+                    q = A[i, j] // b
+                    A[j] = A[j] - q * A[k]
+            # step 6 [Finished?]
+            if i == l:
+                #W = createMatrix(self.row, self.column-k+1)
+                #for j in range(1, self.column-k+2):
+                #    W[j] = A[j+k-1]
+                return A
+            else:
+                i -= 1
+                k -= 1
+                # go to step 2
+
 
 class RingSquareMatrix(SquareMatrix, RingMatrix):
     """
     RingSquareMatrix is a class for square matrices whose elements are in ring.
     """
-    
+
     def __init__(self, row, column=0, compo=0):
         """
         RingSquareMatrix(row, column [,components])
@@ -531,9 +542,77 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         self._initialize(row, column, compo)
 
-    def determinant(self):
+    def __pow__(self, other):
         """
-        Return determinant of self.(Algorithm2.2.6 in Cohen)
+        powering self to integer.
+        """
+        n = +other
+        if not isinstance(n, (int, long)):
+            raise TypeError("index must be an integer")
+        power = unitMatrix(self.row)
+        # check n
+        if n == 0:
+            return power
+        if n > 0:
+            z = self.copy()
+        else:
+            if hasattr(self, "inverse"):
+                n = abs(n)
+                z = self.inverse()
+            else:
+                raise NoInverse
+        while 1:
+            if n % 2 == 1:
+                power = power * z
+            n //= 2
+            if n == 0:
+                return power
+            z = z*z
+
+    def getRing(self):
+        """
+        Return matrix ring of self.
+        """
+        scalars = None
+        for i in range(self.row):
+            for j in range(self.column):
+                cring = ring.getRing(self[i, j])
+                if scalars is None or scalars != cring and scalars.issubring(cring):
+                    scalars = cring
+                elif not scalars.issuperring(cring):
+                    scalars = scalars.getCommonSuperring(cring)
+        return MatrixRing.getInstance(self.row, scalars)
+
+    def isOrthogonalMatrix(self):
+        """
+        Check whether self is orthogonal matrix or not.
+        Orthogonal matrix satisfies M*M^T equals unit matrix.
+        """
+        return self * self.transpose() == unitMatrix(self.row)
+
+    def isAlternativeMatrix(self):
+        """
+        Check whether self is alternative matrix or not.
+        Alternative matrix(skew symmetric matrix) satisfies M=-M^T.
+        """
+        for i in range(self.row):
+            for j in range(i+1, self.column):
+                if self.compo[i][j] != -self.compo[j][i]:
+                    return False
+        return True
+
+    def trace(self):
+        """
+        Return trace of self.
+        """
+        trace = 0
+        for i in range(self.row):
+            trace = trace + self.compo[i][i]
+        return trace
+
+    def determinant(self): # Algorithm 2.2.6 of Cohen's book
+        """
+        Return determinant of self.
         """
         M = self.copy()
         n = self.row
@@ -560,15 +639,195 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                     M[i, j] = t // c
             c = p
         if sign:
-            return M[n,n]
+            return M[n, n]
         else:
             return -M[n, n]
+
+    def cofactors(self):
+        """
+        Return cofactors matrix of self.
+        """
+        cofactors = self.__class__(self.row)
+        for i in range(cofactors.row):
+            for j in range(cofactors.column):
+                cofactors.compo[j][i] = (self.submatrix(i+1, j+1)).determinant()
+                if (i+j) & 1:
+                    cofactors.compo[j][i] = cofactors.compo[j][i] * (-1)
+        return cofactors
+
+    def commutator(self, other):
+        """
+        Return commutator defined as follows:
+        [self, other] = self * other - other * self .
+        """
+        return self*other-other*self
+
+    def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
+        """
+        characteristicPolynomial() -> Polynomial
+        """
+        C = unitMatrix(self.row)
+        coeff = [0] * (self.row+1)
+        coeff[0] = 1
+        for i in range(1, self.row+1):
+            C = self * C
+            if i == 1:
+                coeff[i] = -C.trace()
+            else:
+                coeff[i] = -C.trace() // i
+            C = C + coeff[i] * unitMatrix(self.row, True)
+        import nzmath.poly.uniutil as uniutil
+        coeff.reverse()
+        return uniutil.OneVariableDensePolynomial(coeff, 'x')
+
+    def cofactorMatrix(self):        # Algorithm 2.2.7 of Cohen's book
+        """
+        Return cofactor (adjugate, or classical adjoint) matrix.
+        """
+        C = unitMatrix(self.row)
+        coeff = [0] * self.row
+        coeff[0] = 1
+        for i in range(1, self.row):
+            C = self * C
+            if i == 1:
+                coeff[i] = -C.trace()
+            else:
+                coeff[i] = -C.trace() // i
+            C = C + coeff[i] * unitMatrix(self.row, True)
+        if self.row % 2 == 1:
+            return C
+        else:
+            return -C
+
+    def smithNormalForm(self):# Algorithm 2.4.14 of Cohen's book
+        """
+        Find the Smith Normal Form for square non-singular integral matrix.
+        Return the list of diagonal elements.
+        """
+        M = self.copy()
+        n = M.row
+        R = M.determinant()
+        rings = ring.getRing(M[1, 1])
+        if not bool(R):
+            raise ValueError("Don't input matrix whose determinant is 0")
+        if R < 0:
+            R = -R
+        if R == 1:
+            lst = [1] * (n-1)
+            n = 1
+        else:
+            lst = []
+        while n != 1:
+            j = n
+            c = 0
+            while j != 1:
+                j = j-1
+                if M[n, j]:
+                    u, v, d = rings.extgcd(M[n, n], M[n, j])
+                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    M.setColumn(j, (((M[n, n] // d) * M.getColumn(j)
+                                     - (M[n, j] // d) * M.getColumn(n)) % R))
+                    M.setColumn(n, (B % R))
+            j = n
+            while j != 1:
+                j = j-1
+                if M[j, n]:
+                    u, v, d = rings.extgcd(M[n, n], M[j, n])
+                    B = u * M.getRow(n) + v * M.getRow(j)
+                    M.setRow(j, (((M[n, n] // d) * M.getRow(j)
+                                  - (M[j, n] // d) * M.getRow(n)) % R))
+                    M.setRow(n, (B % R))
+                    c = c+1
+            if c <= 0:
+                b = M[n, n]
+                flag = False
+                for k in range(1, n):
+                    for l in range(1, n):
+                        if (M[k, l] % b) != 0:
+                            M.setRow(n, M.getRow(n) + M.getRow(k))
+                            flag = True
+                if not flag:
+                    dd = rings.gcd(M[n, n], R)
+                    lst.append(dd)
+                    R = (R // dd)
+                    n = n-1
+        dd = rings.gcd(M[1, 1], R)
+        lst.append(dd)
+        lst.reverse()
+        return lst
+
+    def extsmithNormalForm(self):
+        """
+        Find the Smith Normal Form M for square matrix,
+        Computing U,V which satisfied M=U*self*V.
+        Return matrices tuple,(U,V,M).
+        """
+        M = self.copy()
+        n = M.row
+        U = self.__class__(M.row)
+        V = self.__class__(M.row)
+        rings = ring.getRing(M[1, 1])
+        for i in range(M.row):
+            U.compo[i][i] = 1
+            V.compo[i][i] = 1
+        if abs(M.determinant()) == 1:
+            V = M.inverse()
+            M = U
+            return (U, V, M)
+        while n != 1:
+            j = n
+            c = 0
+            while j != 1:
+                j = j-1
+                if M[n, j]:
+                    u, v, d = rings.extgcd(M[n, n], M[n, j])
+                    M_nn = M[n, n] // d
+                    M_nj = M[n, j] // d
+                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
+                    M.getColumn(n)))
+                    M.setColumn(n, B)
+                    B = u * V.getColumn(n) + v * V.getColumn(j)
+                    V.setColumn(j, (M_nn * V.getColumn(j) - M_nj *
+                    V.getColumn(n)))
+                    V.setColumn(n, B)
+            j = n
+            while j != 1:
+                j = j-1
+                if M[j, n]:
+                    u, v, d = rings.extgcd(M[n, n], M[j, n])
+                    M_nn = M[n, n] // d
+                    M_jn = M[j, n] // d
+                    B = u * M.getRow(n) + v * M.getRow(j)
+                    M.setRow(j, (M_nn * M.getRow(j) - M_jn * M.getRow(n)))
+                    M.setRow(n, B)
+                    B = u * U.getRow(n) + v * U.getRow(j)
+                    U.setRow(j, (M_nn * U.getRow(j) - M_jn * U.getRow(n)))
+                    U.setRow(n, B)
+                    c = c+1
+            if c <= 0:
+                b = M[n, n]
+                flag = False
+                for k in range(1, n):
+                    for l in range(1, n):
+                        if (M[k, l] % b) != 0:
+                            M.setRow(n, M.getRow(n) + M.getRow(k))
+                            U.setRow(n, U.getRow(n) + U.getRow(k))
+                            flag = True
+                if not flag:
+                    n = n-1
+        for j in range(1, M.column+1):
+            if M[j, j] < 0:
+                V[j] = -V[j]
+                M[j, j] = -M[j, j]
+        return (U, V, M)
 
 
 class FieldMatrix(RingMatrix):
     """
     FieldMatrix is a class for matrices whose elements are in field.
     """
+
     def __init__(self, row, column, compo=0):
         """
         FieldMatrix(row, column [,components])
@@ -577,38 +836,12 @@ class FieldMatrix(RingMatrix):
 
     def __truediv__(self, other):
         """
-        division by a scalar ``if defined''
+        division by a scalar.
         """
         return ring.inverse(other) * self
 
     __div__ = __truediv__ # backward compatibility?
 
-    def triangulate(self):
-        """
-        Return triangulated matrix of self.
-        """
-        triangle = self.copy()
-        flag = False # for calculation of determinant
-        for i in range(triangle.row):
-            if not triangle.compo[i][i]:
-                for k in range(i+1, triangle.row):
-                    if triangle.compo[k][i]:
-                        triangle.swapRow(i+1, k+1)
-                        flag = not(flag)
-                        break        # break the second loop
-                else:
-                    continue         # the below components are all 0. Back to the first loop
-            for k in range(i+1, triangle.row):
-                inv_i_i = ring.inverse(triangle.compo[i][i])
-                ratio = triangle.compo[k][i] * inv_i_i
-                for l in range(i, triangle.column):
-                    triangle.compo[k][l] = triangle.compo[k][l] - triangle.compo[i][l] * ratio
-
-        if flag:
-            for j in range(triangle.row, triangle.column+1):
-                triangle[triangle.row, j] = triangle[triangle.row, j] * (-1)
-        return triangle
-    
     def _cohensSimplify(self):      # common process of image() and kernel()
         """
         _cohensSimplify is used in image() and kernel()
@@ -740,7 +973,6 @@ class FieldMatrix(RingMatrix):
                 for j in range(i+1, n):
                     sums = sums + M.compo[i][j] * X.compo[j][k]
                 X.compo[i][k] = (B.compo[i][k] - sums) / M.compo[i][i]
-
         for k in range(n+1, m):
             for j in range(r):
                 sums = 0
@@ -748,7 +980,6 @@ class FieldMatrix(RingMatrix):
                     sums = sums + M.compo[k][i] * X.compo[i][j]
                 if (sums != B.compo[k][j]):
                     raise NoInverseImage, "some vectors are not in the inverse image"
-
         return X
 
     def columnEchelonForm(self):  # Algorithm 2.3.11 of Cohen's book
@@ -777,18 +1008,43 @@ class FieldMatrix(RingMatrix):
         return M
 
 
-class FieldSquareMatrix(SquareMatrix, FieldMatrix):
+class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
     """
     FieldSquareMatrix is a class for square matrices in field.
     """
-    
+
     def __init__(self, row, column=0, compo=0):
         """
         FieldSquareMatrix(row, column [,components])
         FieldSquareMatrix must be row == column .
         """
         self._initialize(row, column, compo)
-    
+
+    def triangulate(self):
+        """
+        Return triangulated matrix of self.
+        """
+        triangle = self.copy()
+        flag = False # for calculation of determinant
+        for i in range(triangle.row):
+            if not triangle.compo[i][i]:
+                for k in range(i+1, triangle.row):
+                    if triangle.compo[k][i]:
+                        triangle.swapRow(i+1, k+1)
+                        flag = not(flag)
+                        break        # break the second loop
+                else:
+                    continue         # the below components are all 0. Back to the first loop
+            for k in range(i+1, triangle.row):
+                inv_i_i = ring.inverse(triangle.compo[i][i])
+                ratio = triangle.compo[k][i] * inv_i_i
+                for l in range(i, triangle.column):
+                    triangle.compo[k][l] = triangle.compo[k][l] - triangle.compo[i][l] * ratio
+        if flag:
+            for j in range(triangle.row, triangle.column+1):
+                triangle[triangle.row, j] = triangle[triangle.row, j] * (-1)
+        return triangle
+
     def determinant(self):
         """
         Return determinant of self.
@@ -808,29 +1064,39 @@ class FieldSquareMatrix(SquareMatrix, FieldMatrix):
         """
         return self.inverseImage(unitMatrix(self.row, True))
 
-    def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
-        """
-        characteristicPolynomial() -> Polynomial
-        """
-        i = 0
-        C = unitMatrix(self.row, True)
-        coeff = [0] * (self.row+1)
-        coeff[0] = 1
-        for i in range(1, self.row+1):
-            C = self * C
-            if i == 1:
-                coeff[i] = -C.trace()
+    def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
+        """Return a Matrix in Hessenberg Form."""
+        n = self.row
+        # step 1
+        H = self.copy()
+        for m in range(2, H.row):
+            # step 2
+            for i in range(m+1, n+1):
+                if H[i, m-1] != 0:
+                    break
             else:
-                coeff[i] = -C.trace() * ring.inverse(i)
-            C = C + coeff[i] * unitMatrix(self.row, True)
-        import nzmath.polynomial as polynomial
-        coeff.reverse()
-        return polynomial.OneVariableDensePolynomial(coeff, "x")
+                continue
+            t = H[i, m-1]
+            if i > m:
+                for j in range(m-1, n+1):
+                    tmp = H[i, j]
+                    H[i, j] = H[m, j]
+                    H[m, j] = tmp
+                H.swapColumn(i, m)
+            # step 3
+            for i in range(m+1, n+1):
+                if H[i, m-1] != 0:
+                    u = H[i, m-1] / t
+                    for j in range(m, n+1):
+                        H[i, j] = H[i, j] - u * H[m, j]
+                        H[i, m-1] = 0
+                    H.setColumn(m, H[m] + u * H[i])
+        return H
 
     def LUDecomposition(self):
         """
         LUDecomposition() -> (L, U)
-
+        
         L and U are matrices such that
             self == L * U
             L : lower triangular matrix
@@ -841,7 +1107,6 @@ class FieldSquareMatrix(SquareMatrix, FieldMatrix):
         n = A.row
         L = unitMatrix(n, True)
         U = unitMatrix(n, True)
-
         # initialize L and U
         for i in range(n):
             for j in range(n):
@@ -850,287 +1115,25 @@ class FieldSquareMatrix(SquareMatrix, FieldMatrix):
                 else:
                     L.compo[i][j] = 0
                 U.compo[i][j] = A.compo[i][j]
-
         for i in range(n):
             for j in range(i+1, n):
                 L.compo[j][i] = U.compo[j][i] * ring.inverse(U.compo[i][i])
                 for k in range(i, n):
                     U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
-
         return (L, U)
-
-
-class IntegerMatrix(RingMatrix):
-    """
-    IntegerMatrix is a class for matrices
-    which coefficients are all integers.
-    """
-
-    def __init__(self, row, column, compo = 0):
-        """
-        IntegerMatrix(row, column [,components])
-        """
-        self._initialize(row, column, compo)
-
-    def __mul__(self, other):
-        """
-        multiplication with a Matrix or a scalar
-        """
-        if isinstance(other, Matrix):
-            if self.column != other.row:
-                raise MatrixSizeError
-            if self.row != other.column:
-                product = IntegerMatrix(self.row, other.column)
-            else:
-                product = IntegerSquareMatrix(self.row, other.column)
-            for i in range(1, self.row+1):
-                for j in range(1, other.column+1):
-                    for k in range(self.column):
-                        product[i, j] += self[i, k] * other[k, j]
-            return product
-        elif isinstance(other, vector.Vector):
-            if self.column != len(other):
-                raise vector.VectorSizeError
-            tmp = [0] * self.row
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    tmp[i-1] += self[i, j] * other[j]
-            return vector.Vector(tmp)
-        else:
-            if self.row != other.column:
-                product = IntegerMatrix(self.row, other.column)
-            else:
-                product = IntegerSquareMatrix(self.row, other.column)
-            for i in range(1, self.row+1):
-                for j in range(1, self.column+1):
-                    product[i, j] = self[i, j] * other
-            return product
-
-    def __truediv__(self, other):
-        """
-        division by a scalar
-        """
-        if (other == 1) or (other == -1):
-            return self * other
-        else:
-            raise NoInverse
-
-    __div__ = __truediv__ # backward compatibility
-
-    def __mod__(self, other):
-        if not other:
-            raise ZeroDivisionError
-        for i in range(self.row):
-            self[i] = self[i] % other
-        return self
-
-    def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
-        """Return a Matrix in Hermite Normal Form."""
-        A = self.copy()
-        # step 1 [Initialize]
-        i = self.row
-        k = self.column
-        if self.row <= self.column:
-            l = 1
-        else:
-            l = self.row - self.column + 1
-        while 1:
-            while 1:
-                # step 2 [Row finished?]
-                for j in range(1, k):
-                    if A[i, j] != 0:
-                        break
-                else:       # i.e. all the A[i, j] with j<k are zero
-                    if A[i, k] < 0:
-                        A[k] = -A[k]
-                    break   # go to step 5
-                # step 3 [Choose non-zero entry]
-                j0 = j  # the first non-zero's index
-                for j in range(2, k+1): # Pick among the non-zero A[i,j] for j <= k one with the smallest absolute value
-                    if  0 < abs(A[i, j]) < abs(A[i, j0]):
-                        j0 = j
-                if j0 < k:
-                    A.swapColumn(k, j0)
-                if A[i, k] < 0:
-                    A[k] = -A[k]
-                b = A[i,k]
-                # step 4 [Reduce]
-                for j in range(1, k):
-                    q = A[i, j] // b
-                    A[j] = A[j] - q * A[k]
-            # step5 [Final reductions]
-            b = A[i, k]
-            if b == 0:
-                k += 1
-            else:
-                for j in range(k+1, self.column+1):
-                    q = A[i, j] // b
-                    A[j] = A[j] - q * A[k]
-            # step 6 [Finished?]
-            if i == l:
-                #W = createMatrix(self.row, self.column-k+1)
-                #for j in range(1, self.column-k+2):
-                #    W[j] = A[j+k-1]
-                return A
-            else:
-                i -= 1
-                k -= 1
-                # go to step 2
-
-
-class IntegerSquareMatrix(IntegerMatrix, RingSquareMatrix, ring.RingElement):
-    """
-    IntegerSquareMatrix is a class for square matrices
-    which coefficients are all integers.
-    """
-
-    def __init__(self, row, column=0, compo=0):
-        """
-        IntegerSquareMatrix(row, column [,components])
-        IntegerSquareMatrix must be row == column .
-        """
-        self._initialize(row, column, compo)
-
-    def smithNormalForm(self):
-        """
-        Find the Smith Normal Form for square non-singular integral matrix.
-        Return the list of diagonal elements.
-        """
-
-        M = self.copy()
-        n = M.row
-        R = int(M.determinant())
-        if R == 0:
-            raise ValueError("Don't input matrix whose determinant is 0")
-        if R < 0:
-            R = -R
-        if R == 1:
-            lst = [1]*(n-1)
-            n = 1
-        else:
-            lst = []
-        while n != 1:
-            j = n
-            c = 0
-            while j != 1:
-                j = j-1
-                if M[n, j] != 0:
-                    u, v, d = gcd.extgcd(M[n, n], M[n, j])
-                    B = u * M.getColumn(n) + v * M.getColumn(j)
-                    M.setColumn(j, (((M[n, n] // d) * M.getColumn(j)
-                                     - (M[n, j] // d) * M.getColumn(n)) % R))
-                    M.setColumn(n, (B % R))
-
-            j = n
-            while j != 1:
-                j = j-1
-                if M[j, n] != 0:
-                    u, v, d = gcd.extgcd(M[n, n], M[j, n])
-                    B = u * M.getRow(n) + v * M.getRow(j)
-                    M.setRow(j, (((M[n, n] // d) * M.getRow(j)
-                                  - (M[j,n] // d) * M.getRow(n)) % R))
-                    M.setRow(n, (B % R))
-                    c = c+1
-
-            if c <= 0:
-                b = int(M[n, n])
-                flag = False
-                for k in range(1, n):
-                    for l in range(1, n):
-                        if (M[k, l] % b) != 0:
-                            M.setRow(n, M.getRow(n) + M.getRow(k))
-                            flag = True
-
-                if not flag:
-                    dd = gcd.gcd(M[n, n], R)
-                    lst.append(dd)
-                    R = (R // dd)
-                    n = n-1
-
-        dd = gcd.gcd(M[1, 1], R)
-        lst.append(dd)
-        lst.reverse()
-        return lst
-
-    def extsmithNormalForm(self):
-        """
-        Find the Smith Normal Form M for square matrix,
-        Computing U,V which satisfied M=U*self*V.
-        Return matrices tuple,(U,V,M).
-        """
-        M = self.copy()
-        n = M.row
-        U = IntegerSquareMatrix(M.row)
-        V = IntegerSquareMatrix(M.row)
-        for i in range(M.row):
-            U.compo[i][i] = 1
-            V.compo[i][i] = 1
-        if abs(M.determinant()) == 1:
-            V = M.inverse()
-            M = U
-            return (U, V, M)
-        while n != 1:
-            j = n
-            c = 0
-            while j != 1:
-                j = j-1
-                if M[n, j] != 0:
-                    u, v, d = gcd.extgcd(M[n, n], M[n, j])
-                    M_nn = M[n, n] // d
-                    M_nj = M[n, j] // d
-                    B = u * M.getColumn(n) + v * M.getColumn(j)
-                    M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
-                    M.getColumn(n)))
-                    M.setColumn(n, B)
-                    B = u * V.getColumn(n) + v * V.getColumn(j)
-                    V.setColumn(j, (M_nn * V.getColumn(j) - M_nj *
-                    V.getColumn(n)))
-                    V.setColumn(n, B)
-            j = n
-            while j != 1:
-                j = j-1
-                if M[j, n] != 0:
-                    u, v, d = gcd.extgcd(M[n, n], M[j, n])
-                    M_nn = M[n, n] // d
-                    M_jn = M[j, n] // d
-                    B = u * M.getRow(n) + v * M.getRow(j)
-                    M.setRow(j, (M_nn * M.getRow(j) - M_jn * M.getRow(n)))
-                    M.setRow(n, B)
-                    B = u * U.getRow(n) + v * U.getRow(j)
-                    U.setRow(j, (M_nn * U.getRow(j) - M_jn * U.getRow(n)))
-                    U.setRow(n, B)
-                    c = c+1
-            if c <= 0:
-                b = int(M[n, n])
-                flag = False
-                for k in range(1, n):
-                    for l in range(1, n):
-                        if (M[k, l] % b) != 0:
-                            M.setRow(n, M.getRow(n) + M.getRow(k))
-                            U.setRow(n, U.getRow(n) + U.getRow(k))
-                            flag = True
-                if not flag:
-                    n = n-1
-        for j in range(1, M.column+1):
-            if M[j, j] < 0:
-                V[j] = -V[j]
-                M[j, j] = -M[j, j]
-        return (U, V, M)
-
-    def getRing(self):
-        return MatrixRing.getInstance(self.row, rational.theIntegerRing)
 
 
 class MatrixRing (ring.Ring):
     """
     MatrixRing is a class for matrix rings.
     """
+
     _instances = {}
 
     def __init__(self, size, scalars):
         """
         MatrixRing(size, scalars)
-
+        
         size: size of matrices (positive integer)
         scalars: ring of scalars
         """
@@ -1157,7 +1160,7 @@ class MatrixRing (ring.Ring):
         Return the cached instance of the specified matrix ring.  If
         the specified ring is not cached, it is created, cached and
         returned.
-
+        
         The method is a class method.
         """
         if (size, scalars) not in cls._instances:
@@ -1224,13 +1227,10 @@ class Subspace(Matrix):
         """
         if self.row < self.column:
             raise MatrixSizeError
-
         n = self.row
         k = self.column
-
         M = self.copy()
         B = unitMatrix(n)
-
         for s in range(k):
             for t in range(s, n):
                 if M.compo[t][s]:
@@ -1314,6 +1314,9 @@ def unitMatrix(size, field=False):
         return unit_matrix
 
 def zeroMatrix(row, column = 0, field=False):
+    """
+    return zero matrix.
+    """
     if column == 0:
         column = row
     if field:
@@ -1329,6 +1332,9 @@ def zeroMatrix(row, column = 0, field=False):
     return Matrix(row, column)
 
 def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
+    """
+    Return space which is sum of L and M.
+    """
     if L.row != M.row:
         raise MatrixSizeError
     N = L.copy()
@@ -1337,6 +1343,9 @@ def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     return N.image()
 
 def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
+    """
+    Return space which is intersection of M and M_.
+    """
     if M.row != M_.row:
         raise MatrixSizeError
     M1 = createMatrix(M.row, M.column + M_.column)
