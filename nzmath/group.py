@@ -313,7 +313,7 @@ class AbelianGenerate(GenerateGroup):
         it satisfies that product(generator[i]**b[i,j])=1 for each j.
         """
         l = len(self.generator)
-        b = matrix.IntegerSquareMatrix(l)
+        b = matrix.RingSquareMatrix(l)
         H1 = [(self.identity(), vector.Vector([0] * l))]
         H2 = list(H1)
         m = 1
@@ -396,7 +396,8 @@ class AbelianGenerate(GenerateGroup):
         """
         B = self.relationLattice()
         U_d, V, M = B.extsmithNormalForm()
-        det = int(M.determinant())
+        det = M.determinant()
+        U_d.toFieldMatrix()
         U = U_d.inverse()
         for i in range(U_d.row):
             U_d[i] = (U_d[i] % det)
