@@ -1,5 +1,5 @@
 import unittest
-import sandbox.finitefield as _finitefield
+import nzmath.finitefield as _finitefield
 import nzmath.matrix as _matrix
 
 
