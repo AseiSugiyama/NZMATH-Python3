@@ -7,7 +7,7 @@ import nzmath.poly.uniutil as uniutil
 
 Ra = rational.Rational
 Poly = uniutil.polynomial
-Int = rational.IntegerRing()
+Int = rational.theIntegerRing
 
 # sub test
 from nzmath.test.testMatrixFiniteField import *
@@ -282,8 +282,7 @@ class FieldSquareMatrixTest(unittest.TestCase):
 
 class MatrixRingTest (unittest.TestCase):
     def setUp(self):
-        self.m2z = MatrixRing.getInstance(2, rational.theIntegerRing)
-        # XXX coefficient ring should be able to be specified.
+        self.m2z = MatrixRing.getInstance(2, Int)
 
     def testZero(self):
         z = self.m2z.zero
@@ -298,6 +297,28 @@ class MatrixRingTest (unittest.TestCase):
         self.assertEqual(0, o[1, 2])
         self.assertEqual(0, o[2, 1])
         self.assertEqual(1, o[2, 2])
+
+    def testUnitMatrix(self):
+        """
+        unitMatrix() is an alias of one.
+        """
+        self.assertEqual(self.m2z.one, self.m2z.unitMatrix())
+
+    def testRingAPI(self):
+        m3z = MatrixRing.getInstance(3, Int)
+        m2q = MatrixRing.getInstance(2, rational.theRationalField)
+        # issubring
+        self.failIf(self.m2z.issubring(Int))
+        self.assert_(self.m2z.issubring(self.m2z))
+        self.assert_(self.m2z.issubring(m2q))
+        self.failIf(self.m2z.issubring(m3z))
+        # issuperring
+        self.failIf(self.m2z.issuperring(Int))
+        self.assert_(self.m2z.issuperring(self.m2z))
+        self.failIf(self.m2z.issuperring(m2q))
+        self.failIf(self.m2z.issuperring(m3z))
+        # getCommonSuperring
+        self.assertRaises(TypeError, self.m2z.getCommonSuperring, Int)
 
 
 class SubspaceTest(unittest.TestCase):

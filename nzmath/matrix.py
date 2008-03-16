@@ -1175,7 +1175,7 @@ class MatrixRing (ring.Ring):
         """
         Return the unit matrix.
         """
-        return unitMatrix(self.size)
+        return self.one.copy()
 
     def _getOne(self):
         """
@@ -1185,7 +1185,10 @@ class MatrixRing (ring.Ring):
             components = [self.scalars.zero] * (self.size**2)
             for i in range(self.size):
                 components[i*self.size + i] = self.scalars.one
-            self._one = SquareMatrix(self.size, components)
+            if self.scalars.isfield():
+                self._one = FieldSquareMatrix(self.size, components)
+            else:
+                self._one = RingSquareMatrix(self.size, components)
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit")
@@ -1209,6 +1212,40 @@ class MatrixRing (ring.Ring):
         where n = self.size.
         """
         return createMatrix(self.size, compo)
+
+    def getCharacteristic(self):
+        """
+        Return the characteristic of the ring.
+        """
+        return self.scalars.getCharacteristic()
+
+    def issubring(self, other):
+        """
+        Report whether another ring contains the ring as a subring.
+        """
+        if other is self:
+            return True
+        if not isinstance(other, MatrixRing):
+            return False
+        return self.size == other.size and self.scalars.issubring(other.scalars)
+
+    def issuperring(self, other):
+        """
+        Report whether the ring is a superring of another ring.
+        """
+        if other is self:
+            return True
+        if not isinstance(other, MatrixRing):
+            return False
+        return self.size == other.size and self.scalars.issuperring(other.scalars)
+
+    def getCommonSuperring(self, other):
+        """
+        Return common super ring of self and another ring.
+        """
+        if not isinstance(other, MatrixRing) or self.size != other.size:
+            raise TypeError("no common super ring")
+        return MatrixRing.getInstance(self.size, self.scalars.getCommonSuperring(other.scalars))
 
 
 class Subspace(Matrix):
