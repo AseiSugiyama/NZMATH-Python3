@@ -32,6 +32,7 @@ b7 = createMatrix(3, 3, [1, 0, 0, 9, 1, 0, 5, 6, 1])
 c1 = createMatrix(1, 2, [Ra(3), Ra(2)])
 c2 = createMatrix(4, 5, \
 [Ra(0), 0, 1, 2, -1]+[0, 0, 5, 12, -2]+[0, 0, 1, 3, -1]+[0, 0, 1, 2, 0])
+c3 = createMatrix(3, 2, [Ra(1), 2]+[2, 5]+[6, 7])
 
 ## for FieldSquareMatrix
 d1 = createMatrix(2, 2, [Ra(1), Ra(2)]+[Ra(3), Ra(4)])
@@ -50,6 +51,8 @@ d7 = Matrix(3, 3, \
 
 ## other objects
 v1 = vector.Vector([1, 4])
+v2 = vector.Vector([8])
+v3 = vector.Vector([0, 0, 1])
 
 class MatrixTest(unittest.TestCase):
     def testGetitem(self):
@@ -194,9 +197,10 @@ class RingSquareMatrixTest(unittest.TestCase):
         self.assert_(isinstance(b3.determinant(), (int, long)))
         self.assertEqual(36, b3.determinant())
 
-    def testCofactor(self):
+    def testCofactorMatrix(self):
         cofactors = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
         self.assertEqual(cofactors, b4.cofactors())
+        assert d1 * d1.cofactors() == d1.determinant() * unitMatrix(d1.row)
 
     def testCommutator(self):
         commutator = createMatrix(2, 2, [5, -1, 9, -5])
@@ -204,9 +208,6 @@ class RingSquareMatrixTest(unittest.TestCase):
 
     def testCharacteristicPolynomial(self):
         assert d1.characteristicPolynomial()
-
-    def testCofactorMatrix(self):
-        assert d1 * d1.cofactorMatrix() == d1.determinant() * unitMatrix(d1.row)
 
     def testSmithNormalForm(self):
         self.assertEqual([12, 1, 1], b5.smithNormalForm())
@@ -237,6 +238,14 @@ class FieldMatrixTest(unittest.TestCase):
     def testInverseImage(self):
         self.assertEqual(d6, d5 * d5.inverseImage(d6))
         self.assertRaises(VectorsNotIndependent, d2.inverseImage, unitMatrix(3))
+
+    def testSolution(self):
+        for i in range(1, d6.column+1):
+            self.assertEqual(d6[i], d5 * d5.solution(d6[i])[0])
+        sol1 = c1.solution(v2)
+        for i in range(len(sol1[1])):
+            self.assertEqual(v2, c1 * (sol1[0]+sol1[1][i]))
+        self.assertRaises(NoInverseImage, c3.solution, v3)
 
     def testColumnEchelonForm(self):
         echelon = createMatrix(4, 5,\
