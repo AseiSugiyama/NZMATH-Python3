@@ -710,14 +710,14 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                 coeff[i] = -C.trace()
             else:
                 coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row, True)
+            C = C + coeff[i] * unitMatrix(self.row)
         import nzmath.poly.uniutil as uniutil
         coeff.reverse()
         return uniutil.OneVariableDensePolynomial(coeff, 'x')
 
     def adjugateMatrix(self):        # Algorithm 2.2.7 of Cohen's book
         """
-        Return adjugate, or classical adjoint matrix.
+        Return adjugate(classical adjoint) matrix.
         """
         C = unitMatrix(self.row)
         coeff = [0] * self.row
@@ -728,7 +728,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                 coeff[i] = -C.trace()
             else:
                 coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row, True)
+            C = C + coeff[i] * unitMatrix(self.row)
         if self.row & 1:
             return C
         else:
