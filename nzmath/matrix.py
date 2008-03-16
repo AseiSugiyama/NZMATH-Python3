@@ -632,7 +632,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         Alternative (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
         """
         for i in range(self.row):
-            for j in range(i + 1, self.column):
+            for j in range(i, self.column):
                 if self.compo[i][j] != -self.compo[j][i]:
                     return False
         return True
