@@ -199,10 +199,10 @@ class RingSquareMatrixTest(unittest.TestCase):
         self.assert_(isinstance(b3.determinant(), (int, long)))
         self.assertEqual(36, b3.determinant())
 
-    def testCofactorMatrix(self):
-        cofactors = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
-        self.assertEqual(cofactors, b4.cofactors())
-        assert d1 * d1.cofactors() == d1.determinant() * unitMatrix(d1.row)
+    def testAdjugateMatrix(self):
+        adjugate = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
+        self.assertEqual(adjugate, b4.adjugateMatrix())
+        assert d1 * d1.adjugateMatrix() == d1.determinant() * unitMatrix(d1.row)
 
     def testCommutator(self):
         commutator = createMatrix(2, 2, [5, -1, 9, -5])
