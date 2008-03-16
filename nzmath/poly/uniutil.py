@@ -358,7 +358,7 @@ class ContentProvider (object):
         num, den = 0, 1
         for c in self.itercoefficients():
             if isquotfield is None:
-                coeffring = c.getRing()
+                coeffring = ring.getRing(c)
                 if coeffring.isfield() and isinstance(coeffring, ring.QuotientField):
                     isquotfield = True
                     basedomain = coeffring.basedomain
@@ -390,6 +390,29 @@ class SubresultantGcdProvider (object):
 
     REQUIRE: PseudoDivisionProvider, ContentProvider
     """
+    def resultant(self, other):
+        """
+        Return the resultant of self and other.
+        """
+        order = termorder.ascending_order
+        f, g = self, other
+        if order.degree(self) < order.degree(other):
+            f, g = other, self
+        polynomial_ring = self.getRing()
+        one = polynomial_ring.getCoefficientRing().one
+        m, n = order.degree(self), order.degree(other)
+        sol = 1
+        a = b = one
+        while order.degree(g):
+            delta = order.degree(f) - order.degree(g)
+            if (order.degree(f) & 1) & order.degree(g):
+                sol = -sol
+            h = f.pseudo_mod(g)
+            f, g = g, h.scalar_exact_division(a * (b ** delta))
+            a = f.leading_coefficient()
+            b = ((a ** delta) * b) // (b ** delta)
+        return sol * (b ** (1-order.degree(f))) * (g[0] ** order.degree(f))
+
     def subresultant_gcd(self, other):
         """
         Return the greatest common divisor of given polynomials.  They
