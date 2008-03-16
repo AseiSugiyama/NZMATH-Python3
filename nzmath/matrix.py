@@ -632,7 +632,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         Alternative (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
         """
         for i in range(self.row):
-            for j in range(i + 1, self.column + 1):
+            for j in range(i + 1, self.column):
                 if self.compo[i][j] != -self.compo[j][i]:
                     return False
         return True
@@ -883,13 +883,13 @@ class FieldMatrix(RingMatrix):
     def _cohensSimplify(self):
         """
         _cohensSimplify is a common process used in image() and kernel()
-        
+
         Return a tuple of modified matrix M, image data c and kernel data d.
         """
         M = self.copy()
         c = [0] * (M.row + 1)
         d = [-1] * (M.column + 1)
-        for k in range(1, M.column+1):
+        for k in range(1, M.column + 1):
             for j in range(1, M.row + 1):
                 if c[j] == 0 and M[j, k]:
                     break
@@ -918,21 +918,19 @@ class FieldMatrix(RingMatrix):
         """
         tmp = self._cohensSimplify()
         M, d = tmp[0], tmp[2]
-        c = tmp[0]
-        d = tmp[1]
         basis = []
-        vector = []
+        vector = [0] * (M.column+1)
         for k in range(1, M.column + 1):
             if d[k]:
                 continue
             for i in range(1, M.column + 1):
                 if d[i] > 0:
-                    vector.append(M[d[i], k])
+                    vector[i] = M[d[i], k]
                 elif i == k:
-                    vector.append(1)
+                    vector[i] = 1
                 else:
-                    vector.append(0)
-            basis.append(vector)
+                    vector[i] = 0
+            basis.append(vector[1:])
         dimension = len(basis)
         if dimension == 0:
             return None
@@ -946,16 +944,15 @@ class FieldMatrix(RingMatrix):
         Return a Matrix which column vectors are one basis of self's image,
         or return None if self's image is 0.
         """
-        tmp = M._cohensSimplify()
+        tmp = self._cohensSimplify()
         M, c = tmp[0], tmp[1]
-        c = tmp[0]
         basis = []
         for j in range(1, M.row + 1):
             if c[j]:
                 basis.append(self[c[j]])
-        if not len(basis):
-            return None
         dimension = len(basis)
+        if dimension == 0:
+            return None
         output = createMatrix(self.row, dimension)
         for j in range(1, dimension + 1):
             output.setColumn(j, basis[j - 1])
@@ -1252,9 +1249,9 @@ class MatrixRing (ring.Ring):
             for i in range(self.size):
                 components[i*self.size + i] = self.scalars.one
             if self.scalars.isfield():
-                 self._one = FieldSquareMatrix(self.size, components)
-             else:
-                 self._one = RingSquareMatrix(self.size, components)
+                self._one = FieldSquareMatrix(self.size, components)
+            else:
+                self._one = RingSquareMatrix(self.size, components)
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit")
