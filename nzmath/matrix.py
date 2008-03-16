@@ -715,9 +715,9 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         coeff.reverse()
         return uniutil.OneVariableDensePolynomial(coeff, 'x')
 
-    def cofactorMatrix(self):        # Algorithm 2.2.7 of Cohen's book
+    def adjugateMatrix(self):        # Algorithm 2.2.7 of Cohen's book
         """
-        Return cofactor (adjugate, or classical adjoint) matrix.
+        Return adjugate, or classical adjoint matrix.
         """
         C = unitMatrix(self.row)
         coeff = [0] * self.row
@@ -734,8 +734,13 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         else:
             return -C
 
+    def cofactorMatrix(self):
+        """
+        Return cofactor matrix.
+        """
+        return self.adjugateMatrix().transpose()
+
     cofactors = cofactorMatrix
-    adjugateMatrix = cofactorMatrix
 
     def smithNormalForm(self):# Algorithm 2.4.14 of Cohen's book
         """
