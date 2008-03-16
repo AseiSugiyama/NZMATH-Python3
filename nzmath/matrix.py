@@ -476,6 +476,10 @@ class RingMatrix(Matrix):
     def __neg__(self):
         return (-1) * self
 
+    def toFieldMatrix(self):
+        """RingMatrix -> FieldMatrix"""
+        self.__class__ = FieldMatrix
+
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
         A = self.copy()
@@ -568,6 +572,10 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             if n == 0:
                 return power
             z = z*z
+
+    def toFieldMatrix(self):
+        """RingSquareMatrix -> FieldSquareMatrix"""
+        self.__class__ = FieldSquareMatrix
 
     def getRing(self):
         """
