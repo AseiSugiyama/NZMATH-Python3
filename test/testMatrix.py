@@ -136,6 +136,8 @@ class RingMatrixTest(unittest.TestCase):
         self.assertEqual(mul1, a1 * b2)
         mul2 = createMatrix(3, 2, [-15, -6]+[-2, -2]+[0, 0])
         self.assertEqual(mul2, a4 * b1)
+        mul3 = createMatrix(3, 2, [1, -1]+[109, -64]+[156, -93])
+        self.assertEqual(mul3, b3 * a4)
 
     def testScalarMul(self):
         mul = createMatrix(1, 2, [15, 10])
