@@ -816,8 +816,8 @@ class DiscriminantTest (unittest.TestCase):
         Sextic
         """
         # sf bug # 1918047
-        septic = OneVariableDensePolynomial(range(7, 0, -1), x, Z)
-        self.assertEqual(-2**16 * 7**4, discriminant(septic))
+        sextic = OneVariableDensePolynomial(range(7, 0, -1), x, Z)
+        self.assertEqual(-2**16 * 7**4, discriminant(sextic))
 
 
 def suite(suffix="Test"):
