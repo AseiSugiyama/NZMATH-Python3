@@ -1,3 +1,4 @@
+from __future__ import division
 import unittest
 import logging
 
@@ -455,6 +456,8 @@ class PolynomialGCDTest(unittest.TestCase):
         self.assertEqual(2, resultant(
             OneVariableDensePolynomial([-2, 0, 0, 1], x),
             OneVariableDensePolynomial([0, 1], x)))
+        # sf bug # 1918034
+        self.assertEqual(0, resultant(self.f, self.f * self.g))
 
     def testPseudoDivision(self): 
         A = self.f
@@ -786,6 +789,35 @@ class OneVariableSparsePolynomialTest (unittest.TestCase):
         element = nzmath.finitefield.FinitePrimeFieldElement
         self.assert_(isinstance(OneVariableSparsePolynomial({0:element(1, 5), 1:element(1, 5)}, 'x'), OneVariablePolynomial))
         self.assert_(isinstance(OneVariableSparsePolynomial({0:element(1, 5), 1:element(1, 5)}, 'x'), OneVariablePolynomialCharNonZero))
+
+
+class DiscriminantTest (unittest.TestCase):
+    """
+    Test module function discriminant
+    """
+    def testQuadratic(self):
+        """
+        Quadratic polynomial
+        """
+        a, b, c = -2, -1, 1
+        q1 = OneVariableDensePolynomial([c, b, a], x, Z)
+        d = b ** 2 - 4 * a * c
+        self.assertEqual(d, discriminant(q1))
+
+    def testCubic(self):
+        """
+        Cubic polynomial
+        """
+        cubic = construct("1 + 9*x + x**3")
+        self.assertEqual(-3**3 * 109, discriminant(cubic))
+
+    def testSextic(self):
+        """
+        Sextic
+        """
+        # sf bug # 1918047
+        septic = OneVariableDensePolynomial(range(7, 0, -1), x, Z)
+        self.assertEqual(-2**16 * 7**4, discriminant(septic))
 
 
 def suite(suffix="Test"):
