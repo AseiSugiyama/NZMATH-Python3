@@ -126,12 +126,15 @@ class Matrix(object):
         """
         Return matrix applied __call__ to each elements.
         """
-        sol = self.__class__(self.row, self.column)
+        sol = []
         for i in range(self.row):
             for j in range(self.column):
-                if callable(self.compo[i][j]):
-                    sol.compo[i][j] = (self.compo[i][j])(arg)
-        return sol
+                ele = self.compo[i][j]
+                if callable(ele):
+                    sol.append(ele(arg))
+                else:
+                    sol.append(ele)
+        return createMatrix(self.row, self.column, sol)
 
 
     # utility methods ----------------------------------------------------
@@ -294,11 +297,11 @@ class Matrix(object):
         """
         Return transposed matrix of self.
         """
-        trans = self.__class__(self.column, self.row)
-        for i in range(1, trans.row + 1):
-            for j in range(1, trans.column + 1):
-                trans[i, j] = self[j, i]
-        return trans
+        trans = []
+        for j in range(1, self.column + 1):
+            for i in range(1, self.row + 1):
+                trans.append(self[i, j])
+        return createMatrix(self.column, self.row, trans)
 
     def submatrix(self, i, j):
         """
@@ -419,11 +422,11 @@ class RingMatrix(Matrix):
         """
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
-        sums = self.__class__(self.row, self.column)
+        sums = []
         for i in range(self.row):
             for j in range(self.column):
-                sums.compo[i][j] = self.compo[i][j] + other.compo[i][j]
-        return sums
+                sums.append(self.compo[i][j] + other.compo[i][j])
+        return createMatrix(self.row, self.column, sums)
 
     def __sub__(self, other):
         """
@@ -431,11 +434,11 @@ class RingMatrix(Matrix):
         """
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
-        diff = self.__class__(self.row, self.column)
+        diff = []
         for i in range(self.row):
             for j in range(self.column):
-                diff.compo[i][j] = self.compo[i][j] - other.compo[i][j]
-        return diff
+                diff.append(self.compo[i][j] - other.compo[i][j])
+        return createMatrix(self.row, self.column, diff)
 
     def __mul__(self, other):
         """
@@ -444,62 +447,71 @@ class RingMatrix(Matrix):
         if isinstance(other, Matrix):
             if self.column != other.row:
                 raise MatrixSizeError
-            product = self.__class__(self.row, other.column)
+            product = []
             for i in range(1, self.row + 1):
                 for j in range(1, other.column + 1):
-                    for k in range(self.column):
-                        product[i, j] = product[i, j] + self[i, k] * other[k, j]
-            return product
+                    part_product = self[i, 1] * other[1, j]
+                    for k in range(2, self.column + 1):
+                        part_product = part_product + self[i, k] * other[k, j]
+                    product.append(part_product)
+            return createMatrix(self.row, other.column, product)
         elif isinstance(other, vector.Vector):
             if self.column != len(other):
                 raise vector.VectorSizeError
-            tmp = [0] * self.row
+            product = []
             for i in range(1, self.row + 1):
-                for j in range(1, self.column + 1):
-                    tmp[i-1] = tmp[i-1] + self[i, j] * other[j]
-            return vector.Vector(tmp)
+                part_product = self[i, 1] * other[1]
+                for j in range(2, self.column + 1):
+                    part_product = part_product + self[i, j] * other[j]
+                product.append(part_product)
+            return vector.Vector(product)
         else: #scalar mul
-            product = self.__class__(self.row, self.column)
+            product = []
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
-                    product[i, j] = self[i, j] * other
-            return product
+                    product.append(self[i, j] * other)
+            return createMatrix(self.row, self.column, product)
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
-            if self.row != other.column:
+            if other.column != self.row:
                 raise MatrixSizeError
-            product = self.__class__(other.row, self.column)
-            for i in range(1, self.row + 1):
+            product = []
+            for i in range(1, other.row + 1):
                 for j in range(1, self.column + 1):
-                    product[i, j] = self[i, j] * other
-            return product
+                    part_product = other[i, 1] * self[1, j]
+                    for k in range(2, self.row + 1):
+                        part_product = part_product + other[i, k] * self[k, j]
+                    product.append(part_product)
+            return createMatrix(other.row, self.column, product)
         elif isinstance(other, vector.Vector):
             if self.row != len(other):
                 raise vector.VectorSizeError
-            tmp = [0] * self.column
+            product = []
             for j in range(1, self.column + 1):
-                for i in range(1, self.row + 1):
-                    tmp[j-1] = tmp[j-1] + other[i] * self[i, j]
-            return vector.Vector(tmp)
+                part_product = other[1] * self[1, j]
+                for i in range(2, self.row + 1):
+                    part_product = part_product + other[i] * self[i, j]
+                product.append(part_product)
+            return vector.Vector(product)
         else:
-            product = self.__class__(self.row, self.column)
+            product = []
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
-                    product[i, j] = self[i, j] * other
-            return product
+                    product.append(self[i, j] * other)
+            return createMatrix(self.row, self.column, product)
 
     def __mod__(self, other):
         """
         return self modulo other.
         """
-        mod = self.__class__(self.row, self.column)
         if not bool(other):
             raise ZeroDivisionError
+        mod = []
         for i in range(1, self.row + 1):
             for j in range(1, self.column + 1):
-                mod[i, j] = self[i, j] % other
-        return mod
+                mod.append(self[i, j] % other)
+        return createMatrix(self.row, self.column, mod)
 
     def __neg__(self):
         return (-1) * self
@@ -751,12 +763,13 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         n = M.row
         R = M.determinant()
         rings = ring.getRing(M[1, 1])
+        one = rings.one
         if not bool(R):
             raise ValueError("Don't input matrix whose determinant is 0")
         if R < 0:
             R = -R
-        if R == 1:
-            lst = [1] * (n - 1)
+        if R == one:
+            lst = [one] * (n - 1)
             n = 1
         else:
             lst = []
@@ -807,13 +820,11 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         M = self.copy()
         n = M.row
-        U = self.__class__(M.row)
-        V = self.__class__(M.row)
+        U = unitMatrix(M.row)
+        V = unitMatrix(M.row)
         rings = ring.getRing(M[1, 1])
-        for i in range(M.row):
-            U.compo[i][i] = 1
-            V.compo[i][i] = 1
-        if abs(M.determinant()) == 1:
+        one = rings.one
+        if abs(M.determinant()) == one:
             V = M.inverse()
             M = U
             return (U, V, M)
@@ -853,7 +864,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                 flag = False
                 for k in range(1, n):
                     for l in range(1, n):
-                        if (M[k, l] % b) != 0:
+                        if (M[k, l] % b):
                             M.setRow(n, M.getRow(n) + M.getRow(k))
                             U.setRow(n, U.getRow(n) + U.getRow(k))
                             flag = True
