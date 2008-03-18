@@ -1219,22 +1219,26 @@ def resultant(f, g):
     Return the resultant of 2 (one variable) polynomials.
     Kida's paper p.17
     """
-    if f.degree() >= g.degree():
-        f_cp, g_cp = f.copy(), g.copy()
-    else:
-        f_cp, g_cp = g.copy(), f.copy()
-    m, n = f.degree(), g.degree()
-    sol = 1
+    Z = rational.IntegerRing()
+    f_cp, g_cp = f.copy(), g.copy()
+    if f.degree() < g.degree():
+        f_cp, g_cp = g_cp, f_cp
+    sign = 1
     a = b = 1
-    while g_cp.degree():
+    while True:
         delta = f_cp.degree() - g_cp.degree()
-        if (f_cp.degree() % 2) == 1 and (g_cp.degree() % 2) == 1:
-            sol = -sol
+        if (f_cp.degree() & 1) & g_cp.degree():
+            sign = -sign
         h = pseudoDivision(f_cp, g_cp)[1]
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
         a = f_cp.leadingCoefficient()
         b = ((a ** delta) * b) // (b ** delta)
-    return sol * (b ** (1-f_cp.degree())) * (g_cp[0] ** f_cp.degree())
+        if g_cp in Z or g_cp.degree <=0:
+            break
+    if not hasattr(g_cp, 'degree'): # real scalar
+        return sign * (b * g_cp ** f_cp.degree()) // (b ** f_cp.degree())
+    else:
+        return sign * (b * g_cp[0] ** f_cp.degree()) // (b ** f_cp.degree())
 
 
 # Algorithm 3.1.2 of Cohen's book
