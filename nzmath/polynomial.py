@@ -1219,13 +1219,13 @@ def resultant(f, g):
     Return the resultant of 2 (one variable) polynomials.
     Kida's paper(http://www.rkmath.rikkyo.ac.jp/~kida/intbasis.pdf) p.17
     """
-    Z = rational.IntegerRing()
     f_cp, g_cp = f.copy(), g.copy()
     sign = True
     if f.degree() < g.degree():
         f_cp, g_cp = g_cp, f_cp
         if (f_cp.degree() & 1) and (g_cp.degree() & 1):
             sign = not(sign)
+    coeffRing = f_cp.coefficientRing
     a = b = 1
     while True:
         delta = f_cp.degree() - g_cp.degree()
@@ -1235,7 +1235,7 @@ def resultant(f, g):
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
         a = f_cp.leadingCoefficient()
         b = ((a ** delta) * b) // (b ** delta)
-        if g_cp in Z or g_cp.degree <=0:
+        if g_cp in coeffRing or g_cp.degree <=0:
             break
     if not hasattr(g_cp, 'degree'): # real scalar
         scalar = g_cp
