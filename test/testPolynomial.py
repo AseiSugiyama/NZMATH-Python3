@@ -458,6 +458,11 @@ class PolynomialGCDTest(unittest.TestCase):
             OneVariableDensePolynomial([0, 1], x)))
         # sf bug # 1918034
         self.assertEqual(0, resultant(self.f, self.f * self.g))
+        # sf bug # 1919168
+        h1 = OneVariableDensePolynomial([-2, 1], x)
+        h2 = OneVariableDensePolynomial([-2, 0, 0, 1], x)
+        self.assertEqual(resultant(h1, h2), -resultant(h2, h1))
+                         
 
     def testPseudoDivision(self): 
         A = self.f
