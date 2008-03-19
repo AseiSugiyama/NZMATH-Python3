@@ -1217,18 +1217,20 @@ import nzmath.matrix as matrix
 def resultant(f, g):
     """
     Return the resultant of 2 (one variable) polynomials.
-    Kida's paper p.17
+    Kida's paper(http://www.rkmath.rikkyo.ac.jp/~kida/intbasis.pdf) p.17
     """
     Z = rational.IntegerRing()
     f_cp, g_cp = f.copy(), g.copy()
+    sign = True
     if f.degree() < g.degree():
         f_cp, g_cp = g_cp, f_cp
-    sign = 1
+        if (f_cp.degree() & 1) & (g_cp.degree() & 1):
+            sign = not(sign)
     a = b = 1
     while True:
         delta = f_cp.degree() - g_cp.degree()
-        if (f_cp.degree() & 1) & g_cp.degree():
-            sign = -sign
+        if (f_cp.degree() & 1) & (g_cp.degree() & 1):
+            sign = not(sign)
         h = pseudoDivision(f_cp, g_cp)[1]
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
         a = f_cp.leadingCoefficient()
@@ -1236,10 +1238,13 @@ def resultant(f, g):
         if g_cp in Z or g_cp.degree <=0:
             break
     if not hasattr(g_cp, 'degree'): # real scalar
-        return sign * (b * g_cp ** f_cp.degree()) // (b ** f_cp.degree())
+        scalar = g_cp
     else:
-        return sign * (b * g_cp[0] ** f_cp.degree()) // (b ** f_cp.degree())
-
+        scalar = g_cp[0]
+    if sign:
+        return (b * scalar ** f_cp.degree()) // (b ** f_cp.degree())
+    else:
+        return -(b * scalar ** f_cp.degree()) // (b ** f_cp.degree())
 
 # Algorithm 3.1.2 of Cohen's book
 def pseudoDivision(A, B):
