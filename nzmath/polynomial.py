@@ -1224,12 +1224,12 @@ def resultant(f, g):
     sign = True
     if f.degree() < g.degree():
         f_cp, g_cp = g_cp, f_cp
-        if (f_cp.degree() & 1) & (g_cp.degree() & 1):
+        if (f_cp.degree() & 1) and (g_cp.degree() & 1):
             sign = not(sign)
     a = b = 1
     while True:
         delta = f_cp.degree() - g_cp.degree()
-        if (f_cp.degree() & 1) & (g_cp.degree() & 1):
+        if (f_cp.degree() & 1) and (g_cp.degree() & 1):
             sign = not(sign)
         h = pseudoDivision(f_cp, g_cp)[1]
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
