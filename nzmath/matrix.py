@@ -746,7 +746,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             C = C + coeff[i] * unitMatrix(self.row, self.coeff_ring)
         import nzmath.poly.uniutil as uniutil
         coeff.reverse()
-        return uniutil.OneVariableDensePolynomial(coeff, 'x')
+        return uniutil.polynomial(dict(enumerate(coeff)), self.coeff_ring)
 
     def adjugateMatrix(self):        # Algorithm 2.2.7 of Cohen's book
         """
