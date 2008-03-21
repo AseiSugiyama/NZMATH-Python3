@@ -396,22 +396,33 @@ class SubresultantGcdProvider (object):
         """
         order = termorder.ascending_order
         f, g = self, other
+        sign = True
         if order.degree(self) < order.degree(other):
             f, g = other, self
-        polynomial_ring = self.getRing()
-        one = polynomial_ring.getCoefficientRing().one
-        m, n = order.degree(self), order.degree(other)
-        sol = 1
+            if (order.degree(f) & 1) and (order.degree(g) & 1):
+                sign = not(sign)
+        coeff_ring = self.getCoefficientRing()
+        poly_ring = self.getRing()
+        one = coeff_ring.one
         a = b = one
-        while order.degree(g):
+        while True:
             delta = order.degree(f) - order.degree(g)
-            if (order.degree(f) & 1) & order.degree(g):
-                sol = -sol
+            if (order.degree(f) & 1) and (order.degree(g) & 1):
+                sign = not(sign)
             h = f.pseudo_mod(g)
             f, g = g, h.scalar_exact_division(a * (b ** delta))
             a = f.leading_coefficient()
             b = ((a ** delta) * b) // (b ** delta)
-        return sol * (b ** (1-order.degree(f))) * (g[0] ** order.degree(f))
+            if g in coeff_ring or order.degree(g) <= 0:
+                break
+        if g in poly_ring:
+            scalar = g[0]
+        else:
+            scalar = g
+        if sign:
+            return (b * scalar ** order.degree(f)) // (b ** order.degree(f))
+        else:
+            return -(b * scalar ** order.degree(f)) // (b ** order.degree(f))
 
     def subresultant_gcd(self, other):
         """
