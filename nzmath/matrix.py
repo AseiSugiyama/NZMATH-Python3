@@ -1407,7 +1407,10 @@ def createMatrix(row, column=0, compo=0):
         compo = column
         column = row
     if not bool(compo):
-        return RingMatrix(row, column, [0] * (row * column))
+        if row == column:
+            return RingSquareMatrix(row, [0] * (row * column))
+        else:
+            return RingMatrix(row, column, [0] * (row * column))
     if ring.getRing(compo[0]).isfield():
         if row == column:
             return FieldSquareMatrix(row, compo)
