@@ -37,6 +37,7 @@ class Matrix(object):
                     raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
                     self.compo.append(compo[self.column*i : self.column*(i + 1)])
+            self.coeff_ring = ring.getRing(self.compo[0][0])
         else:
             raise ValueError, "invalid value for matrix size"
 
@@ -44,7 +45,7 @@ class Matrix(object):
         """
         Select Matrix class.
         """
-        if ring.getRing(self.compo[0][0]).isfield():
+        if self.coeff_ring.isfield():
             if self.row == self.column:
                 self.__class__ = FieldSquareMatrix
             else:
@@ -143,12 +144,11 @@ class Matrix(object):
         """
         Create a copy of the instance.
         """
-        copy = self.__class__(self.row, self.column)
         compos = []
-        for k in range(len(self.compo)):
-            compos.append(self.compo[k][:])
-        copy.compo = compos
-        return copy
+        for i in range(self.row):
+            for j in range(self.column):
+                compos.append(self.compo[i][j])
+        return self.__class__(self.row, self.column, compos)
 
     def set(self, list):
         """
@@ -303,6 +303,18 @@ class Matrix(object):
                 trans.append(self[i, j])
         return createMatrix(self.column, self.row, trans)
 
+    def blockMatrix(self, i1, i2, j1, j2):
+        """
+        Return block matrix whose size is (i2-i1+1) * (j2-j1+1).
+        """
+        if i1 > i2 or j1 > j2 or i2 > self.row or j2 > self.column:
+            raise MatrixSizeError
+        mat = []
+        for i in range(i1, i2 + 1):
+            for j in range(j1, j2 + 1):
+                mat.append(self[i, j])
+        return createMatrix(i2 - i1 + 1, j2 - j1 + 1, mat)
+
     def submatrix(self, i, j):
         """
         Return submatrix which deleted i-th row and j-th column from self.
@@ -324,7 +336,7 @@ class SquareMatrix(Matrix):
         SquareMatrix must be row == column .
         """
         self._initialize(row, column, compo)
-        if ring.getRing(self.compo[0][0]).isfield():
+        if self.coeff_ring.isfield():
             self.__class__ = FieldSquareMatrix
         else:
             self.__class__ = RingSquareMatrix
@@ -352,6 +364,7 @@ class SquareMatrix(Matrix):
                     raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
                     self.compo.append(_compo[self.column*i : self.column*(i + 1)])
+            self.coeff_ring = ring.getRing(self.compo[0][0])
         else:
             raise ValueError, "invalid value for matrix size"
 
@@ -516,6 +529,22 @@ class RingMatrix(Matrix):
     def __neg__(self):
         return (-1) * self
 
+    def getCoefficientRing(self):
+        """
+        Set and return coefficient ring.
+        """
+        if not hasattr(self, "_coeff_ring"):
+            scalars = None
+            for i in range(self.row):
+                for j in range(self.column):
+                    cring = ring.getRing(self[i, j])
+                    if scalars is None or scalars != cring and scalars.issubring(cring):
+                        scalars = cring
+                    elif not scalars.issuperring(cring):
+                        scalars = scalars.getCommonSuperring(cring)
+            self._coeff_ring = self.coeff_ring = scalars
+        return self._coeff_ring
+
     def toFieldMatrix(self):
         """RingMatrix -> FieldMatrix"""
         self.__class__ = FieldMatrix
@@ -593,7 +622,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         n = +other
         if not isinstance(n, (int, long)):
             raise TypeError("index must be an integer")
-        power = unitMatrix(self.row)
+        power = unitMatrix(self.row, self.coeff_ring)
         # check n
         if n == 0:
             return power
@@ -621,22 +650,14 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         Return matrix ring of self.
         """
-        scalars = None
-        for i in range(self.row):
-            for j in range(self.column):
-                cring = ring.getRing(self[i, j])
-                if scalars is None or scalars != cring and scalars.issubring(cring):
-                    scalars = cring
-                elif not scalars.issuperring(cring):
-                    scalars = scalars.getCommonSuperring(cring)
-        return MatrixRing.getInstance(self.row, scalars)
+        return MatrixRing.getInstance(self.row, self.getCoefficientRing())
 
     def isOrthogonalMatrix(self):
         """
         Check whether self is orthogonal matrix or not.
         Orthogonal matrix satisfies M*M^T equals unit matrix.
         """
-        return self * self.transpose() == unitMatrix(self.row)
+        return self * self.transpose() == unitMatrix(self.row, self.coeff_ring)
 
     def isAlternativeMatrix(self):
         """
@@ -713,7 +734,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         characteristicPolynomial() -> Polynomial
         """
-        C = unitMatrix(self.row)
+        C = unitMatrix(self.row, self.coeff_ring)
         coeff = [0] * (self.row + 1)
         coeff[0] = 1
         for i in range(1, self.row + 1):
@@ -722,7 +743,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                 coeff[i] = -C.trace()
             else:
                 coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row)
+            C = C + coeff[i] * unitMatrix(self.row, self.coeff_ring)
         import nzmath.poly.uniutil as uniutil
         coeff.reverse()
         return uniutil.OneVariableDensePolynomial(coeff, 'x')
@@ -731,7 +752,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         Return adjugate(classical adjoint) matrix.
         """
-        C = unitMatrix(self.row)
+        C = unitMatrix(self.row, self.coeff_ring)
         coeff = [0] * self.row
         coeff[0] = 1
         for i in range(1, self.row):
@@ -740,7 +761,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
                 coeff[i] = -C.trace()
             else:
                 coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row)
+            C = C + coeff[i] * unitMatrix(self.row, self.coeff_ring)
         if self.row & 1:
             return C
         else:
@@ -820,8 +841,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         M = self.copy()
         n = M.row
-        U = unitMatrix(M.row)
-        V = unitMatrix(M.row)
+        U = unitMatrix(M.row, M.coeff_ring)
+        V = unitMatrix(M.row, M.coeff_ring)
         rings = ring.getRing(M[1, 1])
         one = rings.one
         if abs(M.determinant()) == one:
@@ -950,7 +971,7 @@ class FieldMatrix(RingMatrix):
         dimension = len(basis)
         if dimension == 0:
             return None
-        output = zeroMatrix(self.column, dimension, True)
+        output = zeroMatrix(self.column, dimension, self.coeff_ring)
         for j in range(1, dimension + 1):
             output.setColumn(j, basis[j - 1])
         return output
@@ -972,6 +993,7 @@ class FieldMatrix(RingMatrix):
         output = createMatrix(self.row, dimension)
         for j in range(1, dimension + 1):
             output.setColumn(j, basis[j - 1])
+        output._selectMatrix()
         return output
 
     def rank(self):
@@ -997,7 +1019,7 @@ class FieldMatrix(RingMatrix):
         m = M.row
         n = M.column
         r = V.column
-        X = zeroMatrix(n, r, True)
+        X = zeroMatrix(n, r, self.coeff_ring)
 
         # step 1
         B = V.copy()
@@ -1150,7 +1172,7 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         Return inverse matrix of self if exists,
         or return None.
         """
-        return self.inverseImage(unitMatrix(self.row, True))
+        return self.inverseImage(unitMatrix(self.row, self.coeff_ring))
 
     def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
         """Return a Matrix in Hessenberg Form."""
@@ -1192,7 +1214,7 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         """
 
         n = self.row
-        L = unitMatrix(n, True)
+        L = unitMatrix(n, self.coeff_ring)
         U = self.copy()
         # initialize L and U
         for i in range(n):
@@ -1347,7 +1369,7 @@ class Subspace(Matrix):
         n = self.row
         k = self.column
         M = self.copy()
-        B = unitMatrix(n)
+        B = unitMatrix(n, self.coeff_ring)
         for s in range(k):
             for t in range(s, n):
                 if M.compo[t][s]:
@@ -1385,7 +1407,7 @@ def createMatrix(row, column=0, compo=0):
         compo = column
         column = row
     if not bool(compo):
-        return FieldMatrix(row, column, [0] * (row * column))
+        return RingMatrix(row, column, [0] * (row * column))
     if ring.getRing(compo[0]).isfield():
         if row == column:
             return FieldSquareMatrix(row, compo)
@@ -1397,38 +1419,41 @@ def createMatrix(row, column=0, compo=0):
         else:
             return RingMatrix(row, column, compo)
 
-def unitMatrix(size, field=False):
+def unitMatrix(size, coeff=1):
     """
-    return unit matrix of size .
+    return unit matrix of size.
+    coeff is subclass for ring.Ring or ring.Ring.one.
     """
-    if field:
-        unit_matrix = FieldSquareMatrix(size)
-        for i in range(size):
-            unit_matrix.compo[i][i] = rational.Rational(1, 1)
-        return unit_matrix
+    if isinstance(coeff, ring.Ring):
+        one = coeff.one
+        zero = coeff.zero
     else:
-        unit_matrix = RingSquareMatrix(size)
-        for i in range(size):
-            unit_matrix.compo[i][i] = 1
-        return unit_matrix
+        one = coeff
+        coeff = ring.getRing(one)
+        zero = coeff.zero
+    unit_matrix = [one]
+    iter = [zero] * size + [one]
+    for i in range(size - 1):
+        unit_matrix = unit_matrix + iter
+    return createMatrix(size, size, unit_matrix)
 
-def zeroMatrix(row, column=0, field=False):
+def zeroMatrix(row, column=None, coeff=0):
     """
     return zero matrix.
+    coeff is subclass for ring.Ring or ring.Ring.zero.
     """
-    if column == 0:
-        column = row
-    if field:
-        if row == column:
-            return FieldSquareMatrix(row)
+    if not(rational.isIntegerObject(column)):
+        if column == None:
+            column = row
         else:
-            return FieldMatrix(row, column)
+            coeff = column
+            column = row
+    if isinstance(coeff, ring.Ring):
+        zero = coeff.zero
     else:
-        if row == column:
-            return RingSquareMatrix(row)
-        else:
-            return RingMatrix(row, column)
-    return Matrix(row, column)
+        zero = coeff
+    zero_matrix = [zero] * (row * column)
+    return createMatrix(row, column, zero_matrix)
 
 def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     """
@@ -1439,6 +1464,7 @@ def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     N = L.copy()
     for j in range(1, M.column + 1):
         N.insertColumn(L.column + j, M[j])
+    N.toFieldMatrix()
     return N.image()
 
 def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
@@ -1452,11 +1478,13 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
         M1.setColumn(j, M[j])
     for j in range(1, M_.column + 1):
         M1.setColumn(M.column + j, M_[j])
+    M1.toFieldMatrix()
     N = M1.kernel()
     N1 = createMatrix(M.column , N.column)    # N.column is the dimension of kernel(M1)
     for j in range(1, M.column + 1):
         N1.setRow(j, N.getRow(j))
     M2 = M * N1
+    M2.toFieldMatrix()
     return M2.image()
 
 
