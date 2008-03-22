@@ -150,6 +150,27 @@ class SubresultantGcdProviderTest (unittest.TestCase):
         self.assertEqual(self.up1, self.up1.gcd(self.up1 * self.up1))
         self.assertEqual(-self.v, self.u.subresultant_gcd(self.v))
 
+    def testResultant(self):
+        Z = rational.theIntegerRing
+        I = rational.Integer
+        f = uniutil.polynomial(enumerate(map(I, range(5))), coeffring=Z)
+        g = uniutil.polynomial(enumerate(map(I, range(7, 10))), coeffring=Z)
+        self.assertEqual(0, f.resultant(f * g))
+        h1 = uniutil.polynomial(enumerate(map(I, [-2, 0, 0, 1])), coeffring=Z)
+        h2 = uniutil.polynomial(enumerate([Z.zero, Z.one]), coeffring=Z)
+        self.assertEqual(2, h1.resultant(h2))
+        t = uniutil.polynomial(enumerate(map(I, range(7, 0, -1))), coeffring=Z)
+        self.assertEqual(2**16 * 7**4, t.resultant(t.differentiate()))
+
+
+class IntegerPolynomialTest (unittest.TestCase):
+    def testExactDivision(self):
+        # sf bug #1922158
+        f = uniutil.OneVariableDensePolynomial([0, 9], 'x')
+        g = uniutil.OneVariableDensePolynomial([0, 3], 'x')
+        q = uniutil.polynomial([(0, 3)], rational.theIntegerRing)
+        self.assertEqual(q, f.exact_division(g))
+
 
 class FinitePrimeFieldPolynomialTest (unittest.TestCase):
     def testRepr(self):

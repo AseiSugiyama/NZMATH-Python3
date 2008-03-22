@@ -396,33 +396,29 @@ class SubresultantGcdProvider (object):
         """
         order = termorder.ascending_order
         f, g = self, other
-        sign = True
-        if order.degree(self) < order.degree(other):
-            f, g = other, self
+        negative = False
+        if order.degree(f) < order.degree(g):
+            f, g = g, f
             if (order.degree(f) & 1) and (order.degree(g) & 1):
-                sign = not(sign)
+                negative = not negative
         coeff_ring = self.getCoefficientRing()
-        poly_ring = self.getRing()
-        one = coeff_ring.one
-        a = b = one
-        while True:
+        a = b = coeff_ring.one
+        while order.degree(g) > 0:
             delta = order.degree(f) - order.degree(g)
             if (order.degree(f) & 1) and (order.degree(g) & 1):
-                sign = not(sign)
+                negative = not negative
             h = f.pseudo_mod(g)
             f, g = g, h.scalar_exact_division(a * (b ** delta))
-            a = f.leading_coefficient()
+            a = order.leading_coefficient(f)
             b = ((a ** delta) * b) // (b ** delta)
-            if g in coeff_ring or order.degree(g) <= 0:
-                break
-        if g in poly_ring:
-            scalar = g[0]
+        if not g:
+            return coeff_ring.zero
+        scalar = g[0]
+        degree_f = order.degree(f)
+        if negative:
+            return -(b * scalar ** degree_f) // (b ** degree_f)
         else:
-            scalar = g
-        if sign:
-            return (b * scalar ** order.degree(f)) // (b ** order.degree(f))
-        else:
-            return -(b * scalar ** order.degree(f)) // (b ** order.degree(f))
+            return (b * scalar ** degree_f) // (b ** degree_f)
 
     def subresultant_gcd(self, other):
         """
@@ -1365,6 +1361,19 @@ class UniqueFactorizationDomainPolynomial(SubresultantGcdProvider,
         SubresultantGcdProvider.__init__(self)
 
 
+class IntegerPolynomial(UniqueFactorizationDomainPolynomial):
+    """
+    Polynomial with integer coefficients.
+
+    This class is required because special initialization must be done
+    for built-in int/long.
+    """
+    def __init__(self, coefficients, coeffring=None, _sorted=False, **kwds):
+        dc = dict(coefficients)
+        coefficients = [(d, rational.IntegerIfIntOrLong(c)) for (d, c) in dc.iteritems()]
+        UniqueFactorizationDomainPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
+
+
 class FieldPolynomial(DivisionProvider,
                       ContentProvider,
                       RingPolynomial):
@@ -1421,7 +1430,7 @@ def inject_variable(polynom, variable):
     polynom.variable = variable
 
 
-special_ring_table = {}
+special_ring_table = {rational.IntegerRing: IntegerPolynomial}
 
 
 def polynomial(coefficients, coeffring):
