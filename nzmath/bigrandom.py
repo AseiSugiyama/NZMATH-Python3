@@ -57,4 +57,23 @@ def _validate_for_randrange(start, stop, step):
 random = _random.random
 seed = _random.seed
 
-__all__ = ['random', 'randrange', 'seed']
+
+def map_choice(mapping, upperbound):
+    """
+    Return a choice from a set given as the image of the mapping from
+    natural numbers (more precisely range(upperbound)).  In other
+    words, it is equivalent to
+    random.choice([mapping(i) for i in range(upperboud) if mapping(i) != None])
+    if upperbound is small enough for the list size limit.
+
+    The mapping can be a partial function, i.e. it may return None for
+    some input.  However, if the resulting set is empty, it will end
+    up with an infinite loop.
+    """
+    result = None
+    while result is None:
+        result = mapping(randrange(upperbound))
+    return result
+
+
+__all__ = ['random', 'randrange', 'seed', 'map_choice']

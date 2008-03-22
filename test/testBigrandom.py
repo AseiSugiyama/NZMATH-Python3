@@ -49,6 +49,29 @@ class BigrandomTest(unittest.TestCase):
         self.assertRaises(ValueError, bigrandom.randrange, 3, 3)
 
 
+class ChoiceTest (unittest.TestCase):
+    """
+    tests for bigrandom.map_choice
+    """
+    def testidentity(self):
+        i = lambda x: x
+        self.assert_(0 <= bigrandom.map_choice(i, 2**100) < 2**100)
+
+    def testeven(self):
+        double = lambda x: x + x
+        self.assert_(0 <= bigrandom.map_choice(double, 2**100) < 2**101)
+        self.assertEqual(0, bigrandom.map_choice(double, 2**100) % 2)
+
+    def testpartial(self):
+        def odd(n):
+            """
+            Return None for even numbers.
+            """
+            if n % 2:
+                return n
+        self.assertEqual(1, bigrandom.map_choice(odd, 2**100) % 2)
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
