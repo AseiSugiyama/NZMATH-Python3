@@ -200,9 +200,13 @@ class IntegerTest(unittest.TestCase):
     def testPow(self):
         self.assertEqual(25, pow(5, Integer(2)))
         self.assertEqual(1, pow(self.three, 4, 5))
+        # return Rational when index is negative
+        self.assertEqual(Rational(1, 2), pow(Integer(2), -1))
         # ternary pow doesn't call __rpow__, and just fails.
         self.assertRaises(TypeError, pow, 3, Integer(4), 5)
         self.assertRaises(TypeError, pow, 3, 4, Integer(5))
+        # raise TypeError when index is negative and modulus is given
+        self.assertRaises(TypeError, pow, Integer(2), -1, 5)
 
     def testGetRing(self):
         self.assertEqual(theIntegerRing, self.three.getRing())

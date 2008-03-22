@@ -624,8 +624,13 @@ class Integer(long, ring.CommutativeRingElement):
             return other.__mul__(long(self))
         return self.actAdditive(other)
 
-    def __pow__(self, other, modulo=None):
-        return Integer(pow(long(self), other, modulo))
+    def __pow__(self, index, modulo=None):
+        """
+        If index is negative, result may be a rational number.
+        """
+        if modulo is None and index < 0:
+            return Rational(1, long(self) ** (-index))
+        return Integer(pow(long(self), index, modulo))
 
     def __pos__(self):
         return Integer(self)
