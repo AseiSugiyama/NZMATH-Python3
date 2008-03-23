@@ -1015,6 +1015,8 @@ class FieldMatrix(RingMatrix):
         
         Assume self column vector are linearly independent.
         """
+        if self.row != V.row:
+            raise MatrixSizeError
         M = self.copy()
         m = M.row
         n = M.column
