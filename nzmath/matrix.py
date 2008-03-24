@@ -784,7 +784,6 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         n = M.row
         R = M.determinant()
         rings = ring.getRing(M[1, 1])
-        one = rings.one
         if not bool(R):
             raise ValueError("Don't input matrix whose determinant is 0")
         if R < 0:
@@ -842,11 +841,6 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         U = unitMatrix(M.row, M.coeff_ring)
         V = unitMatrix(M.row, M.coeff_ring)
         rings = ring.getRing(M[1, 1])
-        one = rings.one
-        if abs(M.determinant()) == one:
-            V = M.inverse()
-            M = U
-            return (U, V, M)
         while n != 1:
             j = n
             c = 0
@@ -881,8 +875,6 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             if c <= 0:
                 b = M[n, n]
                 flag = False
-                if not bool(b):
-                    b = R
                 for k in range(1, n):
                     for l in range(1, n):
                         if (M[k, l] % b):
