@@ -789,19 +789,15 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             raise ValueError("Don't input matrix whose determinant is 0")
         if R < 0:
             R = -R
-        if R == one:
-            lst = [one] * (n - 1)
-            n = 1
-        else:
-            lst = []
+        lst = []
         while n != 1:
             j = n
             c = 0
             while j != 1:
                 j -= 1
                 if M[n, j]:
-                    u, v, d = rings.extgcd(M[n, n], M[n, j])
-                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    u, v, d = rings.extgcd(M[n, j], M[n, n])
+                    B = v * M.getColumn(n) + u * M.getColumn(j)
                     M.setColumn(j, (((M[n, n] // d) * M.getColumn(j)
                                      - (M[n, j] // d) * M.getColumn(n)) % R))
                     M.setColumn(n, (B % R))
@@ -809,8 +805,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             while j != 1:
                 j -= 1
                 if M[j, n]:
-                    u, v, d = rings.extgcd(M[n, n], M[j, n])
-                    B = u * M.getRow(n) + v * M.getRow(j)
+                    u, v, d = rings.extgcd(M[j, n], M[n, n])
+                    B = v * M.getRow(n) + u * M.getRow(j)
                     M.setRow(j, (((M[n, n] // d) * M.getRow(j)
                                   - (M[j, n] // d) * M.getRow(n)) % R))
                     M.setRow(n, (B % R))
@@ -818,6 +814,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             if c <= 0:
                 b = M[n, n]
                 flag = False
+                if not bool(b):
+                    b = R
                 for k in range(1, n):
                     for l in range(1, n):
                         if (M[k, l] % b) != 0:
@@ -855,14 +853,14 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             while j != 1:
                 j -= 1
                 if M[n, j]:
-                    u, v, d = rings.extgcd(M[n, n], M[n, j])
+                    u, v, d = rings.extgcd(M[n, j], M[n, n])
                     M_nn = M[n, n] // d
                     M_nj = M[n, j] // d
-                    B = u * M.getColumn(n) + v * M.getColumn(j)
+                    B = v * M.getColumn(n) + u * M.getColumn(j)
                     M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
                     M.getColumn(n)))
                     M.setColumn(n, B)
-                    B = u * V.getColumn(n) + v * V.getColumn(j)
+                    B = v * V.getColumn(n) + u * V.getColumn(j)
                     V.setColumn(j, (M_nn * V.getColumn(j) - M_nj *
                     V.getColumn(n)))
                     V.setColumn(n, B)
@@ -870,19 +868,21 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
             while j != 1:
                 j = j-1
                 if M[j, n]:
-                    u, v, d = rings.extgcd(M[n, n], M[j, n])
+                    u, v, d = rings.extgcd(M[j, n], M[n, n])
                     M_nn = M[n, n] // d
                     M_jn = M[j, n] // d
-                    B = u * M.getRow(n) + v * M.getRow(j)
+                    B = v * M.getRow(n) + u * M.getRow(j)
                     M.setRow(j, (M_nn * M.getRow(j) - M_jn * M.getRow(n)))
                     M.setRow(n, B)
-                    B = u * U.getRow(n) + v * U.getRow(j)
+                    B = v * U.getRow(n) + u * U.getRow(j)
                     U.setRow(j, (M_nn * U.getRow(j) - M_jn * U.getRow(n)))
                     U.setRow(n, B)
                     c += 1
             if c <= 0:
                 b = M[n, n]
                 flag = False
+                if not bool(b):
+                    b = R
                 for k in range(1, n):
                     for l in range(1, n):
                         if (M[k, l] % b):
