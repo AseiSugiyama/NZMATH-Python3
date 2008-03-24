@@ -219,10 +219,10 @@ class RingSquareMatrixTest(unittest.TestCase):
         self.assertEqual([1, 1, 1], b7.smithNormalForm())
 
     def testExtSmithNormalForm(self):
-        smith = (Matrix(3, 3, [2, 1, 3, -1, 0, -1, 1, 0, 0]),\
-            Matrix(3, 3, [11, 3, 0, 3, 1, 1, -10, -3, -1]),\
-            Matrix(3, 3, [12, 0, 0, 0, 1, 0, 0, 0, 1]))
-        self.assertEqual(smith, b5.extsmithNormalForm())
+        smith = Matrix(3, 3, [12, 0, 0, 0, 1, 0, 0, 0, 1])
+        U, V, M = b5.extsmithNormalForm()
+        self.assertEqual(smith, M)
+        self.assertEqual(M, U * b5 * V)
 
 class FieldMatrixTest(unittest.TestCase):
     def testDiv(self):
