@@ -11,14 +11,14 @@ class Matrix(object):
     Matrix is a class for matrices.
     """
 
-    def __init__(self, row, column, compo=0):
+    def __init__(self, row, column, compo=0, coeff_ring=0):
         """
         Matrix(row, column [,components])
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
         self._selectMatrix()
 
-    def _initialize(self, row, column, compo=0):
+    def _initialize(self, row, column, compo=0, coeff_ring=0):
         """
         initialize matrix.
         """
@@ -29,15 +29,24 @@ class Matrix(object):
             self.row = row
             self.column = column
             self.compo = []
+            if isinstance(compo, ring.Ring):
+                coeff_ring = compo
+                compo = 0
             if compo == 0:
+                zero = 0
+                if coeff_ring != 0:
+                    zero = coeff_ring.zero
                 for i in range(self.row):
-                    self.compo.append([0] * self.column)
+                    self.compo.append([zero] * self.column)
             else:
                 if (len(compo) != self.row * self.column):
                     raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
                     self.compo.append(compo[self.column*i : self.column*(i + 1)])
-            self.coeff_ring = ring.getRing(self.compo[0][0])
+            if coeff_ring == 0:
+                self.coeff_ring = ring.getRing(self.compo[0][0])
+            else:
+                self.coeff_ring = coeff_ring
         else:
             raise ValueError, "invalid value for matrix size"
 
@@ -148,8 +157,9 @@ class Matrix(object):
         for i in range(self.row):
             for j in range(self.column):
                 compos.append(self.compo[i][j])
-        return self.__class__(self.row, self.column, compos)
-
+        Mat = self.__class__(self.row, self.column, compos, self.coeff_ring)
+        return Mat
+    
     def set(self, list):
         """
         set(list) : Substitute list for components
@@ -301,7 +311,7 @@ class Matrix(object):
         for j in range(1, self.column + 1):
             for i in range(1, self.row + 1):
                 trans.append(self[i, j])
-        return createMatrix(self.column, self.row, trans)
+        return self.__class__(self.column, self.row, trans, self.coeff_ring)
 
     def blockMatrix(self, i1, i2, j1, j2):
         """
@@ -313,7 +323,7 @@ class Matrix(object):
         for i in range(i1, i2 + 1):
             for j in range(j1, j2 + 1):
                 mat.append(self[i, j])
-        return createMatrix(i2 - i1 + 1, j2 - j1 + 1, mat)
+        return createMatrix(i2 - i1 + 1, j2 - j1 + 1, mat, self.coeff_ring)
 
     def submatrix(self, i, j):
         """
@@ -330,41 +340,50 @@ class SquareMatrix(Matrix):
     SquareMatrix is a class for square matrices.
     """
 
-    def __init__(self, row, column=0, compo=0):
+    def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
         SquareMatrix(row, column [,components])
         SquareMatrix must be row == column .
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
         if self.coeff_ring.isfield():
             self.__class__ = FieldSquareMatrix
         else:
             self.__class__ = RingSquareMatrix
 
-    def _initialize(self, row, column=0, compo=0):
+    def _initialize(self, row, column=0, compo=0, coeff_ring=0):
         """
         initialize matrix.
         """
-        if (column != 0) and (row != column) and (not isinstance(column, list)):
-            raise ValueError("incorrect initializer")
-        elif (rational.isIntegerObject(row) and row > 0):
+        if isinstance(compo, ring.Ring):
+            coeff_ring = compo
+            compo = 0
+        if isinstance(column, list):
+            compo = column
+            column = row
+        elif isinstance(column, ring.Ring):
+            coeff_ring = column
+            column = row
+        if row != column:
+            raise ValueError, "not square matrix"
+        if (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = row
             self.compo = []
-            if (not isinstance(column, list) and compo == 0):
+            if compo == 0:
+                zero = 0
+                if coeff_ring != 0:
+                    zero = coeff_ring.zero
                 for i in range(self.row):
-                    self.compo.append([0] * self.column)
+                    self.compo.append([zero] * self.column)
             else:
-                if isinstance(column, list):
-                    _compo = column
-                elif isinstance(compo, list):
-                    _compo = compo
-                else:
-                    raise ValueError, "matrix parameter not found"
-                if (len(_compo) != self.row ** 2):
+                if (len(compo) != self.row ** 2):
                     raise ValueError, "number of given components is not match the matrix size"
                 for i in range(self.row):
-                    self.compo.append(_compo[self.column*i : self.column*(i + 1)])
-            self.coeff_ring = ring.getRing(self.compo[0][0])
+                    self.compo.append(compo[self.column*i : self.column*(i + 1)])
+            if coeff_ring == 0:
+                self.coeff_ring = ring.getRing(self.compo[0][0])
+            else:
+                self.coeff_ring = coeff_ring
         else:
             raise ValueError, "invalid value for matrix size"
 
@@ -423,11 +442,11 @@ class RingMatrix(Matrix):
     RingMatrix is a class for matrices whose elements are in ring.
     """
 
-    def __init__(self, row, column, compo=0):
+    def __init__(self, row, column, compo=0, coeff_ring=0):
         """
         RingMatrix(row, column [,components])
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
 
     def __add__(self, other):
         """
@@ -548,6 +567,7 @@ class RingMatrix(Matrix):
     def toFieldMatrix(self):
         """RingMatrix -> FieldMatrix"""
         self.__class__ = FieldMatrix
+        self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -608,12 +628,12 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
     RingSquareMatrix is a class for square matrices whose elements are in ring.
     """
 
-    def __init__(self, row, column=0, compo=0):
+    def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
         RingSquareMatrix(row, column [,components])
         RingSquareMatrix must be row == column .
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
 
     def __pow__(self, other):
         """
@@ -645,6 +665,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
     def toFieldMatrix(self):
         """RingSquareMatrix -> FieldSquareMatrix"""
         self.__class__ = FieldSquareMatrix
+        self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def getRing(self):
         """
@@ -895,11 +916,11 @@ class FieldMatrix(RingMatrix):
     FieldMatrix is a class for matrices whose elements are in field.
     """
 
-    def __init__(self, row, column, compo=0):
+    def __init__(self, row, column, compo=0, coeff_ring=0):
         """
         FieldMatrix(row, column [,components])
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
 
     def __truediv__(self, other):
         """
@@ -1117,12 +1138,12 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
     FieldSquareMatrix is a class for square matrices in field.
     """
 
-    def __init__(self, row, column=0, compo=0):
+    def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
         FieldSquareMatrix(row, column [,components])
         FieldSquareMatrix must be row == column .
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
 
     def triangulate(self):
         """
@@ -1348,11 +1369,11 @@ class Subspace(Matrix):
     Subspace is a class for subspaces.
     """
 
-    def __init__(self, row, column, compo=0):
+    def __init__(self, row, column, compo=0, coeff_ring=0):
         """
         Subspace(row, column [,components])
         """
-        self._initialize(row, column, compo)
+        self._initialize(row, column, compo, coeff_ring)
 
     def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
         """
@@ -1393,28 +1414,33 @@ class Subspace(Matrix):
 #       the belows are not class methods
 # --------------------------------------------------------------------
 
-def createMatrix(row, column=0, compo=0):
+def createMatrix(row, column=0, compo=0, coeff_ring=0):
     """
     generate new Matrix or SquareMatrix class.
     """
+    if isinstance(compo, ring.Ring):
+        coeff_ring = compo
+        compo = 0
     if isinstance(column, list):
         compo = column
         column = row
-    if not bool(compo):
+    elif isinstance(column, ring.Ring):
+        coeff_ring = column
+        column = row
+    if compo == 0:
+        return zeroMatrix(row, column, coeff_ring)
+    if coeff_ring == 0:
+        coeff_ring = ring.getRing(compo[0])
+    if coeff_ring.isfield():
         if row == column:
-            return RingSquareMatrix(row, [0] * (row * column))
+            return FieldSquareMatrix(row, compo, coeff_ring)
         else:
-            return RingMatrix(row, column, [0] * (row * column))
-    if ring.getRing(compo[0]).isfield():
-        if row == column:
-            return FieldSquareMatrix(row, compo)
-        else:
-            return FieldMatrix(row, column, compo)
+            return FieldMatrix(row, column, compo, coeff_ring)
     else:
         if row == column:
-            return RingSquareMatrix(row, compo)
+            return RingSquareMatrix(row, compo, coeff_ring)
         else:
-            return RingMatrix(row, column, compo)
+            return RingMatrix(row, column, compo, coeff_ring)
 
 def unitMatrix(size, coeff=1):
     """
@@ -1432,13 +1458,16 @@ def unitMatrix(size, coeff=1):
     iter = [zero] * size + [one]
     for i in range(size - 1):
         unit_matrix = unit_matrix + iter
-    return createMatrix(size, size, unit_matrix)
+    return createMatrix(size, size, unit_matrix, coeff)
 
 def zeroMatrix(row, column=None, coeff=0):
     """
     return zero matrix.
     coeff is subclass for ring.Ring or ring.Ring.zero.
     """
+    if column == 0:
+        coeff = 0
+        column = row
     if not(rational.isIntegerObject(column)):
         if column == None:
             column = row
@@ -1449,8 +1478,9 @@ def zeroMatrix(row, column=None, coeff=0):
         zero = coeff.zero
     else:
         zero = coeff
+        coeff = ring.getRing(coeff)
     zero_matrix = [zero] * (row * column)
-    return createMatrix(row, column, zero_matrix)
+    return createMatrix(row, column, zero_matrix, coeff)
 
 def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
     """
