@@ -458,7 +458,8 @@ class RingMatrix(Matrix):
         for i in range(self.row):
             for j in range(self.column):
                 sums.append(self.compo[i][j] + other.compo[i][j])
-        return createMatrix(self.row, self.column, sums)
+        return createMatrix(self.row, self.column, sums,
+                  self.coeff_ring.getCommonSuperring(other.coeff_ring))
 
     def __sub__(self, other):
         """
@@ -470,7 +471,8 @@ class RingMatrix(Matrix):
         for i in range(self.row):
             for j in range(self.column):
                 diff.append(self.compo[i][j] - other.compo[i][j])
-        return createMatrix(self.row, self.column, diff)
+        return createMatrix(self.row, self.column, diff,
+                  self.coeff_ring.getCommonSuperring(other.coeff_ring))
 
     def __mul__(self, other):
         """
@@ -486,7 +488,8 @@ class RingMatrix(Matrix):
                     for k in range(2, self.column + 1):
                         part_product = part_product + self[i, k] * other[k, j]
                     product.append(part_product)
-            return createMatrix(self.row, other.column, product)
+            return createMatrix(self.row, other.column, product,
+                      self.coeff_ring.getCommonSuperring(other.coeff_ring))
         elif isinstance(other, vector.Vector):
             if self.column != len(other):
                 raise vector.VectorSizeError
@@ -502,7 +505,8 @@ class RingMatrix(Matrix):
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
                     product.append(self[i, j] * other)
-            return createMatrix(self.row, self.column, product)
+            return createMatrix(self.row, self.column, product,
+                      self.coeff_ring.getCommonSuperring(ring.getRing(other)))
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -515,7 +519,8 @@ class RingMatrix(Matrix):
                     for k in range(2, self.row + 1):
                         part_product = part_product + other[i, k] * self[k, j]
                     product.append(part_product)
-            return createMatrix(other.row, self.column, product)
+            return createMatrix(other.row, self.column, product,
+                     self.coeff_ring.getCommonSuperring(other.coeff_ring))
         elif isinstance(other, vector.Vector):
             if self.row != len(other):
                 raise vector.VectorSizeError
@@ -531,7 +536,8 @@ class RingMatrix(Matrix):
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
                     product.append(self[i, j] * other)
-            return createMatrix(self.row, self.column, product)
+            return createMatrix(self.row, self.column, product,
+                     self.coeff_ring.getCommonSuperring(ring.getRing(other)))
 
     def __mod__(self, other):
         """
@@ -543,7 +549,7 @@ class RingMatrix(Matrix):
         for i in range(1, self.row + 1):
             for j in range(1, self.column + 1):
                 mod.append(self[i, j] % other)
-        return createMatrix(self.row, self.column, mod)
+        return createMatrix(self.row, self.column, mod, self.coeff_ring)
 
     def __neg__(self):
         return (-1) * self
@@ -613,7 +619,7 @@ class RingMatrix(Matrix):
                     A[j] = A[j] - q * A[k]
             # step 6 [Finished?]
             if i == l:
-                #W = createMatrix(self.row, self.column-k+1)
+                #W = createMatrix(self.row, self.column-k+1, self.coeff_ring)
                 #for j in range(1, self.column-k+2):
                 #    W[j] = A[j+k-1]
                 return A
@@ -1003,7 +1009,7 @@ class FieldMatrix(RingMatrix):
         dimension = len(basis)
         if dimension == 0:
             return None
-        output = createMatrix(self.row, dimension)
+        output = zeroMatrix(self.row, dimension, self.coeff_ring)
         for j in range(1, dimension + 1):
             output.setColumn(j, basis[j - 1])
         output._selectMatrix()
@@ -1327,7 +1333,7 @@ class MatrixRing (ring.Ring):
         'compo' must be a list of n*n components in the scalar ring,
         where n = self.size.
         """
-        return createMatrix(self.size, compo)
+        return createMatrix(self.size, compo, self.scalars)
 
     def getCharacteristic(self):
         """
