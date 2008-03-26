@@ -771,6 +771,20 @@ class IntegerRing (ring.CommutativeRing):
             return True
         return other.issubring(self)
 
+    def getCommonSuperring(self, other):
+        """
+        Return common superring of the ring and another ring.
+        """
+        if self.issubring(other):
+            return other
+        elif self.issuperring(other):
+            return self
+        try:
+            return other.getCommonSuperring(self)
+        except RuntimeError:
+            # reached recursion limit by calling on each other
+            raise NotImplementedError("no common super ring")
+
     def gcd(self, n, m):
         """
         Return the greatest common divisor of given 2 integers.
