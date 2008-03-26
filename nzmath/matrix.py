@@ -1087,7 +1087,7 @@ class FieldMatrix(RingMatrix):
                     raise NoInverseImage, "some vectors are not in the inverse image"
         return X
 
-    def solution(self, B):  # modified Algorithm 2.3.4 of Cohen's book
+    def solve(self, B):  # modified Algorithm 2.3.4 of Cohen's book
         """
         Return solution X for self * X = B (B is vector).
         This function returns solution vector and kernel of self as vector basis.
@@ -1188,12 +1188,60 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
             det = det * triangle.compo[i][i]
         return det
 
-    def inverse(self):
+    def inverse(self, V=1): # modified Algorithm 2.2.2, 2.3.5 of Cohen's book
         """
-        Return inverse matrix of self if exists,
-        or return None.
+        Return inverse matrix of self or self.inverse() * V.
+        If inverse does not exist, raise NoInverse error.
         """
-        return self.inverseImage(unitMatrix(self.row, self.coeff_ring))
+        if isinstance(V, vector.Vector):
+            if self.row != len(V):
+                raise vector.VectorSizeError
+            B = createMatrix(len(V), 1, V.compo)
+        elif isinstance(V, Matrix):
+            if self.row != V.row:
+                raise MatrixSizeError
+            B = V.copy() # step 1
+        else: # V==1
+            B = unitMatrix(self.row, self.coeff_ring)
+        M = self.copy()
+        n = M.row
+        r = B.column
+        X = zeroMatrix(n, r, self.coeff_ring)
+        # step 2
+        for j in range(n):
+            # step 3
+            for i in range(j, n):
+                if M.compo[i][j]:
+                    break
+            else:
+                raise NoInverse
+            # step 4
+            if i > j:
+                for l in range(j, n):
+                    t = M.compo[i][l]
+                    M.compo[i][l] = M.compo[j][l]
+                    M.compo[j][l] = t
+                B.swapRow(i, j)
+            # step 5
+            d = ring.inverse(M.compo[j][j])
+            for k in range(j + 1, n):
+                ck = d * M.compo[k][j]
+                for l in range(j + 1, n):
+                    M.compo[k][l] = M.compo[k][l] - ck * M.compo[j][l]
+                for l in range(r):
+                    B.compo[k][l] = B.compo[k][l] - ck * B.compo[j][l]
+        # step 6
+        for i in range(n - 1, -1, -1):
+            d = ring.inverse(M.compo[i][i])
+            for k in range(r):
+                sums = self.coeff_ring.zero
+                for j in range(i + 1, n):
+                    sums = sums + M.compo[i][j] * X.compo[j][k]
+                X.compo[i][k] = (B.compo[i][k] - sums) * d
+        if r != 1:
+            return X
+        else:
+            return X[1]
 
     def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
         """Return a Matrix in Hessenberg Form."""
