@@ -41,7 +41,7 @@ class FiniteFieldMatrixTest (unittest.TestCase):
 	# asserting something
         self.assertEqual(inverse, invertible.inverse())
 	# asserting equality
-        self.assertRaises(_matrix.VectorsNotIndependent, noninvertible.inverse)
+        self.assertRaises(_matrix.NoInverse, noninvertible.inverse)
 
     def testGetRing(self):
         invertible = _matrix.createMatrix(2, [self.F7.createElement(c) for c in [2, 5, 3, 1]])
