@@ -364,7 +364,7 @@ class SquareMatrix(Matrix):
         elif isinstance(column, ring.Ring):
             coeff_ring = column
             column = row
-        if row != column:
+        if column != 0 and row != column:
             raise ValueError, "not square matrix"
         if (rational.isIntegerObject(row) and row > 0):
             self.row = self.column = row
