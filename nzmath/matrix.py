@@ -1025,66 +1025,71 @@ class FieldMatrix(RingMatrix):
         else:
             return 0
 
-    def inverseImage(self, V):    # Algorithm 2.3.5 of Cohen's book
+    def inverseImage(self, V):    # modified Algorithm 2.3.5 of Cohen's book
         """
         inverseImage(V) -> X
         
-        such that
-        self * X == V
-        
-        Assume self column vector are linearly independent.
+        such that self * X == V
         """
-        if self.row != V.row:
-            raise MatrixSizeError
+        if isinstance(V, vector.Vector):
+            if self.row != len(V):
+                raise vector.VectorSizeError
+            B = createMatrix(len(V), 1, V.compo)
+        else:
+            if self.row != V.row:
+                raise MatrixSizeError
+            B = V.copy() # step 1
         M = self.copy()
         m = M.row
         n = M.column
         r = V.column
         X = zeroMatrix(n, r, self.coeff_ring)
-
-        # step 1
-        B = V.copy()
-
-        # step 2 -
-        for j in range(n):
+        non_zero = []
+        i = 1
+        # step 2
+        for j in range(1, n+1):
             # step 3
-            for i in range(j, m):
-                if M.compo[i][j]:
+            for k in range(i, m+1):
+                if M[k, j]:
                     break
             else:
-                raise VectorsNotIndependent
+                continue
             # step 4
-            if i > j:
-                for l in range(n):
-                    t = M.compo[i][l]
-                    M.compo[i][l] = M.compo[j][l]
-                    M.compo[j][l] = t
-                for l in range(r):
-                    t = B.compo[i][l]
-                    B.compo[i][l] = B.compo[j][l]
-                    B.compo[j][l] = t
+            if k > i:
+                for l in range(j, n+1):
+                    t = M[i, l]
+                    M[i, l] = M[k, l]
+                    M[k, l] = t
+                B.swapRow(i, k)
             # step 5
-            d = ring.inverse(M.compo[j][j])
-            for k in range(j + 1, m):
-                ck = d * M.compo[k][j]
-                for l in range(j + 1, n):
-                    M.compo[k][l] = M.compo[k][l] - ck * M.compo[j][l]
+            d = ring.inverse(M[i, j])
+            for k in range(i + 1, m + 1):
+                ck = d * M[k, j]
+                for l in range(j + 1, n + 1):
+                    M[k, l] = M[k, l] - ck * M[i, l]
                 for l in range(r):
-                    B.compo[k][l] = B.compo[k][l] - ck * B.compo[j][l]
+                    B[k, l] = B[k, l] - ck * B[i, l]
+            non_zero.insert(0, j)
+            i += 1
+            if i > m:
+                break
         # step 6
-        for i in range(n - 1, -1, -1):
+        i -= 1
+        zero = self.coeff_ring.zero
+        for j in non_zero:
+            d = ring.inverse(M[i, j])
             for k in range(r):
-                sums = 0
-                for j in range(i + 1, n):
-                    sums = sums + M.compo[i][j] * X.compo[j][k]
-                X.compo[i][k] = (B.compo[i][k] - sums) * ring.inverse(M.compo[i][i])
-        for k in range(n + 1, m):
-            for j in range(r):
-                sums = 0
-                for i in range(n):
-                    sums = sums + M.compo[k][i] * X.compo[i][j]
-                if (sums != B.compo[k][j]):
-                    raise NoInverseImage, "some vectors are not in the inverse image"
+                sums = zero
+                for l in range(j + 1, n + 1):
+                    sums = sums + M[i, l] * X[l, k]
+                X[j, k] = (B[i, k] - sums) * d
+            i -= 1
+        # step 7
+        i = len(non_zero) + 1
+        for j in range(1, r + 1):
+            for k in range(i, m + 1):
+                if B[k, j]:
+                    raise NoInverseImage
         return X
 
     def solve(self, B):  # modified Algorithm 2.3.4 of Cohen's book
@@ -1583,7 +1588,4 @@ class NoInverseImage(Exception):
     pass
 
 class NoInverse(Exception):
-    pass
-
-class NoRing(Exception):
     pass
