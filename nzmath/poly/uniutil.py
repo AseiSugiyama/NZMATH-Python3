@@ -1338,6 +1338,24 @@ class DomainPolynomial(PseudoDivisionProvider,
         RingPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         PseudoDivisionProvider.__init__(self)
 
+    def discriminant(self):
+        """
+        Return discriminant of the polynomial.
+        """
+        df = self.differentiate()
+        lc = self.leading_coefficient()
+        if self.degree() % 4 in (2, 3):
+            sign = -1
+        else:
+            sign = 1
+        if self.getCoefficientRing().getCharacteristic() == 0:
+            if lc != 1:
+                return sign * self.resultant(df) / lc
+            else:
+                return sign * self.resultant(df)
+        else:
+            return sign * self.resultant(df) * lc**(self.degree() - df.degree() - 2)
+
 
 class UniqueFactorizationDomainPolynomial(SubresultantGcdProvider,
                                           ContentProvider,
@@ -1394,6 +1412,52 @@ class FieldPolynomial(DivisionProvider,
         RingPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         DivisionProvider.__init__(self)
         ContentProvider.__init__(self)
+
+    def resultant(self, other):
+        """
+        Return the resultant of self and other.
+        """
+        order = termorder.ascending_order
+        f, g = self, other
+        negative = False
+        if order.degree(f) < order.degree(g):
+            f, g = g, f
+            if (order.degree(f) & 1) and (order.degree(g) & 1):
+                negative = not negative
+        coeff_ring = self.getCoefficientRing()
+        a = b = coeff_ring.one
+        while order.degree(g) > 0:
+            delta = order.degree(f) - order.degree(g)
+            if (order.degree(f) & 1) and (order.degree(g) & 1):
+                negative = not negative
+            h = f % g
+            h *= order.leading_coefficient(g)**(order.degree(f) - order.degree(g) + 1)
+            f, g = g, h.scalar_exact_division(a * (b ** delta))
+            a = order.leading_coefficient(f)
+            b = ((a ** delta) * b) // (b ** delta)
+        if not g:
+            return coeff_ring.zero
+        scalar = g[0]
+        degree_f = order.degree(f)
+        if negative:
+            return -(b * scalar ** degree_f) // (b ** degree_f)
+        else:
+            return (b * scalar ** degree_f) // (b ** degree_f)
+
+    def discriminant(self):
+        """
+        Return discriminant of the polynomial.
+        """
+        df = self.differentiate()
+        lc = self.leading_coefficient()
+        if self.degree() % 4 in (2, 3):
+            sign = -1
+        else:
+            sign = 1
+        if self.getCoefficientRing().getCharacteristic() == 0:
+            return sign * self.resultant(df) / lc
+        else:
+            return sign * self.resultant(df) * lc**(self.degree() - df.degree() - 2)
 
 
 class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,

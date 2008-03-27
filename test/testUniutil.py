@@ -171,6 +171,19 @@ class IntegerPolynomialTest (unittest.TestCase):
         q = uniutil.polynomial([(0, 3)], rational.theIntegerRing)
         self.assertEqual(q, f.exact_division(g))
 
+    def testResultant(self):
+        Z = rational.theIntegerRing
+        f = uniutil.polynomial(enumerate(range(1, 6)), Z)
+        g = uniutil.polynomial(enumerate(range(7, 10)), Z)
+        self.assertEqual(29661, f.resultant(g))
+
+    def testDiscriminant(self):
+        Z = rational.theIntegerRing
+        a, b, c = -2, -1, 1
+        q1 = uniutil.polynomial(enumerate([c, b, a]), Z)
+        d = b ** 2 - 4 * a * c
+        self.assertEqual(d, q1.discriminant())
+
 
 class FinitePrimeFieldPolynomialTest (unittest.TestCase):
     def testRepr(self):
@@ -181,6 +194,13 @@ class FinitePrimeFieldPolynomialTest (unittest.TestCase):
         f = uniutil.FinitePrimeFieldPolynomial([(0, 1), (3, 1), (30, 1)], coeffring=finitefield.FinitePrimeField.getInstance(2))
         df = f.differentiate()
         self.assert_(f % df)
+
+    def testDiscriminant(self):
+        F7 = finitefield.FinitePrimeField.getInstance(7)
+        a, b, c = 2, 5, 1
+        q1 = uniutil.polynomial(enumerate([c, b, a]), coeffring=F7)
+        d = F7.createElement(b ** 2 - 4 * a * c)
+        self.assertEqual(d, q1.discriminant())
 
 
 class InjectVariableTest (unittest.TestCase):
@@ -286,11 +306,20 @@ class PolynomialIdealTest (unittest.TestCase):
 
 class FieldPolynomialTest (unittest.TestCase):
     def testDivision(self):
-        f = uniutil.FieldPolynomial([(1, 1)], rational.theRationalField)
-        g = uniutil.FieldPolynomial([(1, 1)], rational.theRationalField)
-        q = uniutil.FieldPolynomial([(0, 1)], rational.theRationalField)
+        Q = rational.theRationalField
+        f = uniutil.FieldPolynomial([(1, 1)], Q)
+        g = uniutil.FieldPolynomial([(1, 1)], Q)
+        q = uniutil.FieldPolynomial([(0, 1)], Q)
         self.assertEqual(q, f // g)
         self.assertEqual(f.getRing().zero, f % g)
+
+    def testDiscriminant(self):
+        Q = rational.theRationalField
+        rat = rational.Rational
+        a, b, c = rat(2, 7), rat(5, 14), rat(1, 7)
+        q1 = uniutil.polynomial(enumerate([c, b, a]), Q)
+        d = b ** 2 - 4 * a * c
+        self.assertEqual(d, q1.discriminant())
 
 
 def suite(suffix="Test"):
