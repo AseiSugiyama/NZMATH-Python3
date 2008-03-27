@@ -927,6 +927,8 @@ class FieldMatrix(RingMatrix):
         FieldMatrix(row, column [,components])
         """
         self._initialize(row, column, compo, coeff_ring)
+        if not self.coeff_ring.isfield():
+            self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def __truediv__(self, other):
         """
@@ -1155,6 +1157,8 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         FieldSquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
+        if not self.coeff_ring.isfield():
+            self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def triangulate(self):
         """
