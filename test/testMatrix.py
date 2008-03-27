@@ -241,15 +241,15 @@ class FieldMatrixTest(unittest.TestCase):
 
     def testInverseImage(self):
         self.assertEqual(d6, d5 * d5.inverseImage(d6))
-        self.assertRaises(VectorsNotIndependent, d2.inverseImage, unitMatrix(3))
+        self.assertRaises(NoInverseImage, d2.inverseImage, unitMatrix(3))
 
-    def testSolution(self):
+    def testSolve(self):
         for i in range(1, d6.column+1):
-            self.assertEqual(d6[i], d5 * d5.solution(d6[i])[0])
-        sol1 = c1.solution(v2)
+            self.assertEqual(d6[i], d5 * d5.solve(d6[i])[0])
+        sol1 = c1.solve(v2)
         for i in range(len(sol1[1])):
             self.assertEqual(v2, c1 * (sol1[0]+sol1[1][i]))
-        self.assertRaises(NoInverseImage, c3.solution, v3)
+        self.assertRaises(NoInverseImage, c3.solve, v3)
 
     def testColumnEchelonForm(self):
         echelon = createMatrix(4, 5,\
@@ -274,7 +274,7 @@ class FieldSquareMatrixTest(unittest.TestCase):
         cinverse.set([Ra(-47, 86), Ra(15, 86), Ra(19, 86)]+\
         [Ra(7, 43), Ra(6, 43), Ra(-1, 43)]+[Ra(35, 86), Ra(-13, 86), Ra(-5, 86)])
         self.assertEqual(cinverse, d3.inverse())
-        self.assertRaises(VectorsNotIndependent, d2.inverse)
+        self.assertRaises(NoInverse, d2.inverse)
 
     def testInverseNoChange(self):
         # sf bug#1849220
