@@ -562,12 +562,15 @@ class RingMatrix(Matrix):
             scalars = None
             for i in range(self.row):
                 for j in range(self.column):
-                    cring = ring.getRing(self[i, j])
+                    cring = ring.getRing(self.compo[i][j])
                     if scalars is None or scalars != cring and scalars.issubring(cring):
                         scalars = cring
                     elif not scalars.issuperring(cring):
                         scalars = scalars.getCommonSuperring(cring)
-            scalars = scalars.getCommonSuperring(self.coeff_ring)
+            if scalars != self.coeff_ring or scalars.issubring(self.coeff_ring):
+                scalars = self.coeff_ring
+            elif not scalars.issuperring(self.coeff_ring):
+                scalars = scalars.getCommonSuperring(self.coeff_ring)
             self._coeff_ring = self.coeff_ring = scalars
         return self._coeff_ring
 
@@ -1362,24 +1365,23 @@ class MatrixRing (ring.Ring):
         getter for one (unit matrix)
         """
         if self._one is None:
-            components = [self.scalars.zero] * (self.size**2)
-            for i in range(self.size):
-                components[i*self.size + i] = self.scalars.one
-            if self.scalars.isfield():
-                self._one = FieldSquareMatrix(self.size, components)
-            else:
-                self._one = RingSquareMatrix(self.size, components)
+            self._one = unitMatrix(self.size, self.scalars)
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit")
+
+    def zeroMatrix(self):
+        """
+        Return the zero matrix.
+        """
+        return self.zero.copy()
 
     def _getZero(self):
         """
         Return zero matrix.
         """
         if self._zero is None:
-            components = [self.scalars.zero] * (self.size**2)
-            self._zero = SquareMatrix(self.size, components)
+            self._zero = zeroMatrix(self.size, self.scalars)
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit")
