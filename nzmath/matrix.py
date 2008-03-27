@@ -567,6 +567,7 @@ class RingMatrix(Matrix):
                         scalars = cring
                     elif not scalars.issuperring(cring):
                         scalars = scalars.getCommonSuperring(cring)
+            scalars = scalars.getCommonSuperring(self.coeff_ring)
             self._coeff_ring = self.coeff_ring = scalars
         return self._coeff_ring
 
