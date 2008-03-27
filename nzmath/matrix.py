@@ -1259,14 +1259,14 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         H = self.copy()
         for m in range(2, H.row):
             # step 2
-            for i in range(m+1, n+1):
+            for i in range(m + 1, n + 1):
                 if H[i, m - 1]:
                     break
             else:
                 continue
-            t = H[i, m - 1]
+            tinv = ring.inverse(H[i, m - 1])
             if i > m:
-                for j in range(m-1, n+1):
+                for j in range(m - 1, n + 1):
                     tmp = H[i, j]
                     H[i, j] = H[m, j]
                     H[m, j] = tmp
@@ -1274,10 +1274,10 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
             # step 3
             for i in range(m + 1, n + 1):
                 if H[i, m - 1] != 0:
-                    u = H[i, m - 1] / t
+                    u = H[i, m - 1] * tinv
                     for j in range(m, n + 1):
                         H[i, j] = H[i, j] - u * H[m, j]
-                        H[i, m - 1] = 0
+                    H[i, m - 1] = 0
                     H.setColumn(m, H[m] + u * H[i])
         return H
 
