@@ -59,7 +59,15 @@ class Ring (object):
         """
         Return common super ring of self and another ring.
         """
-        raise NotImplementedError("derived class should override")
+        if self.issubring(other):
+            return other
+        elif self.issuperring(other):
+            return self
+        try:
+            return other.getCommonSuperring(self)
+        except RuntimeError:
+            # reached recursion limit by calling on each other
+            raise NotImplementedError("no common super ring")
 
     def __eq__(self, other):
         """
