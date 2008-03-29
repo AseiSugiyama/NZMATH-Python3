@@ -103,13 +103,35 @@ class Matrix(object):
                         return False
             return True
         elif isinstance(other, int) and other == 0: # zero matrix ?
-            for i in range(self.row):
-                for j in range(self.column):
-                    if self.compo[i][j]:
-                        return False
-            return True
+            return not bool(self)
         else:
             raise TypeError
+
+    def __ne__(self, other):
+        """
+        Check self != other.
+        self != 0 means whether self != zeromatrix or not.
+        """
+        return not (self == other)
+
+    def __nonzero__(self):
+        """
+        Check self != zeromatrix
+        """
+        for i in range(self.row):
+            for j in range(self.column):
+                if self.compo[i][j]:
+                    return True
+        return False
+
+    def __contains__(self, item):
+        """
+        Check whether item == one of self's element.
+        """
+        for i in range(self.row):
+            if item in self.compo[i]:
+                return True
+        return False
 
     def __repr__(self):
         return_str = ""
@@ -148,6 +170,27 @@ class Matrix(object):
 
 
     # utility methods ----------------------------------------------------
+
+    def map(self, function):
+        """
+        Return matrix applied function to all self elements.
+        """
+        compos = []
+        for i in range(self.row):
+            compos= compos + (map(function, self.compo[i]))
+        return createMatrix(self.row, self.column, compos)
+
+    def reduce(self, function, initializer=None):
+        """
+        Return value applied binomial function to all self elements.
+        """
+        if initializer:
+            val = reduce(function, self.compo[0], initializer)
+        else:
+            val = reduce(function, self.compo[0])
+        for i in range(1, self.row):
+            val = reduce(function, self.compo[i], val)
+        return val
 
     def copy(self):
         """
@@ -283,6 +326,18 @@ class Matrix(object):
         else:
             raise TypeError
         self._selectMatrix()
+
+    def extendRow(self, arg):
+        """
+        Join arg in vertical way.
+        """
+        self.insertRow(self.row + 1, arg)
+
+    def extendColumn(self, arg):
+        """
+        Join arg in horizontal way.
+        """
+        self.insertColumn(self.column + 1, arg)
 
     def deleteRow(self, i):
         """
@@ -435,6 +490,12 @@ class SquareMatrix(Matrix):
                 if self.compo[i][j] != self.compo[j][i]:
                     return False
         return True
+
+    def isSingular(self):
+        """
+        Check determinant == 0 or not.
+        """
+        return not bool(self.determinant())
 
 
 class RingMatrix(Matrix):
