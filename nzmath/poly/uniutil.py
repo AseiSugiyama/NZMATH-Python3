@@ -1074,7 +1074,7 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
             return a.extgcd(b)
         raise NotImplementedError
 
-    # class method
+    @classmethod
     def getInstance(cls, coeffring):
         """
         Return an instance of the class with specified coefficient ring.
@@ -1082,8 +1082,6 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
         if coeffring not in cls._instances:
             cls._instances[coeffring] = cls(coeffring)
         return cls._instances[coeffring]
-
-    getInstance = classmethod(getInstance)
 
 
 class PolynomialIdeal (ring.Ideal):

@@ -1,6 +1,7 @@
 import unittest
 import nzmath.factor.util as util
 
+
 class FactoringIntegerTest (unittest.TestCase):
     def setUp(self):
         self.tracker100 = util.FactoringInteger(100)
@@ -36,6 +37,13 @@ class FactoringIntegerTest (unittest.TestCase):
         # doesn't affect
         self.assertEqual([(100, 1)], self.tracker100.getResult())
         self.assertEqual(100, self.tracker100.getNextTarget())
+
+    def testHighPower(self):
+        tracker = util.FactoringInteger(3**9)
+        tracker.register(3**2)
+        # 3**9 = (3**2)**4 * 3 and 3 divides 3**2 again
+        # so 3 is a smaller factor, then 3**9 = (3)**9 * 1
+        self.assertEqual([(3, 9)], tracker.getResult())
 
 
 class FactoringMethodTest (unittest.TestCase):

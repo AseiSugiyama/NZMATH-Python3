@@ -3,6 +3,7 @@ factoring methods.
 """
 
 import nzmath.arith1 as arith1
+import nzmath.bigrange as bigrange
 import nzmath.prime as prime
 import nzmath.factor.util as util
 import nzmath.factor.find as find
@@ -24,7 +25,7 @@ class DefaultMethod (util.FactoringMethod):
         Factor the given positive integer.
         The returned value must be in the form of [(p1, e1), ..., (pn, en)].
         """
-        if not self.validate_input_number(number):
+        if not self._validate_input_number(number):
             return []
 
         # backup
@@ -121,9 +122,9 @@ class TrialDivision (util.FactoringMethod):
         """
         if 'start' in options and 'stop' in options:
             if 'step' in options:
-                trials = iter(range(options['start'], options['stop'], options['step']))
+                trials = bigrange.range(options['start'], options['stop'], options['step'])
             else:
-                trials = iter(range(options['start'], options['stop']))
+                trials = bigrange.range(options['start'], options['stop'])
         elif 'iterator' in options:
             trials = options['iterator']
         elif 'eratosthenes' in options:

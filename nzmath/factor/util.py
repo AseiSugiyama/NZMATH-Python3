@@ -32,7 +32,7 @@ class FactoringMethod (object):
         an option 'need_sort' is boolean: True to sort the result.
         This should be specified with return_type='list'.
         """
-        if not self.validate_input_number(number):
+        if not self._validate_input_number(number):
             return []
 
         tracker = FactoringInteger(number)
@@ -74,7 +74,8 @@ class FactoringMethod (object):
         else:
             return tracker
 
-    def validate_input_number(self, number):
+    @staticmethod
+    def _validate_input_number(number):
         """
         Return True if the given number is an integer greater than one.
         Return False if the given number is equal to one.
@@ -107,7 +108,7 @@ class FactoringMethod (object):
     verbose = property(_getVerbose, _setVerbose, None, "Verbosity: boolean")
 
 
-class FactoringInteger:
+class FactoringInteger (object):
     """
     A class for keeping track of factorization.
     """
@@ -119,7 +120,7 @@ class FactoringInteger:
         self.factors = [(number, 1)]
         self.primality = {number:False}
 
-    def register(self, divisor, isprime = Unknown):
+    def register(self, divisor, isprime=Unknown):
         """
         Register a divisor of the number, if the divisor is a true
         divisor of the number.  The number is divided by the divisor
@@ -131,21 +132,24 @@ class FactoringInteger:
                     self.setPrimality(base, isprime)
                 break
             common_divisor = gcd.gcd(base, divisor)
-            if common_divisor > 1:
-                if common_divisor == divisor:
+            if common_divisor == 1:
+                continue
+            # common_divisor > 1:
+            if common_divisor == divisor:
+                k, coprime = arith1.vp(base, common_divisor)
+                while not gcd.coprime(common_divisor, coprime):
+                    # try a smaller factor
+                    common_divisor = gcd.gcd(common_divisor, coprime)
                     k, coprime = arith1.vp(base, common_divisor)
-                    while not gcd.coprime(common_divisor, coprime):
-                        common_divisor = gcd.gcd(common_divisor, coprime)
-                        k, coprime = arith1.vp(base, common_divisor)
-                    if k:
-                        if coprime > 1:
-                            self.replace(base, [(common_divisor, k), (coprime, 1)])
-                        else:
-                            self.replace(base, [(common_divisor, k)])
-                        self.primality[divisor] = isprime
-                else: # common_divisor properly divides divisor.
-                    self.register(common_divisor)
-                    self.register(divisor // common_divisor)
+                if k:
+                    if coprime > 1:
+                        self.replace(base, [(common_divisor, k), (coprime, 1)])
+                    else:
+                        self.replace(base, [(common_divisor, k)])
+                    self.primality[divisor] = isprime
+            else: # common_divisor properly divides divisor.
+                self.register(common_divisor)
+                self.register(divisor // common_divisor)
 
     def replace(self, number, factors):
         """
@@ -178,7 +182,10 @@ class FactoringInteger:
 
     def getCompositeFactor(self):
         """
-        Return a composite (or unknown primality) factor from factors.
+        Return a composite (or unknown primality) factor from factors
+        in a form (base, index), whose base's primality is non-True.
+
+        If there is no such factor, LookupError will be raised.
         """
         # use linear search because self.factors is a short list.
         for base, index in self.factors:
@@ -186,15 +193,20 @@ class FactoringInteger:
                 return (base, index)
         raise LookupError("no factor matches.")
 
-    def getNextTarget(self):
+    def getNextTarget(self, cond=None):
         """
-        Return a composite (or unknown primality) factor of self.number.
+        Return the next target which meets 'cond'.  if 'cond' is not
+        specified, then the next target is a composite (or unknown
+        primality) factor of self.number.  'cond' can be a binary
+        (arguments are base and index) predicate.
 
         If there is no such factor, LookupError will be raised.
         """
+        if cond is None:
+            cond = lambda base, index: not self.primality[base]
         # use linear search because self.factors is a short list.
         for base, index in self.factors:
-            if not self.primality[base]:
+            if cond(base, index):
                 return base
         raise LookupError("no factor matches.")
 
@@ -202,7 +214,7 @@ class FactoringInteger:
         """
         Return the factors in the form of [(base, index), ...].
         """
-        return self.factors[:]
+        return list(self.factors)
 
     def setPrimality(self, number, isprime):
         """

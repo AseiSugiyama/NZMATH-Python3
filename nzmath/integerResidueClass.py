@@ -181,6 +181,7 @@ class IntegerResidueClassRing (ring.CommutativeRing):
     def __hash__(self):
         return self.m & 0xFFFFFFFF
 
+    @classmethod
     def getInstance(cls, modulus):
         """
         getInstance returns an instance of the class of specified
@@ -191,7 +192,6 @@ class IntegerResidueClassRing (ring.CommutativeRing):
             anInstance = IntegerResidueClassRing(modulus)
             cls._instances[modulus] = anInstance
         return cls._instances[modulus]
-    getInstance = classmethod(getInstance)
 
     def createElement(self, seed):
         if isinstance(seed, IntegerResidueClass) and seed.m % self.m == 0:

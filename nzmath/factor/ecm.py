@@ -38,6 +38,7 @@ class Curve (object):
         self.c = c
         self.c2 = (c + 2)//4
 
+    @classmethod
     def get_random_curve_with_point(cls, curve_type, n, bounds):
         """
         Return the curve with parameter C and a point Q on the curve,
@@ -93,7 +94,6 @@ class Curve (object):
             start_point = Point(4, 1)
             curve = cls((d + 1) % n)
         return curve, start_point
-    get_random_curve_with_point = classmethod(get_random_curve_with_point)
 
 
 class Point (tuple):

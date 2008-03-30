@@ -193,7 +193,7 @@ class FinitePrimeField (FiniteField):
 
     zero = property(_getZero, None, None, "additive unit.")
 
-    # class method
+    @classmethod
     def getInstance(cls, characteristic):
         """
         Return an instance of the class with specified characteristic.
@@ -201,8 +201,6 @@ class FinitePrimeField (FiniteField):
         if characteristic not in cls._instances:
             cls._instances[characteristic] = cls(characteristic)
         return cls._instances[characteristic]
-
-    getInstance = classmethod(getInstance)
 
 
 import nzmath.polynomial as polynomial

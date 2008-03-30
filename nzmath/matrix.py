@@ -1400,6 +1400,7 @@ class MatrixRing (ring.Ring):
     def __str__(self):
         return "M_%d(%s)" % (self.size, str(self.scalars))
 
+    @classmethod
     def getInstance(cls, size, scalars):
         """
         Return the cached instance of the specified matrix ring.  If
@@ -1412,8 +1413,6 @@ class MatrixRing (ring.Ring):
             anInstance = MatrixRing(size, scalars)
             cls._instances[size, scalars] = anInstance
         return cls._instances[size, scalars]
-
-    getInstance = classmethod(getInstance)
 
     def unitMatrix(self):
         """
