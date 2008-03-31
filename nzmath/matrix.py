@@ -1,7 +1,6 @@
 from __future__ import division
 
 import nzmath.gcd as gcd
-import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.vector as vector
 
@@ -22,8 +21,8 @@ class Matrix(object):
         """
         initialize matrix.
         """
-        if (rational.isIntegerObject(row)
-            and rational.isIntegerObject(column)
+        if (isinstance(row, (int, long))
+            and isinstance(column, (int, long))
             and row > 0
             and column > 0 ): # row and column check
             self.row = row
@@ -421,7 +420,7 @@ class SquareMatrix(Matrix):
             column = row
         if column != 0 and row != column:
             raise ValueError, "not square matrix"
-        if (rational.isIntegerObject(row) and row > 0):
+        if (isinstance(row, (int, long)) and row > 0):
             self.row = self.column = row
             self.compo = []
             if compo == 0:
@@ -1594,7 +1593,7 @@ def zeroMatrix(row, column=None, coeff=0):
     if column == 0:
         coeff = 0
         column = row
-    if not(rational.isIntegerObject(column)):
+    if not(isinstance(column, (int, long))):
         if column == None:
             column = row
         else:
