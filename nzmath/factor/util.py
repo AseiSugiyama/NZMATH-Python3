@@ -140,6 +140,8 @@ class FactoringInteger (object):
                 continue
             # common_divisor > 1:
             if common_divisor == divisor:
+                if isprime:
+                    self.setPrimality(divisor, isprime)
                 k, coprime = arith1.vp(base, common_divisor)
                 while not gcd.coprime(common_divisor, coprime):
                     # try a smaller factor
@@ -150,7 +152,6 @@ class FactoringInteger (object):
                         self.replace(base, [(common_divisor, k), (coprime, 1)])
                     else:
                         self.replace(base, [(common_divisor, k)])
-                    self.primality[divisor] = isprime
             else: # common_divisor properly divides divisor.
                 self.register(common_divisor)
                 self.register(divisor // common_divisor)
@@ -158,11 +159,15 @@ class FactoringInteger (object):
     def replace(self, number, factors):
         """
         Replace a number with factors.
+        The number is a one of known factors of tracked number.
+        factors is a list of (base, index) pairs.
         It is assumed that number = product of factors.
         """
         try:
             replacee = self.getMatchingFactor(number)
             self.factors.remove(replacee)
+            if replacee[0] in self.primality:
+                del self.primality[replacee[0]]
             replacee_index = replacee[1]
             for base, index in factors:
                 if replacee_index == 1:

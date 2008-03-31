@@ -19,10 +19,11 @@ class FactoringIntegerTest (unittest.TestCase):
         self.failUnlessRaises(LookupError, self.tracker100.getNextTarget)
 
     def testPrime(self):
-        self.tracker100.register(2, isprime = True)
+        self.tracker100.register(2, isprime=True)
         self.assertEqual([(2, 2), (25, 1)], self.tracker100.getResult())
-        self.tracker100.register(5, isprime = True)
+        self.tracker100.register(5, isprime=True)
         self.assertEqual([(2, 2), (5, 2)], self.tracker100.getResult())
+        self.assertEqual({2: True, 5: True}, self.tracker100.primality)
 
     def testComposite(self):
         self.tracker100.register(10)
@@ -30,6 +31,7 @@ class FactoringIntegerTest (unittest.TestCase):
         self.tracker100.register(25)
         self.tracker100.sortFactors()
         self.assertEqual([(2, 2), (5, 2)], self.tracker100.getResult())
+        self.assertEqual({2: util.Unknown, 5: util.Unknown}, self.tracker100.primality)
 
     def testCoprime(self):
         # register a coprime number
@@ -37,6 +39,7 @@ class FactoringIntegerTest (unittest.TestCase):
         # doesn't affect
         self.assertEqual([(100, 1)], self.tracker100.getResult())
         self.assertEqual(100, self.tracker100.getNextTarget())
+        self.assertEqual({100: False}, self.tracker100.primality)
 
     def testHighPower(self):
         tracker = util.FactoringInteger(3**9)
@@ -44,6 +47,7 @@ class FactoringIntegerTest (unittest.TestCase):
         # 3**9 = (3**2)**4 * 3 and 3 divides 3**2 again
         # so 3 is a smaller factor, then 3**9 = (3)**9 * 1
         self.assertEqual([(3, 9)], tracker.getResult())
+        self.assertEqual({3: util.Unknown}, tracker.primality)
 
 
 class FactoringMethodTest (unittest.TestCase):
