@@ -168,8 +168,6 @@ class Matrix(object):
         return createMatrix(self.row, self.column, sol)
 
 
-    # utility methods ----------------------------------------------------
-
     def map(self, function):
         """
         Return matrix applied function to all self elements.
@@ -358,7 +356,6 @@ class Matrix(object):
             del self.compo[k][j - 1]
         self._selectMatrix()
 
-    # Mathematical functions ---------------------------------------------
 
     def transpose(self):
         """
@@ -370,9 +367,9 @@ class Matrix(object):
                 trans.append(self[i, j])
         return self.__class__(self.column, self.row, trans, self.coeff_ring)
 
-    def blockMatrix(self, i, j, row, column=None):
+    def getBlock(self, i, j, row, column=None):
         """
-        Return block matrix whose size is row*column, (1,1)-element is self[i,j].
+        Return a block whose size is row*column, (1,1)-element is self[i,j].
         """
         if column == None:
             column = row
@@ -384,7 +381,7 @@ class Matrix(object):
                 mat.append(self[k, l])
         return createMatrix(row, column, mat, self.coeff_ring)
 
-    def subMatrix(self, I, J):
+    def subMatrix(self, I, J=None):
         """
         Return submatrix whose element is self[i, j] for i in I and j in J.
         If I, J is not index(list or tuple) but integer,
@@ -396,6 +393,8 @@ class Matrix(object):
             mat.deleteColumn(J)
             return mat
         else:
+            if J == None:
+                J = I
             mat = []
             for i in I:
                 for j in J:
