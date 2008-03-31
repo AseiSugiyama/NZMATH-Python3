@@ -86,7 +86,7 @@ class MatrixTest(unittest.TestCase):
 
     def testSubMatrix(self):
         sub = createMatrix(2, 1, [-12, 0])
-        self.assertEqual(sub, a4.submatrix(2, 1))
+        self.assertEqual(sub, a4.subMatrix(2, 1))
 
 
 class SquareMatrixTest(unittest.TestCase):
