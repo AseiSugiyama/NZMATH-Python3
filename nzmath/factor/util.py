@@ -47,11 +47,15 @@ class FactoringMethod (object):
         Continue factoring and return the result of factorization.
 
         The argument 'tracker' should be an instance of FactoringInteger.
-        The default returned type is FactoringInteger.
 
-        This method should be overridden.
+        The default returned type is FactoringInteger, but if
+        'return_type' is specified as 'list' then it returns
+        list of tuples (prime, index).
+        The primes are judged by a function specified in 'primeq'
+        optional argument, default to nzmath.prime.primeq.
         """
         return_list = (options.get('return_type', '') == 'list')
+        primeq = options.get('primeq', prime.primeq)
 
         while True:
             try:
@@ -59,13 +63,13 @@ class FactoringMethod (object):
             except LookupError:
                 # factored completely
                 break
-            if prime.primeq(target):
+            if primeq(target):
                 tracker.register(target, True)
             else:
                 p = self.find(target, **options)
                 if 1 < p < target:
                     # factor found
-                    tracker.register(p)
+                    tracker.register(p, primeq(p))
                 elif p == 1:
                     # failed to factor
                     break
