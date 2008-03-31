@@ -1,6 +1,5 @@
 from __future__ import division
 
-import nzmath.gcd as gcd
 import nzmath.ring as ring
 import nzmath.vector as vector
 
@@ -39,9 +38,10 @@ class Matrix(object):
                     self.compo.append([zero] * self.column)
             else:
                 if (len(compo) != self.row * self.column):
-                    raise ValueError, "number of given components is not match the matrix size"
+                    raise ValueError, "len(compo) is not match the matrix size"
                 for i in range(self.row):
-                    self.compo.append(compo[self.column*i : self.column*(i + 1)])
+                    self.compo.append(
+                    compo[self.column * i : self.column * (i + 1)])
             if coeff_ring == 0:
                 self.coeff_ring = ring.getRing(self.compo[0][0])
             else:
@@ -176,7 +176,7 @@ class Matrix(object):
         """
         compos = []
         for i in range(self.row):
-            compos= compos + (map(function, self.compo[i]))
+            compos = compos + (map(function, self.compo[i]))
         return createMatrix(self.row, self.column, compos)
 
     def reduce(self, function, initializer=None):
@@ -202,14 +202,14 @@ class Matrix(object):
         Mat = self.__class__(self.row, self.column, compos, self.coeff_ring)
         return Mat
     
-    def set(self, list):
+    def set(self, compo):
         """
-        set(list) : Substitute list for components
+        set(compo) : Substitute list for components
         """
-        if (len(list) != self.row * self.column):
-            raise ValueError, "number of given components is not match the matrix size"
+        if (len(compo) != self.row * self.column):
+            raise ValueError, "len(compo) is not match the matrix size"
         for i in range(self.row):
-            self.compo[i] = list[self.column*i : self.column*(i + 1)]
+            self.compo[i] = compo[self.column*i : self.column*(i + 1)]
 
     def setRow(self, m, arg):
         """
@@ -217,11 +217,13 @@ class Matrix(object):
         """
         if isinstance(arg, list):
             if (len(arg) != self.column):
-                raise vector.VectorSizeError, "number of given components is not match the row size"
+                raise vector.VectorSizeError, \
+                "len(compo) is not match the row size"
             self.compo[m - 1] = arg[:]
         elif isinstance(arg, vector.Vector):
             if (len(arg) != self.column):
-                raise vector.VectorSizeError, "number of given components is not match the row size"
+                raise vector.VectorSizeError, \
+                "len(compo) is not match the row size"
             self.compo[m - 1] = arg.compo[:]
         else:
             raise TypeError, self.setRow.__doc__
@@ -232,12 +234,12 @@ class Matrix(object):
         """
         if isinstance(arg, list):
             if (len(arg) != self.row):
-                raise ValueError, "number of given components is not match the column size"
+                raise ValueError, "len(compo) is not match the column size"
             for i in range(self.row):
                 self.compo[i][n - 1] = arg[i]
         elif isinstance(arg, vector.Vector):
             if (len(arg) != self.row):
-                raise ValueError, "number of given components is not match the column size"
+                raise ValueError, "len(compo) is not match the column size"
             for i in range(self.row):
                 self.compo[i][n - 1] = arg.compo[i]
         else:
@@ -247,7 +249,7 @@ class Matrix(object):
         """
         getRow(i) : Return i-th row in form of Matrix
         """
-        return vector.Vector(self.compo[i - 1])
+        return vector.Vector(self.compo[i - 1][:])
 
     def getColumn(self, j):
         """
@@ -320,7 +322,8 @@ class Matrix(object):
             if self.row != arg.row:
                 raise MatrixSizeError
             for k in range(arg.row):
-                self.compo[k] = self.compo[k][:j - 1] + arg.compo[k] + self.compo[k][j - 1:]
+                self.compo[k] = \
+                self.compo[k][:j - 1] + arg.compo[k] + self.compo[k][j - 1:]
             self.column += arg.column
         else:
             raise TypeError
@@ -367,26 +370,37 @@ class Matrix(object):
                 trans.append(self[i, j])
         return self.__class__(self.column, self.row, trans, self.coeff_ring)
 
-    def blockMatrix(self, i1, i2, j1, j2):
+    def blockMatrix(self, i, j, row, column=None):
         """
-        Return block matrix whose size is (i2-i1+1) * (j2-j1+1).
+        Return block matrix whose size is row*column, (1,1)-element is self[i,j].
         """
-        if i1 > i2 or j1 > j2 or i2 > self.row or j2 > self.column:
+        if column == None:
+            column = row
+        if i + row - 1 > self.row or j + column - 1 > self.column:
             raise MatrixSizeError
         mat = []
-        for i in range(i1, i2 + 1):
-            for j in range(j1, j2 + 1):
-                mat.append(self[i, j])
-        return createMatrix(i2 - i1 + 1, j2 - j1 + 1, mat, self.coeff_ring)
+        for k in range(i, i + row):
+            for l in range(j, j + column):
+                mat.append(self[k, l])
+        return createMatrix(row, column, mat, self.coeff_ring)
 
-    def submatrix(self, i, j):
+    def subMatrix(self, I, J):
         """
-        Return submatrix which deleted i-th row and j-th column from self.
+        Return submatrix whose element is self[i, j] for i in I and j in J.
+        If I, J is not index(list or tuple) but integer,
+         return submatrix which deleted I-th row and J-th column from self.
         """
-        mat = self.copy()
-        mat.deleteRow(i)
-        mat.deleteColumn(j)
-        return mat
+        if isinstance(I, (int, long)) and isinstance(J, (int, long)):
+            mat = self.copy()
+            mat.deleteRow(I)
+            mat.deleteColumn(J)
+            return mat
+        else:
+            mat = []
+            for i in I:
+                for j in J:
+                    mat.append(self[i, j])
+            return createMatrix(len(I), len(J), mat, self.coeff_ring)
 
 
 class SquareMatrix(Matrix):
@@ -431,9 +445,10 @@ class SquareMatrix(Matrix):
                     self.compo.append([zero] * self.column)
             else:
                 if (len(compo) != self.row ** 2):
-                    raise ValueError, "number of given components is not match the matrix size"
+                    raise ValueError, "len(compo) is not match the matrix size"
                 for i in range(self.row):
-                    self.compo.append(compo[self.column*i : self.column*(i + 1)])
+                    self.compo.append(
+                    compo[self.column * i : self.column * (i + 1)])
             if coeff_ring == 0:
                 self.coeff_ring = ring.getRing(self.compo[0][0])
             else:
@@ -489,12 +504,6 @@ class SquareMatrix(Matrix):
                 if self.compo[i][j] != self.compo[j][i]:
                     return False
         return True
-
-    def isSingular(self):
-        """
-        Check determinant == 0 or not.
-        """
-        return not bool(self.determinant())
 
 
 class RingMatrix(Matrix):
@@ -623,7 +632,8 @@ class RingMatrix(Matrix):
             for i in range(self.row):
                 for j in range(self.column):
                     cring = ring.getRing(self.compo[i][j])
-                    if scalars is None or scalars != cring and scalars.issubring(cring):
+                    if scalars is None or \
+                    scalars != cring and scalars.issubring(cring):
                         scalars = cring
                     elif not scalars.issuperring(cring):
                         scalars = scalars.getCommonSuperring(cring)
@@ -661,7 +671,8 @@ class RingMatrix(Matrix):
                     break   # go to step 5
                 # step 3 [Choose non-zero entry]
                 j0 = j  # the first non-zero's index
-                for j in range(2, k + 1): # Pick among the non-zero A[i, j] for j <= k one with the smallest absolute value
+                # Pick among the non-zero A[i, j] for j <= k one with the smallest absolute value
+                for j in range(2, k + 1): 
                     if  0 < abs(A[i, j]) < abs(A[i, j0]):
                         j0 = j
                 if j0 < k:
@@ -763,6 +774,12 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
 
     isAntisymmetricMatrix = isAlternativeMatrix
 
+    def isSingular(self):
+        """
+        Check determinant == 0 or not.
+        """
+        return not bool(self.determinant())
+
     def trace(self):
         """
         Return trace of self.
@@ -809,7 +826,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         """
         Return (i, j)-cofactor of self.
         """
-        cofactor = (self.submatrix(i, j)).determinant()
+        cofactor = (self.subMatrix(i, j)).determinant()
         if (i+j) & 1:
             cofactor = cofactor * (-1)
         return cofactor
@@ -876,7 +893,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix):
         R = M.determinant()
         rings = ring.getRing(M[1, 1])
         if not bool(R):
-            raise ValueError("Don't input matrix whose determinant is 0")
+            raise ValueError("Don't input singular matrix")
         if R < 0:
             R = -R
         lst = []
@@ -1044,15 +1061,15 @@ class FieldMatrix(RingMatrix):
         for k in range(1, M.column + 1):
             if d[k]:
                 continue
-            vector = []
+            vect = []
             for i in range(1, M.column + 1):
                 if d[i] > 0:
-                    vector.append(M[d[i], k])
+                    vect.append(M[d[i], k])
                 elif i == k:
-                    vector.append(1)
+                    vect.append(1)
                 else:
-                    vector.append(0)
-            basis.append(vector)
+                    vect.append(0)
+            basis.append(vect)
         dimension = len(basis)
         if dimension == 0:
             return None
@@ -1161,7 +1178,9 @@ class FieldMatrix(RingMatrix):
     def solve(self, B):  # modified Algorithm 2.3.4 of Cohen's book
         """
         Return solution X for self * X = B (B is vector).
-        This function returns solution vector and kernel of self as vector basis.
+        This function returns tuple (V, M) below.
+          V: one solution as vector
+          M: kernel of self as vector basis matrix.
         If you want only one solution, use 'inverseImage'.
         """
         M_1 = self.copy()
@@ -1236,14 +1255,16 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
                     if triangle.compo[k][i]:
                         triangle.swapRow(i + 1, k + 1)
                         flag = not(flag)
-                        break        # break the second loop
+                        break # break the second loop
                 else:
-                    continue         # the below components are all 0. Back to the first loop
+                    # the below components are all 0. Back to the first loop
+                    continue
             for k in range(i + 1, triangle.row):
                 inv_i_i = ring.inverse(triangle.compo[i][i])
                 ratio = triangle.compo[k][i] * inv_i_i
                 for l in range(i, triangle.column):
-                    triangle.compo[k][l] = triangle.compo[k][l] - triangle.compo[i][l] * ratio
+                    triangle.compo[k][l] = \
+                    triangle.compo[k][l] - triangle.compo[i][l] * ratio
         if flag:
             for j in range(triangle.row, triangle.column + 1):
                 triangle[triangle.row, j] = triangle[triangle.row, j] * (-1)
@@ -1363,7 +1384,8 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
             for j in range(i + 1, n):
                 L.compo[j][i] = U.compo[j][i] * ring.inverse(U.compo[i][i])
                 for k in range(i, n):
-                    U.compo[j][k] = U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
+                    U.compo[j][k] = \
+                    U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
         return (L, U)
 
 
@@ -1478,7 +1500,8 @@ class MatrixRing (ring.Ring):
             return True
         if not isinstance(other, MatrixRing):
             return False
-        return self.size == other.size and self.scalars.issuperring(other.scalars)
+        return self.size == other.size and \
+        self.scalars.issuperring(other.scalars)
 
     def getCommonSuperring(self, other):
         """
@@ -1486,7 +1509,8 @@ class MatrixRing (ring.Ring):
         """
         if not isinstance(other, MatrixRing) or self.size != other.size:
             raise TypeError("no common super ring")
-        return MatrixRing.getInstance(self.size, self.scalars.getCommonSuperring(other.scalars))
+        return MatrixRing.getInstance(self.size, 
+        self.scalars.getCommonSuperring(other.scalars))
 
 
 class Subspace(Matrix):
@@ -1531,7 +1555,8 @@ class Subspace(Matrix):
                 M.compo[s][j] *= d
                 for i in range(n):
                     if i != s and i != t:
-                        M.compo[i][j] = M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
+                        M.compo[i][j] = \
+                        M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
         return B
 
 
@@ -1580,10 +1605,12 @@ def unitMatrix(size, coeff=1):
         coeff = ring.getRing(one)
         zero = coeff.zero
     unit_matrix = [one]
-    iter = [zero] * size + [one]
+    units = [zero] * size + [one]
     for i in range(size - 1):
-        unit_matrix = unit_matrix + iter
+        unit_matrix = unit_matrix + units
     return createMatrix(size, size, unit_matrix, coeff)
+
+identityMatrix = unitMatrix
 
 def zeroMatrix(row, column=None, coeff=0):
     """
@@ -1632,7 +1659,7 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
         M1.setColumn(M.column + j, M_[j])
     M1.toFieldMatrix()
     N = M1.kernel()
-    N1 = createMatrix(M.column , N.column)    # N.column is the dimension of kernel(M1)
+    N1 = createMatrix(M.column , N.column) # N.column is dim(ker(M1))
     for j in range(1, M.column + 1):
         N1.setRow(j, N.getRow(j))
     M2 = M * N1
@@ -1645,13 +1672,17 @@ def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
 #--------------------------------------------------------------------
 
 class MatrixSizeError(Exception):
+    """Invalid input error for matrix size."""
     pass
 
 class VectorsNotIndependent(Exception):
+    """Invalid input error because column vectors are linear dependent."""
     pass
 
 class NoInverseImage(Exception):
+    """Invalid input error because self do not have inverse image for input."""
     pass
 
 class NoInverse(Exception):
+    """Invalid input error because matrix is not invertible."""
     pass
