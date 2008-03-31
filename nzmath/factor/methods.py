@@ -10,6 +10,7 @@ import nzmath.factor.find as find
 from nzmath.factor.mpqs import mpqsfind
 from nzmath.factor.ecm import ecm as ecmfind
 
+
 class DefaultMethod (util.FactoringMethod):
     """
     A factor method used as the default.
@@ -23,7 +24,7 @@ class DefaultMethod (util.FactoringMethod):
     def factor(self, number, **options):
         """
         Factor the given positive integer.
-        The returned value must be in the form of [(p1, e1), ..., (pn, en)].
+        The returned value is in the form of [(p1, e1), ..., (pn, en)].
         """
         if not self._validate_input_number(number):
             return []
@@ -96,25 +97,8 @@ class TrialDivision (util.FactoringMethod):
             except LookupError:
                 raise
             self.primeseq = self._parse_seq(options)
-        return_list = (options.get('return_type', '') == 'list')
 
-        while True:
-            try:
-                target = tracker.getNextTarget()
-            except LookupError:
-                # factored completely
-                break
-            p = self.find(target)
-            if 1 < p < target:
-                # factor found
-                tracker.register(p, True)
-            elif p == 1:
-                # trial sequence exhausts
-                break
-        if return_list:
-            return tracker.getResult()
-        else:
-            return tracker
+        return util.FactoringMethod.continue_factor(self, tracker, **options)
 
     def _parse_seq(self, options):
         """
