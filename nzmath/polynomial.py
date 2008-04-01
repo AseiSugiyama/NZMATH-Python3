@@ -1226,8 +1226,8 @@ def resultant(f, g):
         if (f_cp.degree() & 1) and (g_cp.degree() & 1):
             sign = not(sign)
     coeffRing = f_cp.coefficientRing
-    a = b = 1
-    while True:
+    a = b = coeffRing.one
+    while not(g_cp in coeffRing) and g_cp.degree >0:
         delta = f_cp.degree() - g_cp.degree()
         if (f_cp.degree() & 1) and (g_cp.degree() & 1):
             sign = not(sign)
@@ -1235,12 +1235,9 @@ def resultant(f, g):
         f_cp, g_cp = g_cp, h // (a * (b ** delta))
         a = f_cp.leadingCoefficient()
         b = ((a ** delta) * b) // (b ** delta)
-        if g_cp in coeffRing or g_cp.degree <=0:
-            break
-    if not hasattr(g_cp, 'degree'): # real scalar
-        scalar = g_cp
-    else:
-        scalar = g_cp[0]
+    if not g_cp:
+        return coeffRing.zero
+    scalar = g_cp[0]
     if sign:
         return (b * scalar ** f_cp.degree()) // (b ** f_cp.degree())
     else:
