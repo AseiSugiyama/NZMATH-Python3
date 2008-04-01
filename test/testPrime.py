@@ -73,12 +73,13 @@ class LpspTest (unittest.TestCase):
 
     def testLucasTestForPseudoPrime(self):
         # Lucas but not Frobenius example
-        self.assert_(prime.lpsp(4187, 1, -1))
+        self.assert_(prime.lpsp(323, 1, -1))
         # Frobenius pseudoprime
+        self.assert_(prime.lpsp(4181, 1, -1))
         self.assert_(prime.lpsp(5777, 1, -1))
 
     def testLucasTestForDetectedComposite(self):
-        self.failIf(prime.lpsp(4181, 1, -1))
+        self.failIf(prime.lpsp(4187, 1, -1))
 
 
 class FpspTest (unittest.TestCase):
@@ -86,16 +87,17 @@ class FpspTest (unittest.TestCase):
         self.assert_(prime.fpsp(101, 2, 3))
 
     def testFrobeniusTestForPseudoPrime(self):
-        # the smallest example with the parameter
+        # Prime Numbers example
+        self.assert_(prime.fpsp(4181, 1, -1)) # smallest
         self.assert_(prime.fpsp(5777, 1, -1))
         # Shinohara's example
         self.assert_(prime.fpsp(291409, 3, 8))
 
     def testFrobeniusTestForDetectedComposite(self):
         # not Lucas => not Frobenius
-        self.failIf(prime.fpsp(4181, 1, -1))
-        # Lucas pseudoprime but not Frobenius pseudoprime
         self.failIf(prime.fpsp(4187, 1, -1))
+        # Lucas pseudoprime but not Frobenius pseudoprime
+        self.failIf(prime.fpsp(323, 1, -1))
 
 
 def suite(suffix="Test"):
