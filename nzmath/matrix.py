@@ -1511,7 +1511,7 @@ class MatrixRing (ring.Ring):
         self.scalars.getCommonSuperring(other.scalars))
 
 
-class SubSpace(FieldMatrix):
+class Subspace(FieldMatrix):
     """
     Subspace is a class for subspaces.
     """
