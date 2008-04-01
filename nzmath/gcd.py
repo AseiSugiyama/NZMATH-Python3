@@ -26,10 +26,10 @@ def extgcd(x, y):
     of two integers x and y and u, v such that d = x * u + y * v.
     """
     # Crandall & Pomerance "PRIME NUMBERS", Algorithm 2.1.4
-    a, b, g, u, v, w = 1, 0, abs(x), 0, 1, abs(y)
-    while w > 0:
-        q = g // w
-        a, b, g, u, v, w = u, v, w, a-q*u, b-q*v, g-q*w
+    a, b, g, u, v, w = 1, 0, x, 0, 1, y
+    while w:
+        q, t = divmod(g, w)
+        a, b, g, u, v, w = u, v, w, a-q*u, b-q*v, t
     return (a, b, g)
 
 def gcd_of_list(integers):
