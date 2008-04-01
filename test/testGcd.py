@@ -25,11 +25,23 @@ class GcdTest (unittest.TestCase):
         self.assertEqual(273, gcd.lcm(13, 21))
 
     def testExtgcd(self):
-        self.assertEqual((-4,3,1), gcd.extgcd(8, 11))
-        extgcd = gcd.extgcd(8, 11)
-        self.assert_(8 * extgcd[0] + 11 * extgcd[1] == extgcd[2])
+        u, v, d = gcd.extgcd(8, 11)
+        self.assertEqual(1, abs(d))
+        self.assertEqual(d, 8 * u + 11 * v)
+        #sf.bug 1924839
+        u, v, d = gcd.extgcd(-8, 11)
+        self.assertEqual(1, abs(d))
+        self.assertEqual(d, -8 * u + 11 * v)
+        u, v, d = gcd.extgcd(8, -11)
+        self.assertEqual(1, abs(d))
+        self.assertEqual(d, 8 * u - 11 * v)
+        u, v, d = gcd.extgcd(-8, -11)
+        self.assertEqual(1, abs(d))
+        self.assertEqual(d, -8 * u - 11 * v)
         import nzmath.rational as rational
-        self.assertEqual((-4,3,1), gcd.extgcd(rational.Integer(8), 11))
+        u, v, d = gcd.extgcd(rational.Integer(8), 11)
+        self.assertEqual(1, abs(d))
+        self.assertEqual(d, 8 * u + 11 * v)
 
     def testGcdOfList(self):
         self.assertEqual([8, [1]], gcd.gcd_of_list([8]))
