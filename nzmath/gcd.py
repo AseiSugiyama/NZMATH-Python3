@@ -8,6 +8,7 @@ def gcd(a, b):
     """
     Return the greatest common divisor of 2 integers a and b.
     """
+    a, b = abs(a), abs(b)
     while b:
         a, b = b, a % b
     return a
@@ -18,6 +19,7 @@ def binarygcd(a, b):
     by binary gcd algorithm.
     """
     # use arygcd version
+    a, b = abs(a), abs(b)
     return arygcd.binarygcd(a, b)
 
 def extgcd(x, y):
@@ -30,7 +32,10 @@ def extgcd(x, y):
     while w:
         q, t = divmod(g, w)
         a, b, g, u, v, w = u, v, w, a-q*u, b-q*v, t
-    return (a, b, g)
+    if g >= 0:
+        return (a, b, g)
+    else:
+        return (-a, -b, -g)
 
 def gcd_of_list(integers):
     """
@@ -71,7 +76,7 @@ def coprime(a, b):
     False
     >>>
     """
-    return abs(gcd(a, b)) == 1
+    return gcd(a, b) == 1
 
 def pairwise_coprime(int_list):
     """
