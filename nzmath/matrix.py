@@ -376,9 +376,8 @@ class Matrix(object):
         if i + row - 1 > self.row or j + column - 1 > self.column:
             raise MatrixSizeError
         mat = []
-        for k in range(i, i + row):
-            for l in range(j, j + column):
-                mat.append(self[k, l])
+        for k in range(i - 1, i + row - 1):
+            mat.extend(self.compo[k][j - 1:j + column - 1])
         return createMatrix(row, column, mat, self.coeff_ring)
 
     def subMatrix(self, I, J=None):
@@ -387,14 +386,14 @@ class Matrix(object):
         If I, J is not index(list or tuple) but integer,
          return submatrix which deleted I-th row and J-th column from self.
         """
+        if J == None:
+            J = I
         if isinstance(I, (int, long)) and isinstance(J, (int, long)):
             mat = self.copy()
             mat.deleteRow(I)
             mat.deleteColumn(J)
             return mat
         else:
-            if J == None:
-                J = I
             mat = []
             for i in I:
                 for j in J:
@@ -703,7 +702,7 @@ class RingMatrix(Matrix):
                 # go to step 2
 
 
-class RingSquareMatrix(SquareMatrix, RingMatrix):
+class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
     """
     RingSquareMatrix is a class for square matrices whose elements are in ring.
     """
@@ -1512,7 +1511,7 @@ class MatrixRing (ring.Ring):
         self.scalars.getCommonSuperring(other.scalars))
 
 
-class Subspace(Matrix):
+class SubSpace(FieldMatrix):
     """
     Subspace is a class for subspaces.
     """
@@ -1557,6 +1556,30 @@ class Subspace(Matrix):
                         M.compo[i][j] = \
                         M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
         return B
+
+    def sumOfSubspaces(self, other): # Algorithm 2.3.8 of Cohen's book
+        """
+        Return space which is sum of self and other.
+        """
+        if self.row != other.row:
+            raise MatrixSizeError
+        N = self.copy()
+        for j in range(1, other.column + 1):
+            N.insertColumn(self.column + j, other[j])
+        return N.image()
+
+    def intersectionOfSubspaces(self, other): # Algorithm 2.3.9 of Cohen's book
+        """
+        Return space which is intersection of self and M_.
+        """
+        if self.row != other.row:
+            raise MatrixSizeError
+        M1 = self.copy()
+        M1 = M1.extendRow(other)
+        N = M1.kernel()
+        N1 = N.getBlock(1, 1, self.column, N.column) # N.column is dim(ker(M1))
+        M2 = self * N1
+        return M2.image()
 
 
 # --------------------------------------------------------------------
@@ -1632,38 +1655,6 @@ def zeroMatrix(row, column=None, coeff=0):
         coeff = ring.getRing(coeff)
     zero_matrix = [zero] * (row * column)
     return createMatrix(row, column, zero_matrix, coeff)
-
-def sumOfSubspaces(L, M):             # Algorithm 2.3.8 of Cohen's book
-    """
-    Return space which is sum of L and M.
-    """
-    if L.row != M.row:
-        raise MatrixSizeError
-    N = L.copy()
-    for j in range(1, M.column + 1):
-        N.insertColumn(L.column + j, M[j])
-    N.toFieldMatrix()
-    return N.image()
-
-def intersectionOfSubspaces(M, M_):    # Algorithm 2.3.9 of Cohen's book
-    """
-    Return space which is intersection of M and M_.
-    """
-    if M.row != M_.row:
-        raise MatrixSizeError
-    M1 = createMatrix(M.row, M.column + M_.column)
-    for j in range(1, M.column + 1):
-        M1.setColumn(j, M[j])
-    for j in range(1, M_.column + 1):
-        M1.setColumn(M.column + j, M_[j])
-    M1.toFieldMatrix()
-    N = M1.kernel()
-    N1 = createMatrix(M.column , N.column) # N.column is dim(ker(M1))
-    for j in range(1, M.column + 1):
-        N1.setRow(j, N.getRow(j))
-    M2 = M * N1
-    M2.toFieldMatrix()
-    return M2.image()
 
 
 #--------------------------------------------------------------------
