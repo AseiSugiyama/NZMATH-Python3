@@ -103,12 +103,13 @@ def _lucas_test_sequence(n, a, b):
     where m = (n - (a**2 - 4*b / n)) // 2.
     """
     d = a**2 - 4*b
-    if abs(gcd.gcd(n, 2*a*b*d)) != 1:
+    if (d >= 0 and arith1.floorsqrt(d) ** 2 == d) \
+    or not(gcd.coprime(n, 2*a*b*d)):
         raise ValueError("Choose another parameters.")
 
     x_0 = 2
-    inv_b = gcd.extgcd(b, n)[0]
-    x_1 = ((a**2)*inv_b - 2) % n
+    inv_b = arith1.inverse(b, n)
+    x_1 = ((a ** 2) * inv_b - 2) % n
 
     # Chain functions
     def even_step(u):
