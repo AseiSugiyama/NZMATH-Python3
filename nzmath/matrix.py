@@ -759,10 +759,10 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         return self * self.transpose() == unitMatrix(self.row, self.coeff_ring)
 
-    def isAlternativeMatrix(self):
+    def isAlternatingMatrix(self):
         """
         Check whether self is alternative matrix or not.
-        Alternative (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
+        Alternating (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
         """
         for i in range(self.row):
             for j in range(i, self.column):
@@ -770,7 +770,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                     return False
         return True
 
-    isAntisymmetricMatrix = isAlternativeMatrix
+    isAntisymmetricMatrix = isAlternatingMatrix
+    isSkewsymmetricMatrix = isAlternatingMatrix
 
     def isSingular(self):
         """
