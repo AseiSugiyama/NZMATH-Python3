@@ -1520,7 +1520,7 @@ class Subspace(FieldMatrix):
         """
         Subspace(row, column [,components])
         """
-        self._initialize(row, column, compo, coeff_ring)
+        FieldMatrix.__init__(self, row, column, compo, coeff_ring)
 
     def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
         """
@@ -1575,7 +1575,7 @@ class Subspace(FieldMatrix):
         if self.row != other.row:
             raise MatrixSizeError
         M1 = self.copy()
-        M1 = M1.extendRow(other)
+        M1.extendColumn(other)
         N = M1.kernel()
         N1 = N.getBlock(1, 1, self.column, N.column) # N.column is dim(ker(M1))
         M2 = self * N1
