@@ -412,6 +412,12 @@ class SquareMatrix(Matrix):
         SquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
+        self._selectMatrix()
+
+    def _selectMatrix(self):
+        """
+        Select Matrix class.
+        """
         if self.coeff_ring.isfield():
             self.__class__ = FieldSquareMatrix
         else:
@@ -514,6 +520,16 @@ class RingMatrix(Matrix):
         RingMatrix(row, column [,components])
         """
         self._initialize(row, column, compo, coeff_ring)
+        self._selectMatrix()
+
+    def _selectMatrix(self):
+        """
+        Select Matrix class.
+        """
+        if self.row == self.column:
+            self.__class__ = RingSquareMatrix
+        else:
+            self.__class__ = RingMatrix
 
     def __add__(self, other):
         """
@@ -646,6 +662,11 @@ class RingMatrix(Matrix):
         """RingMatrix -> FieldMatrix"""
         self.__class__ = FieldMatrix
         self.coeff_ring = self.coeff_ring.getQuotientField()
+
+    def toSubspace(self):
+        """RingMatrix -> Subspace"""
+        self.toFieldMatrix()
+        self.toSubspace()
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -1009,6 +1030,16 @@ class FieldMatrix(RingMatrix):
         self._initialize(row, column, compo, coeff_ring)
         if not self.coeff_ring.isfield():
             self.coeff_ring = self.coeff_ring.getQuotientField()
+        self._selectMatrix()
+
+    def _selectMatrix(self):
+        """
+        Select Matrix class.
+        """
+        if self.row == self.column:
+            self.__class__ = FieldSquareMatrix
+        else:
+            self.__class__ = FieldMatrix
 
     def __truediv__(self, other):
         """
@@ -1017,6 +1048,10 @@ class FieldMatrix(RingMatrix):
         return ring.inverse(other) * self
 
     __div__ = __truediv__ # backward compatibility?
+
+    def toSubspace(self):
+        """FieldMatrix -> Subspace"""
+        self.__class__ = Subspace
 
     def _cohensSimplify(self):
         """
@@ -1521,7 +1556,9 @@ class Subspace(FieldMatrix):
         """
         Subspace(row, column [,components])
         """
-        FieldMatrix.__init__(self, row, column, compo, coeff_ring)
+        self._initialize(row, column, compo, coeff_ring)
+        if not self.coeff_ring.isfield():
+            self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
         """
