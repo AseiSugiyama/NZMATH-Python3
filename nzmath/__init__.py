@@ -32,6 +32,7 @@ __all__ = [
     "rationalFunction",
     "real",
     "ring",
+    "squarefree",
     "vector",
     "zassenhaus"
     ]
