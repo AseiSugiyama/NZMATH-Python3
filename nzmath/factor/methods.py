@@ -79,6 +79,9 @@ class TrialDivision (util.FactoringMethod):
         1) 'list' for default type [(p1, e1), ..., (pn, en)].
         2) 'tracker' for alternative type FactoringInteger.
         """
+        # to be used in _parse_seq
+        options['n'] = number
+
         return util.FactoringMethod.factor(self, number, **options)
 
     def continue_factor(self, tracker, **options):
@@ -91,13 +94,6 @@ class TrialDivision (util.FactoringMethod):
         options is the same for factor, but the default value for
         'return_type' is 'tracker'.
         """
-        if not hasattr(self, 'primeseq'):
-            try:
-                options['n'] = tracker.getNextTarget()
-            except LookupError:
-                raise
-            self.primeseq = self._parse_seq(options)
-
         return util.FactoringMethod.continue_factor(self, tracker, **options)
 
     def _parse_seq(self, options):
@@ -119,16 +115,24 @@ class TrialDivision (util.FactoringMethod):
             trials = prime.generator()
         return trials
 
-    def find(self, target, **options):
+    def generate(self, target, **options):
         """
-        Return the minimum factor of 'target' in the sequence.
+        Generate prime factors of the target number with their
+        valuations.  The method may terminate with yielding (1, 1)
+        to indicate the factorization is incomplete.
         """
-        for p in self.primeseq:
+        primeseq = self._parse_seq(options)
+        for p in primeseq:
             if not (target % p):
-                return p
+                e, target = arith1.vp(target // p, p, 1)
+                yield p, e
             if p ** 2 > target:
+                # there are no more factors of target, thus target is a prime
+                yield target, 1
                 break
-        return 1
+        else:
+            # primeseq is exhausted but target has not been proven prime
+            yield 1, 1
 
 
 class PMinusOneMethod (util.FactoringMethod):

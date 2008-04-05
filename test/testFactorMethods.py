@@ -7,10 +7,10 @@ _log.setLevel(logging.INFO)
 
 class FactorTest (unittest.TestCase):
     def testTrialDivision(self):
-        self.assertEqual(mthd.trialDivision(60), [(2,2),(3,1),(5,1)])
-        self.assertEqual(mthd.trialDivision(128), [(2,7)])
-        self.assertEqual(mthd.trialDivision(200819), [(409,1),(491,1)])
-        self.assertEqual(mthd.trialDivision(1042387),  [(701,1),(1487,1)])
+        self.assertEqual([(2,2),(3,1),(5,1)], mthd.trialDivision(60))
+        self.assertEqual([(2,7)], mthd.trialDivision(128))
+        self.assertEqual([(409,1),(491,1)], mthd.trialDivision(200819))
+        self.assertEqual([(701,1),(1487,1)], mthd.trialDivision(1042387))
 
     def testRho(self):
         self.assertEqual([(2,2),(3,1),(5,1)], mthd.rhomethod(60))
@@ -59,6 +59,21 @@ class FactorTest (unittest.TestCase):
         result = mthd.mpqs(p*154858631, verbose=False)
         _log.info("verbose:")
         result = mthd.mpqs(p*154858631, verbose=True)
+
+
+class TrialDivisionTest (unittest.TestCase):
+    def testTrialDivisionTracker(self):
+        tdm = mthd.TrialDivision()
+        factorization_of_49 = tdm.factor(49, return_type='tracker')
+        self.assert_(isinstance(factorization_of_49, mthd.util.FactoringInteger))
+        self.assert_(7 in factorization_of_49.primality)
+
+        # fail to factor is iterator is short
+        factorization_of_10201 = tdm.factor(10201,
+                                            return_type='tracker',
+                                            iterator=iter(range(3, 100, 2)))
+        self.assert_(10201 in factorization_of_10201.primality) # not factored
+        self.failIf(factorization_of_10201.primality[10201]) # not a prime
 
 
 def suite(suffix = "Test"):

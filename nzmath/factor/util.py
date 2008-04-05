@@ -36,11 +36,15 @@ class FactoringMethod (object):
             return []
 
         tracker = FactoringInteger(number)
-        options['return_type'] = options.get('return_type', 'list')
-        result = self.continue_factor(tracker, **options)
-        if options['return_type'] == 'list' and options.get('need_sort', False):
-            result.sort()
-        return result
+        for p, e in self.generate(number, **options):
+            if p != 1:
+                tracker.register(p, True)
+        if options.get('return_type', 'list') == 'list':
+            result = tracker.getResult()
+            if options.get('need_sort', False):
+                return sorted(result)
+            return result
+        return tracker
 
     def continue_factor(self, tracker, **options):
         """
@@ -94,12 +98,34 @@ class FactoringMethod (object):
 
     def find(self, target, **options):
         """
-        Find a factor from the target number.
+        Find a factor from the target number.  The method may return 1
+        to indicate the factorization is incomplete.
 
         This method must be overridden, or 'factor' method should be
         overridden not to call this method.
         """
-        pass
+        for p, e in self.generate(target, **options):
+            return p
+
+    def generate(self, target, **options):
+        """
+        Generate prime factors of the target number with their
+        valuations.  The method may terminate with yielding (1, 1)
+        to indicate the factorization is incomplete.
+
+        This method must be overridden, or 'factor' method should be
+        overridden not to call this method.
+        """
+        tracker = FactoringInteger(target)
+        options['return_type'] = 'tracker'
+        result = self.continue_factor(tracker, **options)
+        for p, e in result.factors:
+            if result.primality[p]:
+                yield p, e
+                target //= p ** e
+            else:
+                yield 1, 1
+                break
 
     def _getVerbose(self):
         "getter for property verbose"
