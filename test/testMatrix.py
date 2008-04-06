@@ -186,11 +186,11 @@ class RingSquareMatrixTest(unittest.TestCase):
         orthogonal = createMatrix(2, 2, [Ra(3, 5), Ra(4, 5), Ra(-4, 5), Ra(3, 5)])
         assert orthogonal.isOrthogonalMatrix()
 
-    def testIsAlternativeMatrix(self):
+    def testIsAlternatingMatrix(self):
         alternate1 = createMatrix(2, 2, [0, 2, -2, 0])
-        assert alternate1.isAlternativeMatrix()
+        assert alternate1.isAlternatingMatrix()
         alternate2 = createMatrix(2, [1, 2, -2, 0])
-        assert not alternate2.isAlternativeMatrix()
+        assert not alternate2.isAlternatingMatrix()
 
     def testTrace(self):
         self.assertEqual(15, b4.trace())

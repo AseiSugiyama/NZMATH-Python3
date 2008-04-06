@@ -773,7 +773,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
 
     def isAlternatingMatrix(self):
         """
-        Check whether self is alternative matrix or not.
+        Check whether self is alternating matrix or not.
         Alternating (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
         """
         for i in range(self.row):
@@ -1632,12 +1632,6 @@ class Subspace(FieldMatrix):
             e_i[i - 1] = one
             B.extendColumn(e_i)
         return Subspace.fromMatrix(B, True)
-
-    def complementSpace(self):
-        """
-        Return (Euclidean orthogonal) complement space.
-        """
-        return Subspace.fromMatrix(self.transpose().kernel(), True)
 
     def sumOfSubspaces(self, other): # Algorithm 2.3.8 of Cohen's book
         """
