@@ -11,7 +11,7 @@ class Matrix(object):
 
     def __init__(self, row, column, compo=0, coeff_ring=0):
         """
-        Matrix(row, column [,components])
+        Matrix(row, column [,components, coeff_ring])
         """
         self._initialize(row, column, compo, coeff_ring)
         self._selectMatrix()
@@ -301,7 +301,7 @@ class Matrix(object):
 
     def insertColumn(self, j, arg):
         """
-        insertColumn(j, arg) : added new_column
+        insertColumn(j, new_column) : added new_column
         new_column can be a list or a Matrix
         """
         if isinstance(arg, list):
@@ -329,13 +329,13 @@ class Matrix(object):
 
     def extendRow(self, arg):
         """
-        Join arg in vertical way.
+        extendRow(new_row) : join new_row in vertical way.
         """
         self.insertRow(self.row + 1, arg)
 
     def extendColumn(self, arg):
         """
-        Join arg in horizontal way.
+        extendColumn(new_column) : join new_column in horizontal way.
         """
         self.insertColumn(self.column + 1, arg)
 
@@ -408,20 +408,11 @@ class SquareMatrix(Matrix):
 
     def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
-        SquareMatrix(row, column [,components])
+        SquareMatrix(row [, column ,components, coeff_ring])
         SquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
         self._selectMatrix()
-
-    def _selectMatrix(self):
-        """
-        Select Matrix class.
-        """
-        if self.coeff_ring.isfield():
-            self.__class__ = FieldSquareMatrix
-        else:
-            self.__class__ = RingSquareMatrix
 
     def _initialize(self, row, column=0, compo=0, coeff_ring=0):
         """
@@ -517,7 +508,7 @@ class RingMatrix(Matrix):
 
     def __init__(self, row, column, compo=0, coeff_ring=0):
         """
-        RingMatrix(row, column [,components])
+        RingMatrix(row, column [,components, coeff_ring])
         """
         self._initialize(row, column, compo, coeff_ring)
         self._selectMatrix()
@@ -663,10 +654,10 @@ class RingMatrix(Matrix):
         self.__class__ = FieldMatrix
         self.coeff_ring = self.coeff_ring.getQuotientField()
 
-    def toSubspace(self):
+    def toSubspace(self, isbasis=None):
         """RingMatrix -> Subspace"""
         self.toFieldMatrix()
-        self.toSubspace()
+        self.toSubspace(isbasis)
 
     def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
         """Return a Matrix in Hermite Normal Form."""
@@ -730,7 +721,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
 
     def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
-        RingSquareMatrix(row, column [,components])
+        RingSquareMatrix(row [, column ,components, coeff_ring])
         RingSquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
@@ -1025,7 +1016,7 @@ class FieldMatrix(RingMatrix):
 
     def __init__(self, row, column, compo=0, coeff_ring=0):
         """
-        FieldMatrix(row, column [,components])
+        FieldMatrix(row, column [,components, coeff_ring])
         """
         self._initialize(row, column, compo, coeff_ring)
         if not self.coeff_ring.isfield():
@@ -1036,10 +1027,11 @@ class FieldMatrix(RingMatrix):
         """
         Select Matrix class.
         """
-        if self.row == self.column:
-            self.__class__ = FieldSquareMatrix
-        else:
-            self.__class__ = FieldMatrix
+        if self.__class__ != Subspace:
+            if self.row == self.column:
+                self.__class__ = FieldSquareMatrix
+            else:
+                self.__class__ = FieldMatrix
 
     def __truediv__(self, other):
         """
@@ -1049,9 +1041,10 @@ class FieldMatrix(RingMatrix):
 
     __div__ = __truediv__ # backward compatibility?
 
-    def toSubspace(self):
+    def toSubspace(self, isbasis=None):
         """FieldMatrix -> Subspace"""
         self.__class__ = Subspace
+        self.isbasis = isbasis
 
     def _cohensSimplify(self):
         """
@@ -1270,7 +1263,7 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
 
     def __init__(self, row, column=0, compo=0, coeff_ring=0):
         """
-        FieldSquareMatrix(row, column [,components])
+        FieldSquareMatrix(row [, column, components, coeff_ring])
         FieldSquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
@@ -1552,37 +1545,75 @@ class Subspace(FieldMatrix):
     Subspace is a class for subspaces.
     """
 
-    def __init__(self, row, column, compo=0, coeff_ring=0):
+    def __init__(self, row, column, compo=0, coeff_ring=0, isbasis=None):
         """
-        Subspace(row, column [,components])
+        Subspace(row, column [,components, coeff_ring, isbasis])
         """
+        if isinstance(compo, bool):
+            isbasis = compo
+            compo = 0
+        elif isinstance(coeff_ring, bool):
+            isbasis = coeff_ring
+            coeff_ring = 0
         self._initialize(row, column, compo, coeff_ring)
         if not self.coeff_ring.isfield():
             self.coeff_ring = self.coeff_ring.getQuotientField()
+        self.isbasis = isbasis
 
-    def supplementBasis(self):     # Algorithm 2.3.6 of Cohen's book
+    @classmethod
+    def fromMatrix(cls, mat, isbasis=None):
+        """
+        A constructor class method, which creates Subspace from a
+        Matrix instance.
+        """
+        compo = []
+        for row in mat.compo:
+            compo += row
+        return cls(mat.row, mat.column, compo, mat.coeff_ring, isbasis)
+
+    def isSubspace(self, other):
+        """ 
+        Check self is in other as subspace
+        """
+        try:
+            other.inverseImage(self)
+            return True
+        except:
+            return False
+
+    def toBasis(self):
+        """
+        Change matrix to basis.
+        """
+        if not self.isbasis:
+            basis = self.image()
+            if not basis: # zero space
+                basis = zeroMatrix(self.row, 1, self.coeff_ring)
+            self.compo = basis.compo
+            self.column = basis.column
+            self.isbasis = True
+
+    def supplementBasis(self):     # Modified Algorithm 2.3.6 of Cohen's book
         """
         Return a basis of full space, which including self's column vectors.
         """
+        self.toBasis()
         if self.row < self.column:
             raise MatrixSizeError
         n = self.row
         k = self.column
         M = self.copy()
-        B = unitMatrix(n, self.coeff_ring)
+        pnt = range(1, self.row + 1)
         for s in range(k):
             for t in range(s, n):
                 if M.compo[t][s]:
                     break
-            else:
-                raise VectorsNotIndependent
+            else: # zero space
+                return unitMatrix(self.row, self.coeff_ring)
             d = ring.inverse(M.compo[t][s])
             M.compo[t][s] = 1
             if t != s:
-                for i in range(n):
-                    B.compo[i][t] = B.compo[i][s]
-            for i in range(n):
-                B.compo[i][s] = self.compo[i][s]
+                pnt[t] = pnt[s]
             for j in range(s + 1, k):
                 if t != s:
                     tmp = M.compo[s][j]
@@ -1593,7 +1624,20 @@ class Subspace(FieldMatrix):
                     if i != s and i != t:
                         M.compo[i][j] = \
                         M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
-        return B
+        B = self.copy()
+        one = self.coeff_ring.one
+        zeros = [self.coeff_ring.zero] * n
+        for i in pnt[k: ]:
+            e_i = zeros
+            e_i[i - 1] = one
+            B.extendColumn(e_i)
+        return Subspace.fromMatrix(B, True)
+
+    def complementSpace(self):
+        """
+        Return (Euclidean orthogonal) complement space.
+        """
+        return Subspace.fromMatrix(self.transpose().kernel(), True)
 
     def sumOfSubspaces(self, other): # Algorithm 2.3.8 of Cohen's book
         """
@@ -1602,22 +1646,22 @@ class Subspace(FieldMatrix):
         if self.row != other.row:
             raise MatrixSizeError
         N = self.copy()
-        for j in range(1, other.column + 1):
-            N.insertColumn(self.column + j, other[j])
-        return N.image()
+        N.extendColumn(other)
+        return Subspace.fromMatrix(N.image(), True)
 
     def intersectionOfSubspaces(self, other): # Algorithm 2.3.9 of Cohen's book
         """
-        Return space which is intersection of self and M_.
+        Return space which is intersection of self and other.
         """
         if self.row != other.row:
             raise MatrixSizeError
         M1 = self.copy()
         M1.extendColumn(other)
         N = M1.kernel()
+        if not N:
+            zeroMatrix(self.row, 1, self.coeff_ring)
         N1 = N.getBlock(1, 1, self.column, N.column) # N.column is dim(ker(M1))
-        M2 = self * N1
-        return M2.image()
+        return Subspace.fromMatrix((self * N1).image(), True)
 
 
 # --------------------------------------------------------------------
@@ -1701,10 +1745,6 @@ def zeroMatrix(row, column=None, coeff=0):
 
 class MatrixSizeError(Exception):
     """Invalid input error for matrix size."""
-    pass
-
-class VectorsNotIndependent(Exception):
-    """Invalid input error because column vectors are linear dependent."""
     pass
 
 class NoInverseImage(Exception):
