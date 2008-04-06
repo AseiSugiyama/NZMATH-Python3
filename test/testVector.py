@@ -35,7 +35,6 @@ class VectorTest(unittest.TestCase):
 
     def testIndexOfNoneZero(self):
         v = vector.Vector([0,2,0])
-##         print v.indexOfNoneZero()
         assert v.indexOfNoneZero() == 2
 
     def testIterator(self):
@@ -44,8 +43,25 @@ class VectorTest(unittest.TestCase):
 	self.assertEqual(3, len(l), str(l))
 
 
-def suite():
-    suite = unittest.makeSuite(VectorTest, 'test')
+class InnerProductTest (unittest.TestCase):
+    def testReals(self):
+        rv1 = vector.Vector([0, 2, 0])
+        rv2 = vector.Vector([2, 0, -9])
+        self.assertEqual(0, vector.innerProduct(rv1, rv2))
+
+    def testComplex(self):
+        cv1 = vector.Vector([1, 0+1j])
+        cv2 = vector.Vector([0-1j, 1])
+        self.assertEqual(0+2j, vector.innerProduct(cv1, cv2))
+        self.assertEqual(0-2j, vector.innerProduct(cv2, cv1))
+
+
+def suite(suffix="Test"):
+    suite = unittest.TestSuite()
+    all_names = globals()
+    for name in all_names:
+        if name.endswith(suffix):
+            suite.addTest(unittest.makeSuite(all_names[name], "test"))
     return suite
 
 if __name__ == '__main__':
