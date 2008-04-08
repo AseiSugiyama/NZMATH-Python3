@@ -37,11 +37,35 @@ class Matrix(object):
                 for i in range(self.row):
                     self.compo.append([zero] * self.column)
             else:
-                if (len(compo) != self.row * self.column):
-                    raise ValueError, "len(compo) is not match the matrix size"
-                for i in range(self.row):
-                    self.compo.append(
-                    compo[self.column * i : self.column * (i + 1)])
+                if isinstance(compo[0], list):
+                    if len(compo) != self.row:
+                        raise ValueError, "len(compo) " + \
+                        "is not match the matrix size"
+                    for i in range(self.row):
+                        if len(compo[i]) != self.column:
+                            raise ValueError, "len(compo[%d]) " % i + \
+                            "is not match the matrix size"
+                        self.compo.append(compo[i][:])
+                elif isinstance(compo[0], vector.Vector):
+                    if len(compo) != self.column:
+                        raise ValueError, "len(compo) " + \
+                        "is not match the matrix size"
+                    self.compo = [[] for i in range(self.row)]
+                    for i in range(self.column):
+                        if len(compo[i]) != self.row:
+                            raise valueError, "len(compo[%d]) " % i + \
+                            "is not match the matrix size"
+                        j = 0
+                        for ele in compo[i].compo:
+                            self.compo[j].append(ele)
+                            j += 1
+                else:
+                    if (len(compo) != self.row * self.column):
+                        raise ValueError, "len(compo) " + \
+                        "is not match the matrix size"
+                    for i in range(self.row):
+                        self.compo.append(
+                        compo[self.column * i : self.column * (i + 1)])
             if coeff_ring == 0:
                 self.coeff_ring = ring.getRing(self.compo[0][0])
             else:
@@ -427,29 +451,11 @@ class SquareMatrix(Matrix):
         elif isinstance(column, ring.Ring):
             coeff_ring = column
             column = row
-        if column != 0 and row != column:
+        elif column == 0:
+            column = row
+        if row != column:
             raise ValueError, "not square matrix"
-        if (isinstance(row, (int, long)) and row > 0):
-            self.row = self.column = row
-            self.compo = []
-            if compo == 0:
-                zero = 0
-                if coeff_ring != 0:
-                    zero = coeff_ring.zero
-                for i in range(self.row):
-                    self.compo.append([zero] * self.column)
-            else:
-                if (len(compo) != self.row ** 2):
-                    raise ValueError, "len(compo) is not match the matrix size"
-                for i in range(self.row):
-                    self.compo.append(
-                    compo[self.column * i : self.column * (i + 1)])
-            if coeff_ring == 0:
-                self.coeff_ring = ring.getRing(self.compo[0][0])
-            else:
-                self.coeff_ring = coeff_ring
-        else:
-            raise ValueError, "invalid value for matrix size"
+        Matrix._initialize(self, row, column, compo, coeff_ring)
 
     def isUpperTriangularMatrix(self):
         """
@@ -1678,7 +1684,12 @@ def createMatrix(row, column=0, compo=0, coeff_ring=0):
     if compo == 0:
         return zeroMatrix(row, column, coeff_ring)
     if coeff_ring == 0:
-        coeff_ring = ring.getRing(compo[0])
+        if isinstance(compo[0], list):
+            coeff_ring = ring.getRing(compo[0][0])
+        elif isinstance(compo[0], vector.Vector):
+            coeff_ring = ring.getRing(compo[0][1])
+        else:
+            coeff_ring = ring.getRing(compo[0])
     if coeff_ring.isfield():
         if row == column:
             return FieldSquareMatrix(row, compo, coeff_ring)
