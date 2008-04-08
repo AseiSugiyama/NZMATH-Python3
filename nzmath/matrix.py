@@ -1025,9 +1025,13 @@ class FieldMatrix(RingMatrix):
         FieldMatrix(row, column [,components, coeff_ring])
         """
         self._initialize(row, column, compo, coeff_ring)
+        self._selectMatrix()
+
+    def _initialize(self, row, column, compo=0, coeff_ring=0):
+        """initialize matrix"""
+        RingMatrix._initialize(self, row, column, compo, coeff_ring)
         if not self.coeff_ring.isfield():
             self.coeff_ring = self.coeff_ring.getQuotientField()
-        self._selectMatrix()
 
     def _selectMatrix(self):
         """
@@ -1273,8 +1277,6 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         FieldSquareMatrix must be row == column .
         """
         self._initialize(row, column, compo, coeff_ring)
-        if not self.coeff_ring.isfield():
-            self.coeff_ring = self.coeff_ring.getQuotientField()
 
     def triangulate(self):
         """
@@ -1562,8 +1564,6 @@ class Subspace(FieldMatrix):
             isbasis = coeff_ring
             coeff_ring = 0
         self._initialize(row, column, compo, coeff_ring)
-        if not self.coeff_ring.isfield():
-            self.coeff_ring = self.coeff_ring.getQuotientField()
         self.isbasis = isbasis
 
     @classmethod
