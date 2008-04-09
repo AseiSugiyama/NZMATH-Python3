@@ -581,12 +581,15 @@ class RingMatrix(Matrix):
                 product.append(part_product)
             return vector.Vector(product)
         else: #scalar mul
+            try:
+                rings = self.coeff_ring.getCommonSuperring(ring.getRing(other))
+            except:
+                return NotImplemented
             product = []
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
                     product.append(self[i, j] * other)
-            return createMatrix(self.row, self.column, product,
-                      self.coeff_ring.getCommonSuperring(ring.getRing(other)))
+            return createMatrix(self.row, self.column, product, rings)
 
     def __rmul__(self, other):
         if isinstance(other, Matrix):
@@ -612,12 +615,15 @@ class RingMatrix(Matrix):
                 product.append(part_product)
             return vector.Vector(product)
         else:
+            try:
+                rings = self.coeff_ring.getCommonSuperring(ring.getRing(other))
+            except:
+                return NotImplemented
             product = []
             for i in range(1, self.row + 1):
                 for j in range(1, self.column + 1):
                     product.append(self[i, j] * other)
-            return createMatrix(self.row, self.column, product,
-                     self.coeff_ring.getCommonSuperring(ring.getRing(other)))
+            return createMatrix(self.row, self.column, product, rings)
 
     def __mod__(self, other):
         """
@@ -631,7 +637,16 @@ class RingMatrix(Matrix):
                 mod.append(self[i, j] % other)
         return createMatrix(self.row, self.column, mod, self.coeff_ring)
 
+    def __pos__(self):
+        """
+        return copy of self.
+        """
+        return self.copy()
+
     def __neg__(self):
+        """
+        return -self.
+        """
         return (-1) * self
 
     def getCoefficientRing(self):
@@ -855,38 +870,43 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         return self*other-other*self
 
-    def characteristicPolynomial(self):        # Algorithm 2.2.7 of Cohen's book
+    def characteristicMatrix(self):
+        """
+        Return the characteristic matrix (i.e. xI-A) of self.
+        """
+        #import nzmath.poly.uniutil as uniutil
+        #x = uniutil.polynomial({1:1}, self.coeff_ring)
+        import nzmath.polynomial as polynomial
+        x = polynomial.OneVariableDensePolynomial([0,1], 'x')
+        poly_ring = x.getRing()
+        return unitMatrix(self.row, poly_ring) * x - self
+
+    def _characteristicPolyList(self): # Algorithm 2.2.7 of Cohen's book
+        """for characteristicPolynomial, adjugateMatrix"""
+        unit = unitMatrix(self.row, self.coeff_ring)
+        coeff = [self.coeff_ring.one, -self.trace()]
+        C = self + coeff[-1] * unit
+        for i in range(2, self.row):
+            C = self * C
+            coeff.append(-C.trace() // i)
+            C = C + coeff[-1] * unit
+        coeff.append(-(self * C).trace() // i)
+        coeff.reverse()
+        return coeff, C
+
+    def characteristicPolynomial(self):
         """
         characteristicPolynomial() -> Polynomial
         """
-        C = unitMatrix(self.row, self.coeff_ring)
-        coeff = [0] * (self.row + 1)
-        coeff[0] = 1
-        for i in range(1, self.row + 1):
-            C = self * C
-            if i == 1:
-                coeff[i] = -C.trace()
-            else:
-                coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row, self.coeff_ring)
+        coeff = self._characteristicPolyList()[0]
         import nzmath.poly.uniutil as uniutil
-        coeff.reverse()
         return uniutil.polynomial(dict(enumerate(coeff)), self.coeff_ring)
 
-    def adjugateMatrix(self):        # Algorithm 2.2.7 of Cohen's book
+    def adjugateMatrix(self):
         """
         Return adjugate(classical adjoint) matrix.
         """
-        C = unitMatrix(self.row, self.coeff_ring)
-        coeff = [0] * self.row
-        coeff[0] = 1
-        for i in range(1, self.row):
-            C = self * C
-            if i == 1:
-                coeff[i] = -C.trace()
-            else:
-                coeff[i] = -C.trace() // i
-            C = C + coeff[i] * unitMatrix(self.row, self.coeff_ring)
+        C = self._characteristicPolyList()[1]
         if self.row & 1:
             return C
         else:
@@ -1750,6 +1770,10 @@ def zeroMatrix(row, column=None, coeff=0):
 
 class MatrixSizeError(Exception):
     """Invalid input error for matrix size."""
+    pass
+
+class VectorsNotIndependent(Exception):
+    """Invalid input error because column vectors are linear dependent."""
     pass
 
 class NoInverseImage(Exception):
