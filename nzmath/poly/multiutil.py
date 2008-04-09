@@ -330,6 +330,40 @@ class RingPolynomial (OrderProvider,
     def __repr__(self): # debug
         return "%s(%s)" % (self.__class__.__name__, self._coefficients)
 
+    def __add__(self, other):
+        try:
+            return multivar.BasicPolynomial.__add__(self, other)
+        except AttributeError:
+            one = self.getRing().one
+            try:
+                return multivar.BasicPolynomial.__add__(self, other * one)
+            except Exception:
+                return NotImplemented
+
+    def __radd__(self, other):
+        one = self.getRing().one
+        try:
+            return other * one + self
+        except Exception:
+            return NotImplemented
+
+    def __sub__(self, other):
+        try:
+            return multivar.BasicPolynomial.__sub__(self, other)
+        except AttributeError:
+            one = self.getRing().one
+            try:
+                return multivar.BasicPolynomial.__sub__(self, other * one)
+            except Exception:
+                return NotImplemented
+
+    def __rsub__(self, other):
+        one = self.getRing().one
+        try:
+            return other * one - self
+        except Exception:
+            return NotImplemented
+
 
 class DomainPolynomial (PseudoDivisionProvider,
                         RingPolynomial):
