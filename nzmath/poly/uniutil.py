@@ -933,7 +933,7 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
             import nzmath.rationalFunction as rationalfunction
             # use always "x" as the variable name
             return rationalfunction.RationalFunctionField(coefficientField, "x")
-        except:
+        except Exception:
             raise
 
     def __eq__(self, other):
@@ -1315,6 +1315,40 @@ class RingPolynomial (OrderProvider,
 
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self.terms()), repr(self._coefficient_ring))
+
+    def __add__(self, other):
+        try:
+            return univar.SortedPolynomial.__add__(self, other)
+        except AttributeError:
+            one = self.getRing().one
+            try:
+                return univar.SortedPolynomial.__add__(self, other * one)
+            except Exception:
+                return NotImplemented
+
+    def __radd__(self, other):
+        one = self.getRing().one
+        try:
+            return other * one + self
+        except Exception:
+            return NotImplemented
+
+    def __sub__(self, other):
+        try:
+            return univar.SortedPolynomial.__sub__(self, other)
+        except AttributeError:
+            one = self.getRing().one
+            try:
+                return univar.SortedPolynomial.__sub__(self, other * one)
+            except Exception:
+                return NotImplemented
+
+    def __rsub__(self, other):
+        one = self.getRing().one
+        try:
+            return other * one - self
+        except Exception:
+            return NotImplemented
 
 
 class DomainPolynomial(PseudoDivisionProvider,

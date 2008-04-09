@@ -184,6 +184,26 @@ class IntegerPolynomialTest (unittest.TestCase):
         d = b ** 2 - 4 * a * c
         self.assertEqual(d, q1.discriminant())
 
+    def testAddition(self):
+        Z = rational.theIntegerRing
+        f = uniutil.polynomial(enumerate(range(1, 6)), Z)
+        g = uniutil.polynomial(enumerate(range(7, 10)), Z)
+        h = uniutil.polynomial(enumerate([8, 10, 12, 4, 5]), Z)
+        self.assertEqual(h, f + g)
+        self.assert_(isinstance(f + g, uniutil.IntegerPolynomial))
+        # sf bug # 1937925
+        f2 = uniutil.polynomial(enumerate([2, 2, 3, 4, 5]), Z)
+        self.assertEqual(f2, f + 1)
+        self.assertEqual(f2, 1 + f)
+
+    def testSubtraction(self):
+        Z = rational.theIntegerRing
+        f = uniutil.polynomial(enumerate(range(1, 6)), Z)
+        # sf bug # 1937925
+        f2 = uniutil.polynomial([(1, 2), (2, 3), (3, 4), (4, 5)], Z)
+        self.assertEqual(f2, f - 1)
+        self.assertEqual(-f2, 1 - f)
+
 
 class FinitePrimeFieldPolynomialTest (unittest.TestCase):
     def testRepr(self):
