@@ -46,6 +46,19 @@ class Matrix(object):
                             raise ValueError, "len(compo[%d]) " % i + \
                             "is not match the matrix size"
                         self.compo.append(compo[i][:])
+                elif isinstance(compo[0], tuple):
+                    if len(compo) != self.column:
+                        raise ValueError, "len(compo) " + \
+                        "is not match the matrix size"
+                    self.compo = [[] for i in range(self.row)]
+                    for i in range(self.column):
+                        if len(compo[i]) != self.row:
+                            raise valueError, "len(compo[%d]) " % i + \
+                            "is not match the matrix size"
+                        j = 0
+                        for ele in compo[i]:
+                            self.compo[j].append(ele)
+                            j += 1
                 elif isinstance(compo[0], vector.Vector):
                     if len(compo) != self.column:
                         raise ValueError, "len(compo) " + \
@@ -1704,7 +1717,7 @@ def createMatrix(row, column=0, compo=0, coeff_ring=0):
     if compo == 0:
         return zeroMatrix(row, column, coeff_ring)
     if coeff_ring == 0:
-        if isinstance(compo[0], list):
+        if isinstance(compo[0], (list, tuple)):
             coeff_ring = ring.getRing(compo[0][0])
         elif isinstance(compo[0], vector.Vector):
             coeff_ring = ring.getRing(compo[0][1])
