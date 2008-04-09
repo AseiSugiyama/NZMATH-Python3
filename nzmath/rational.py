@@ -611,7 +611,7 @@ class Integer(long, ring.CommutativeRingElement):
             return self.__class__(long(self) * other)
         try:
             retval = other.__rmul__(self)
-            if retval and retval is not NotImplemented:
+            if retval is not NotImplemented:
                 return retval
         except Exception:
             pass
