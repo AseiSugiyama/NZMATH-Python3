@@ -129,10 +129,19 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
         h_factor = self.h.factor()
         self.assertEqual(2, len(h_factor), h_factor)
 
+    def testRamify(self):
+        F3 = F3 = finitefield.FinitePrimeField.getInstance(3)
+        rami = uniutil.FinitePrimeFieldPolynomial([(0, F3.one), (2, F3.zero), (3, F3.one)], coeffring=F3)
+        r_factor = rami.factor()
+        self.assertEqual(1, len(r_factor), r_factor)
+        r_factor = r_factor[0]
+        self.assertEqual(3, r_factor[1])
+        self.assertEqual(rami, r_factor[0] ** 3)
+
     def testIsIrreducible(self):
-        assert self.f.isirreducible()
-        assert not self.g.isirreducible()
-        assert not self.h.isirreducible()
+        self.assert_(self.f.isirreducible())
+        self.failIf(self.g.isirreducible())
+        self.failIf(self.h.isirreducible())
 
 
 class SubresultantGcdProviderTest (unittest.TestCase):

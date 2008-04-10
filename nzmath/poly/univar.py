@@ -32,9 +32,9 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         if not isinstance(other, PolynomialInterface):
             warnings.warn("comparison falls back to that of formal sum.")
             return formalsum.FormalSumContainerInterface.__eq__(self, other)
-        sterms = self.terms()
+        sterms = [t for t in self.iterterms() if t[1]]
         sterms.sort()
-        oterms = other.terms()
+        oterms = [t for t in other.iterterms() if t[1]]
         oterms.sort()
         return sterms == oterms
 
@@ -180,7 +180,10 @@ class BasicPolynomial (PolynomialInterface):
         if isinstance(other, PolynomialInterface):
             return self.ring_mul(other)
         else:
-            return self.scalar_mul(other)
+            try:
+                return self.scalar_mul(other)
+            except TypeError:
+                return NotImplemented
 
     def __rmul__(self, other):
         """
@@ -190,7 +193,10 @@ class BasicPolynomial (PolynomialInterface):
         from left, this method is called.  In the context, it is only
         posiible that other be a scalar.
         """
-        return self.scalar_mul(other)
+        try:
+            return self.scalar_mul(other)
+        except TypeError:
+            return NotImplemented
 
     def __neg__(self):
         """
@@ -526,7 +532,10 @@ class SortedPolynomial (PolynomialInterface):
         if isinstance(other, PolynomialInterface):
             return self.ring_mul(other)
         else:
-            return self.scalar_mul(other)
+            try:
+                return self.scalar_mul(other)
+            except TypeError:
+                return NotImplemented
 
     def __rmul__(self, other):
         """
@@ -536,7 +545,10 @@ class SortedPolynomial (PolynomialInterface):
         from left, this method is called.  In the context, it is only
         posiible that other be a scalar.
         """
-        return self.scalar_mul(other)
+        try:
+            return self.scalar_mul(other)
+        except TypeError:
+            return NotImplemented
 
     def ring_mul_karatsuba(self, other):
         """
@@ -650,6 +662,12 @@ class SortedPolynomial (PolynomialInterface):
                     snd_squared.upshift_degree(half_degree * 2))
 
     def __pow__(self, index):
+        """
+        self ** index
+
+        No ternary powering is defined here, because there is no
+        modulus operator defined.
+        """
         # special indeces
         if index < 0:
             raise ValueError("negative index is not allowed.")
@@ -767,7 +785,7 @@ class SortedPolynomial (PolynomialInterface):
             return True
         if not isinstance(other, SortedPolynomial):
             return PolynomialInterface.__eq__(self, other)
-        if [t for t in self] == [t for t in other]:
+        if [t for t in self if t[1]] == [t for t in other if t[1]]:
             return True
         return False
 

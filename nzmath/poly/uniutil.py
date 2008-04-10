@@ -592,7 +592,7 @@ class PrimeCharacteristicFunctionsProvider (object):
         the characteristic.  If the polynomial does not consist of
         p-th powered terms only, result is nonsense.
         """
-        return self.__class__([(d // self.ch, c) for (d, c) in self], **self._init_kwds)
+        return self.__class__([(d // self.ch, c) for (d, c) in self if c], **self._init_kwds)
 
     def distinct_degree_factorization(self):
         """
@@ -1444,6 +1444,36 @@ class FieldPolynomial(DivisionProvider,
         RingPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         DivisionProvider.__init__(self)
         ContentProvider.__init__(self)
+
+    def __pow__(self, index, mod=None):
+        """
+        self ** index (% mod).
+        """
+        if mod is None:
+            return RingPolynomial.__pow__(self, index)
+
+        if index < 0:
+            raise ValueError("negative index is not allowed.")
+        # special indeces
+        elif index == 0:
+            return self.getRing().one
+        elif index == 1:
+            return self % mod
+        elif index == 2:
+            return self.square() % mod
+        # special polynomials
+        if not self:
+            return self
+        # general
+        power_product = self.getRing().one
+        power_of_2 = self % mod
+        while index:
+            if index & 1:
+                power_product = mod.mod(power_product * power_of_2)
+            index //= 2
+            if index:
+                power_of_2 = mod.mod(power_of_2.square())
+        return power_product
 
     def resultant(self, other):
         """
