@@ -756,9 +756,10 @@ class SortedPolynomial (PolynomialInterface):
         Return the coefficient of specified degree.
         If there is no term of degree, return 0.
         """
-        rindex = self._bisect(degree)
-        if self.sorted[rindex - 1][0] == degree:
-            return self.sorted[rindex - 1][1]
+        if self.sorted:
+            rindex = self._bisect(degree)
+            if self.sorted[rindex - 1][0] == degree:
+                return self.sorted[rindex - 1][1]
         return 0
 
     def __contains__(self, degree):
