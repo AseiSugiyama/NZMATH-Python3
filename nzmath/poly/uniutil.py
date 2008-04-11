@@ -1388,6 +1388,15 @@ class DomainPolynomial(PseudoDivisionProvider,
         else:
             return sign * self.resultant(df) * lc**(self.degree() - df.degree() - 2)
 
+    def to_field_polynomial(self):
+        """
+        Return a FieldPolynomial object obtained by embedding the
+        polynomial ring over the domain D to over the quatient field
+        of D.
+        """
+        field = self.getCoefficientRing().getQuotientField()
+        return polynomial([(d, field.createElement(c)) for d, c in self.iterterms()], field)
+
 
 class UniqueFactorizationDomainPolynomial(SubresultantGcdProvider,
                                           ContentProvider,
