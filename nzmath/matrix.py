@@ -726,7 +726,7 @@ class RingMatrix(Matrix):
                 b = A[i, k]
                 # step 4 [Reduce]
                 for j in range(1, k):
-                    q = A[i, j] // b
+                    q = ring.exact_division(A[i, j], b)
                     A[j] = A[j] - q * A[k]
             # step5 [Final reductions]
             b = A[i, k]
@@ -734,7 +734,7 @@ class RingMatrix(Matrix):
                 k += 1
             else:
                 for j in range(k + 1, self.column + 1):
-                    q = A[i, j] // b
+                    q = ring.exact_division(A[i, j], b)
                     A[j] = A[j] - q * A[k]
             # step 6 [Finished?]
             if i == l:
@@ -785,7 +785,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
             n //= 2
             if n == 0:
                 return power
-            z = z*z
+            z = z * z
 
     def toFieldMatrix(self):
         """RingSquareMatrix -> FieldSquareMatrix"""
@@ -840,7 +840,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         M = self.copy()
         n = self.row
-        c = 1
+        c = self.coeff_ring.one
         sign = True
         for k in range(1, n):
             p = M[k, k]
@@ -860,7 +860,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
             for i in range(k + 1, n + 1):
                 for j in range(k+1, n+1):
                     t = p * M[i, j] - M[i, k] * M[k, j]
-                    M[i, j] = t // c
+                    M[i, j] = ring.exact_division(t, c)
             c = p
         if sign:
             return M[n, n]
@@ -887,12 +887,9 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         Return the characteristic matrix (i.e. xI-A) of self.
         """
-        #import nzmath.poly.uniutil as uniutil
-        #x = uniutil.polynomial({1:1}, self.coeff_ring)
-        import nzmath.polynomial as polynomial
-        x = polynomial.OneVariableDensePolynomial([0,1], 'x')
-        poly_ring = x.getRing()
-        return unitMatrix(self.row, poly_ring) * x - self
+        import nzmath.poly.uniutil as uniutil
+        x = uniutil.polynomial({1:1}, self.coeff_ring)
+        return x * unitMatrix(self.row, x.getRing()) - self
 
     def _characteristicPolyList(self): # Algorithm 2.2.7 of Cohen's book
         """
@@ -903,12 +900,13 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         unit = unitMatrix(self.row, self.coeff_ring)
         coeff = [self.coeff_ring.one, -self.trace()]
         C = self + coeff[-1] * unit
-        i = 2 # for self.row == 2
-        for i in range(2, self.row):
+        i = 2
+        while i < self.row:
             C = self * C
-            coeff.append(-C.trace() // i)
+            coeff.append(ring.exact_division(-C.trace(), i))
             C = C + coeff[-1] * unit
-        coeff.append(-(self * C).trace() // i)
+            i += 1
+        coeff.append(ring.exact_division(-(self * C).trace(), i))
         coeff.reverse()
         return coeff, C
 
@@ -952,7 +950,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         M = self.copy()
         n = M.row
         R = M.determinant()
-        rings = ring.getRing(M[1, 1])
+        rings = self.coeff_ring
         if not bool(R):
             raise ValueError("Don't input singular matrix")
         if R < 0:
@@ -966,8 +964,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 if M[n, j]:
                     u, v, d = rings.extgcd(M[n, j], M[n, n])
                     B = v * M.getColumn(n) + u * M.getColumn(j)
-                    M.setColumn(j, (((M[n, n] // d) * M.getColumn(j)
-                                     - (M[n, j] // d) * M.getColumn(n)) % R))
+                    M.setColumn(j, ((ring.exact_division(M[n, n], d) * M.getColumn(j)
+                                     - ring.exact_division(M[n, j], d) * M.getColumn(n)) % R))
                     M.setColumn(n, (B % R))
             j = n
             while j != 1:
@@ -975,8 +973,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 if M[j, n]:
                     u, v, d = rings.extgcd(M[j, n], M[n, n])
                     B = v * M.getRow(n) + u * M.getRow(j)
-                    M.setRow(j, (((M[n, n] // d) * M.getRow(j)
-                                  - (M[j, n] // d) * M.getRow(n)) % R))
+                    M.setRow(j, ((ring.exact_division(M[n, n], d) * M.getRow(j)
+                                  - ring.exact_division(M[j, n], d) * M.getRow(n)) % R))
                     M.setRow(n, (B % R))
                     c += 1
             if c <= 0:
@@ -992,7 +990,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 if not flag:
                     dd = rings.gcd(M[n, n], R)
                     lst.append(dd)
-                    R = (R // dd)
+                    R = ring.exact_division(R, dd)
                     n -= 1
         dd = rings.gcd(M[1, 1], R)
         lst.append(dd)
@@ -1009,7 +1007,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         n = M.row
         U = unitMatrix(M.row, M.coeff_ring)
         V = unitMatrix(M.row, M.coeff_ring)
-        rings = ring.getRing(M[1, 1])
+        rings = self.coeff_ring
         while n != 1:
             j = n
             c = 0
@@ -1017,8 +1015,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 j -= 1
                 if M[n, j]:
                     u, v, d = rings.extgcd(M[n, j], M[n, n])
-                    M_nn = M[n, n] // d
-                    M_nj = M[n, j] // d
+                    M_nn = ring.exact_division(M[n, n], d)
+                    M_nj = ring.exact_division(M[n, j], d)
                     B = v * M.getColumn(n) + u * M.getColumn(j)
                     M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
                     M.getColumn(n)))
@@ -1032,8 +1030,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 j = j-1
                 if M[j, n]:
                     u, v, d = rings.extgcd(M[j, n], M[n, n])
-                    M_nn = M[n, n] // d
-                    M_jn = M[j, n] // d
+                    M_nn = ring.exact_division(M[n, n], d)
+                    M_jn = ring.exact_division(M[j, n], d)
                     B = v * M.getRow(n) + u * M.getRow(j)
                     M.setRow(j, (M_nn * M.getRow(j) - M_jn * M.getRow(n)))
                     M.setRow(n, B)
