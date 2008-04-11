@@ -13,6 +13,54 @@ import nzmath.arith1 as arith1
 import nzmath.ring as ring
 
 
+class Real(float, ring.FieldElement):
+    """
+    Real is a class of real. 
+    This class is only for consistency for other Ring object.
+    """
+
+    def __init__(self, value):
+        ring.FieldElement.__init__(self)
+
+    def __add__(self, other):
+        return float(self) + float(other)
+
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        return float(self) - float(other)
+
+    def __rsub__(self, other):
+        return float(other) - float(self)
+
+    def __mul__(self, other):
+        return float(self) * float(other)
+
+    __rmul__ = __mul__
+
+    def __div__(self, other):
+        return float(self) / float(other)
+
+    def __rdiv__(self, other):
+        return float(other) / float(self)
+
+    __truediv__ = __div__
+
+    __rtruediv__ = __rdiv__
+
+    def __pow__(self, other, err=None):
+        if other in theRealField:
+            if err == None:
+                return Real(pow(self, float(other)))
+            else:
+                return Real(pow(self, float(other), err))
+        else:
+            return NotImplemented
+
+    def getRing(self):
+        return theRealField
+
+
 class RealField (ring.Field):
     """
     RealField is a class of the field of real numbers.
@@ -36,6 +84,8 @@ class RealField (ring.Field):
         if reduced in rational.theRationalField:
             return True
         if isinstance(reduced, float):
+            return True
+        if isinstance(reduced, Real):
             return True
         return False  ## How to know a number is real ?
 
