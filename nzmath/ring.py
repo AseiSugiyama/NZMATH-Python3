@@ -265,6 +265,7 @@ class CommutativeRingElement (RingElement):
     CommutativeRingElement is an abstract class for elements of
     commutative rings.
     """
+
     def __init__(self):
         """
         This class is abstract and cannot be instanciated.
@@ -696,6 +697,25 @@ class CommutativeRingProperties (object):
             self.setIsnoetherian(False)
 
 
+def getRingInstance(obj):
+    """
+    Return a RingElement instance which eqauls 'obj'.
+
+    Mainly for python built-in objects such as int or float.
+    """
+    if isinstance(obj, RingElement):
+        return obj
+    elif isinstance(obj, (int, long)):
+        import nzmath.rational as rational
+        return rational.Integer(obj)
+    elif isinstance(obj, float):
+        import nzmath.real as real
+        return real.Real(obj)
+    elif isinstance(obj, complex):
+        import nzmath.imaginary as imaginary
+        return imaginary.Complex(obj)
+    return None
+
 def getRing(obj):
     """
     Return a ring to which 'obj' belongs.
@@ -742,3 +762,11 @@ def inverse(obj):
         return getRing(obj).one / obj
     except TypeError:
         raise NotImplementedError("no inversion method found")
+
+def exact_division(self, other):
+    """
+    Return the division of 'self' by 'obj' if the division is exact.
+
+    Mainly for python built-in objects such as int or float.
+    """
+    return getRingInstance(self).exact_division(other)
