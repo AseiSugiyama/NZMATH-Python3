@@ -27,6 +27,7 @@ b4 = Matrix(3, 3, [1, 2, 3]+[0, 5, -2]+[7, 1, 9])
 b5 = createMatrix(3, 3, [1, 3, 2, 4, 6, 5, 6, 8, 9])
 b6 = createMatrix(3, 3, [1, 2, 4, 0, 3, 5, 0, 0, 0])
 b7 = createMatrix(3, 3, [1, 0, 0, 9, 1, 0, 5, 6, 1])
+b8 = Matrix(3, 3, [3, 15, 12]+[2,7,5]+[1,-4,-2])
 
 ## for FieldMatrix
 c1 = createMatrix(1, 2, [Ra(3), Ra(2)])
@@ -55,18 +56,40 @@ v2 = vector.Vector([8])
 v3 = vector.Vector([0, 0, 1])
 
 class MatrixTest(unittest.TestCase):
+    def testInit(self):
+        lst_lst = Matrix(3, 2, [[21, -12], [1, -1], [0, 0]])
+        self.assertEqual(a4, lst_lst)
+        lst_tuple = Matrix(3, 2, [(21, 1, 0), (-12,  -1, 0)])
+        self.assertEqual(a4, lst_tuple)
+        lst_vect = Matrix(3, 2, [vector.Vector([21, 1, 0]), vector.Vector([-12,  -1, 0])])
+        self.assertEqual(a4, lst_vect)
+
     def testGetitem(self):
         self.assertEqual(2, a1[1, 2])
         self.assertEqual(-2, b2[2, 2])
         self.assertRaises(IndexError, a1.__getitem__, "wrong")
+        self.assertEqual(vector.Vector([21, 1, 0]), a4[1])
 
     def testEqual(self):
         self.assert_(a1 == Matrix(1, 2, [3, 2]))
         self.assert_(isinstance(a1 == a1, bool))
 
+    def testNonZero(self):
+        self.assert_(not zeroMatrix(2, 3))
+
+    def testContains(self):
+        self.assert_(5 in a2)
+
     def testCall(self):
         call = createMatrix(1, 2, [13, 4])
         self.assertEqual(call, a5(2))
+
+    def testMap(self):
+        pow_two = createMatrix(1, 2, [9, 4])
+        self.assertEqual(pow_two, a1.map(lambda n : n ** 2))
+
+    def testReduce(self):
+        self.assertEqual(-2, a3.reduce(min))
 
     def testGetRow(self):
         row1 = vector.Vector([3, -2])
@@ -84,9 +107,15 @@ class MatrixTest(unittest.TestCase):
         trans = createMatrix(2, 3, [7, 3, 0]+[8, -2, 10])
         self.assertEqual(trans, a3.transpose())
 
+    def testGetBlock(self):
+        block = Matrix(2, 3, [4, 6, 5, 6, 8, 9])
+        self.assertEqual(block, b5.getBlock(2, 1, 2, 3))
+
     def testSubMatrix(self):
-        sub = createMatrix(2, 1, [-12, 0])
-        self.assertEqual(sub, a4.subMatrix(2, 1))
+        sub1 = createMatrix(2, 1, [-12, 0])
+        self.assertEqual(sub1, a4.subMatrix(2, 1))
+        sub2 = createMatrix(2, 2, [4, 5, 6, 9])
+        self.assertEqual(sub2, b5.subMatrix([2, 3], [1, 3]))
 
 
 class SquareMatrixTest(unittest.TestCase):
@@ -190,7 +219,10 @@ class RingSquareMatrixTest(unittest.TestCase):
         alternate1 = createMatrix(2, 2, [0, 2, -2, 0])
         assert alternate1.isAlternatingMatrix()
         alternate2 = createMatrix(2, [1, 2, -2, 0])
-        assert not alternate2.isAlternatingMatrix()
+        assert not alternate2.isAntisymmetricMatrix()
+
+    def testIsSingular(self):
+        assert b6.isSingular()
 
     def testTrace(self):
         self.assertEqual(15, b4.trace())
@@ -201,28 +233,45 @@ class RingSquareMatrixTest(unittest.TestCase):
         self.assert_(isinstance(b3.determinant(), (int, long)))
         self.assertEqual(36, b3.determinant())
 
-    def testAdjugateMatrix(self):
-        adjugate = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
-        self.assertEqual(adjugate, b4.adjugateMatrix())
-        assert d1 * d1.adjugateMatrix() == d1.determinant() * unitMatrix(d1.row)
+    def testCofactor(self):
+        self.assertEqual(-6, b5.cofactor(1, 2))
 
     def testCommutator(self):
         commutator = createMatrix(2, 2, [5, -1, 9, -5])
         self.assertEqual(commutator, b1.commutator(b2))
 
+    def testCharacteristicMatrix(self):
+        charMat = createMatrix(2, 2, \
+        [Poly({0:-1,1:1}, Int), Poly({0:-2}, Int)]+[Poly({0:-3}, Int), Poly({0:-4,1:1}, Int)])
+        self.assertEqual(charMat, b1.characteristicMatrix())
+
     def testCharacteristicPolynomial(self):
         assert d1.characteristicPolynomial()
+
+    def testAdjugateMatrix(self):
+        adjugate = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
+        self.assertEqual(adjugate, b4.adjugateMatrix())
+        assert d1 * d1.adjugateMatrix() == d1.determinant() * unitMatrix(d1.row)
+
+    def testCofactorMatrix(self):
+        cofact = d5.cofactorMatrix()
+        self.assertEqual(d5.cofactor(2, 3), cofact[2, 3])
 
     def testSmithNormalForm(self):
         self.assertEqual([12, 1, 1], b5.smithNormalForm())
         self.assertRaises(ValueError, b6.smithNormalForm)
         self.assertEqual([1, 1, 1], b7.smithNormalForm())
+        self.assertEqual([9, 3, 1], b8.smithNormalForm())
 
     def testExtSmithNormalForm(self):
-        smith = Matrix(3, 3, [12, 0, 0, 0, 1, 0, 0, 0, 1])
-        U, V, M = b5.extsmithNormalForm()
-        self.assertEqual(smith, M)
-        self.assertEqual(M, U * b5 * V)
+        smith1 = Matrix(3, 3, [12, 0, 0, 0, 1, 0, 0, 0, 1])
+        U_1, V_1, M_1 = b5.extsmithNormalForm()
+        self.assertEqual(smith1, M_1)
+        self.assertEqual(M_1, U_1 * b5 * V_1)
+        smith2 = Matrix(3, 3, [9, 0, 0, 0, 3, 0, 0, 0, 1])
+        U_2, V_2, M_2 = b8.extsmithNormalForm()
+        self.assertEqual(smith2, M_2)
+        self.assertEqual(M_2, U_2 * b8 * V_2)
 
 class FieldMatrixTest(unittest.TestCase):
     def testDiv(self):
@@ -230,10 +279,12 @@ class FieldMatrixTest(unittest.TestCase):
         self.assertEqual(div, c1 / 3)
 
     def testKernel(self):
-        pass
+        ker = c2.kernel()
+        self.assert_(not c2 * ker)
 
     def testImage(self):
-        pass
+        img = createMatrix(4,3,[1,2,-1]+[5,12,-2]+[1,3,-1]+[1,2,0])
+        self.assertEqual(img, c2.image())
 
     def testRank(self):
         self.assertEqual(3, c2.rank())
@@ -275,6 +326,7 @@ class FieldSquareMatrixTest(unittest.TestCase):
         [Ra(7, 43), Ra(6, 43), Ra(-1, 43)]+[Ra(35, 86), Ra(-13, 86), Ra(-5, 86)])
         self.assertEqual(cinverse, d3.inverse())
         self.assertRaises(NoInverse, d2.inverse)
+        self.assertEqual(d3.inverse() * c3, d3.inverse(c3))
 
     def testInverseNoChange(self):
         # sf bug#1849220
@@ -339,6 +391,42 @@ class SubspaceTest(unittest.TestCase):
         ba = Subspace(3, 2, [1, 2, 3, 4, 5, 7])
         supbase = createMatrix(3, 3, [1, 2, 0, 3, 4, 0, 5, 7, 1])
         self.assertEqual(supbase, ba.supplementBasis())
+
+    def testSumOfSubspaces(self):
+        unit1 = Subspace(3, 1, [1, 0, 0])
+        unit2 = Subspace(3, 2, [0, 0]+[1, 0]+[0, 1])
+        self.assertEqual(unitMatrix(3), unit1.sumOfSubspaces(unit2))
+
+    def testIntersectionOfSubspace(self):
+        unit1 = Subspace(3, 2, [1, 0]+[0, 1]+[0, 0])
+        unit2 = unitMatrix(3)
+        unit2.toSubspace()
+        intersect = Subspace(3, 2, [-1, 0]+[0, -1]+[0, 0])
+        self.assertEqual(intersect, unit1.intersectionOfSubspaces(unit2))
+
+
+class FunctionTest(unittest.TestCase):
+    def testCreateMatrix(self):
+        Q = rational.theRationalField
+        mat1 = createMatrix(2, 3, [[2,3,4], [5,6,7]])
+        self.assertEqual(mat1.coeff_ring, Int)
+        mat2 = createMatrix(2, 3, [[2,3,4], [5,6,7]], Q)
+        self.assertEqual(mat2.coeff_ring, Q)
+        mat3 = createMatrix(3, [(1, 2, 3), (4, 5, 6), (7, 8, 9)], Q)
+        self.assert_(mat3.row == mat3.column)
+        self.assert_(mat3.__class__, FieldSquareMatrix)
+        mat4 = createMatrix(2, [vector.Vector([1, 4]), vector.Vector([6, 8])])
+        self.assertEqual(mat4.coeff_ring, Int)
+        mat5 = createMatrix(5, 6, Int)
+        self.assert_(mat5 == 0)
+        mat6 = createMatrix(1, 4)
+        self.assert_(mat6 == 0)
+        mat7 = createMatrix(3, Q)
+        self.assert_(mat7.row == mat7.column)
+        self.assert_(mat7 == 0)
+        self.assertEqual(mat7.coeff_ring, Q)
+        mat8 = createMatrix(7)
+        self.assert_(mat8 == 0)
 
 
 def suite(suffix="Test"):
