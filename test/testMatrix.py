@@ -246,7 +246,7 @@ class RingSquareMatrixTest(unittest.TestCase):
         self.assertEqual(charMat, b1.characteristicMatrix())
 
     def testCharacteristicPolynomial(self):
-        assert d1.characteristicPolynomial()
+        assert d1.characteristicPolynomial() == d1.characteristicMatrix().determinant()
 
     def testAdjugateMatrix(self):
         adjugate = createMatrix(3, 3, [47, -15, -19, -14, -12, 2, -35, 13, 5])
