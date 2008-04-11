@@ -895,10 +895,15 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         return unitMatrix(self.row, poly_ring) * x - self
 
     def _characteristicPolyList(self): # Algorithm 2.2.7 of Cohen's book
-        """for characteristicPolynomial, adjugateMatrix"""
+        """
+        for characteristicPolynomial, adjugateMatrix
+        
+        Assume self.row >= 2.
+        """
         unit = unitMatrix(self.row, self.coeff_ring)
         coeff = [self.coeff_ring.one, -self.trace()]
         C = self + coeff[-1] * unit
+        i = 2 # for self.row == 2
         for i in range(2, self.row):
             C = self * C
             coeff.append(-C.trace() // i)
@@ -911,14 +916,20 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         characteristicPolynomial() -> Polynomial
         """
+        import nzmath.poly.uniutil
+        genPoly = nzmath.poly.uniutil.polynomial
+        if self.row == 1:
+            rings = self.coeff_ring
+            return genPoly({0:-self.trace(), 1:rings.one}, rings)
         coeff = self._characteristicPolyList()[0]
-        import nzmath.poly.uniutil as uniutil
-        return uniutil.polynomial(dict(enumerate(coeff)), self.coeff_ring)
+        return genPoly(dict(enumerate(coeff)), self.coeff_ring)
 
     def adjugateMatrix(self):
         """
         Return adjugate(classical adjoint) matrix.
         """
+        if self.row == 1:
+            return unitMatrix(self.row, self.coeff_ring)
         C = self._characteristicPolyList()[1]
         if self.row & 1:
             return C
