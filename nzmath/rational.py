@@ -647,6 +647,9 @@ class Integer(long, ring.CommutativeRingElement):
     def getRing(self):
         return theIntegerRing
 
+    def inverse(self):
+        return Rational(1, self)
+
     def actAdditive(self, other):
         """
         Act on other additively, i.e. n is expanded to n time
