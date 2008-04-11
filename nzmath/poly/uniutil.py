@@ -466,6 +466,36 @@ class SubresultantGcdProvider (object):
             elif delta > 1 and (g != one or h != one):
                 h = g * (h * g) ** (delta - 1)
 
+    def subresultant_extgcd(self, other):
+        """
+        Return (A,B,P) s.t. A*self+B*other=P, 
+        where P is the greatest common divisor of given polynomials.
+        They must be in the polynomial ring and its coefficient ring must
+        be a UFD.
+
+        Reference: Kida's paper p.18
+        """
+        order = termorder.ascending_order
+        coeff_ring = self.getCoefficientRing()
+        P_1, P_2 = self, other
+        A_1, A_2 = coeff_ring.one, coeff_ring.zero
+        if order.degree(P_1) < order.degree(P_2):
+            P_1, P_2 = P_2, P_1
+            A_1, A_2 = A_2, A_1
+        if not P_2:
+            return (A_1, A_2, P_1)
+        a = b = coeff_ring.one
+        while P_2:
+            delta = order.degree(P_1) - order.degree(P_2)
+            b = a * (b ** delta)
+            Q, R = P_1.pseudo_divmod(P_2)
+            a = order.leading_coefficient(P_2)
+            ad = a ** delta
+            P_1, P_2 = P_2, R.scalar_exact_division(b)
+            A_1, A_2 = A_2, (ad * a * A_1 - Q * A_2).exact_division(b)
+            b = (ad * b) // (b ** delta)
+        B_1 = (P_1 - A_1 * self).exact_division(other)
+        return (A_1, B_1, P_1)
 
 class PrimeCharacteristicFunctionsProvider (object):
     """
@@ -1072,6 +1102,8 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
         """
         if hasattr(a, "extgcd"):
             return a.extgcd(b)
+        elif hasattr(a, "subresultant_extgcd"):
+            return a.subresultant_extgcd(b)
         raise NotImplementedError
 
     @classmethod
