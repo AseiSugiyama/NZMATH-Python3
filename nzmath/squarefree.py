@@ -37,9 +37,11 @@ def lenstra(n):
     pre-condition: n & 1
     reference: H.W.Lenstra 1973 ---
     """
+    n = int(n) # see sf bug #1826712
+    predn = n - 1
     bound = int(math.log(n)**2 + 1)
     for i in range(2, bound):
-        if pow(rational.Integer(i), n - 1, n) != 1:
+        if pow(i, predn, n) != 1:
             raise Undetermined("Lenstra's method can't determine squarefreeness")
     return True
 
@@ -126,6 +128,8 @@ def lenstra_ternary(n):
     pre-condition: n & 1
     reference: H.W.Lenstra 1973 ---
     """
+    n = int(n) # see sf bug #1826712
+    predn = n - 1
     bound = int(math.log(n)**2 + 1)
     for i in range(2, bound):
         if pow(i, n - 1, n) != 1:
