@@ -468,7 +468,7 @@ class SubresultantGcdProvider (object):
 
     def subresultant_extgcd(self, other):
         """
-        Return (A,B,P) s.t. A*self+B*other=P, 
+        Return (A, B, P) s.t. A*self+B*other=P, 
         where P is the greatest common divisor of given polynomials.
         They must be in the polynomial ring and its coefficient ring must
         be a UFD.
@@ -492,7 +492,7 @@ class SubresultantGcdProvider (object):
             a = order.leading_coefficient(P_2)
             ad = a ** delta
             P_1, P_2 = P_2, R.scalar_exact_division(b)
-            A_1, A_2 = A_2, (ad * a * A_1 - Q * A_2).exact_division(b)
+            A_1, A_2 = A_2, (ad * a * A_1 - Q * A_2).scalar_exact_division(b)
             b = (ad * b) // (b ** delta)
         B_1 = (P_1 - A_1 * self).exact_division(other)
         return (A_1, B_1, P_1)
