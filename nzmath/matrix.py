@@ -964,8 +964,10 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 if M[n, j]:
                     u, v, d = rings.extgcd(M[n, j], M[n, n])
                     B = v * M.getColumn(n) + u * M.getColumn(j)
-                    M.setColumn(j, ((ring.exact_division(M[n, n], d) * M.getColumn(j)
-                                     - ring.exact_division(M[n, j], d) * M.getColumn(n)) % R))
+                    M_nn = ring.exact_division(M[n, n], d)
+                    M_nj = ring.exact_division(M[n, j], d)
+                    M.setColumn(j, ((M_nn * M.getColumn(j)
+                                     - M_nj * M.getColumn(n)) % R))
                     M.setColumn(n, (B % R))
             j = n
             while j != 1:
@@ -973,8 +975,10 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 if M[j, n]:
                     u, v, d = rings.extgcd(M[j, n], M[n, n])
                     B = v * M.getRow(n) + u * M.getRow(j)
-                    M.setRow(j, ((ring.exact_division(M[n, n], d) * M.getRow(j)
-                                  - ring.exact_division(M[j, n], d) * M.getRow(n)) % R))
+                    M_nn = ring.exact_division(M[n, n], d)
+                    M_jn = ring.exact_division(M[j, n], d)
+                    M.setRow(j, ((M_nn * M.getRow(j)
+                                  - M_jn * M.getRow(n)) % R))
                     M.setRow(n, (B % R))
                     c += 1
             if c <= 0:
@@ -1018,12 +1022,12 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                     M_nn = ring.exact_division(M[n, n], d)
                     M_nj = ring.exact_division(M[n, j], d)
                     B = v * M.getColumn(n) + u * M.getColumn(j)
-                    M.setColumn(j, (M_nn * M.getColumn(j) - M_nj *
-                    M.getColumn(n)))
+                    M.setColumn(j, (M_nn * M.getColumn(j)
+                                    - M_nj * M.getColumn(n)))
                     M.setColumn(n, B)
                     B = v * V.getColumn(n) + u * V.getColumn(j)
-                    V.setColumn(j, (M_nn * V.getColumn(j) - M_nj *
-                    V.getColumn(n)))
+                    V.setColumn(j, (M_nn * V.getColumn(j)
+                                    - M_nj * V.getColumn(n)))
                     V.setColumn(n, B)
             j = n
             while j != 1:
@@ -1340,8 +1344,7 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
                 inv_i_i = ring.inverse(triangle[i, i])
                 ratio = triangle[k, i] * inv_i_i
                 for l in range(i, triangle.column + 1):
-                    triangle[k, l] = \
-                    triangle[k, l] - triangle[i, l] * ratio
+                    triangle[k, l] = triangle[k, l] - triangle[i, l] * ratio
         if flag:
             for j in range(triangle.row, triangle.column + 1):
                 triangle[triangle.row, j] = -triangle[triangle.row, j]
