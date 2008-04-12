@@ -18,6 +18,7 @@ import nzmath.bigrange as bigrange
 import nzmath.prime as prime
 import nzmath.rational as rational
 import nzmath.factor.methods as factor_methods
+import nzmath.factor.misc as factor_misc
 
 
 class Undetermined (Exception):
@@ -132,7 +133,7 @@ def lenstra_ternary(n):
     predn = n - 1
     bound = int(math.log(n)**2 + 1)
     for i in range(2, bound):
-        if pow(i, n - 1, n) != 1:
+        if pow(i, predn, n) != 1:
             return None
     return True
 
@@ -185,7 +186,7 @@ def trial_division_ternary(n):
     return True
 
 
-# Just for symmetry, viafactor_ternary is defined as alias of viafactor.
+# Just for symmetry, viafactor_ternary is defined as an alias of viafactor.
 viafactor_ternary = viafactor
 
 
@@ -197,51 +198,52 @@ class SquarefreeDecompositionMethod (factor_methods.TrialDivision):
         factor_methods.TrialDivision.__init__(self)
         self.primeseq = None # initialized later
 
-    def continue_factor(self, tracker, **options):
+    def generate(self, target, **options):
         """
-        Continue factoring and return the result of factorization.
+        Generate squarefree factors of the target number with their
+        valuations.  The method may terminate with yielding (1, 1)
+        to indicate the factorization is incomplete.
 
-        The argument 'tracker' should be an instance of FactoringInteger.
-        The default returned type is FactoringInteger.
+        If a keyword option 'strict' is False (default to True),
+        factorization will stop after the first square factor no
+        matter whether it is squarefree or not.
         """
-        return_list = (options.get('return_type', '') == 'list')
-
-        non_square = lambda b, i: i == 1 and not trivial_test_ternary(b)
-
-        try:
-            while True:
-                target = tracker.getNextTarget(non_square)
-                # A non-square composite is squarefree if there is no
-                # facor up to its cubic root.
-                self.primeseq = bigrange.range(2 + target % 2, arith1.floorpowerroot(target, 3) + 1, 2)
-                p = self.find(target, **options)
-                if 1 < p < target:
-                    # factor found
-                    tracker.register(p)
-                elif p == 1:
-                    # factor is not found, i.e. target is squarefree
-                    tracker.register(target, True)
+        strict = options.get('strict', True)
+        options['n'] = target
+        primeseq = self._parse_seq(options)
+        for p in primeseq:
+            if not (target % p):
+                e, target = arith1.vp(target, p)
+                yield p, e
+                if target == 1:
                     break
-        except LookupError:
-            # decomposition completed
-            pass
-        if return_list:
-            return tracker.getResult()
+                elif e > 1 and not strict:
+                    yield 1, 1
+                    break
+                elif trivial_test_ternary(target):
+                    # the factor remained is squarefree.
+                    yield target, 1
+                    break
+                q, e = factor_misc.primePowerTest(target)
+                if e:
+                    yield q, e
+                    break
+                sqrt = arith1.issquare(target)
+                if sqrt:
+                    if strict:
+                        for q, e in self.factor(sqrt, iterator=primeseq):
+                            yield q, 2 * e
+                    else:
+                        yield sqrt, 2
+                    break
+            if p ** 3 > target:
+                # there are no more square factors of target,
+                # thus target is squarefree
+                yield target, 1
+                break
         else:
-            return tracker
-
-    def find(self, target, **options):
-        """
-        Return a factor of 'target'.
-
-        If 'target' is square, its square root is returned.
-        Otherwise, it returns the minimum factor in the sequence.
-        """
-        sqrt = arith1.issquare(target)
-        if sqrt:
-            return sqrt
-        # rest is the same as the base class TrialDivisionMethod
-        return factor_methods.TrialDivision.find(self, target, **options)
+            # primeseq is exhausted but target has not been proven prime
+            yield 1, 1
 
     def issquarefree(self, n):
         """
@@ -253,8 +255,10 @@ class SquarefreeDecompositionMethod (factor_methods.TrialDivision):
         """
         if trivial_test_ternary(n):
             return True
-        factorization = dict(self.factor(n, return_type='list'))
-        return all(e == 1 for e in factorization.itervalues())
+        for s, e in self.generate(n, strict=False):
+            if e > 1:
+                return False
+        return True
 
 
 viadecomposition = SquarefreeDecompositionMethod().issquarefree

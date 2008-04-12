@@ -98,6 +98,11 @@ class SquarefreeDecompositionMethodTest (unittest.TestCase):
         c = 1296000000048526524000605664488558519786723203009
         # no factorization of c is needed and thus reasonablly fast
         self.assert_(decomp(101 * c))
+        # prime power (97 ** 3)
+        self.failIf(decomp(2738019), "3 * 97**3")
+        # square ((97 * 101) ** 2)
+        self.failIf(decomp(287943627), "3 * 97**2 * 101**2")
+        self.failIf(decomp(101 * c ** 2), "101 * c **2")
 
 
 def suite(suffix="Test"):
