@@ -474,9 +474,9 @@ class SquareMatrix(Matrix):
         """
         Check whether self is upper triangular matrix or not.
         """
-        for j in range(self.column):
-            for i in range(j + 1, self.row):
-                if self.compo[i][j]:
+        for j in range(1, self.column + 1):
+            for i in range(j + 1, self.row + 1):
+                if self[i, j]:
                     return False
         return True
 
@@ -484,9 +484,9 @@ class SquareMatrix(Matrix):
         """
         Check whether self is lower triangular matrix or not.
         """
-        for i in range(self.row):
-            for j in range(i + 1, self.column):
-                if self.compo[i][j]:
+        for i in range(1, self.row + 1):
+            for j in range(i + 1, self.column + 1):
+                if self[i, j]:
                     return False
         return True
 
@@ -503,9 +503,9 @@ class SquareMatrix(Matrix):
         """
         if not(self.isDiagonalMatrix()):
             return False
-        chk = self.compo[0][0]
-        for i in range(1, self.row):
-            if self.compo[i][i] != chk:
+        chk = self[1, 1]
+        for i in range(2, self.row + 1):
+            if self[i, i] != chk:
                 return False
         return True
 
@@ -513,9 +513,9 @@ class SquareMatrix(Matrix):
         """
         Check whether self is symmetric matrix or not.
         """
-        for i in range(self.row):
-            for j in range(i + 1, self.column):
-                if self.compo[i][j] != self.compo[j][i]:
+        for i in range(1, self.row + 1):
+            for j in range(i + 1, self.column + 1):
+                if self[i, j] != self[j, i]:
                     return False
         return True
 
@@ -548,9 +548,9 @@ class RingMatrix(Matrix):
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
         sums = []
-        for i in range(self.row):
-            for j in range(self.column):
-                sums.append(self.compo[i][j] + other.compo[i][j])
+        for i in range(1, self.row + 1):
+            for j in range(1, self.column + 1):
+                sums.append(self[i, j] + other[i, j])
         return createMatrix(self.row, self.column, sums,
                   self.coeff_ring.getCommonSuperring(other.coeff_ring))
 
@@ -561,9 +561,9 @@ class RingMatrix(Matrix):
         if (self.row != other.row) or (self.column != other.column):
             raise MatrixSizeError
         diff = []
-        for i in range(self.row):
-            for j in range(self.column):
-                diff.append(self.compo[i][j] - other.compo[i][j])
+        for i in range(1, self.row + 1):
+            for j in range(1, self.column + 1):
+                diff.append(self[i, j] - other[i, j])
         return createMatrix(self.row, self.column, diff,
                   self.coeff_ring.getCommonSuperring(other.coeff_ring))
 
@@ -668,9 +668,9 @@ class RingMatrix(Matrix):
         """
         if not hasattr(self, "_coeff_ring"):
             scalars = None
-            for i in range(self.row):
-                for j in range(self.column):
-                    cring = ring.getRing(self.compo[i][j])
+            for i in range(1, self.row + 1):
+                for j in range(1, self.column + 1):
+                    cring = ring.getRing(self[i, j])
                     if scalars is None or \
                     scalars != cring and scalars.issubring(cring):
                         scalars = cring
@@ -810,9 +810,9 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         Check whether self is alternating matrix or not.
         Alternating (skew symmetric, or antisymmetric) matrix satisfies M=-M^T.
         """
-        for i in range(self.row):
-            for j in range(i, self.column):
-                if self.compo[i][j] != -self.compo[j][i]:
+        for i in range(1, self.row + 1):
+            for j in range(i, self.column + 1):
+                if self[i, j] != -self[j, i]:
                     return False
         return True
 
@@ -829,9 +829,9 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         """
         Return trace of self.
         """
-        trace = 0
-        for i in range(self.row):
-            trace = trace + self.compo[i][i]
+        trace = self.coeff_ring.zero
+        for i in range(1, self.row + 1):
+            trace = trace + self[i, i]
         return trace
 
     def determinant(self): # Algorithm 2.2.6 of Cohen's book
@@ -848,7 +848,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 i = k + 1
                 while not bool(M[i, k]):
                     if i == n:
-                        return 0
+                        return self.coeff_ring.zero
                     else:
                         i += 1
                 for j in range(k, n + 1):
@@ -858,7 +858,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 sign = not(sign)
                 p = M[k, k]
             for i in range(k + 1, n + 1):
-                for j in range(k+1, n+1):
+                for j in range(k + 1, n + 1):
                     t = p * M[i, j] - M[i, k] * M[k, j]
                     M[i, j] = ring.exact_division(t, c)
             c = p
@@ -872,8 +872,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         Return (i, j)-cofactor of self.
         """
         cofactor = (self.subMatrix(i, j)).determinant()
-        if (i+j) & 1:
-            cofactor = cofactor * (-1)
+        if (i + j) & 1:
+            cofactor = -cofactor
         return cofactor
 
     def commutator(self, other):
@@ -881,7 +881,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         Return commutator defined as follows:
         [self, other] = self * other - other * self .
         """
-        return self*other-other*self
+        return self * other - other * self
 
     def characteristicMatrix(self):
         """
@@ -984,7 +984,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                     b = R
                 for k in range(1, n):
                     for l in range(1, n):
-                        if (M[k, l] % b) != 0:
+                        if (M[k, l] % b):
                             M.setRow(n, M.getRow(n) + M.getRow(k))
                             flag = True
                 if not flag:
@@ -1027,7 +1027,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                     V.setColumn(n, B)
             j = n
             while j != 1:
-                j = j-1
+                j -= 1
                 if M[j, n]:
                     u, v, d = rings.extgcd(M[j, n], M[n, n])
                     M_nn = ring.exact_division(M[n, n], d)
@@ -1050,7 +1050,7 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                             flag = True
                 if not flag:
                     n -= 1
-        for j in range(1, M.column+1):
+        for j in range(1, M.column + 1):
             if M[j, j] < 0:
                 V[j] = -V[j]
                 M[j, j] = -M[j, j]
@@ -1183,7 +1183,7 @@ class FieldMatrix(RingMatrix):
         """
         img = self.image()
         if img:
-            return len(img.compo[0])
+            return img.column
         else:
             return 0
 
@@ -1209,16 +1209,16 @@ class FieldMatrix(RingMatrix):
         non_zero = []
         i = 1
         # step 2
-        for j in range(1, n+1):
+        for j in range(1, n + 1):
             # step 3
-            for k in range(i, m+1):
+            for k in range(i, m + 1):
                 if M[k, j]:
                     break
             else:
                 continue
             # step 4
             if k > i:
-                for l in range(j, n+1):
+                for l in range(j, n + 1):
                     t = M[i, l]
                     M[i, l] = M[k, l]
                     M[k, l] = t
@@ -1302,7 +1302,7 @@ class FieldMatrix(RingMatrix):
             for j in range(1, M.column + 1):
                 if j == k:
                     continue
-                for l in range(1, i+1):
+                for l in range(1, i + 1):
                     M[l, j] = M[l, j] - M[l, k] * M[i, j]
             k -= 1
         return M
@@ -1326,37 +1326,37 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         """
         triangle = self.copy()
         flag = False # for calculation of determinant
-        for i in range(triangle.row):
-            if not triangle.compo[i][i]:
-                for k in range(i + 1, triangle.row):
-                    if triangle.compo[k][i]:
+        for i in range(1, triangle.row + 1):
+            if not triangle[i, i]:
+                for k in range(i + 1, triangle.row + 1):
+                    if triangle[k, i]:
                         triangle.swapRow(i + 1, k + 1)
                         flag = not(flag)
                         break # break the second loop
                 else:
                     # the below components are all 0. Back to the first loop
                     continue
-            for k in range(i + 1, triangle.row):
-                inv_i_i = ring.inverse(triangle.compo[i][i])
-                ratio = triangle.compo[k][i] * inv_i_i
-                for l in range(i, triangle.column):
-                    triangle.compo[k][l] = \
-                    triangle.compo[k][l] - triangle.compo[i][l] * ratio
+            for k in range(i + 1, triangle.row + 1):
+                inv_i_i = ring.inverse(triangle[i, i])
+                ratio = triangle[k, i] * inv_i_i
+                for l in range(i, triangle.column + 1):
+                    triangle[k, l] = \
+                    triangle[k, l] - triangle[i, l] * ratio
         if flag:
             for j in range(triangle.row, triangle.column + 1):
-                triangle[triangle.row, j] = triangle[triangle.row, j] * (-1)
+                triangle[triangle.row, j] = -triangle[triangle.row, j]
         return triangle
 
     def determinant(self):
         """
         Return determinant of self.
         """
-        det = 1
         if self.row != self.column:
             raise MatrixSizeError, "not square matrix"
         triangle = self.triangulate()
-        for i in range(self.row):
-            det = det * triangle.compo[i][i]
+        det = self.coeff_ring.one
+        for i in range(1, self.row + 1):
+            det = det * triangle[i, i]
         return det
 
     def inverse(self, V=1): # modified Algorithm 2.2.2, 2.3.5 of Cohen's book
@@ -1379,36 +1379,36 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         r = B.column
         X = zeroMatrix(n, r, self.coeff_ring)
         # step 2
-        for j in range(n):
+        for j in range(1, n + 1):
             # step 3
-            for i in range(j, n):
-                if M.compo[i][j]:
+            for i in range(j, n + 1):
+                if M[i, j]:
                     break
             else:
                 raise NoInverse
             # step 4
             if i > j:
-                for l in range(j, n):
-                    t = M.compo[i][l]
-                    M.compo[i][l] = M.compo[j][l]
-                    M.compo[j][l] = t
+                for l in range(j, n + 1):
+                    t = M[i, l]
+                    M[i, l] = M[j, l]
+                    M[j, l] = t
                 B.swapRow(i, j)
             # step 5
-            d = ring.inverse(M.compo[j][j])
-            for k in range(j + 1, n):
-                ck = d * M.compo[k][j]
-                for l in range(j + 1, n):
-                    M.compo[k][l] = M.compo[k][l] - ck * M.compo[j][l]
-                for l in range(r):
-                    B.compo[k][l] = B.compo[k][l] - ck * B.compo[j][l]
+            d = ring.inverse(M[j, j])
+            for k in range(j + 1, n + 1):
+                ck = d * M[k, j]
+                for l in range(j + 1, n + 1):
+                    M[k, l] = M[k, l] - ck * M[j, l]
+                for l in range(1, r + 1):
+                    B[k, l] = B[k, l] - ck * B[j, l]
         # step 6
-        for i in range(n - 1, -1, -1):
-            d = ring.inverse(M.compo[i][i])
-            for k in range(r):
+        for i in range(n, 0, -1):
+            d = ring.inverse(M[i, i])
+            for k in range(1, r + 1):
                 sums = self.coeff_ring.zero
-                for j in range(i + 1, n):
-                    sums = sums + M.compo[i][j] * X.compo[j][k]
-                X.compo[i][k] = (B.compo[i][k] - sums) * d
+                for j in range(i + 1, n + 1):
+                    sums = sums + M[i, j] * X[j, k]
+                X[i, k] = (B[i, k] - sums) * d
         if r != 1:
             return X
         else:
@@ -1417,6 +1417,7 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
     def hessenbergForm(self):      # Algorithm 2.2.9 of Cohen's book
         """Return a Matrix in Hessenberg Form."""
         n = self.row
+        zero = self.coeff_ring.zero
         # step 1
         H = self.copy()
         for m in range(2, H.row):
@@ -1435,11 +1436,11 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
                 H.swapColumn(i, m)
             # step 3
             for i in range(m + 1, n + 1):
-                if H[i, m - 1] != 0:
+                if H[i, m - 1]:
                     u = H[i, m - 1] * tinv
                     for j in range(m, n + 1):
                         H[i, j] = H[i, j] - u * H[m, j]
-                    H[i, m - 1] = 0
+                    H[i, m - 1] = zero
                     H.setColumn(m, H[m] + u * H[i])
         return H
 
@@ -1457,12 +1458,11 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         L = unitMatrix(n, self.coeff_ring)
         U = self.copy()
         # initialize L and U
-        for i in range(n):
-            for j in range(i + 1, n):
-                L.compo[j][i] = U.compo[j][i] * ring.inverse(U.compo[i][i])
-                for k in range(i, n):
-                    U.compo[j][k] = \
-                    U.compo[j][k] - U.compo[i][k] * L.compo[j][i]
+        for i in range(1, n + 1):
+            for j in range(i + 1, n + 1):
+                L[j, i] = U[j, i] * ring.inverse(U[i, i])
+                for k in range(i, n + 1):
+                    U[j, k] = U[j, k] - U[i, k] * L[j, i]
         return (L, U)
 
 
@@ -1652,26 +1652,25 @@ class Subspace(FieldMatrix):
         k = self.column
         M = self.copy()
         pnt = range(1, self.row + 1)
-        for s in range(k):
-            for t in range(s, n):
-                if M.compo[t][s]:
+        for s in range(1, k + 1):
+            for t in range(s, n + 1):
+                if M[t, s]:
                     break
             else: # zero space
                 return unitMatrix(self.row, self.coeff_ring)
-            d = ring.inverse(M.compo[t][s])
-            M.compo[t][s] = 1
+            d = ring.inverse(M[t, s])
+            M[t, s] = 1
             if t != s:
                 pnt[t] = pnt[s]
-            for j in range(s + 1, k):
+            for j in range(s + 1, k + 1):
                 if t != s:
-                    tmp = M.compo[s][j]
-                    M.compo[s][j] = M.compo[t][j]
-                    M.compo[t][j] = tmp
-                M.compo[s][j] *= d
-                for i in range(n):
+                    tmp = M[s, j]
+                    M[s, j] = M[t, j]
+                    M[t, j] = tmp
+                M[s, j] *= d
+                for i in range(1, n + 1):
                     if i != s and i != t:
-                        M.compo[i][j] = \
-                        M.compo[i][j] - M.compo[i][s] * M.compo[s][j]
+                        M[i, j] = M[i, j] - M[i, s] * M[s, j]
         B = self.copy()
         one = self.coeff_ring.one
         zeros = [self.coeff_ring.zero] * n
