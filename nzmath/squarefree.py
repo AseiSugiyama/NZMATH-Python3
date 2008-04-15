@@ -159,7 +159,7 @@ def trivial_test_ternary(n):
 def trial_division_ternary(n):
     """
     Test the squarefreeness of n.
-    The return value is one of the ternary logical constants.
+    The return value is one of the True or False, not None.
 
     The method is a kind of trial division.
     """
