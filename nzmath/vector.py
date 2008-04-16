@@ -104,13 +104,19 @@ class Vector (object):
             return matrix.createMatrix(1, len(self), self.compo)
 
 
-def innerProduct(self, other):
+def innerProduct(bra, ket):
+    """
+    Return the result of inner product of two vectors, whose
+    components are real or complex numbers.
+    """
+    if len(bra) != len(ket):
+        raise VectorSizeError("no inner product with different sized vectors")
     v = 0
-    for i in range(1, len(self) + 1):
+    for i in range(1, len(bra) + 1):
         try:
-            v += self[i] * other[i].conjugate()
+            v += bra[i] * ket[i].conjugate()
         except AttributeError:
-            v += self[i] * other[i]
+            v += bra[i] * ket[i]
     return v
 
 def ismatrix(obj):
