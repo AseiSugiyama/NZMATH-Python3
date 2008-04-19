@@ -726,7 +726,7 @@ class RingMatrix(Matrix):
                 b = A[i, k]
                 # step 4 [Reduce]
                 for j in range(1, k):
-                    q = ring.exact_division(A[i, j], b)
+                    q = A[i, j] // b
                     A[j] = A[j] - q * A[k]
             # step5 [Final reductions]
             b = A[i, k]
@@ -734,7 +734,7 @@ class RingMatrix(Matrix):
                 k += 1
             else:
                 for j in range(k + 1, self.column + 1):
-                    q = ring.exact_division(A[i, j], b)
+                    q = A[i, j] // b
                     A[j] = A[j] - q * A[k]
             # step 6 [Finished?]
             if i == l:
@@ -1664,7 +1664,7 @@ class Subspace(FieldMatrix):
             d = ring.inverse(M[t, s])
             M[t, s] = 1
             if t != s:
-                pnt[t] = pnt[s]
+                pnt[t - 1] = pnt[s - 1]
             for j in range(s + 1, k + 1):
                 if t != s:
                     tmp = M[s, j]
