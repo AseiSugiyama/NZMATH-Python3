@@ -25,6 +25,7 @@ import testRational
 import testRationalFunction
 import testReal
 import testRing
+import testRound2
 import testSquarefree
 import testVector
 import testZassenhaus
