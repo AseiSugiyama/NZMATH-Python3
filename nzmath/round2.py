@@ -22,20 +22,22 @@ import nzmath.vector as vector
 import nzmath.squarefree as squarefree
 
 
-_log = logging.getLogger('sandbox.round2')
+_log = logging.getLogger('nzmath.round2')
 
 uniutil.special_ring_table[finitefield.FinitePrimeField] = uniutil.FinitePrimeFieldPolynomial
 
 
 def round2(minpoly_coeff):
     """
-    K:=Q(theta)
+    Return integral basis of the ring of integers of a field with its
+    discriminant.  The field is given by a list of integers, which is
+    a polynomial of generating element theta.  The polynomial ought to
+    be monic, in other word, the generating element ought to be an
+    algebraic integer.
 
-    Given theminpoly, minimal monic polynomial of theta, as list of
-    coefficients in ascending order, return integral basis of Z_K and
-    disc(K).
-    The integral basis is given as list of polynomials of theta.
-    (In other functions, bases are returned in the same fashion.)
+    The integral basis will be given as a list of rational vectors
+    with respect to theta.  (In other functions, bases are returned in
+    the same fashion.)
     """
     minpoly_int = uniutil.polynomial(enumerate(minpoly_coeff), rational.theIntegerRing)
     d = minpoly_int.discriminant()
@@ -232,7 +234,7 @@ def _null_linear_combination(zeta, alpha, j, p, theminpoly):
 
 def Dedekind(minpoly_coeff, p, e):
     """
-    Return (finished or not, a basis of an order)
+    Return (finished or not, an order)
 
     the Dedekind criterion
 
