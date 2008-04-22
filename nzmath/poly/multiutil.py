@@ -333,7 +333,7 @@ class RingPolynomial (OrderProvider,
     def __add__(self, other):
         try:
             return multivar.BasicPolynomial.__add__(self, other)
-        except AttributeError:
+        except (AttributeError, TypeError):
             one = self.getRing().one
             try:
                 return multivar.BasicPolynomial.__add__(self, other * one)
@@ -350,7 +350,7 @@ class RingPolynomial (OrderProvider,
     def __sub__(self, other):
         try:
             return multivar.BasicPolynomial.__sub__(self, other)
-        except AttributeError:
+        except (AttributeError, TypeError):
             one = self.getRing().one
             try:
                 return multivar.BasicPolynomial.__sub__(self, other * one)
