@@ -400,6 +400,14 @@ class UniqueFactorizationDomainPolynomial (GcdProvider,
             raise TypeError("coefficient ring has to be a UFD")
         GcdProvider.__init__(self)
 
+    def resultant(self, other, var):
+        """
+        Return resultant of two polynomials of the same ring, with
+        respect to the variable specified by its position var.
+        """
+        cring = self._coefficient_ring
+        return self.nest(var, cring).resultant(other.nest(var, cring))
+
 
 class PolynomialRingAnonymousVariables (ring.CommutativeRing):
     """
