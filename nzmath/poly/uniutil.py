@@ -410,15 +410,15 @@ class SubresultantGcdProvider (object):
             h = f.pseudo_mod(g)
             f, g = g, h.scalar_exact_division(a * (b ** delta))
             a = order.leading_coefficient(f)
-            b = ((a ** delta) * b) // (b ** delta)
+            b = ((a ** delta) * b).exact_division(b ** delta)
         if not g:
             return coeff_ring.zero
         scalar = g[0]
         degree_f = order.degree(f)
         if negative:
-            return -(b * scalar ** degree_f) // (b ** degree_f)
+            return (-b * scalar ** degree_f).exact_division(b ** degree_f)
         else:
-            return (b * scalar ** degree_f) // (b ** degree_f)
+            return (b * scalar ** degree_f).exact_division(b ** degree_f)
 
     def subresultant_gcd(self, other):
         """
