@@ -1050,10 +1050,7 @@ class ECoverFp(ECGeneric):
         if self.order() % m:
             raise ValueError("point order does not divide group order.")
         else:
-            while 1:
-                P = self.point()
-                if self.mul(m, P) == [0]:
-                    return P
+            return self.mul(self.order() // m, self.point())
 
     def _divisor(self, k, j, P, R, S):
         """
@@ -1162,7 +1159,7 @@ class ECoverFp(ECGeneric):
         """
         computing the Weil pairing with Miller's algorithm.
         """
-        if m % self.BSGS(P) or m % self.BSGS(Q):
+        if self.mul(m,P) != [0] or self.mul(m,Q) != [0]:
             raise ValueError("sorry, not mP=[0] or mQ=[0].")
 
         if P == [0] or Q == [0] or P == Q:
@@ -1193,6 +1190,10 @@ class ECoverFp(ECGeneric):
         if P == [0]:
             return 1
 
+        # if self.ch < 41, BSGS may fail but pointorder enough to use.
+        if self.ch < 41:
+            return self.pointorder(P)
+
         Q = self.mul(self.ch+1, P)
         m = arith1.floorpowerroot(self.ch, 4) + 1
         Plist = [[0]]
@@ -1208,13 +1209,12 @@ class ECoverFp(ECGeneric):
         j = 0
         while k <= m:
             S = self.add(Q, self.mul(k, R))
-            if S != [0]:
-                if S in Plist:
-                    j = Plist.index(S)
-                    break
-                elif S in Plist_rev:
-                    j = -Plist_rev.index(S)
-                    break
+            if S in Plist:
+                j = Plist.index(S)
+                break
+            elif S in Plist_rev:
+                j = -Plist_rev.index(S)
+                break
             k = k+1
         M = self.ch+1+2*m*k-j
         Flist = factor_methods.factor(M)

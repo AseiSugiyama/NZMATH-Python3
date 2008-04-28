@@ -71,10 +71,26 @@ class EllipticTest(unittest.TestCase):
         assert e.whetherOn(e.point())
         assert f.whetherOn(f.point())
 
+    def testFindPoint(self):
+        e = elliptic.EC([1,3], 7)
+        f = elliptic.EC([-1,0], 65537)
+        g = elliptic.EC([0,1], 65537)
+
+        assert e.mul(3,e.findpoint(3)) == [0]
+        assert f.mul(64,f.findpoint(64)) == [0] # f(Fp) \cong (Z/256Z)^2
+        assert g.mul(3641,g.findpoint(3641)) == [0] # g(Fp) \cong Z/(p+1)Z
+
+    def testPointOrder(self):
+        e = elliptic.EC([1,3], 7)
+        f = elliptic.EC([0,1], 65537)
+
+        assert e.pointorder(e.findpoint(3)) == 3
+        assert f.pointorder(f.findpoint(331)) == 331 # f(Fp) be divided by 331
+
     def testChangeCurve(self):
         assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '8/1 * y + 6/1 * x * y + y ** 2=-10/1 * x - 3/1 * x ** 2 + x ** 3'
 
-    def testPoint(self):
+    def testChangePoint(self):
         assert elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
 
     def testDivPoly(self):
