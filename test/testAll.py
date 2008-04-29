@@ -43,6 +43,7 @@ import testUnivar
 import testUniutil
 import testMultivar
 import testMultiutil
+import testPolyFactor
 
 def suite():
     suite = unittest.TestSuite()
