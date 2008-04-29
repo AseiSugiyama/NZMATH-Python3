@@ -2,7 +2,7 @@ import unittest
 import nzmath.prime as prime
 import nzmath.rational as rational
 import nzmath.poly.uniutil as uniutil
-import nzmath.poly.zassenhaus as zassenhaus
+import nzmath.poly.factor as zassenhaus
 
 
 Z = rational.theIntegerRing
