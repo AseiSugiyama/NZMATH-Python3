@@ -1,3 +1,25 @@
+version 0.7.0 to 0.90.0
+-----------------------
+* change required Python version to 2.5.
+* many changes in matrix.
+* add new modules algfield, round2 and squarefree.
+* add a new module factor in poly sub-package.
+* add a new function map_choice in bigrandom.
+* add a new function euler in combinatorial.
+* add a method getRing to imaginary.Complex to fix sf bug # 1852828.
+* add a new class Real in real.
+* add a new method generate to factor.util.FactoringMethod.
+* add a new method total_degree to classes in poly.multivar.
+* add new methods resultant, discriminant and subresultant_extgcd to poly.uniutil.SubresultantGcdProvider.
+* add a new class IntegerPolynomial in poly.uniutil.
+* add a new method resultant to poly.multiutil.UniqueFactorizationDomainPolynomial.
+* change LLL into a function in lattice.
+* fix a few bugs in elliptic including sf bug #1913999.
+* fix a few bugs in gcd including sf bug #1924839.
+* fix a bug in prime._lucas_test_sequence.
+* change inplementation of polynomial.resultant.
+* a few minor modifications in rational.
+
 version 0.6.0 to 0.7.0
 ----------------------
 * add a new sub-package poly for new implementation of polynomials.
