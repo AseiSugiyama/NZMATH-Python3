@@ -173,28 +173,31 @@ class SubresultantGcdProviderTest (unittest.TestCase):
 
 
 class IntegerPolynomialTest (unittest.TestCase):
+    def setUp(self):
+        self.Z = rational.theIntegerRing
+
     def testExactDivision(self):
         # sf bug #1922158
         f = uniutil.OneVariableDensePolynomial([0, 9], 'x')
         g = uniutil.OneVariableDensePolynomial([0, 3], 'x')
-        q = uniutil.polynomial([(0, 3)], rational.theIntegerRing)
+        q = uniutil.polynomial([(0, 3)], self.Z)
         self.assertEqual(q, f.exact_division(g))
 
     def testResultant(self):
-        Z = rational.theIntegerRing
+        Z = self.Z
         f = uniutil.polynomial(enumerate(range(1, 6)), Z)
         g = uniutil.polynomial(enumerate(range(7, 10)), Z)
         self.assertEqual(29661, f.resultant(g))
 
     def testDiscriminant(self):
-        Z = rational.theIntegerRing
+        Z = self.Z
         a, b, c = -2, -1, 1
         q1 = uniutil.polynomial(enumerate([c, b, a]), Z)
         d = b ** 2 - 4 * a * c
         self.assertEqual(d, q1.discriminant())
 
     def testAddition(self):
-        Z = rational.theIntegerRing
+        Z = self.Z
         f = uniutil.polynomial(enumerate(range(1, 6)), Z)
         g = uniutil.polynomial(enumerate(range(7, 10)), Z)
         h = uniutil.polynomial(enumerate([8, 10, 12, 4, 5]), Z)
@@ -206,12 +209,34 @@ class IntegerPolynomialTest (unittest.TestCase):
         self.assertEqual(f2, 1 + f)
 
     def testSubtraction(self):
-        Z = rational.theIntegerRing
+        Z = self.Z
         f = uniutil.polynomial(enumerate(range(1, 6)), Z)
         # sf bug # 1937925
         f2 = uniutil.polynomial([(1, 2), (2, 3), (3, 4), (4, 5)], Z)
         self.assertEqual(f2, f - 1)
         self.assertEqual(-f2, 1 - f)
+
+    def testPseudoDivisions(self):
+        Z = self.Z
+        divisor = uniutil.polynomial({0:1, 1:3}, Z)
+        monic_divisor = uniutil.polynomial({0:1, 1:1}, Z)
+        dividend = uniutil.polynomial({0:1, 2:1}, Z)
+        quotient, reminder = dividend.pseudo_divmod(monic_divisor)
+        self.assertEqual(uniutil.polynomial({0:-1, 1:1}, Z), quotient)
+        self.assertEqual(uniutil.polynomial({0:2}, Z), reminder)
+        quotient, reminder = dividend.monic_divmod(monic_divisor)
+        self.assertEqual(uniutil.polynomial({0:-1, 1:1}, Z), quotient)
+        self.assertEqual(uniutil.polynomial({0:2}, Z), reminder)
+        quotient, reminder = dividend.pseudo_divmod(divisor)
+        self.assertEqual(uniutil.polynomial({0:-1, 1:3}, Z), quotient)
+        self.assertEqual(uniutil.polynomial({0:10}, Z), reminder)
+
+    def testIsmonic(self):
+        Z = self.Z
+        nonmonic = uniutil.polynomial({0:1, 1:3}, Z)
+        monic = uniutil.polynomial({0:1, 1:1}, Z)
+        self.failIf(nonmonic.ismonic())
+        self.assert_(monic.ismonic())
 
 
 class FinitePrimeFieldPolynomialTest (unittest.TestCase):

@@ -341,6 +341,115 @@ class PseudoDivisionProvider (object):
         """
         return self.coefficients_map(lambda c: c.exact_division(scale))
 
+    def monic_divmod(self, other):
+        """
+        self.monic_divmod(other) -> (Q, R)
+
+        Q, R are polynomials such that
+        self == other * Q + R.
+
+        The leading coefficient of other MUST be one.
+        """
+        order = termorder.ascending_order
+        if hasattr(self, 'order'):
+            assert self.order is order
+
+        degree = order.degree(other)
+        quotient, remainder = self.__class__((), **self._init_kwds), self
+        rdegree, rlc = order.leading_term(remainder)
+        if rdegree < degree:
+            return quotient, remainder
+        while rdegree >= degree:
+            # step 3
+            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            quotient += canceller
+            remainder -= canceller * other
+            rdegree, rlc = order.leading_term(remainder)
+
+        return quotient, remainder
+
+    def monic_floordiv(self, other):
+        """
+        self.monic_floordiv(other) -> Q
+
+        Q is a polynomial such that
+        self == other * Q + R,
+        where R is a polynomial whose degree is smaller than other's.
+
+        The leading coefficient of other MUST be one.
+        """
+        order = termorder.ascending_order
+        if hasattr(self, 'order'):
+            assert self.order is order
+        degree = order.degree(other)
+        # step 1
+        quotient, remainder = self.__class__((), **self._init_kwds), self
+        rdegree, rlc = order.leading_term(remainder)
+        if rdegree < degree:
+            return quotient
+        while rdegree >= degree:
+            # step 3
+            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            quotient += canceller
+            remainder -= canceller * other
+            rdegree, rlc = order.leading_term(remainder)
+
+        return quotient
+
+    def monic_mod(self, other):
+        """
+        self.monic_mod(other) -> R
+
+        R is a polynomial such that
+        self == other * Q + R,
+        where Q is another polynomial.
+
+        The leading coefficient of other MUST be one.
+        """
+        order = termorder.ascending_order
+        if hasattr(self, 'order'):
+            assert self.order is order
+        degree = order.degree(other)
+        remainder = self
+        rdegree, rlc = order.leading_term(remainder)
+        if rdegree < degree:
+            return remainder
+        while rdegree >= degree:
+            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            remainder -= canceller * other
+            rdegree, rlc = order.leading_term(remainder)
+
+        return remainder
+
+    def monic_pow(self, index, mod):
+        """
+        Return self**index % mod.
+
+        The leading coefficient of mod MUST be one.
+        """
+        if index < 0:
+            raise ValueError("negative index is not allowed.")
+        # special indeces
+        elif index == 0:
+            return self.getRing().one
+        elif index == 1:
+            return self.monic_mod(mod)
+        elif index == 2:
+            return self.square().monic_mod(mod)
+        # special polynomials
+        if not self:
+            return self
+        # general
+        power_product = self.getRing().one
+        power_of_2 = self.monic_mod(mod)
+        while index:
+            if index & 1:
+                power_product = (power_product * power_of_2).monic_mod(mod)
+            index //= 2
+            if index:
+                power_of_2 = power_of_2.square().monic_mod(mod)
+        return power_product
+
 
 class ContentProvider (object):
     """
@@ -1382,6 +1491,13 @@ class RingPolynomial (OrderProvider,
         except Exception:
             return NotImplemented
 
+    def ismonic(self):
+        """
+        Return True if the polynomial is monic, i.e. its leading
+        coefficient is one.  False otherwise.
+        """
+        return self.leading_coefficient() == self._coefficient_ring.one
+
 
 class DomainPolynomial(PseudoDivisionProvider,
                        RingPolynomial):
@@ -1428,6 +1544,20 @@ class DomainPolynomial(PseudoDivisionProvider,
         """
         field = self.getCoefficientRing().getQuotientField()
         return polynomial([(d, field.createElement(c)) for d, c in self.iterterms()], field)
+
+    def __pow__(self, index, mod=None):
+        """
+        self ** index (% mod)
+
+        It overrides the method from SortedPolynomial.  The mod MUST
+        be monic, otherwise the method raises ValueError.
+        """
+        if mod is None:
+            return RingPolynomial.__pow__(self, index)
+        elif mod.ismonic():
+            return self.monic_pow(index, mod)
+        else:
+            raise ValueError("non-monic modulus")
 
 
 class UniqueFactorizationDomainPolynomial(SubresultantGcdProvider,
