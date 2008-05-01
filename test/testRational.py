@@ -1,3 +1,4 @@
+from __future__ import division
 import unittest
 from nzmath.rational import *
 import nzmath.finitefield as finitefield

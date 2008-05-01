@@ -158,6 +158,12 @@ class SubresultantGcdProviderTest (unittest.TestCase):
     def testSubResultantGcd(self):
         self.assertEqual(self.up1, self.up1.gcd(self.up1 * self.up1))
         self.assertEqual(-self.v, self.u.subresultant_gcd(self.v))
+        #
+        Z = rational.theIntegerRing
+        f = uniutil.polynomial([(0, 1L), (2, -1L), (4, 1L)], Z)
+        gx = uniutil.polynomial([(1, -2L), (3, 4L)], Z)
+        g = uniutil.polynomial([(0, -2L), (2, 4L)], Z)
+        self.assertEqual(f.subresultant_gcd(gx), f.subresultant_gcd(g))
 
     def testResultant(self):
         Z = rational.theIntegerRing
@@ -221,15 +227,21 @@ class IntegerPolynomialTest (unittest.TestCase):
         divisor = uniutil.polynomial({0:1, 1:3}, Z)
         monic_divisor = uniutil.polynomial({0:1, 1:1}, Z)
         dividend = uniutil.polynomial({0:1, 2:1}, Z)
-        quotient, reminder = dividend.pseudo_divmod(monic_divisor)
+        quotient, remainder = dividend.pseudo_divmod(monic_divisor)
         self.assertEqual(uniutil.polynomial({0:-1, 1:1}, Z), quotient)
-        self.assertEqual(uniutil.polynomial({0:2}, Z), reminder)
-        quotient, reminder = dividend.monic_divmod(monic_divisor)
+        self.assertEqual(uniutil.polynomial({0:2}, Z), remainder)
+        quotient, remainder = dividend.monic_divmod(monic_divisor)
         self.assertEqual(uniutil.polynomial({0:-1, 1:1}, Z), quotient)
-        self.assertEqual(uniutil.polynomial({0:2}, Z), reminder)
-        quotient, reminder = dividend.pseudo_divmod(divisor)
+        self.assertEqual(uniutil.polynomial({0:2}, Z), remainder)
+        quotient, remainder = dividend.pseudo_divmod(divisor)
         self.assertEqual(uniutil.polynomial({0:-1, 1:3}, Z), quotient)
-        self.assertEqual(uniutil.polynomial({0:10}, Z), reminder)
+        self.assertEqual(uniutil.polynomial({0:10}, Z), remainder)
+        # stop in the middle of degree descendence
+        divident = uniutil.polynomial({0:1, 2:-1, 4:1}, Z)
+        divisor = uniutil.polynomial({1:-1, 3:2}, Z)
+        quotient, remainder = divident.pseudo_divmod(divisor)
+        self.assertEqual(uniutil.polynomial({1:2}, Z), quotient)
+        self.assertEqual(uniutil.polynomial({0:4, 2:-2}, Z), remainder)
 
     def testIsmonic(self):
         Z = self.Z

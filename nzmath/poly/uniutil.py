@@ -237,7 +237,7 @@ class PseudoDivisionProvider (object):
         # step 1
         quotient, remainder = self.__class__((), **self._init_kwds), self
         rdegree, rlc = order.leading_term(remainder)
-        e = order.degree(remainder) - degree + 1
+        e = rdegree - degree + 1
         if e <= 0:
             return quotient, remainder
         while rdegree >= degree:
@@ -563,13 +563,13 @@ class SubresultantGcdProvider (object):
                 return polynomial_ring.createElement(content_gcd)
 
             # step 3
-            divident, divisor = divisor, quotient
+            divident, divisor = divisor, remainder
             if delta == 0 and g != one:
-                divisor = divisor.exact_division(g)
+                divisor = divisor.scalar_exact_division(g)
             elif delta == 1 and (g != one or h != one):
-                divisor = divisor.exact_division(g * h)
+                divisor = divisor.scalar_exact_division(g * h)
             elif delta > 1 and (g != one or h != one):
-                divisor = quotient.exact_division(g * h**delta)
+                divisor = divisor.scalar_exact_division(g * h**delta)
             g = divident.leading_coefficient()
             if delta == 1 and h != g:
                 h = g
