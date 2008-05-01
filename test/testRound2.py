@@ -19,6 +19,7 @@ class Round2UniutilTest (unittest.TestCase):
         self.root2 = [-2, 0, 1]
         self.root1i = [1, 0, 1]
         self.cubic = [1, 9, 0, 1]
+        self.quartic = [1, 0, -10, 0, 1]
         self.sextic = range(7, 0, -1)
         self.septic = range(8, 0, -1)
         self.Z = rational.theIntegerRing
@@ -56,6 +57,17 @@ class Round2UniutilTest (unittest.TestCase):
         self.assert_(result)
         self.assertEqual(2, len(result))
         self.assertEqual(-327, result[1], result) # disc K = -327 = -3 * 109
+
+    def testQuartic(self):
+        """
+	Test an example: X^4 - 10X^2 + 1
+	"""
+        poly_disc = uniutil.polynomial(enumerate(self.quartic), self.Z).discriminant()
+        self.assertEqual(147456, poly_disc)
+        result = round2.round2(self.quartic)
+        self.assert_(result)
+        self.assertEqual(2, len(result))
+        self.assertEqual(2304, result[1], result)
 
     def testSextic(self):
         """
