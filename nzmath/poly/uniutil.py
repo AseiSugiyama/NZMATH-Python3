@@ -541,13 +541,14 @@ class SubresultantGcdProvider (object):
         divident = self
         divisor = other
         polynomial_ring = self.getRing()
-        one = polynomial_ring.getCoefficientRing().one
+        coeff_ring = polynomial_ring.getCoefficientRing()
+        one = coeff_ring.one
         # step 1
         if order.degree(divisor) > order.degree(divident):
             divident, divisor = divisor, divident
         if not divisor:
             return divident
-        content_gcd = polynomial_ring.gcd(divident.content(), divisor.content())
+        content_gcd = coeff_ring.gcd(divident.content(), divisor.content())
         divident = divident.primitive_part()
         divisor = divisor.primitive_part()
         g = h = one
