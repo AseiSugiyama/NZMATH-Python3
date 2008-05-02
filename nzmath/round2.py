@@ -26,6 +26,8 @@ _log = logging.getLogger('nzmath.round2')
 
 uniutil.special_ring_table[finitefield.FinitePrimeField] = uniutil.FinitePrimeFieldPolynomial
 
+Z = rational.theIntegerRing
+Q = rational.theRationalField
 
 def round2(minpoly_coeff):
     """
@@ -39,7 +41,7 @@ def round2(minpoly_coeff):
     with respect to theta.  (In other functions, bases are returned in
     the same fashion.)
     """
-    minpoly_int = uniutil.polynomial(enumerate(minpoly_coeff), rational.theIntegerRing)
+    minpoly_int = uniutil.polynomial(enumerate(minpoly_coeff), Z)
     d = minpoly_int.discriminant()
     squarefactors = _prepare_squarefactors(d)
     omega = _default_omega(minpoly_int.degree())
@@ -105,14 +107,14 @@ def _p_maximal(p, e, minpoly_coeff):
         return omega
 
     # main loop to construct p-maximal order
-    minpoly_terms_rat = [(i, rational.Rational(c)) for (i, c) in enumerate(minpoly_coeff)]
-    theminpoly = uniutil.polynomial(minpoly_terms_rat, rational.theRationalField)
+    minpoly = uniutil.polynomial(enumerate(minpoly_coeff), Z)
+    theminpoly = minpoly.to_field_polynomial()
     n = theminpoly.degree()
     q = p ** (arith1.log(n, p) + 1)
     while True:
         # Ip: radical of pO
         # Ip = <alpha>, l = dim Ip/pO (essential part of Ip)
-        alpha, l = _p_radical(omega, p, q, theminpoly, n)
+        alpha, l = _p_radical(omega, p, q, minpoly, n)
 
         # instead of step 9 big matrix,
         # Kida's LN section 2.2
@@ -132,19 +134,18 @@ def _p_maximal(p, e, minpoly_coeff):
     # now <omega> is p-maximal.
     return omega
 
-def _p_radical(omega, p, q, theminpoly, n):
+def _p_radical(omega, p, q, minpoly, n):
     """
-    Return basis of Ip with dimension of Ip/pO.
+    Return module Ip with dimension of Ip/pO.
 
     Ip is the radical of pO, or
     Ip = {x in O | ~x in kernel f},
     where ~x is x mod pO, f is q(=p^e > n)-th powering, which in fact an
     Fp-linear map.
     """
-    omega_poly = omega.get_polynomials()
     # Ip/pO = kernel of q-th powering.
     # omega_j^q = \sum a_i_j omega_i
-    base_p = _kernel_of_qpow(omega_poly, q, p, theminpoly, n)
+    base_p = _kernel_of_qpow(omega, q, p, minpoly, n)
     l = base_p.column
 
     # expand basis of Ip/pO to O/pO
@@ -153,37 +154,45 @@ def _p_radical(omega, p, q, theminpoly, n):
 
     # basis of Ip
     # pulled back from bases of Ip/pO and O/pO
-    alpha = []
+    omega_poly = omega.get_polynomials()
+    alpha_basis = []
     for j in range(1, l + 1):
-        alpha_j = 0
-        for i in range(1, n + 1):
-            alpha_j += _pull_back(beta_p[i, j], p) * omega_poly[i - 1]
-        alpha.append(alpha_j)
+        alpha_basis.append(omega.linear_combination([_pull_back(c, p) for c in beta_p[j]]))
     for j in range(l + 1, n + 1):
-        alpha_j = 0
-        for i in range(1, n + 1):
-            alpha_j += _pull_back(beta_p[i, j], p) * omega_poly[i - 1]
-        alpha.append(p * alpha_j)
+        alpha_basis.append(omega.linear_combination([_pull_back(c, p) * p for c in beta_p[j]]))
+    alpha = ModuleWithDenominator(alpha_basis, omega.denominator)
     return alpha, l
 
-def _kernel_of_qpow(omega, q, p, theminpoly, n):
+def _kernel_of_qpow(omega, q, p, minpoly, n):
     """
     Return the kernel of q-th powering, which is a linear map over Fp.
     q is a power of p which exceeds n.
 
     (omega_j^q (mod theminpoly) = \sum a_i_j omega_i   a_i_j in Fp)
     """
+    omega_poly = omega.get_polynomials()
+    denom = omega.denominator
+    theminpoly = minpoly.to_field_polynomial()
     field_p = finitefield.FinitePrimeField.getInstance(p)
     zero = field_p.zero
     qpow = matrix.zeroMatrix(n, n, field_p) # Fp matrix
     for j in range(n):
         a_j = [zero] * n
-        omega_j_qpow = pow(omega[j], q, theminpoly)
+        omega_poly_j = uniutil.polynomial(enumerate(omega.basis[j]), Z)
+        omega_j_qpow = pow(omega_poly_j, q, minpoly)
+        redundancy = gcd.gcd(omega_j_qpow.content(), denom ** q)
+        omega_j_qpow = omega_j_qpow.coefficients_map(lambda c: c // redundancy)
+        essential = denom ** q // redundancy
         while omega_j_qpow:
             i = omega_j_qpow.degree()
-            a_ji = omega_j_qpow[i] / omega[i][i]
-            omega_j_qpow -= a_ji * omega[i]
-            a_j[i] = field_p.createElement(a_ji)
+            a_ji = int(omega_j_qpow[i] / (omega_poly[i][i] * essential))
+            omega_j_qpow -= a_ji * (omega_poly[i] * essential)
+            if omega_j_qpow.degree() < i:
+                a_j[i] = field_p.createElement(a_ji)
+            else:
+                _log.debug("%s / %d" % (str(omega_j_qpow), essential))
+                _log.debug("j = %d, a_ji = %s" % (j, a_ji))
+                raise ValueError("omega is not a basis")
         qpow.setColumn(j + 1, a_j)
 
     return qpow.kernel()
@@ -192,7 +201,7 @@ def _p_module(alpha, l, p, theminpoly):
     """
     Return basis of Up/pO, where Up = {x in Ip | xIp \subset pIp}.
     """
-    zeta = alpha[:l]
+    zeta = alpha.get_polynomials()[:l]
     for j in range(l):
         # refine zeta so that zeta * alpha[j] (mod theminpoly) = 0 (mod pIp)
         kernel = _null_linear_combination(zeta, alpha, j, p, theminpoly)
@@ -204,33 +213,48 @@ def _p_module(alpha, l, p, theminpoly):
             newzeta.append(sum(_pull_back(c, p) * z for (c, z) in zip(kernel[k], zeta)))
         zeta = newzeta
     n = theminpoly.degree()
+    denominator = 1
     zeta_list = []
     for z in zeta:
-        zeta_list.append([_normalize_int(c) for c in _coeff_list(z, n)])
+        while True:
+            try:
+                zeta_list.append([_normalize_int(c * denominator) for c in _coeff_list(z, n)])
+                break
+            except ValueError:
+                for i in range(len(zeta_list)):
+                    zeta_list[i] = [c * p for c in zeta_list[i]]
+                denominator *= p
+                _log.debug("denominator = %d" % denominator)
     # since zeta may be empty, a hint 'dimension' is necessary
-    return ModuleWithDenominator(zeta_list, 1, dimension=n)
+    return ModuleWithDenominator(zeta_list, denominator, dimension=n)
 
 def _null_linear_combination(zeta, alpha, j, p, theminpoly):
     """
     Return linear combination coefficients of tau_i = z_i * alpha[j],
     which is congruent to 0 modulo theminpoly and pIp.
+
+    alpha is a module.
     
     zeta_{j+1} = {z in zeta_j | z * alpha[j] (mod theminpoly) = 0 (mod pIp)}
     """
-    field_p = finitefield.FinitePrimeField.getInstance(p)
-    fpelem = field_p.createElement
     n = theminpoly.degree()
-    taumat = matrix.FieldMatrix(n, len(zeta))
-    for i in range(len(zeta)):
-        tau_i = zeta[i] * alpha[j] % theminpoly
-        # tau_i (mod (pIp = p<alpha>))
-        for k in range(n - 1, -1, -1):
-            while tau_i[alpha[k].degree()] < 0:
-                tau_i += p * alpha[k]
-            while tau_i[alpha[k].degree()] >= p * alpha[k].leading_coefficient():
-                tau_i -= p * alpha[k]
-        taumat.setColumn(i + 1, [fpelem(c) for c in _coeff_list(tau_i, n)])
-    return taumat.kernel() # linear combination of tau_i's
+    l = len(zeta)
+    assert n == len(alpha.basis)
+    alpha_basis = [tuple(b) for b in alpha.get_rationals()]
+    alpha_mat = matrix.createMatrix(n, alpha_basis, coeff_ring=Q)
+    alpha_poly = alpha.get_polynomials()
+
+    taus = []
+    for i in range(l):
+        tau_i = zeta[i] * alpha_poly[j] % theminpoly
+        taus.append(tuple(_coeff_list(tau_i, n)))
+    tau_mat = matrix.createMatrix(n, l, taus, coeff_ring=Q)
+
+    xi = alpha_mat.inverseImage(tau_mat)
+
+    field_p = finitefield.FinitePrimeField.getInstance(p)
+    xi_p = xi.map(field_p.createElement)
+    return xi_p.kernel() # linear combination of tau_i's
 
 def Dedekind(minpoly_coeff, p, e):
     """
@@ -250,7 +274,7 @@ def Dedekind(minpoly_coeff, p, e):
     if m == 0:
         return True, omega
 
-    minpoly = uniutil.polynomial(enumerate(minpoly_coeff), rational.theIntegerRing)
+    minpoly = uniutil.polynomial(enumerate(minpoly_coeff), Z)
     v = [_coeff_list(uniq, n)]
     shift = uniq
     for i in range(1, m):
@@ -274,7 +298,7 @@ def _factor_minpoly_modp(minpoly_coeff, p):
     quot_p = theminpoly_p.exact_division(mini_p)
     mini = _min_abs_poly(mini_p)
     quot = _min_abs_poly(quot_p)
-    minpoly = uniutil.polynomial(enumerate(minpoly_coeff), rational.theIntegerRing)
+    minpoly = uniutil.polynomial(enumerate(minpoly_coeff), Z)
     f_p = _mod_p((mini * quot - minpoly).scalar_exact_division(p), p)
     gcd = f_p.getRing().gcd
     common_p = gcd(gcd(mini_p, quot_p), f_p) # called Z
@@ -300,7 +324,7 @@ def _min_abs_poly(poly_p):
     p = poly_p.getCoefficientRing().char
     for d, c in poly_p:
         coeff[d] = _pull_back(c, p)
-    return uniutil.polynomial(coeff, rational.theIntegerRing)
+    return uniutil.polynomial(coeff, Z)
 
 def _coeff_list(upoly, size):
     """
@@ -368,7 +392,7 @@ def _rational_polynomial(coeffs):
     Return rational polynomial with given coefficients in ascending
     order.
     """
-    return uniutil.polynomial(enumerate(coeffs), rational.theRationalField)
+    return uniutil.polynomial(enumerate(coeffs), Q)
 
 
 class ModuleWithDenominator (object):
@@ -467,3 +491,14 @@ class ModuleWithDenominator (object):
         rank and in Hermite normal form).
         """
         return product([rational.Rational(self.basis[i][i], self.denominator) for i in range(self.rank)])
+
+    def linear_combination(self, coefficients):
+        """
+        Return a list corresponding a linear combination of basis with
+        given coefficients.  The denominator is ignored.
+        """
+        new_basis = [0] * self.dimension
+        for c, base in zip(coefficients, self.basis):
+            for i in range(self.dimension):
+                new_basis[i] += c * base[i]
+        return new_basis

@@ -5,10 +5,10 @@ import nzmath.poly.uniutil as uniutil
 import nzmath.round2 as round2
 
 import logging
-logging.basicConfig(level=logging.WARN)
+logging.basicConfig(level=logging.INFO)
 
 
-class Round2UniutilTest (unittest.TestCase):
+class Round2Test (unittest.TestCase):
     """
     Test for the main function round2.
     """
