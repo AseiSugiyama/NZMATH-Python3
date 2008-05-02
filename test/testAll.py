@@ -1,6 +1,7 @@
 import unittest
 import logging
 
+import testAlgfield
 import testArith1
 import testArygcd
 import testBigrandom

@@ -9,6 +9,7 @@ Copyright (c) 2003-2007, NZMATH development group, all right reserved.
 """
 
 __all__ = [
+    "algfield",
     "arith1",
     "arygcd",
     "bigrandom",
