@@ -27,6 +27,7 @@ up_list = set(['UserManual', 'Install', 'Tutorial', 'FAQ']) # not module page
 ja_flag = False # japanese manual
 p_out = True # output intermediate steps
 sleeptime = 1 # sleep time
+retry = 5 # web retry number
 
 # for japanese up_list
 if ja_flag:
@@ -112,6 +113,12 @@ def convertWikiURL(files):
     """
     return urlparse.urlunsplit( ('http', basepla, basewiki, files, '') )
 
+def convertWikiHPURL(files):
+    """
+    convert file to wiki address (but not wiki form).
+    """
+    return urlparse.urlunsplit( ('http', basepla, basewiki + files, '', '') )
+
 def convertDocURL(files):
     """
     convert file to document(manual address) address.
@@ -140,6 +147,24 @@ def convertEntity(data):
         else:
             sol += char
     return sol.encode('euc_jp')
+
+def retryConnection(func, *args, **kw):
+    """
+    retry connection to web.
+    """
+    try_num = 0
+    while True:
+        try:
+            web_file = func(*args, **kw)
+            break
+        except IOError:
+            try_num += 1
+            if try_num >= retry:
+                raise IOError
+            if p_out:
+                print "retry connection..."
+            os.system('sleep ' +  str(sleeptime))
+    return web_file
 
 #------ Error Class
 class NoneOutput(Exception):
@@ -175,7 +200,8 @@ class MyWikiParser(HTMLParser):
 
     def handle_data(self, data):
         if not(self.deal):
-            p_data = convertEntity(data.replace('NZMATHWiki', 'NZMATH'))
+            p_data = data.replace('This is a currently developing', 'This is a released')
+            p_data = convertEntity(p_data.replace('- NZMATHWiki', '- NZMATH'))
             self.f.write(p_data)
 
     def handle_starttag(self, tag, attrs):
@@ -245,7 +271,18 @@ class MyWikiParser(HTMLParser):
                             else:
                                 p_attrs[1] = (attrs[1][0], '../default.css')
                 if tag == 'img':
-                    raise NoneOutput
+                    #raise NoneOutput
+                    if attrs[1][0] == 'src':
+                        parse = urlparse.urlparse(attrs[1][0])
+                        if parse[0] == '':
+                            imgpage = convertWikiHPURL(self.files + attrs[1][1])
+                            imgfile = attrs[1][1]
+                        else:
+                            imgpage = attrs[1][1]
+                            imgfile = parse[2]
+                        if p_out:
+                            print "get img from " + imgpage
+                        retryConnection(urllib.urlretrieve, imgpage, imgname)
                 self.f.write(back_to_tag(tag, p_attrs)[:-1] + ' />')
             except NoneOutput:
                 pass
@@ -275,7 +312,7 @@ class MyWikiParser(HTMLParser):
         HTMLParser.close(self)
 
     def feeds(self):
-        HTMLParser.feed(self, urllib.urlopen(self.url).read())
+        HTMLParser.feed(self, retryConnection(urllib.urlopen, self.url).read())
 
 #------ preparation
 def main(base_path):
@@ -321,10 +358,9 @@ def main(base_path):
         csspage = convertHPURL('manual/default.css')
         if p_out:
             print "get css from " + csspage
-        urllib.urlretrieve(csspage, 'default.css')
+        retryConnection(urllib.urlretrieve, csspage, 'default.css')
         while ad_list:
             files = ad_list.pop()
-            os.system('sleep ' +  str(sleeptime))
             MyWikiParser(files).feeds()
         if p_out:
             print "\n" + "All process is done!" + "\n"
@@ -343,8 +379,8 @@ def main(base_path):
         print "Error: Maybe, Japanese encodings(ex.euc_jp) is not supported."
     except:
         if p_out:
-            print "Check" + base_path + "(dir? truly path? and so on.)"
-            print "Delete" + base_path + "and try again."
+            print "Check " + base_path + " (dir? truly path? and so on.)"
+            print "Delete " + base_path + " and try again."
             print "(Maybe, caused by problem of network connection)\n"
         print sys.exc_info()[0]
     os.chdir(current)
