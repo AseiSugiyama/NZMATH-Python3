@@ -8,7 +8,7 @@ combinatorial, finitefield, imaginary, integerResidueClass,
 multiplicative, rationalFunction, real, ring, zassenhaus, etc.
 
 Tanaka Satoru :
-Involved in the development of elliptic, finitefield, imaginay,
+Involved in the development of elliptic, finitefield, imaginary,
 lattice,matrix,rational,real and vector.
 
 Nishimoto Keiichiro : 
@@ -57,4 +57,8 @@ Contributed to the implementation of ary gcd.
 
 Koizumi Masahiro, [2006-2008]:
 Involved in the development of matrix, lattice and polynomial.
+
+External Supports:
+
+The manual of matrix are organize and revise by Tamura Tsukuru and Harada Satoshi.
 
