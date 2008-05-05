@@ -60,5 +60,5 @@ Involved in the development of matrix, lattice and polynomial.
 
 External Supports:
 
-The manual of matrix are organize and revise by Tamura Tsukuru and Harada Satoshi.
+The manual of matrix are organized and revised by Tamura Tsukuru and Harada Satoshi.
 
