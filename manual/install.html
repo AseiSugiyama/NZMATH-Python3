@@ -23,22 +23,22 @@
 <li><a href="#cfc02dd6">Package installations</a></li></ul>
 
 <h3 id="content_1_1">Basic installation  <a class="anchor_super" id="b589fc67">&dagger;</a></h3>
-<p>To install NZMATH, you must have a Python 2.3  or
+<p>To install NZMATH, you must have a Python 2.5  or
 a higher version installed in your computer.
 If you don't have a copy of Python, please install it first.
 Python is available from <a href="http://www.python.org/" rel="nofollow">www.python.org</a> .</p>
-<p>The next step is to extract <a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.7.0.tar.gz" rel="nofollow">NZMATH-0.7.0.tar.gz</a>. You can easily unzip this, depending on your OS. For systems with recent GNU tar, you can
+<p>The next step is to extract <a href="http://tnt.math.metro-u.ac.jp/nzmath/download/NZMATH-0.90.0.tar.gz" rel="nofollow">NZMATH-0.90.0.tar.gz</a>. You can easily unzip this, depending on your OS. For systems with recent GNU tar, you can
 do it with a single command:</p>
-<pre>% tar xf NZMATH-0.7.0.tar.gz</pre>
+<pre>% tar xf NZMATH-0.90.0.tar.gz</pre>
 <p>where, % is the command line prompt.  Or with standard tar, you can do
 it as:</p>
-<pre>% gzip -cd NZMATH-0.7.0.tar.gz | tar xf -</pre>
-<p>Then, you have a child directory named NZMATH-0.7.0.</p>
+<pre>% gzip -cd NZMATH-0.90.0.tar.gz | tar xf -</pre>
+<p>Then, you have a child directory named NZMATH-0.90.0.</p>
 <p><a class="anchor" id="setup"></a>The last step is to install NZMATH to the standard
 python path. Usually, this translates to writing files somewhere under
 /usr/lib or /usr/local/lib, and thus you have to have appropriate
 write permission.  Typically, do as the following:</p>
-<pre>% cd NZMATH-0.7.0
+<pre>% cd NZMATH-0.90.0
 % su
 # python setup.py install</pre>
 
@@ -46,8 +46,8 @@ write permission.  Typically, do as the following:</p>
 <p>These packages may be updated after our releases.</p>
 
 <h4 id="content_1_3">KNOPPIX/Math  <a class="anchor_super" id="bef24f53">&dagger;</a></h4>
-<p><a href="http://geom.math.metro-u.ac.jp/wiki/index.php?KNOPPIX%2FMath%2FICMS2006" title="KNOPPIX/Math:KNOPPIX/Math/ICMS2006" rel="nofollow">KNOPPIX/Math/ICMS2006</a>
-is shipped with NZMATH-0.5.0 installed.</p>
+<p><a href="http://www.knoppix-math.org/wiki/index.php?KNOPPIX%2FMath%2F2007" title="KNOPPIX/Math:KNOPPIX/Math/2007" rel="nofollow">KNOPPIX/Math/2007</a>
+is shipped with NZMATH-0.7.0 installed.</p>
 
 <h4 id="content_1_4">Gentoo Linux  <a class="anchor_super" id="i8247269">&dagger;</a></h4>
 <p>There is a private package for <a href="http://www.gentoo.org/" rel="nofollow">Gentoo Linux</a> by Matsui Tetsushi.
@@ -63,7 +63,8 @@ of ebuildjp site.</p>
 
 <h4 id="content_1_5">Mac OS X (Tiger)  <a class="anchor_super" id="i5c56650">&dagger;</a></h4>
 <p>A NZMATH 0.5.1 application binary for Mac OS X 10.4 / Intel
-<a href="http://tnt.math.metro-u.ac.jp/nzmath/contrib/macosx/NZMATH-20061231.tar.gz" rel="nofollow">NZMATH-20061231.tar.gz</a>   is contributed by Kishi Toshiharu.
+<a href="http://tnt.math.metro-u.ac.jp/nzmath/contrib/macosx/NZMATH-20061231.tar.gz" rel="nofollow">NZMATH-20061231.tar.gz</a>
+is contributed by Kishi Toshiharu.
 (For Mac OS X 10.4 / PPC, an application binary of 0.5.0
 <a href="http://tnt.math.metro-u.ac.jp/nzmath/contrib/macosx/NZMATH-20060225.tar.gz" rel="nofollow">NZMATH-20060225.tar.gz</a>
 is also contributed.)
@@ -74,10 +75,10 @@ You can use it by following instruction:</p>
 <li>double click the NZMATH.app.</li></ol>
 
 <h4 id="content_1_6">Windows (32bit)  <a class="anchor_super" id="t20efe9f">&dagger;</a></h4>
-<p>A NZMATH 0.7.0 for Windows is released.
-The installer(.exe file) is in <a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.7.0.win32Install.exe" rel="nofollow">NZMATH-0.7.0.win32Install.exe</a>,
+<p>A NZMATH 0.90.0 for Windows is released.
+The installer(.exe file) is in <a href="http://tnt.math.metro-u.ac.jp/nzmath/download/NZMATH-0.90.0.win32Install.exe" rel="nofollow">NZMATH-0.90.0.win32Install.exe</a>,
 and the zipped binary files are in
-<a href="http://tnt.math.metro-u.ac.jp/nzmath/NZMATH-0.7.0.zip" rel="nofollow">NZMATH-0.7.0.zip</a>.</p>
+<a href="http://tnt.math.metro-u.ac.jp/nzmath/download/NZMATH-0.90.0.zip" rel="nofollow">NZMATH-0.90.0.zip</a>.</p>
 <p>To install, decompress the zip file and see <a href="#setup">Basic installation</a> with setup.py in it.</p>
 <p>Or, perform the simple task described below(use installer):</p>
 <ol class="list1" style="padding-left:16px;margin-left:16px"><li>download .exe file.</li>
@@ -86,7 +87,7 @@ and the zipped binary files are in
 <li>the setup window will open. follow the steps in the setup wizard.</li></ol>
 <p>The manuals are installed in
 <em>prefix</em><a id="notetext_1" href="#notefoot_1" class="note_super" title="prefix usually means C:\Python as default for Windows.">*1</a>
-\share\doc\NZMATH-0.7.0\manual.</p>
+\share\doc\NZMATH-0.90.0\manual.</p>
 </div>
 
 <div id="note">
@@ -98,7 +99,7 @@ and the zipped binary files are in
 
 
 <div id="footer">
- Copyright &copy; 2003-2007, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>
