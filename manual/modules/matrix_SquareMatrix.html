@@ -17,80 +17,45 @@
 
 
 <hr class="full_hr" />
-<div id="body"><p>nzmath.<a href="matrix.html" title="matrix.py">matrix</a></p>
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="matrix.html" title="matrix.py">matrix</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29%2FSquareMatrix%20%28ja%29" title="matrix (ja)/SquareMatrix (ja)">Japanese</a>)</p>
 <h2 id="content_1_0">SquareMatrix  <a class="anchor_super" id="index">&dagger;</a></h2>
 <p>The class is for square matrix. It is a subclass of <a href="matrix_Matrix.html" title="matrix.py/Matrix">Matrix</a>.</p>
 <div class="contents">
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  SquareMatrix </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ca8ab0ed"> SquareMatrix(row, compo) </a></li>
-<li><a href="#b950bc3b"> SquareMatrix(row, column, compo) </a></li></ul></li>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Initialize </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#b950bc3b"> SquareMatrix(row [, column, compo, coeff_ring]) </a></li></ul></li>
 <li><a href="#method"> Methods </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#n010dd83"> getRing() </a></li>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#mfcb2a43"> isUpperTriangularMatrix() </a></li>
+<li><a href="#y30308df"> isLowerTriangularMatrix() </a></li>
 <li><a href="#vf2dc1cc"> isDiagonalMatrix() </a></li>
 <li><a href="#v1829a0f"> isScalarMatrix() </a></li>
-<li><a href="#y8e4764d"> isSymmetricMatrix() </a></li>
-<li><a href="#z7944f2a"> isOrthogonalMatrix() </a></li>
-<li><a href="#i5cec8b6"> isAlternateMatrix() </a></li>
-<li><a href="#hc072e9b"> commutator(N) </a></li>
-<li><a href="#d36fecf6"> trace() </a></li>
-<li><a href="#nf8bea14"> determinant() </a></li>
-<li><a href="#k12475c2"> cofactors() </a></li>
-<li><a href="#z6935a2c"> inverse() </a></li>
-<li><a href="#v193a452"> characteristicPolynomial() </a></li>
-<li><a href="#o86113a7"> LUDecomposition() </a></li>
-<li><a href="#bdab46b2"> hessenbergForm() </a></li></ul></li>
-<li><a href="#operator"> Operators </a></li></ul></li></ul>
+<li><a href="#y8e4764d"> isSymmetricMatrix() </a></li></ul></li></ul></li></ul>
 </div>
 
 
-<h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
+<h3 id="content_1_1">Initialize  <a class="anchor_super" id="init">&dagger;</a></h3>
 
-<h4 id="content_1_2">SquareMatrix(<em>row</em>, <em>compo</em>)  <a class="anchor_super" id="ca8ab0ed">&dagger;</a></h4>
+<h4 id="content_1_2">SquareMatrix(<em>row</em> [, <em>column</em>, <em>compo</em>, <em>coeff_ring</em>])  <a class="anchor_super" id="b950bc3b">&dagger;</a></h4>
+<p>This constructor determines the class automatically like <a href="matrix.html#cmatrix" title="matrix.py">createMatrix</a>.
+<em>row</em> must be equal to <em>column</em>.<br /></p>
 
-<h4 id="content_1_3">SquareMatrix(<em>row</em>, <em>column</em>, <em>compo</em>)  <a class="anchor_super" id="b950bc3b">&dagger;</a></h4>
-<p><em>row</em> and <em>column</em> must be a positive integer, and assuming <em>row</em> must be equal to <em>column</em>.<br />
-<em>compo</em> must be a <strong><a href="matrix.html#listform" title="matrix.py">list form</a></strong>.<br />
-<br />
-In general, given matrix size unspecified, you should call <strong><a href="matrix.html#cmatrix" title="matrix.py">createMatrix</a></strong> for your profit.<br /></p>
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
 
-<h3 id="content_1_4">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+<h4 id="content_1_4">isUpperTriangularMatrix()  <a class="anchor_super" id="mfcb2a43">&dagger;</a></h4>
+<p>Check whether self is upper triangular matrix or not.</p>
 
-<h4 id="content_1_5">getRing()  <a class="anchor_super" id="n010dd83">&dagger;</a></h4>
+<h4 id="content_1_5">isLowerTriangularMatrix()  <a class="anchor_super" id="y30308df">&dagger;</a></h4>
+<p>Check whether self is lower triangular matrix or not.</p>
 
 <h4 id="content_1_6">isDiagonalMatrix()  <a class="anchor_super" id="vf2dc1cc">&dagger;</a></h4>
+<p>Check whether self is diagonal matrix or not.</p>
 
 <h4 id="content_1_7">isScalarMatrix()  <a class="anchor_super" id="v1829a0f">&dagger;</a></h4>
+<p>Check whether self is scalar matrix or not.</p>
 
 <h4 id="content_1_8">isSymmetricMatrix()  <a class="anchor_super" id="y8e4764d">&dagger;</a></h4>
-
-<h4 id="content_1_9">isOrthogonalMatrix()  <a class="anchor_super" id="z7944f2a">&dagger;</a></h4>
-
-<h4 id="content_1_10">isAlternateMatrix()  <a class="anchor_super" id="i5cec8b6">&dagger;</a></h4>
-
-<h4 id="content_1_11">commutator(N)  <a class="anchor_super" id="hc072e9b">&dagger;</a></h4>
-<p>Return commutator defined as [M, N] = M * N - N * M .</p>
-
-<h4 id="content_1_12">trace()  <a class="anchor_super" id="d36fecf6">&dagger;</a></h4>
-
-<h4 id="content_1_13">determinant()  <a class="anchor_super" id="nf8bea14">&dagger;</a></h4>
-
-<h4 id="content_1_14">cofactors()  <a class="anchor_super" id="k12475c2">&dagger;</a></h4>
-
-<h4 id="content_1_15">inverse()  <a class="anchor_super" id="z6935a2c">&dagger;</a></h4>
-
-<h4 id="content_1_16">characteristicPolynomial()  <a class="anchor_super" id="v193a452">&dagger;</a></h4>
-
-<h4 id="content_1_17">LUDecomposition()  <a class="anchor_super" id="o86113a7">&dagger;</a></h4>
-<p>return L and U s.t. M == L * U:<br /></p>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li>L : lower triangular matrix</li>
-<li>U : upper triangular matrix</li></ul>
-
-<h4 id="content_1_18">hessenbergForm()  <a class="anchor_super" id="bdab46b2">&dagger;</a></h4>
-
-<h3 id="content_1_19">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
-<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">M ** c</td><td class="style_td">Return the c-th power of matrices M.</td></tr></tbody></table></div>
+<p>Check whether self is symmetric matrix or not.</p>
 </div>
 
 
@@ -99,7 +64,7 @@ In general, given matrix size unspecified, you should call <strong><a href="matr
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

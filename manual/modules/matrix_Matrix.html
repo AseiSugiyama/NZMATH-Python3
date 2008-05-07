@@ -17,17 +17,23 @@
 
 
 <hr class="full_hr" />
-<div id="body"><p>nzmath.<a href="matrix.html" title="matrix.py">matrix</a></p>
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="matrix.html" title="matrix.py">matrix</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29%2FMatrix%20%28ja%29" title="matrix (ja)/Matrix (ja)">Japanese</a>)</p>
 <h2 id="content_1_0">Matrix  <a class="anchor_super" id="index">&dagger;</a></h2>
 <p>The class is for matrix.</p>
 <div class="contents">
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  Matrix </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ve0b3d8e"> Matrix(row, column, compo) </a></li></ul></li>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Initialize </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ve0b3d8e"> Matrix(row, column [, compo, coeff_ring]) </a></li></ul></li>
+<li><a href="#attribute"> Attribute </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#u09c4d88"> row </a></li>
+<li><a href="#ede679d6"> column </a></li>
+<li><a href="#coeff_ring"> coeff_ring </a></li></ul></li>
 <li><a href="#method"> Methods </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#d5a98db5"> copy() </a></li>
-<li><a href="#mf6febec"> set(list) </a></li>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#y750a6f8"> map(function) </a></li>
+<li><a href="#ab822eca"> reduce(function [,initializer]) </a></li>
+<li><a href="#d5a98db5"> copy() </a></li>
+<li><a href="#mf6febec"> set(compo) </a></li>
 <li><a href="#iac7bbeb"> setRow(m, arg) </a></li>
 <li><a href="#r183d581"> setColumn(n, arg) </a></li>
 <li><a href="#c9376beb"> getRow(i) </a></li>
@@ -36,81 +42,84 @@
 <li><a href="#n5d575b5"> swapColumn(n1, n2) </a></li>
 <li><a href="#b117bf73"> insertRow(i, arg) </a></li>
 <li><a href="#o72ba37e"> insertColumn(j, arg) </a></li>
+<li><a href="#q1482546"> extendRow(arg) </a></li>
+<li><a href="#w2ad5e41"> extendColumn(arg) </a></li>
 <li><a href="#a043b970"> deleteRow(i) </a></li>
 <li><a href="#n74564af"> deleteColumn(j) </a></li>
 <li><a href="#m92c9e2d"> transpose() </a></li>
-<li><a href="#s812b52b"> triangulate() </a></li>
-<li><a href="#mfcb2a43"> isUpperTriangularMatrix() </a></li>
-<li><a href="#y30308df"> isLowerTriangularMatrix() </a></li>
-<li><a href="#vb686dd5"> subMatrix(i,j) </a></li>
-<li><a href="#a5a8d7e4"> kernel() </a></li>
-<li><a href="#c9b88ff7"> image() </a></li>
-<li><a href="#t37411aa"> rank() </a></li>
-<li><a href="#l8974e37"> inverseimage(V) </a></li>
-<li><a href="#kcd8b704"> columnEchelonForm() </a></li></ul></li>
+<li><a href="#ua90f777"> getBlock(i, j, row [,column]) </a></li>
+<li><a href="#vb686dd5"> subMatrix(I[, J]) </a></li></ul></li>
 <li><a href="#operator"> Operators </a></li></ul></li></ul>
 </div>
 
 
-<h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
+<h3 id="content_1_1">Initialize  <a class="anchor_super" id="init">&dagger;</a></h3>
 
-<h4 id="content_1_2">Matrix(<em>row</em>, <em>column</em>, <em>compo</em>)  <a class="anchor_super" id="ve0b3d8e">&dagger;</a></h4>
-<p><em>row</em> and <em>column</em> must be a positive integer, and assuming <em>row</em> not be equal to <em>column</em>.<br />
-<em>compo</em> must be a <strong><a href="matrix.html#listform" title="matrix.py">list form</a></strong>.<br />
-<br />
-In general, given matrix size unspecified, you should call <strong><a href="matrix.html#cmatrix" title="matrix.py">createMatrix</a></strong> for your profit.<br /></p>
+<h4 id="content_1_2">Matrix(<em>row</em>, <em>column</em> [, <em>compo</em>, <em>coeff_ring</em>])  <a class="anchor_super" id="ve0b3d8e">&dagger;</a></h4>
+<p>This constructor determines the class automatically like <a href="matrix.html#cmatrix" title="matrix.py">createMatrix</a>.</p>
 
-<h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+<h3 id="content_1_3">Attribute  <a class="anchor_super" id="attribute">&dagger;</a></h3>
 
-<h4 id="content_1_4">copy()  <a class="anchor_super" id="d5a98db5">&dagger;</a></h4>
+<h4 id="content_1_4">row  <a class="anchor_super" id="u09c4d88">&dagger;</a></h4>
+<p>The row size of the matrix.</p>
+
+<h4 id="content_1_5">column  <a class="anchor_super" id="ede679d6">&dagger;</a></h4>
+<p>The column size of the matrix.</p>
+
+<h4 id="content_1_6">coeff_ring  <a class="anchor_super" id="coeff_ring">&dagger;</a></h4>
+<p>The coefficient ring of the matrix.</p>
+
+<h3 id="content_1_7">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+
+<h4 id="content_1_8">map(<em>function</em>)  <a class="anchor_super" id="y750a6f8">&dagger;</a></h4>
+<p>Return the matrix whose elements is applied <em>function</em> to.
+(new in 0.90.0)</p>
+
+<h4 id="content_1_9">reduce(<em>function</em> [,<em>initializer</em>])  <a class="anchor_super" id="ab822eca">&dagger;</a></h4>
+<p>Apply <em>function</em> from upper-left to lower-right, so as to reduce the iterable to a single value.(new in 0.90.0)</p>
+
+<h4 id="content_1_10">copy()  <a class="anchor_super" id="d5a98db5">&dagger;</a></h4>
 <p>create a copy of self (other instance).</p>
 
-<h4 id="content_1_5">set(<em>list</em>)  <a class="anchor_super" id="mf6febec">&dagger;</a></h4>
+<h4 id="content_1_11">set(<em>compo</em>)  <a class="anchor_super" id="mf6febec">&dagger;</a></h4>
 
-<h4 id="content_1_6">setRow(<em>m</em>, <em>arg</em>)  <a class="anchor_super" id="iac7bbeb">&dagger;</a></h4>
+<h4 id="content_1_12">setRow(<em>m</em>, <em>arg</em>)  <a class="anchor_super" id="iac7bbeb">&dagger;</a></h4>
 
-<h4 id="content_1_7">setColumn(<em>n</em>, <em>arg</em>)  <a class="anchor_super" id="r183d581">&dagger;</a></h4>
+<h4 id="content_1_13">setColumn(<em>n</em>, <em>arg</em>)  <a class="anchor_super" id="r183d581">&dagger;</a></h4>
 
-<h4 id="content_1_8">getRow(<em>i</em>)  <a class="anchor_super" id="c9376beb">&dagger;</a></h4>
+<h4 id="content_1_14">getRow(<em>i</em>)  <a class="anchor_super" id="c9376beb">&dagger;</a></h4>
 
-<h4 id="content_1_9">getColumn(<em>j</em>)  <a class="anchor_super" id="ld7c49b1">&dagger;</a></h4>
+<h4 id="content_1_15">getColumn(<em>j</em>)  <a class="anchor_super" id="ld7c49b1">&dagger;</a></h4>
 
-<h4 id="content_1_10">swapRow(<em>m1</em>, <em>m2</em>)  <a class="anchor_super" id="sb8c669c">&dagger;</a></h4>
+<h4 id="content_1_16">swapRow(<em>m1</em>, <em>m2</em>)  <a class="anchor_super" id="sb8c669c">&dagger;</a></h4>
 
-<h4 id="content_1_11">swapColumn(<em>n1</em>, <em>n2</em>)  <a class="anchor_super" id="n5d575b5">&dagger;</a></h4>
+<h4 id="content_1_17">swapColumn(<em>n1</em>, <em>n2</em>)  <a class="anchor_super" id="n5d575b5">&dagger;</a></h4>
 
-<h4 id="content_1_12">insertRow(<em>i</em>, <em>arg</em>)  <a class="anchor_super" id="b117bf73">&dagger;</a></h4>
+<h4 id="content_1_18">insertRow(<em>i</em>, <em>arg</em>)  <a class="anchor_super" id="b117bf73">&dagger;</a></h4>
 
-<h4 id="content_1_13">insertColumn(<em>j</em>, <em>arg</em>)  <a class="anchor_super" id="o72ba37e">&dagger;</a></h4>
+<h4 id="content_1_19">insertColumn(<em>j</em>, <em>arg</em>)  <a class="anchor_super" id="o72ba37e">&dagger;</a></h4>
 
-<h4 id="content_1_14">deleteRow(<em>i</em>)  <a class="anchor_super" id="a043b970">&dagger;</a></h4>
+<h4 id="content_1_20">extendRow(<em>arg</em>)  <a class="anchor_super" id="q1482546">&dagger;</a></h4>
 
-<h4 id="content_1_15">deleteColumn(<em>j</em>)  <a class="anchor_super" id="n74564af">&dagger;</a></h4>
+<h4 id="content_1_21">extendColumn(<em>arg</em>)  <a class="anchor_super" id="w2ad5e41">&dagger;</a></h4>
 
-<h4 id="content_1_16">transpose()  <a class="anchor_super" id="m92c9e2d">&dagger;</a></h4>
+<h4 id="content_1_22">deleteRow(<em>i</em>)  <a class="anchor_super" id="a043b970">&dagger;</a></h4>
 
-<h4 id="content_1_17">triangulate()  <a class="anchor_super" id="s812b52b">&dagger;</a></h4>
-<p>return upper triangulated matrix.</p>
+<h4 id="content_1_23">deleteColumn(<em>j</em>)  <a class="anchor_super" id="n74564af">&dagger;</a></h4>
 
-<h4 id="content_1_18">isUpperTriangularMatrix()  <a class="anchor_super" id="mfcb2a43">&dagger;</a></h4>
+<h4 id="content_1_24">transpose()  <a class="anchor_super" id="m92c9e2d">&dagger;</a></h4>
+<p>Return the transpose of the matrix.</p>
 
-<h4 id="content_1_19">isLowerTriangularMatrix()  <a class="anchor_super" id="y30308df">&dagger;</a></h4>
+<h4 id="content_1_25">getBlock(<em>i</em>, <em>j</em>, <em>row</em> [,<em>column</em>])  <a class="anchor_super" id="ua90f777">&dagger;</a></h4>
+<p>Return the <em>row</em> * <em>column</em> block matrix from the (<em>i</em>, <em>j</em>)-element.
+(new in 0.90.0)</p>
 
-<h4 id="content_1_20">subMatrix(<em>i</em>,<em>j</em>)  <a class="anchor_super" id="vb686dd5">&dagger;</a></h4>
-<p>return submatrix deleted <em>i</em>-th row and <em>j</em>-th column.</p>
+<h4 id="content_1_26">subMatrix(<em>I</em>[, <em>J</em>])  <a class="anchor_super" id="vb686dd5">&dagger;</a></h4>
+<p>Return submatrix deleted <em>I</em>-th row and <em>J</em>-th column.
+If <em>I</em> and <em>J</em> is a sequence, return the submatrix composed of the rows and the colums assigned by <em>I</em> and <em>J</em>, respectively.</p>
 
-<h4 id="content_1_21">kernel()  <a class="anchor_super" id="a5a8d7e4">&dagger;</a></h4>
-
-<h4 id="content_1_22">image()  <a class="anchor_super" id="c9b88ff7">&dagger;</a></h4>
-
-<h4 id="content_1_23">rank()  <a class="anchor_super" id="t37411aa">&dagger;</a></h4>
-
-<h4 id="content_1_24">inverseimage(<em>V</em>)  <a class="anchor_super" id="l8974e37">&dagger;</a></h4>
-
-<h4 id="content_1_25">columnEchelonForm()  <a class="anchor_super" id="kcd8b704">&dagger;</a></h4>
-
-<h3 id="content_1_26">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
-<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">M + N</td><td class="style_td">Return the sum of matrices M and N.</td></tr><tr><td class="style_td">M - N</td><td class="style_td">Return the difference of matrices M and N.</td></tr><tr><td class="style_td">M * N</td><td class="style_td">Return the product of M and N. N must be matrix,vector or scaler</td></tr><tr><td class="style_td">M / d</td><td class="style_td">Return the division of M by d. d must be scalar.</td></tr><tr><td class="style_td">-M</td><td class="style_td">Return the matrix whose coefficients have inverted signs of M.</td></tr><tr><td class="style_td">+M</td><td class="style_td">Return the same matrix with M. Simplification is carried out if possible.</td></tr><tr><td class="style_td">M == N</td><td class="style_td">Return whether M and N are equal or not.</td></tr><tr><td class="style_td">M != N</td><td class="style_td">Return whether M and N are different or not.</td></tr><tr><td class="style_td">M[i,j]</td><td class="style_td">Return the coefficient of i-th row, j-th column term of matrix M.</td></tr><tr><td class="style_td">M[i]</td><td class="style_td">Return the vector of i-th column term of matrix M.</td></tr><tr><td class="style_td">M[i,j] = c</td><td class="style_td">Replace the coefficient of i-th row, j-th column term of matrix M by c.</td></tr><tr><td class="style_td">M[j] = c</td><td class="style_td">Replace the vector of i-th column term of matrix M by vector c.</td></tr><tr><td class="style_td">repr(M)</td><td class="style_td">Return the repr string of the matrix M.<br class="spacer" />string represents <a href="matrix.html#listform" title="matrix.py">list concatenated row vector lists</a>.</td></tr><tr><td class="style_td">str(M)</td><td class="style_td">Return the str string of the matrix M.</td></tr></tbody></table></div>
+<h3 id="content_1_27">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">M == N</td><td class="style_td">Return whether M and N are equal or not.</td></tr><tr><td class="style_td">M != N</td><td class="style_td">Return whether M and N are different or not.</td></tr><tr><td class="style_td">M[i, j]</td><td class="style_td">Return the coefficient of i-th row, j-th column term of matrix M.</td></tr><tr><td class="style_td">M[i]</td><td class="style_td">Return the vector of i-th column term of matrix M.</td></tr><tr><td class="style_td">M[i, j] = c</td><td class="style_td">Replace the coefficient of i-th row, j-th column term of matrix M by c.</td></tr><tr><td class="style_td">M[j] = c</td><td class="style_td">Replace the vector of i-th column term of matrix M by vector c.</td></tr><tr><td class="style_td">c in M</td><td class="style_td">Check whether some element of M equals c.</td></tr><tr><td class="style_td">repr(M)</td><td class="style_td">Return the repr string of the matrix M.<br class="spacer" />string represents list concatenated row vector lists.</td></tr><tr><td class="style_td">str(M)</td><td class="style_td">Return the str string of the matrix M.</td></tr></tbody></table></div>
 </div>
 
 
@@ -119,7 +128,7 @@ In general, given matrix size unspecified, you should call <strong><a href="matr
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

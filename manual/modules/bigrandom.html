@@ -24,8 +24,8 @@
 <h4 id="content_1_1">historical note  <a class="anchor_super" id="rf76b4f7">&dagger;</a></h4>
 <p>The module was written for replacement of the Python standard module <a href="http://docs.python.org/lib/module-random.html" rel="nofollow">random</a>,
 because in the era of Python 2.2 (prehistorical period of NZMATH) the random module raises OverflowError for long integer arguments for the randrange function, which is the only function having a use case in NZMATH.</p>
-<p>After the creation of Python 2.3, it was theoretically possible to use random.randrange.  Use of it is, however, not considered, since there is the bigrandom module.  It is lucky for us and users.  Recently, in fall of 2006, we found a bug in random.randrange and reported it; the random.randrange now accepts long integers but returns unreliable result for truly big integers.</p>
-<p>We do not have any plans now, but if the bug will be fixed, the bigrandom module will be able to retire.</p>
+<p>After the creation of Python 2.3, it was theoretically possible to use random.randrange.  Use of it is, however, not considered, since there is the bigrandom module.  It is lucky for us and users.  In fall of 2006, we found a bug in random.randrange and reported it (see <a href="http://bugs.python.org/issue1590891" rel="nofollow">issue tracker</a>); the random.randrange accepts long integers but returns unreliable result for truly big integers.
+The bug was fixed for Python 2.5.1.  You can, therefore, use random.randrange instead of bigrandom.randrange for Python 2.5.1 or higher.</p>
 
 <h3 id="content_1_2">Function  <a class="anchor_super" id="n95dc22c">&dagger;</a></h3>
 
@@ -36,6 +36,17 @@ because in the era of Python 2.2 (prehistorical period of NZMATH) the random mod
 <p>Or you can ignore the last two arguments. For example:<br /></p>
 <pre>&gt;&gt;&gt; randrange(4) 
 3L</pre>
+
+<h4 id="content_1_4"><a class="anchor" id="map_choice"></a>map_choice(<em>mapping</em>, <em>upperbound</em>)  <a class="anchor_super" id="d343c4e2">&dagger;</a></h4>
+<p>Return a choice from a set given as the image of the mapping from
+natural numbers (more precisely range(upperbound)).  In other
+words, it is equivalent to
+random.choice([mapping(i) for i in range(upperboud) if mapping(i) != None])
+if upperbound is small enough for the list size limit.</p>
+<p>The mapping can be a partial function, i.e. it may return None for
+some input.  However, if the resulting set is empty, it will end
+up with an infinite loop.<br />
+(new in 0.90.0)</p>
 </div>
 
 
@@ -44,7 +55,7 @@ because in the era of Python 2.2 (prehistorical period of NZMATH) the random mod
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

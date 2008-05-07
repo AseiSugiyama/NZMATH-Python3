@@ -43,14 +43,14 @@
 <p>This is a class for permutation group element.<br class="spacer" />
 Create element with 'normal' way.<br class="spacer" />
 For example,<br class="spacer" /></p>
-<pre>  [考1,考2,考3,考4,考5]</pre>
-<p>(1:1 onto mapping(bijection), 1-&gt;考1, 2-&gt;考2, 3-&gt;考3, 4-&gt;考4, 5-&gt;考5.)</p>
+<pre>  [&sigma;1,&sigma;2,&sigma;3,&sigma;4,&sigma;5]</pre>
+<p>(1:1 onto mapping(bijection), 1-&gt;&sigma;1, 2-&gt;&sigma;2, 3-&gt;&sigma;3, 4-&gt;&sigma;4, 5-&gt;&sigma;5.)</p>
 <blockquote><p class="quotation">
 <strong>Initialize</strong><br class="spacer" />
 Initialize with 'normal' list.</p>
-<pre>&gt;&gt;&gt;pm=Permute([考1,考2,...,考n])</pre>
+<pre>&gt;&gt;&gt;pm=Permute([&sigma;1,&sigma;2,...,&sigma;n])</pre>
 <p class="quotation">Or, you can specify key as list.</p>
-<pre>&gt;&gt;&gt;pm=Permute([key(考1),key(考2),...,key(考n)], key_list)</pre></blockquote>
+<pre>&gt;&gt;&gt;pm=Permute([key(&sigma;1),key(&sigma;2),...,key(&sigma;n)], key_list)</pre></blockquote>
 
 <div class="spacer">&nbsp;</div>
 <p>Example</p>
@@ -79,9 +79,9 @@ We define some special key.</p>
 <h3 id="content_1_1">Operation  <a class="anchor_super" id="b93ae3f4">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td></tr><tr><td class="style_td">*</td><td class="style_td">Multiplication</td></tr><tr><td class="style_td">/</td><td class="style_td">Division</td></tr><tr><td class="style_td">**</td><td class="style_td">Powering</td></tr></tbody></table></div>
 <p>Multiplication with normal mapping way(right multiply).<br class="spacer" />
-i.e. 考=[考1,考2,..,考n],而=[而1,而2,..,而n], 考*而 is mapping,而i-&gt;考i.<br class="spacer" /></p>
+i.e. &sigma;=[&sigma;1,&sigma;2,..,&sigma;n],&tau;=[&tau;1,&tau;2,..,&tau;n], &sigma;*&tau; is mapping,&tau;i-&gt;&sigma;i.<br class="spacer" /></p>
 <div class="spacer">&nbsp;</div>
-<p>You can get 考i.<br class="spacer" /></p>
+<p>You can get &sigma;i.<br class="spacer" /></p>
 <pre>&gt;&gt;&gt;Pr[3]
 1
 &gt;&gt;&gt;Prk['b']
@@ -127,9 +127,9 @@ If you want to test equality precisely, use setKey for key's normalization.<br c
 It is symmetrical arranging.</p>
 <div class="spacer">&nbsp;</div>
 <p>This is inductive definition for dimension.<br class="spacer" /><br class="spacer" />
-If (n-1) dimension numbering of [考1,考2,...,考(n-2),考(n-1)] is k,<br class="spacer" />
-numbering of [考1,考2,...,考(n-2),考(n-1),n] is k and<br class="spacer" />
-numbering of [考1,考2,...,考(n-2),n,考(n-1)] is k+(n-1)! and so on.<br class="spacer" />
+If (n-1) dimension numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),&sigma;(n-1)] is k,<br class="spacer" />
+numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),&sigma;(n-1),n] is k and<br class="spacer" />
+numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),n,&sigma;(n-1)] is k+(n-1)! and so on.<br class="spacer" />
 (Goto <a href="http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm" rel="nofollow">鰾午瞬及朿盒 鎔わ朿鎔蝸詭懍鎔わ濡</a>)</p>
 <pre>&gt;&gt;&gt;Pr.numbering()
 28</pre>
@@ -167,7 +167,7 @@ It returns even permutation is 1,odd one is -1.</p>
 
 <h4 id="content_1_15">ToMatrix()  <a class="anchor_super" id="tc789b17">&dagger;</a></h4>
 <p>Return permutation matrix,A.<br class="spacer" />
-A[i,考i]=1,other A[k,j]=0.</p>
+A[i,&sigma;i]=1,other A[k,j]=0.</p>
 <pre>&gt;&gt;&gt;Pr.ToMatrix()
 0 0 1 0 0
 1 0 0 0 0
@@ -194,7 +194,7 @@ Warning: This permutation is independent on key (except dict type)</p>
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

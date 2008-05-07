@@ -30,9 +30,7 @@
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#j94d9f48"> def innerProduct(aVector, other) </a></li></ul></li>
 <li><a href="#q52b98f9"> EXCEPTIONS </a>
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#vector_e_vsize"> except VectorSizeError </a></li></ul></li>
-<li><a href="#e16e7a7e"> DEPENDENCY </a></li>
-<li><a href="#te97f72c"> BUGS(IMPLEMENT PROBLEMS, MAYBE) </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#b953bb53"> Implementation of InnerProduct </a></li></ul></li></ul></li></ul>
+<li><a href="#e16e7a7e"> DEPENDENCY </a></li></ul></li></ul>
 </div>
 
 
@@ -42,12 +40,12 @@
 <h4 id="content_1_2">class Vector  <a class="anchor_super" id="we1309cd">&dagger;</a></h4>
 <p>Class Vector is an elemental class of vector. <br /></p>
 <dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Initialize</dt>
-<dd><pre>&gt;&gt;&gt; aVector=Vector(list)</pre>
+<dd><pre>&gt;&gt;&gt; aVector = Vector(list)</pre>
 Variable aVector initializes to Vector object.<br />
 <strong>Example to use</strong>:<br />
-<pre>&gt;&gt;&gt; u=Vector([0,1,3])
-&gt;&gt;&gt; v=Vector([2,1,2])
-&gt;&gt;&gt; z=Vector([0]*3)
+<pre>&gt;&gt;&gt; u = Vector([0,1,3])
+&gt;&gt;&gt; v = Vector([2,1,2])
+&gt;&gt;&gt; z = Vector([0]*3)
 &gt;&gt;&gt; z
 Vector [0, 0, 0]</pre></dd>
 <dt>Operators</dt>
@@ -55,13 +53,13 @@ Vector [0, 0, 0]</pre></dd>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><strong>&quot;+&quot;, &quot;-&quot;</strong><br />
 addition and subtraction.<br />
 operate with two vector of same length, or return <a href="#vector_e_vsize">Exception VectorSizeError</a>.<br />
-<pre>&gt;&gt;&gt; u+v
+<pre>&gt;&gt;&gt; u + v
 Vector [2, 2, 5]
 &gt;&gt;&gt; -u
 Vector [0, -1, -3]</pre></li>
 <li><strong>&quot;*&quot;, &quot;/&quot;</strong><br />
 scalar product.
-<pre>&gt;&gt;&gt; v*3
+<pre>&gt;&gt;&gt; v * 3
 Vector [6, 3, 6]</pre></li>
 <li><a class="anchor" id="vector_len"></a><strong>len(aVector)</strong><br />
 return length of aVector.<br />
@@ -75,11 +73,11 @@ return representation string of aVector.<br />
 return string of listed representation of aVector.<br />
 <pre>&gt;&gt;&gt; str(u)
 '[0, 1, 3]'</pre></li></ul></dd>
-<dt>Function</dt>
-<dd>Class Vector defined functions as follows.<br />
+<dt>Methods</dt>
+<dd>Class Vector defines methods as follows.<br />
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a class="anchor" id="vector_f_copy"></a><strong>aVector.copy()</strong><br />
 return a copy of aVector.<br />
-<pre>&gt;&gt;&gt; x=u.copy()
+<pre>&gt;&gt;&gt; x = u.copy()
 &gt;&gt;&gt; x
 Vector [0, 1, 3]</pre></li>
 <li><a class="anchor" id="vector_f_set"></a><strong>aVector.set(list)</strong><br />
@@ -107,18 +105,21 @@ Exception: all zero</pre></li></ul></dd></dl>
 <p>Module vector provides functions as follows.<br /></p>
 
 <h4 id="content_1_5">def innerProduct(aVector, other)  <a class="anchor_super" id="j94d9f48">&dagger;</a></h4>
-<p>return innerProduct.<br /></p>
+<p>Return the result of an inner product.<br /></p>
 <pre>&gt;&gt;&gt; innerProduct(u,v)
-7</pre>
+7
+&gt;&gt;&gt; innerProduct(Vector([1+1j, 2+2j, 3+3j]), Vector([1+1j, 2+2j, 3+3j]))
+(28+0j)</pre>
+<p>In the latter case, it is Hermitian inner product.</p>
 
 <h3 id="content_1_6">EXCEPTIONS  <a class="anchor_super" id="q52b98f9">&dagger;</a></h3>
-<p>Module vector provide exceptions as follows.<br /></p>
+<p>Module vector provides an exception.<br /></p>
 
 <h4 id="content_1_7">except VectorSizeError  <a class="anchor_super" id="vector_e_vsize">&dagger;</a></h4>
 <p>Exception VectorSizeError occurs additive operation with two vector of different length.<br /></p>
-<pre>&gt;&gt;&gt; u=Vector([0,1,3])
-&gt;&gt;&gt; w=Vector([4,3,2,0])
-&gt;&gt;&gt; u+w
+<pre>&gt;&gt;&gt; u = Vector([0,1,3])
+&gt;&gt;&gt; w = Vector([4,3,2,0])
+&gt;&gt;&gt; u + w
 Traceback (most recent call last):
   File &quot;&lt;stdin&gt;&quot;, line 1, in ?
   File &quot;vector.py&quot;, line 31, in __add__
@@ -127,11 +128,6 @@ VectorSizeError</pre>
 
 <h3 id="content_1_8">DEPENDENCY  <a class="anchor_super" id="e16e7a7e">&dagger;</a></h3>
 <p>This module can be used independently of other NZMATH modules.<br /></p>
-
-<h3 id="content_1_9">BUGS(IMPLEMENT PROBLEMS, MAYBE)  <a class="anchor_super" id="te97f72c">&dagger;</a></h3>
-
-<h4 id="content_1_10">Implementation of InnerProduct  <a class="anchor_super" id="b953bb53">&dagger;</a></h4>
-<p>innerProduct with imaginary module are not implemented.<br /></p>
 </div>
 
 
@@ -140,7 +136,7 @@ VectorSizeError</pre>
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

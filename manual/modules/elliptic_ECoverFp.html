@@ -28,6 +28,8 @@ The class is a subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#g6428332"> ECoverFp(Weierstrass list form, characteristic, index) </a></li></ul></li>
 <li><a href="#method"> Methods </a>
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#madefeca"> point() </a></li>
+<li><a href="#sa31c7de"> pointorder(P) </a></li>
+<li><a href="#taf6ef53"> findpoint(m) </a></li>
 <li><a href="#le08f125"> Schoof() </a></li>
 <li><a href="#qd144d20"> Shanks_Mestre() </a></li>
 <li><a href="#dadf59f6"> naive() </a></li>
@@ -52,34 +54,41 @@ In general, given EC characteristic specified, you should call <strong><a href="
 <h4 id="content_1_4">point()  <a class="anchor_super" id="madefeca">&dagger;</a></h4>
 <p>Returns a random point on elliptic curve.<br /></p>
 
-<h4 id="content_1_5">Schoof()  <a class="anchor_super" id="le08f125">&dagger;</a></h4>
+<h4 id="content_1_5">pointorder(<em>P</em>)  <a class="anchor_super" id="sa31c7de">&dagger;</a></h4>
+<p>Returns the order of point P. Algorithm uses factorization of order().<br /></p>
+
+<h4 id="content_1_6">findpoint(<em>m</em>)  <a class="anchor_super" id="taf6ef53">&dagger;</a></h4>
+<p>Returns point P in E/F_p such that mP == [0].<br /></p>
+
+<h4 id="content_1_7">Schoof()  <a class="anchor_super" id="le08f125">&dagger;</a></h4>
 <p>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of elliptic curve over Fp. This uses the Schoof's method.<br /></p>
 
-<h4 id="content_1_6">Shanks_Mestre()  <a class="anchor_super" id="qd144d20">&dagger;</a></h4>
+<h4 id="content_1_8">Shanks_Mestre()  <a class="anchor_super" id="qd144d20">&dagger;</a></h4>
 <p>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of elliptic curve over over Fp. This uses the Shanks-Mestre method.<br /></p>
 
-<h4 id="content_1_7">naive()  <a class="anchor_super" id="dadf59f6">&dagger;</a></h4>
+<h4 id="content_1_9">naive()  <a class="anchor_super" id="dadf59f6">&dagger;</a></h4>
 <p>computes t such that #E(Fp)=p+1-t, where #E(Fp) stands for the number of points of elliptic curve over Fp. This uses the Legendre-symbol method.<br /></p>
 
-<h4 id="content_1_8">order(<em>flag</em>=0)  <a class="anchor_super" id="b9d7c34e">&dagger;</a></h4>
+<h4 id="content_1_10">order(<em>flag</em>=0)  <a class="anchor_super" id="b9d7c34e">&dagger;</a></h4>
 <p>computes #E(Fp). If p&lt;1000, this uses the Legendre method. If 10^4&lt;p&lt;10^30, this uses the Shanks-Mestre method. Otherwise, it uses Schoof's method. If flag=r, this computes #E(Fp^r) .<br /></p>
 
-<h4 id="content_1_9">TatePairing(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="k6fa27bb">&dagger;</a></h4>
+<h4 id="content_1_11">TatePairing(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="k6fa27bb">&dagger;</a></h4>
 <p>returns &lt;<em>P</em>,<em>Q</em>&gt;_<em>m</em> by using Miller's algorithm.<br /></p>
 
-<h4 id="content_1_10">TatePairing_Extend(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="s03cc1f4">&dagger;</a></h4>
+<h4 id="content_1_12">TatePairing_Extend(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="s03cc1f4">&dagger;</a></h4>
 <p>returns T_<em>m</em>(<em>P</em>,<em>Q</em>):=&lt;<em>P</em>,<em>Q</em>&gt;_<em>m</em>^((ch-1)/<em>m</em>) by using Miller's algorithm.<br /></p>
 
-<h4 id="content_1_11">WeilPairing(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="x87aa71d">&dagger;</a></h4>
+<h4 id="content_1_13">WeilPairing(<em>m</em>, <em>P</em>, <em>Q</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="x87aa71d">&dagger;</a></h4>
 <p>returns e_<em>m</em>(<em>P</em>,<em>Q</em>) by using Miller's algorithm. suppose divisor class is [0].<br /></p>
 
-<h4 id="content_1_12">BSGS(P) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="e64c715e">&dagger;</a></h4>
-<p>returns m such that m<em>P</em>=[0].<br /></p>
+<h4 id="content_1_14">BSGS(P) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="e64c715e">&dagger;</a></h4>
+<p>returns m such that m<em>P</em>=[0].<br />
+Because of failure to apply BSGS to small group, call pointorder(P) instead of BSGS Algorithms if order of finite field is less than 40.</p>
 
-<h4 id="content_1_13">DLP_BSGS(<em>n</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="p63c548c">&dagger;</a></h4>
+<h4 id="content_1_15">DLP_BSGS(<em>n</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="p63c548c">&dagger;</a></h4>
 <p>returns m such that <em>Q</em>=m<em>P</em>. <em>P</em>, <em>Q</em> are in the subgroup of order <em>n</em>.<br /></p>
 
-<h4 id="content_1_14">structure() <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="hd102abc">&dagger;</a></h4>
+<h4 id="content_1_16">structure() <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="hd102abc">&dagger;</a></h4>
 <p>returns the group structure (n1, n2) of the E(Fp) by using Weil Pairing.<br /></p>
 </div>
 
@@ -89,7 +98,7 @@ In general, given EC characteristic specified, you should call <strong><a href="
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

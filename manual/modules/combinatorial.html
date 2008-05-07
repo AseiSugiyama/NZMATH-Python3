@@ -42,7 +42,11 @@ binomial(0,0) = 1.</p>
 <p>Return <em>n</em>-th Catalan number.<br />
 (new in 0.4.0)</p>
 
-<h4 id="content_1_6">combinationIndexGenerator(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="j6613d96">&dagger;</a></h4>
+<h4 id="content_1_6">euler(<em>n</em>)  <a class="anchor_super" id="lf6739e4">&dagger;</a></h4>
+<p>Return <em>n</em>-th Euler number.<br />
+(new in 0.90.0)</p>
+
+<h4 id="content_1_7">combinationIndexGenerator(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="j6613d96">&dagger;</a></h4>
 <p>Generate indeces of m elment subsets of n element set.</p>
 <p>For example:</p>
 <pre>       &gt;&gt;&gt; for idx in combinationIndexGenerator(5,3):
@@ -61,32 +65,32 @@ binomial(0,0) = 1.</p>
        &gt;&gt;&gt;</pre>
 <p>(moved from <a href="zassenhaus.html" title="zassenhaus.py">zassenhaus.py</a> in 0.5.0)</p>
 
-<h4 id="content_1_7">fallingfactorial(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="nc2585cb">&dagger;</a></h4>
+<h4 id="content_1_8">fallingfactorial(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="nc2585cb">&dagger;</a></h4>
 <p>Return the falling factorial; <em>n</em> to the <em>m</em> falling, i.e. <em>n</em>(<em>n</em>-1)..(<em>n</em>-<em>m</em>+1).<br />
 (new in 0.5.0)</p>
 
-<h4 id="content_1_8">risingfactorial(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="s4149af6">&dagger;</a></h4>
+<h4 id="content_1_9">risingfactorial(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="s4149af6">&dagger;</a></h4>
 <p>Return the rising factorial; <em>n</em> to the <em>m</em> rising, i.e. <em>n</em>(<em>n</em>+1)..(<em>n</em>+<em>m</em>-1).<br />
 (new in 0.5.0)</p>
 
-<h4 id="content_1_9">multinomial(<em>n</em>, <em>parts</em>)  <a class="anchor_super" id="u768f878">&dagger;</a></h4>
+<h4 id="content_1_10">multinomial(<em>n</em>, <em>parts</em>)  <a class="anchor_super" id="u768f878">&dagger;</a></h4>
 <p>Return multinomial coefficient.<br />
 <em>parts</em> MUST be a sequence of natural numbers and <em>n</em>==sum(<em>parts</em>) holds.<br />
 (new in 0.5.0)</p>
 
-<h4 id="content_1_10">partitionGenerator(<em>n</em> [, <em>maxi</em>])  <a class="anchor_super" id="g03e8eb1">&dagger;</a></h4>
+<h4 id="content_1_11">partitionGenerator(<em>n</em> [, <em>maxi</em>])  <a class="anchor_super" id="g03e8eb1">&dagger;</a></h4>
 <p>Generate partitions of <em>n</em>.<br />
 If <em>maxi</em> is given, then addends are limited to at most <em>maxi</em>.<br />
 (new in 0.5.0)</p>
 
-<h4 id="content_1_11">bell(<em>n</em>)  <a class="anchor_super" id="u8580930">&dagger;</a></h4>
+<h4 id="content_1_12">bell(<em>n</em>)  <a class="anchor_super" id="u8580930">&dagger;</a></h4>
 <p>Return n-th Bell number.</p>
 <p>The Bell number b is defined by:</p>
 <pre> b(n) = \sum_{i=0}^{n} S(n, i)</pre>
 <p>where S denotes Stirling number of the second kind.<br />
 (new in 0.7.0)</p>
 
-<h4 id="content_1_12">stirling1(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="q56b4938">&dagger;</a></h4>
+<h4 id="content_1_13">stirling1(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="q56b4938">&dagger;</a></h4>
 <p>Stirling number of the first kind.</p>
 <p>Let s denote the Stirling number, (x)_n falling factorial, then</p>
 <pre> (x)_n = \sum_{i=0}^{n} s(n, i) * x**i</pre>
@@ -94,7 +98,7 @@ If <em>maxi</em> is given, then addends are limited to at most <em>maxi</em>.<br
 <pre> s(n, m) = s(n-1, m-1) - (n-1)*S(n-1, m)</pre>
 <p>(new in 0.7.0)</p>
 
-<h4 id="content_1_13">stirling2(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="i45da85a">&dagger;</a></h4>
+<h4 id="content_1_14">stirling2(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="i45da85a">&dagger;</a></h4>
 <p>Stirling number of the second kind.</p>
 <p>Let S denote the Stirling number, (x)_i falling factorial, then:</p>
 <pre> x**n = \sum_{i=0}^{n} S(n, i) * (x)_i</pre>
@@ -109,7 +113,7 @@ If <em>maxi</em> is given, then addends are limited to at most <em>maxi</em>.<br
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

@@ -18,32 +18,42 @@
 
 <hr class="full_hr" />
 <div id="body"><p><a href="../index.html" title="UserManual">UserManual</a><br /></p>
-<h2 id="content_1_0">lattice  <a class="anchor_super" id="u964d33d">&dagger;</a></h2>
-<p>lattice module provides lattice.<br /></p>
+<h2 id="content_1_0">lattice  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>lattice module provides lattice.</p>
 <div class="contents">
 <a id="contents_1"></a>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#u964d33d"> lattice </a></li>
-<li><a href="#jd7a7c72"> class Lattice </a>
-<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#n6d369d4"> Constructor </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#s21a6e82"> Lattice(basis, quadraticForm) </a></li></ul></li>
-<li><a href="#f6cd31d8"> Methods </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ncfbf6fe"> LLL() </a></li></ul></li></ul></li></ul>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  lattice </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ld042ad9">  LLL(basis, quadraicform = None, delta = 0.75) </a></li></ul></li>
+<li><a href="#class">  Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#lattice">  Lattice </a></li>
+<li><a href="#latticeelement">  LatticeElement </a></li></ul></li></ul></li></ul>
 </div>
 
 
-<h2 id="content_1_1">class Lattice  <a class="anchor_super" id="jd7a7c72">&dagger;</a></h2>
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="function">&dagger;</a></h3>
 
-<h3 id="content_1_2">Constructor  <a class="anchor_super" id="n6d369d4">&dagger;</a></h3>
+<h4 id="content_1_2">LLL(<em>basis</em>, <em>quadraicform = None</em>, <em>delta = 0.75</em>)  <a class="anchor_super" id="ld042ad9">&dagger;</a></h4>
+<p>Output LLL reduced basis and a transform matrix.
+If <em>qudraticform</em> is not specified (or None), distance is represented by the Euclid norm.</p>
+<p>Ex.1</p>
+<pre>&gt;&gt;&gt; M = matrix.Matrix(3, 3, [1, 2, 1, 2, 1, 2, 1, 1, 0])
+&gt;&gt;&gt; S = matrix.Matrix(3, 3, [1, 0, 0, 0, 1, 0, 0, 0, 1])
+&gt;&gt;&gt; lattice.LLL(M, S)
+([0, 1, 2]+[0, -1, 1]+[-1, 0, 0], [-1L, -1L, -1L]+[0L, 1L, 1L]+[1L, 0L, 1L])
+&gt;&gt;&gt; lattice.LLL(M)
+([0, 1, 2]+[0, -1, 1]+[-1, 0, 0], [-1L, -1L, -1L]+[0L, 1L, 1L]+[1L, 0L, 1L])
+&gt;&gt;&gt; T = matrix.Matrix(3, 3, [1, 1, 0, 1, 1, 0, 0, 0, 1])
+&gt;&gt;&gt; lattice.LLL(M, T)
+([1, 0, 1]+[-1, 0, 2]+[0, -1, 0], [-1L, -1L, 0L]+[1L, 0L, 0L]+[0L, 1L, 1L])</pre>
 
-<h4 id="content_1_3">Lattice(basis, quadraticForm)  <a class="anchor_super" id="s21a6e82">&dagger;</a></h4>
-<p>basis and quadraticForm must be <a href="matrix.html#cmatrix" title="matrix.py">SquareMatrix</a>.</p>
 
-<h3 id="content_1_4">Methods  <a class="anchor_super" id="f6cd31d8">&dagger;</a></h3>
+<h3 id="content_1_3">Classes  <a class="anchor_super" id="class">&dagger;</a></h3>
+<p>These classes will be used in a future version.</p>
 
-<h4 id="content_1_5">LLL()  <a class="anchor_super" id="ncfbf6fe">&dagger;</a></h4>
-<p>Transforms basis into LLL-reduced basis, and returns its transformation matrix.<br /></p>
-<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>NOTE</dt>
-<dd>this method do self-modifying <em>alattice.basis</em>.<br /></dd></dl>
+<h4 id="content_1_4">Lattice  <a class="anchor_super" id="lattice">&dagger;</a></h4>
+
+<h4 id="content_1_5">LatticeElement  <a class="anchor_super" id="latticeelement">&dagger;</a></h4>
 </div>
 
 
@@ -52,7 +62,7 @@
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

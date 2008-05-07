@@ -24,7 +24,7 @@ It is a tuple-like object.</p>
 
 <h3 id="content_1_1">Constructor  <a class="anchor_super" id="h07981a4">&dagger;</a></h3>
 
-<h4 id="content_1_2">TermIndeces(indeces)  <a class="anchor_super" id="s332a94d">&dagger;</a></h4>
+<h4 id="content_1_2">TermIndeces(<em>indeces</em>)  <a class="anchor_super" id="s332a94d">&dagger;</a></h4>
 <p>The constructor does not check the validity of indeces,
 such as integerness, nonnegativity, etc.</p>
 
@@ -34,7 +34,15 @@ such as integerness, nonnegativity, etc.</p>
 <p>Return the index at <em>pos</em> and a new TermIndeces object as the
 omitting-the-<em>pos</em> indeces.</p>
 
-<h3 id="content_1_5">Operators  <a class="anchor_super" id="nf653b76">&dagger;</a></h3>
+<h4 id="content_1_5">gcd(<em>other</em>)  <a class="anchor_super" id="y078750c">&dagger;</a></h4>
+<p>Return &quot;gcd&quot; of indeces with other indeces.<br />
+(new in 0.*.*)</p>
+
+<h4 id="content_1_6">lcm(<em>other</em>)  <a class="anchor_super" id="f538b592">&dagger;</a></h4>
+<p>Return &quot;lcm&quot; of indeces with other indeces.<br />
+(new in 0.*.*)</p>
+
+<h3 id="content_1_7">Operators  <a class="anchor_super" id="nf653b76">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">t == u, t != u</td><td class="style_td">equality</td></tr><tr><td class="style_td">t + u</td><td class="style_td">componentwise addition</td></tr><tr><td class="style_td">t - u</td><td class="style_td">componentwise subtraction</td></tr><tr><td class="style_td">t * a</td><td class="style_td">scalar multiplication</td></tr><tr><td class="style_td">t &lt;= u, t &lt; u, t &gt;= u, t &gt; u</td><td class="style_td">ordering</td></tr><tr><td class="style_td">t[k]</td><td class="style_td">k-th index</td></tr><tr><td class="style_td">len(t)</td><td class="style_td">length</td></tr><tr><td class="style_td">iter(t)</td><td class="style_td">iterator</td></tr><tr><td class="style_td">hash(t)</td><td class="style_td">hash</td></tr></tbody></table></div>
 </div>
 
@@ -44,7 +52,7 @@ omitting-the-<em>pos</em> indeces.</p>
 
 
 <div id="footer">
- Copyright &copy; 2003-2007,<a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>
