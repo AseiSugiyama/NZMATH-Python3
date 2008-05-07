@@ -516,8 +516,8 @@ class MatAlgNumber(object):
         return MatAlgNumber(coeff, self.polynomial)
         
     def inverse(self):
-        mat = self.matrix
-        inv = mat.inverse()
+        (self.matrix).toFieldMatrix()
+        inv = (self.matrix).inverse()
         coeff = []
         for i in range(inv.row):
             coeff.append(inv[i+1][1])
@@ -559,6 +559,7 @@ class ApproxAlgNumber:
         self.coeff = coefficient
         self.degree = len(self.coeff)
         self.polynomial = poly
+        self.field = NumberField(self.polynomial)
         conj = equation.SimMethod(self.polynomial)
         self.conj = conj
         self.base_approx = approx
@@ -602,6 +603,29 @@ class ApproxAlgNumber:
     def __sub__(self, other):
         return self.__add__(-other)
 
+    def __mul__(self, other):
+        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial)*BasicAlgNumber([other.coeff, 1], other.polynomial)).coeff
+        return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
+
+    def __pow__(self, power):
+        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial)**power).coeff
+        return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
+
+    def trace(self):
+        a = BasicAlgNumber([self.coeff, 1], self.polynomial)
+        return a.trace()
+
+    def norm(self):
+        a = BasicAlgNumber([self.coeff, 1], self.polynomial)
+        return a.norm()
+
+    def ch_basic(self):
+        return BasicAlgNumber([self.coeff, 1], self.polynomial)
+
+    def ch_matrix(self):
+        return MatAlgNumber(self.coeff, self.polynomial)
+
+
 def changetype(a, polynomial):
     """
     Change a integer 'a' to be an element of field K defined polynomial
@@ -627,50 +651,6 @@ def disc(A):
     list.append(s.trace())
     M = matrix.createMatrix(n, n, list)
     return M.determinant()
-
-class Module:
-    def __init__(self, denominator, form, field):
-        #form is a integer matrix.
-        #field is a Number field.
-        self.denominator = denominator
-        self.field = field
-        self.form = form
-        self.transform = form.transpose()
-        self.hnf = self.form.hermiteNormalForm()
-        self.transhnf = self.hnf.transpose()
-        self.rank = self.hnf.rank()
-        
-    def __repr__(self):
-        return '%s(%s, %s)' % (self.__class__.__name__, [self.denominator, repr(self.transhnf)], repr(self.field))
-
-    def __add__(self, other):
-        return "Not Implemented"
-
-    def isSameModele(self, other):
-        if self.hnf == other.hnf:
-            return True
-        else:
-            return "Can not determined"
-
-class Module_element:
-    def __init__(self, coefficient, module):
-        #coefficient is a vector.
-        self.coefficient = coefficient
-        self.module = module
-
-    def __repr__(self):
-        return '%s(%s, %s)' % (self.__class__.__name__, self.coefficient, repr(self.module))
-        
-    def __add__(self, other):
-        coeff = self.coefficient + other.coefficient
-        return Module_element(coeff, self.module)
-
-    def __sub__(self, other):
-        coeff = self.coefficient + other.coefficient
-        return Module_element(coeff, self.module)
-
-    def __mul__(self, a):
-        return Module_element(a*self.coefficient, self.module)
 
 def qpoly(coeffs):
     """
