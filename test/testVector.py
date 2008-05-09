@@ -39,8 +39,8 @@ class VectorTest(unittest.TestCase):
 
     def testIterator(self):
         v = vector.Vector([2, 0, -9])
-	l = list(v)
-	self.assertEqual(3, len(l), str(l))
+        l = list(v)
+        self.assertEqual(3, len(l), str(l))
 
 
 class InnerProductTest (unittest.TestCase):
