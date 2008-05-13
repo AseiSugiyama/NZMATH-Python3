@@ -1,5 +1,5 @@
 TMPDIR = /tmp/nzmath-build
-PYTHON = python2.3
+PYTHON = python2.5
 HTMLPY = $(PYTHON) rst2html.py
 OLD_VER = 0.7.0
 NEW_VER = 0.90.0

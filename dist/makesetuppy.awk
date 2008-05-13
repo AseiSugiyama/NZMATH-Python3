@@ -6,6 +6,7 @@
 BEGIN {
     version = ARGV[1];
     ARGV[1] = "";
+    openbracket = 0;
 
     print "from distutils.core import setup";
     print "";
@@ -19,6 +20,12 @@ BEGIN {
     print "    author = 'NZMATH development group',";
     print "    author_email = 'nzmath-user@tnt.math.metro-u.ac.jp',";
     print "    description = 'number theory oriented calculation system',";
+    print "    classifiers = ['Development Status :: 4 - Beta',";
+    print "                   'License :: OSI Approved :: BSD License',";
+    print "                   'Operating System :: OS Independent',";
+    print "                   'Programming Language :: Python',";
+    print "                   'Topic :: Scientific/Engineering :: Mathematics',";
+    print "                  ],";
     print "";
     print "    packages = ['nzmath', 'nzmath.factor', 'nzmath.poly'],";
     print "";
@@ -29,6 +36,7 @@ BEGIN {
     if(directory !~ /CVS$/) {
 	print "        (doc_prefix + '" directory "', [";
 	cont = 0;
+	openbracket = openbracket + 1;
     }
 }
 /(css|html)$/ {
@@ -37,9 +45,12 @@ BEGIN {
 /^$/ && !cont{
     print "        ]),";
     cont = 1;
+    openbracket = openbracket - 1;
 }
 END {
-    print "        ]),";
+    for(i = openbraket; i > 0; i = i - 1) {
+	print "        ]),";
+    }
     print "    ]";
     print ")";
 }

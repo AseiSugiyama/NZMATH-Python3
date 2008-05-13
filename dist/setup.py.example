@@ -9,6 +9,11 @@ setup (
     author="NZMATH development group",
     author_email="nzmath-user@tnt.math.metro-u.ac.jp",
     description="number theory oriented calculation system",
+    classifiers=["Development Status :: 4 - Beta",
+                 "License :: OSI Approved :: BSD License",
+                 "Operating System :: OS Independent",
+                 "Programming Language :: Python",
+                 "Topic :: Scientific/Engineering :: Mathematics"],
 
     packages=["nzmath", "nzmath.factor", "nzmath.poly"],
 
