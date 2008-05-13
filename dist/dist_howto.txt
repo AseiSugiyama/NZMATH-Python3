@@ -1,0 +1,117 @@
+How to release NZMATH
+=====================
+
+This manual explains how to release new NZMATH version.  It is
+intended to be self-contained.  The release manager should take the
+steps below on a Unix(-like) system.  He/she needs CVS access on the
+process, and ssh access to the web server.
+
+
+Steps
+-----
+0. Decide the version number.
+
+   The current versioning scheme is as follows.  The version has three
+   components: major, minor and micro.  Each of them starts from zero.
+   The minor (micro) version is reset if major (resp. minor) version
+   is incremented.  The major version changes with the base Python
+   version that the NZMATH supports.  For example, all of NZMATH 0.x.x
+   run on Python 2.3 or higher.  The minor version changes with the
+   module structure; additions or deletions of modules or sub-package.
+   The micro version reflects other changes like bug fixes.
+
+1. Update documents in dist directory.
+
+   There are README.txt, CHANGES.txt, HISTORY.txt etc.
+   Makefile has OLD_VER and NEW_VER variables, and they should be
+   reflect the current and newly decided versions.
+
+2. HTMLize the manual.
+
+   Consult dist/nzmathwiki.py for more details.
+
+3. Tag in CVS.
+
+   The files are ready to be distributed by the previous steps. To
+   make them named in the history, tag them in CVS repository.  The
+   command line looks like:
+       % cvs tag release-x_y_z *
+   on nmath directory, where x, y and z are major, minor and micro
+   versions respectively.
+
+   If you later need change the revision to be tagged, you can use -F
+   option of 'cvs tag'.
+
+4. Retrieve the tagged files.
+
+   You need a fresh copies of files, since the working copy of CVS may
+   contain garbage files.  Please change your current directory to
+   somewhere else; a recommended place is ~/tmp (if you have).
+       % cd ~/tmp
+       % cvs -d $CVSROOT export -r release-x_y_z nmath
+   These retrieve the tagged files in ~/tmp/nmath without control data
+   of CVS.  CVSROOT for sf.net is (by replacing the account):
+       :ext:account@nzmath.cvs.sourceforge.net:/cvsroot/nzmath
+
+5. Make a distribution file.
+
+   Run 'make' in dist subdirectory:
+       % cd ~/tmp/nmath/dist
+       % make
+   Then, NZMATH-x.y.z.tar.gz will be in /tmp/nzmath-build/dist
+   directory (note that it is not ~/tmp you may be using but /tmp).
+
+   There is no current practice to make a package for Windows.
+
+6. Make a test distribution file.
+
+   The tests also should be distributed.  There is no automation to
+   construct the test distribution file, so do the followings:
+       % cd ~/tmp/nmath
+       % tar zcf NZMATH-test-x.y.z.tar.gz test/
+   Needless to say, x.y.z has to be replaced by yourself with the real
+   version you choose.
+
+7. Try them by yourself.
+
+   To make sure the files created are flawless, it is recommended to
+   try to install them on your machine.
+
+8. Put the distribution file on the web.
+
+   The distribution files NZMATH-x.y.z.tar.gz and
+   NZMATH-test-x.y.z.tar.gz have to be made public.
+
+   Currently, we use http://tnt.math.metro-u.ac.jp/nzmath as the main
+   web site of the NZMATH project, so put the file onto it.  Then
+   update index.html manually, replace README.html by generated one(*)
+   and the manual directory by the same files as in the distribution.
+
+   For this step, you need SSH and CVS access to the tnt server.
+
+   (*) It is in /tmp/nzmath-build.  If you don't have docutils
+       installed, then README.html has size 0.  In that case, you have
+       to manually update it.
+
+   The secondary download site is sourceforge.net.  There is a help
+   page on sourceforge.net, so the series of steps described here is
+   just a rough guideline.
+   1) upload NZMATH-x.y.z.tar.gz and NZMATH-test-x.y.z.tar.gz by
+      anonymous ftp.
+   2) create new release names from the web interface.
+   3) go on to pick up the files as new release files.
+
+   For this part, you need relese management permission on the
+   sourceforge.net nzmath project.
+
+9. Announce.
+
+   Very few people will notice the update until you announce it.  The
+   places to announce are currently the nzmath-user ML and the
+   sourceforgef.net project news.  For the latter, you need right to
+   submit a news on sourceforge.net nzmath project.  You can use the
+   previous announcements as templates.
+
+10. Finished.
+
+   OK, you've done it.
