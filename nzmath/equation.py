@@ -4,9 +4,9 @@ import cmath
 import logging
 
 import nzmath.arith1 as arith1
-import nzmath.polynomial as polynomial
-import nzmath.finitefield as finitefield
 import nzmath.bigrange as bigrange
+import nzmath.finitefield as finitefield
+import nzmath.poly.uniutil as uniutil
 
 _log = logging.getLogger('nzmath.equation')
 _log.setLevel(logging.DEBUG)
@@ -188,9 +188,9 @@ def _SimMethod(g, initials=None, newtoninitial=None, repeat=250):
     else:
         z = initials
 
-    f = polynomial.OneVariableDensePolynomial(g, 'x')
+    f = uniutil.OneVariableDensePolynomial(g, 'x')
     deg = f.degree()
-    df = f.differentiate('x')
+    df = f.differentiate()
 
     value_list = [f(z[i]) for i in range(deg)]
     for loop in range(repeat):
