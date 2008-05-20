@@ -79,7 +79,7 @@ class Ring (object):
         """
         Inequality test.
         """
-        return not (self == other)
+        return not self.__eq__(other)
 
 
 class CommutativeRing (Ring):
@@ -160,13 +160,21 @@ class CommutativeRing (Ring):
         """
         Return True if 'action_ring' is registered to provide action.
         """
-        return action_ring in self._actions
+        if action_ring in self._actions:
+            return True
+        for action_superring in self._actions:
+            if action_ring.issubring(action_superring):
+                return True
+        return False
 
     def getaction(self, action_ring):
         """
         Return the registered action for 'action_ring'.
         """
-        return self._actions[action_ring]
+        for action_superring in self._actions:
+            if action_ring.issubring(action_superring):
+                return self._actions[action_superring]
+        raise KeyError("no action is defined")
 
 
 class Field (CommutativeRing):
@@ -199,8 +207,10 @@ class Field (CommutativeRing):
 
     def gcd(self, a, b):
         """
-        A field is trivially a ufd and shuold be provide gcd.
+        A field is trivially a ufd and shuold provide gcd.
         """
+        if not a and not b:
+            return self.zero
         return self.one
 
     def getQuotientField(self):
@@ -223,9 +233,14 @@ class QuotientField (Field):
         """
         # This class is abstract and cannot be instanciated.
         if type(self) is QuotientField:
-            raise NotImplementedError
+            raise NotImplementedError("QuotientField is an abstract class")
         Field.__init__(self)
         self.basedomain = domain
+
+        def baseaction(baseelement, quotient):
+            return quotient.__class__(baseelement * quotient.numerator, quotient.denominator)
+        
+        self.registerModuleAction(self.basedomain, baseaction)
 
 
 class RingElement (object):
@@ -340,22 +355,49 @@ class QuotientFieldElement (FieldElement):
         self.denominator = denominator
 
     def __add__(self, other):
-        numerator = self.numerator*other.denominator + self.denominator*other.numerator
-        denominator = self.denominator*other.denominator
-        return self.__class__(numerator, denominator)
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator = self.numerator*other.denominator + self.denominator*other.numerator
+            denominator = self.denominator*other.denominator
+            return self.__class__(numerator, denominator)
+        try:
+            return self + self.getRing().one.mul_module_action(other)
+        except TypeError:
+            return NotImplemented
+
+    __radd__ = __add__
 
     def __sub__(self, other):
-        numerator = self.numerator*other.denominator - self.denominator*other.numerator
-        denominator = self.denominator*other.denominator
-        return self.__class__(numerator, denominator)
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator = self.numerator*other.denominator - self.denominator*other.numerator
+            denominator = self.denominator*other.denominator
+            return self.__class__(numerator, denominator)
+        try:
+            return self - self.getRing().one.mul_module_action(other)
+        except TypeError:
+            return NotImplemented
+
+    def __rsub__(self, other):
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator = self.denominator*other.numerator - self.numerator*other.denominator
+            denominator = self.denominator*other.denominator
+            return self.__class__(numerator, denominator)
+        try:
+            return self.getRing().one.mul_module_action(other) - self
+        except TypeError:
+            return NotImplemented
 
     def __neg__(self):
         return self.__class__(-self.numerator, self.denominator)
 
     def __mul__(self, other):
-        numerator = self.numerator * other.numerator
-        denominator = self.denominator * other.denominator
-        return self.__class__(numerator, denominator)
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator = self.numerator * other.numerator
+            denominator = self.denominator * other.denominator
+            return self.__class__(numerator, denominator)
+        try:
+            return self.mul_module_action(other)
+        except TypeError:
+            return NotImplemented
 
     __rmul__ = __mul__
 
@@ -363,9 +405,24 @@ class QuotientFieldElement (FieldElement):
         return self.__class__(self.numerator ** index, self.denominator ** index)
 
     def __truediv__(self, other):
-        numerator = self.numerator * other.denominator
-        denominator = self.denominator * other.numerator
-        return self.__class__(numerator, denominator)
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator = self.numerator * other.denominator
+            denominator = self.denominator * other.numerator
+            return self.__class__(numerator, denominator)
+        try:
+            return self * self.getRing().one.mul_module_action(other).inverse()
+        except TypeError:
+            return NotImplemented
+
+    def __rtruediv__(self, other):
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            numerator =  other.numerator * self.denominator
+            denominator = other.denominator * self.numerator
+            return self.__class__(numerator, denominator)
+        try:
+            return self.getRing().one.mul_module_action(other) * self.inverse()
+        except TypeError:
+            return NotImplemented
 
     __div__ = __truediv__
 
@@ -373,7 +430,12 @@ class QuotientFieldElement (FieldElement):
         return self.__class__(self.denominator, self.numerator)
 
     def __eq__(self, other):
-        return self.numerator*other.denominator == self.denominator*other.numerator
+        if hasattr(other, "numerator") and hasattr(other, "denominator"):
+            return self.numerator*other.denominator == self.denominator*other.numerator
+        try:
+            return self == self.getRing().one.mul_module_action(other)
+        except TypeError:
+            return NotImplemented
 
 
 class Ideal (object):
