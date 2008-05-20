@@ -24,6 +24,7 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         method, no actual initialization happens.
         """
         formalsum.FormalSumContainerInterface.__init__(self)
+        self.number_of_variables = 1
 
     def __eq__(self, other):
         """
