@@ -57,8 +57,8 @@ def floorpowerroot(n, k):
 
 def legendre(a, m):
     """
-    This function returns Legendre symbol (a/m)
-    If m is a odd composite then this is Jacobi symbol
+    This function returns the Legendre symbol (a/m).
+    If m is an odd composite then this is the Jacobi symbol.
     """
     a = a % m
     symbol = 1
@@ -116,10 +116,10 @@ def expand(n, m):
     n and m should satisfy n > m > 0.
     """
     k = []
-    while n // m:
+    while n >= m:
         k.append(n % m)
         n //= m
-    k.append(n%m)
+    k.append(n)
     return k
 
 def inverse(x, p):
