@@ -1068,13 +1068,10 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
         Return the quotient field of the ring if coefficient ring has
         its quotient field.  Otherwise, an exception will be raised.
         """
-        try:
-            coefficientField = self._coefficient_ring.getQuotientField()
-            import nzmath.rationalFunction as rationalfunction
-            # use always "x" as the variable name
-            return rationalfunction.RationalFunctionField(coefficientField, "x")
-        except Exception:
-            raise
+        coefficientField = self._coefficient_ring.getQuotientField()
+        import nzmath.rationalFunction as rationalfunction
+        # use always "x" as the variable name
+        return rationalfunction.RationalFunctionField(coefficientField, "x")
 
     def __eq__(self, other):
         """
