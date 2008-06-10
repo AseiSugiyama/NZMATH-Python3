@@ -99,6 +99,7 @@ class CommutativeRing (Ring):
         Ring.__init__(self)
         self.properties = CommutativeRingProperties()
         self._actions = {}
+        self._actions_order = []
 
     def getQuotientField(self):
         """
@@ -155,6 +156,12 @@ class CommutativeRing (Ring):
         'action' so the ring be an 'action_ring' module.
         """
         self._actions[action_ring] = action
+        for i in range(len(self._actions_order) - 1, -1, -1):
+            if self._actions_order[i].issubring(action_ring):
+                self._actions_order.insert(i + 1, action_ring)
+                break
+        else:
+            self._actions_order.insert(0, action_ring)
 
     def hasaction(self, action_ring):
         """
@@ -162,7 +169,7 @@ class CommutativeRing (Ring):
         """
         if action_ring in self._actions:
             return True
-        for action_superring in self._actions:
+        for action_superring in self._actions_order:
             if action_ring.issubring(action_superring):
                 return True
         return False
@@ -171,7 +178,7 @@ class CommutativeRing (Ring):
         """
         Return the registered action for 'action_ring'.
         """
-        for action_superring in self._actions:
+        for action_superring in self._actions_order:
             if action_ring.issubring(action_superring):
                 return self._actions[action_superring]
         raise KeyError("no action is defined")
@@ -294,10 +301,14 @@ class CommutativeRingElement (RingElement):
         Return the result of a module action.
         other must be in one of the action rings of self's ring.
         """
-        self_ring = self.getRing()
-        other_ring = getRing(other)
-        if self_ring.hasaction(other_ring):
-            return self_ring.getaction(other_ring)(other, self)
+        try:
+            self_ring = self.getRing()
+            other_ring = getRing(other)
+            if self_ring.hasaction(other_ring):
+                return self_ring.getaction(other_ring)(other, self)
+        except RuntimeError, e:
+            #print "mul_module_action", e
+            raise
         raise TypeError("no module action with %s" % str(other_ring))
 
     def exact_division(self, other):
