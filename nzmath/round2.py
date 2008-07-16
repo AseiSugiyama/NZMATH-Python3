@@ -294,7 +294,7 @@ def _factor_minpoly_modp(minpoly_coeff, p):
     Fp = finitefield.FinitePrimeField.getInstance(p)
     theminpoly_p = uniutil.polynomial([(d, Fp.createElement(c)) for (d, c) in enumerate(minpoly_coeff)], Fp)
     modpfactors = theminpoly_p.factor()
-    mini_p = product([t for (t, e) in modpfactors])
+    mini_p = arith1.product([t for (t, e) in modpfactors])
     quot_p = theminpoly_p.exact_division(mini_p)
     mini = _min_abs_poly(mini_p)
     quot = _min_abs_poly(quot_p)
@@ -361,16 +361,6 @@ def _normalize_int(elem):
         return elem.numerator
     else:
         raise ValueError("non integer: %s" % str(elem))
-
-def product(numberlist):
-    """
-    Return the product (result of * operator) of elements of given
-    numberlist.
-    """
-    result = numberlist[0]
-    for number in numberlist[1:]:
-        result *= number
-    return result
 
 def _default_omega(degree):
     """
@@ -490,7 +480,7 @@ class ModuleWithDenominator (object):
         Return determinant of the basis (basis ought to be of full
         rank and in Hermite normal form).
         """
-        return product([rational.Rational(self.basis[i][i], self.denominator) for i in range(self.rank)])
+        return arith1.product([rational.Rational(self.basis[i][i], self.denominator) for i in range(self.rank)])
 
     def linear_combination(self, coefficients):
         """

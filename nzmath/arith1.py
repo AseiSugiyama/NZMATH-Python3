@@ -2,6 +2,7 @@
 Miscellaneous arithmetic functions
 """
 
+import itertools
 import math
 import random
 import nzmath.gcd as gcd
@@ -285,3 +286,24 @@ def log(n, base=2):
 
 def _log10(n):
     return len(str(n))-1
+
+def product(iterable, init=None):
+    """
+    product(iterable) is a product of all elements in iterable.  If
+    init is given, the multiplication starts with init instead of the
+    first element in iterable. If the iterable is empty, then init or
+    1 will be returned.
+
+    If iterable is an iterator, it will be exhausted.
+    """
+    iterator = iter(iterable)
+    if init is None:
+        try:
+            result = iterator.next()
+        except StopIteration:
+            return 1 # empty product
+    else:
+        result = init
+    for item in iterator:
+        result *= item
+    return result

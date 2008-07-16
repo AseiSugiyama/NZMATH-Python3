@@ -82,6 +82,11 @@ class Arith1Test (unittest.TestCase):
         self.assertAlmostEqual(1.4567910310469068692, arith1.AGM(1, 2))
         self.assertAlmostEqual(1.8636167832448965424, arith1.AGM(1, 3))
 
+    def testProduct(self):
+        self.assertEqual(1, arith1.product([]))
+        self.assertEqual(120, arith1.product(xrange(1, 6)))
+        self.assertEqual(14400, arith1.product(i**2 for i in range(1, 6)))
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
