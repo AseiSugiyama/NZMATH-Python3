@@ -1,6 +1,5 @@
 from __future__ import division
 # standard modules
-import operator
 import itertools
 import cmath
 # NZMATH modules
