@@ -42,13 +42,13 @@ BEGIN {
 /(css|html)$/ {
     print "         '" directory "/" $0 "',";
 }
-/^$/ && !cont{
+/^$/ && !cont {
     print "        ]),";
     cont = 1;
     openbracket = openbracket - 1;
 }
 END {
-    for(i = openbraket; i > 0; i = i - 1) {
+    for(i = openbracket; i > 0; i = i - 1) {
 	print "        ]),";
     }
     print "    ]";
