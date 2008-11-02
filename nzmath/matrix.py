@@ -27,12 +27,13 @@ class Matrix(object):
             self.row = row
             self.column = column
             self.compo = []
-            if isinstance(compo, ring.Ring):
+            if isinstance(compo, (ring.Ring, int)):
                 coeff_ring = compo
                 compo = 0
             if compo == 0:
                 zero = 0
                 if coeff_ring != 0:
+                    coeff_ring = _getRing(coeff_ring)
                     zero = coeff_ring.zero
                 for i in range(self.row):
                     self.compo.append([zero] * self.column)
@@ -82,7 +83,12 @@ class Matrix(object):
             if coeff_ring == 0:
                 self.coeff_ring = ring.getRing(self.compo[0][0])
             else:
-                self.coeff_ring = coeff_ring
+                self.coeff_ring = coeff_ring = _getRing(coeff_ring)
+                if not(isinstance(ring.getRing(self.compo[0][0]), coeff_ring.__class__)):
+                    compos = []
+                    for i in range(self.row):
+                        compos.append(map(coeff_ring.createElement, self.compo[i]))
+                    self.compo = compos
         else:
             raise ValueError, "invalid value for matrix size"
 
@@ -455,7 +461,7 @@ class SquareMatrix(Matrix):
         """
         initialize matrix.
         """
-        if isinstance(compo, ring.Ring):
+        if isinstance(compo, (ring.Ring, int)):
             coeff_ring = compo
             compo = 0
         if isinstance(column, list):
@@ -1354,8 +1360,6 @@ class FieldSquareMatrix(RingSquareMatrix, FieldMatrix):
         """
         Return determinant of self.
         """
-        if self.row != self.column:
-            raise MatrixSizeError, "not square matrix"
         triangle = self.triangulate()
         det = self.coeff_ring.one
         for i in range(1, self.row + 1):
@@ -1716,7 +1720,7 @@ def createMatrix(row, column=0, compo=0, coeff_ring=0):
     """
     generate new Matrix or SquareMatrix class.
     """
-    if isinstance(compo, ring.Ring):
+    if isinstance(compo, (ring.Ring, int)):
         coeff_ring = compo
         compo = 0
     if isinstance(column, list):
@@ -1725,6 +1729,8 @@ def createMatrix(row, column=0, compo=0, coeff_ring=0):
     elif isinstance(column, ring.Ring):
         coeff_ring = column
         column = row
+    if coeff_ring != 0 and isinstance(coeff_ring, int):
+        coeff_ring = _getRing(coeff_ring)
     if compo == 0:
         return zeroMatrix(row, column, coeff_ring)
     if coeff_ring == 0:
@@ -1807,3 +1813,17 @@ class NoInverseImage(Exception):
 class NoInverse(Exception):
     """Invalid input error because matrix is not invertible."""
     pass
+
+########## for utility
+def _getRing(coeff_ring):
+    """
+    If 'coeff_ring' represents characteristic, return F_p or Z_n instance.
+    """
+    if isinstance(coeff_ring, int):
+        try:
+            import nzmath.finitefield
+            coeff_ring = nzmath.finitefield.FinitePrimeField(coeff_ring)
+        except:
+            import nzmath.integerResidueClass
+            coeff_ring = nzmath.integerResidueClass.integerResidueClassRing(coeff_ring)
+    return coeff_ring
