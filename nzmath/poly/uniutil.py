@@ -676,8 +676,10 @@ class PrimeCharacteristicFunctionsProvider (object):
         if not self:
             raise ZeroDivisionError("polynomial division or modulo by zero.")
         polynom %= self
-        if index == 1:
+        if index == 1 or not polynom:
             return polynom
+        elif polynom.degree() == 0:
+            return self.getRing().createElement([(0, polynom[0]**index)])
         acoefficient = polynom.itercoefficients().next()
         one = ring.getRing(acoefficient).one
         power_product = self.__class__({0: one}, **self._init_kwds)

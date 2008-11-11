@@ -268,6 +268,14 @@ class FinitePrimeFieldPolynomialTest (unittest.TestCase):
         d = F7.createElement(b ** 2 - 4 * a * c)
         self.assertEqual(d, q1.discriminant())
 
+    def testModPow(self):
+        F17 = finitefield.FinitePrimeField.getInstance(17)
+        a, b, c = 2, 5, 1
+        q1 = uniutil.FinitePrimeFieldPolynomial(enumerate([c, b, a]), coeffring=F17)
+        m = uniutil.FinitePrimeFieldPolynomial(enumerate([c, a]), coeffring=F17)
+        self.assertEqual(q1 ** 3 % m, m.mod_pow(q1, 3))
+        self.assertEqual(q1 ** 70 % m, m.mod_pow(q1, 70))
+
 
 class InjectVariableTest (unittest.TestCase):
     def testInject(self):
