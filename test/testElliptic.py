@@ -125,6 +125,12 @@ class OrderTest (unittest.TestCase):
         byNaive = e.naive()
         assert bySchoof == byNaive
 
+    def testEqual233(self):
+        e = elliptic.EC([2, 5], 233)
+        bySchoof = e.Schoof()
+        byNaive = e.naive()
+        self.assertEqual(byNaive, bySchoof)
+
 
 class PairingTest (unittest.TestCase):
     def testLine(self):
