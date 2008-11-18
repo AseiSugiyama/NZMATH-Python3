@@ -85,7 +85,7 @@ class DivisionProvider (object):
         """
         if type(self) is DivisionProvider:
             raise NotImplementedError(_MIXIN_MSG % self.__class__.__name__)
-        self._reduced = None
+        self._reduced = {}
 
     def __divmod__(self, other):
         """
@@ -139,17 +139,12 @@ class DivisionProvider (object):
         self should have attribute _reduced to cache reduced monomials.
         """
         degree, lc = self.order.leading_term(self)
-        if not self._reduced:
-            self._reduced = {}
-            one = ring.getRing(self.itercoefficients().next()).one
-            redux = self.__class__([(degree, one)], **self._init_kwds)
-            moniced = self.scalar_mul(one / lc)
-            for i in range(degree, degree * 2 + 1):
-                if self.order.degree(redux) == degree:
-                    redux -= moniced.scalar_mul(self.order.leading_coefficient(redux))
-                self._reduced[i] = redux
-                redux = redux.term_mul((1, 1))
         div_deg = self.order.degree(dividend)
+        if div_deg < degree:
+            return dividend
+        upperbound = min(degree * 2, div_deg) + 1
+        if not self._reduced or max(self._reduced.keys()) + 1 < upperbound:
+            self._populate_reduced(degree, lc, upperbound)
         if div_deg > degree * 2:
             dividend %= self.square()
         assert self.order.degree(dividend) <= degree * 2
@@ -162,6 +157,27 @@ class DivisionProvider (object):
                 else:
                     accum += self._reduced[d].scalar_mul(c)
         return accum + self.__class__(lowers, **self._init_kwds)
+
+    def _populate_reduced(self, degree, lc, upperbound):
+        """
+        Populate self._reduced.
+
+        degree, lc is of self, and self._reduced is populated up to
+        the given upperbound.
+        """
+        one = ring.getRing(self.itercoefficients().next()).one
+        if not self._reduced:
+            minimum = degree
+            redux = self.__class__([(degree - 1, one)], **self._init_kwds)
+        else:
+            minimum = max(self._reduced.keys()) + 1
+            redux = self._reduced[minimum - 1]
+        moniced = self.scalar_mul(one / lc)
+        for i in range(minimum, upperbound):
+            redux = redux.term_mul((1, 1))
+            if self.order.degree(redux) == degree:
+                redux -= moniced.scalar_mul(self.order.leading_coefficient(redux))
+            self._reduced[i] = redux
 
     def __truediv__(self, other):
         """
