@@ -158,6 +158,29 @@ class DivisionProvider (object):
                     accum += self._reduced[d].scalar_mul(c)
         return accum + self.__class__(lowers, **self._init_kwds)
 
+    def mod_pow(self, polynom, index):
+        """
+        Return polynom ** index % self.
+        """
+        if not self:
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
+        polynom %= self
+        if index == 1 or not polynom:
+            return polynom
+        elif polynom.degree() == 0:
+            return self.getRing().createElement([(0, polynom[0]**index)])
+        acoefficient = polynom.itercoefficients().next()
+        one = ring.getRing(acoefficient).one
+        power_product = self.__class__({0: one}, **self._init_kwds)
+        if index:
+            power_of_2 = polynom
+            while index:
+                if index % 2 == 1:
+                    power_product = self.mod(power_product * power_of_2)
+                power_of_2 = self.mod(power_of_2.square())
+                index //= 2
+        return power_product
+
     def _populate_reduced(self, degree, lc, upperbound):
         """
         Populate self._reduced.
@@ -682,29 +705,6 @@ class PrimeCharacteristicFunctionsProvider (object):
                 if index % 2 == 1:
                     power_product *= power_of_2
                 power_of_2 = power_of_2 * power_of_2
-                index //= 2
-        return power_product
-
-    def mod_pow(self, polynom, index):
-        """
-        Return polynom ** index % self.
-        """
-        if not self:
-            raise ZeroDivisionError("polynomial division or modulo by zero.")
-        polynom %= self
-        if index == 1 or not polynom:
-            return polynom
-        elif polynom.degree() == 0:
-            return self.getRing().createElement([(0, polynom[0]**index)])
-        acoefficient = polynom.itercoefficients().next()
-        one = ring.getRing(acoefficient).one
-        power_product = self.__class__({0: one}, **self._init_kwds)
-        if index:
-            power_of_2 = polynom
-            while index:
-                if index % 2 == 1:
-                    power_product = self.mod(power_product * power_of_2)
-                power_of_2 = self.mod(power_of_2.square())
                 index //= 2
         return power_product
 
