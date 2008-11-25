@@ -114,7 +114,7 @@ class EllipticTest(unittest.TestCase):
         # assert F.divPoly(1,7)==D[7]
 
 
-class OrderTest (unittest.TestCase):
+class OrderTest(unittest.TestCase):
     def testEqual(self):
         e = elliptic.EC([1,4],5)
         bySchoof = e.Schoof()
@@ -127,8 +127,10 @@ class OrderTest (unittest.TestCase):
 
     def testEqual233(self):
         e = elliptic.EC([2, 5], 233)
-        bySchoof = e.Schoof()
         byNaive = e.naive()
+        byShanksMestre = e.Shanks_Mestre()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, byShanksMestre)
         self.assertEqual(byNaive, bySchoof)
 
 

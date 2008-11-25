@@ -761,7 +761,7 @@ class ECoverFp(ECGeneric):
                         P = GCD(PolyMulRed([u-x, D[w], D[w]], D[j])+PolyMulRed([D[w-1], D[w+1], E], D[j]), D[j])
                     if P != 1:
                         if w % 2 == 0:
-                            P = GCD(PolyMulRed([4, PolyMulRed([g0, E], D[j]), PolyPow(D[w], 3, D[j])], D[j])-PolyMulRed([D[w-1], D[w-1], D[w+2]], D[j])+PolyMulRed([D[w-2], D[w+1], D[w+1]], D[j]), D[j])
+                            P = GCD(PolyMulRed([4, PolyMulRed([g0, E, E], D[j]), PolyPow(D[w], 3, D[j])], D[j])-PolyMulRed([D[w-1], D[w-1], D[w+2]], D[j])+PolyMulRed([D[w-2], D[w+1], D[w+1]], D[j]), D[j])
                         else:
                             P = GCD(PolyMulRed([4, g0, PolyPow(D[w], 3, D[j])], D[j])-PolyMulRed([D[w-1], D[w-1], D[w+2]], D[j])+PolyMulRed([D[w-2], D[w+1], D[w+1]], D[j]), D[j])
                         if P != 1:
