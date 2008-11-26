@@ -1678,7 +1678,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         """
         Fq = self.getCoefficientRing()
         FqX = self.getRing()
-        q = len(Fq)
+        q = card(Fq)
         f = self.copy()
         x = f.__class__([0, 1], f.getVariable(), Fq)
         w = x.copy()
@@ -1708,7 +1708,7 @@ class OneVariablePolynomialCharNonZero (OneVariablePolynomial):
         r = self.degree() / degree
         Fq = self.getCoefficientRing()
         FqX = self.getRing()
-        q = len(Fq)
+        q = card(Fq)
         p = Fq.getCharacteristic()
         if degree == 1:
             result = []

@@ -6,6 +6,8 @@ import nzmath.rational as rational
 import nzmath.factor.methods as facts
 import nzmath.vector as vector
 import nzmath.matrix as matrix
+import nzmath.compatibility
+
 
 class Group:
     """
@@ -83,8 +85,8 @@ class Group:
         order = 0
         if hasattr(self.classes, "grouporder"):
             order = self.classes.grouporder()
-        elif hasattr(self.classes, "__len__"):
-            order = len(self.classes)
+        elif hasattr(self.classes, "card"):
+            order = card(self.classes)
         else:
             order = self.classes.m
         if self.main and hasattr(self.classes, "zero"): # *-cyclic group

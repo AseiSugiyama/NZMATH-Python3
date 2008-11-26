@@ -181,6 +181,12 @@ class IntegerResidueClassRing (ring.CommutativeRing):
     def __hash__(self):
         return self.m & 0xFFFFFFFF
 
+    def card(self):
+        """
+        Return the cardinality of the ring.
+        """
+        return self.m
+
     @classmethod
     def getInstance(cls, modulus):
         """

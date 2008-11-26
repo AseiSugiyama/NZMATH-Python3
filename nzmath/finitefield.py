@@ -23,10 +23,6 @@ class FiniteField (ring.Field):
         ring.Field.__init__(self)
         self.char = characteristic
 
-##     def __len__(self):
-##         "Cardinality of the field"
-##         raise NotImplementedError
-
     def card(self):
         "Cardinality of the field"
         raise NotImplementedError
@@ -173,10 +169,6 @@ class FinitePrimeField (FiniteField):
         """
         return FinitePrimeFieldElement(seed, self.char)
 
-    def __len__(self):
-        "Cardinality of the field"
-        return self.char
-
     def card(self):
         "Cardinality of the field"
         return self.char
@@ -264,12 +256,6 @@ class FiniteExtendedField (FiniteField):
                 raise TypeError("modulus must be in F_p[#1]")
         else:
             raise TypeError("degree or modulus must be supplied.")
-
-    def __len__(self):
-        """
-        Return the cardinality of the field
-        """
-        return self.char ** self.degree
 
     def card(self):
         """
