@@ -3,6 +3,7 @@ import unittest
 from nzmath.finitefield import *
 from nzmath.rational import Integer, Rational, theRationalField
 from nzmath.polynomial import OneVariableDensePolynomial as poly
+import nzmath.compatibility
 
 class FinitePrimeFieldElementTest(unittest.TestCase):
     def testInit(self):
@@ -161,9 +162,9 @@ class FiniteExtendedFieldElementTest (unittest.TestCase):
 
 class FiniteExtendedFieldTest (unittest.TestCase):
     def testInit(self):
-        self.assertEqual(8, len(FiniteExtendedField(2, 3)))
+        self.assertEqual(8, card(FiniteExtendedField(2, 3)))
         f = poly([1, 1, 0, 1], "x", FinitePrimeField.getInstance(2))
-        self.assertEqual(8, len(FiniteExtendedField(2, f)))
+        self.assertEqual(8, card(FiniteExtendedField(2, f)))
         for i in range(10): # 10 might be enough to check random moduli
             F8 = FiniteExtendedField(2, 3)
             defining_polynomial = F8.modulus.generators[0]

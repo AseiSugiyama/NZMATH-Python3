@@ -23,7 +23,11 @@ class FiniteField (ring.Field):
         ring.Field.__init__(self)
         self.char = characteristic
 
-    def __len__(self):
+##     def __len__(self):
+##         "Cardinality of the field"
+##         raise NotImplementedError
+
+    def card(self):
         "Cardinality of the field"
         raise NotImplementedError
 
@@ -173,6 +177,10 @@ class FinitePrimeField (FiniteField):
         "Cardinality of the field"
         return self.char
 
+    def card(self):
+        "Cardinality of the field"
+        return self.char
+
     def __nonzero__(self):
         return True
 
@@ -263,6 +271,12 @@ class FiniteExtendedField (FiniteField):
         """
         return self.char ** self.degree
 
+    def card(self):
+        """
+        Return the cardinality of the field
+        """
+        return self.char ** self.degree
+
     def createElement(self, seed):
         """
         Create an element of the field.
@@ -291,7 +305,7 @@ class FiniteExtendedField (FiniteField):
         return "%s(%d, %s)" % (self.__class__.__name__, self.char, repr(self.modulus))
 
     def __str__(self):
-        return "F_%d @(%s)" % (len(self), str(self.modulus.generators[0]))
+        return "F_%d @(%s)" % (card(self), str(self.modulus.generators[0]))
 
     def __hash__(self):
         return (self.char ** self.degree) & 0xFFFFFFFF
@@ -458,7 +472,7 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         """
         if not self:
             raise ZeroDivisionError("There is no inverse of zero.")
-        return self ** (len(self.field)-2)
+        return self ** (card(self.field)-2)
 
     def __pow__(self, index):
         while index < 0:

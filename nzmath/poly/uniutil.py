@@ -227,7 +227,7 @@ class DivisionProvider (object):
         while divisor:
             divident, divisor = divisor, divident % divisor
         lc = self.order.leading_coefficient(divident)
-        if lc and lc != 1:
+        if lc and lc != ring.getRing(lc).one:
             divident = divident.scalar_exact_division(lc)
         return divident
 
@@ -766,7 +766,7 @@ class PrimeCharacteristicFunctionsProvider (object):
         ring must be a finite field.
         """
         Fq = ring.getRing(self.itercoefficients().next())
-        q = len(Fq)
+        q = card(Fq)
         f = self
         x = f.__class__([(1, Fq.one)], **self._init_kwds)
         w = x
@@ -793,7 +793,7 @@ class PrimeCharacteristicFunctionsProvider (object):
         """
         r = self.order.degree(self) // degree
         Fq = ring.getRing(self.itercoefficients().next())
-        q = len(Fq)
+        q = card(Fq)
         p = Fq.getCharacteristic()
         if degree == 1:
             result = []
