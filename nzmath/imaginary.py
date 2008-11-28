@@ -208,6 +208,7 @@ class ComplexField (ring.Field):
     """
 
     def __init__(self):
+        ring.Field.__init__(self)
         self._one = Complex(1)
         self._zero = Complex(0)
 
