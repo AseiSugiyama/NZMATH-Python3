@@ -6,6 +6,7 @@ functions.
 """
 
 from __future__ import division
+import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.polynomial as old_polynomial
 import nzmath.rational as rational
@@ -124,10 +125,11 @@ class DivisionProvider (object):
         degree, lc = self.order.leading_term(other)
         remainder = self
         rdegree, rlc = self.order.leading_term(remainder)
-        if rdegree <= degree * 2:
+        if rdegree > degree + 5 and degree > 1:
             return other.mod(remainder)
+        ilc = ring.inverse(lc)
         while rdegree >= degree:
-            q = rdegree - degree, rlc / lc
+            q = rdegree - degree, rlc * ilc
             remainder = remainder - other.term_mul(q)
             rdegree, rlc = self.order.leading_term(remainder)
         return remainder
@@ -146,8 +148,8 @@ class DivisionProvider (object):
         if not self._reduced or max(self._reduced.keys()) + 1 < upperbound:
             self._populate_reduced(degree, lc, upperbound)
         if div_deg > degree * 2:
-            dividend %= self.square()
-        assert self.order.degree(dividend) <= degree * 2
+            dividend_degrees = sorted(dividend.iterbases(), reverse=True)
+            self._populate_reduced_more(degree, dividend_degrees)
         accum = self.__class__((), **self._init_kwds)
         lowers = []
         for d, c in dividend:
@@ -201,6 +203,50 @@ class DivisionProvider (object):
             if self.order.degree(redux) == degree:
                 redux -= moniced.scalar_mul(self.order.leading_coefficient(redux))
             self._reduced[i] = redux
+
+    def _populate_reduced_more(self, degree, degrees):
+        """
+        Populate self._reduced more for much higher degree dividend.
+        This method has to be called after _populate_reduced.
+
+        degree is of self, and self._reduced is populated so that it
+        will include all of degrees > degree * 2.  The degrees are
+        recommended to be sorted in descending order.
+        """
+        minimum = 2 ** arith1.log(degree)
+        if minimum < degree:
+            minimum *= 2
+        redux = self._reduced[minimum]
+        maxreduced = max(self._reduced.keys())
+        maximum = max(degrees)
+        i = minimum
+        binary = {}
+        while i * 2 <= maximum:
+            i += i
+            redux = self.mod(redux.square())
+            binary[i] = redux
+        binarykeys = sorted(binary.keys(), reverse=True)
+        for deg in (d for d in degrees if d > maxreduced):
+            pickup = []
+            rest = deg
+            for key in binarykeys:
+                if rest < key:
+                    continue
+                rest -= key
+                pickup.append(key)
+                if rest < maxreduced or rest in self._reduced:
+                    break
+            total = pickup.pop()
+            prod = binary[total]
+            for picked in reversed(pickup):
+                total += picked
+                prod = self.mod(prod * binary[picked])
+                self._reduced[total] = prod
+            if rest in self._reduced:
+                final = self.mod(prod * self._reduced[rest])
+            else: # rest < degree
+                final = self.mod(prod.term_mul((rest, 1)))
+            self._reduced[deg] = final
 
     def __truediv__(self, other):
         """

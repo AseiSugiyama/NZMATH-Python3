@@ -817,12 +817,8 @@ def inverse(obj):
 
     Mainly for python built-in objects such as int or float.
     """
-    try:
-        # if obj has its inverse method, use it.
+    if hasattr(obj, "inverse"):
         return obj.inverse()
-    except AttributeError:
-        # OK, try next
-        pass
     # special cases
     if isinstance(obj, (int, long)):
         import nzmath.rational as rational
