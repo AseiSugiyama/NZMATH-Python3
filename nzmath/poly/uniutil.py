@@ -6,6 +6,7 @@ functions.
 """
 
 from __future__ import division
+import logging
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.polynomial as old_polynomial
@@ -14,6 +15,9 @@ import nzmath.rationalFunction as rationalFunction
 import nzmath.ring as ring
 import nzmath.poly.univar as univar
 import nzmath.poly.termorder as termorder
+
+
+_log = logging.getLogger("nzmath.poly.uniutil")
 
 
 _MIXIN_MSG = "%s is mix-in"
@@ -145,7 +149,16 @@ class DivisionProvider (object):
         if div_deg < degree:
             return dividend
         upperbound = min(degree * 2, div_deg) + 1
-        if not self._reduced or max(self._reduced.keys()) + 1 < upperbound:
+        populate = False
+        if not self._reduced:
+            populate = True
+        else:
+            i = min(self._reduced.keys())
+            while i in self._reduced.keys():
+                i += 1
+            if i < upperbound:
+                populate = True
+        if populate:
             self._populate_reduced(degree, lc, upperbound)
         if div_deg > degree * 2:
             dividend_degrees = sorted(dividend.iterbases(), reverse=True)
@@ -217,10 +230,10 @@ class DivisionProvider (object):
         if minimum < degree:
             minimum *= 2
         redux = self._reduced[minimum]
-        maxreduced = max(self._reduced.keys())
+        maxreduced = degree * 2
         maximum = max(degrees)
         i = minimum
-        binary = {}
+        binary = {i:redux}
         while i * 2 <= maximum:
             i += i
             redux = self.mod(redux.square())
@@ -236,6 +249,7 @@ class DivisionProvider (object):
                 pickup.append(key)
                 if rest < maxreduced or rest in self._reduced:
                     break
+            assert pickup
             total = pickup.pop()
             prod = binary[total]
             for picked in reversed(pickup):
