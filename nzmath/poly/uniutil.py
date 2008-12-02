@@ -1844,7 +1844,7 @@ def OneVariableDensePolynomial(coefficient, variable, coeffring=None):
     univariate polynomial.  The argument variable is ignored.
     """
     _coefficients = dict(enumerate(coefficient))
-    if not coeffring:
+    if coeffring is None:
         coeffring = init_coefficient_ring(_coefficients)
     return polynomial(_coefficients, coeffring)
 
@@ -1860,7 +1860,7 @@ def OneVariableSparsePolynomial(coefficient, variable, coeffring=None):
     univariate polynomial.  The argument variable is ignored.
     """
     _coefficients = dict(coefficient)
-    if not coeffring:
+    if coeffring is None:
         coeffring = init_coefficient_ring(_coefficients)
     return polynomial(_coefficients, coeffring)
 
