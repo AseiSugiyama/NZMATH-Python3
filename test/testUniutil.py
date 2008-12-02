@@ -98,6 +98,11 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
         self.assertEqual(1, h_decomp.keys()[0])
         self.assertEqual(self.h, h_decomp.values()[0], str(h_decomp.items()[0]))
         self.assert_(self.thirty.gcd(self.thirty.differentiate()))
+        p_decomp = self.h.squarefree_decomposition()
+        self.assertEqual(1, len(p_decomp))
+        self.assertEqual(1, p_decomp.keys()[0])
+        self.assertEqual(self.h, p_decomp.values()[0], str(p_decomp.items()[0]))
+        self.assert_(self.thirty.gcd(self.thirty.differentiate()))
 
     def testDistinctDegreeFactorization(self):
         h_ddf = self.h.distinct_degree_factorization()
@@ -112,7 +117,7 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
     def testFactor(self):
         factored = self.p.factor()
         self.assert_(isinstance(factored, list))
-        self.assertEqual(3, len(factored))
+        self.assertEqual(3, len(factored), str(factored))
         for factor in factored:
             self.assert_(isinstance(factor, tuple))
             self.assertEqual(2, len(factor))

@@ -15,6 +15,7 @@ import nzmath.rationalFunction as rationalFunction
 import nzmath.ring as ring
 import nzmath.poly.univar as univar
 import nzmath.poly.termorder as termorder
+import nzmath.compatibility
 
 
 _log = logging.getLogger("nzmath.poly.uniutil")
@@ -706,6 +707,7 @@ class SubresultantGcdProvider (object):
         B_1 = (P_1 - A_1 * self).exact_division(other)
         return (A_1, B_1, P_1)
 
+
 class PrimeCharacteristicFunctionsProvider (object):
     """
     PrimeCharacteristicFunctionsProvider provides efficient powering
@@ -766,6 +768,48 @@ class PrimeCharacteristicFunctionsProvider (object):
                     power_product *= power_of_2
                 power_of_2 = power_of_2 * power_of_2
                 index //= 2
+        return power_product
+
+    def mod_pow(self, polynom, index):
+        """
+        Return polynom ** index % self.
+        """
+        if not self:
+            raise ZeroDivisionError("polynomial division or modulo by zero.")
+        polynom %= self
+        if index == 1 or not polynom:
+            return polynom
+        elif polynom.degree() == 0:
+            return self.getRing().createElement([(0, polynom[0]**index)])
+        acoefficient = polynom.itercoefficients().next()
+        cardfq = card(ring.getRing(acoefficient))
+        final_product = self.getRing().one
+        qpow = polynom
+        # q-th power expansion
+        while index:
+            index, small = divmod(index, cardfq)
+            if small:
+                final_product *= self._small_index_mod_pow(qpow, small)
+            # c ** q = c for any Fq element c, thus
+            qpow = self.mod(qpow.bases_map(lambda d: d * cardfq))
+
+        return final_product
+
+    def _small_index_mod_pow(self, polynom, index):
+        """
+        Return polynom ** index % self for small index (0 < index < q).
+        """
+        # binary powering
+        power_product = self.getRing().one
+        if index > 0:
+            power_of_2 = polynom
+            while index:
+                if index % 2 == 1:
+                    power_product = self.mod(power_product * power_of_2)
+                power_of_2 = self.mod(power_of_2.square())
+                index //= 2
+        else:
+            raise ValueError("this private method requires index > 0")
         return power_product
 
     def squarefree_decomposition(self):
