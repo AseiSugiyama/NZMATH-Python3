@@ -1830,6 +1830,35 @@ class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,
         FieldPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         PrimeCharacteristicFunctionsProvider.__init__(self, coeffring.getCharacteristic())
 
+    def ring_mul(self, other):
+        """
+        Multiplication of two polynomials in the same ring.
+        """
+        # IMPLEMENTATION REMARK:
+        # The most time consuming part of computation is bunch of
+        # object creations.  Thus, here, the creation of finite field
+        # elements is avoided during summing up coefficients.
+        mul_coeff = {}
+        try:
+            ## stripped to bare integer
+            stripped_self = [(ds, cs.n) for (ds, cs) in self]
+            stripped_other = [(do, co.n) for (do, co) in other]
+            for ds, cs in stripped_self:
+                for do, co in stripped_other:
+                    term_degree = ds + do
+                    if term_degree in mul_coeff:
+                        mul_coeff[term_degree] = (mul_coeff[term_degree] + cs*co ) % self.ch
+                    else:
+                        mul_coeff[term_degree] = cs*co
+            ## back to decorated datatype
+            fp = self.getCoefficientRing()
+            coeffs = [(d, fp.createElement(c)) for (d, c) in mul_coeff.iteritems() if c % self.ch]
+        except AttributeError:
+            # maybe fail due to lacking attribute .n sometimes
+            _log.debug("fall back to good old ring_mul")
+            return PolynomialInterface.ring_mul(self, other)
+        return self.__class__(coeffs, **self._init_kwds)
+
 
 def inject_variable(polynom, variable):
     """
