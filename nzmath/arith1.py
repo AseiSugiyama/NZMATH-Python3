@@ -104,7 +104,7 @@ def modsqrt(a, p):
             for i in range(1, s):
                 if pow(A*(D**m), 2**(s-1-i), p) == (p-1):
                     m += 2**i
-            x = (a**((t+1)//2)) * (D**(m//2)) % p
+            x = (pow(a, (t+1)//2, p) * pow(D, m//2, p)) % p
         return x
     elif symbol == 0:
         return 0
