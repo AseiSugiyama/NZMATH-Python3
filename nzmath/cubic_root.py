@@ -189,7 +189,7 @@ def cornacchia(d, p):
         a, b = b, a % b
     c, r = divmod(p - b * b, d)
     if r:
-        raise ValueError("no slution")
+        raise ValueError("no solution")
     t = arith1.issquare(c)
     if t == 0:
         raise ValueError("no solution")
