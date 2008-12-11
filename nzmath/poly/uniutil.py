@@ -9,6 +9,7 @@ from __future__ import division
 import logging
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
+import nzmath.gcd as gcd
 import nzmath.polynomial as old_polynomial
 import nzmath.rational as rational
 import nzmath.rationalFunction as rationalFunction
@@ -163,6 +164,7 @@ class DivisionProvider (object):
             self._populate_reduced(degree, lc, upperbound)
         if div_deg > degree * 2:
             dividend_degrees = sorted(dividend.iterbases(), reverse=True)
+            dividend_degrees = [deg for deg in dividend_degrees if deg > degree]
             self._populate_reduced_more(dividend_degrees)
         accum = self.__class__((), **self._init_kwds)
         lowers = []
@@ -227,20 +229,28 @@ class DivisionProvider (object):
         degrees > degree * 2.  The degrees are recommended to be
         sorted in descending order.
         """
-        # union of binary chain as the addition sequence used.
-        _log.debug("reduce more: %s" % str(degrees))
         degree = self.order.degree(self)
+        # self._reduced has every key from degree up to maxreduced.
+        # The default (prepared by _populate_reduced) is degree*2.
         maxreduced = degree * 2
         while (maxreduced + 1) in self._reduced:
             maxreduced += 1
-        redux = self._reduced[maxreduced]
+        # use binary chain multiplied by a stride
+        stride = maxreduced
+        if len(degrees) > 1:
+            # try to use wider stride
+            common_degree = gcd.gcd_of_list(degrees)[0]
+            if common_degree > maxreduced:
+                # common_degree is better than maxreduced.
+                self._populate_reduced_more([common_degree])
+                stride = common_degree
+        redux = self._reduced[stride]
         maximum = max(degrees)
-        i = maxreduced
-        binary = {i:redux}
-        while i * 2 <= maximum:
-            i += i
+        binary = {stride:redux}
+        while stride * 2 <= maximum:
+            stride += stride
             redux = self.mod(redux.square())
-            binary[i] = redux
+            binary[stride] = redux
         binarykeys = sorted(binary.keys(), reverse=True)
         for deg in (d for d in degrees if d > maxreduced):
             pickup = []
