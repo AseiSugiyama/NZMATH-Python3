@@ -163,7 +163,7 @@ class DivisionProvider (object):
             self._populate_reduced(degree, lc, upperbound)
         if div_deg > degree * 2:
             dividend_degrees = sorted(dividend.iterbases(), reverse=True)
-            self._populate_reduced_more(degree, dividend_degrees)
+            self._populate_reduced_more(dividend_degrees)
         accum = self.__class__((), **self._init_kwds)
         lowers = []
         for d, c in dividend:
@@ -218,22 +218,24 @@ class DivisionProvider (object):
                 redux -= moniced.scalar_mul(self.order.leading_coefficient(redux))
             self._reduced[i] = redux
 
-    def _populate_reduced_more(self, degree, degrees):
+    def _populate_reduced_more(self, degrees):
         """
         Populate self._reduced more for much higher degree dividend.
         This method has to be called after _populate_reduced.
 
-        degree is of self, and self._reduced is populated so that it
-        will include all of degrees > degree * 2.  The degrees are
-        recommended to be sorted in descending order.
+        self._reduced is populated so that it will include all of
+        degrees > degree * 2.  The degrees are recommended to be
+        sorted in descending order.
         """
-        minimum = 2 ** arith1.log(degree)
-        if minimum < degree:
-            minimum *= 2
-        redux = self._reduced[minimum]
+        # union of binary chain as the addition sequence used.
+        _log.debug("reduce more: %s" % str(degrees))
+        degree = self.order.degree(self)
         maxreduced = degree * 2
+        while (maxreduced + 1) in self._reduced:
+            maxreduced += 1
+        redux = self._reduced[maxreduced]
         maximum = max(degrees)
-        i = minimum
+        i = maxreduced
         binary = {i:redux}
         while i * 2 <= maximum:
             i += i
@@ -251,7 +253,7 @@ class DivisionProvider (object):
                 if rest < maxreduced or rest in self._reduced:
                     break
             assert pickup
-            total = pickup.pop()
+            total = pickup.pop() # start with the smallest degree picked up
             prod = binary[total]
             for picked in reversed(pickup):
                 total += picked
@@ -283,8 +285,10 @@ class DivisionProvider (object):
         Return a greatest common divisor of self and other.
         Returned polynomial is always monic.
         """
-        divident = self
-        divisor = other
+        if self.order.degree(self) < self.order.degree(other):
+            divident, divisor = other, self
+        else:
+            divident, divisor = self, other
         while divisor:
             divident, divisor = divisor, divident % divisor
         lc = self.order.leading_coefficient(divident)
@@ -766,7 +770,7 @@ class PrimeCharacteristicFunctionsProvider (object):
             while index:
                 if index % 2 == 1:
                     power_product *= power_of_2
-                power_of_2 = power_of_2 * power_of_2
+                power_of_2 = power_of_2.square()
                 index //= 2
         return power_product
 
@@ -1830,16 +1834,17 @@ class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,
         FieldPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         PrimeCharacteristicFunctionsProvider.__init__(self, coeffring.getCharacteristic())
 
+    # IMPLEMENTATION REMARK:
+    # The most time consuming part of computation is bunch of
+    # object creations.  Thus, here, the creation of finite field
+    # elements is avoided during summing up coefficients.
+
     def ring_mul(self, other):
         """
         Multiplication of two polynomials in the same ring.
         """
-        # IMPLEMENTATION REMARK:
-        # The most time consuming part of computation is bunch of
-        # object creations.  Thus, here, the creation of finite field
-        # elements is avoided during summing up coefficients.
-        mul_coeff = {}
         try:
+            mul_coeff = {}
             ## stripped to bare integer
             stripped_self = [(ds, cs.n) for (ds, cs) in self]
             stripped_other = [(do, co.n) for (do, co) in other]
@@ -1850,14 +1855,40 @@ class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,
                         mul_coeff[term_degree] = (mul_coeff[term_degree] + cs*co ) % self.ch
                     else:
                         mul_coeff[term_degree] = cs*co
-            ## back to decorated datatype
-            fp = self.getCoefficientRing()
-            coeffs = [(d, fp.createElement(c)) for (d, c) in mul_coeff.iteritems() if c % self.ch]
+            ## back to decorated datatype automatically
+            return self.__class__(mul_coeff, **self._init_kwds)
         except AttributeError:
             # maybe fail due to lacking attribute .n sometimes
             _log.debug("fall back to good old ring_mul")
             return PolynomialInterface.ring_mul(self, other)
-        return self.__class__(coeffs, **self._init_kwds)
+
+    def square(self):
+        """
+        Return the square of self.
+        """
+        # zero
+        if not self:
+            return self
+        # monomial, binomial
+        elif len(self.sorted) <= 2:
+            return FieldPolynomial.square(self)
+
+        # general
+        try:
+            result = {}
+            # stripped to bare integer
+            stripped_self = [(ds, cs.n) for (ds, cs) in self]
+            for i, term in enumerate(stripped_self):
+                di, ci = term[0], term[1]
+                result[di*2] = result.get(di*2, 0) + pow(ci, 2, self.ch)
+                for j in range(i + 1, len(stripped_self)):
+                    dj, cj = self.sorted[j][0], self.sorted[j][1]
+                    result[di + dj] = result.get(di + dj, 0) + 2 * ci * cj
+            # back to decorated datatype automatically
+            return self.__class__(result, **self._init_kwds)
+        except AttributeError:
+            _log.debug("fall back to old square")
+            return FieldPolynomial.square(self)
 
 
 def inject_variable(polynom, variable):
