@@ -230,6 +230,9 @@ class DivisionProvider (object):
         sorted in descending order.
         """
         degree = self.order.degree(self)
+        if not [deg for deg in degrees if deg not in self._reduced]:
+            # no need to populate more
+            return
         # self._reduced has every key from degree up to maxreduced.
         # The default (prepared by _populate_reduced) is degree*2.
         maxreduced = degree * 2
@@ -242,14 +245,18 @@ class DivisionProvider (object):
             common_degree = gcd.gcd_of_list(degrees)[0]
             if common_degree > maxreduced:
                 # common_degree is better than maxreduced.
-                self._populate_reduced_more([common_degree])
+                if common_degree not in self._reduced:
+                    self._populate_reduced_more([common_degree])
                 stride = common_degree
         redux = self._reduced[stride]
         maximum = max(degrees)
         binary = {stride:redux}
         while stride * 2 <= maximum:
             stride += stride
-            redux = self.mod(redux.square())
+            if stride not in self._reduced:
+                redux = self.mod(redux.square())
+            else:
+                redux = self._reduced[stride]
             binary[stride] = redux
         binarykeys = sorted(binary.keys(), reverse=True)
         for deg in (d for d in degrees if d > maxreduced):
@@ -802,7 +809,9 @@ class PrimeCharacteristicFunctionsProvider (object):
         # q-th power expansion
         while index:
             index, small = divmod(index, cardfq)
-            if small:
+            if small == 1:
+                final_product *= qpow
+            elif small:
                 final_product *= self._small_index_mod_pow(qpow, small)
             # c ** q = c for any Fq element c, thus
             qpow = self.mod(qpow.bases_map(lambda d: d * cardfq))
@@ -820,6 +829,8 @@ class PrimeCharacteristicFunctionsProvider (object):
             while index:
                 if index % 2 == 1:
                     power_product = self.mod(power_product * power_of_2)
+                    if index == 1:
+                        break
                 power_of_2 = self.mod(power_of_2.square())
                 index //= 2
         else:
