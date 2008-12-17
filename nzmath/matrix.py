@@ -1824,6 +1824,6 @@ def _getRing(coeff_ring):
             import nzmath.finitefield
             coeff_ring = nzmath.finitefield.FinitePrimeField(coeff_ring)
         except:
-            import nzmath.integerResidueClass
-            coeff_ring = nzmath.integerResidueClass.integerResidueClassRing(coeff_ring)
+            import nzmath.intresidue
+            coeff_ring = nzmath.intresidue.IntegerResidueClassRing(coeff_ring)
     return coeff_ring

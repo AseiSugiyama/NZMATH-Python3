@@ -8,7 +8,7 @@ import nzmath.combinatorial as combinatorial
 import nzmath.matrix as matrix
 import nzmath.lattice as lattice
 import nzmath.vector as vector
-import nzmath.integerResidueClass as integerResidueClass
+import nzmath.intresidue as intresidue
 import nzmath.polynomial as polynomial
 import nzmath.finitefield as finitefield
 
@@ -152,7 +152,7 @@ def vanHoeij(f):
                 if weight != 1:
                     break
         else:
-            ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
+            ZqZ = intresidue.IntegerResidueClassRing.getInstance(q)
             ZqZX = polynomial.PolynomialRing(ZqZ, f.getVariable())
             for j in range(echelonForm.column):
                 gj = 0
@@ -246,7 +246,7 @@ def padicLiftList(f, factors, p, q):
     with positive integers p dividing q.
     """
     ZpZx = polynomial.PolynomialRing(
-        integerResidueClass.IntegerResidueClassRing.getInstance(p),
+        intresidue.IntegerResidueClassRing.getInstance(p),
         f.getVariable())
     gg = reduce(lambda x, y: x*y, factors, 1)
     h = ZpZx.createElement((f - gg) / q)
@@ -274,7 +274,7 @@ def extgcdp(f, g, p):
 
     Find u,v,w such that f*u + g*v = w = gcd(f,g) mod p.
     """
-    zpz = integerResidueClass.IntegerResidueClassRing.getInstance(p)
+    zpz = intresidue.IntegerResidueClassRing.getInstance(p)
     f_coeff = f.coefficient.getAsDict()
     f_zpz = polynomial.OneVariableSparsePolynomial(f_coeff, "x", zpz)
     g_coeff = g.coefficient.getAsDict()
@@ -305,7 +305,7 @@ def minimumAbsoluteInjection(f):
 
     """
     coefficientRing = f.getCoefficientRing()
-    if isinstance(coefficientRing, integerResidueClass.IntegerResidueClassRing):
+    if isinstance(coefficientRing, intresidue.IntegerResidueClassRing):
         p = coefficientRing.m
     elif isinstance(coefficientRing, finitefield.FinitePrimeField):
         p = coefficientRing.getCharacteristic()
@@ -359,7 +359,7 @@ def findCombination(f, d, factors, q):
             if divisibilityTest(f, g):
                 return (g, [g])
     else:
-        ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
+        ZqZ = intresidue.IntegerResidueClassRing.getInstance(q)
         ZqZX = polynomial.PolynomialRing(ZqZ, f.getVariable())
         for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]

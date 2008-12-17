@@ -14,7 +14,7 @@ import nzmath.arith1 as arith1
 import nzmath.finitefield as finitefield
 import nzmath.factor.methods as factormethods
 import nzmath.gcd as gcd
-import nzmath.integerResidueClass as integerresidueclass
+import nzmath.intresidue as intresidue
 import nzmath.matrix as matrix
 import nzmath.poly.uniutil as uniutil
 import nzmath.rational as rational
@@ -338,7 +338,7 @@ def _pull_back(elem, p):
     Return an integer which is a pull back of elem in Fp.
     """
     if not isinstance(elem, finitefield.FinitePrimeFieldElement):
-        if isinstance(elem, integerresidueclass.IntegerResidueClass):
+        if isinstance(elem, intresidue.IntegerResidueClass):
             # expecting Z/(p^2 Z)
             result = finitefield.FinitePrimeFieldElement(elem.n, p).n
         else:

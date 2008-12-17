@@ -21,7 +21,7 @@ __all__ = [
     "gcd",
     "group",
     "imaginary",
-    "integerResidueClass",
+    "intresidue",
     "lattice",
     "matrix",
     "multiplicative",
