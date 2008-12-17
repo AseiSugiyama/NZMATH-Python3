@@ -14,7 +14,8 @@ import testEquation
 import testGcd
 import testGroup
 import testImaginary
-import testIntegerResidueClass
+import testIntresidue
+#import testIntegerResidueClass deprecated
 import testLattice
 import testMatrix
 import testMultiplicative

@@ -1,14 +1,15 @@
-import warnings
+from __future__ import division
+import logging
 import nzmath.gcd as gcd
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.prime as prime
 
 
-warnings.warn(DeprecationWarning("use intresidue instead"))
+_log = logging.getLogger('nzmath.intresidue')
 
 
-class IntegerResidueClass (ring.CommutativeRingElement):
+class IntegerResidueClass(ring.CommutativeRingElement):
     """
     A class for integer residue class.
     """
@@ -19,11 +20,17 @@ class IntegerResidueClass (ring.CommutativeRingElement):
         elif modulus < 0:
             modulus = -modulus
         self.m = modulus
-        if isinstance(representative, rational.Rational):
+
+        if isinstance(representative, (int, long)):
+            self.n = representative % self.m
+        elif all(hasattr(representative, attr) for attr in ("m", "n")):
+            assert representative.m == modulus
+            self.n = representative.n
+        elif isinstance(representative, rational.Rational):
             t = IntegerResidueClass(representative.denominator, self.m).inverse().getResidue()
             self.n = representative.numerator * t % self.m
         else:
-            self.n = representative % self.m
+            raise NotImplementedError("%s is not made from %s." % (self.__class__.__name__, repr(representative),))
 
     def __repr__(self):
         return "IntegerResidueClass(%d, %d)" % (self.n, self.m)
@@ -39,11 +46,29 @@ class IntegerResidueClass (ring.CommutativeRingElement):
             else:
                 raise ValueError("incompatible modulus: %d and %d" % (self.m, other.m))
         try:
-            return self.__class__(self.n * other, self.m)
-        except:
-            return NotImplemented
+            return self.mul_module_action(other)
+        except TypeError, e:
+            #trial may fail with TypeError.
+            #_log.debug("no action for %s * %s" % (str(self), str(other)))
+            pass
+        except RuntimeError, e:
+            # maximum recursion depth may exceed
+            #_log.debug("recursion limit for %s * %s" % (str(self), str(other)))
+            pass
+        return NotImplemented
 
-    __rmul__ = __mul__
+    def __rmul__(self, other):
+        try:
+            return self.mul_module_action(other)
+        except TypeError, e:
+            #trial may fail with TypeError.
+            #_log.debug("no action for %s * %s" % (str(other), str(self)))
+            pass
+        except RuntimeError, e:
+            # maximum recursion depth may exceed
+            #_log.debug("recursion limit for %s * %s" % (str(other), str(self)))
+            pass
+        return NotImplemented
 
     def __div__(self, other):
         try:
@@ -141,10 +166,16 @@ class IntegerResidueClass (ring.CommutativeRingElement):
     def __ne__(self, other):
         return not (self == other)
 
+    def __hash__(self):
+        """
+        hash so that if a == b then hash(a) == hash(b).
+        """
+        return self.n & (2**32 - 1)
+
     def inverse(self):
         t = gcd.extgcd(self.n, self.m)
         if t[2] != 1:
-            raise ValueError("No inverse of %s." % self)
+            raise ZeroDivisionError("No inverse of %s." % self)
         return self.__class__(t[0], self.m)
 
     def getModulus(self):
@@ -153,19 +184,33 @@ class IntegerResidueClass (ring.CommutativeRingElement):
     def getResidue(self):
         return self.n
 
-    def toInteger(self):
+    def minimumNonNegative(self):
         """
         Return the smallest non-negative representative element of the
         residue class.
         """
         return rational.Integer(self.n % self.m)
 
+    toInteger = minimumNonNegative
+
+    def minimumAbsolute(self):
+        """
+        Return the minimum absolute representative integer of the
+        residue class.
+        """
+        result = self.n % self.m
+        if result > self.m // 2:
+            result -= self.m
+        return rational.Integer(result)
+
     def getRing(self):
         return IntegerResidueClassRing.getInstance(self.m)
 
 
-class IntegerResidueClassRing (ring.CommutativeRing):
-    """IntegerResidueClassRing is also known as Z/mZ."""
+class IntegerResidueClassRing(ring.CommutativeRing):
+    """
+    IntegerResidueClassRing is also known as Z/mZ.
+    """
 
     _instances = {}
 
@@ -175,6 +220,10 @@ class IntegerResidueClassRing (ring.CommutativeRing):
         """
         ring.CommutativeRing.__init__(self)
         self.m = modulus
+        self.registerModuleAction(rational.theIntegerRing, _mul_with_int)
+        # mathematically Q_m = Q \ {r/s; gcd(r, s) == 1, gcd(s, m) > 1}
+        # is more appropriate.
+        self.registerModuleAction(rational.theRationalField, _mul_with_rat)
 
     def __repr__(self):
         return "IntegerResidueClassRing(%d)" % self.m
@@ -277,3 +326,16 @@ class IntegerResidueClassRing (ring.CommutativeRing):
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit.")
+
+
+def _mul_with_int(integer, residue):
+    """
+    Return k * IntegerResidueClass(n, m)
+    """
+    return residue.__class__(integer * residue.n, residue.m)
+
+def _mul_with_rat(rat, residue):
+    """
+    Return Rational(a, b) * IntegerResidueClass(n, p)
+    """
+    return residue.__class__(rat * residue.n, residue.m)
