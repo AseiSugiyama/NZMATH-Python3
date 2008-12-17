@@ -5,7 +5,7 @@ import logging
 import nzmath.arith1 as arith1
 import nzmath.finitefield as finitefield
 import nzmath.gcd as gcd
-import nzmath.integerResidueClass as integerResidueClass
+import nzmath.intresidue as intresidue
 import nzmath.polynomial as polynomial
 import nzmath.prime as prime
 import nzmath.rational as rational
@@ -91,7 +91,7 @@ def _isscalar(elem):
     return isinstance(elem, (int,
                              long,
                              finitefield.FinitePrimeFieldElement,
-                             integerResidueClass.IntegerResidueClass))
+                             intresidue.IntegerResidueClass))
 
 def heart(q):
     """
