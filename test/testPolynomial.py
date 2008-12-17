@@ -3,7 +3,7 @@ import unittest
 import logging
 
 import nzmath.ring as ring
-import nzmath.integerResidueClass as integerResidueClass
+import nzmath.intresidue as intresidue
 import nzmath.compatibility
 from nzmath.polynomial import *
 
@@ -289,18 +289,18 @@ class RationalPolynomialTest(unittest.TestCase):
 
 class IntegerResidueClassPolynomialTest(unittest.TestCase):
     def setUp(self):
-        self.f1 = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(3,5), integerResidueClass.IntegerResidueClass(1,5)], x)
-        self.f2 = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(4,5), integerResidueClass.IntegerResidueClass(1,5), integerResidueClass.IntegerResidueClass(1,5)], x)
+        self.f1 = OneVariableDensePolynomial([intresidue.IntegerResidueClass(3,5), intresidue.IntegerResidueClass(1,5)], x)
+        self.f2 = OneVariableDensePolynomial([intresidue.IntegerResidueClass(4,5), intresidue.IntegerResidueClass(1,5), intresidue.IntegerResidueClass(1,5)], x)
 
     def testAdd(self):
-        sum = OneVariableDensePolynomial([integerResidueClass.IntegerResidueClass(2,5), integerResidueClass.IntegerResidueClass(2,5), integerResidueClass.IntegerResidueClass(1,5)], x)
+        sum = OneVariableDensePolynomial([intresidue.IntegerResidueClass(2,5), intresidue.IntegerResidueClass(2,5), intresidue.IntegerResidueClass(1,5)], x)
         assert sum == (self.f1 + self.f2)
 
     def testEquals(self):
         assert self.f1 == self.f1
 
     def testCall(self):
-        f = MultiVariableSparsePolynomial({(1,0): integerResidueClass.IntegerResidueClass(1,101), (0,1): integerResidueClass.IntegerResidueClass(100,101)}, ["x","y"])
+        f = MultiVariableSparsePolynomial({(1,0): intresidue.IntegerResidueClass(1,101), (0,1): intresidue.IntegerResidueClass(100,101)}, ["x","y"])
         assert not f(x=1,y=1)
 
 

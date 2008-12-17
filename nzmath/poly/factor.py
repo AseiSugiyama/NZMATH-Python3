@@ -5,7 +5,7 @@ import nzmath.arith1 as arith1
 import nzmath.prime as prime
 import nzmath.rational as rational
 import nzmath.combinatorial as combinatorial
-import nzmath.integerResidueClass as integerResidueClass
+import nzmath.intresidue as intresidue
 import nzmath.finitefield as finitefield
 import nzmath.poly.uniutil as uniutil
 
@@ -102,7 +102,7 @@ def padic_lift_list(f, factors, p, q):
     with positive integers p dividing q.
     """
     ZpZx = uniutil.PolynomialRingAnonymousVariable(
-        integerResidueClass.IntegerResidueClassRing.getInstance(p))
+        intresidue.IntegerResidueClassRing.getInstance(p))
     gg = reduce(operator.mul, factors, 1)
     h = ZpZx.createElement([(d, c // q) for (d, c) in (f - gg).iterterms()])
     lifted = []
@@ -129,7 +129,7 @@ def extgcdp(f, g, p):
 
     Find u,v,w such that f*u + g*v = w = gcd(f,g) mod p.
     """
-    zpz = integerResidueClass.IntegerResidueClassRing.getInstance(p)
+    zpz = intresidue.IntegerResidueClassRing.getInstance(p)
     f_zpz = uniutil.polynomial(f, zpz)
     g_zpz = uniutil.polynomial(g, zpz)
     zero, one = f_zpz.getRing().zero, f_zpz.getRing().one
@@ -155,7 +155,7 @@ def minimum_absolute_injection(f):
     absolute representatives.
     """
     coefficientRing = f.getCoefficientRing()
-    if isinstance(coefficientRing, integerResidueClass.IntegerResidueClassRing):
+    if isinstance(coefficientRing, intresidue.IntegerResidueClassRing):
         p = coefficientRing.m
     elif isinstance(coefficientRing, finitefield.FinitePrimeField):
         p = coefficientRing.getCharacteristic()
@@ -208,7 +208,7 @@ def find_combination(f, d, factors, q):
             if divisibility_test(f, g):
                 return (g, [g])
     else:
-        ZqZ = integerResidueClass.IntegerResidueClassRing.getInstance(q)
+        ZqZ = intresidue.IntegerResidueClassRing.getInstance(q)
         ZqZX = uniutil.PolynomialRingAnonymousVariable.getInstance(ZqZ)
         for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]

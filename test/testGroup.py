@@ -1,7 +1,7 @@
 import unittest
 from nzmath.group import *
 from nzmath.finitefield import FinitePrimeFieldElement, FinitePrimeField
-from nzmath.integerResidueClass import *
+from nzmath.intresidue import *
 from nzmath.permute import Permute, PermGroup
 
 a1 = GroupElement(Permute([2, 4, 1, 3])) #Multiplication Group
