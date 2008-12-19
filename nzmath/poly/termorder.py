@@ -226,10 +226,7 @@ class MultivarTermOrder (TermOrderInterface):
         result = " + ".join([self._format_term((base, polynom[base]), varnames) for base in bases if polynom[base]])
         # minus terms
         result = self._PLUS_MINUS.sub("- ", result)
-        # coefficient is 1 (or -1)
-        for varname in varnames:
-            one_times_x = re.compile(r"(^| )1 \* %s" % varname)
-            result = one_times_x.sub(" " + varname, result)
+
         result = result.lstrip()
         if not result:
             result = "0"
