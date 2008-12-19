@@ -17,7 +17,7 @@ import nzmath.poly.univar as univar
 import nzmath.poly.uniutil as uniutil
 import nzmath.compatibility
 
-_log = logging.getLogger('sandbox.finitefield')
+_log = logging.getLogger('nzmath.finitefield')
 
 
 class FiniteFieldElement (ring.FieldElement):

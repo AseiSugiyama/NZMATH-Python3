@@ -2,7 +2,7 @@ from __future__ import division
 import unittest
 import logging
 from nzmath.rational import Rational, theRationalField
-from sandbox.finitefield import FinitePrimeField, FinitePrimeFieldElement, \
+from nzmath.finitefield import FinitePrimeField, FinitePrimeFieldElement, \
      FiniteExtendedField, FiniteExtendedFieldElement, \
      FinitePrimeFieldPolynomial, fqiso, embedding, double_embeddings
 import nzmath.compatibility
