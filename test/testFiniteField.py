@@ -1,9 +1,15 @@
 from __future__ import division
 import unittest
-from nzmath.finitefield import *
-from nzmath.rational import Integer, Rational, theRationalField
-from nzmath.polynomial import OneVariableDensePolynomial as poly
+import logging
+from nzmath.rational import Rational, theRationalField
+from sandbox.finitefield import FinitePrimeField, FinitePrimeFieldElement, \
+     FiniteExtendedField, FiniteExtendedFieldElement, \
+     FinitePrimeFieldPolynomial, fqiso, embedding, double_embeddings
 import nzmath.compatibility
+
+
+logging.basicConfig(level=logging.DEBUG)
+
 
 class FinitePrimeFieldElementTest(unittest.TestCase):
     def testInit(self):
@@ -11,7 +17,7 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
         self.failUnless(elem)
         self.assertEqual(12, elem.toInteger())
         self.assertEqual(17, elem.getModulus())
-        residue = FinitePrimeFieldElement(Rational(8,15), 11)
+        residue = FinitePrimeFieldElement(Rational(8, 15), 11)
         self.failUnless(residue)
         self.assertEqual(2, residue.toInteger())
         self.assertEqual(11, residue.getModulus())
@@ -84,7 +90,7 @@ class FinitePrimeFieldElementTest(unittest.TestCase):
 class FinitePrimeFieldTest(unittest.TestCase):
     def setUp(self):
         self.F17 = FinitePrimeField(17)
-    
+
     def testEq(self):
         self.assertEqual(self.F17, self.F17)
 
@@ -126,54 +132,50 @@ class FinitePrimeFieldTest(unittest.TestCase):
 
 
 class FiniteExtendedFieldElementTest (unittest.TestCase):
-    def testPos(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, +F289.one)
-
-    def testNeg(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.zero, -F289.zero)
+    def setUp(self):
+        self.F3 = FinitePrimeField.getInstance(3)
+        self.F81 = FiniteExtendedField(3, 4)
 
     def testAdd(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, F289.zero + F289.one)
+        s = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(1, 1)], self.F3), self.F81)
+        t = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 1), (1, 1)], self.F3), self.F81)
+        result = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 1), (1, 2)], self.F3), self.F81)
+        self.assertEqual(result, s + t)
+        self.assertEqual(t, s + self.F81.one)
+        self.assertEqual(t, s + self.F3.one)
 
     def testSub(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, F289.one - F289.zero)
-        self.assertEqual(F289.zero, F289.one - F289.one)
+        s = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(1, 1)], self.F3), self.F81)
+        t = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 1), (1, 1)], self.F3), self.F81)
+        result = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 2)], self.F3), self.F81)
+        tluser = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 1)], self.F3), self.F81)
+        self.assertEqual(result, s - t)
+        self.assertEqual(tluser, t - s)
+        self.assertEqual(self.F81.zero, s - s)
 
-    def testInverse(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, F289.one.inverse())
-        self.assertRaises(ZeroDivisionError, F289.zero.inverse)
-
-    def testMul(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, F289.one * F289.one)
-        self.assertEqual(F289.zero, F289.one * F289.zero)
-
-    def testDiv(self):
-        F289 = FiniteExtendedField(17, 2)
-        self.assertEqual(F289.one, F289.one / F289.one)
-        self.assertEqual(F289.zero, F289.zero / F289.one)
-        self.assertRaises(ZeroDivisionError, F289.one.__truediv__, F289.zero)
-
+    def testRsub(self):
+        # Fp - Fq
+        s = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(1, 1)], self.F3), self.F81)
+        result = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(0, 1), (1, 2)], self.F3), self.F81)
+        self.assertEqual(result, self.F3.one - s)
+        # Z -Fq
+        self.assertEqual(result, 1 - s)
+        
 
 class FiniteExtendedFieldTest (unittest.TestCase):
     def testInit(self):
         self.assertEqual(8, card(FiniteExtendedField(2, 3)))
-        f = poly([1, 1, 0, 1], "x", FinitePrimeField.getInstance(2))
+        f = FinitePrimeFieldPolynomial(enumerate([1, 1, 0, 1]), FinitePrimeField.getInstance(2))
         self.assertEqual(8, card(FiniteExtendedField(2, f)))
         for i in range(10): # 10 might be enough to check random moduli
             F8 = FiniteExtendedField(2, 3)
-            defining_polynomial = F8.modulus.generators[0]
+            defining_polynomial = F8.modulus
             self.assert_(defining_polynomial.degree() == 3)
-            self.assert_(defining_polynomial.isIrreducible())
+            self.assert_(defining_polynomial.isirreducible())
 
     def testCreateElement(self):
         F125 = FiniteExtendedField(5, 3)
-        self.assertEqual(F125.createElement(6), F125.createElement(poly([1, 1], "x", FinitePrimeField.getInstance(5))))
+        self.assertEqual(F125.createElement(6), F125.createElement(FinitePrimeFieldPolynomial(enumerate([1, 1]), FinitePrimeField.getInstance(5))))
         self.assertEqual(F125.createElement(6), F125.createElement([1, 1]))
 
     def testSuperring(self):
@@ -220,10 +222,69 @@ class FiniteExtendedFieldTest (unittest.TestCase):
         F625 = FiniteExtendedField(5, 4)
         self.failIf(F625.one in F125)
         self.failIf(F625.createElement(17) in F125)
-        # We don't expect an element of extended fields be in the field
+        # we don't expect an element of extended fields be in the field
         # even if it actually is.
         F15625 = FiniteExtendedField(5, 6)
         self.failIf(F15625.one in F125)
+
+
+class FinitePrimeFieldPolynomialTest (unittest.TestCase):
+    def testRepr(self):
+        f = FinitePrimeFieldPolynomial([(0, 2), (8, 1)], coeffring=FinitePrimeField.getInstance(311))
+        self.assertEqual(0, repr(f).index("Finite"))
+
+
+class Homomorphism2Test (unittest.TestCase):
+    """
+    test for homomorphisms
+    """
+    def setUp(self):
+        """
+	create two different Fq's.
+	"""
+        self.F2 = FinitePrimeField.getInstance(2)
+        f = FinitePrimeFieldPolynomial([(0, 1), (5, 1), (6, 1)], self.F2)
+        self.F64 = FiniteExtendedField(2, f)
+        self.F3 = FinitePrimeField.getInstance(3)
+        f = FinitePrimeFieldPolynomial(enumerate([1, 2, 1, 2, 1]), self.F3)
+        self.F81 = FiniteExtendedField(3, f)
+
+    def testIsomorphism(self):
+        """
+	test for fqiso
+	"""
+        g = FinitePrimeFieldPolynomial(enumerate([1, 1, 0, 0, 1, 1, 1]), self.F2)
+        F64b = FiniteExtendedField(2, g)
+        f64iso = fqiso(self.F64, F64b)
+        self.assertEqual(F64b.zero, f64iso(self.F64.zero))
+        self.assertEqual(F64b.one, f64iso(self.F64.one))
+        x = F64b.createElement(2)
+        self.assertEqual(F64b.order(x), self.F64.order(f64iso(x)))
+        g = FinitePrimeFieldPolynomial(enumerate([2, 0, 0, 1, 1]), self.F3)
+        F81b = FiniteExtendedField(3, g)
+        f81iso = fqiso(self.F81, F81b)
+        self.assertEqual(F81b.zero, f81iso(self.F81.zero))
+        self.assertEqual(F81b.one, f81iso(self.F81.one))
+
+    def testEmbedding(self):
+        """
+        test for embedding
+        """
+        F8 = FiniteExtendedField(2, 3)
+        embed8to64 = embedding(F8, self.F64)
+        self.assertEqual(self.F64.zero, embed8to64(F8.zero))
+        self.assertEqual(self.F64.one, embed8to64(F8.one))
+        x = F8.createElement(2)
+        self.assertEqual(F8.order(x), self.F64.order(embed8to64(x)))
+
+    def testDoubleEmbeddings(self):
+        """
+        test for double_embeddings
+        """
+        # linearly disjoint
+        F32 = FiniteExtendedField(2, 5)
+        e1, e2 = double_embeddings(F32, self.F64)
+        self.assertEqual(e1(F32.one), e2(self.F64.one))
 
 
 def suite(suffix = "Test"):
