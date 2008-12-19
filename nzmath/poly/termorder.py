@@ -104,18 +104,25 @@ class UnivarTermOrder (TermOrderInterface):
         degrees.sort(cmp=self.comparator)
         if reverse:
             degrees.reverse()
-        str_terms = [("%s * %s ** %d" % (polynom[d], varname, d)) for d in degrees]
+        str_terms = [("%s * %s ** %d" % (polynom[d], varname, d)) for d in degrees if polynom[d]]
         # constant
-        if 0 in degrees:
-            str_terms[str_terms.index("%s * %s ** 0" % (polynom[0], varname))] = str(polynom[0])
+        if 0 in degrees and polynom[0]:
+            const_term = str(polynom[0])
+            if (hasattr(polynom, "getCoefficientRing") and
+                polynom[0] == polynom.getCoefficientRing().one):
+                const_term = "1"
+            str_terms[str_terms.index("%s * %s ** 0" % (polynom[0], varname))] = const_term
         # degree 1
-        if 1 in degrees:
+        if 1 in degrees and polynom[1]:
             str_terms[str_terms.index("%s * %s ** 1" % (polynom[1], varname))] = "%s * %s" % (polynom[1], varname)
         result = " + ".join(str_terms)
         # minus terms
         result = self._PLUS_MINUS.sub("- ", result)
         # coefficient is 1 (or -1)
-        one_times_x = re.compile(r"(^| )1 \* %s" % varname)
+        if hasattr(polynom, "getCoefficientRing"):
+            one_times_x = re.compile(r"(^| )%s \* %s" % (polynom.getCoefficientRing().one, varname))
+        else:
+            one_times_x = re.compile(r"(^| )1 \* %s" % varname)
         result = one_times_x.sub(" " + varname, result)
         result = result.lstrip()
         return result
