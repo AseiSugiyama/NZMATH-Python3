@@ -1,113 +1,121 @@
 import unittest
+import logging
+import nzmath.rational as rational
+import nzmath.poly.uniutil as uniutil
+import nzmath.poly.multiutil as multiutil
 import nzmath.elliptic as elliptic
 import nzmath.finitefield as finitefield
-import nzmath.polynomial as polynomial
-import nzmath.rational as rational
 
-a = elliptic.EC([0,-1,1,0,0], 0)
-b = elliptic.EC([1,0], 0)
-c = elliptic.EC([0,17], 0)
+logging.basicConfig(level=logging.INFO)
 
-P1 = [-2,3]
-P2 = [-1,4]
-P3 = [2,5]
-P4 = [4,9]
-P5 = [8,23]
-P6 = [43,282]
-P7 = [52,375]
-P8 = [5234,378661]
 
 class EllipticTest(unittest.TestCase):
-    def testInit(self):
-        assert a.c4 == 16
-        assert a.c6 == -152
-        assert a.disc == -11
-        assert a.j == rational.Rational(a.c4**3, a.disc)
+    def setUp(self):
+        self.a = elliptic.EC([0,-1,1,0,0], 0)
+        self.b = elliptic.EC([1,0], 0)
+        self.c = elliptic.EC([0,17], 0)
 
-        assert b.c4 == -48
-        assert b.c6 == 0
-        assert b.disc == -64
-        assert b.j == rational.Rational(b.c4**3, b.disc)
+        self.P1 = map(rational.Rational,[-2,3])
+        self.P2 = map(rational.Rational,[-1,4])
+        self.P3 = map(rational.Rational,[2,5])
+        self.P4 = map(rational.Rational,[4,9])
+        self.P5 = map(rational.Rational,[8,23])
+        self.P6 = map(rational.Rational,[43,282])
+        self.P7 = map(rational.Rational,[52,375])
+        self.P8 = map(rational.Rational,[5234,378661])
+
+    def testInit(self):
+        self.assertEqual(16, self.a.c4)
+        self.assertEqual(-152, self.a.c6)
+        self.assertEqual(-11, self.a.disc)
+        self.assertEqual(rational.Rational(self.a.c4**3, self.a.disc), self.a.j)
+
+        self.assertEqual(-48, self.b.c4)
+        self.assertEqual(0, self.b.c6)
+        self.assertEqual(-64, self.b.disc)
+        self.assertEqual(rational.Rational(self.b.c4**3, self.b.disc), self.b.j)
+
+    def testStr(self):
+        e = elliptic.EC([1, 3, 4, 0, 1], 7)
+        self.assert_(str(e))
 
     def testSimple(self): 
-        self.assertEqual('y ** 2=8208 - 432 * x + x ** 3', str(a.simple()))
+        self.assertEqual('y ** 2 = x ** 3 - 432/1 * x + 8208/1', str(self.a.simple()))
+        # ch > 0
+        e = elliptic.EC([1, 1, 1, 3, 4], 7)
+        self.assert_(e.simple())
 
-    def testWhetherOn(self): 
-        assert c.whetherOn(P1)
-        assert c.whetherOn(P2)
-        assert c.whetherOn(P3)
-        assert c.whetherOn(P4)
-        assert c.whetherOn(P5)
-        assert c.whetherOn(P6)
-        assert c.whetherOn(P7)
-        assert c.whetherOn(P8)
-        assert not c.whetherOn([-15,-2])
-        assert not c.whetherOn([99999,66666666])
+    def testWhetherOn(self):
+        self.assert_(self.c.whetherOn(self.P1))
+        self.assert_(self.c.whetherOn(self.P2))
+        self.assert_(self.c.whetherOn(self.P3))
+        self.assert_(self.c.whetherOn(self.P4))
+        self.assert_(self.c.whetherOn(self.P5))
+        self.assert_(self.c.whetherOn(self.P6))
+        self.assert_(self.c.whetherOn(self.P7))
+        self.assert_(self.c.whetherOn(self.P8))
+        self.failIf(self.c.whetherOn([-15,-2]))
+        self.failIf(self.c.whetherOn([99999,66666666]))
 
     def testAdd(self):
-        assert c.add(P3, P7) == c.mul(3, P1)
+        self.assertEqual(self.c.add(self.P3, self.P7), self.c.mul(3, self.P1))
 
     def testSub(self):
-        assert c.sub(P1, P3) == P4
+        self.assertEqual(self.P4, self.c.sub(self.P1, self.P3))
 
-    def testMul(self): 
-        assert c.mul(-2, P1) == P5
+    def testMul(self):
+        self.assertEqual(self.P5, self.c.mul(-2, self.P1))
 
     def testOrder(self):
-        d = elliptic.EC([2,6], 7)
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([11,3], 13)
+        d = elliptic.EC([2, 6], 7)
+        e = elliptic.EC([1, 3], 7)
+        f = elliptic.EC([11, 3], 13)
 
-        assert d.order() == 11
-        assert e.order() == 6
-        assert f.order() == 13
+        self.assertEqual(11, d.order())
+        self.assertEqual(6, e.order())
+        self.assertEqual(13, f.order())
 
     def testPoint(self):
-        d = elliptic.EC([2,6], 7)
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([11,3], 13)
+        d = elliptic.EC([2, 6], 7)
+        e = elliptic.EC([1, 3], 7)
+        f = elliptic.EC([11, 3], 13)
 
-        assert d.whetherOn(d.point())
-        assert e.whetherOn(e.point())
-        assert f.whetherOn(f.point())
-
-    def testFindPoint(self):
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([-1,0], 65537)
-        g = elliptic.EC([0,1], 65537)
-
-        assert e.mul(3,e.findpoint(3)) == [0]
-        assert f.mul(64,f.findpoint(64)) == [0] # f(Fp) \cong (Z/256Z)^2
-        assert g.mul(3641,g.findpoint(3641)) == [0] # g(Fp) \cong Z/(p+1)Z
-
-    def testPointOrder(self):
-        e = elliptic.EC([1,3], 7)
-        f = elliptic.EC([0,1], 65537)
-
-        assert e.pointorder(e.findpoint(3)) == 3
-        assert f.pointorder(f.findpoint(331)) == 331 # f(Fp) be divided by 331
+        self.assert_(d.whetherOn(d.point()))
+        self.assert_(e.whetherOn(e.point()))
+        self.assert_(f.whetherOn(f.point()))
 
     def testChangeCurve(self):
-        assert str(elliptic.EC([2,4],0).changeCurve([1,2,3,4])) == '8/1 * y + 6/1 * x * y + y ** 2=-10/1 * x - 3/1 * x ** 2 + x ** 3'
+        self.assertEqual('y ** 2 + 6/1 * x * y + 8/1 * y = x ** 3 - 3/1 * x ** 2 - 10/1 * x',
+                          str(elliptic.EC([2, 4], 0).changeCurve([1, 2, 3, 4])))
 
     def testChangePoint(self):
-        assert elliptic.EC([1,2],0).changePoint([1,2], [1,2,3,4]) == [-1, 1]
+        self.assertEqual([-1, 1], elliptic.EC([1, 2], 0).changePoint([1, 2], [1, 2, 3, 4]))
 
     def testDivPoly(self):
-        E = elliptic.EC([3,4],101)
-        F101 = finitefield.FinitePrimeField(E.ch)
-        D=({-1:polynomial.OneVariableSparsePolynomial({0:-1},['x'],F101),
-            0:polynomial.OneVariableSparsePolynomial({},['x'],F101),
-            1:polynomial.OneVariableSparsePolynomial({0:1},['x'],F101),
-            2:polynomial.OneVariableSparsePolynomial({0:1},['x'],F101)*2,
-            3:polynomial.OneVariableSparsePolynomial({0:92,1:48,2:18,4:3},["x"],F101),
-            4:polynomial.OneVariableSparsePolynomial({0:94,1:5,2:11,3:59,4:30,6:2},["x"],F101)*2,
-            5:polynomial.OneVariableSparsePolynomial({0:48,1:58,2:53,3:60,4:28,5:93,6:79,7:52,8:65,9:5,10:85,12:5},["x"],F101),
-            6:polynomial.OneVariableSparsePolynomial({0:9,1:12,2:44,3:16,4:64,5:22,6:76,7:28,8:42,9:96,10:87,12:57,13:62,14:14,16:3},["x"],F101)*2,
-            7:polynomial.OneVariableSparsePolynomial({0:94,1:77,2:87,3:65,4:97,5:45,6:80,7:22,8:44,9:76,10:5,11:49,12:49,13:74,14:76,15:53,16:69,17:47,18:63,19:70,20:78,21:20,22:15,24:7},["x"],F101),
-            8:polynomial.OneVariableSparsePolynomial({0:16,1:50,2:29,3:10,4:62,5:80,6:41,7:66,8:79,9:48,10:77,11:53,12:67,13:70,14:5,15:18,16:36,17:28,18:58,19:95,20:67,21:91,22:37,23:93,24:25,25:93,26:61,27:34,28:68,30:4},["x"],F101)*2},
-           [3,5,7])
-        assert E.divPoly([])==D
+        E = elliptic.EC([3, 4], 101)
+        F101 = finitefield.FinitePrimeField.getInstance(E.ch)
+        D = ({-1:uniutil.polynomial({0:-1}, F101),
+            0:uniutil.polynomial({}, F101),
+            1:uniutil.polynomial({0:1}, F101),
+            2:uniutil.polynomial({0:2}, F101),
+            3:uniutil.polynomial({0:92, 1:48, 2:18, 4:3}, F101),
+            4:uniutil.polynomial({0:188, 1:10, 2:22, 3:118, 4:60, 6:4}, F101),
+            5:uniutil.polynomial({0:48, 1:58, 2:53, 3:60, 4:28, 5:93, 6:79,
+                                  7:52, 8:65, 9:5, 10:85, 12:5}, F101),
+            6:uniutil.polynomial({0:18, 1:24, 2:88, 3:32, 4:128, 5:44, 6:152,
+                                  7:56, 8:84, 9:192, 10:174, 12:114, 13:124,
+                                  14:28, 16:6}, F101),
+            7:uniutil.polynomial({0:94, 1:77, 2:87, 3:65, 4:97, 5:45, 6:80,
+                                  7:22, 8:44, 9:76, 10:5, 11:49, 12:49, 13:74,
+                                  14:76, 15:53, 16:69, 17:47, 18:63, 19:70,
+                                  20:78, 21:20, 22:15, 24:7}, F101),
+            8:uniutil.polynomial({0:32, 1:100, 2:58, 3:20, 4:124, 5:160, 6:82,
+                                  7:132, 8:158, 9:96, 10:154, 11:106, 12:134,
+                                  13:140, 14:10, 15:36, 16:72, 17:56, 18:116,
+                                  19:190, 20:134, 21:182, 22:74, 23:186, 24:50,
+                                  25:186, 26:122, 27:68, 28:136, 30:8}, F101)},
+           [2, 3, 5, 7])
+        self.assertEqual(D, E.divPoly([]))
         ## NotImplemented
         # F=elliptic.EC([3,4],7,3)
         # D=F.divPoly(1)[0]
@@ -115,17 +123,59 @@ class EllipticTest(unittest.TestCase):
 
 
 class OrderTest(unittest.TestCase):
-    def testEqual(self):
-        e = elliptic.EC([1,4],5)
-        bySchoof = e.Schoof()
-        byNaive = e.naive()
-        assert bySchoof == byNaive
-        e = elliptic.EC([1,3,4,0,1],5)
-        bySchoof = e.Schoof()
-        byNaive = e.naive()
-        assert bySchoof == byNaive
+    def testCh5(self):
+        e = elliptic.EC([1, 4], 5)
+        self.assertEqual(5 + 1 - e.trace(), e.order())
 
-    def testEqual233(self):
+
+class TraceTest(unittest.TestCase):
+    # ch <= 229, Shanks_Mestre deligates the computation to naive.
+    def testEqualCh5(self):
+        e = elliptic.EC([1, 4], 5)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof)
+        e = elliptic.EC([2, 0], 5)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof)
+        e = elliptic.EC([1, 3, 4, 0, 1], 5)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof)
+
+    def testEqualCh7(self):
+        e = elliptic.EC([1, 4], 7)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof, str(e))
+        e = elliptic.EC([2, 0], 7)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof, str(e))
+        e = elliptic.EC([1, 3, 4, 0, 1], 7)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof, repr(e)) # see EllipticTest.testStr
+
+    def testEqualCh19(self):
+        e = elliptic.EC([2, 1], 19)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof)
+        e = elliptic.EC([2, 5], 19)
+        byNaive = e.naive()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, bySchoof)
+
+    def testEqualCh233(self):
+        e = elliptic.EC([2, 1], 233)
+        byNaive = e.naive()
+        byShanksMestre = e.Shanks_Mestre()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, byShanksMestre)
+        self.assertEqual(byNaive, bySchoof)
+        # bug #2281173
         e = elliptic.EC([2, 5], 233)
         byNaive = e.naive()
         byShanksMestre = e.Shanks_Mestre()
@@ -133,72 +183,109 @@ class OrderTest(unittest.TestCase):
         self.assertEqual(byNaive, byShanksMestre)
         self.assertEqual(byNaive, bySchoof)
 
+    def testEqualCh311(self):
+        e = elliptic.EC([12, 179], 311)
+        byNaive = e.naive()
+        byShanksMestre = e.Shanks_Mestre()
+        bySchoof = e.Schoof()
+        self.assertEqual(byNaive, byShanksMestre)
+        self.assertEqual(byNaive, bySchoof)
 
-class PairingTest (unittest.TestCase):
+    def testEqualCh65537(self):
+        # 65537 is too large for naive method.
+        e = elliptic.EC([0, 1], 65537)  # supersingular curve
+        byShanksMestre = e.Shanks_Mestre()
+        bySchoof = e.Schoof()
+        self.assertEqual(0, byShanksMestre)
+        self.assertEqual(0, bySchoof)
+
+
+class PairingTest(unittest.TestCase):
     def testLine(self):
-        # having both variables
-        e = elliptic.EC([0,0,1,-1,0],17)
-        P = [0,0]
-        l = e.line(P,P)
-        self.assertEqual(2, l[0])
-        self.assert_(isinstance(l[1], polynomial.MultiVariableSparsePolynomial))
-        self.assertEqual(e.field.zero, l[1](x=P[0],y=P[1]))
-        # having y only
-        P2 = e.mul(2,P)
-        l2 = e.line(P,P2)
-        self.assertEqual(-1, l2[0])
-        self.assert_(isinstance(l2[1], polynomial.OneVariablePolynomial))
-        self.assertEqual(e.field.zero, l2[1](0))
-        # having no variable
-        l3 = e.line([0])
-        self.assertEqual(0, l3[0])
-        self.assert_(isinstance(l3[1], finitefield.FinitePrimeFieldElement))
-        self.assertEqual(e.field.one, l3[1])
-        # having x only
-        l4 = e.line(P, [0])
-        self.assertEqual(1, l4[0])
-        self.assert_(isinstance(l4[1], polynomial.OneVariablePolynomial))
-        self.assertEqual(e.field.zero, l4[1](P[0]))
+        # FIXME: need more appropriate tests
+        e = elliptic.EC([0, 0, 1, -1, 0], 17)
+        P = [0, 0]
+        self.assertEqual(e.basefield.zero, e.line(P, P, P))
+        P2 = e.mul(2, P)
+        self.assertEqual(e.basefield.zero, e.line(P, P2, e.mul(-1, e.add(P, P2))))
 
     def testWeilPairing(self):
         # this example was refered to Washington.
-        e = elliptic.EC([0,2], 7)
-        P = [0,3]
-        Q = [5,1]
+        e = elliptic.EC([0, 2], 7)
+        P = [5, 1]
+        Q = [0, 3]
         R = e.WeilPairing(3, P, Q)
-        assert R == finitefield.FinitePrimeFieldElement(2, 7)
+        self.assertEqual(finitefield.FinitePrimeFieldElement(2, 7), R)
+
+        # test case of extension field, characteristic 7
+        p = 7
+        r = 11
+        F = finitefield.FinitePrimeField(p)
+        PX = uniutil.polynomial({0:3,1:3,2:2,3:1,4:4,5:1,6:1,10:1},F)
+        Fx = finitefield.FiniteExtendedField(p,PX)
+
+        E = elliptic.EC([F.one,-F.one],F)
+        Ex = elliptic.EC([Fx.one,-Fx.one],Fx)
+
+        P = [3,6]
+        assert E.whetherOn(P)
+        assert Ex.whetherOn(P)
+        assert E.mul(11,P) == E.infpoint
+        Qxcoord = Fx.createElement(6*7**9+7**8+7**6+6*7**3+6*7**2+7+6)
+        Qycoord = Fx.createElement(3*7**9+6*7**8+4*7**7+2*7**6+5*7**4+5*7**3+7**2+7+3)
+        Q = [Qxcoord,Qycoord]
+        assert Ex.whetherOn(Q)
+        assert Ex.mul(11,Q) == Ex.infpoint
+
+        w = Ex.WeilPairing(11, P, Q)
+        Wp = Fx.createElement(7**9 + 5*7**8 + 4*7**7 + 2*7**5 + 7**4 + 6*7**2)
+        assert w == Wp
+
+    def testWeilPairingIsFunction(self):
+        # e2 is isomorphic to Z/256 x Z/256
+        F_65537 = finitefield.FinitePrimeField(65537)
+        e2 = elliptic.EC([-1, 0], F_65537)
+        P1 = map(F_65537.createElement, [30840, 53250])
+        self.failIf(256 % e2.pointorder(P1))
+        P2 = map(F_65537.createElement, [10657, 46245])
+        self.failIf(256 % e2.pointorder(P2))
+        weil10 = set(e2.WeilPairing(256, P1, P2) for i in range(10))
+        # since Weil pairing is a function, the result is always same
+        self.assertEqual(1, len(weil10))
+        # Weil pairing is a function E[m]xE[m] -> mu_m
+        self.assertEqual(e2.basefield.one, weil10.pop()**256)
 
     def testTatePairing(self):
         # this example was refered to Washington.
         # note that Tate pairing is only defined
         # up to a multiple by an lth power.
-        e = elliptic.EC([-1,1], 11)
-        l = map(finitefield.FinitePrimeFieldElement,[5,6],[11]*2)
-        P = [3,6]
+        e = elliptic.EC([-1, 1], 11)
+        self.assertEqual(10, e.order())
+        P = map(e.basefield.createElement,[3, 6])
         R = e.TatePairing(5, P, P)
-        #assert R == finitefield.FinitePrimeFieldElement(5, 11)
-        assert R in l
+        l = map(finitefield.FinitePrimeFieldElement, [5, 6], [11]*2)
+        self.assert_(R in l, R)
 
     def testTatePairing_Extend(self):
         # this example was refered to Kim Nguyen.
-        e = elliptic.EC([0,4], 997)
-        P = [0,2]
-        Q = [747,776]
+        e = elliptic.EC([0, 4], 997)
+        P = [0, 2]
+        Q = [747, 776]
         R = e.TatePairing_Extend(3, P, P)
         W1 = e.TatePairing_Extend(3, P, Q)
         W2 = e.TatePairing_Extend(3, Q, P)
-        assert R == finitefield.FinitePrimeField(997).one
-        assert W1 == finitefield.FinitePrimeFieldElement(304, 997)
-        assert W1 == W2**-1
+        self.assertEqual(e.basefield.one, R)
+        self.assertEqual(finitefield.FinitePrimeFieldElement(304, 997), W1)
+        self.assertEqual(W1, W2.inverse())
 
     def testStructure(self):
         # this example was rechecked by MAGMA.
-        e = elliptic.EC([0,4], 997)
-        f = elliptic.EC([-1,0], 65537)
-        g = elliptic.EC([0,1], 65537)
-        assert e.structure() == (12,84)
-        assert f.structure() == (256,256)
-        assert g.structure() == (1,65538)
+        e = elliptic.EC([0, 4], 997)
+        f = elliptic.EC([-1, 0], 65537)
+        g = elliptic.EC([0, 1], 65537)
+        self.assertEqual((12, 84),  e.structure())
+        self.assertEqual((256, 256),  f.structure())
+        self.assertEqual((1, 65538),  g.structure())
 
 
 def suite(suffix="Test"):
