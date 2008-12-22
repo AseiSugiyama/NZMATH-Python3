@@ -131,7 +131,7 @@ class DivisionProvider (object):
         degree, lc = self.order.leading_term(other)
         remainder = self
         rdegree, rlc = self.order.leading_term(remainder)
-        if rdegree > degree + 5 and degree > 1:
+        if rdegree > degree + 5 and degree >= 1:
             return other.mod(remainder)
         ilc = ring.inverse(lc)
         while rdegree >= degree:
