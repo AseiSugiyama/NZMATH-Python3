@@ -90,6 +90,16 @@ class FactoredIntegerTest(unittest.TestCase):
         self.assert_(factored45.is_divisible_by(9))
         self.assert_(factored45.is_divisible_by(15))
 
+    def testExactDivision(self):
+        fortyfive = misc.FactoredInteger(45)
+        self.assertEqual(45, int(fortyfive))
+        fifteen = fortyfive.exact_division(3)
+        self.assertEqual(15, int(fifteen))
+        five = fortyfive // 9
+        self.assertEqual(5, int(five))
+        five = fortyfive.exact_division(misc.FactoredInteger(9, {3:2}))
+        self.assertEqual(5, int(five))
+
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()

@@ -143,24 +143,26 @@ class FactoredInteger(object):
             else:
                 quotient.factors[divisor] -= 1
         elif not isinstance(other, FactoredInteger):
+            dividing = divisor
             for p, e in self.factors.iteritems():
-                while not divisor % p:
-                    divisor // p
+                while not dividing % p:
+                    dividing //= p
                     if quotient.factors[p] == 1:
-                        del quotient.factors[divisor]
-                        assert divisor % p
+                        del quotient.factors[p]
+                        assert dividing % p, dividing
                     else:
-                        quotient.factors[divisor] -= 1
-                if divisor == 1:
+                        quotient.factors[p] -= 1
+                if dividing == 1:
                     break
-            assert divisor == 1
+            assert dividing == 1
         else:
             for p, e in other.factors.iteritems():
                 assert p in quotient.factors and quotient.factors[p] >= e
                 if quotient.factors[p] == e:
-                    del quotient.factors[divisor]
+                    del quotient.factors[p]
                 else:
-                    quotient.factors[divisor] -= e
+                    quotient.factors[p] -= e
+        quotient.integer //= divisor
         return quotient
 
     # maybe this is what you want, isn't it?
