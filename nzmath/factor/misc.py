@@ -71,6 +71,12 @@ class FactoredInteger(object):
         assert not integer % partial_factor, "wrong factorization"
         return cls(integer // partial_factor) * cls(partial_factor, partial)
 
+    def __iter__(self):
+        """
+        Default iterator
+        """
+        return self.factors.iteritems()
+
     def __mul__(self, other):
         if isinstance(other, FactoredInteger):
             integer = self.integer * other.integer
