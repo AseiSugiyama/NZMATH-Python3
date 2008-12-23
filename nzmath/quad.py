@@ -6,9 +6,8 @@ import warnings
 import nzmath.gcd as gcd
 import nzmath.arith1 as arith1
 import nzmath.prime as prime
-import nzmath.factor.methods as methods
 import nzmath.factor.misc as misc
-import nzmath.factor.mpqs as mpqs
+
 
 class ReducedQuadraticForm:
     """
@@ -223,10 +222,9 @@ def class_formula(disc, uprbd):
     h = sqrt(|D|)/pi (1 - (D/p)(1/p))^{-1} where p is less than ubound.
     """
     ht = math.sqrt(abs(disc)) / math.pi
-    ml = number_unit(disc)/2
-    factors = mpqs.eratosthenes(uprbd)
+    ml = number_unit(disc) / 2
 
-    for factor in factors:
+    for factor in prime.generator_eratosthenes(uprbd):
         ml = ml * (1 - (kronecker(disc, factor) / factor))**(-1)
     return int(ht * ml + 0.5)
 
@@ -954,15 +952,13 @@ def ordercv(n, sossp, sogsp, nt, disc, classnum, tmp_ss, tmp_gs):
     """
     n: int
     """
-    lst_p = methods.factor(n)
-    n_is_changing = True
-    while n_is_changing:
-        n_is_changing = False
+    factor_n = misc.FactoredInteger(n)
+    while True:
         c_s1 = ClassGroup(disc, classnum, []) # a subset of G
         lstp_ls = sossp.retel()
         sogsptp = sogsp.retel()
-        for p, e in lst_p:
-            base = nt ** (n // p)
+        for p, e in factor_n:
+            base = nt ** (int(factor_n) // p)
             for ttp_ls in lstp_ls:
                 tmp_c_s1 = base * ttp_ls
                 tmp_c_s1.s_parent = ttp_ls
@@ -970,19 +966,16 @@ def ordercv(n, sossp, sogsp, nt, disc, classnum, tmp_ss, tmp_gs):
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
-                    n_is_changing = True
-                    n //= p
-                    if e > 1:
-                        lst_p[lst_p.index((p, e))] = (p, e - 1)
-                    else:
-                        lst_p.remove((p, e))
+                    factor_n //= p
                     tmp_ss = rete.s_parent
                     tmp_gs = tmp_ell
                     break
             else:
                 continue
             break
-    return n, tmp_ss, tmp_gs
+        else:
+            break
+    return int(factor_n), tmp_ss, tmp_gs
 
 def giantspcv(q, sz, y, c_s1, bounds, sogsp):
     """
@@ -1114,31 +1107,27 @@ def trorder(n, sossp, sogsp, nt, disc):
     n: int
     nt: element
     """
-    divisors = methods.factor(n)
+    factor_n = misc.FactoredInteger(n)
     while True:
         c_s1 = ClassGroup(disc, 0, [])
         lstp_ls = sossp.retel()
         sogsptp = sogsp.retel()
-        for p, e in divisors:
+        for p, e in factor_n:
             # initialize c_s1
-            base = nt ** (n // p)
+            base = nt ** (int(factor_n) // p)
             for ttp_ls in lstp_ls:
                 c_s1.insttree(base * ttp_ls)
             # search in c_s1
             for tmp_ell in sogsptp:
                 rete = c_s1.search(tmp_ell)
                 if rete != False:
-                    n //= p
-                    if e > 1:
-                        divisors[divisors.index((p, e))] = (p, e - 1)
-                    else:
-                        divisors.remove((p, e))
+                    factor_n //= p
                     break
             else:
                 continue
             break
         else:
-            return n
+            return int(factor_n)
 
 def isfinished_trbsgs(lwrbd, bounds, h, n, sossp, sogsp, nt, disc):
     """

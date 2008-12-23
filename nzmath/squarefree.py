@@ -102,7 +102,7 @@ def viafactor(n):
     It is obvious that if one knows the prime factorization of the number,
     he/she can tell whether the number is squarefree or not.
     """
-    for p, e in factor_methods.factor(n):
+    for p, e in factor_misc.FactoredInteger(n):
         if e >= 2:
             return False
     return True

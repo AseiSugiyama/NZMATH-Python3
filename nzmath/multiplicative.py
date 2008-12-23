@@ -2,7 +2,7 @@
 Multiplicative number theoretic functions.
 """
 
-import nzmath.factor.methods as factor_methods
+import nzmath.factor.misc as factor_misc
 import nzmath.prime as prime
 
 def euler(n):
@@ -13,14 +13,13 @@ def euler(n):
     if n == 1:
         return 1
     if prime.primeq(n):
-        return n-1
-    f = factor_methods.factor(n)
+        return n - 1
     t = 1
-    for p, e in f:
+    for p, e in factor_misc.FactoredInteger(n):
         if e > 1:
-            t *= pow(p, e-1) * (p-1)
+            t *= pow(p, e - 1) * (p - 1)
         else:
-            t *= p-1
+            t *= p - 1
     return t
 
 def moebius(n):
@@ -35,9 +34,8 @@ def moebius(n):
         return 1
     if prime.primeq(n):
         return -1
-    f = factor_methods.factor(n)
     m = 1
-    for p, e in f:
+    for p, e in factor_misc.FactoredInteger(n):
         if e > 1:
             return 0
         m = -m
@@ -51,11 +49,10 @@ def sigma(m, n):
         return 1
     if prime.primeq(n):
         return 1 + n**m
-    f = factor_methods.factor(n)
     s = 1
-    for p, e in f:
+    for p, e in factor_misc.FactoredInteger(n):
         t = 1
-        for i in range(1, e+1):
+        for i in range(1, e + 1):
             t += (p**i)**m
         s *= t
     return s

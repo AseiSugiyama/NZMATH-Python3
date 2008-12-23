@@ -3,7 +3,7 @@ Group Theorical module
 """
 import math
 import nzmath.rational as rational
-import nzmath.factor.methods as facts
+import nzmath.factor.misc as factor_misc
 import nzmath.vector as vector
 import nzmath.matrix as matrix
 import nzmath.compatibility
@@ -208,12 +208,11 @@ class GroupElement:
         clas = self.classes.classes
         if hasattr(clas, "zero") and self.element == clas.zero:
             return 1
-        ord = self.classes.grouporder()
-        ordfact = facts.factor(ord)
+        ordfact = factor_misc.FactoredInteger(self.classes.grouporder())
         identity = self.classes.identity()
         k = 1
         for p, e in ordfact:
-            b = self.ope2(ord // (p ** e))
+            b = self.ope2(int(ordfact) // (p ** e))
             while b != identity:
                 k = k * p
                 b = b.ope2(p)

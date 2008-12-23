@@ -11,7 +11,7 @@ import nzmath.arith1 as arith1
 import nzmath.prime as prime
 import nzmath.ring as ring
 import nzmath.rational as rational
-import nzmath.factor.methods as factor_methods
+import nzmath.factor.misc as factor_misc
 import nzmath.intresidue as intresidue
 import nzmath.poly.univar as univar
 import nzmath.poly.uniutil as uniutil
@@ -20,7 +20,7 @@ import nzmath.compatibility
 _log = logging.getLogger('nzmath.finitefield')
 
 
-class FiniteFieldElement (ring.FieldElement):
+class FiniteFieldElement(ring.FieldElement):
     """
     The base class for all finite field element.
     """
@@ -31,7 +31,7 @@ class FiniteFieldElement (ring.FieldElement):
         ring.FieldElement.__init__(self)
 
 
-class FiniteField (ring.Field):
+class FiniteField(ring.Field):
     """
     The base class for all finite fields.
     """
@@ -59,13 +59,12 @@ class FiniteField (ring.Field):
         group of the field.
         """
         if not elem:
-            raise ValueError("zero is not in the group.")
-        grouporder = card(self) - 1
+            raise ValueError("zero is not in the multiplicative group.")
         if self._orderfactor is None:
-            self._orderfactor = factor_methods.factor(grouporder)
+            self._orderfactor = factor_misc.FactoredInteger(card(self) - 1)
         o = 1
         for p, e in self._orderfactor:
-            b = elem ** (grouporder // (p**e))
+            b = elem ** (int(self._orderfactor) // (p**e))
             while b != self.one:
                 o = o * p
                 b = b ** p
@@ -144,7 +143,7 @@ class FiniteField (ring.Field):
         return self.TonelliShanks(element)
 
 
-class FinitePrimeFieldElement (intresidue.IntegerResidueClass, FiniteFieldElement):
+class FinitePrimeFieldElement(intresidue.IntegerResidueClass, FiniteFieldElement):
     """
     The class for finite prime field element.
     """
@@ -179,19 +178,18 @@ class FinitePrimeFieldElement (intresidue.IntegerResidueClass, FiniteFieldElemen
         """
         if self.n == 0:
             raise ValueError("zero is not in the group.")
-        grouporder = self.m - 1
         if not hasattr(self, "orderfactor"):
-            self.orderfactor = factor_methods.factor(grouporder)
+            self.orderfactor = factor_misc.FactoredInteger(self.m - 1)
         o = 1
         for p, e in self.orderfactor:
-            b = self**(grouporder//(p**e))
+            b = self ** (int(self.orderfactor) // (p**e))
             while b.n != 1:
                 o = o*p
                 b = b**p
         return o
 
 
-class FinitePrimeField (FiniteField):
+class FinitePrimeField(FiniteField):
     """
     FinitePrimeField is also known as F_p or GF(p).
     """
@@ -327,7 +325,7 @@ FinitePrimeFieldPolynomial = uniutil.FinitePrimeFieldPolynomial
 uniutil.special_ring_table[FinitePrimeField] = uniutil.FinitePrimeFieldPolynomial
 
 
-class FiniteExtendedFieldElement (FiniteFieldElement):
+class FiniteExtendedFieldElement(FiniteFieldElement):
     """
     FiniteExtendedFieldElement is a class for an element of F_q.
     """
@@ -467,7 +465,7 @@ class FiniteExtendedFieldElement (FiniteFieldElement):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self.rep), repr(self.field))
 
 
-class FiniteExtendedField (FiniteField):
+class FiniteExtendedField(FiniteField):
     """
     FiniteExtendedField is a class for finite field, whose cardinality
     q = p**n with a prime p and n>1. It is usually called F_q or GF(q).

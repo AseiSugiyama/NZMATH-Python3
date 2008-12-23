@@ -12,7 +12,7 @@ from __future__ import division
 import logging
 import nzmath.arith1 as arith1
 import nzmath.finitefield as finitefield
-import nzmath.factor.methods as factormethods
+import nzmath.factor.misc as factor_misc
 import nzmath.gcd as gcd
 import nzmath.intresidue as intresidue
 import nzmath.matrix as matrix
@@ -67,7 +67,7 @@ def _prepare_squarefactors(disc):
     if squarefree.trivial_test_ternary(absd):
         fund_disc *= absd
     else:
-        for p, e in factormethods.factor(absd):
+        for p, e in factor_misc.FactoredInteger(absd):
             if e > 1:
                 squareness, oddity = divmod(e, 2)
                 squarefactors.append((p, squareness))
