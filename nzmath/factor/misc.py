@@ -183,9 +183,6 @@ class FactoredInteger(object):
         """
         Return the proper divisors (divisors of n excluding 1 and n).
         """
-        l = self.divisors()
-        l.remove(1)
-        l.remove(self.integer)
         return self.divisors()[1:-1]
 
     def prime_divisors(self):
