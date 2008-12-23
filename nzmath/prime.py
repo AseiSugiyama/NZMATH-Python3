@@ -70,7 +70,7 @@ def bigprimeq(z):
     Giving up rigorous proof of primality, return True for a probable
     prime.
     """
-    if long(z) != z:
+    if int(z) != z:
         raise ValueError("non-integer for primeq()")
     elif z <= 1:
         return False
@@ -160,7 +160,7 @@ def prime(s):
     """
     prime(n) returns the n-th prime number.
     """
-    if s != long(s):
+    if s != int(s):
         raise ValueError("non-integer for prime()")
     elif s <= 0:
         raise ValueError("non-positive-integer for prime()")
@@ -284,7 +284,7 @@ def primeq(n):
     A convinient function for primatilty test. It uses one of
     trialDivision, smallSpsp or apr depending on the size of n.
     """
-    if long(n) != n:
+    if int(n) != n:
         raise ValueError("non-integer for primeq()")
     if n <= 1:
         return False
@@ -312,13 +312,14 @@ def properDivisors(n):
     Return proper divisors of n (divisors of n excluding 1 and n).
 
     It is only useful for a product of small primes.
+    One can use FactoredInteger.proper_divisors() as well.
     """
     if n in (2, 3, 5, 7, 11, 13, 17, 19, 23):
         return []
     else:
         l = [1]
-        for (p, e) in _factor(n):
-            for j in range(1, e+1):
+        for p, e in _factor(n):
+            for j in range(1, e + 1):
                 l += [k*pow(p, j) for k in l if k % p != 0]
         l.remove(1)
         l.remove(n)
@@ -332,7 +333,6 @@ def _factor(n, bound=0):
     If the bound is given and less than the sqaure root of n,
     result is not proved to be a prime factorization.
     """
-
     factors = []
     if not (n % 2):
         v2, n = arith1.vp(n, 2)
@@ -358,25 +358,25 @@ def _calc_bound(n, bound=0):
 
 def primitive_root(p):
     """
-    Return a primitive root of Z/pZ.
+    Return a primitive root of p.
     """
-    pd = properDivisors(p-1)
+    pd = FactoredInteger(p - 1).proper_divisors()
     for i in bigrange.range(2, p):
         for d in pd:
-            if pow(i, (p-1)//d, p) == 1:
+            if pow(i, (p - 1)//d, p) == 1:
                 break
         else:
             return i
 
 
-class Zeta:
+class Zeta(object):
     """
     Represent linear combinations of roots of unity.
     """
     def __init__(self, size, pos=None, val=1):
         self.size = size
         self.z = [0]*self.size
-        if pos != None:
+        if pos is not None:
             self.z[pos % self.size] = val
 
     def __add__(self, other):
@@ -390,7 +390,7 @@ class Zeta:
             m = gcd.lcm(self.size, other.size)
             return self.promote(m) + other.promote(m)
 
-    def __mul__(self,other):
+    def __mul__(self, other):
         if not isinstance(other, Zeta):
             zr_m = Zeta(self.size)
             zr_m.z = [x*other for x in self.z]
@@ -515,71 +515,176 @@ class Zeta:
         return sum(self.z)
 
 
-class FactoredInteger:
-    def __init__(self, other):
-        if isinstance(other, FactoredInteger):
-            self.integer = other.integer
-            self.factors = other.factors.copy()
+class FactoredInteger(object):
+    """
+    Integers with factorization information.
+    """
+    def __init__(self, integer, factors=None):
+        """
+        FactoredInteger(integer [, factors])
+
+        If factors is given, it is a dict of type {prime:exponent}
+        and the product of prime**exponent is equal to the integer.
+        Otherwise, factorization is carried out in initialization.
+        """
+        self.integer = int(integer)
+        if factors is None:
+            self.factors = dict(_factor(self.integer))
         else:
-            self.integer = long(other)
-            self.factors = {}
-            for (p, e) in _factor(self.integer):
-                self.factors[p] = e
+            self.factors = dict(factors)
+
+    @classmethod
+    def from_partial_factorization(cls, integer, partial):
+        """
+        Construct a new FactoredInteger object from partial
+        factorization information given as dict of type
+        {prime:exponent}.
+        """
+        partial_factor = 1
+        for p, e in partial.iteritems():
+            partial_factor *= p**e
+        assert not integer % partial_factor, "wrong factorization"
+        return cls(integer // partial_factor) * cls(partial_factor, partial)
+
+    def __iter__(self):
+        """
+        Default iterator
+        """
+        return self.factors.iteritems()
 
     def __mul__(self, other):
         if isinstance(other, FactoredInteger):
-            new = +self
+            integer = self.integer * other.integer
+            new_factors = self.factors.copy()
             for p in other.factors:
-                new.factors[p] = new.factors.get(p, 0) + other.factors[p]
-            new.integer *= other.integer
-            return new
+                new_factors[p] = new_factors.get(p, 0) + other.factors[p]
+            return self.__class__(integer, new_factors)
         else:
             return self * FactoredInteger(other)
 
     __rmul__ = __mul__
 
     def __pow__(self, other):
-        new = +self
-        new.integer = new.integer**other
-        for p in new.factors:
-            new.factors[p] *= other
-        return new
+        new_integer = self.integer**other
+        new_factors = {}
+        for p in self.factors:
+            new_factors[p] = self.factors[p] * other
+        return self.__class__(new_integer, new_factors)
 
     def __pos__(self):
-        return self.__class__(self)
+        return self.copy(self)
 
     def __str__(self):
         return str(self.integer)
 
-    def __mod__(self, other):
-        return self.integer%other
+    def __eq__(self, other):
+        return self.integer == int(other)
 
-    def __cmp__(self, other):
-        return cmp(long(self), long(other))
+    def __ne__(self, other):
+        return self.integer != int(other)
 
     def __long__(self):
-        return long(self.integer)
+        return int(self.integer)
+
+    __int__ = __long__
+
+    def copy(self):
+        return self.__class__(self.integer, self.factors.copy())
+
+    def __mod__(self, other):
+        # maybe you want self.is_divisible_by(other)
+        if int(other) in self.factors:
+            return 0
+        return self.integer % int(other)
+
+    def is_divisible_by(self, other):
+        """
+        Return True if other divides self.
+        """
+        if int(other) in self.factors:
+            # other is prime and divides
+            return True
+        return not self.integer % int(other)
+
+    def exact_division(self, other):
+        """
+        Divide by a factor.
+        """
+        divisor = int(other)
+        quotient = self.copy()
+        if divisor in quotient.factors:
+            if quotient.factors[divisor] == 1:
+                del quotient.factors[divisor]
+            else:
+                quotient.factors[divisor] -= 1
+        elif not isinstance(other, FactoredInteger):
+            dividing = divisor
+            for p, e in self.factors.iteritems():
+                while not dividing % p:
+                    dividing //= p
+                    if quotient.factors[p] == 1:
+                        del quotient.factors[p]
+                        assert dividing % p, dividing
+                    else:
+                        quotient.factors[p] -= 1
+                if dividing == 1:
+                    break
+            assert dividing == 1
+        else:
+            for p, e in other.factors.iteritems():
+                assert p in quotient.factors and quotient.factors[p] >= e
+                if quotient.factors[p] == e:
+                    del quotient.factors[p]
+                else:
+                    quotient.factors[p] -= e
+        quotient.integer //= divisor
+        return quotient
+
+    # maybe this is what you want, isn't it?
+    __floordiv__ = exact_division
+
+    def divisors(self):
+        """
+        Return all divisors.
+        """
+        l = [1]
+        for p, e in self.factors.iteritems():
+            for j in range(1, e + 1):
+                l += [k*pow(p, j) for k in l if k % p]
+        l.sort()
+        return l
+
+    def proper_divisors(self):
+        """
+        Return the proper divisors (divisors of n excluding 1 and n).
+        """
+        return self.divisors()[1:-1]
+
+    def prime_divisors(self):
+        """
+        Return the list of primes that divides the number.
+        """
+        return self.factors.keys()
 
 
-class TestPrime:
+class TestPrime(object):
     primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
 
     def __init__(self, t=12):
-        self.t = FactoredInteger(t)
-        self.et = FactoredInteger(4)*(2**self.t.factors[2])
-        smoothp = [1]
-        for p in self.t.factors:
-            temp = smoothp[:]
-            pp = 1
-            for _ in range(self.t.factors[p]):
-                pp *= p
-                smoothp += [x*pp for x in temp]
-        for p in [x+1 for x in smoothp]:
-            if p&1 and _isprime(p):
-                self.et = self.et*p
+        if isinstance(t, (int, long)):
+            self.t = FactoredInteger(t)
+        else:
+            assert isinstance(t, FactoredInteger)
+            self.t = t
+        powerof2 = self.t.factors[2] + 2
+        self.et = FactoredInteger(2 ** powerof2, {2:powerof2})
+        for d in self.t.divisors():
+            p = d + 1
+            if p & 1 and _isprime(p):
+                self.et = self.et * FactoredInteger(p, {p:1})
                 if p in self.t.factors:
-                    self.et = self.et*(p**self.t.factors[p])
-        del smoothp
+                    e = self.t.factors[p]
+                    self.et = self.et * FactoredInteger(p**e, {p:e})
 
     def next(self):
         eu = []
@@ -588,7 +693,7 @@ class TestPrime:
                 eu.append((p - 1) * (p**(self.t.factors[p] - 1)))
             else:
                 eu.append(p - 1)
-        return self.__class__(self.t*self.primes[eu.index(min(eu))])
+        return self.__class__(self.t * self.primes[eu.index(min(eu))])
 
 
 class Status:
@@ -903,7 +1008,7 @@ def apr(n):
     for p in L.yet_keys():
         if not L.subrest(p, n, el.et, J):
             return False
-    r = long(n)
+    r = int(n)
     for _ in bigrange.range(1, el.t.integer):
         r = (r*n) % el.et.integer
         if n % r == 0 and r != 1 and r != n:
