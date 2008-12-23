@@ -8,14 +8,13 @@ import nzmath.factor.find as find
 
 _log = logging.getLogger('nzmath.factor.mpqs')
 
-class QS:
+class QS(object):
     def __init__(self, n, sieverange, factorbase):
         self.number = n
         self.sqrt_n = int(math.sqrt(n))
         for i in [2,3,5,7,11,17,19]:
             if n % i == 0:
-                _log.error("This number is divided by %d" % i)
-                raise ValueError
+                raise ValueError("This number is divided by %d" % i)
 
         self.digit = arith1.log(self.number, 10) + 1
         self.Srange = sieverange
@@ -168,18 +167,16 @@ class QS:
         return smooth
 
 
-class MPQS:
+class MPQS(object):
     def __init__(self, n, sieverange=0, factorbase=0, multiplier=0):
         self.number = n
         _log.info("The number is %d MPQS starting" % n)
 
         if prime.primeq(self.number):
-            _log.error("This number is Prime Number")
-            raise ValueError
+            raise ValueError("This number is Prime Number")
         for i in [2,3,5,7,11,13]:
             if n % i == 0:
-                _log.error("This number is divided by %d" % i)
-                raise ValueError
+                raise ValueError("This number is divided by %d" % i)
 
         self.sievingtime = 0
         self.coefficienttime = 0
@@ -232,8 +229,7 @@ class MPQS:
                 k = 1
             else:
                 if multiplier == 1:
-                    _log.error("This number is 3 mod 4 ")
-                    raise ValueError
+                    raise ValueError("This number is 3 mod 4 ")
                 else:
                     k = multiplier
         self.number = k*self.number
@@ -439,7 +435,7 @@ class MPQS:
         return smooth
 
 
-class Elimination:
+class Elimination(object):
     def __init__(self, smooth):
         self.vector = []
         self.history = []
@@ -666,7 +662,7 @@ def mpqs(n, s=0, f=0, m=0):
 
 def eratosthenes(n):
     if n < 2:
-        raise ValueError,"Input value must be bigger than 1  "
+        raise ValueError("Input value must be bigger than 1")
     else:
         primes = [2]
         sieves = [1]*(((n+1)//2)-1)
