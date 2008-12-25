@@ -583,6 +583,18 @@ class FactoredInteger(object):
     def __ne__(self, other):
         return self.integer != int(other)
 
+    def __le__(self, other):
+        return self.integer <= int(other)
+
+    def __lt__(self, other):
+        return self.integer < int(other)
+
+    def __gt__(self, other):
+        return self.integer > int(other)
+
+    def __ge__(self, other):
+        return self.integer >= int(other)
+
     def __long__(self):
         return int(self.integer)
 
