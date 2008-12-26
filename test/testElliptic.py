@@ -287,6 +287,14 @@ class PairingTest(unittest.TestCase):
         self.assertEqual((256, 256),  f.structure())
         self.assertEqual((1, 65538),  g.structure())
 
+    def testBSGS(self):
+        F_65537 = finitefield.FinitePrimeField(65537)
+        e2 = elliptic.EC([-1, 0], F_65537)
+        P1 = map(F_65537.createElement, [30840, 53250])
+        self.failIf(256 % e2.BSGS(P1))
+        P2 = map(F_65537.createElement, [10657, 46245])
+        self.failIf(256 % e2.BSGS(P2))
+        
 
 def suite(suffix="Test"):
     suite = unittest.TestSuite()

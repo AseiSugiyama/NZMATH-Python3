@@ -14,6 +14,7 @@ import nzmath.prime as prime
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.factor.methods as factor_methods
+import nzmath.factor.misc as factor_misc
 import nzmath.finitefield as finitefield
 import nzmath.compatibility
 
@@ -1199,21 +1200,18 @@ class ECoverGF(ECGeneric):
                 R[0] - (2 * P[1] + self.a1 * P[0] + self.a3 ) * R[1] - \
                 (P[0] ** 3) + self.a4 * P[0] + 2 * self.a6 - self.a3 * P[1]
 
-    def pointorder(self, P, ord=None, f=None):
+    def pointorder(self, P, ord_factor=None):
         """
         find point order of P and return order.
         """
-        # parameter ord and f are extension for structre.
-        if ord:
-            N = ord
+        # parameter ord_factor is extension for structre.
+        if ord_factor is not None:
+            N = int(ord_factor)
         else:
             N = self.order()
-        if f:
-            l = f
-        else:
-            l = factor_methods.factor(N)
+            ord_factor = factor_misc.FactoredInteger(N)
         o = 1
-        for p, e in l:
+        for p, e in ord_factor:
             B = self.mul(N//(p**e), P)
             while B != self.infpoint:
                 o = o*p
@@ -1343,7 +1341,7 @@ class ECoverGF(ECGeneric):
         while j <= m:
             Plist.append(R)
             R = self.add(R, P)
-            j = j+1
+            j += 1
         R = self.mul(2*m, P)
         k = -m
         Plist_rev = map(self.mul, [-1]*(m+1), Plist) # make reverse point mapping
@@ -1356,8 +1354,8 @@ class ECoverGF(ECGeneric):
             elif S in Plist_rev:
                 j = -Plist_rev.index(S)
                 break
-            k = k+1
-        M = self.ch+1+2*m*k-j
+            k += 1
+        M = self.ch + 1 + 2*m*k - j
         Flist = factor_methods.factor(M)
         for p, e in Flist:
             for i in range(e):
@@ -1413,10 +1411,9 @@ class ECoverGF(ECGeneric):
         # step 2. decompose N.
         r = gcd.gcd(card(simplified.basefield) - 1, N)
         _log.debug("r = %d, N = %d" % (r, N))
-        r_factor = factor_methods.factor(r)
-        N0 = r
+        r_factor = factor_misc.FactoredInteger(r)
         N1, N2 = 1, N
-        for p, _ in r_factor:
+        for p in r_factor.prime_divisors():
             k, N2 = arith1.vp(N2, p=p)  
             N1 *= p**k
     
@@ -1429,8 +1426,8 @@ class ECoverGF(ECGeneric):
             while P2 == self.infpoint:
                 P2 = simplified.point()
             P1, P2 = simplified.mul(N2, P1), simplified.mul(N2, P2)
-            s = simplified.pointorder(P1, r, r_factor)
-            t = simplified.pointorder(P2, r, r_factor)
+            s = simplified.pointorder(P1, r_factor)
+            t = simplified.pointorder(P2, r_factor)
             m = gcd.lcm(s, t)
             if m > 1:
                 e = simplified.WeilPairing(m, P1, P2)
