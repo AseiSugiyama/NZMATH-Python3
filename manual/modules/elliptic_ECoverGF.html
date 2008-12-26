@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>elliptic.py/ECoverGF - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?elliptic.py%2FECoverGF">elliptic.py/ECoverGF</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p>nzmath.<a href="elliptic.html" title="elliptic.py">elliptic</a></p>
+<h2 id="content_1_0">ECoverGF  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for elliptic curves over finite field. It is also called Galois Field (GF).<br />
+The class is a subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>.</p>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Notations In this document:</dt>
+<dd><ul class="list2" style="padding-left:16px;margin-left:16px"><li>p - characteristic number (must be prime)</li>
+<li>Fq - finite field, has order q = p^k (k&gt;=1)</li></ul></dd></dl>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  ECoverGF </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#g6428332"> ECoverGF(Weierstrass list form, basefield) </a></li></ul></li>
+<li><a href="#method"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#madefeca"> point() </a></li>
+<li><a href="#sa31c7de"> pointorder(P) </a></li>
+<li><a href="#le08f125"> Schoof() </a></li>
+<li><a href="#qd144d20"> Shanks_Mestre() </a></li>
+<li><a href="#dadf59f6"> naive() </a></li>
+<li><a href="#b9d7c34e"> order(flag=0) </a></li>
+<li><a href="#k6fa27bb"> TatePairing(m, P, Q) </a></li>
+<li><a href="#vcd290dc"> TatePairing_Extend(m, P, Q) </a></li>
+<li><a href="#x87aa71d"> WeilPairing(m, P, Q) </a></li>
+<li><a href="#u9b416eb"> BSGS(P) </a></li>
+<li><a href="#p63c548c"> DLP_BSGS(n, P, Q) </a></li>
+<li><a href="#hd102abc"> structure() </a></li></ul></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
+
+<h4 id="content_1_2">ECoverGF(<em>Weierstrass list form</em>, <em>basefield</em>)  <a class="anchor_super" id="g6428332">&dagger;</a></h4>
+<p>All elements of <em>Weierstrass list form</em> have to be an object inheriting <a href="finitefield.html" title="finitefield.py">finitefield</a>.<a href="finitefield_FiniteFieldElement.html" title="finitefield.py/FiniteFieldElement">FiniteFieldElement</a> or an Python long integer.<br />
+<em>basefield</em> has to be a prime number or an object inheriting finitefield.<a href="finitefield_FiniteField.html" title="finitefield.py/FiniteField">FiniteField</a> .
+if <em>basefield</em> is prime number, Constructor automatically create finite prime field (e.g. finitefield.<a href="finitefield_FinitePrimeField.html" title="finitefield.py/FinitePrimeField">FinitePrimeField</a>(p)).<br />
+if <em>Weierstrass list form</em> is a list of Python long integer, constructor will automatically convert by <em>basefield</em>.createElement method.</p>
+<p>In general, given EC characteristic or basefield specified, you should call <strong><a href="elliptic.html#cec" title="elliptic.py">EC</a></strong> for your profit. It is not recommended to call this class directly.<br /></p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+
+<h4 id="content_1_4">point()  <a class="anchor_super" id="madefeca">&dagger;</a></h4>
+<p>Returns a random point on elliptic curve.<br /></p>
+
+<h4 id="content_1_5">pointorder(<em>P</em>)  <a class="anchor_super" id="sa31c7de">&dagger;</a></h4>
+<p>Returns the order of point P. Algorithm uses factorization of order().<br /></p>
+
+<h4 id="content_1_6">Schoof()  <a class="anchor_super" id="le08f125">&dagger;</a></h4>
+<p>computes t such that #E(Fq)=q+1-t, where #E(Fq) stands for the number of points of elliptic curve over Fq. This uses the Schoof's method.<br /></p>
+
+<h4 id="content_1_7">Shanks_Mestre()  <a class="anchor_super" id="qd144d20">&dagger;</a></h4>
+<p>computes t such that #E(Fq)=q+1-t, where #E(Fq) stands for the number of points of elliptic curve over Fq. This uses the Shanks-Mestre method.<br /></p>
+
+<h4 id="content_1_8">naive()  <a class="anchor_super" id="dadf59f6">&dagger;</a></h4>
+<p>computes t such that #E(Fq)=p+1-t, where #E(Fq) stands for the number of points of elliptic curve over Fq. This uses the Legendre-symbol method.<br /></p>
+
+<h4 id="content_1_9">order(<em>flag</em>=0)  <a class="anchor_super" id="b9d7c34e">&dagger;</a></h4>
+<p>computes #E(Fq). If p&lt;1000, this uses the Legendre method. If 10^4&lt;p&lt;10^30, this uses the Shanks-Mestre method. Otherwise, it uses Schoof's method. If flag=r, this computes #E(Fq^r) .<br /></p>
+
+<h4 id="content_1_10">TatePairing(<em>m</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="k6fa27bb">&dagger;</a></h4>
+<p>returns Tate Pairing &lt;<em>P</em>,<em>Q</em>&gt;_<em>m</em> by using Miller's algorithm.<br />
+the point on elliptic curve <em>P</em> has to be a m-torsion point (e.g. <em>mP</em>=[0]).
+also the number m must be dividing order of curve.</p>
+
+<h4 id="content_1_11">TatePairing_Extend(<em>m</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="vcd290dc">&dagger;</a></h4>
+<p>returns Tate Pairing with final exponentation, that is T_<em>m</em>(<em>P</em>,<em>Q</em>):=&lt;<em>P</em>,<em>Q</em>&gt;_<em>m</em>^((q-1)/<em>m</em>) by using Miller's algorithm.<br /></p>
+
+<h4 id="content_1_12">WeilPairing(<em>m</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="x87aa71d">&dagger;</a></h4>
+<p>returns Weil Pairing e_<em>m</em>(<em>P</em>,<em>Q</em>) by using Miller's algorithm. <br />
+the number m must be dividing order of curve, and the point on elliptic curve <em>P, Q</em> have to be a m-torsion point (e.g. <em>mP</em>=[0]).<br /></p>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>Note</dt>
+<dd>Since properties of Weil pairing, if DLP_BSGS(m, P, Q) returns meaningful value, the weilpairing must be trivial.</dd></dl>
+
+<h4 id="content_1_13">BSGS(P)  <a class="anchor_super" id="u9b416eb">&dagger;</a></h4>
+<p>returns scalar m such that m<em>P</em>=[0].<br />
+Because of failure to apply BSGS to small group, call pointorder(P) instead of BSGS Algorithms if order of finite field is less than 40.</p>
+
+<h4 id="content_1_14">DLP_BSGS(<em>n</em>, <em>P</em>, <em>Q</em>)  <a class="anchor_super" id="p63c548c">&dagger;</a></h4>
+<p>returns scalar m such that <em>Q</em>=m<em>P</em>. <em>P</em>, <em>Q</em> are in the subgroup of order <em>n</em> if exists, otherwise returns False.</p>
+
+<h4 id="content_1_15">structure()  <a class="anchor_super" id="hd102abc">&dagger;</a></h4>
+<p>returns the group structure (n1, n2) of the E(Fq) by using Weil Pairing.<br /></p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

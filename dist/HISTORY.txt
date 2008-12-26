@@ -1,4 +1,8 @@
-2008-04-**
+2008-12-26
+----------
+The version 0.91.0 is released.
+
+2008-05-07
 ----------
 The version 0.90.0 is released.
 It is the first of beta series for 1.0.

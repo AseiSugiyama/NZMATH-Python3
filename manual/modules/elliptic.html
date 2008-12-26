@@ -24,31 +24,30 @@
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  elliptic </a>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cec"> EC(Weierstrass list form, characteristic, index) </a></li></ul></li>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cec"> EC(Weierstrass list form, basefield) </a></li></ul></li>
 <li><a href="#class">  Classes </a>
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ecgen"> ECGeneric </a></li>
 <li><a href="#ecoverq"> ECoverQ </a></li>
-<li><a href="#ecoverfp"> ECoverFp </a></li>
-<li><a href="#ecoverf2"> ECoverF2 </a></li></ul></li></ul></li></ul>
+<li><a href="#ecovergf"> ECoverGF </a></li></ul></li></ul></li></ul>
 </div>
 
 
 <h3 id="content_1_1">Functions  <a class="anchor_super" id="function">&dagger;</a></h3>
 
-<h4 id="content_1_2">EC(<em>Weierstrass list form</em>, <em>characteristic</em>, <em>index</em>)  <a class="anchor_super" id="cec">&dagger;</a></h4>
-<p>A factory function to create an instance of <a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a> or <a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a> or <a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>. and their are subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>, see also as use.<br />
-If <em>characteristic</em> is set, create elliptic curve over finite field(<a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a> or <a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>). <del>if set <em>index</em>&gt;2, you should take elliptic curve over finite extended field(i.e. E/F_q, q=<em>characteristic</em>^<em>index</em>).</del> Elliptic curve over finite extended field is under construction(not implemented).<br />
-Otherwise (if <em>characteristic</em> not given or 0), create elliptic curve over rational field(<a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>) .<br /></p>
+<h4 id="content_1_2">EC(<em>Weierstrass list form</em>, <em>basefield</em>)  <a class="anchor_super" id="cec">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a> or <a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>. and their are subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>, see also as use.<br />
+If <em>basefield</em> is a object inheriting <a href="finitefield.html" title="finitefield.py">finitefield</a>.<a href="finitefield_FiniteField.html" title="finitefield.py/FiniteField">FiniteField</a> or a prime number, create elliptic curve over finite field(<a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>).
+Otherwise (if <em>basefield</em> is not given or object of <a href="rational.html" title="rational.py">rational</a>.<a href="rational_RationalField.html" title="rational.py/RationalField">RationalField</a> or 0), create elliptic curve over rational field(<a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>) .<br /></p>
 <p>How to asssign curves in <strong><em>Weierstrass list form</em></strong> given by the equation:<br /></p>
 <blockquote><p class="quotation">
 E: y^2 + a1 xy + a3 y = x^3 + a2 x^2 + a4 x + a6<br /></p></blockquote>
 
-<pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],characteristic) </pre>
+<pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],basefield) </pre>
 <p>or for</p>
 <blockquote><p class="quotation">
 E: y^2= x^3 + A x + B<br /></p></blockquote>
 
-<pre>&gt;&gt;&gt; E=EC([A,B],characteristic)</pre>
+<pre>&gt;&gt;&gt; E=EC([A,B],basefield)</pre>
 
 <h3 id="content_1_3">Classes  <a class="anchor_super" id="class">&dagger;</a></h3>
 
@@ -56,9 +55,7 @@ E: y^2= x^3 + A x + B<br /></p></blockquote>
 
 <h4 id="content_1_5"><a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>  <a class="anchor_super" id="ecoverq">&dagger;</a></h4>
 
-<h4 id="content_1_6"><a href="elliptic_ECoverFp.html" title="elliptic.py/ECoverFp">ECoverFp</a>  <a class="anchor_super" id="ecoverfp">&dagger;</a></h4>
-
-<h4 id="content_1_7"><a href="elliptic_ECoverF2.html" title="elliptic.py/ECoverF2">ECoverF2</a>  <a class="anchor_super" id="ecoverf2">&dagger;</a></h4>
+<h4 id="content_1_6"><a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>  <a class="anchor_super" id="ecovergf">&dagger;</a></h4>
 </div>
 
 

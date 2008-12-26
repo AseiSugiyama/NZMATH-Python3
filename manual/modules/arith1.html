@@ -40,7 +40,8 @@ Return Jacobi symbol otherwise.</p>
 
 <h4 id="content_1_6">expand(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="i2e36705">&dagger;</a></h4>
 <p>Return <em>m</em>-adic expansion for <em>n</em>.
-<em>n</em> and <em>m</em> should satisfy <em>n</em> &gt; <em>m</em> &gt; 0.</p>
+<em>n</em> and <em>m</em> should satisfy <em>n</em> &gt; <em>m</em> &gt; 0.
+The result is a list of expansion coefficients in ascending order (little endian).</p>
 
 <h4 id="content_1_7">inverse(<em>x</em>, <em>p</em>)  <a class="anchor_super" id="r20ee256">&dagger;</a></h4>
 <p>Return inverse of <em>x</em> for modulo <em>p</em>.</p>
@@ -74,8 +75,16 @@ If <em>n</em> is a square number, the function returns its square root.<br />
 
 <h4 id="content_1_13">log(<em>n</em> [,<em>base</em>])  <a class="anchor_super" id="xfd4a43c">&dagger;</a></h4>
 <p>Return integer part of logarithm of the given integer <em>n</em>
-to the <em>base</em>.  The default value for <em>base</em> is 2.
+to the <em>base</em>.  The default value for <em>base</em> is 2.<br />
 (new in 0.5.0)</p>
+
+<h4 id="content_1_14">product(<em>iterable</em> [,<em>init</em>])  <a class="anchor_super" id="ic28951a">&dagger;</a></h4>
+<p>Return a product of all elements in <em>iterable</em>.  If
+<em>init</em> is given, the multiplication starts with <em>init</em> instead of the
+first element in <em>iterable</em>. If the <em>iterable</em> is empty, then <em>init</em>
+or 1 will be returned.</p>
+<p>If <em>iterable</em> is an iterator, it will be exhausted.<br />
+(new in 0.9*.*)</p>
 </div>
 
 

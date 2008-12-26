@@ -31,6 +31,13 @@ while Python 2.3 has sets module and sets.Set.
 The <em>set</em> the module provides for Python 2.3 is the sets.Set.
 Similarly, sets.ImmutableSet would be assigned to <em>frozenset</em>.
 Be careful that the compatibility is not perfect.</p>
+
+<h4 id="content_1_2">card(<em>virtualset</em>)  <a class="anchor_super" id="iacd432b">&dagger;</a></h4>
+<p>Return cardinality of the <em>virtualset</em>.</p>
+<p>The builtin len() raises OverflowError when the result &gt; sys.maxint.
+It is not clear this restriction will go away in the future.
+The function card() ought to be used instead of len()
+for obtaining cardinality of sets or set-like objects in nzmath.</p>
 </div>
 
 

@@ -26,7 +26,7 @@ We strongly recommend you should call <strong><a href="elliptic.html#cec" title=
 <a id="contents_1"></a>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  ECGeneric </a>
 <ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
-<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#c3ae12a3"> ECgeneric(Weierstrass list form, characteristic, index) </a></li></ul></li>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#c3ae12a3"> ECgeneric(Weierstrass list form, basefield) </a></li></ul></li>
 <li><a href="#method"> Methods </a>
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#b4794f0a"> simple() </a></li>
 <li><a href="#s8c8f32b"> changeCurve(V) </a></li>
@@ -43,7 +43,7 @@ We strongly recommend you should call <strong><a href="elliptic.html#cec" title=
 
 <h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
 
-<h4 id="content_1_2">ECgeneric(<em>Weierstrass list form</em>, <em>characteristic</em>, <em>index</em>)  <a class="anchor_super" id="c3ae12a3">&dagger;</a></h4>
+<h4 id="content_1_2">ECgeneric(<em>Weierstrass list form</em>, <em>basefield</em>)  <a class="anchor_super" id="c3ae12a3">&dagger;</a></h4>
 
 <h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
 
@@ -79,7 +79,7 @@ by an admissible change in variables. <br /></p>
 2y + a1 x + a3 . If the parameter <em>m</em> is not specified (<em>m</em>=None), then this returns the list of division polynomials for Schoof's algorithm.<br /></p>
 
 <h3 id="content_1_13">Properties  <a class="anchor_super" id="property">&dagger;</a></h3>
-<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">ch</td><td class="style_td">returns the characteristic of the field.</td></tr><tr><td class="style_td">a1, a2, a3, a4, a6</td><td class="style_td">returns the coefficients a1, a2, a3, a4, a6, resp.</td></tr><tr><td class="style_td">b2, b4, b6, b8</td><td class="style_td">returns the coefficents b2, b4, b6, b8 .</td></tr><tr><td class="style_td">c4, c6</td><td class="style_td">returns the coefficients c4 and c6 .</td></tr><tr><td class="style_td">disc</td><td class="style_td">returns the discriminant of the elliptic curve.</td></tr><tr><td class="style_td">j</td><td class="style_td">returns the j-invariant of the elliptic curve.</td></tr></tbody></table></div>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">basefield</td><td class="style_td">returns object of definition field (must be <em>basefield</em>).</td></tr><tr><td class="style_td">ch</td><td class="style_td">returns the characteristic of basefield.</td></tr><tr><td class="style_td">infpoint</td><td class="style_td">returns representataion of infinity point (e.g. [0]).</td></tr><tr><td class="style_td">a1, a2, a3, a4, a6</td><td class="style_td">returns the coefficients a1, a2, a3, a4, a6, resp.</td></tr><tr><td class="style_td">b2, b4, b6, b8</td><td class="style_td">returns the coefficents b2, b4, b6, b8 .</td></tr><tr><td class="style_td">c4, c6</td><td class="style_td">returns the coefficients c4 and c6 .</td></tr><tr><td class="style_td">disc</td><td class="style_td">returns the discriminant of the elliptic curve.</td></tr><tr><td class="style_td">j</td><td class="style_td">returns the j-invariant of the elliptic curve.</td></tr><tr><td class="style_td">coefficient</td><td class="style_td">returns <em>Weierstrass list form</em> (e.g. [a1,a2,a3,a4,a6] or [a4,a6]).</td></tr></tbody></table></div>
 </div>
 
 

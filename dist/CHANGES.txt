@@ -1,3 +1,10 @@
+version 0.90.0 to 0.91.0
+------------------------
+* add a new module intresidue to obsolete integerResidueClass.
+* rewrite finitefield, elliptic to use new polynomial (poly subpackage).
+* add card() in compatibility to substitute with builtin len() for sets.
+* speed up some polynomial operations, arith1.modsqrt, etc.
+
 version 0.7.0 to 0.90.0
 -----------------------
 * change required Python version to 2.5.
