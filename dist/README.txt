@@ -8,7 +8,7 @@ NZMATH is a Python based number theory oriented calculation system.
 It is developed at Tokyo Metropolitan University.
 
 The version 0.91.0 is an enhancement release.
-It is the first of beta series for 1.0.
+It is the second of beta series for 1.0.
 The API can still be changed with versions.
 
 Installation
