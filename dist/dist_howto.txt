@@ -60,8 +60,8 @@ Steps
        % make
    Then, NZMATH-x.y.z.tar.gz will be in /tmp/nzmath-build/dist
    directory (note that it is not ~/tmp you may be using but /tmp).
-
-   There is no current practice to make a package for Windows.
+   For Windows, NZMATH-x.y.z.zip will be in the same directory,
+   and NZMATH-x.y.z.win32Install.exe in /tmp/nzmath-build/dist_wininst.
 
 6. Make a test distribution file.
 
