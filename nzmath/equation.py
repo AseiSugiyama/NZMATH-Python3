@@ -22,25 +22,6 @@ def e1(x):
     else:
         return -x[0]/x[1]
 
-def e1_Zn(x,n):
-    """
-    n is a element in Integer Sets.
-    x = [a,b] <=> a*t = b (mod n)
-
-    Deprecated: use e1_ZnZ instead.
-    """
-    import warnings
-    warnings.warn(DeprecationWarning("use e1_ZnZ instead"))
-    (a,b,e,m) = (x[0],x[1],0,n)
-    (c,d) = (m//a,m%a)
-    while d :
-        (m,a,e,b) = (a,d,b,e-c*b)
-        (c,d) = (m//a,m%a)
-    if x[1]%a != 0:
-        raise ValueError("No Solution")
-    else:
-        return (b//a)%n
-
 def e1_ZnZ(x, n):
     """
     Return the solution of x[0] + x[1]*t = 0 (mod n).
