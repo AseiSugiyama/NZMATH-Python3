@@ -71,10 +71,6 @@ class SimMethodTest (GlobalEquationTestBase):
 
 
 class LocalEquationTest (unittest.TestCase):
-    def test_e1_Zn(self):
-        solution = equation.e1_Zn([3, 1], 7) # 3*t = 1 (mod 7)
-        self.assertEqual(5, solution)
-
     def test_e1_ZnZ(self):
         solution = equation.e1_ZnZ([1, 3], 7) # 1 + 3*t = 0 (mod 7)
         self.assertEqual(2, solution)
