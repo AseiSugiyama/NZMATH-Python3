@@ -795,16 +795,20 @@ class SortedPolynomial (PolynomialInterface):
         """
         substitution
         """
-        items = self.sorted[:]
+        items = list(self.sorted)
         if not items:
             return 0 * val
+        val_pow = {1:val}
         d, c = items.pop()
         result = c
         while len(items) > 0:
             (e, f) = items.pop()
-            result = result * (val ** (d - e)) + f
+            result = result * val_pow.setdefault(d - e, val ** (d - e)) + f
             d = e
-        return result * (val ** d)
+        if d:
+            return result * val_pow.get(d, val ** d)
+        else:
+            return result 
 
     def __repr__(self): # debug
         return repr(self.sorted)
