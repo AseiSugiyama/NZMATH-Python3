@@ -25,6 +25,30 @@ class ProgressionTest (unittest.TestCase):
                          [i for i in itertools.islice(bigrange.geometric_progression(3, 2), 4)])
 
 
+class MultirangeTest (unittest.TestCase):
+    def testBasic(self):
+        it = bigrange.multirange([(1, 10, 3), (1, 10, 4)])
+        self.assertEqual((1, 1), it.next())
+        self.assertEqual((1, 5), it.next())
+        self.assertEqual((1, 9), it.next())
+        self.assertEqual((4, 1), it.next())
+        self.assertEqual((4, 5), it.next())
+        self.assertEqual((4, 9), it.next())
+        self.assertEqual((7, 1), it.next())
+        self.assertEqual((7, 5), it.next())
+        self.assertEqual((7, 9), it.next())
+
+class MultirangeRestrictionsTest (unittest.TestCase):
+    def testBasic(self):
+        it = bigrange.multirange_restrictions([(1, 10, 3), (1, 10, 4)], ascending=(1,))
+        self.assertEqual((1, 1), it.next())
+        self.assertEqual((1, 5), it.next())
+        self.assertEqual((1, 9), it.next())
+        self.assertEqual((4, 5), it.next())
+        self.assertEqual((4, 9), it.next())
+        self.assertEqual((7, 9), it.next())
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
