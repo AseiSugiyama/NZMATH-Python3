@@ -3,19 +3,120 @@ from math import floor
 from nzmath.matrix import Matrix
 from nzmath.matrix import VectorsNotIndependent
 from nzmath.vector import *
-
+from nzmath.arith1 import *
+from nzmath.gcd import *
+#import nzmath.matrix as matrix
 
 class Lattice:
-
+    """
+    A class of lattice.
+    """
     def __init__(self, basis, quadraticForm):
         self.basis = basis.copy()  # in form of Matrix
         self.quadraticForm = quadraticForm.copy()  # in form of Matrix
+        if self.basis.determinant() == 0:
+            raise ValueError
 
     def createElement(self, compo):
         return LatticeElement(self, compo)
 
     def bilinearForm(self, v1, v2):
         return v2.transpose() * self.quadraticForm * v1
+
+    def isCyclic(self):
+        """
+        Check whether given lattice is a cyclic lattice. 
+        """
+        n = self.basis.column
+        def rot(x):
+            x_list = []
+            for i in range(n):
+                x_list.append(x[(n-1+i)%n])
+            return Vector(x_list)
+        Rot = []
+        for i in range(n):
+            X_list = []
+            for j in range(n):
+                X_list.append(self.basis.compo[j][i])
+            Rot.append(rot(X_list))
+        T = self.basis.inverse()*matrix.Matrix(n, n, Rot)
+        for i in range(n):
+            for j in range(n):
+                if T.compo[i][j].denominator != 1:
+                    return False
+        return True
+
+    def isIdeal(self):
+        """
+        Check whether given lattice is a ideal lattice. 
+        """
+        n = self.basis.column
+        Compo = []
+        for i in range(n):
+            for j in range(n):
+                if i == j + 1:
+                    Compo.append(1)
+                else:
+                    Compo.append(0)
+        M = Matrix(n, n, Compo)
+        d = self.basis.determinant()
+        B = self.basis.hermiteNormalForm()
+        z = B.compo[n-1][n-1]
+        A = B.adjugateMatrix()
+        z = B.compo[n-1][n-1]
+        P = A*M*B
+        for i in range(n):
+            for j in range(n):
+                P.compo[i][j] = P.compo[i][j]%d
+        sum = 0
+        for i in range(n):
+            for j in range(n-1):
+                sum = sum + P.compo[i][j]
+        if sum == 0:
+            c_compo = []
+            for i in range(n):
+                c_compo.append(P.compo[i][n-1])
+        else:
+            return False
+        c_sum = 0
+        for i in range(n):
+            c_sum = c_sum + c_compo[i]
+        if c_sum == 0:
+            c_compo = []
+            for i in range(n):
+                c_compo.append(d)
+        c = Vector(c_compo)
+
+        if z == 1:
+            qstar = c
+            poly = B*qstar
+        elif gcd(z, d//z) != 1:
+            qstar = c
+            poly = B*qstar
+        else:
+            sum0 = 0
+            for i in range(n):
+                sum0 = sum0 + c.compo[i]%z
+            if sum0 == 0:
+                qstar_compo = []
+                for j in range(n):
+                    qstar_compo.append(CRT([(c.compo[j]//z, d//z), (0, z)]))
+                qstar = Vector(qstar_compo)
+                poly = B*qstar
+            else:
+                return False
+
+        sum1 = 0
+        for i in range(n):
+            sum1 = sum1 + poly.compo[i]%(d//z)
+        if sum1 == 0:
+            q_compo = []
+            for j in range(n):
+                q_compo.append(poly.compo[j]//d)
+            q = Vector(q_compo)
+            return True, q
+        else:
+            return False
 
 def LLL(_basis, quadraticForm=None ,delta = 0.75):
     """
