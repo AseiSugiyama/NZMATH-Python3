@@ -51,6 +51,10 @@ class IntegerResidueClass(ring.CommutativeRingElement):
             #trial may fail with TypeError.
             #_log.debug("no action for %s * %s" % (str(self), str(other)))
             pass
+        except AttributeError, e:
+            #trial may fail with AttributeError because other may lack ring.
+            #_log.debug("no action for %s * %s" % (str(self), str(other)))
+            pass
         except RuntimeError, e:
             # maximum recursion depth may exceed
             #_log.debug("recursion limit for %s * %s" % (str(self), str(other)))
@@ -62,6 +66,10 @@ class IntegerResidueClass(ring.CommutativeRingElement):
             return self.mul_module_action(other)
         except TypeError, e:
             #trial may fail with TypeError.
+            #_log.debug("no action for %s * %s" % (str(other), str(self)))
+            pass
+        except AttributeError, e:
+            #trial may fail with AttributeError because other may lack ring.
             #_log.debug("no action for %s * %s" % (str(other), str(self)))
             pass
         except RuntimeError, e:
