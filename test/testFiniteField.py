@@ -160,7 +160,15 @@ class FiniteExtendedFieldElementTest (unittest.TestCase):
         self.assertEqual(result, self.F3.one - s)
         # Z -Fq
         self.assertEqual(result, 1 - s)
-        
+
+    def testTrace(self):
+        a3 = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(3, 1)], self.F3), self.F81)
+        self.assert_(a3.trace() in self.F3, repr(a3.trace()))
+
+    def testNorm(self):
+        a3 = FiniteExtendedFieldElement(FinitePrimeFieldPolynomial([(3, 1)], self.F3), self.F81)
+        self.assert_(a3.norm() in self.F3, repr(a3.norm()))
+
 
 class FiniteExtendedFieldTest (unittest.TestCase):
     def testInit(self):

@@ -70,10 +70,22 @@ class FiniteField(ring.Field):
                 b = b ** p
         return o
 
+    def random_element(self, *args):
+        """
+        Return a randomly chosen element og the field.
+        """
+        return self.createElement(bigrandom.randrange(*args))
+
+    def primitive_element(self):
+        """
+        Return a primitive element of the field, i.e., a generator of
+        the multiplicative group.
+        """
+        raise NotImplementedError("primitive_element should be overridden")
+
     def Legendre(self, element):
         """ Return generalize Legendre Symbol for FiniteField.
         """
-        # Note: FIXME(definition must be multiplicative group)
         if not element:
             return 0
 
@@ -106,7 +118,7 @@ class FiniteField(ring.Field):
         a = element
         n = self.createElement(self.char+1)
         while self.Legendre(n) != -1:
-            n = self.createElement(bigrandom.randrange(2, card(self))) # field maybe large
+            n = self.random_element(2, card(self)) # field maybe large
         y = z = n ** q
         r = e
         x = a ** ((q-1) // 2)
@@ -271,6 +283,24 @@ class FinitePrimeField(FiniteField):
         """
         return FinitePrimeFieldElement(seed, self.char, modulus_is_prime=True)
 
+    def primitive_element(self):
+        """
+        Return a primitive element of the field, i.e., a generator of
+        the multiplicative group.
+        """
+        if self.char == 2:
+            return self.one
+        fullorder = card(self) - 1
+        if self._orderfactor is None:
+            self._orderfactor = factor_misc.FactoredInteger(fullorder)
+        for i in bigrange.range(2, self.char):
+            g = self.createElement(i)
+            for p in self._orderfactor.prime_divisors():
+                if g ** (fullorder // p) == self.one:
+                    break
+            else:
+                return g
+
     def Legendre(self, element):
         """ Return generalize Legendre Symbol for FinitePrimeField.
         """
@@ -298,7 +328,7 @@ class FinitePrimeField(FiniteField):
     def _getOne(self):
         "getter for one"
         if self._one is None:
-            self._one = FinitePrimeFieldElement(1, self.char, modulus_is_prime=True)
+            self._one = FinitePrimeFieldElement(1, self.char)
         return self._one
 
     one = property(_getOne, None, None, "multiplicative unit.")
@@ -306,7 +336,7 @@ class FinitePrimeField(FiniteField):
     def _getZero(self):
         "getter for zero"
         if self._zero is None:
-            self._zero = FinitePrimeFieldElement(0, self.char, modulus_is_prime=True)
+            self._zero = FinitePrimeFieldElement(0, self.char)
         return self._zero
 
     zero = property(_getZero, None, None, "additive unit.")
@@ -322,7 +352,7 @@ class FinitePrimeField(FiniteField):
 
 
 FinitePrimeFieldPolynomial = uniutil.FinitePrimeFieldPolynomial
-uniutil.special_ring_table[FinitePrimeField] = uniutil.FinitePrimeFieldPolynomial
+uniutil.special_ring_table[FinitePrimeField] = FinitePrimeFieldPolynomial
 
 
 class FiniteExtendedFieldElement(FiniteFieldElement):
@@ -384,6 +414,8 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
 
         other can be an element of either F_q, F_p or Z.
         """
+        if other is 0 or other is self.field.zero:
+            return self
         return self._op(other, "__add__")
 
     __radd__ = __add__
@@ -394,6 +426,8 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
 
         other can be an element of either F_q, F_p or Z.
         """
+        if other is 0 or other is self.field.zero:
+            return self
         return self._op(other, "__sub__")
 
     def __rsub__(self, other):
@@ -410,6 +444,8 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
 
         other can be an element of either F_q, F_p or Z.
         """
+        if other is 1 or other is self.field.one:
+            return self
         return self._op(other, "__mul__")
 
     __rmul__ = __mul__
@@ -464,6 +500,32 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self.rep), repr(self.field))
 
+    def trace(self):
+        """
+        Return the absolute trace.
+        """
+        p = self.field.char
+        q = p
+        alpha = self
+        tr = alpha.rep[0]
+        while q < card(self.field):
+            q *= p
+            alpha **= p
+            tr += alpha.rep[0]
+        if tr not in FinitePrimeField.getInstance(p):
+            tr = FinitePrimeField.getInstance(p).createElement(tr)
+        return tr
+
+    def norm(self):
+        """
+        Return the absolute norm.
+        """
+        p = self.field.char
+        nrm = (self ** ((card(self.field) - 1) // (p - 1))).rep[0]
+        if nrm not in FinitePrimeField.getInstance(p):
+            nrm = FinitePrimeField.getInstance(p).createElement(nrm)
+        return nrm
+
 
 class FiniteExtendedField(FiniteField):
     """
@@ -484,14 +546,10 @@ class FiniteExtendedField(FiniteField):
             if n_or_modulus <= 1:
                 raise ValueError("degree of extension must be > 1.")
             self.degree = n_or_modulus
-            # randomly chosen irreducible polynomial
-            top = FinitePrimeFieldPolynomial({self.degree: 1}, coeffring=self.basefield)
-            seed = bigrandom.randrange(1, self.char)
-            cand = FinitePrimeFieldPolynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield) + top
-            while cand.degree() < self.degree or not cand.isirreducible():
-                seed = bigrandom.randrange(1, self.char ** self.degree)
-                cand = FinitePrimeFieldPolynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield) + top
-            self.modulus = cand
+            # choose a method among three variants:
+            #self.modulus = self._random_irriducible()
+            #self.modulus = self._small_irriducible()
+            self.modulus = self._primitive_polynomial()
         elif isinstance(n_or_modulus, FinitePrimeFieldPolynomial):
             if isinstance(n_or_modulus.getCoefficientRing(), FinitePrimeField):
                 if n_or_modulus.degree() > 1 and n_or_modulus.isirreducible():
@@ -505,6 +563,66 @@ class FiniteExtendedField(FiniteField):
             raise TypeError("degree or modulus must be supplied.")
         self.registerModuleAction(rational.theIntegerRing, self._int_mul)
         self.registerModuleAction(FinitePrimeField.getInstance(self.char), self._fp_mul)
+
+    def _random_irriducible(self):
+        """
+        Return randomly chosen irreducible polynomial of self.degree.
+        """
+        cardinality = self.char ** self.degree
+        seed = bigrandom.randrange(1, self.char) + cardinality
+        cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
+        while cand.degree() < self.degree or not cand.isirreducible():
+            seed = bigrandom.randrange(1, cardinality) + cardinality
+            cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
+        _log.debug(cand.order.format(cand))
+        return cand
+
+    def _small_irriducible(self):
+        """
+        Return an irreducible polynomial of self.degree with a small
+        number of non-zero coefficients.
+        """
+        cardinality = self.char ** self.degree
+        top = uniutil.polynomial({self.degree: 1}, coeffring=self.basefield)
+        for seed in range(self.degree - 1):
+            for const in range(1, self.char):
+                coeffs = [const] + arith1.expand(seed, 2)
+                cand = uniutil.polynomial(enumerate(coeffs), coeffring=self.basefield) + top
+                if cand.isirreducible():
+                    _log.debug(cand.order.format(cand))
+                    return cand
+        for subdeg in range(self.degree):
+            subseedbound = self.char ** subdeg
+            for subseed in range(subseedbound + 1, self.char * subseedbound):
+                if not subseed % self.char:
+                    continue
+                seed = subseed + cardinality
+                cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
+                if cand.isirreducible():
+                    return cand
+
+    def _primitive_polynomial(self):
+        """
+        Return a primitive polynomial of self.degree.
+
+        REF: Lidl & Niederreiter, Introduction to finite fields and
+             their applications.
+        """
+        cardinality = self.char ** self.degree
+        const = self.basefield.primitive_element()
+        if self.degree % 2:
+            const = -const
+        cand = uniutil.polynomial({0:const, self.degree:self.basefield.one}, self.basefield)
+        maxorder = factor_misc.FactoredInteger((card(self) - 1) // (self.char - 1))
+        var = uniutil.polynomial({1:self.basefield.one}, self.basefield)
+        while not (cand.isirreducible() and
+                   all(pow(var, int(maxorder) // p, cand).degree() > 0 for p in maxorder.prime_divisors())):
+            # randomly modify the polynomial
+            deg = bigrandom.randrange(1, self.degree)
+            coeff = self.basefield.random_element(1, self.char)
+            cand += uniutil.polynomial({deg:coeff}, self.basefield)
+        _log.debug(cand.order.format(cand))
+        return cand
 
     @staticmethod
     def _int_mul(integer, fqelem):
@@ -619,6 +737,22 @@ class FiniteExtendedField(FiniteField):
             return self.char == other.char and self.degree == other.degree
         return False
 
+    def primitive_element(self):
+        """
+        Return a primitive element of the field, i.e., a generator of
+        the multiplicative group.
+        """
+        fullorder = card(self) - 1
+        if self._orderfactor is None:
+            self._orderfactor = factor_misc.FactoredInteger(fullorder)
+        for i in bigrange.range(self.char, card(self)):
+            g = self.createElement(i)
+            for p in self._orderfactor.prime_divisors():
+                if g ** (fullorder // p) == self.one:
+                    break
+            else:
+                return g
+
     # properties
     def _getOne(self):
         "getter for one"
@@ -686,53 +820,15 @@ def embedding(f_q1, f_q2):
     # 0. initialize basic variables
     p = f_q2.getCharacteristic()
     q1, q2 = card(f_q1), card(f_q2)
-    q1_mult_order, q2_mult_order = q1 - 1, q2 - 1
 
     # 1. find a multiplicative generator of f_q2
-    for i in bigrange.range(p, q2):
-        f_q2_gen = f_q2.createElement(i)
-        if f_q2.order(f_q2_gen) == q2_mult_order:
-            break
+    f_q2_gen = f_q2.primitive_element()
     f_q2_subgen = f_q2_gen ** ((q2 - 1) // (q1 - 1))
 
-    # 2.1 minimal polynomial of g = f_q2_gen ** ((q2 - 1) // (q1 - 1))
-    #   minpoly = (X - g)(X - g**p)...(X - g**(p**(k1 - 1)))
-    q, gpow = 1, f_q2_subgen
-    linear_factors = []
-    while q < q2:
-        linear_factors.append(univar.BasicPolynomial({0: gpow, 1: f_q2.one}))
-        # finally, raise power (Frobenius map).
-        q *= p
-        gpow **= p
-    minpoly = arith1.product(linear_factors)
-    # 2.2 minpoly has f_q2 coefficints but they are indeed f_p elements
-    minpoly = univar.BasicPolynomial([(d, c.rep[0]) for (d, c) in minpoly])
+    # 2. find a root of defining polynomial of f_q1 in f_q2
+    image_of_x_1 = _findroot(f_q2_subgen, f_q1)
 
-    # 3. find a multiplicative generator of f_q1
-    for i in bigrange.range(p, q1):
-        f_q1_gen = f_q1.createElement(i)
-        if f_q1.order(f_q1_gen) == q1_mult_order:
-            break
-
-    # 4. find f_q1_gen ** c of a root of minpoly and let it f_q1_gen
-    for c in bigrange.range(1, q1):
-        if gcd.coprime(c, q1_mult_order):
-            if not minpoly(f_q1_gen ** c):
-                break
-    f_q1_gen = f_q1_gen ** c
-
-    # 5. solve DLP:
-    #   x_1 = f_q1_gen ** t
-    #   (Here uses "brute force" method)
-    x_1 = f_q1.createElement(p)
-    gpow = f_q1_gen
-    for i in bigrange.range(1, q):
-        if gpow == x_1:
-            image_of_x_1 = f_q2_subgen ** i
-            break
-        gpow *= f_q1_gen
-
-    # finally, define a function
+    # 3. finally, define a function
     def f_q1_to_f_q2_homo(f_q1_elem):
         """
         Return the image of the isomorphism of the given element.
@@ -746,6 +842,17 @@ def embedding(f_q1, f_q2):
 
     return f_q1_to_f_q2_homo
 
+def _findroot(f_q2_subgen, f_q1):
+    """
+    Find root of the defining polynomial of f_q1 in f_q2
+    """
+    root = f_q2_subgen
+    for i in range(1, card(f_q1)):
+        if not f_q1.modulus(root):
+            image_of_x_1 = root
+            break
+        root *= f_q2_subgen
+    return image_of_x_1
 
 def double_embeddings(f_q1, f_q2):
     """
