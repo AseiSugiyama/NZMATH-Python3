@@ -25,7 +25,7 @@ _log = logging.getLogger("nzmath.poly.uniutil")
 _MIXIN_MSG = "%s is mix-in"
 
 
-class OrderProvider (object):
+class OrderProvider(object):
     """
     OrderProvider provides order and related operations.
     """
@@ -75,7 +75,7 @@ class OrderProvider (object):
                 self.__class__(upper, **self._init_kwds))
 
 
-class DivisionProvider (object):
+class DivisionProvider(object):
     """
     DivisionProvider provides all kind of divisions for univariate
     polynomials.  It is assumed that the coefficient ring of the
@@ -335,7 +335,7 @@ class DivisionProvider (object):
         return (a, b, g)
 
 
-class PseudoDivisionProvider (object):
+class PseudoDivisionProvider(object):
     """
     PseudoDivisionProvider provides pseudo divisions for univariate
     polynomials.  It is assumed that the coefficient ring of the
@@ -572,7 +572,7 @@ class PseudoDivisionProvider (object):
         return power_product
 
 
-class ContentProvider (object):
+class ContentProvider(object):
     """
     ContentProvider provides content and primitive part.
 
@@ -613,7 +613,7 @@ class ContentProvider (object):
         return self.scalar_exact_division(self.content())
 
 
-class SubresultantGcdProvider (object):
+class SubresultantGcdProvider(object):
     """
     SubresultantGcdProvider provides gcd method using subresultant
     algorithm.
@@ -729,7 +729,7 @@ class SubresultantGcdProvider (object):
         return (A_1, B_1, P_1)
 
 
-class PrimeCharacteristicFunctionsProvider (object):
+class PrimeCharacteristicFunctionsProvider(object):
     """
     PrimeCharacteristicFunctionsProvider provides efficient powering
     and factorization for polynomials whose coefficient ring has prime
@@ -995,7 +995,11 @@ class PrimeCharacteristicFunctionsProvider (object):
 
         If f is irreducible return True, otherwise False.
         """
-        if not self[0]:
+        if 0 <= self.order.degree(self) <= 1:
+            # degree 1 polynomials and constants are irreducible
+            return True
+        elif not self[0]:
+            # degree >= 2 polynomials are reducible if constant term is zero
             return False
         squareFreeFactors = self.squarefree_decomposition()
         if len(squareFreeFactors) != 1:
@@ -1012,7 +1016,7 @@ class PrimeCharacteristicFunctionsProvider (object):
         return True
 
 
-class KaratsubaProvider (object):
+class KaratsubaProvider(object):
     """
     define Karatsuba method multiplication and squaring.
 
@@ -1109,7 +1113,7 @@ class KaratsubaProvider (object):
             return result
 
 
-class VariableProvider (object):
+class VariableProvider(object):
     """
     VariableProvider provides the variable name and other cariable
     related methods.
@@ -1136,7 +1140,7 @@ class VariableProvider (object):
         return [self.variable]
 
 
-class RingElementProvider (ring.CommutativeRingElement):
+class RingElementProvider(ring.CommutativeRingElement):
     """
     Provides interfaces for ring.CommutativeRingElement.
     """
@@ -1179,7 +1183,7 @@ class RingElementProvider (ring.CommutativeRingElement):
                 self._ring = PolynomialRingAnonymousVariable.getInstance(self._coefficient_ring)
 
 
-class PolynomialRingAnonymousVariable (ring.CommutativeRing):
+class PolynomialRingAnonymousVariable(ring.CommutativeRing):
     """
     The class of univariate polynomial ring.
     There's no need to specify the variable name.
@@ -1370,7 +1374,7 @@ class PolynomialRingAnonymousVariable (ring.CommutativeRing):
         return cls._instances[coeffring]
 
 
-class PolynomialIdeal (ring.Ideal):
+class PolynomialIdeal(ring.Ideal):
     """
     A class to represent an ideal of univariate polynomial ring.
     """
@@ -1558,9 +1562,9 @@ class PolynomialIdeal (ring.Ideal):
             self.generators.sort(cmp=lambda a, b: cmp(degree(b), degree(a)))
 
 
-class RingPolynomial (OrderProvider,
-                      univar.SortedPolynomial,
-                      RingElementProvider):
+class RingPolynomial(OrderProvider,
+                     univar.SortedPolynomial,
+                     RingElementProvider):
     """
     General polynomial with commutative ring coefficients.
     """
@@ -1838,10 +1842,10 @@ class FieldPolynomial(DivisionProvider,
             return sign * self.resultant(df) * lc**(self.degree() - df.degree() - 2)
 
 
-class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,
-                                  FieldPolynomial):
+class FiniteFieldPolynomial(PrimeCharacteristicFunctionsProvider,
+                            FieldPolynomial):
     """
-    Fp polynomial
+    Fq polynomial
     """
     def __init__(self, coefficients, coeffring=None, _sorted=False, **kwds):
         """
@@ -1854,6 +1858,21 @@ class FinitePrimeFieldPolynomial (PrimeCharacteristicFunctionsProvider,
             raise TypeError("argument `coeffring' is required")
         FieldPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
         PrimeCharacteristicFunctionsProvider.__init__(self, coeffring.getCharacteristic())
+
+
+class FinitePrimeFieldPolynomial(FiniteFieldPolynomial):
+    """
+    Fp polynomial
+    """
+    def __init__(self, coefficients, coeffring=None, _sorted=False, **kwds):
+        """
+        Initialize the polynomial.
+
+        - coefficients: initializer for polynomial coefficients
+        - coeffring: finite prime field
+        """
+        FiniteFieldPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
+
 
     # IMPLEMENTATION REMARK:
     # The most time consuming part of computation is bunch of

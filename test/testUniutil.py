@@ -147,6 +147,9 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
         self.assert_(self.f.isirreducible())
         self.failIf(self.g.isirreducible())
         self.failIf(self.h.isirreducible())
+        # degree 1 polynomial is irreducible.
+        x = uniutil.FinitePrimeFieldPolynomial({1:2}, coeffring=self.F5)
+        self.assert_(x.isirreducible())
 
 
 class SubresultantGcdProviderTest (unittest.TestCase):
