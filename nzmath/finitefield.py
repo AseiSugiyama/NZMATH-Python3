@@ -15,6 +15,8 @@ import nzmath.factor.misc as factor_misc
 import nzmath.intresidue as intresidue
 import nzmath.poly.univar as univar
 import nzmath.poly.uniutil as uniutil
+import nzmath.matrix as matrix
+import nzmath.vector as vector
 import nzmath.compatibility
 
 _log = logging.getLogger('nzmath.finitefield')
@@ -818,7 +820,6 @@ def embedding(f_q1, f_q2):
         return fqiso(f_q1, f_q2)
     # search multiplicative generators of both fields and relate them.
     # 0. initialize basic variables
-    p = f_q2.getCharacteristic()
     q1, q2 = card(f_q1), card(f_q2)
 
     # 1. find a multiplicative generator of f_q2
@@ -826,7 +827,7 @@ def embedding(f_q1, f_q2):
     f_q2_subgen = f_q2_gen ** ((q2 - 1) // (q1 - 1))
 
     # 2. find a root of defining polynomial of f_q1 in f_q2
-    image_of_x_1 = _findroot(f_q2_subgen, f_q1)
+    image_of_x_1 = _findroot(f_q1, f_q2, f_q2_subgen)
 
     # 3. finally, define a function
     def f_q1_to_f_q2_homo(f_q1_elem):
@@ -841,18 +842,6 @@ def embedding(f_q1, f_q2):
         return f_q1_elem.rep(image_of_x_1)
 
     return f_q1_to_f_q2_homo
-
-def _findroot(f_q2_subgen, f_q1):
-    """
-    Find root of the defining polynomial of f_q1 in f_q2
-    """
-    root = f_q2_subgen
-    for i in range(1, card(f_q1)):
-        if not f_q1.modulus(root):
-            image_of_x_1 = root
-            break
-        root *= f_q2_subgen
-    return image_of_x_1
 
 def double_embeddings(f_q1, f_q2):
     """
@@ -870,3 +859,112 @@ def double_embeddings(f_q1, f_q2):
         return (identity, embedding(f_q2, f_q1))
     composite = FiniteExtendedField(p, gcd.lcm(k1, k2))
     return (embedding(f_q1, composite), embedding(f_q2, composite))
+
+
+def _findroot(f_q1, f_q2, f_q2_subgen):
+    """
+    Find root of the defining polynomial of f_q1 in f_q2
+    """
+    if card(f_q1) > 50: # 50 is small, maybe
+        _log.debug("by affine multiple (%d)" % card(f_q1))
+        return affine_multiple_method(f_q1.modulus, f_q2)
+    root = f_q2_subgen
+    for i in range(1, card(f_q1)):
+        if not f_q1.modulus(root):
+            image_of_x_1 = root
+            break
+        root *= f_q2_subgen
+    return image_of_x_1
+
+def affine_multiple_method(lhs, field):
+    """
+    Find and return a root of the equation lhs = 0 by brute force
+    search in the given field.  If there is no root in the field,
+    ValueError is raised.
+
+    The first argument lhs is a univariate polynomial with
+    coefficients in a finite field.  The second argument field is
+    an extension field of the field of coefficients of lhs.
+
+    Affine multiple A(X) is $\sum_{i=0}^{n} a_i X^{q^i} - a$ for some
+    a_i's and a in the coefficient field of lhs, which is a multiple
+    of the lhs.
+    """
+    polynomial_ring = lhs.getRing()
+    coeff_field = lhs.getCoefficientRing()
+    q = card(coeff_field)
+    n = lhs.degree()
+
+    # residues = [x, x^q, x^{q^2}, ..., x^{q^{n-1}}]
+    residues = [lhs.mod(polynomial_ring.one.term_mul((1, 1)))] # x
+    for i in range(1, n):
+        residues.append(pow(residues[-1], q, lhs)) # x^{q^i}
+
+    # find a linear relation among residues and a constant
+    coeff_matrix = matrix.createMatrix(n, n, [coeff_field.zero] * (n**2), coeff_field)
+    for j, residue in enumerate(residues):
+        for i in range(residue.degree() + 1):
+            coeff_matrix[i + 1, j + 1] = residue[i]
+    constant_components = [coeff_field.one] + [coeff_field.zero] * (n - 1)
+    constant_vector = vector.Vector(constant_components)
+    try:
+        relation_vector, kernel = coeff_matrix.solve(constant_vector)
+        for j in range(n, 0, -1):
+            if relation_vector[j]:
+                constant = relation_vector[j].inverse()
+                relation = [constant * c for c in relation_vector]
+                break
+    except matrix.NoInverseImage:
+        kernel_matrix = coeff_matrix.kernel()
+        relation_vector = kernel_matrix[1]
+        assert type(relation_vector) is vector.Vector
+        for j in range(n, 0, -1):
+            if relation_vector[j]:
+                normalizer = relation_vector[j].inverse()
+                relation = [normalizer * c for c in relation_vector]
+                constant = coeff_field.zero
+                break
+
+    # define L(X) = A(X) + constant
+    coeffs = {}
+    for i, relation_i in enumerate(relation):
+        coeffs[q**i] = relation_i
+    linearized = uniutil.polynomial(coeffs, coeff_field)
+
+    # Fq basis [1, X, ..., X^{s-1}]
+    qbasis = [1]
+    root = field.createElement(field.char)
+    s = arith1.log(card(field), q)
+    qbasis += [root**i for i in range(1, s)]
+    # represent L as Matrix
+    lmat = matrix.createMatrix(s, s, field.basefield)
+    for j, base in enumerate(qbasis):
+        imagei = linearized(base)
+        if imagei.getRing() == field.basefield:
+            lmat[1, j + 1] = imagei
+        else:
+            for i, coeff in imagei.rep.iterterms():
+                if coeff:
+                    lmat[i + 1, j + 1] = coeff
+    # solve L(X) = the constant
+    constant_components = [constant] + [coeff_field.zero] * (s - 1)
+    constant_vector = vector.Vector(constant_components)
+    solution, kernel = lmat.solve(constant_vector)
+    assert lmat * solution == constant_vector
+    solutions = [solution]
+    for v in kernel:
+        for i in range(card(field.basefield)):
+            solutions.append(solution + i * v)
+
+    # roots of A(X) contains the solutions of lhs = 0
+    for t in bigrange.multirange([(card(field.basefield),)] * len(kernel)):
+        affine_root_vector = solution
+        for i, ti in enumerate(t):
+            affine_root_vector += ti * kernel[i]
+        affine_root = field.zero
+        for i, ai in enumerate(affine_root_vector):
+            affine_root += ai * qbasis[i]
+        if not lhs(affine_root):
+            return affine_root
+
+    raise ValueError("no root found")
