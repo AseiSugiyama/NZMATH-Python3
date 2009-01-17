@@ -24,7 +24,7 @@ import testPolynomial
 import testPrime
 import testQuad
 import testRational
-import testRationalFunction
+#import testRationalFunction deprecated
 import testReal
 import testRing
 import testRound2
@@ -46,6 +46,8 @@ import testUniutil
 import testMultivar
 import testMultiutil
 import testPolyFactor
+import testPolyRing
+import testRatfunc
 
 def suite():
     suite = unittest.TestSuite()

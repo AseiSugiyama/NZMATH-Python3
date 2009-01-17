@@ -5,6 +5,7 @@ import nzmath.rational as rational
 import nzmath.finitefield as finitefield
 import nzmath.poly.termorder as termorder
 import nzmath.poly.univar as univar
+import nzmath.poly.ring as poly_ring
 import nzmath.poly.uniutil as uniutil
 
 
@@ -300,90 +301,6 @@ class InjectVariableTest (unittest.TestCase):
         # varname lost
         self.assert_(hasattr(f, "getVariable"))
         self.assertRaises(AttributeError, f.getVariable)
-
-
-class PolynomialRingAnonymousVariableTest (unittest.TestCase):
-    def setUp(self):
-        Z = rational.theIntegerRing
-        self.zx = uniutil.PolynomialRingAnonymousVariable(Z)
-
-    def testTrivial(self):
-        self.assertEqual(self.zx, self.zx)
-        zx = "Z[]"
-        self.assertEqual(zx, str(self.zx))
-
-    def testCreateElement(self):
-        """
-        createElement method is tweaked in uniutil.
-        """
-        one = uniutil.polynomial({0: 1}, rational.theIntegerRing)
-        self.assertEqual(one, self.zx.createElement(1))
-
-    def testOne(self):
-        one = uniutil.polynomial({0: 1}, rational.theIntegerRing)
-        self.assertEqual(one, self.zx.one)
-        try:
-            self.zx.one = 0
-        except AttributeError:
-            # should be raised.
-            pass
-        except:
-            self.failIf(False, "unexcepted error is raised")
-        else:
-            self.failIf(False, "assignment should be prohibited")
-
-    def testZero(self):
-        zero = uniutil.polynomial((), rational.theIntegerRing)
-        self.assertEqual(zero, self.zx.zero)
-        try:
-            self.zx.zero = 0
-        except AttributeError:
-            # should be raised.
-            pass
-        except:
-            self.failIf(False, "unexcepted error is raised")
-        else:
-            self.failIf(False, "assignment should be prohibited")
-
-
-class PolynomialIdealTest (unittest.TestCase):
-    def setUp(self):
-        self.Z = rational.theIntegerRing
-        self.Q = rational.theRationalField
-        self.zx = uniutil.PolynomialRingAnonymousVariable(self.Z)
-        self.qx = uniutil.PolynomialRingAnonymousVariable(self.Q)
-
-    def testNonzero(self):
-        self.failIf(uniutil.PolynomialIdeal(self.Q.zero, self.qx))
-
-    def testReduceFieldPolynomial(self):
-        whole = uniutil.PolynomialIdeal(self.Q.one, self.qx)
-        f = uniutil.polynomial([(1, self.Q.createElement(3, 4))], self.Q)
-        self.failIf(whole.reduce(f))
-        self.assert_(uniutil.PolynomialIdeal(f, self.qx).reduce(self.Q.one))
-
-    def testReduceEuclideanPolynomial(self):
-        whole = uniutil.PolynomialIdeal(-1, self.zx)
-        f = uniutil.polynomial([(0, 3), (1, 2)], self.Z)
-        f_ideal = uniutil.PolynomialIdeal(f, self.zx)
-        self.failIf(whole.reduce(f))
-        self.assert_(f_ideal.reduce(self.Z.one))
-
-        two_generators = uniutil.PolynomialIdeal([f, self.zx.createElement(5)], self.zx)
-        self.failIf(two_generators.reduce(f))
-        self.assert_(two_generators.reduce(self.Z.one))
-
-    def testNormalizeGenerators(self):
-        f = uniutil.polynomial([(0, 3), (1, 2)], self.Z)
-        i1 = uniutil.PolynomialIdeal([f, self.zx.createElement(5)], self.zx)
-        i2 = uniutil.PolynomialIdeal([self.zx.createElement(5), f], self.zx)
-        self.assertEqual(i1.generators, i2.generators)
-        self.assertEqual(i1, i2)
-
-    def testZeroIdeal(self):
-        null = uniutil.PolynomialIdeal(self.zx.zero, self.zx)
-        self.assert_(self.zx.zero in null)
-        self.failIf(self.zx.one in null)
 
 
 class FieldPolynomialTest (unittest.TestCase):

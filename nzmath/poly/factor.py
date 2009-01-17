@@ -8,9 +8,7 @@ import nzmath.combinatorial as combinatorial
 import nzmath.intresidue as intresidue
 import nzmath.finitefield as finitefield
 import nzmath.poly.uniutil as uniutil
-
-
-uniutil.special_ring_table[finitefield.FinitePrimeField] = uniutil.FinitePrimeFieldPolynomial
+import nzmath.poly.ring as poly_ring
 
 
 def zassenhaus(f):
@@ -101,7 +99,7 @@ def padic_lift_list(f, factors, p, q):
       gi's are pairwise coprime
     with positive integers p dividing q.
     """
-    ZpZx = uniutil.PolynomialRingAnonymousVariable(
+    ZpZx = poly_ring.PolynomialRing(
         intresidue.IntegerResidueClassRing.getInstance(p))
     gg = reduce(operator.mul, factors, 1)
     h = ZpZx.createElement([(d, c // q) for (d, c) in (f - gg).iterterms()])

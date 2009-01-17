@@ -1,11 +1,14 @@
 """
 rational functions and fields of rational functions
 """
-
+import warnings
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.polynomial as polynomial
 import nzmath.compatibility
+
+
+warnings.warn(DeprecationWarning("use poly.ratfunc instead"))
 
 
 class RationalFunctionField (ring.QuotientField):

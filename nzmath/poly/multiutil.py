@@ -4,11 +4,12 @@ Multivariate polynomial extenders.
 
 from __future__ import division
 import nzmath.rational as rational
-import nzmath.rationalFunction as rationalfunction
 import nzmath.ring as ring
 import nzmath.poly.termorder as termorder
+import nzmath.poly.ring as poly_ring
 import nzmath.poly.uniutil as uniutil
 import nzmath.poly.multivar as multivar
+import nzmath.poly.ratfunc as ratfunc
 
 
 _MIXIN_MSG = "%s is mix-in"
@@ -63,11 +64,11 @@ class NestProvider (object):
         if self.number_of_variables == 2:
             itercoeff = lambda coeff: [(i[0], c) for (i, c) in coeff]
             poly = uniutil.polynomial
-            polyring = uniutil.PolynomialRingAnonymousVariable.getInstance(coeffring)
+            polyring = poly_ring.PolynomialRing.getInstance(coeffring)
         elif self.number_of_variables >= 3:
             itercoeff = lambda coeff: coeff
             poly = self.__class__
-            polyring = PolynomialRingAnonymousVariables.getInstance(coeffring, self.number_of_variables - 1)
+            polyring = poly_ring.PolynomialRing.getInstance(coeffring, self.number_of_variables - 1)
         else:
             raise TypeError("number of variable is not multiple")
         for index, coeff in self.combine_similar_terms(outer):
@@ -134,7 +135,7 @@ class RingElementProvider (ring.CommutativeRingElement):
     def set_coefficient_ring(self, coeffring):
         if self._coefficient_ring is None:
             self._coefficient_ring = coeffring
-            self._ring = PolynomialRingAnonymousVariables.getInstance(self._coefficient_ring, self.number_of_variables)
+            self._ring = poly_ring.PolynomialRing.getInstance(self._coefficient_ring, self.number_of_variables)
 
 
 class PseudoDivisionProvider (object):
@@ -216,7 +217,7 @@ class PseudoDivisionProvider (object):
 
         The result is a rational function.
         """
-        return rationalfunction.RationalFunction(self, other)
+        return ratfunc.RationalFunction(self, other)
 
     def exact_division(self, other):
         """
@@ -444,7 +445,7 @@ class PolynomialRingAnonymousVariables (ring.CommutativeRing):
         """
         coefficientField = self._coefficient_ring.getQuotientField()
         variables = ["x%d" % i for i in range(self.number_of_variables)]
-        return rationalfunction.RationalFunctionField(coefficientField, variables)
+        return ratfunc.RationalFunctionField(coefficientField, variables)
 
     def __eq__(self, other):
         if self is other:
@@ -489,11 +490,11 @@ class PolynomialRingAnonymousVariables (ring.CommutativeRing):
         """
         reports whether another ring contains this polynomial ring.
         """
-        if isinstance(other, PolynomialRingAnonymousVariables):
+        if isinstance(other, poly_ring.PolynomialRing):
             if (self._coefficient_ring.issubring(other.getCoefficientRing()) and
                 self.number_of_variables <= other.number_of_variables):
                 return True
-        elif isinstance(other, rationalfunction.RationalFunctionField):
+        elif isinstance(other, poly_ring.RationalFunctionField):
             if (len(other.vars) >= self.number_of_variables and
                 other.coefficientField.issuperring(self._coefficient_ring)):
                 return True
@@ -509,9 +510,7 @@ class PolynomialRingAnonymousVariables (ring.CommutativeRing):
         """
         if self._coefficient_ring.issuperring(other):
             return True
-        if isinstance(other, uniutil.PolynomialRingAnonymousVariable):
-            return self._coefficient_ring.issuperring(other.getCoefficientRing())
-        if isinstance(other, PolynomialRingAnonymousVariables):
+        if isinstance(other, poly_ring.PolynomialRing):
             return (self._coefficient_ring.issuperring(other.getCoefficientRing()) and
                     self.number_of_variables >= other.number_of_variables)
         try:
