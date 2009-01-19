@@ -39,7 +39,7 @@ class Lattice:
             for j in range(n):
                 X_list.append(self.basis.compo[j][i])
             Rot.append(rot(X_list))
-        T = self.basis.inverse()*matrix.Matrix(n, n, Rot)
+        T = self.basis.inverse()*Matrix(n, n, Rot)
         for i in range(n):
             for j in range(n):
                 if T.compo[i][j].denominator != 1:
