@@ -13,7 +13,6 @@ import nzmath.ring as ring
 import nzmath.rational as rational
 import nzmath.factor.misc as factor_misc
 import nzmath.intresidue as intresidue
-import nzmath.poly.univar as univar
 import nzmath.poly.uniutil as uniutil
 import nzmath.matrix as matrix
 import nzmath.vector as vector
@@ -357,30 +356,31 @@ FinitePrimeFieldPolynomial = uniutil.FinitePrimeFieldPolynomial
 uniutil.special_ring_table[FinitePrimeField] = FinitePrimeFieldPolynomial
 
 
-class FiniteExtendedFieldElement(FiniteFieldElement):
+class ExtendedFieldElement(FiniteFieldElement):
     """
-    FiniteExtendedFieldElement is a class for an element of F_q.
+    ExtendedFieldElement is a class for an element of F_q.
     """
     def __init__(self, representative, field):
         """
         FiniteExtendedFieldElement(representative, field) creates
-        an element of the finite extended field.
+        an element of the finite extended field F_q.
 
-        The argument representative must be an F_p polynomial
-        (an instance of FinitePrimeFieldPolynomial).
+        The argument representative has to be a polynomial with
+        base field coefficients, i.e., if F_q is over F_{p^k}
+        the representative has to F_{p^k} polynomial.
 
         Another argument field mut be an instance of
-        FiniteExtendedField.
+        ExtendedField.
         """
-        if isinstance(field, FiniteExtendedField):
+        if isinstance(field, ExtendedField):
             self.field = field
         else:
             raise TypeError("wrong type argument for field.")
-        if (isinstance(representative, FinitePrimeFieldPolynomial) and
-            isinstance(representative.getCoefficientRing(), FinitePrimeField)):
+        if (isinstance(representative, uniutil.FiniteFieldPolynomial) and
+            representative.getCoefficientRing() == self.field.basefield):
             self.rep = self.field.modulus.mod(representative)
         else:
-            _log.debug(representative.__class__.__name__)
+            _log.error(representative.__class__.__name__)
             raise TypeError("wrong type argument for representative.")
 
     def getRing(self):
@@ -394,7 +394,7 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
         Do `self (op) other'.
         op must be a name of the special method for binary operation.
         """
-        if isinstance(other, FiniteExtendedFieldElement):
+        if isinstance(other, ExtendedFieldElement):
             if other.field is self.field:
                 result = self.field.modulus.mod(getattr(self.rep, op)(other.rep))
                 return self.__class__(result, self.field)
@@ -529,117 +529,137 @@ class FiniteExtendedFieldElement(FiniteFieldElement):
         return nrm
 
 
-class FiniteExtendedField(FiniteField):
+class ExtendedField(FiniteField):
     """
-    FiniteExtendedField is a class for finite field, whose cardinality
+    ExtendedField is a class for finite field, whose cardinality
     q = p**n with a prime p and n>1. It is usually called F_q or GF(q).
     """
-    def __init__(self, characteristic, n_or_modulus):
+    def __init__(self, basefield, modulus):
         """
-        FiniteExtendedField(p, n_or_modulus) creates a finite field.
+        ExtendedField(basefield, modulus)
+
+        Create a field extension basefield[X]/(modulus(X)).
+
+        The modulus has to be an irreducible polynomial with
+        coefficients in the basefield.
+        """
+        FiniteField.__init__(self, basefield.char)
+        self.basefield = basefield
+        self.modulus = modulus
+        if isinstance(self.basefield, FinitePrimeField):
+            self.degree = self.modulus.degree()
+        else:
+            self.degree = self.basefield.degree * self.modulus.degree()
+            bf = self.basefield
+            while hasattr(bf, "basefield"):
+                # all basefields can be used as a scalar field.
+                self.registerModuleAction(bf.basefield, self._scalar_mul)
+                bf = bf.basefield
+        self.registerModuleAction(self.basefield, self._scalar_mul)
+        # integer is always a good scalar
+        self.registerModuleAction(rational.theIntegerRing, self._scalar_mul)
+
+    @classmethod
+    def prime_extension(cls, characteristic, n_or_modulus):
+        """
+        ExtendedField.prime_extension(p, n_or_modulus) creates a
+        finite field extended over prime field.
+
         characteristic must be prime. n_or_modulus can be:
           1) an integer greater than 1, or
           2) a polynomial in a polynomial ring of F_p with degree
              greater than 1.
         """
-        FiniteField.__init__(self, characteristic)
-        self.basefield = FinitePrimeField.getInstance(self.char)
         if isinstance(n_or_modulus, (int, long)):
-            if n_or_modulus <= 1:
+            n = n_or_modulus
+            if n <= 1:
                 raise ValueError("degree of extension must be > 1.")
-            self.degree = n_or_modulus
             # choose a method among three variants:
-            #self.modulus = self._random_irriducible()
-            #self.modulus = self._small_irriducible()
-            self.modulus = self._primitive_polynomial()
+            #modulus = cls._random_irriducible(characteristic, n)
+            #modulus = cls._small_irriducible(characteristic, n)
+            modulus = cls._primitive_polynomial(characteristic, n)
         elif isinstance(n_or_modulus, FinitePrimeFieldPolynomial):
-            if isinstance(n_or_modulus.getCoefficientRing(), FinitePrimeField):
-                if n_or_modulus.degree() > 1 and n_or_modulus.isirreducible():
-                    self.degree = n_or_modulus.degree()
-                    self.modulus = n_or_modulus
-                else:
-                    raise ValueError("modulus must be of degree greater than 1.")
-            else:
+            modulus = n_or_modulus
+            if not isinstance(modulus.getCoefficientRing(), FinitePrimeField):
                 raise TypeError("modulus must be F_p polynomial.")
+            if modulus.degree() <= 1 or not modulus.isirreducible():
+                raise ValueError("modulus must be of degree greater than 1.")
         else:
             raise TypeError("degree or modulus must be supplied.")
-        self.registerModuleAction(rational.theIntegerRing, self._int_mul)
-        self.registerModuleAction(FinitePrimeField.getInstance(self.char), self._fp_mul)
+        return cls(FinitePrimeField.getInstance(characteristic), modulus)
 
-    def _random_irriducible(self):
+    @staticmethod
+    def _random_irriducible(char, degree):
         """
         Return randomly chosen irreducible polynomial of self.degree.
         """
-        cardinality = self.char ** self.degree
-        seed = bigrandom.randrange(1, self.char) + cardinality
-        cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
-        while cand.degree() < self.degree or not cand.isirreducible():
+        cardinality = char ** degree
+        basefield = FinitePrimeField.getInstance(char)
+        seed = bigrandom.randrange(1, char) + cardinality
+        cand = uniutil.FiniteFieldPolynomial(enumerate(arith1.expand(seed, cardinality)), coeffring=basefield)
+        while cand.degree() < degree or not cand.isirreducible():
             seed = bigrandom.randrange(1, cardinality) + cardinality
-            cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
+            cand = uniutil.FiniteFieldPolynomial(enumerate(arith1.expand(seed, cardinality)), coeffring=basefield)
         _log.debug(cand.order.format(cand))
         return cand
 
-    def _small_irriducible(self):
+    @staticmethod
+    def _small_irriducible(char, degree):
         """
         Return an irreducible polynomial of self.degree with a small
         number of non-zero coefficients.
         """
-        cardinality = self.char ** self.degree
-        top = uniutil.polynomial({self.degree: 1}, coeffring=self.basefield)
-        for seed in range(self.degree - 1):
-            for const in range(1, self.char):
+        cardinality = char ** degree
+        basefield = FinitePrimeField.getInstance(char)
+        top = uniutil.polynomial({degree: 1}, coeffring=basefield)
+        for seed in range(degree - 1):
+            for const in range(1, char):
                 coeffs = [const] + arith1.expand(seed, 2)
-                cand = uniutil.polynomial(enumerate(coeffs), coeffring=self.basefield) + top
+                cand = uniutil.polynomial(enumerate(coeffs), coeffring=basefield) + top
                 if cand.isirreducible():
                     _log.debug(cand.order.format(cand))
                     return cand
-        for subdeg in range(self.degree):
-            subseedbound = self.char ** subdeg
-            for subseed in range(subseedbound + 1, self.char * subseedbound):
-                if not subseed % self.char:
+        for subdeg in range(degree):
+            subseedbound = char ** subdeg
+            for subseed in range(subseedbound + 1, char * subseedbound):
+                if not subseed % char:
                     continue
                 seed = subseed + cardinality
-                cand = uniutil.polynomial(enumerate(arith1.expand(seed, self.char)), coeffring=self.basefield)
+                cand = uniutil.polynomial(enumerate(arith1.expand(seed, cardinality)), coeffring=basefield)
                 if cand.isirreducible():
                     return cand
 
-    def _primitive_polynomial(self):
+    @staticmethod
+    def _primitive_polynomial(char, degree):
         """
         Return a primitive polynomial of self.degree.
 
         REF: Lidl & Niederreiter, Introduction to finite fields and
              their applications.
         """
-        cardinality = self.char ** self.degree
-        const = self.basefield.primitive_element()
-        if self.degree % 2:
+        cardinality = char ** degree
+        basefield = FinitePrimeField.getInstance(char)
+        const = basefield.primitive_element()
+        if degree % 2:
             const = -const
-        cand = uniutil.polynomial({0:const, self.degree:self.basefield.one}, self.basefield)
-        maxorder = factor_misc.FactoredInteger((card(self) - 1) // (self.char - 1))
-        var = uniutil.polynomial({1:self.basefield.one}, self.basefield)
+        cand = uniutil.polynomial({0:const, degree:basefield.one}, basefield)
+        maxorder = factor_misc.FactoredInteger((cardinality - 1) // (char - 1))
+        var = uniutil.polynomial({1:basefield.one}, basefield)
         while not (cand.isirreducible() and
                    all(pow(var, int(maxorder) // p, cand).degree() > 0 for p in maxorder.prime_divisors())):
             # randomly modify the polynomial
-            deg = bigrandom.randrange(1, self.degree)
-            coeff = self.basefield.random_element(1, self.char)
-            cand += uniutil.polynomial({deg:coeff}, self.basefield)
+            deg = bigrandom.randrange(1, degree)
+            coeff = basefield.random_element(1, char)
+            cand += uniutil.polynomial({deg:coeff}, basefield)
         _log.debug(cand.order.format(cand))
         return cand
 
     @staticmethod
-    def _int_mul(integer, fqelem):
+    def _scalar_mul(integer, fqelem):
         """
         Return integer * (Fq element).
         """
         return fqelem.__class__(fqelem.rep * integer, fqelem.field)
-
-    @staticmethod
-    def _fp_mul(fpelem, fqelem):
-        """
-        Return (Fp element) * (Fq element).
-        """
-        newrep = fqelem.rep * fpelem
-        return fqelem.__class__(newrep, fqelem.field)
 
     def card(self):
         """
@@ -652,24 +672,25 @@ class FiniteExtendedField(FiniteField):
         Create an element of the field.
         """
         if isinstance(seed, (int, long)):
-            expansion = arith1.expand(seed, self.char)
-            return FiniteExtendedFieldElement(
-                FinitePrimeFieldPolynomial(enumerate(expansion), self.basefield),
+            expansion = arith1.expand(seed, card(self.basefield))
+            return ExtendedFieldElement(
+                uniutil.FiniteFieldPolynomial(enumerate(expansion), self.basefield),
                 self)
-        elif isinstance(seed, FinitePrimeFieldPolynomial):
-            return FiniteExtendedFieldElement(seed, self)
-        elif isinstance(seed, FinitePrimeFieldElement) and seed.m == self.getCharacteristic():
-            return FiniteExtendedFieldElement(
-                FinitePrimeFieldPolynomial([(0, seed)], self.basefield),
+        elif seed in self.basefield:
+            return ExtendedFieldElement(
+                uniutil.FiniteFieldPolynomial([(0, seed)], self.basefield),
                 self)
         elif seed in self:
             # seed is in self, return only embedding
             return self.zero + seed
+        elif (isinstance(seed, uniutil.FiniteFieldPolynomial) and
+              seed.getCoefficientRing() is self.basefield):
+            return ExtendedFieldElement(seed, self)
         else:
             try:
                 # lastly check sequence
-                return FiniteExtendedFieldElement(
-                    FinitePrimeFieldPolynomial(enumerate(seed), self.basefield),
+                return ExtendedFieldElement(
+                    uniutil.FiniteFieldPolynomial(enumerate(seed), self.basefield),
                     self)
             except TypeError:
                 raise TypeError("seed %s is not an appropriate object." % str(seed))
@@ -689,11 +710,11 @@ class FiniteExtendedField(FiniteField):
         """
         if self is other:
             return True
-        if isinstance(other, FiniteExtendedField):
+        elif isinstance(other, ExtendedField):
             if self.char == other.char and not (self.degree % other.degree):
                 return True
             return False
-        if isinstance(other, FinitePrimeField):
+        elif isinstance(other, FinitePrimeField):
             if self.char == other.getCharacteristic():
                 return True
             return False
@@ -708,9 +729,9 @@ class FiniteExtendedField(FiniteField):
         """
         if self is other:
             return True
-        if isinstance(other, FinitePrimeField):
+        elif isinstance(other, FinitePrimeField):
             return False
-        if isinstance(other, FiniteExtendedField):
+        elif isinstance(other, ExtendedField):
             if self.char == other.char and not (other.degree % self.degree):
                 return True
             return False
@@ -723,11 +744,11 @@ class FiniteExtendedField(FiniteField):
         """
         Report whether elem is in field.
         """
-        if isinstance(elem, FiniteExtendedFieldElement) and \
-               elem.getRing().modulus == self.modulus:
+        if (isinstance(elem, ExtendedFieldElement) and
+            elem.getRing().modulus == self.modulus):
             return True
-        elif isinstance(elem, FinitePrimeFieldElement) and \
-                 elem.getRing().getCharacteristic() == self.getCharacteristic():
+        elif (isinstance(elem, FinitePrimeFieldElement) and
+              elem.getRing().getCharacteristic() == self.getCharacteristic()):
             return True
         return False
 
@@ -735,7 +756,7 @@ class FiniteExtendedField(FiniteField):
         """
         Equality test.
         """
-        if isinstance(other, FiniteExtendedField):
+        if isinstance(other, ExtendedField):
             return self.char == other.char and self.degree == other.degree
         return False
 
@@ -759,9 +780,8 @@ class FiniteExtendedField(FiniteField):
     def _getOne(self):
         "getter for one"
         if self._one is None:
-            self._one = FiniteExtendedFieldElement(
-                FinitePrimeFieldPolynomial(
-                [(0, 1)], self.basefield),
+            self._one = ExtendedFieldElement(
+                uniutil.FiniteFieldPolynomial([(0, 1)], self.basefield),
                 self)
         return self._one
 
@@ -770,9 +790,8 @@ class FiniteExtendedField(FiniteField):
     def _getZero(self):
         "getter for zero"
         if self._zero is None:
-            self._zero = FiniteExtendedFieldElement(
-                FinitePrimeFieldPolynomial(
-                [], self.basefield),
+            self._zero = ExtendedFieldElement(
+                uniutil.FiniteFieldPolynomial([], self.basefield),
                 self)
         return self._zero
 
@@ -968,3 +987,14 @@ def affine_multiple_method(lhs, field):
             return affine_root
 
     raise ValueError("no root found")
+
+
+def FiniteExtendedField(characteristic, n_or_modulus):
+    """
+    Return ExtexdedField F_{p^n} or F_p[]/(modulus).
+
+    This is a convenience wrapper for backward compatibility.
+    """
+    return ExtendedField.prime_extension(characteristic, n_or_modulus)
+
+FiniteExtendedFieldElement = ExtendedFieldElement
