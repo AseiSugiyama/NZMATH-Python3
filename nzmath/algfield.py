@@ -144,12 +144,13 @@ class NumberField (ring.Field):
                     traces.append(s.trace())
         else:
             sigma = equation.SimMethod(self.polynomial)
+            #print sigma
             f = []
             for i in range(n):
                 f.append(zpoly(Basis[i]))
             for i in range(n):
                 for j in range(n):
-                    m = 0
+                    m = 0 + 0j
                     for k in range(n):
                         m += f[i](sigma[k])*f[j](sigma[k].conjugate())
                     traces.append(m.real)
