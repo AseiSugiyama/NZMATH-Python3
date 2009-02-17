@@ -1,6 +1,4 @@
 from __future__ import division
-import random
-import operator
 import nzmath.arith1 as arith1
 import nzmath.prime as prime
 import nzmath.rational as rational
@@ -101,7 +99,7 @@ def padic_lift_list(f, factors, p, q):
     """
     ZpZx = poly_ring.PolynomialRing(
         intresidue.IntegerResidueClassRing.getInstance(p))
-    gg = reduce(operator.mul, factors, 1)
+    gg = arith1.product(factors)
     h = ZpZx.createElement([(d, c // q) for (d, c) in (f - gg).iterterms()])
     lifted = []
     for g in factors:
@@ -210,7 +208,7 @@ def find_combination(f, d, factors, q):
         ZqZX = uniutil.PolynomialRingAnonymousVariable.getInstance(ZqZ)
         for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]
-            product = reduce(operator.mul, picked, 1)
+            product = arith1.product(picked)
             product = minimum_absolute_injection(ZqZX.createElement(product))
             if divisibility_test(f, product):
                 return (product, picked)
