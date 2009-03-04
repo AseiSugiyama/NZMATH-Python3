@@ -52,19 +52,22 @@ class NumberField (ring.Field):
         """
         degree = self.degree
 
-        def theta(j, K):
-            base = [0] * K.degree
-            base[j] = 1
-            return BasicAlgNumber([base, 1], K.polynomial)
-
         traces = []
         for i in range(degree):
             for j in range(degree):
-                s = theta(i, self)*theta(j, self)
+                s = self.basis(i)*self.basis(j)
                 traces.append(s.trace())
 
         M = matrix.RingSquareMatrix(degree, degree, traces)
         return M.determinant()
+
+    def basis(self, j):
+        """
+        Return the j-th basis of self. 
+        """
+        base = [0] * self.degree
+        base[j] = 1
+        return BasicAlgNumber([base, 1], self.polynomial)
 
     def signature(self):
         """
@@ -322,16 +325,22 @@ class BasicAlgNumber(object):
         return BasicAlgNumber([jcoeff, d], self.polynomial)
 
     def inverse(self):
-        f = zpoly(self.polynomial)
-        g = zpoly(self.coeff)
-        quotient, remainder = f.pseudo_divmod(g)
+        f = qpoly(self.polynomial)
+        g = qpoly(self.coeff)
+        quot = f.extgcd(g)
 
-        if not remainder:
-            icoeff = [i*self.denom for i in self.coeff]
-            new_denom = 1
-        else:
-            icoeff = [self.denom * quotient[i] for i in range(self.degree)]
-            new_denom = -remainder[0]
+        icoeff = [self.denom * quot[1][i] for i in range(self.degree)]
+        #print icoeff
+        denom_list = []
+        for i in range(self.degree):
+            if icoeff[i] == 0:
+                denom_list.append(1)
+            else:
+                denom_list.append(icoeff[i].denominator)
+        new_denom = 1
+        for i in range(self.degree):
+            new_denom = gcd.lcm(new_denom, denom_list[i])
+        icoeff = [icoeff[i].numerator * new_denom // icoeff[i].denominator for i in range(self.degree)]
         return BasicAlgNumber([icoeff, new_denom], self.polynomial)
 
     def __truediv__(self, other):
@@ -359,8 +368,8 @@ class BasicAlgNumber(object):
         n = len(self.polynomial) - 1
         
         tlist = [n]
-        s = 0
         for k in range(1, n):
+            s = 0
             for i in range(1, k):
                 s += tlist[k - i] * self.polynomial[n - i]
             tlist.append(-k * self.polynomial[n - k] - s)
