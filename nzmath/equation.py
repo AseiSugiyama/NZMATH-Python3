@@ -225,3 +225,38 @@ def _upper_bound_of_roots(g):
     weight = len(filter(None, g))
     assert g[-1]
     return max([pow(weight*abs(c/g[-1]), 1/len(g)) for c in g])
+
+def root_Fp(g, p):
+	"""
+	Return a root in F_p of nonzero polynomial g.
+	p must be prime.
+	"""
+	if isinstance(g, list):
+		g = zip(range(len(g)),g)
+	Fp = finitefield.FinitePrimeField(p)
+	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
+	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
+	g = g.gcd(h)
+	deg_g = g.degree()
+	while True:
+		if deg_g == 0:
+			return 0
+		if deg_g == 1:
+			return (-g[0]).toInteger()
+		elif deg_g == 2:
+			d = g[1]*g[1]-4*g[0]
+			e = arith1.modsqrt(d.toInteger(), p)
+			return ((-g[1]-e)*arith1.inverse(2,p)).toInteger()
+		h = g
+		deg_h = 0
+		x = poly.uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)/2:1}, Fp)
+		a = 0
+		while (h.degree() == 0) or (h.degree() == deg_g):
+			b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+			v = g(b)
+			h = x.gcd(v)
+			a = a + 1
+			deg_h = h.degree()
+		b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+		g = h(b)
+		deg_g = deg_h
