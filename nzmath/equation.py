@@ -231,6 +231,8 @@ def root_Fp(g, p):
 	Return a root in F_p of nonzero polynomial g.
 	p must be prime.
 	"""
+	if not g[-1] == 1:
+		raise ValueError("polynomial must be monic")
 	if isinstance(g, list):
 		g = zip(range(len(g)),g)
 	Fp = finitefield.FinitePrimeField(p)
