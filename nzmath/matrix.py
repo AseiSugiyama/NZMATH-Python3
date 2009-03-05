@@ -147,7 +147,7 @@ class Matrix(object):
         elif isinstance(other, int) and other == 0: # zero matrix ?
             return not bool(self)
         else:
-            raise TypeError()
+            return False
 
     def __ne__(self, other):
         """
