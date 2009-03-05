@@ -231,8 +231,6 @@ def root_Fp(g, p):
 	Return a root in F_p of nonzero polynomial g.
 	p must be prime.
 	"""
-	if not g[-1] == 1:
-		raise ValueError("polynomial must be monic")
 	if isinstance(g, list):
 		g = zip(range(len(g)),g)
 	Fp = finitefield.FinitePrimeField(p)
@@ -240,15 +238,18 @@ def root_Fp(g, p):
 	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
 	g = g.gcd(h)
 	deg_g = g.degree()
+	if g[0] == 0:
+		deg_g = deg_g - 1
+		g = g.shift_degree_to(deg_g) 
 	while True:
 		if deg_g == 0:
 			return 0
 		if deg_g == 1:
-			return (-g[0]).toInteger()
+			return (-g[0]/g[1]).toInteger()
 		elif deg_g == 2:
 			d = g[1]*g[1]-4*g[0]
 			e = arith1.modsqrt(d.toInteger(), p)
-			return ((-g[1]-e)*arith1.inverse(2,p)).toInteger()
+			return ((-g[1]-e)/(2*g[2])).toInteger()
 		h = g
 		deg_h = 0
 		x = poly.uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)/2:1}, Fp)
