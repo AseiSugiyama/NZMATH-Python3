@@ -228,7 +228,7 @@ def _upper_bound_of_roots(g):
 
 def root_Fp(g, p):
 	"""
-	Return a root in F_p of nonzero polynomial g.
+	Return a root over F_p of nonzero polynomial g.
 	p must be prime.
 	"""
 	if isinstance(g, list):
