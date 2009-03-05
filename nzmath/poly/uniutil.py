@@ -946,7 +946,7 @@ class PrimeCharacteristicFunctionsProvider(object):
             randpoly = self.__class__(rand_coeff, **self._init_kwds)
             if p == 2:
                 G = self.__class__((), **self._init_kwds)
-                for i in range(degree * r):
+                for i in range(degree):
                     G = G + randpoly
                     randpoly = self.mod(randpoly.square())
             else:

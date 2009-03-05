@@ -114,6 +114,10 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
     def testSplitSameDegrees(self):
         h_ssd = self.h.split_same_degrees(1)
         self.assertEqual(self.h.degree(), len(h_ssd))
+        phi7 = uniutil.FinitePrimeFieldPolynomial(enumerate([self.F2.one]*7), coeffring=self.F2)
+        result7 = phi7.split_same_degrees(3)
+        self.assertEqual(2, len(result7))
+        self.assertEqual(phi7, result7[0] * result7[1])
 
     def testFactor(self):
         factored = self.p.factor()
