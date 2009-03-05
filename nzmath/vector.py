@@ -22,6 +22,9 @@ class Vector (object):
     def __eq__(self, other):
         return self.compo == other.compo
 
+    def __ne__(self, other):
+        return self.compo != other.compo
+
     def __add__(self, other):
         if isinstance(other, Vector):
             if len(self) == len(other):
