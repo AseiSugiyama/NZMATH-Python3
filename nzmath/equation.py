@@ -301,7 +301,6 @@ def roots_loop(g, deg_g, p, Fp):
 	if deg_g == 0:
 		return []
 	if deg_g == 1:
-		print g[0]
 		g0 = g[0]
 		if isinstance(g[0], int):
 			import nzmath.finitefield
