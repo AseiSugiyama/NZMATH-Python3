@@ -248,11 +248,7 @@ def root_Fp(g, p, flag=True):
 		if deg_g == 0:
 			return None
 		if deg_g == 1:
-			g0 = g[0]
-			if isinstance(g[0], int):
-				import nzmath.finitefield
-				g0 = nzmath.finitefield.FinitePrimeFieldElement(g[0], p)
-			return (-g0/g[1]).toInteger()
+			return (-g[0]/g[1]).toInteger()
 		elif deg_g == 2:
 			d = g[1]*g[1]-4*g[0]
 			e = arith1.modsqrt(d.toInteger(), p)
@@ -303,11 +299,7 @@ def roots_loop(g, deg_g, p, Fp):
 	if deg_g == 0:
 		return []
 	if deg_g == 1:
-		g0 = g[0]
-		if isinstance(g[0], int):
-			import nzmath.finitefield
-			g0 = nzmath.finitefield.FinitePrimeFieldElement(g[0], p)
-		return [(-g0/g[1]).toInteger()]
+		return [(-g[0]/g[1]).toInteger()]
 	elif deg_g == 2:
 		d = g[1]*g[1]-4*g[0]
 		e = arith1.modsqrt(d.toInteger(), p)
