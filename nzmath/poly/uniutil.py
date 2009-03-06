@@ -1269,6 +1269,16 @@ class RingPolynomial(OrderProvider,
         """
         return self.leading_coefficient() == self._coefficient_ring.one
 
+    def __getitem__(self, degree):
+        """
+        Return the coefficient of specified degree.
+        If there is no term of degree, return 0.
+        """
+        result = univar.SortedPolynomial.__getitem__(self, degree)
+        if result is 0:
+            result = self._coefficient_ring.zero
+        return result
+
 
 class DomainPolynomial(PseudoDivisionProvider,
                        RingPolynomial):

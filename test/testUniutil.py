@@ -289,6 +289,11 @@ class FinitePrimeFieldPolynomialTest (unittest.TestCase):
         self.assertEqual(q1 ** 3 % m, m.mod_pow(q1, 3))
         self.assertEqual(q1 ** 70 % m, m.mod_pow(q1, 70))
 
+    def testEmptyTerm(self):
+        F17 = finitefield.FinitePrimeField.getInstance(17)
+        q = uniutil.FinitePrimeFieldPolynomial({1:F17.one}, coeffring=F17)
+        self.assert_(F17.zero is q[0])
+        self.failIf(0 is q[0])
 
 class InjectVariableTest (unittest.TestCase):
     def testInject(self):
