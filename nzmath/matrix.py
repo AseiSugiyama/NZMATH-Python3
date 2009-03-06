@@ -1214,7 +1214,7 @@ class FieldMatrix(RingMatrix):
         M = self.copy()
         m = M.row
         n = M.column
-        r = V.column
+        r = B.column
         X = zeroMatrix(n, r, self.coeff_ring)
         non_zero = []
         i = 1
