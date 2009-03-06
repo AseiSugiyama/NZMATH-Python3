@@ -234,7 +234,8 @@ def root_Fp(g, p, flag=True):
 	If flag = False, return a root randomly
 	"""
 	if isinstance(g, list):
-		g = zip(range(len(g)),g)
+		if not isinstance(g[0], tuple):
+			g = zip(range(len(g)),g)
 	Fp = finitefield.FinitePrimeField(p)
 	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
 	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
@@ -284,7 +285,8 @@ def allroots_Fp(g, p):
 	p must be prime.
 	"""
 	if isinstance(g, list):
-		g = zip(range(len(g)),g)
+		if not isinstance(g[0], tuple):
+			g = zip(range(len(g)),g)
 	Fp = finitefield.FinitePrimeField(p)
 	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
 	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
