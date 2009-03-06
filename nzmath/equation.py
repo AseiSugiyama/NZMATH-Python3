@@ -4,6 +4,7 @@ import cmath
 import logging
 
 import nzmath.arith1 as arith1
+import nzmath.bigrandom as bigrandom
 import nzmath.bigrange as bigrange
 import nzmath.finitefield as finitefield
 import nzmath.poly.uniutil as uniutil
@@ -226,10 +227,11 @@ def _upper_bound_of_roots(g):
     assert g[-1]
     return max([pow(weight*abs(c/g[-1]), 1/len(g)) for c in g])
 
-def root_Fp(g, p):
+def root_Fp(g, p, flag=True):
 	"""
 	Return a root over F_p of nonzero polynomial g.
 	p must be prime.
+	If flag = False, return a root randomly
 	"""
 	if isinstance(g, list):
 		g = zip(range(len(g)),g)
@@ -243,23 +245,86 @@ def root_Fp(g, p):
 		g = g.shift_degree_to(deg_g) 
 	while True:
 		if deg_g == 0:
-			return 0
+			return None
 		if deg_g == 1:
-			return (-g[0]/g[1]).toInteger()
+			g0 = g[0]
+			if isinstance(g[0], int):
+				import nzmath.finitefield
+				g0 = nzmath.finitefield.FinitePrimeFieldElement(g[0], p)
+			return (-g0/g[1]).toInteger()
 		elif deg_g == 2:
 			d = g[1]*g[1]-4*g[0]
 			e = arith1.modsqrt(d.toInteger(), p)
 			return ((-g[1]-e)/(2*g[2])).toInteger()
-		h = g
 		deg_h = 0
-		x = poly.uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)/2:1}, Fp)
-		a = 0
-		while (h.degree() == 0) or (h.degree() == deg_g):
-			b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
-			v = g(b)
-			h = x.gcd(v)
-			a = a + 1
-			deg_h = h.degree()
-		b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+		x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+		if flag == True:
+			a = 0
+			while (deg_h == 0) or (deg_h == deg_g):
+				b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+				v = g(b)
+				h = x.gcd(v)
+				a = a + 1
+				deg_h = h.degree()
+				b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+		else:
+			while (deg_h == 0) or (deg_h == deg_g):
+				a = bigrandom.randrange(0, p)
+				b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+				v = g(b)
+				h = x.gcd(v)
+				deg_h = h.degree()
+				b = uniutil.FinitePrimeFieldPolynomial({0:a, 1:1}, Fp)
 		g = h(b)
 		deg_g = deg_h
+
+def allroots_Fp(g, p):
+	"""
+	Return roots over F_p of nonzero polynomial g.
+	p must be prime.
+	"""
+	if isinstance(g, list):
+		g = zip(range(len(g)),g)
+	Fp = finitefield.FinitePrimeField(p)
+	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
+	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
+	g = g.gcd(h)
+	deg_g = g.degree()
+	roots = []
+	if g[0] == 0:
+		roots.append(0)
+		deg_g = deg_g - 1
+		g = g.shift_degree_to(deg_g)
+	return roots + roots_loop(g, deg_g, p, Fp)
+
+def roots_loop(g, deg_g, p, Fp):
+	if deg_g == 0:
+		return []
+	if deg_g == 1:
+		print g[0]
+		g0 = g[0]
+		if isinstance(g[0], int):
+			import nzmath.finitefield
+			g0 = nzmath.finitefield.FinitePrimeFieldElement(g[0], p)
+		return [(-g0/g[1]).toInteger()]
+	elif deg_g == 2:
+		d = g[1]*g[1]-4*g[0]
+		e = arith1.modsqrt(d.toInteger(), p)
+		g1 = -g[1]
+		g2 = 2*g[2]
+		return [((g1-e)/g2).toInteger(), ((g1+e)/g2).toInteger()]
+	deg_h = 0
+	x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+	a = 0
+	while (deg_h == 0) or (deg_h == deg_g):
+		b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+		v = g(b)
+		h = x.gcd(v)
+		a = a + 1
+		deg_h = h.degree()
+	b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+	s = h(b)
+	deg_s = deg_h
+	t = g.exact_division(s)
+	deg_t = t.degree()
+	return roots_loop(s, deg_s, p, Fp) + roots_loop(t, deg_t, p, Fp)
