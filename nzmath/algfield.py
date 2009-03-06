@@ -7,6 +7,7 @@ import nzmath.gcd as gcd
 import nzmath.lattice as lattice 
 import nzmath.matrix as matrix
 import nzmath.factor.misc as misc
+import nzmath.finitefield as finitefield
 import nzmath.poly.uniutil as uniutil
 import nzmath.poly.multiutil as multiutil
 import nzmath.rational as rational
@@ -51,7 +52,12 @@ class NumberField (ring.Field):
         However the output is not disc of self but disc of self.polynomial.
         """
         degree = self.degree
-
+        """
+        Obasis, disc = round2.round2(self)
+        A = [algfield.MatAlgNumber(obasis[0][i]) for i in range(degree)]
+        return disc(A) <--- real disc of self field.
+        """
+   
         traces = []
         for i in range(degree):
             for j in range(degree):
@@ -60,6 +66,7 @@ class NumberField (ring.Field):
 
         M = matrix.RingSquareMatrix(degree, degree, traces)
         return M.determinant()
+
 
     def basis(self, j):
         """
@@ -172,7 +179,6 @@ class NumberField (ring.Field):
             Ch_Basis.append(base_cor)
 
         C = []
-        #print Ch_Basis[0]
         a = Ch_Basis[0]
         for i in range(n):
             coeff = Ch_Basis[i].ch_approx(appr[0]).charpoly
@@ -636,6 +642,41 @@ class ApproxAlgNumber:
         return MatAlgNumber(self.coeff, self.polynomial)
 
 
+class Ideal:
+    """
+    """
+    def init():
+        return "Not implemented"
+
+def prime_decomp(p, polynomial):
+    """
+    Return prime decomposition of (p) over Q[x]/(polynomial).
+    """
+    f = fppoly(polynomial, p)
+    d = f.degree()
+    disc = round2.round2(polynomial)[1]
+    field = NumberField(polynomial)
+    if field.disc() == disc or field.disc()//disc % p != 0:
+        factor = f.factor()
+        dlist = []
+        if len(factor) == 1 and factor[0][1] == 1:
+            return "(p) is prime ideal."
+        else:
+            for i in range(len(factor)):
+                basis_list = []
+                for j in range(d):
+                    if factor[i][0][j] == 0:
+                        basis_list.append(0)
+                    else:
+                        basis_list.append(factor[i][0][j].toInteger())
+                dlist.append([BasicAlgNumber([basis_list, 1], polynomial), factor[i][1]])
+                ideal_list = []
+            for i in range(len(dlist)):
+                ideal_list.append([[p, dlist[i][0]],dlist[i][1]])
+            return ideal_list
+    else:
+        return "Not Implemented."
+
 def changetype(a, polynomial):
     """
     Change a integer 'a' to be an element of field K defined polynomial
@@ -658,7 +699,7 @@ def disc(A):
     for i in range(n):
         for j in range(n):
             s = A[i]*A[j]
-    list.append(s.trace())
+            list.append(s.trace())
     M = matrix.createMatrix(n, n, list)
     return M.determinant()
 
@@ -676,3 +717,10 @@ def zpoly(coeffs):
     coeffs.  The coeffs is a list of coefficients in ascending order.
     """
     return uniutil.polynomial(enumerate(coeffs), rational.theIntegerRing)
+
+def fppoly(coeffs, p):
+    """
+    Return a Z_p coefficient polynomial constructed from given
+    coeffs.  The coeffs is a list of coefficients in ascending order.
+    """
+    return uniutil.polynomial(enumerate(coeffs), finitefield.FinitePrimeField(p))
