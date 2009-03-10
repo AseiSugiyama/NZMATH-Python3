@@ -1,5 +1,6 @@
 #bigrandom.py
 
+import sys
 import random as _random
 import nzmath.arith1 as arith1
 
@@ -11,6 +12,12 @@ def randrange(start, stop=None, step=1):
 
     see random.randrange
     """
+    if stop is None:
+        if abs(start) < sys.maxint:
+            return _random.randrange(start)
+    elif abs(stop - start) < sys.maxint:
+        return _random.randrange(start, stop, step)
+
     negative_step = False
     if stop is None:
         start, stop = 0, start
