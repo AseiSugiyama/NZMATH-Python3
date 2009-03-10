@@ -25,7 +25,6 @@ def zassenhaus(f):
     while q < 2*f.leading_coefficient()*blm:
         fp_factors = padic_lift_list(f, fp_factors, p, q)
         q *= p
-    print fp_factors,p,q
     return brute_force_search(f, fp_factors, q)
 
 def padic_factorization(f):
