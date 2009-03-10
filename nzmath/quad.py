@@ -1,63 +1,56 @@
 from __future__ import division
 import math
-import random
 import copy
 import warnings
 import nzmath.gcd as gcd
 import nzmath.arith1 as arith1
 import nzmath.prime as prime
 import nzmath.factor.misc as misc
+import nzmath.bigrandom as bigrandom
 
 
-class ReducedQuadraticForm:
+class ReducedQuadraticForm(object):
     """
     The class is for reduced quadratic form.
     """
     def __init__(self, element, unit):
-        self.element = element # form = [a_1, a_2, a_3]
-        self.unit = list(unit)
-        self.ind = -1
-        self.alpha = []
-        self.beta = []
-        self.s_parent = 0
-        self.g_parent = 0
+        self.element = element # form = (a_1, a_2, a_3)
+        self.unit = unit
 
     def __repr__(self):
-        return_str = '%s' % self.element
+        return_str = 'ReducedQuadraticForm(%d, %d, %d)' % self.element
+        return return_str
+
+    def __str__(self):
+        return_str = '[%d, %d, %d]' % self.element
         return return_str
 
     def __mul__(self, other):
         if not isinstance(other, ReducedQuadraticForm):
             return NotImplemented
-        return self.__class__(compositePDF(self.element[:], other.element[:]), self.unit)
+        composition = compositePDF(self.element, other.element)
+        return self.__class__(composition, self.unit)
 
     def __pow__(self, exp):
-        sy = self.unit
         if not isinstance(exp, (int, long)):
             raise TypeError("powering index must be an integer.")
-        # Right-Left Binary algorithm
-        if exp == 1:
-            return self.__class__(self.element[:], sy)
-        if exp == 0:
-            return self.__class__(sy, sy)
-        if exp < 0:
-            lexp = -exp
-            sz = self.inverse().element[:]
-        else:
-            lexp = exp
-            sz = self.element[:]
-        while True:
-            if lexp % 2:
-                sy = compositePDF(sz, sy)
-            lexp = lexp // 2
-            if lexp == 0:
-                return self.__class__(sy, self.unit)
-            else:
-                sz = sqrPDF(sz)
+        powered_form = powPDF(self.element, exp, self.unit)
+        return self.__class__(powered_form, self.unit)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         invel = other.inverse()
-        return compositePDF(self.element[:], invel.element[:])
+        composition = compositePDF(self.element, invel.element)
+        return self.__class__(composition, self.unit)
+
+    def inverse(self):
+        """
+        Return inverse of the form.
+        """
+        if self.element == self.unit:
+            return copy.deepcopy(self)
+        else:
+            f_1, f_2, f_3 = self.element
+            return self.__class__(reducePDF((f_1, -f_2, f_3)), self.unit)
 
     def __eq__(self, other):
         if self.__class__ != other.__class__:
@@ -67,91 +60,60 @@ class ReducedQuadraticForm:
         else:
             return False
 
-    def __ge__(self, other):
-        if self.__class__ != other.__class__:
-            return False
-        for valueofel in range(2):
-            if (self.element[valueofel] > other.element[valueofel]):
-                return True
-            elif (self.element[valueofel] == other.element[valueofel]):
-                continue
-            else:
-                return False
-        return True
-
-    def __le__(self, other):
-        if self.__class__ != other.__class__:
-            return False
-        for valueofel in range(2):
-            if (self.element[valueofel] < other.element[valueofel]):
-                return True
-            elif (self.element[valueofel] == other.element[valueofel]):
-                continue
-            else:
-                return False
-        return True
-
-    def __gt__(self, other):
-        if self.__class__ != other.__class__:
-            return False
-        for valueofel in range(2):
-            if (self.element[valueofel] > other.element[valueofel]):
-                return True
-            elif (self.element[valueofel] == other.element[valueofel]):
-                continue
-            else:
-                return False
-        return False
-
-    def __lt__(self, other):
-        if self.__class__ != other.__class__:
-            return False
-        for valueofel in range(2):
-            if (self.element[valueofel] < other.element[valueofel]):
-                return True
-            elif (self.element[valueofel] == other.element[valueofel]):
-                continue
-            else:
-                return False
-        return False
-
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def inverse(self):
-        if self.element == self.unit:
-            return copy.deepcopy(self)
-        else:
-            cpyel = self.element[:]
-            cpyel[1] = -cpyel[1]
-            return ReducedQuadraticForm(reducePDF(cpyel), self.unit)
+    def disc(self):
+        """
+        Return discriminant of the form.
+        """
+        return self.element[1]**2 - 4*self.element[0]*self.element[2]
 
     def repOfModule(self):
-        ld = self.element[1]**2 - 4*self.element[0]*self.element[2]
+        ld = self.disc()
         a_m2 = 2*self.element[0]
         rb = -self.element[1]
 
         return_str = '%s + root(%s) / %s' % (rb, ld, a_m2)
         return return_str
 
-class ClassGroup:
+    def __iter__(self):
+        """
+        Return iterator for form (a, b, c).
+        """
+        return iter(self.element)
+
+    def __getitem__(self, index):
+        """
+        Return each component of form (a, b, c),
+        """
+        return self.element[index]
+
+
+class ClassGroup(object):
     """
     The class is for class group.
     """
-    def __init__(self, disc, classnum, elements = []):
+    def __init__(self, disc, classnum, elements=None):
         # element is an element of some class (for example ReducedQuadraticForm
         self.disc = disc
         self.rootoftree = []
         self.rootornot = 0
-        self.elements = copy.deepcopy(elements)
+        if not elements:
+            self.elements = []
+        else:
+            self.elements = copy.deepcopy(elements)
         self.classnum = classnum
         self.expunit = unit_form(disc)
 
-    def __repr__(self):
+    def __str__(self):
         return_str = "class of ClassGroup:\n"
         return_str = return_str + 'disc is %s\n' % self.disc
         return_str = return_str + 'rootoftree is %s' % self.rootoftree
         return return_str
+
+    def __repr__(self):
+        return "ClassGroup(%d, %d, %s)" % (self.disc, self.classnum, self.elements)
 
     def inserels(self, newlist):
         for newel in newlist:
@@ -242,7 +204,7 @@ def class_number(disc, limit_of_disc=100000000):
 
     h = 1
     b = disc % 2
-    c_b = long(math.sqrt(-disc / 3))
+    c_b = int(math.sqrt(-disc / 3))
 
     while b <= c_b:
         q = (b**2 - disc) // 4
@@ -273,7 +235,7 @@ def class_group(disc, limit_of_disc=100000000):
 
     h = 1
     b = disc % 2
-    c_b = long(math.sqrt(-disc / 3))
+    c_b = int(math.sqrt(-disc / 3))
 
     ret_list = []
     f_a = 1
@@ -283,7 +245,8 @@ def class_group(disc, limit_of_disc=100000000):
     else:
         f_b = 1
         f_c = -((disc - 1) // 4)
-    ret_list.append([f_a, f_b, f_c])
+    unit = (f_a, f_b, f_c)
+    ret_list.append(ReducedQuadraticForm(unit, unit))
 
     while b <= c_b:
         q = (b**2 - disc) // 4
@@ -292,22 +255,32 @@ def class_group(disc, limit_of_disc=100000000):
             a = 2
         while a**2 <= q:
             if q % a == 0 and gcd.gcd_of_list([a, b, q//a])[0] == 1:
+                f_c = (b**2 - disc) // (4 * a)
                 if a == b or a**2 == q or b == 0:
                     h += 1
-                    f_c = (b**2 - disc) // (4 * a)
-                    ret_list.append([a, b, f_c])
+                    ret_list.append(ReducedQuadraticForm((a, b, f_c), unit))
                 else:
                     h += 2
-                    f_c = (b**2 - disc) // (4 * a)
-                    ret_list.append([a, b, f_c])
-                    ret_list.append([a, -b, f_c])
+                    ret_list.append(ReducedQuadraticForm((a, b, f_c), unit))
+                    ret_list.append(ReducedQuadraticForm((a, -b, f_c), unit))
             a += 1
         b += 2
 
-    eounit = ret_list[0]
-    for i, t_lt in enumerate(ret_list):
-        ret_list[i] = ReducedQuadraticForm(t_lt, eounit)
-    return (h, ret_list)
+    return h, ret_list
+
+
+class ReducedQuadraticFormForBSGS(ReducedQuadraticForm):
+    """
+    The class is for reduced quadratic form for *bsgs functions.
+    """
+    def __init__(self, element, unit):
+        ReducedQuadraticForm.__init__(self, element, unit)
+        self.ind = -1
+        self.alpha = []
+        self.beta = []
+        self.s_parent = 0
+        self.g_parent = 0
+
 
 def class_number_bsgs(disc):
     """
@@ -387,7 +360,7 @@ def class_group_bsgs(disc, classnum, qin):
 
     # get the unit
     uto = unit_form(disc)
-    ut = ReducedQuadraticForm(uto, uto)
+    ut = ReducedQuadraticFormForBSGS(uto, uto)
 
     # append the unit to subset of G
     sossp = ClassGroup(disc, classnum, []) # a subset of G
@@ -497,52 +470,50 @@ def disc(f):
 def reducePDF(f):
     """
     Return the reduced form of the given positive definite form 'f'.
-    f = (a[0], a[1], a[2])
+    f = (f_1, f_2, f_3)
     """
-    a = list(f)
-    if a[0] < 0:
-        raise ValueError("a must be positive in quadratic form f=(a,b,c).")
-    if (a[1]**2 - 4*a[0]*a[2]) >= 0:
-        raise ValueError("discriminant (D= b^2 - 4*a*c) must be negative.")
-    if (-a[0] <  a[1]) and (a[1] <= a[0]):
-        if a[0] > a[2]:
-            a[1] = -a[1]
-            a[0], a[2] = a[2], a[0]
+    f_1, f_2, f_3 = f
+    if f_1 < 0:
+        raise ValueError("f_1 must be positive in quadratic form f=(f_1,f_2,f_3).")
+    if (f_2**2 - 4*f_1*f_3) >= 0:
+        raise ValueError("discriminant (D= f_2^2 - 4*f_1*f_3) must be negative.")
+    if -f_1 < f_2 <= f_1:
+        if f_1 > f_3:
+            f_2 = -f_2
+            f_1, f_3 = f_3, f_1
         else:
-            if (a[0] == a[2]) and (a[1] < 0):
-                a[1] = -a[1]
-            return [a[0], a[1], a[2]]
+            if (f_1 == f_3) and (f_2 < 0):
+                f_2 = -f_2
+            return (f_1, f_2, f_3)
     while 1:
-        q = a[1] // (2*a[0])
-        r = a[1] - q*(2*a[0])
-        if r > a[0]:
-            r = r - 2*a[0]
+        q = f_2 // (2*f_1)
+        r = f_2 - q*(2*f_1)
+        if r > f_1:
+            r = r - 2*f_1
             q = q + 1
-        a[2] = a[2] - ((a[1] + r)//2)*q
-        a[1] = r
-        if a[0] > a[2]:
-            a[1] = -a[1]
-            a[0], a[2] = a[2], a[0]
+        f_3 = f_3 - ((f_2 + r)//2)*q
+        f_2 = r
+        if f_1 > f_3:
+            f_2 = -f_2
+            f_1, f_3 = f_3, f_1
             continue
         else:
-            if (a[0] == a[2]) and (a[1] < 0):
-                a[1] = -a[1]
-            return a
+            if (f_1 == f_3) and (f_2 < 0):
+                f_2 = -f_2
+            return (f_1, f_2, f_3)
 
 def sqrPDF(f):
     """
     Return the square of the given quadratic form 'f'.
     """
-    f_1 = list(f)
-
     # compute disc and etc
     D = disc(f)
     sogsp = arith1.floorpowerroot(int(abs(D / 4)), 4)
-    (u, v, d_1) = euclid_exd(f_1[1], f_1[0])
+    (u, v, d_1) = euclid_exd(f[1], f[0])
 
-    la = f_1[0] // d_1
-    lb = f_1[1] // d_1
-    lc = (-f_1[2] * u) % la
+    la = f[0] // d_1
+    lb = f[1] // d_1
+    lc = (-f[2] * u) % la
     c_1 = la - lc
     if c_1 < lc:
         lc = -c_1
@@ -551,14 +522,14 @@ def sqrPDF(f):
     v_2, v_3, z, d, v = parteucl(la, lc, sogsp)
 
     if z == 0:
-        g = (lb * v_3 + f_1[2]) // d
+        g = (lb * v_3 + f[2]) // d
         a_2 = d**2
         c_2 = v_3 ** 2
-        b_2 = f_1[1] + (d + v_3)**2 - a_2 - c_2
+        b_2 = f[1] + (d + v_3)**2 - a_2 - c_2
         c_2 = c_2 + g * d_1
-        return reducePDF([a_2, b_2, c_2])
+        return reducePDF((a_2, b_2, c_2))
 
-    e = (f_1[2] * v + lb * d) // la
+    e = (f[2] * v + lb * d) // la
     g = (e * v_2 - lb) // v
     b_2 = e * v_2 + v * g
     if d_1 > 1:
@@ -571,27 +542,29 @@ def sqrPDF(f):
     b_2 = b_2 + (d + v_3) ** 2 - a_2 - c_2
     a_2 = a_2 + e * v
     c_2 = c_2 + g * v_2
-    return reducePDF([a_2, b_2, c_2])
+    return reducePDF((a_2, b_2, c_2))
 
-def powPDF(f, exp):
+def powPDF(f, exp, ut=None):
     """
     Return the powering 'exp' of the given quadratic form 'f'.
     """
-    D = disc(f)
-    ut = unit_form(D)
+    if ut is None:
+        D = disc(f)
+        ut = unit_form(D)
 
     if exp == 0:
         return ut
     elif exp == 1:
-        return f[:]
+        return f
     elif f == ut:
         return ut
     if exp < 0:
         lexp = -exp
-        sz = [f[0], - f[1], f[2]]
+        sz = (f[0], -f[1], f[2])
     else:
         lexp = exp
-        sz = f[:]
+        sz = f
+    # Right-Left Binary algorithm
     sy = ut
     while True:
         if (lexp % 2) == 1:
@@ -644,7 +617,7 @@ def compositePDF(f_1, f_2):
     a_3 = v_1*v_2
     c_3 = (f_2[2]*d_1 + r*(f_2[1] + v_2*r)) // v_1
 
-    return reducePDF([a_3, b_3, c_3])
+    return reducePDF((a_3, b_3, c_3))
 
 def unit_form(disc):
     """
@@ -660,7 +633,7 @@ def unit_form(disc):
         c = (disc - 1) // -4
     else:
         raise ValueError("discriminant is not 0 or 1 mod 4.")
-    return [a, b, c]
+    return (a, b, c)
 
 def kronecker(a, b):
     """
@@ -768,8 +741,7 @@ def sqroot(disc, p):
         elif (disc % 8) == 1: # disc is odd and disc % 8 is 1
             bp = disc
         else: # disc is odd and disc % 4 is 1 => impossible (-5 / 2) = -1
-            bp = disc
-            raise ValueError
+            raise ValueError("disc is odd and disc % 4 is 1 => impossible (-5 / 2) = -1")
     else:
         bpf1 = arith1.modsqrt(disc, p)
         bpf2 = disc
@@ -777,7 +749,7 @@ def sqroot(disc, p):
     if bp > p:
         bp = 2 * p - bp
 
-    fpt = reducePDF([p, bp, ((bp ** 2) - disc) // (4 * p)])
+    fpt = reducePDF((p, bp, ((bp ** 2) - disc) // (4 * p)))
     return fpt
 
 def randomele(disc, unit):
@@ -785,28 +757,23 @@ def randomele(disc, unit):
     Return a reduced random form with the given discriminant and the given unit.
     Also random element is not unit.
     """
-    limit = long(math.sqrt(-disc / 3))
+    limit = int(math.sqrt(-disc / 3))
     while True:
-        a = int(limit * random.random()) + 1
+        a = bigrandom.randrange(1, limit + 1)
         ind = 0
         while ind < 2*a:
-            b = int(a*random.random())
-            ch = random.random()
-            if ch < 0.5:
+            b = bigrandom.randrange(a)
+            if bigrandom.randrange(2):
                 b = -b
             tp = disc - b**2
             if tp % (-4 * a) == 0:
                 c = tp // (-4 * a)
                 if gcd.gcd_of_list([a, b, c])[0] != 1:
                     continue
-                red = reducePDF([a, b, c])
-                if red == unit:
-                    ind = ind + 1
-                    continue
-                return ReducedQuadraticForm(red, unit)
-            else:
-                ind = ind + 1
-                continue
+                red = reducePDF((a, b, c))
+                if red != unit:
+                    return ReducedQuadraticForm(red, unit)
+            ind += 1
 
 
 def isfundamental(disc):
@@ -815,24 +782,15 @@ def isfundamental(disc):
     """
     if disc == 1:
         return False
-    if disc <= 0:
-        spt = misc.squarePart(-disc)
-    else:
-        spt = misc.squarePart(disc)
-    if (disc % 4) == 1 and spt == 1:
-        return True
+    spt = misc.squarePart(abs(disc))
+    if (disc % 4) == 1:
+        return spt == 1
     elif (disc % 4) == 0:
-        if disc <= 0:
-            sptq = misc.squarePart(-disc // 4)
-        else:
-            sptq = misc.squarePart(disc // 4)
-        if sptq != 1:
+        spt //= 2
+        if spt != 1:
             return False
         discof = (disc // 4) % 4
-        if discof == 2:
-            return True
-        elif discof == 3:
-            return True
+        return discof == 2 or discof == 3
     return False
 
 def euclid_exd(a, b):
@@ -884,7 +842,6 @@ def parteucl(a, b, sogsp):
             v_2 = t_2
             v_3 = t_3
             z = z + 1
-            continue
         else:
             if z % 2 != 0:
                 v_2 = -v_2
