@@ -978,7 +978,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         lc = self.order.leading_coefficient(self)
         if lc != ring.getRing(lc).one:
             self = self.scalar_exact_division(lc)
-            result.append((lc, 1))
+            result.append((self.getRing().one*lc, 1))
         squarefreefactors = self.squarefree_decomposition()
         for m, f in squarefreefactors.iteritems():
             distinct_degree_factors = f.distinct_degree_factorization()
