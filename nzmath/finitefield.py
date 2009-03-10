@@ -991,7 +991,7 @@ def affine_multiple_method(lhs, field):
 
 def FiniteExtendedField(characteristic, n_or_modulus):
     """
-    Return ExtexdedField F_{p^n} or F_p[]/(modulus).
+    Return ExtendedField F_{p^n} or F_p[]/(modulus).
 
     This is a convenience wrapper for backward compatibility.
     """
