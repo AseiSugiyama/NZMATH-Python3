@@ -22,9 +22,10 @@ def zassenhaus(f):
     # lift to Mignotte bound
     blm = upper_bound_of_coefficient(f)
     q = p
-    while q < 2*blm:
+    while q < 2*f.leading_coefficient()*blm:
         fp_factors = padic_lift_list(f, fp_factors, p, q)
         q *= p
+    print fp_factors,p,q
     return brute_force_search(f, fp_factors, q)
 
 def padic_factorization(f):
@@ -44,6 +45,8 @@ def padic_factorization(f):
         fmodp = uniutil.polynomial(
             f.terms(),
             finitefield.FinitePrimeField.getInstance(p))
+        if f.degree() > fmodp.degree():
+            continue
         g = fmodp.getRing().gcd(fmodp,
                                 fmodp.differentiate())
         if g.degree() == 0:
@@ -82,7 +85,7 @@ def brute_force_search(f, fp_factors, q):
             r -= d
         else:
             d += 1
-    factors.append(f)
+    factors.append(f.primitive_part())
     return factors
 
 def padic_lift_list(f, factors, p, q):
@@ -116,7 +119,7 @@ def padic_lift_list(f, factors, p, q):
         u_mod = ZpZx.createElement(u)
         gg_mod = ZpZx.createElement(gg)
         h = u_mod * h + gg_mod * t
-    lifted.append(g + minimum_absolute_injection(h)*q)
+        lifted.append(g + minimum_absolute_injection(h)*q)
     return lifted
 
 def extgcdp(f, g, p):
@@ -199,10 +202,12 @@ def find_combination(f, d, factors, q):
     combination and a list consisting of the combination itself.
     If there is no combination, return (0,[]).
     """
+    if not factors[0].degree():
+        factors.pop(0)
     if d == 1:
         for g in factors:
-            if divisibility_test(f, g):
-                return (g, [g])
+            if divisibility_test(f.leading_coefficient()*f, g):
+                return (g.primitive_part(), [g])
     else:
         ZqZ = intresidue.IntegerResidueClassRing.getInstance(q)
         ZqZX = uniutil.PolynomialRingAnonymousVariable.getInstance(ZqZ)
@@ -210,8 +215,8 @@ def find_combination(f, d, factors, q):
             picked = [factors[i] for i in idx]
             product = arith1.product(picked)
             product = minimum_absolute_injection(ZqZX.createElement(product))
-            if divisibility_test(f, product):
-                return (product, picked)
+            if divisibility_test(f.leading_coefficient()*f, product):
+                return (product.primitive_part(), picked)
     return 0, [] # nothing found
 
 def divisibility_test(f, g):
@@ -225,3 +230,32 @@ def divisibility_test(f, g):
     elif isinstance(f, uniutil.UniqueFactorizationDomainPolynomial) and f.pseudo_mod(g):
         return False
     return True
+
+def integerpolynomialfactorization(f):
+    """
+    integerpolynomialfactorization -> list of (factors,index) of f.
+
+    Factor a integer coefficient polynomial f with
+    Berlekamp-Zassenhaus method.
+    """
+    F = [f]
+    G = f
+    c = 0
+    one = G.getRing().one
+    while (G.differentiate() and F[c] != one):
+        c = c + 1
+        deriv = G.differentiate()
+        F.append(F[c-1].subresultant_gcd(deriv))
+        G = G.pseudo_floordiv(F[c])
+    sqfree_part = F[0].pseudo_floordiv(F[0].subresultant_gcd(F[1]))
+    N = zassenhaus(sqfree_part)
+    result = [()] * len(N)
+
+    F.reverse()
+    e = len(F)
+    for deg, deriv in enumerate(F):
+        part = sqfree_part.pseudo_floordiv(sqfree_part.subresultant_gcd(deriv))
+        for index,factor in enumerate(N):
+            if not (factor.pseudo_mod(part)) and result[index] == ():
+                result[index]=(factor, e-deg)
+    return result
