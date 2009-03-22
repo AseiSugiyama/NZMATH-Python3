@@ -699,59 +699,153 @@ class RingMatrix(Matrix):
         self.toFieldMatrix()
         self.toSubspace(isbasis)
 
-    def hermiteNormalForm(self):  # Algorithm 2.4.4 of Cohen's book
-        """Return a Matrix in Hermite Normal Form."""
+    def hermiteNormalForm(self, non_zero=False):
+        # Algorithm 2.4.5 in CCANT
+        """
+        Find the Hermite Normal Form for integer matrix.
+        If non_zero is True, return non-zero columns for self's HNF
+        """
         A = self.copy()
+        rings = self.coeff_ring
         # step 1 [Initialize]
         i = self.row
+        j = self.column
         k = self.column
         if self.row <= self.column:
             l = 1
         else:
             l = self.row - self.column + 1
-        while 1:
+        for i in range(l, self.column + 1)[::-1]:
             while 1:
-                # step 2 [Row finished?]
-                for j in range(1, k):
-                    if A[i, j]:
+                j0 = j
+                # step 2 [Check zero]
+                for j in range(1, j0)[::-1]:
+                    if bool(A[i, j]):
                         break
-                else:       # i.e. all the A[i, j] with j<k are zero
-                    if A[i, k] < 0:
-                        A[k] = -A[k]
-                    break   # go to step 5
-                # step 3 [Choose non-zero entry]
-                j0 = j  # the first non-zero's index
-                # Pick among the non-zero A[i, j] for j <= k one with the smallest absolute value
-                for j in range(2, k + 1): 
-                    if  0 < abs(A[i, j]) < abs(A[i, j0]):
-                        j0 = j
-                if j0 < k:
-                    A.swapColumn(k, j0)
-                if A[i, k] < 0:
-                    A[k] = -A[k]
-                b = A[i, k]
-                # step 4 [Reduce]
-                for j in range(1, k):
-                    q = A[i, j] // b
-                    A[j] = A[j] - q * A[k]
-            # step5 [Final reductions]
+                else: # j==1
+                    break
+                # step 3 [Euclidean step]
+                u, v, d = rings.extgcd(A[i, k], A[i, j])
+                A_ik = ring.exact_division(A[i, k], d)
+                A_ij = ring.exact_division(A[i, j], d)
+                B = u * A[k] + v * A[j]
+                A[j] = A_ik * A[j] - A_ij * A[k]
+                A[k] = B
+            # step4 [Final reductions]
             b = A[i, k]
+            if b < 0:
+                A[k] = -A[k]
+                b = -b
             if not bool(b):
                 k += 1
             else:
                 for j in range(k + 1, self.column + 1):
                     q = A[i, j] // b
                     A[j] = A[j] - q * A[k]
-            # step 6 [Finished?]
-            if i == l:
-                #W = createMatrix(self.row, self.column-k+1, self.coeff_ring)
-                #for j in range(1, self.column-k+2):
-                #    W[j] = A[j+k-1]
-                return A
+            # step 5 [Finished?]
+            k -= 1
+            j = k
+            # go to step 2
+        if non_zero:
+            if k == self.column: # zero module
+                return None
+            W = createMatrix(
+                self.row, self.column - k,
+                [A[j + k] for j in range(1, self.column - k + 1)])
+            return W
+        else:
+            return A
+
+    HNF = hermiteNormalForm
+
+    def _SimplifyHNF(self):
+        """
+        This method is a common process used in 
+        extHNF() and kernelAsModule()
+        """
+        A = self.copy()
+        U = unitMatrix(A.column, A.coeff_ring)
+        rings = self.coeff_ring
+        # step 1 [Initialize]
+        i = self.row
+        j = self.column
+        k = self.column
+        if self.row <= self.column:
+            l = 1
+        else:
+            l = self.row - self.column + 1
+        for i in range(l, self.column + 1)[::-1]:
+            while 1:
+                j0 = j
+                # step 2 [Check zero]
+                for j in range(1, j0)[::-1]:
+                    if bool(A[i, j]):
+                        break
+                else: # j==1
+                    break
+                # step 3 [Euclidean step]
+                u, v, d = rings.extgcd(A[i, k], A[i, j])
+                A_ik = ring.exact_division(A[i, k], d)
+                A_ij = ring.exact_division(A[i, j], d)
+                B = u * A[k] + v * A[j]
+                A[j] = A_ik * A[j] - A_ij * A[k]
+                A[k] = B
+                B = u * U[k] + v * U[j]
+                U[j] = A_ik * U[j] - A_ij * U[k]
+                U[k] = B
+            # step4 [Final reductions]
+            b = A[i, k]
+            if b < 0:
+                A[k] = -A[k]
+                U[k] = -U[k]
+                b = -b
+            if not bool(b):
+                k += 1
             else:
-                i -= 1
-                k -= 1
-                # go to step 2
+                for j in range(k + 1, self.column + 1):
+                    q = A[i, j] // b
+                    A[j] = A[j] - q * A[k]
+                    U[j] = U[j] - q * U[k]
+            # step 5 [Finished?]
+            k -= 1
+            j = k
+            # go to step 2
+        return (U, A, k)
+
+    def exthermiteNormalForm(self, non_zero=False):
+        # Modified Algorithm 2.4.5 in CCANT
+        """
+        Find the Hermite Normal Form M for integer matrix.
+        Computing U which satisfied M=self*U.
+        Return matrices tuple,(U, M).
+        """
+        U, A, k = self._SimplifyHNF()
+        if non_zero:
+            if k == self.column: # zero module
+                return None
+            new_A = createMatrix(
+                self.row, self.column - k,
+                [A[j + k] for j in range(1, self.column - k + 1)])
+            new_U = createMatrix(
+                self.column, self.column - k,
+                [U[j + k] for j in range(1, self.column - k + 1)])
+            return (new_U, new_A)
+        else:
+            return (U, A)
+
+    extHNF = exthermiteNormalForm
+
+    def kernelAsModule(self):
+        """
+        Compute kernel as Z-module.
+        """
+        U, A, k = self._SimplifyHNF()
+        if k == 0:
+            return None
+        else:
+            ker = createMatrix(
+                self.column, k, [U[j] for j in range(1, k + 1)])
+            return ker
 
 
 class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
@@ -1007,6 +1101,9 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
         lst.reverse()
         return lst
 
+    SNF = smithNormalForm
+    elementary_divisor = smithNormalForm
+
     def extsmithNormalForm(self):
         """
         Find the Smith Normal Form M for square matrix,
@@ -1065,6 +1162,8 @@ class RingSquareMatrix(SquareMatrix, RingMatrix, ring.RingElement):
                 V[j] = -V[j]
                 M[j, j] = -M[j, j]
         return (U, V, M)
+
+    extSNF = extsmithNormalForm
 
 
 class FieldMatrix(RingMatrix):
