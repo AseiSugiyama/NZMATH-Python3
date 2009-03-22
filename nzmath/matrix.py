@@ -708,14 +708,13 @@ class RingMatrix(Matrix):
         A = self.copy()
         rings = self.coeff_ring
         # step 1 [Initialize]
-        i = self.row
         j = self.column
         k = self.column
         if self.row <= self.column:
             l = 1
         else:
             l = self.row - self.column + 1
-        for i in range(l, self.column + 1)[::-1]:
+        for i in range(l, self.row + 1)[::-1]:
             while 1:
                 j0 = j
                 # step 2 [Check zero]
@@ -767,14 +766,13 @@ class RingMatrix(Matrix):
         U = unitMatrix(A.column, A.coeff_ring)
         rings = self.coeff_ring
         # step 1 [Initialize]
-        i = self.row
         j = self.column
         k = self.column
         if self.row <= self.column:
             l = 1
         else:
             l = self.row - self.column + 1
-        for i in range(l, self.column + 1)[::-1]:
+        for i in range(l, self.row + 1)[::-1]:
             while 1:
                 j0 = j
                 # step 2 [Check zero]
