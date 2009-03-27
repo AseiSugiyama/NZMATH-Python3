@@ -700,7 +700,7 @@ class RingMatrix(Matrix):
         self.toSubspace(isbasis)
 
     def hermiteNormalForm(self, non_zero=False):
-        # Algorithm 2.4.5 in CCANT
+        # Algorithm 2.4.5 in CCANT (fixed for parameter l)
         """
         Find the Hermite Normal Form for integer matrix.
         If non_zero is True, return non-zero columns for self's HNF
@@ -708,15 +708,9 @@ class RingMatrix(Matrix):
         A = self.copy()
         rings = self.coeff_ring
         # step 1 [Initialize]
-        j = self.column
-        k = self.column
-        if self.row <= self.column:
-            l = 1
-        else:
-            l = self.row - self.column + 1
-        for i in range(l, self.row + 1)[::-1]:
+        j0 = k = self.column
+        for i in range(1, self.row + 1)[::-1]:
             while 1:
-                j0 = j
                 # step 2 [Check zero]
                 for j in range(1, j0)[::-1]:
                     if bool(A[i, j]):
@@ -743,7 +737,9 @@ class RingMatrix(Matrix):
                     A[j] = A[j] - q * A[k]
             # step 5 [Finished?]
             k -= 1
-            j = k
+            j0 = k
+            if k == 0:
+                break
             # go to step 2
         if non_zero:
             if k == self.column: # zero module
@@ -766,15 +762,9 @@ class RingMatrix(Matrix):
         U = unitMatrix(A.column, A.coeff_ring)
         rings = self.coeff_ring
         # step 1 [Initialize]
-        j = self.column
-        k = self.column
-        if self.row <= self.column:
-            l = 1
-        else:
-            l = self.row - self.column + 1
-        for i in range(l, self.row + 1)[::-1]:
+        j0 = k = self.column
+        for i in range(1, self.row + 1)[::-1]:
             while 1:
-                j0 = j
                 # step 2 [Check zero]
                 for j in range(1, j0)[::-1]:
                     if bool(A[i, j]):
@@ -806,7 +796,9 @@ class RingMatrix(Matrix):
                     U[j] = U[j] - q * U[k]
             # step 5 [Finished?]
             k -= 1
-            j = k
+            j0 = k
+            if k == 0:
+                break
             # go to step 2
         return (U, A, k)
 
