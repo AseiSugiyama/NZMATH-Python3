@@ -45,11 +45,18 @@ def factorial(n):
         raise TypeError("integer is expected, %s detected." % n.__class__)
     elif n < 0:
         raise ValueError("argument must not be a negative integer.")
-    elif n == 0 or n == 1:
-        return Integer(1)
-    l = range(1, n+1)
+    elif n < 1500:
+        # naive loop is best for small n.
+        result = 1
+        for i in xrange(2, n + 1):
+            result *= i
+        return Integer(result)
+    # The following algorithm keeps temporary results rather small as
+    # possible in order to make the function run faster than the naive
+    # loop.
+    l = range(1, n + 1)
     while len(l) > 1:
-        for i in range(len(l)//2):
+        for i in xrange(len(l) // 2):
             l[i] *= l.pop()
     return Integer(l.pop())
 
