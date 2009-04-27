@@ -5,6 +5,7 @@ Miscellaneous arithmetic functions
 import itertools
 import math
 import random
+import bisect
 import nzmath.gcd as gcd
 
 
@@ -250,6 +251,12 @@ class _Issquare:
 
 # test whether a given number is a square number or not.
 issquare = _Issquare()
+"""test whether a given number is a square number or not."""
+
+
+# choosing 4096 to cover at least 1000 digits
+POWERS_LIST_LENGTH = 4096
+POWERS_OF_2 = [2**i for i in range(POWERS_LIST_LENGTH)]
 
 def log(n, base=2):
     """
@@ -260,6 +267,9 @@ def log(n, base=2):
         return 0
     if base == 10:
         return _log10(n)
+    if base == 2 and n < POWERS_OF_2[-1]:
+        # a shortcut
+        return bisect.bisect_right(POWERS_OF_2, n) - 1
     fit = base
     result = 1
     stock = [(result, fit)]
