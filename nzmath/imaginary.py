@@ -530,4 +530,9 @@ def atanh(z, err=defaultError):
 
 
 def sqrt(z, err=defaultError):
-    return real.sqrt(abs(z))*expi(z.arg()/2)
+    if hasattr(z, 'arg'):
+        return real.sqrt(abs(z))*expi(z.arg()/2)
+    elif z >= 0:
+        return real.sqrt(abs(z))
+    elif z < 0:
+        return Complex(0, real.sqrt(abs(z)))
