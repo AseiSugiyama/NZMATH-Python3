@@ -1,8 +1,8 @@
 from __future__ import division
 import unittest
 import logging
-from sandbox.config import HAVE_MPMATH
-import sandbox.ecpp as ecpp
+from nzmath.config import HAVE_MPMATH
+import nzmath.ecpp as ecpp
 
 
 logging.basicConfig(level=logging.INFO)

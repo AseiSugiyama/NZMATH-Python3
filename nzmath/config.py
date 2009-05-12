@@ -57,7 +57,7 @@ CHECK_SQLITE3 = True
 # net availability
 # ----------------
 #
-# Some functions will connect to the Net (not yet; this is a sample.)
+# Some functions will connect to the Net.
 # Desktop machines are usually connected to the Net, but notebooks
 # may have connectivity only occasionally.
 #

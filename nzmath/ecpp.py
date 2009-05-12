@@ -12,7 +12,7 @@ import nzmath.prime as prime
 import nzmath.quad as quad
 import nzmath.squarefree as squarefree
 import nzmath.compatibility
-from sandbox.config import DATADIR, HAVE_MPMATH, HAVE_NET
+from nzmath.config import DATADIR, HAVE_MPMATH, HAVE_NET
 
 if HAVE_MPMATH:
     import mpmath
@@ -37,7 +37,7 @@ else:
         return math.floor(x + 0.5)
 
 
-_log = logging.getLogger('sandbox.ecpp')
+_log = logging.getLogger('nzmath.ecpp')
 
 # mapping from disc to list of order functions.
 default_orders = [lambda n, u, v: n + 1 + u,
