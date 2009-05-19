@@ -13,7 +13,7 @@ from __future__ import division
 import sys
 import nzmath.arith1 as arith1
 import nzmath.rational as rational
-import sandbox.poly.ring as polyring
+import nzmath.poly.ring as polyring
 
 
 # module globals
