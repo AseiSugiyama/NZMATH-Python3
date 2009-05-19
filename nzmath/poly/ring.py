@@ -1,5 +1,5 @@
 """
-base classes for polynomial rings and ratinal function fields.
+base classes for polynomial rings and rational function fields.
 """
 
 from __future__ import division
