@@ -62,6 +62,9 @@ Contributed to the implementation of ary gcd.
 Koizumi Masahiro, [2006-2008]:
 Involved in the development of matrix, lattice and polynomial.
 
+Ichiki Shingo, [2007-2009]:
+Contributed to the implementation of ECPP.
+
 
 Other Contributors
 ------------------
