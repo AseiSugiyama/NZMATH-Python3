@@ -7,7 +7,7 @@ import nzmath.intresidue as intresidue
 import nzmath.finitefield as finitefield
 import nzmath.poly.uniutil as uniutil
 import nzmath.poly.ring as poly_ring
-
+import nzmath.poly.hensel as hensel
 
 def zassenhaus(f):
     """
@@ -16,16 +16,30 @@ def zassenhaus(f):
     Factor a squarefree monic integer coefficient polynomial f with
     Berlekamp-Zassenhaus method.
     """
+    # keep leading coefficient
+    lf = f.leading_coefficient()
+
+    # p-adic factorization
     p, fp_factors = padic_factorization(f)
     if len(fp_factors) == 1:
         return [f]
+
+    # purge leading coefficient from factors
+    for i,g in enumerate(fp_factors):
+        if g.degree() == 0:
+           del fp_factors[i]
+           break
+
     # lift to Mignotte bound
     blm = upper_bound_of_coefficient(f)
-    q = p
-    while q < 2*f.leading_coefficient()*blm:
-        fp_factors = padic_lift_list(f, fp_factors, p, q)
-        q *= p
-    return brute_force_search(f, fp_factors, q)
+    bound = p**(arith1.log(2*blm,p)+1)
+
+    # Hensel lifting
+    lf_inv_modq = intresidue.IntegerResidueClass(lf, bound).inverse()
+    fq = f.coefficients_map(lambda c: (lf_inv_modq*c).minimumAbsolute()) # fq is monic
+    fq_factors, q = hensel.lift_upto(fq, fp_factors, p, bound)
+
+    return brute_force_search(f, fq_factors, bound)
 
 def padic_factorization(f):
     """
@@ -80,7 +94,7 @@ def brute_force_search(f, fp_factors, q):
             factors.append(found)
             for picked in combination:
                 fp_factors.remove(picked)
-            f = f.pseudo_floordiv(found)
+            f = f.pseudo_floordiv(found).primitive_part()
             r -= d
         else:
             d += 1
@@ -201,20 +215,21 @@ def find_combination(f, d, factors, q):
     combination and a list consisting of the combination itself.
     If there is no combination, return (0,[]).
     """
-    if not factors[0].degree():
-        factors.pop(0)
+    lf = f.leading_coefficient()
+    ZqZX = poly_ring.PolynomialRing(
+        intresidue.IntegerResidueClassRing.getInstance(q))
+
     if d == 1:
         for g in factors:
-            if divisibility_test(f.leading_coefficient()*f, g):
-                return (g.primitive_part(), [g])
+            product = minimum_absolute_injection(ZqZX.createElement(lf*g))
+            if divisibility_test(lf*f, product):
+                return (product.primitive_part(), [g])
     else:
-        ZqZ = intresidue.IntegerResidueClassRing.getInstance(q)
-        ZqZX = uniutil.PolynomialRingAnonymousVariable.getInstance(ZqZ)
         for idx in combinatorial.combinationIndexGenerator(len(factors), d):
             picked = [factors[i] for i in idx]
-            product = arith1.product(picked)
+            product = lf * arith1.product(picked)
             product = minimum_absolute_injection(ZqZX.createElement(product))
-            if divisibility_test(f.leading_coefficient()*f, product):
+            if divisibility_test(lf*f, product):
                 return (product.primitive_part(), picked)
     return 0, [] # nothing found
 
@@ -242,19 +257,18 @@ def integerpolynomialfactorization(f):
     c = 0
     one = G.getRing().one
     while (G.differentiate() and F[c] != one):
-        c = c + 1
         deriv = G.differentiate()
-        F.append(F[c-1].subresultant_gcd(deriv))
-        G = G.pseudo_floordiv(F[c])
-    sqfree_part = F[0].pseudo_floordiv(F[0].subresultant_gcd(F[1]))
+        F.append(F[c].subresultant_gcd(deriv))
+        c = c + 1
+        G = F[c]
+    sqfree_part = F[0].pseudo_floordiv(F[0].subresultant_gcd(F[1])).primitive_part()
     N = zassenhaus(sqfree_part)
     result = [()] * len(N)
 
     F.reverse()
     e = len(F)
     for deg, deriv in enumerate(F):
-        part = sqfree_part.pseudo_floordiv(sqfree_part.subresultant_gcd(deriv))
         for index,factor in enumerate(N):
-            if not (factor.pseudo_mod(part)) and result[index] == ():
-                result[index]=(factor, e-deg)
+            if not (deriv.pseudo_mod(factor)) and result[index] == ():
+                result[index]=(factor, (e-deg))
     return result
