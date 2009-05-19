@@ -42,6 +42,22 @@ class PadicFactorizationTest (unittest.TestCase):
         r = zassenhaus.padic_factorization(f)
         self.assert_(isinstance(r, tuple), r)
 
+class IntegerPolynomialFactorizationTest (unittest.TestCase):
+    def testRegular(self):
+        f1 = uniutil.polynomial(enumerate([1, 2]), Z)
+        f2 = uniutil.polynomial(enumerate([5, 4, 1]), Z)
+        f3_1 = uniutil.polynomial(enumerate([-1, 3]), Z)
+        f3_2 = uniutil.polynomial(enumerate([1, 3]), Z)
+        f = f1**5 * f2**3 * f3_1 * f3_2
+
+        r = zassenhaus.integerpolynomialfactorization(f)
+        self.assert_(isinstance(r, list))
+        self.assertEqual(4, len(r), r)
+        self.assert_(isinstance(r[0][0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assert_(isinstance(r[1][0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assert_(isinstance(r[2][0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assert_(isinstance(r[3][0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assertEqual(f, r[0][0]**r[0][1] * r[1][0]**r[1][1] * r[2][0]**r[2][1] * r[3][0]**r[3][1])
 
 def suite(suffix = "Test"):
     suite = unittest.TestSuite()
