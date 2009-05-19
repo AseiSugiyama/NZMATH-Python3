@@ -1,3 +1,15 @@
+version 0.91.0 to 0.92.0
+------------------------
+* add a new module config, ecpp, poly.ratfunc and poly.ring.
+* add functions trace/norm/primitive_element/random_element to finitefield.
+* add ExtendedField to finitefield to replace FiniteExtendedField.
+* add a function multirange to bigrange.
+* add functions root_Fp and allroots_Fp to equation.
+* remove deprecated e1_Zn in equation.
+* fix a few bugs in algfield.
+* fix a few bugs in matrix.
+* fix a bug of split_same_degree in poly.uniutil.
+
 version 0.90.0 to 0.91.0
 ------------------------
 * add a new module intresidue to obsolete integerResidueClass.
