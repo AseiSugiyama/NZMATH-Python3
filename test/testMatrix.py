@@ -203,6 +203,26 @@ class RingMatrixTest(unittest.TestCase):
         hermite = createMatrix(3, 3, [0, 1, 0, 0 ,0, 1, 0, 0, 1])
         self.assertEqual(hermite, h)
 
+    def testExtHermiteNormalForm(self):
+        already = createMatrix(4, 3, [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1])
+        U_1, h_1 = already.exthermiteNormalForm()
+        self.assertEqual(h_1, already)
+        self.assertEqual(already * U_1, h_1)
+
+        lessrank = createMatrix(2, 3, [1, 0, 0, 0, 1, 0])
+        U_2, h_2 = lessrank.exthermiteNormalForm()
+        self.assertEqual(h_2.row, lessrank.row)
+        self.assertEqual(h_2.column, lessrank.column)
+        self.assertEqual(lessrank * U_2, h_2)
+
+    def testKernelAsModule(self):
+        ker_1 = a1.kernelAsModule()
+        self.assertEqual(a1 * ker_1[1], vector.Vector([0]))
+
+        #zero test
+        ker_2 = b1.kernelAsModule()
+        self.assertEqual(ker_2, None)
+
 class RingSquareMatrixTest(unittest.TestCase):
 
     def testPow(self):
