@@ -1,8 +1,8 @@
 TMPDIR = /tmp/nzmath-build
 PYTHON = python2.5
 HTMLPY = $(PYTHON) rst2html.py
-OLD_VER = 0.90.0
-NEW_VER = 0.91.0
+OLD_VER = 0.91.0
+NEW_VER = 0.92.0
 
 all: html sdist zip wininst
 
@@ -13,7 +13,7 @@ zip: files setup.py
 	(cd $(TMPDIR); $(PYTHON) setup.py sdist --formats=zip)
 
 wininst: files setup.py
-	(cd $(TMPDIR); $(PYTHON) setup.py bdist_wininst -d dist_wininst -b logo.bmp; mv build build_wininst)
+	(cd $(TMPDIR); $(PYTHON) setup.py bdist_wininst; mv build build_wininst)
 	for i in $(TMPDIR)/dist_wininst/*; do\
 		chmod 755 $$i; \
 		mv $$i `echo $$i | sed 's/.exe/Install.exe/'`; \
@@ -30,7 +30,9 @@ html: files
 
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
-	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py logo.bmp $(TMPDIR)
+	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py \
+		logo.bmp setup.cfg $(TMPDIR)
+	cp -a data $(TMPDIR)
 	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath
 	cp -a ../factor $(TMPDIR)/nzmath/

@@ -9,48 +9,35 @@ BEGIN {
     openbracket = 0;
 
     print "from distutils.core import setup";
+    print "import glob";
     print "";
-    print "doc_prefix = 'share/doc/NZMATH-" version "/'";
+    print "version = '" version "'";
+    print "doc_prefix = 'doc/NZMATH-%s/' % version";
+    print "data_prefix = 'nzmath/'";
     print "";
 
-    print "setup (";
-    print "    name = 'NZMATH',";
-    print "    version = '" version "',";
-    print "    url = 'http://tnt.math.metro-u.ac.jp/nzmath/',";
-    print "    author = 'NZMATH development group',";
-    print "    author_email = 'nzmath-user@tnt.math.metro-u.ac.jp',";
-    print "    description = 'number theory oriented calculation system',";
-    print "    classifiers = ['Development Status :: 4 - Beta',";
-    print "                   'License :: OSI Approved :: BSD License',";
-    print "                   'Operating System :: OS Independent',";
-    print "                   'Programming Language :: Python',";
-    print "                   'Topic :: Scientific/Engineering :: Mathematics',";
-    print "                  ],";
+    print "setup(";
+    print "    name='NZMATH',";
+    print "    version=version,";
+    print "    url='http://tnt.math.metro-u.ac.jp/nzmath/',";
+    print "    author='NZMATH development group',";
+    print "    author_email='nzmath-user@tnt.math.metro-u.ac.jp',";
+    print "    description='number theory oriented calculation system',";
+    print "    classifiers=['Development Status :: 4 - Beta',";
+    print "                 'License :: OSI Approved :: BSD License',";
+    print "                 'Operating System :: OS Independent',";
+    print "                 'Programming Language :: Python',";
+    print "                 'Topic :: Scientific/Engineering :: Mathematics',";
+    print "                ],";
     print "";
-    print "    packages = ['nzmath', 'nzmath.factor', 'nzmath.poly'],";
+    print "    packages=['nzmath', 'nzmath.factor', 'nzmath.poly'],";
     print "";
-    print "    data_files = ["
-}
-/:/ {
-    directory = substr($0, 1, length($0) - 1);
-    if(directory !~ /CVS$/) {
-	print "        (doc_prefix + '" directory "', [";
-	cont = 0;
-	openbracket = openbracket + 1;
-    }
-}
-/(css|html)$/ {
-    print "         '" directory "/" $0 "',";
-}
-/^$/ && !cont {
-    print "        ]),";
-    cont = 1;
-    openbracket = openbracket - 1;
-}
-END {
-    for(i = openbracket; i > 0; i = i - 1) {
-	print "        ]),";
-    }
+    print "    data_files=["
+    print "        (data_prefix, ['data/discriminant.csv']),";
+    print "        (doc_prefix + 'manual',";
+    print "            ['manual/default.css'] + glob.glob('manual/*.html')),";
+    print "        (doc_prefix + 'manual/modules',";
+    print "            glob.glob('manual/modules/*.html')),";
     print "    ]";
     print ")";
 }

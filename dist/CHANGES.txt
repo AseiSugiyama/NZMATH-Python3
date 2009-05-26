@@ -1,6 +1,6 @@
 version 0.91.0 to 0.92.0
 ------------------------
-* add a new module config, ecpp, poly.ratfunc and poly.ring.
+* add a new module config, ecpp, poly.ratfunc, poly.ring and poly.hensel.
 * add functions trace/norm/primitive_element/random_element to finitefield.
 * add ExtendedField to finitefield to replace FiniteExtendedField.
 * add a function multirange to bigrange.
