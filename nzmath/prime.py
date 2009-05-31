@@ -7,6 +7,7 @@ import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
 import nzmath.bigrange as bigrange
+from nzmath.config import GRH
 
 _log = logging.getLogger('nzmath.prime')
 _log.setLevel(logging.DEBUG)
@@ -51,13 +52,31 @@ def spsp(n, base, s=None, t=None):
     return True
 
 
+def miller(n):
+    """
+    Miller's primality test.
+
+    This test is valid under GRH.
+    """
+    s, t = arith1.vp(n - 1, 2)
+    # The O-constant 2 by E.Bach
+    ## 2 log(n) = 2 log_2(n)/log_2(e) = 2 log(2) log_2(n)
+    ## 2 log(2) <= 1.3862943611198906
+    bound = min(n - 2, 13862943611198906 * arith1.log(n) // 10 ** 16) + 1
+    _log.info("bound: %d" % bound)
+    for b in range(2, bound):
+        if not spsp(n, b, s, t):
+            return False
+    return True
+
+
 def millerRabin(n, times=20):
     """
     Miller-Rabin pseudo-primality test.  Optional second argument
     times (default to 20) is the number of repetition.  The error
     probability is at most 4**(-times).
     """
-    s, t = arith1.vp(n-1, 2)
+    s, t = arith1.vp(n - 1, 2)
     for _ in range(times):
         b = bigrandom.randrange(2, n-1)
         if not spsp(n, b, s, t):
@@ -191,7 +210,7 @@ def generator():
 
 def generator_eratosthenes(n):
     """
-    Generate primes up to n using Eratosthenes sieve.
+    Generate primes up to n (inclusive) using Eratosthenes sieve.
     """
     if n < 2:
         raise StopIteration
@@ -297,7 +316,17 @@ def primeq(n):
         return False
     if n < 10 ** 12:
         return True
-    return apr(n)
+    if not GRH:
+	return apr(n)
+    else:
+	return miller(n)
+
+
+def primonial(p):
+    """
+    Return 2*3*...*p for given prime p.
+    """
+    return arith1.product(generator_eratosthenes(p))
 
 
 # defs for APR algorithm
@@ -879,7 +908,7 @@ class Status:
                 if self.isDone(p):
                     return True
             else:
-                raise ImplementLimit
+                raise ImplementLimit("limit")
         else:
             step = p*2
             q = 1
@@ -895,7 +924,7 @@ class Status:
                 if self.isDone(p):
                     return True
             else:
-                raise ImplementLimit
+                raise ImplementLimit("limit")
 
 
 class JacobiSum:
