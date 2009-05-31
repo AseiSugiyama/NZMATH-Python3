@@ -24,18 +24,46 @@
 
 <h3 id="content_1_1">Functions  <a class="anchor_super" id="ie756465">&dagger;</a></h3>
 
-<h4 id="content_1_2">arithmetic_progression(<em>init</em>, <em>difference</em>)  <a class="anchor_super" id="hbc08578">&dagger;</a></h4>
-<p>Generate an arithmetic progression starts form <em>init</em> and <em>difference</em> step.</p>
-
-<h4 id="content_1_3">count([<em>n</em>])  <a class="anchor_super" id="d4fcbe9d">&dagger;</a></h4>
+<h4 id="content_1_2">count([<em>n</em>])  <a class="anchor_super" id="d4fcbe9d">&dagger;</a></h4>
 <p>Count up infinitely from <em>n</em> (default to 0).</p>
 <p>see <a href="http://docs.python.org/lib/module-itertools.html" rel="nofollow">itertools</a>.count.</p>
+
+<h4 id="content_1_3">range(<em>start</em> [, <em>stop</em> [, <em>step</em>]])  <a class="anchor_super" id="q0d7ab02">&dagger;</a></h4>
+<p>Generate a range-like finite integer sequence. It can generate more than <a href="http://docs.python.org/lib/module-sys.html" rel="nofollow">sys</a>.maxint elements.</p>
 
 <h4 id="content_1_4">geometric_progression(<em>init</em>, <em>ratio</em>)  <a class="anchor_super" id="t7ee23f3">&dagger;</a></h4>
 <p>Generate a geometric progression starting form <em>init</em> and multiplying <em>ratio</em>.</p>
 
-<h4 id="content_1_5">range(<em>start</em> [, <em>stop</em> [, <em>step</em>]])  <a class="anchor_super" id="q0d7ab02">&dagger;</a></h4>
-<p>Generate a range-like finite integer sequence. It can generate more than <a href="http://docs.python.org/lib/module-sys.html" rel="nofollow">sys</a>.maxint elements.</p>
+<h4 id="content_1_5">arithmetic_progression(<em>init</em>, <em>difference</em>)  <a class="anchor_super" id="hbc08578">&dagger;</a></h4>
+<p>Generate an arithmetic progression starts form <em>init</em> and <em>difference</em> step.</p>
+
+<h4 id="content_1_6">multirange(<em>triples</em>)  <a class="anchor_super" id="oc0b80a4">&dagger;</a></h4>
+<p>multirange(list of range triples) is an iterator over cartesian
+product of elements of ranges.</p>
+<p>For example, multirange([(1, 10, 3), (1, 10, 4)]) yields
+(1, 1), (1, 5), (1, 9), (4, 1), (4, 5), (4, 9), (7, 1), (7, 5),
+and (7, 9).</p>
+<p>The range triples may be doubles (start, stop) or single (stop,),
+but they have to be always tuples.</p>
+<p>Be cautious that using multirange usually means you are trying to
+do brute force looping.<br />
+(new in 0.92.0)</p>
+
+<h4 id="content_1_7">multirange_restrictions(<em>triples</em>, **<em>kwds</em>)  <a class="anchor_super" id="h5132594">&dagger;</a></h4>
+<p>multirange_restrictions is an iterator similar to the multirange
+but putting restrictions on each ranges.  Those restrictions are specified
+by keyword arguments: ascending, descending, strictly_ascending and strictly_descending.</p>
+<p>A restriction ascending, for example,
+is a sequence that specifies the indeces where the number emitted
+by the range should be greater than or equal to the number at the
+previous index.  Other restrictions descending, strictly_ascending
+and strictly_descending are similar.</p>
+<p>For example, while multirange([(1, 10, 3), (1, 10, 4)]) yields
+(1, 1), (1, 5), (1, 9), (4, 1), (4, 5), (4, 9), (7, 1), (7, 5),
+and (7, 9),
+multirange_restrictions([(1, 10, 3), (1, 10, 4)], ascending=(1,))
+yields only (1, 1), (1, 5), (1, 9), (4, 5), (4, 9) and (7, 9).<br />
+(new in 0.92.0)</p>
 </div>
 
 
@@ -44,7 +72,7 @@
 
 
 <div id="footer">
- Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

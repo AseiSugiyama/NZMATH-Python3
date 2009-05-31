@@ -30,7 +30,9 @@ It is a subclass of <a href="matrix_Matrix.html" title="matrix.py/Matrix">Matrix
 <ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#me6e6e36"> getCoefficientRing() </a></li>
 <li><a href="#f74cfd2b"> toFieldMatrix() </a></li>
 <li><a href="#toSubspace"> toSubspace([isbasis]) </a></li>
-<li><a href="#c3c70432">  hermiteNormalForm() </a></li></ul></li>
+<li><a href="#c3c70432">  hermiteNormalForm() </a></li>
+<li><a href="#cfa933ac">  exthermiteNormalForm() </a></li>
+<li><a href="#t23f64a1">  kernelAsModule() </a></li></ul></li>
 <li><a href="#operator"> Operators </a></li></ul></li></ul>
 </div>
 
@@ -64,7 +66,22 @@ This method checks all elements of <em>self</em> and set <a href="matrix_Matrix.
 0  0  1  0
 0  0  0  1</pre>
 
-<h3 id="content_1_8">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
+<h4 id="content_1_8">exthermiteNormalForm()  <a class="anchor_super" id="cfa933ac">&dagger;</a></h4>
+<p>Compute hermite normal form M and U satified self*U=M, and return RingSquareMatrix tuple (U,V,M).</p>
+
+<h4 id="content_1_9">kernelAsModule()  <a class="anchor_super" id="t23f64a1">&dagger;</a></h4>
+<p>Compute kernel as Z-module.</p>
+<p>Ex.</p>
+<pre>&gt;&gt;&gt; A = matrix.Matrix(1, 2, [2, 1])
+&gt;&gt;&gt; print A.kernelAsModule()
+1
+-2
+&gt;&gt;&gt; A.toFieldMatrix()
+&gt;&gt;&gt; print A.kernel()
+-1/2
+ 1/1</pre>
+
+<h3 id="content_1_10">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
 <div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">M + N</td><td class="style_td">Return the sum of matrices M and N.</td></tr><tr><td class="style_td">M - N</td><td class="style_td">Return the difference of matrices M and N.</td></tr><tr><td class="style_td">M * N</td><td class="style_td">Return the product of M and N. N must be matrix,vector or scaler</td></tr><tr><td class="style_td">M % d</td><td class="style_td">Return M modulo d. d must be nonzero integer.</td></tr><tr><td class="style_td">-M</td><td class="style_td">Return the matrix whose coefficients have inverted signs of M.</td></tr><tr><td class="style_td">+M</td><td class="style_td">Return the copy of M.</td></tr></tbody></table></div>
 </div>
 
@@ -74,7 +91,7 @@ This method checks all elements of <em>self</em> and set <a href="matrix_Matrix.
 
 
 <div id="footer">
- Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

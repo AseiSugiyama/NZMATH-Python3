@@ -29,15 +29,14 @@ The class is a subclass of <a href="finitefield_FiniteField.html" title="finitef
 <p>Create a finite field. <em>characteristic</em> must be prime.
 <em>n_or_modulus</em> can be:</p>
 <ol class="list1" style="padding-left:16px;margin-left:16px"><li>an integer greater than 1, or</li>
-<li>a polynomial in a polynomial ring of F_p with degree greater than 1.</li>
-<li>an ideal of the polynomial ring F_p[#1] with degree greater than 1.</li></ol>
+<li>a polynomial in a polynomial ring of F_p with degree greater than 1.</li></ol>
 
 <h3 id="content_1_3">Methods  <a class="anchor_super" id="p83ee7d7">&dagger;</a></h3>
 
 <h4 id="content_1_4">createElement(<em>seed</em>)  <a class="anchor_super" id="w9c4bf55">&dagger;</a></h4>
 <p>Create an element of the field from <em>seed</em>. The result is an instance of <a href="finitefield_FiniteExtendedFieldElement.html" title="finitefield.py/FiniteExtendedFieldElement">FiniteExtendedFieldElement</a>.
 The <em>seed</em> can be:</p>
-<ul class="list1" style="padding-left:16px;margin-left:16px"><li>a <a href="polynomial_OneVariablePolynomialCharNonZero.html" title="polynomial.py/OneVariablePolynomialCharNonZero">OneVariablePolynomialCharNonZero</a></li>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>a <a href="poly_uniutil_FinitePrimeFieldPolynomial.html" title="poly/uniutil.py/FinitePrimeFieldPolynomial">FinitePrimeFieldPolynomial</a></li>
 <li>an integer, which will be p-adically expanded and interpreted as a polynomial.</li>
 <li>a list of integers, which will be coefficients of a polynomial.</li></ul>
 
@@ -57,7 +56,7 @@ The <em>seed</em> can be:</p>
 <p>isdomain(), iseuclidean(), isnoetherian(), ispid(), isufd()</p>
 
 <h3 id="content_1_10">Operators  <a class="anchor_super" id="gaf10968">&dagger;</a></h3>
-<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">len</td><td class="style_td">cardinality</td></tr><tr><td class="style_td">repr</td><td class="style_td">repr string</td></tr><tr><td class="style_td">str</td><td class="style_td">str string</td></tr></tbody></table></div>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">card</td><td class="style_td">cardinality</td></tr><tr><td class="style_td">repr</td><td class="style_td">repr string</td></tr><tr><td class="style_td">str</td><td class="style_td">str string</td></tr></tbody></table></div>
 
 <h3 id="content_1_11">Properties  <a class="anchor_super" id="vda1a3da">&dagger;</a></h3>
 <ul class="list1" style="padding-left:16px;margin-left:16px"><li>one (read only) The multiplicative unit of the field.</li>
@@ -71,7 +70,7 @@ The <em>seed</em> can be:</p>
 
 
 <div id="footer">
- Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/hensel.py/HenselLiftMulti - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fhensel.py%2FHenselLiftMulti">poly/hensel.py/HenselLiftMulti</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_hensel.html" title="poly/hensel.py">hensel</a></p>
+<h2 id="content_1_0">HenselLiftMulti  <a class="anchor_super" id="dbc835ef">&dagger;</a></h2>
+<p>A class represents integer polynomials which will be lifted by
+Hensel's lemma, so-called the quadratic method.</p>
+<p>If the number of factors is two, you should use <a href="poly_hensel_HenselLiftPair.html" title="poly/hensel.py/HenselLiftPair">HenselLiftPair</a>.</p>
+<p>Target and all its factors are supposed to be monic.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="e3bb0a48">&dagger;</a></h3>
+
+<h4 id="content_1_2">HenselLiftMulti(<em>f</em>, <em>factors</em>, <em>ladder</em>, <em>p</em>, <em>q</em>)  <a class="anchor_super" id="ee37844d">&dagger;</a></h4>
+<p>The parameters satisfy that:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>ai's of <em>factors</em> and <em>f</em> are all monic</li>
+<li>bi's of cofactors are product of aj's for i &lt; j</li>
+<li><em>f</em> == a1*...*ar (mod <em>q</em>)</li>
+<li><em>ladder</em> is a tuple (sis, tis) and si's of sis and ti's of tis satisfy: ai*si + bi*ti == 1 (mod <em>p</em>), with positive integers <em>p</em> dividing <em>q</em>.</li></ol>
+<p>If <em>p</em>==<em>q</em>, <em>q</em> can be omit from the argument.</p>
+
+<h4 id="content_1_3">from_factors(<em>f</em>, <em>factors</em>, <em>p</em>)  <a class="anchor_super" id="fb315de5">&dagger;</a></h4>
+<p>A class method to create and return an instance of HenselLiftMulti.</p>
+<p>The parameters satisfy that:</p>
+<blockquote><p class="quotation"><em>f</em> == a1*...*ar (mod <em>p</em>)<br />
+with a prime number <em>p</em> and ai's in <em>factors</em>.<br />
+(<em>f</em>, <em>a1</em>, <em>a2</em>, <em>p</em>)</p></blockquote>
+
+<h3 id="content_1_4">Methods  <a class="anchor_super" id="g1af16d9">&dagger;</a></h3>
+
+<h4 id="content_1_5">lift_factors()  <a class="anchor_super" id="d6ebde6f">&dagger;</a></h4>
+<p>Update factors by lifted integer coefficient polynomials Ai's:</p>
+<blockquote><p class="quotation">f == A1*A2*...*Ar (mod p*q) and<br />
+Ai == ai (mod q) (i = 1, 2,...,r),</p></blockquote>
+<p>then, <em>q</em> is updated by <em>p</em>*<em>q</em>.</p>
+
+<p>PRECONDITIONS (automatically satisfied):</p>
+<blockquote><p class="quotation">f == a1*a1*...*ar (mod <em>q</em>)<br />
+ai*si + bi*ti == 1 (mod <em>p</em>) and<br />
+<em>p</em> | <em>q</em></p></blockquote>
+
+<h4 id="content_1_6">lift_ladder()  <a class="anchor_super" id="y7428933">&dagger;</a></h4>
+<p>Update si's and ti's with Si's and Ti's:</p>
+<blockquote><p class="quotation">ai*Si + ai*Ti == 1 (mod <em>p</em>**2) (i=1,2,...,r)<br />
+Si == si (mod <em>p</em>) (i = 1, 2,...,r)<br />
+Ti == ti (mod <em>p</em>) (i = 1, 2,...,r)<br /></p></blockquote>
+<p>then, update <em>p</em> with <em>p</em>**2.</p>
+
+<p>PRECONDITIONS (automatically satisfied):</p>
+<blockquote><p class="quotation">ai+si + bi+ti == 1 (mod <em>p</em>)</p></blockquote>
+
+<h4 id="content_1_7">lift()  <a class="anchor_super" id="y0464de7">&dagger;</a></h4>
+<p>The lift. You should call this method.</p>
+
+<h3 id="content_1_8">properties  <a class="anchor_super" id="wa9ed64c">&dagger;</a></h3>
+
+<h4 id="content_1_9">factors  <a class="anchor_super" id="p93fab51">&dagger;</a></h4>
+<p>factors a1 and a2 as a list.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

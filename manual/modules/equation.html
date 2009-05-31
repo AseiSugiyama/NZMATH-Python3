@@ -60,6 +60,15 @@ Repeat is the number of this method's steps, NewtonInitial is a Initial number o
 If this method returns Error in Newton Method, Then please change the NewtonInitial's value. <br />
 Default of NewtonInitial is 1, Repeat is 200.</p>
 <pre>Remark : If f has multiple root, maybe return Error.</pre>
+
+<h4 id="content_1_10">root_Fp(<em>g = [a_0,a_1, ...]</em>,<em>p</em>,<em>flag=True</em>)  <a class="anchor_super" id="x0ede1ef">&dagger;</a></h4>
+<p>Return a root over F_p of nonzero polynomial a_0 + a_1 * x + ... = 0 ( mod p ). <br />
+p must be prime. We can take a dictionary type as polynomial g.<br />
+If flag = False, return a root randomly.</p>
+
+<h4 id="content_1_11">allroots_Fp(<em>g = [a_0,a_1, ...]</em>,<em>p</em>)  <a class="anchor_super" id="fa9fa30e">&dagger;</a></h4>
+<p>Return roots over F_p of nonzero polynomial a_0 + a_1 * x + ... = 0 ( mod p ). <br />
+p must be prime. We can take a dictionary type as polynomial g.</p>
 </div>
 
 
@@ -68,7 +77,7 @@ Default of NewtonInitial is 1, Repeat is 200.</p>
 
 
 <div id="footer">
- Copyright &copy; 2003-2008, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
 </div>
 
 </body>
