@@ -232,7 +232,8 @@ def default_datadir():
         candidates.appens(os.path.join(sys.prefix, 'Data', 'nzmath'))
     else:
         candidates.append(os.path.join(sys.prefix, 'share', 'nzmath'))
-    # more possibilities?
+    # default install script will install here ...hmm
+    candidates.append(os.path.join(sys.prefix, 'nzmath'))
 
     for canddir in candidates:
         if os.path.exists(canddir):
