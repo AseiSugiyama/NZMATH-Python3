@@ -31,7 +31,7 @@ html: files
 files: clean
 	mkdir -p $(TMPDIR)/nzmath
 	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py \
-		logo.bmp setup.cfg $(TMPDIR)
+		logo.bmp setup.cfg nzmathconf.py.sample $(TMPDIR)
 	cp -a data $(TMPDIR)
 	cp -a ../manual $(TMPDIR)
 	cp -p ../*.py $(TMPDIR)/nzmath

@@ -1,3 +1,4 @@
 include *.txt
+include nzmathconf.py.sample
 recursive-include manual *.css *.html
 include data/*
