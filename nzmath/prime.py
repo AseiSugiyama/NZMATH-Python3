@@ -317,9 +317,9 @@ def primeq(n):
     if n < 10 ** 12:
         return True
     if not GRH:
-	return apr(n)
+        return apr(n)
     else:
-	return miller(n)
+        return miller(n)
 
 
 def primonial(p):
