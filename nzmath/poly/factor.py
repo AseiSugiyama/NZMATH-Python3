@@ -252,8 +252,10 @@ def integerpolynomialfactorization(f):
     Factor a integer coefficient polynomial f with
     Berlekamp-Zassenhaus method.
     """
-    F = [f]
-    G = f
+    cont = f.content()
+    prim = f.primitive_part()
+    F = [prim]
+    G = prim
     c = 0
     one = G.getRing().one
     while (G.differentiate() and F[c] != one):
@@ -263,12 +265,17 @@ def integerpolynomialfactorization(f):
         G = F[c]
     sqfree_part = F[0].pseudo_floordiv(F[0].subresultant_gcd(F[1])).primitive_part()
     N = zassenhaus(sqfree_part)
-    result = [()] * len(N)
+
+    if cont != 1:
+        result = [(one.scalar_mul(cont) ,1)]
+    else:
+        result = []
 
     F.reverse()
     e = len(F)
-    for deg, deriv in enumerate(F):
-        for index,factor in enumerate(N):
-            if not (deriv.pseudo_mod(factor)) and result[index] == ():
-                result[index]=(factor, (e-deg))
+    for factor in N:
+        for deg, deriv in enumerate(F):
+            if not (deriv.pseudo_mod(factor)):
+                result.append((factor, (e-deg)))
+                break
     return result
