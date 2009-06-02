@@ -4,7 +4,8 @@ import math
 import nzmath.arith1 as arith1
 import nzmath.equation as equation
 import nzmath.gcd as gcd
-import nzmath.lattice as lattice 
+import nzmath.lattice as lattice
+import nzmath.vector as vector
 import nzmath.matrix as matrix
 import nzmath.factor.misc as misc
 import nzmath.finitefield as finitefield
@@ -48,8 +49,8 @@ class NumberField (ring.Field):
 
     def disc(self):
         """
-        Compute the discriminant of self.
-        However the output is not disc of self but disc of self.polynomial.
+        Compute the discriminant of self.polynomial.
+        (The output is not field disc of self but disc of self.polynomial.)
         """
         degree = self.degree
         """
@@ -67,6 +68,27 @@ class NumberField (ring.Field):
         M = matrix.RingSquareMatrix(degree, degree, traces)
         return M.determinant()
 
+    def integer_ring(self):
+        """
+        Return the integer ring of self (using round2 module)
+        """
+        if not hasattr(self, "integer_basis"):
+            int_basis, self.discriminant = round2.round2(self.polynomial)
+            self.integer_basis = matrix.createMatrix(
+                self.degree, [vector.Vector(int_basis[j]) for j in range(
+                len(int_basis))])
+        return self.integer_basis
+
+    def field_discriminant(self):
+        """
+        Return the (field) discriminant of self (using round2 module)
+        """
+        if not hasattr(self, "discriminant"):
+            int_basis, self.discriminant = round2.round2(self.polynomial)
+            self.integer_basis = matrix.createMatrix(
+                self.degree, [vector.Vector(int_basis[j]) for j in range(
+                len(int_basis))])
+        return self.discriminant
 
     def basis(self, j):
         """
@@ -138,11 +160,10 @@ class NumberField (ring.Field):
         appr = equation.SimMethod(self.polynomial)
 
         #Step 1.
-        # Using the round 2 method, compute an integral basis.
-        Basis, disc = round2.round2(self.polynomial)
+        Basis = self.integer_ring()
         BaseList = []
         for i in range(n):
-            AlgInt = MatAlgNumber(Basis[i], self.polynomial)
+            AlgInt = MatAlgNumber(Basis[i].compo, self.polynomial)
             BaseList.append(AlgInt)
         
         #Step 2.
@@ -204,7 +225,8 @@ class NumberField (ring.Field):
             if D % 4 == 0:
                 if squarefree.trial_division(abs(D)//4) and (D//4) % 4 != 1:
                     return True
-        return "Can not determined"
+        # compare with real integer ring
+        return abs(self.integer_ring().determinant()) == 1
 
     def isGaloisField(self, other = None):
         """
@@ -234,11 +256,22 @@ class NumberField (ring.Field):
         """
         return 0
 
-    def createElement(self, seed):
+    def createElement(self, *seed):
         """
         createElement returns an element of the field with seed.
         """
-        raise NotImplementedError
+        if len(seed) == 1:
+            if isinstance(seed[0], list):
+                if isinstance(seed[0][0], list):
+                    return BasicAlgNumber(seed[0], self.polynomial)
+                else:
+                    return MatAlgNumber(seed[0], self.polynomial)
+            else:
+                raise NotImplementedError
+        elif len(seed) == 2:
+            return ApproxAlgNumber(seed[0], seed[1], self.polynomial)
+        else:
+            raise NotImplementedError
 
     def issubring(self, other):
         """
@@ -295,21 +328,42 @@ class BasicAlgNumber(object):
             coeff.append(-self.coeff[i])
         return BasicAlgNumber([coeff, self.denom], self.polynomial)
 
+    def _int_to_algnumber(self, other):
+        """
+        other (integer) -> BasicAlgNumber (over self.field)
+        """
+        return BasicAlgNumber([[other] + [0] * (self.degree - 1), 1],
+                              self.polynomial)
+
+    def _rational_to_algnumber(self, other):
+        """
+        other (rational) -> BasicAlgNumber (over self.field)
+        """
+        return BasicAlgNumber([[other.numerator] + [0] * (self.degree - 1),
+                               other.denominator], self.polynomial)
+
     def __add__(self, other):
-        d = self.denom*other.denom
-        coeff = []
-        for i in range(len(self.coeff)):
-            coeff.append(other.denom*self.coeff[i] + self.denom*other.coeff[i])
-        return BasicAlgNumber([coeff, d], self.polynomial)
+        if isinstance(other, BasicAlgNumber):
+            d = self.denom*other.denom
+            coeff = []
+            for i in range(len(self.coeff)):
+                coeff.append(
+                    other.denom*self.coeff[i] + self.denom*other.coeff[i])
+            return BasicAlgNumber([coeff, d], self.polynomial)
+        elif isinstance(other, (int, long)):
+            return self + self._int_to_algnumber(other)
+        elif isinstance(other, rational.Rational):
+            return self + self._rational_to_algnumber(other)
+        else:
+            return NotImplemented
+
+    __radd__ = __add__
 
     def __sub__(self, other):
         return self.__add__(-other)
 
     def __mul__(self, other):
-        if not isinstance(other, BasicAlgNumber):
-            Coeff = [i*other for i in self.coeff] 
-            return BasicAlgNumber([Coeff, self.denom], self.polynomial)
-        else:
+        if isinstance(other, BasicAlgNumber):
             d = self.denom*other.denom
             f = zpoly(self.polynomial)
             g = zpoly(self.coeff)
@@ -317,6 +371,22 @@ class BasicAlgNumber(object):
             j = (g * h).pseudo_mod(f)
             jcoeff = [j[i] for i in range(self.degree)]
             return BasicAlgNumber([jcoeff, d], self.polynomial)
+        elif isinstance(other, (int, long)):
+            Coeff = [i*other for i in self.coeff] 
+            return BasicAlgNumber([Coeff, self.denom], self.polynomial)
+        elif isinstance(other, rational.Rational):
+            GCD = gcd.gcd(other.numerator, self.denom)
+            denom = self.denom * other.denominator
+            mul = other.numerator
+            if GCD != 1:
+                denom //= GCD
+                mul //= GCD
+            Coeff = [self.coeff[j] * mul for j in range(self.degree)]
+            return BasicAlgNumber([Coeff, denom], self.polynomial)
+        else:
+            return NotImplemented
+
+    __rmul__ = __mul__
 
     def __pow__(self, exponent, mod=None):
         d = self.denom**exponent
@@ -501,13 +571,25 @@ class MatAlgNumber(object):
         return MatAlgNumber(coeff, self.polynomial)
 
     def __add__(self, other):
+        if isinstance(other, (int, long, rational.Rational)):
+            other = MatAlgNumber(
+                [other] + [0] * (self.degree -1), self.polynomial)
+        elif not isinstance(other, MatAlgNumber):
+            return NotImplemented
         mat = self.matrix + other.matrix
         coeff = []
         for i in range(mat.row):
             coeff.append(mat[i+1][1])
         return MatAlgNumber(coeff, self.polynomial)
 
+    __radd__ = __add__
+
     def __sub__(self, other):
+        if isinstance(other, (int, long, rational.Rational)):
+            other = MatAlgNumber(
+                [other] + [0] * (self.degree -1), self.polynomial)
+        elif not isinstance(other, MatAlgNumber):
+            return NotImplemented
         mat = self.matrix - other.matrix
         coeff = []
         for i in range(mat.row):
@@ -515,10 +597,25 @@ class MatAlgNumber(object):
         return MatAlgNumber(coeff, self.polynomial)
 
     def __mul__(self, other):
-        if not isinstance(other, MatAlgNumber):
+        if isinstance(other, MatAlgNumber):
+            mat = self.matrix * other.matrix
+        elif isinstance(other, (int, long, rational.Rational)):
             mat = other * self.matrix
         else:
-            mat = self.matrix * other.matrix
+            return NotImplemented
+        coeff = []
+        for i in range(mat.row):
+            coeff.append(mat[i+1][1])
+        return MatAlgNumber(coeff, self.polynomial)
+
+    __rmul__ = __mul__
+
+    def __div__(self, other):
+        if isinstance(other, (int, long, rational.Rational)):
+            return self * (rational.Rational(other) ** -1)
+        elif not isinstance(other, MatAlgNumber):
+            return NotImplemented
+        mat = other.matrix.inverse(self.matrix)
         coeff = []
         for i in range(mat.row):
             coeff.append(mat[i+1][1])
@@ -566,7 +663,7 @@ class MatAlgNumber(object):
 
     def ch_approx(self, approx):
         return (self.ch_basic()).ch_approx(approx)
-                    
+
 class ApproxAlgNumber:
     """
     The class for algebraic number represented by minimum polynomial.    
@@ -616,12 +713,18 @@ class ApproxAlgNumber:
         coeff = [self.coeff[i] + other.coeff[i] for i in range(self.degree)]
         return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
 
+    __radd__ = __add__
+
     def __sub__(self, other):
         return self.__add__(-other)
 
     def __mul__(self, other):
-        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial)*BasicAlgNumber([other.coeff, 1], other.polynomial)).coeff
+        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial) *
+                 BasicAlgNumber([other.coeff, 1], other.polynomial)
+                 ).coeff
         return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
+
+    __rmul__ = __mul__
 
     def __pow__(self, power):
         coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial)**power).coeff
@@ -640,7 +743,6 @@ class ApproxAlgNumber:
 
     def ch_matrix(self):
         return MatAlgNumber(self.coeff, self.polynomial)
-
 
 class Ideal:
     """
