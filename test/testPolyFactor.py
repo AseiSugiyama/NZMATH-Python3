@@ -43,7 +43,7 @@ class PadicFactorizationTest (unittest.TestCase):
         self.assert_(isinstance(r, tuple), r)
 
 class IntegerPolynomialFactorizationTest (unittest.TestCase):
-    def testRegular(self):
+    def testNonMonic(self):
         f1 = uniutil.polynomial(enumerate([1, 2]), Z)
         f2 = uniutil.polynomial(enumerate([5, 4, 1]), Z)
         f3_1 = uniutil.polynomial(enumerate([-1, 3]), Z)
@@ -53,10 +53,25 @@ class IntegerPolynomialFactorizationTest (unittest.TestCase):
         r = zassenhaus.integerpolynomialfactorization(f)
         self.assert_(isinstance(r, list))
         self.assertEqual(4, len(r), r)
-        self.assert_(isinstance(r[0][0], uniutil.UniqueFactorizationDomainPolynomial))
-        self.assert_(isinstance(r[1][0], uniutil.UniqueFactorizationDomainPolynomial))
-        self.assert_(isinstance(r[2][0], uniutil.UniqueFactorizationDomainPolynomial))
-        self.assert_(isinstance(r[3][0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assert_(isinstance(r[0][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[1][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[2][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[3][0], uniutil.IntegerPolynomial))
+        self.assertEqual(f, r[0][0]**r[0][1] * r[1][0]**r[1][1] * r[2][0]**r[2][1] * r[3][0]**r[3][1])
+
+    def testNonPrimitive(self):
+        f1 = uniutil.polynomial(enumerate([3, 6]), Z)
+        f2 = uniutil.polynomial(enumerate([5, 4, 1]), Z)
+        f3 = uniutil.polynomial(enumerate([-1, 3]), Z)
+        f = f1**3 * f2**2 * f3
+
+        r = zassenhaus.integerpolynomialfactorization(f)
+        self.assert_(isinstance(r, list))
+        self.assertEqual(4, len(r), r)
+        self.assert_(isinstance(r[0][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[1][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[2][0], uniutil.IntegerPolynomial))
+        self.assert_(isinstance(r[3][0], uniutil.IntegerPolynomial))
         self.assertEqual(f, r[0][0]**r[0][1] * r[1][0]**r[1][1] * r[2][0]**r[2][1] * r[3][0]**r[3][1])
 
 def suite(suffix = "Test"):
