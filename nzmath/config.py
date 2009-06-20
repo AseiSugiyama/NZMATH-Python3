@@ -229,7 +229,7 @@ def default_datadir():
     if DATADIR is not None:
         candidates.append(DATADIR)
     if sys.platform in WINDOWS_PLATFORMS:
-        candidates.appens(os.path.join(sys.prefix, 'Data', 'nzmath'))
+        candidates.append(os.path.join(sys.prefix, 'Data', 'nzmath'))
     else:
         candidates.append(os.path.join(sys.prefix, 'share', 'nzmath'))
     # default install script will install here ...hmm
