@@ -679,41 +679,43 @@ class MatAlgNumber(object):
                 coeff.append(int((self.coeff[i]).numerator * denom / (self.coeff[i]).denominator))
         return BasicAlgNumber([coeff, denom], self.polynomial)
 
-class Ideal:
-    """
-    """
-    def init():
-        return "Not implemented"
-
 def prime_decomp(p, polynomial):
     """
     Return prime decomposition of (p) over Q[x]/(polynomial).
     """
-    f = fppoly(polynomial, p)
-    d = f.degree()
-    disc = round2.round2(polynomial)[1]
     field = NumberField(polynomial)
-    print field.disc(), disc, field.disc()//disc % p
-    if field.disc() == disc or field.disc()//disc % p != 0:
-        factor = f.factor()
-        dlist = []
-        if len(factor) == 1 and factor[0][1] == 1:
-            return "(p) is prime ideal."
-        else:
-            for i in range(len(factor)):
-                basis_list = []
-                for j in range(d):
-                    if factor[i][0][j] == 0:
-                        basis_list.append(0)
-                    else:
-                        basis_list.append(factor[i][0][j].toInteger())
-                dlist.append([BasicAlgNumber([basis_list, 1], polynomial), factor[i][1]])
-                ideal_list = []
-            for i in range(len(dlist)):
-                ideal_list.append([[p, dlist[i][0]],dlist[i][1]])
-            return ideal_list
+    field_disc = field.field_discriminant()
+    if (field.disc() // field_disc) % p != 0:
+        return _easy_prime_decomp(p, polynomial)
     else:
-        return "Not Implemented."
+        return _main_prime_decomp(p, polynomial)
+
+def _easy_prime_decomp(p, polynomial):
+    """
+    prime decomposition by factoring polynomial
+    """
+    # import nzmath.module as module
+    if len(factor) == 1 and factor[0][1] == 1:
+        return [( (p), 1 )]
+    else:
+        dlist = []
+        for i in range(len(factor)):
+            basis_list = []
+            for j in range(d):
+                if factor[i][0][j] == 0:
+                    basis_list.append(0)
+                else:
+                    basis_list.append(factor[i][0][j].toInteger())
+            dlist.append([BasicAlgNumber([basis_list, 1], polynomial),
+                          factor[i][1]])
+        return [( (p, dlist_ele[0]), dlist_ele[1] ) for dlist_ele in dlist]
+
+def _main_prime_decomp(p, polynomial):
+    """
+    main step of prime decomposition
+    """
+    # import nzmath.module as module
+    raise NotImplementedError
 
 def changetype(a, polynomial):
     """
