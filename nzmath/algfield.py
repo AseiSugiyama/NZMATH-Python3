@@ -695,8 +695,12 @@ def _easy_prime_decomp(p, polynomial):
     prime decomposition by factoring polynomial
     """
     # import nzmath.module as module
+    f = fppoly(polynomial, p)
+    d = f.degree()
+    factor = f.factor()
+    p_alg = BasicAlgNumber([[p] + [0] * (d - 1), 1], polynomial)
     if len(factor) == 1 and factor[0][1] == 1:
-        return [( (p), 1 )]
+        return [(p_alg , 1 )]
     else:
         dlist = []
         for i in range(len(factor)):
@@ -708,7 +712,7 @@ def _easy_prime_decomp(p, polynomial):
                     basis_list.append(factor[i][0][j].toInteger())
             dlist.append([BasicAlgNumber([basis_list, 1], polynomial),
                           factor[i][1]])
-        return [( (p, dlist_ele[0]), dlist_ele[1] ) for dlist_ele in dlist]
+        return [( (p_alg, dlist_ele[0]), dlist_ele[1] ) for dlist_ele in dlist]
 
 def _main_prime_decomp(p, polynomial):
     """
