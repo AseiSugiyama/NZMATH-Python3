@@ -201,6 +201,7 @@ def LLL(_basis, quadraticForm=None ,delta = 0.75):
             B[k] = _innerProduct(bstar[k], bstar[k])
         #step3
         while 1:
+            #print basis
             _RED(k,k-1)
             if B[k] < (delta - mu[k][k-1] ** 2) * B[k-1]:
                 _SWAP(k)

@@ -198,11 +198,13 @@ class NumberField (ring.Field):
             for v in range(n):
                 base_cor += BaseList[v]*L.compo[v][i]
             Ch_Basis.append(base_cor)
+            print Ch_Basis.append(base_cor)
 
         C = []
         a = Ch_Basis[0]
         for i in range(n):
             coeff = Ch_Basis[i].ch_approx(appr[0]).charpoly
+            print coeff
             C.append(zpoly(coeff))
             
         #Step 5.
@@ -317,6 +319,33 @@ class BasicAlgNumber(object):
         if GCD != 1:
             self.coeff = [i//GCD for i in self.coeff]
             self.denom = self.denom//GCD
+
+        conj = equation.SimMethod(self.polynomial)
+        self.conj = conj
+        APP = []
+        for j in range(self.degree):
+            Approx = 0
+            for i in range(self.degree):
+                Approx += self.coeff[i]*(conj[j]**i)
+            APP.append(Approx)
+        self.approx = APP
+
+        Conj = []
+        for i in range(self.degree):
+            conj_approx = 0
+            for j in range(self.degree):
+                conj_approx += (self.coeff[j])*((self.conj[i])**j)
+            Conj.append(conj_approx)
+        P = uniutil.polynomial({0:-Conj[0], 1:1}, ring.getRing(Conj[0]))
+        for i in range(1, self.degree):
+            P *= uniutil.polynomial({0:-Conj[i], 1:1}, ring.getRing(Conj[i]))
+        charcoeff = []
+        for i in range(self.degree + 1):
+            if hasattr(P[i], "real"):
+                charcoeff.append(int(math.floor(P[i].real + 0.5)))
+            else:
+                charcoeff.append(int(math.floor(P[i] + 0.5)))
+        self.charpoly = charcoeff
     
     def __repr__(self):
         return_str = '%s(%s, %s)' % (self.__class__.__name__, [self.coeff, self.denom], self.polynomial)
@@ -503,17 +532,6 @@ class BasicAlgNumber(object):
                 list.append(rational.Rational(self.coeff[i], self.denom))
         return MatAlgNumber(list, self.polynomial)
 
-    def ch_approx(self, approx):
-        """
-        Change style to ApproxAlgNuber.
-        """
-        list = []
-        if self.denom == 1:
-            list = self.coeff
-        else:
-            list = self.coeff
-        return ApproxAlgNumber(list, approx, self.polynomial)
-
 class MatAlgNumber(object):
     """
     The class for algebraic number represented by matrix.
@@ -661,89 +679,6 @@ class MatAlgNumber(object):
                 coeff.append(int((self.coeff[i]).numerator * denom / (self.coeff[i]).denominator))
         return BasicAlgNumber([coeff, denom], self.polynomial)
 
-    def ch_approx(self, approx):
-        return (self.ch_basic()).ch_approx(approx)
-
-class ApproxAlgNumber:
-    """
-    The class for algebraic number represented by minimum polynomial.    
-    """
-    def __init__(self, coefficient, approx, poly):
-        self.coeff = coefficient
-        self.degree = len(self.coeff)
-        self.polynomial = poly
-        self.field = NumberField(self.polynomial)
-        conj = equation.SimMethod(self.polynomial)
-        self.conj = conj
-        self.base_approx = approx
-
-        Approx = 0
-        for i in range(self.degree):
-            Approx += self.coeff[i]*(approx**i)
-        self.approx = Approx
-
-        Conj = []
-        for i in range(self.degree):
-            conj_approx = 0
-            for j in range(self.degree):
-                conj_approx += (self.coeff[j])*((self.conj[i])**j)
-            Conj.append(conj_approx)
-        P = uniutil.polynomial({0:-Conj[0], 1:1}, ring.getRing(Conj[0]))
-        for i in range(1, self.degree):
-            P *= uniutil.polynomial({0:-Conj[i], 1:1}, ring.getRing(Conj[i]))
-        charcoeff = []
-        for i in range(self.degree + 1):
-            if hasattr(P[i], "real"):
-                charcoeff.append(int(math.floor(P[i].real + 0.5)))
-            else:
-                charcoeff.append(int(math.floor(P[i] + 0.5)))
-        self.charpoly = charcoeff
-
-    def __repr__(self):
-        return_str = '%s(%s, %s)' % (self.__class__.__name__, self.approx, self.charpoly)
-        return return_str
-    
-    def __neg__(self):
-        list = []
-        for i in range(self.degree):
-            list.append(-self.coeff[i])
-        return ApproxAlgNumber(list, self.base_approx, self.polynomial)
-
-    def __add__(self, other):
-        coeff = [self.coeff[i] + other.coeff[i] for i in range(self.degree)]
-        return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
-
-    __radd__ = __add__
-
-    def __sub__(self, other):
-        return self.__add__(-other)
-
-    def __mul__(self, other):
-        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial) *
-                 BasicAlgNumber([other.coeff, 1], other.polynomial)
-                 ).coeff
-        return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
-
-    __rmul__ = __mul__
-
-    def __pow__(self, power):
-        coeff = (BasicAlgNumber([self.coeff, 1], self.polynomial)**power).coeff
-        return ApproxAlgNumber(coeff, self.base_approx, self.polynomial)
-
-    def trace(self):
-        a = BasicAlgNumber([self.coeff, 1], self.polynomial)
-        return a.trace()
-
-    def norm(self):
-        a = BasicAlgNumber([self.coeff, 1], self.polynomial)
-        return a.norm()
-
-    def ch_basic(self):
-        return BasicAlgNumber([self.coeff, 1], self.polynomial)
-
-    def ch_matrix(self):
-        return MatAlgNumber(self.coeff, self.polynomial)
-
 class Ideal:
     """
     """
@@ -758,6 +693,7 @@ def prime_decomp(p, polynomial):
     d = f.degree()
     disc = round2.round2(polynomial)[1]
     field = NumberField(polynomial)
+    print field.disc(), disc, field.disc()//disc % p
     if field.disc() == disc or field.disc()//disc % p != 0:
         factor = f.factor()
         dlist = []
