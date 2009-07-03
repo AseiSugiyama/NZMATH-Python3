@@ -21,7 +21,7 @@ class NumberField (ring.Field):
     """
     A class of number field.
     """
-    def __init__(self, polynomial):
+    def __init__(self, polynomial, precompute=False):
         """
         Initialize a number field with given polynomial coefficients
         (in ascending order).
@@ -29,6 +29,11 @@ class NumberField (ring.Field):
         ring.Field.__init__(self)
         self.polynomial = polynomial
         self.degree = len(polynomial) - 1
+        if precompute:
+            getConj()
+            disc()
+            signature()
+            integer_ring()
 
     def __repr__(self):
         return_str = '%s(%s)' % (self.__class__.__name__, self.polynomial)
@@ -47,26 +52,37 @@ class NumberField (ring.Field):
         compos = f.resultant(g(diff), 0)
         return NumberField([compos[i] for i in range(compos.degree() + 1)])
 
+    def getConj(self):
+        """
+        Return (approximate) solutions of self.polynomial.
+        We can discriminate the conjugate field of self by these values.
+        """
+        if not hasattr(self, "conj"):
+            conj = equation.SimMethod(self.polynomial)
+            self.conj = conj
+        return self.conj
+
     def disc(self):
         """
         Compute the discriminant of self.polynomial.
         (The output is not field disc of self but disc of self.polynomial.)
         """
-        degree = self.degree
         """
         Obasis, disc = round2.round2(self)
         A = [algfield.MatAlgNumber(obasis[0][i]) for i in range(degree)]
         return disc(A) <--- real disc of self field.
         """
    
-        traces = []
-        for i in range(degree):
-            for j in range(degree):
-                s = self.basis(i)*self.basis(j)
-                traces.append(s.trace())
-
-        M = matrix.RingSquareMatrix(degree, degree, traces)
-        return M.determinant()
+        if not hasattr(self, "poldisc"):
+            degree = self.degree
+            traces = []
+            for i in range(degree):
+                for j in range(degree):
+                    s = self.basis(i)*self.basis(j)
+                    traces.append(s.trace())
+            M = matrix.RingSquareMatrix(degree, degree, traces)
+            self.poldisc = M.determinant()
+        return self.poldisc
 
     def integer_ring(self):
         """
@@ -103,52 +119,54 @@ class NumberField (ring.Field):
         Using Strum's algorithm, compute the signature of self.
         Algorithm 4.1.11 in Cohen's Book
         """
-        degree = self.degree
-        #Step 1.
-        if degree == 0:
-            return (0, 0)
-        # no check for degree 1?
-
-        minpoly = zpoly(self.polynomial)
-        d_minpoly = minpoly.differentiate()
-        A = minpoly.primitive_part()
-        B = d_minpoly.primitive_part()
-        g = 1
-        h = 1
-        pos_at_inf = A.leading_coefficient() > 0
-        pos_at_neg = pos_at_inf == (degree % 2)
-        r_1 = 1
-
-        #Step 2.
-        while True:
-            deg = A.degree() - B.degree()
-            residue = A.pseudo_mod(B)
-            if not residue:
-                raise ValueError("not squarefree")
-            if B.leading_coefficient() > 0 or deg % 2:
-                residue = - residue
-            #Step 3.
-            degree_res = residue.degree()
-            pos_at_inf_of_res = residue.leading_coefficient() > 0
-
-            if pos_at_inf_of_res != pos_at_inf:
-                pos_at_inf = not pos_at_inf
-                r_1 -= 1
-
-            if pos_at_inf_of_res != (pos_at_neg == (degree_res % 2 == 0)):
-                pos_at_neg = not pos_at_neg
-                r_1 += 1
-
-            #Step 4.
-            if degree_res == 0:
-                return (r_1, (degree - r_1)//2)
-
-            A, B = B, residue.scalar_exact_division(g*(h**deg))
-            g = abs(A.leading_coefficient())
-            if deg == 1:
-                h = g
-            elif deg > 1:
-                h = g**deg // h**(deg - 1)
+        if not hasattr(self, "sign"):
+            degree = self.degree
+            #Step 1.
+            if degree == 0:
+                return (0, 0)
+            # no check for degree 1?
+    
+            minpoly = zpoly(self.polynomial)
+            d_minpoly = minpoly.differentiate()
+            A = minpoly.primitive_part()
+            B = d_minpoly.primitive_part()
+            g = 1
+            h = 1
+            pos_at_inf = A.leading_coefficient() > 0
+            pos_at_neg = pos_at_inf == (degree % 2)
+            r_1 = 1
+    
+            #Step 2.
+            while True:
+                deg = A.degree() - B.degree()
+                residue = A.pseudo_mod(B)
+                if not residue:
+                    raise ValueError("not squarefree")
+                if B.leading_coefficient() > 0 or deg % 2:
+                    residue = - residue
+                #Step 3.
+                degree_res = residue.degree()
+                pos_at_inf_of_res = residue.leading_coefficient() > 0
+    
+                if pos_at_inf_of_res != pos_at_inf:
+                    pos_at_inf = not pos_at_inf
+                    r_1 -= 1
+    
+                if pos_at_inf_of_res != (pos_at_neg == (degree_res % 2 == 0)):
+                    pos_at_neg = not pos_at_neg
+                    r_1 += 1
+    
+                #Step 4.
+                if degree_res == 0:
+                    return (r_1, (degree - r_1)//2)
+    
+                A, B = B, residue.scalar_exact_division(g*(h**deg))
+                g = abs(A.leading_coefficient())
+                if deg == 1:
+                    h = g
+                elif deg > 1:
+                    h = g**deg // h**(deg - 1)
+        return self.sign
 
     def POLRED(self):
         """
@@ -157,7 +175,7 @@ class NumberField (ring.Field):
         Algorithm 4.4.11 in Cohen's book.
         """
         n = self.degree
-        appr = equation.SimMethod(self.polynomial)
+        appr = self.getConj()
 
         #Step 1.
         Basis = self.integer_ring()
@@ -174,8 +192,7 @@ class NumberField (ring.Field):
                     s = BaseList[i]*BaseList[j]
                     traces.append(s.trace())
         else:
-            sigma = equation.SimMethod(self.polynomial)
-            #print sigma
+            sigma = self.getConj()
             f = []
             for i in range(n):
                 f.append(zpoly(Basis[i]))
@@ -191,6 +208,7 @@ class NumberField (ring.Field):
         S = matrix.unitMatrix(n)
         L = lattice.LLL(S, M)[0]
         
+
         #Step 4.
         Ch_Basis = []
         for i in range(n):
@@ -198,13 +216,11 @@ class NumberField (ring.Field):
             for v in range(n):
                 base_cor += BaseList[v]*L.compo[v][i]
             Ch_Basis.append(base_cor)
-            print Ch_Basis.append(base_cor)
 
         C = []
         a = Ch_Basis[0]
         for i in range(n):
-            coeff = Ch_Basis[i].ch_approx(appr[0]).charpoly
-            print coeff
+            coeff = Ch_Basis[i].ch_basic().getCharPoly()
             C.append(zpoly(coeff))
             
         #Step 5.
@@ -301,11 +317,31 @@ class NumberField (ring.Field):
             return True
         return False
 
+    # properties
+    def _getOne(self):
+        "getter for one"
+        if self._one is None:
+            self._one = BasicAlgNumber([[1] + [0] * (self.degree - 1), 1],
+                              self.polynomial)
+        return self._one
+
+    one = property(_getOne, None, None, "multiplicative unit.")
+
+    def _getZero(self):
+        "getter for zero"
+        if self._zero is None:
+            self._zero = BasicAlgNumber([[0] + [0] * (self.degree - 1), 1],
+                              self.polynomial)
+        return self._zero
+
+    zero = property(_getZero, None, None, "additive unit.")
+
+
 class BasicAlgNumber(object):
     """
     The class for algebraic number.
     """
-    def __init__(self, valuelist, polynomial):
+    def __init__(self, valuelist, polynomial, precompute=False):
         if len(polynomial) != len(valuelist[0])+1:
             raise ValueError
         self.value = valuelist
@@ -319,33 +355,10 @@ class BasicAlgNumber(object):
         if GCD != 1:
             self.coeff = [i//GCD for i in self.coeff]
             self.denom = self.denom//GCD
-
-        conj = equation.SimMethod(self.polynomial)
-        self.conj = conj
-        APP = []
-        for j in range(self.degree):
-            Approx = 0
-            for i in range(self.degree):
-                Approx += self.coeff[i]*(conj[j]**i)
-            APP.append(Approx)
-        self.approx = APP
-
-        Conj = []
-        for i in range(self.degree):
-            conj_approx = 0
-            for j in range(self.degree):
-                conj_approx += (self.coeff[j])*((self.conj[i])**j)
-            Conj.append(conj_approx)
-        P = uniutil.polynomial({0:-Conj[0], 1:1}, ring.getRing(Conj[0]))
-        for i in range(1, self.degree):
-            P *= uniutil.polynomial({0:-Conj[i], 1:1}, ring.getRing(Conj[i]))
-        charcoeff = []
-        for i in range(self.degree + 1):
-            if hasattr(P[i], "real"):
-                charcoeff.append(int(math.floor(P[i].real + 0.5)))
-            else:
-                charcoeff.append(int(math.floor(P[i] + 0.5)))
-        self.charpoly = charcoeff
+        if precompute:
+            self.getConj()
+            self.getApprox()
+            self.getCharPoly()
     
     def __repr__(self):
         return_str = '%s(%s, %s)' % (self.__class__.__name__, [self.coeff, self.denom], self.polynomial)
@@ -458,6 +471,49 @@ class BasicAlgNumber(object):
         j = (g * h).monic_mod(f)
         jcoeff = [j[i] for i in range(self.degree)]
         return BasicAlgNumber([jcoeff, d], self.polynomial)
+
+    def getConj(self):
+        """
+        Return (approximate) solutions of self.polynomial.
+        We can discriminate the conjugate field of self by these values.
+        """
+        if not hasattr(self, "conj"):
+            self.conj = NumberField(self.polynomial).getConj()
+        return self.conj
+
+    def getApprox(self):
+        """
+        Return the approximations of all conjugates of self.
+        """
+        if not hasattr(self, "approx"):
+            APP = []
+            for i in range(self.degree):
+                Approx = 0
+                for j in range(self.degree):
+                    Approx += self.coeff[j]*(self.getConj()[i]**j)
+                APP.append(Approx)
+            self.approx = APP
+        return self.approx
+
+    def getCharPoly(self):
+        """
+        Return the characteristic polynomial of theta 
+        by compute products of (x-theta_i).
+        """
+        if not hasattr(self, "charpoly"):
+            Conj = self.getApprox()
+            P = uniutil.polynomial({0:-Conj[0], 1:1}, ring.getRing(Conj[0]))
+            for i in range(1, self.degree):
+                P *= uniutil.polynomial({0:-Conj[i], 1:1}, 
+                    ring.getRing(Conj[i]))
+            charcoeff = []
+            for i in range(self.degree + 1):
+                if hasattr(P[i], "real"):
+                    charcoeff.append(int(math.floor(P[i].real + 0.5)))
+                else:
+                    charcoeff.append(int(math.floor(P[i] + 0.5)))
+            self.charpoly = charcoeff
+        return self.charpoly
 
     def getRing(self):
         """
