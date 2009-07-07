@@ -443,6 +443,13 @@ class Matrix(object):
                     mat.append(self[i, j])
             return createMatrix(len(I), len(J), mat, self.coeff_ring)
 
+    def toMatrix(self, flag=True):
+        """
+        return the matrix (self)
+        (this method is for compatibility to vector)
+        """
+        return self
+
 
 class SquareMatrix(Matrix):
     """
@@ -1714,6 +1721,15 @@ class Subspace(FieldMatrix):
         for row in mat.compo:
             compo += row
         return cls(mat.row, mat.column, compo, mat.coeff_ring, isbasis)
+
+    def toFieldMatrix(self):
+        """
+        Subspace -> Field(Square)Matrix
+        """
+        if self.row == self.column:
+            self.__class__ = FieldSquareMatrix
+        else:
+            self.__class__ = FieldMatrix
 
     def isSubspace(self, other):
         """ 
