@@ -195,7 +195,12 @@ def _kernel_of_qpow(omega, q, p, minpoly, n):
                 raise ValueError("omega is not a basis")
         qpow.setColumn(j + 1, a_j)
 
-    return qpow.kernel()
+    result = qpow.kernel()
+    if result is None:
+        _log.debug("(_k_q): trivial kernel")
+        return matrix.zeroMatrix(n, 1, field_p)
+    else:
+        return result
 
 def _p_module(alpha, l, p, theminpoly):
     """

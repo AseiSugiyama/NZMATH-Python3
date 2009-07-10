@@ -5,7 +5,7 @@ import nzmath.poly.uniutil as uniutil
 import nzmath.round2 as round2
 
 import logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Round2Test (unittest.TestCase):
@@ -90,6 +90,29 @@ class Round2Test (unittest.TestCase):
         self.assert_(result)
         self.assertEqual(2, len(result))
         self.assertEqual(-2**12 * 3**10, result[1], result)
+
+    def test6480(self):
+        coeff = [6480, 1296, -252, 36, -7, 1]
+        poly_disc = uniutil.polynomial(enumerate(coeff), self.Z).discriminant()
+        result = round2.round2(coeff)
+        self.assert_(result)
+        self.assertEqual(2, len(result))
+        bases, disc = result
+        self.assert_(poly_disc > disc, result)
+        self.failIf(poly_disc % disc.numerator, result)
+        #(by magma)
+        #> IntegralBasis(NumberField(PolynomialRing(RationalField())![6480,1296,-252,36,-7,1]));
+        #[
+        #    1,
+        #    $.1,
+        #    1/6*($.1^2 + 5*$.1),
+        #    1/216*($.1^3 + 11*$.1^2 + 54*$.1 + 36),
+        #    1/1296*($.1^4 + 5*$.1^3 + 204*$.1^2 + 792*$.1 + 1080)
+        #]
+        # check only the last one
+        self.assertEqual([1080, 792, 204, 5, 1],
+                         [1296*c for c in bases[-1]],
+                         result)
 
 
 def suite(suffix="Test"):
