@@ -6,6 +6,13 @@ import nzmath.gcd as gcd
 import nzmath.prime as prime
 import nzmath.factor.find as find
 
+# TODO: add psyco to config entry
+##         try:
+##             import psyco
+##             psyco.full()
+##         except ImportError:
+##             pass
+
 _log = logging.getLogger('nzmath.factor.mpqs')
 
 class QS(object):
@@ -67,11 +74,6 @@ class QS(object):
         self.minus_check = minus_val # This is "x" that Q(x) is minus value.
 
     def run_sieve(self):
-        try:
-            import pysco
-            pysco.full()
-        except ImportError:
-            pass
         T = time.time()
         M = self.Srange
         start_location = []
