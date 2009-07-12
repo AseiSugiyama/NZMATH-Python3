@@ -1,7 +1,7 @@
 from __future__ import division
 import unittest
 import nzmath.arith1 as arith1
-import sandbox.poly.hensel as hensel
+import nzmath.poly.hensel as hensel
 
 
 class HenselTestBase(unittest.TestCase):

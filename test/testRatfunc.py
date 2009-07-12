@@ -1,7 +1,7 @@
 import unittest
-import sandbox.poly.ratfunc as ratfunc
+import nzmath.poly.ratfunc as ratfunc
 import nzmath.poly.uniutil as uniutil
-import sandbox.poly.ring as ring
+import nzmath.poly.ring as ring
 from nzmath.rational import theRationalField as Q
 from nzmath.rational import theIntegerRing as Z
 
