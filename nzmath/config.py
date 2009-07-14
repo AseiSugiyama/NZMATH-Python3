@@ -72,6 +72,25 @@ HAVE_NET = None
 CHECK_NET = True
 
 #
+# psyco
+# -----
+#
+# psyco is a package providing JIT compiler for Python.
+# http://psyco.sourceforge.net/
+# The package is usable only on x86 CPUs.
+# This package is used in factor/mpqs module.
+#
+# If you have psyco installed, and would like to use it fully, set:
+#HAVE_PSYCO = True
+#CHECK_PSYCO = False
+# If you would like to disable it no matter whether it is available:
+#HAVE_PSYCO = False
+#CHECK_PSYCO = False
+# The default values mean "I don't know, check it and use it if possible":
+HAVE_PSYCO = None
+CHECK_PSYCO = True
+
+#
 # Assumptions
 # ===========
 #
@@ -221,6 +240,23 @@ if CHECK_NET:
     HAVE_NET = check_net()
 
 #
+# psyco availability
+# ------------------
+#
+def check_psyco():
+    """
+    Check if psyco is importable or not.
+    """
+    try:
+        import psyco
+        return True
+    except ImportError:
+        return False
+
+if CHECK_PSYCO:
+    HAVE_PSYCO = check_psyco()
+        
+#
 # data directory
 # --------------
 #
@@ -248,4 +284,5 @@ if CHECK_DATADIR:
 
 # Declare exported variables.
 
-__all__ = ['HAVE_MPMATH', 'HAVE_SQLITE3', 'HAVE_NET', 'GRH', 'DATADIR']
+__all__ = ['HAVE_MPMATH', 'HAVE_SQLITE3', 'HAVE_NET', 'HAVE_PSYCO',
+           'GRH', 'DATADIR']
