@@ -1532,7 +1532,7 @@ class FinitePrimeFieldPolynomial(FiniteFieldPolynomial):
         except AttributeError:
             # maybe fail due to lacking attribute .n sometimes
             _log.debug("fall back to good old ring_mul")
-            return PolynomialInterface.ring_mul(self, other)
+            return univar.PolynomialInterface.ring_mul(self, other)
 
     def square(self):
         """
