@@ -158,10 +158,10 @@ if confdir is None:
         homedir = os.environ.get('HOME', None)
         if homedir is not None:
             confdir = os.path.join(homedir, '.nzmath.d')
-    if confdir is not None and os.path.exists(confdir):
-        sys.path.insert(0, confdir)
-    else:
-        warnings.warn("please set NZMATHCONFDIR")
+if confdir is not None and os.path.exists(confdir):
+    sys.path.insert(0, confdir)
+else:
+    warnings.warn("please set NZMATHCONFDIR")
 try:
     # overwrite the default settings with user's nzmathconf
     from nzmathconf import *
