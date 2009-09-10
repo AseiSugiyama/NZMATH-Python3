@@ -1,21 +1,24 @@
 import unittest
 import itertools
-from sys import maxint
+import sys
 import nzmath.bigrange as bigrange
 
 
 class CountTest (unittest.TestCase):
     def testCount(self):
+        maxint = sys.maxint
         from_maxint = [maxint, maxint+1, maxint+2]
         self.assertEqual(from_maxint,
                          [i for i in itertools.islice(bigrange.count(maxint), 3)])
-        # otoh, itertools.count raises ...
-        self.assertRaises(OverflowError,
+        # otoh, itertools.count raises in Python 2.5 (2.6 doesn't raise)
+        if sys.version.startswith('2.5'):
+            self.assertRaises(OverflowError,
                           itertools.islice(itertools.count(maxint), 3).next)
 
 
 class ProgressionTest (unittest.TestCase):
     def testArithmeticProgression(self):
+        maxint = sys.maxint
         from_maxint = [maxint, maxint+1, maxint+2]
         self.assertEqual(from_maxint,
                          [i for i in itertools.islice(bigrange.arithmetic_progression(maxint, 1), 3)])
