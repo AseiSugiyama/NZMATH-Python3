@@ -2,7 +2,7 @@ from __future__ import division
 import unittest
 import logging
 import nzmath.equation as equation
-from operator import mul
+from nzmath.arith1 import product
 from nzmath.polynomial import OneVariableDensePolynomial
 
 
@@ -37,7 +37,7 @@ class GlobalEquationTestBase (unittest.TestCase):
         """
         # norm
         degree = len(coefficients) - 1
-        self.assertAlmostEqual(0, abs((-1)**degree*coefficients[0] - reduce(mul, solutions, 1)))
+        self.assertAlmostEqual(0, abs((-1)**degree*coefficients[0] - product(solutions)))
         # trace
         self.assertAlmostEqual(0, abs(-coefficients[-2] - sum(solutions)))
 
@@ -55,6 +55,29 @@ class GlobalEquationTest (GlobalEquationTestBase):
 
 
 class SimMethodTest (GlobalEquationTestBase):
+    def test_degree3(self):
+        self.assert_solve(equation.SimMethod, [1, 0, 0, 1])
+        self.assert_solve(equation.SimMethod, [-2, 0, 0, 1])
+
+    def test_degree4(self):
+        self.assert_solve(equation.SimMethod, [-2, 0, 1, 0, 1])
+
+    def test_degree5(self):
+        self.assert_solve(equation.SimMethod, [-2, 1, 0, 0, 1, 1])
+
+    def test_degree6(self):
+        # example from H.Cohen's book p.169 (Olivier's example)
+        self.assert_solve(equation.SimMethod, [4, 17, 10, -12, -7, 2, 1])
+
+class SimMethodPluginTest (GlobalEquationTestBase):
+    def setUp(selt):
+        from sandbox.plugins import SETPRECISION
+        SETPRECISION(200)
+
+    def tearDown(self):
+        from sandbox.plugins import SETPRECISION
+        SETPRECISION(53)
+
     def test_degree3(self):
         self.assert_solve(equation.SimMethod, [1, 0, 0, 1])
         self.assert_solve(equation.SimMethod, [-2, 0, 0, 1])

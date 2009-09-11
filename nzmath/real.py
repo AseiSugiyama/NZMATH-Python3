@@ -1,77 +1,140 @@
 """
-The module `real' provides arbitrary precision real numbers and their
-utilities.  The functions provided are corresponding to the `math'
+real -- real numbers and the real number field.
+
+The module real provides arbitrary precision real numbers and their
+utilities.  The functions provided are corresponding to the math
 standard module.
 """
 
 from __future__ import division
-import math
 import itertools
+import warnings
 
-import nzmath.rational as rational
 import nzmath.arith1 as arith1
+import nzmath.rational as rational
 import nzmath.ring as ring
+from nzmath.plugins import MATHMODULE as math, FLOATTYPE as Float, \
+     CHECK_REAL_OR_COMPLEX as check_real_or_complex
 
 
-class Real(float, ring.FieldElement):
+class Real(ring.FieldElement):
     """
     Real is a class of real. 
     This class is only for consistency for other Ring object.
     """
 
+    convertable = (Float, int, long, rational.Rational)
+
     def __init__(self, value):
+        """
+        value will be wrapped in Float.
+        """
         ring.FieldElement.__init__(self)
+        if isinstance(value, rational.Rational):
+            self.data = value.toFloat()
+        else:
+            self.data = Float(value)
 
     def __add__(self, other):
-        return float(self) + float(other)
+        if isinstance(other, Real):
+            result = self.data + other.data
+        elif isinstance(other, self.convertable):
+            result = self.data + other
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
-    __radd__ = __add__
+    def __radd__(self, other):
+        if isinstance(other, self.convertable):
+            result = other + self.data
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
     def __sub__(self, other):
-        return float(self) - float(other)
+        if isinstance(other, Real):
+            result = self.data - other.data
+        elif isinstance(other, self.convertable):
+            result = self.data - other
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
     def __rsub__(self, other):
-        return float(other) - float(self)
+        if isinstance(other, self.convertable):
+            result = other - self.data
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
     def __mul__(self, other):
-        return float(self) * float(other)
+        if isinstance(other, Real):
+            result = self.data * other.data
+        elif isinstance(other, self.convertable):
+            result = self.data * other
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
-    __rmul__ = __mul__
+    def __rmul__(self, other):
+        if isinstance(other, self.convertable):
+            result = other * self.data
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
-    def __div__(self, other):
-        return float(self) / float(other)
+    def __truediv__(self, other):
+        if isinstance(other, Real):
+            result = self.data / other.data
+        elif isinstance(other, self.convertable):
+            result = self.data / other
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
-    def __rdiv__(self, other):
-        return float(other) / float(self)
+    __div__ = __truediv__
 
-    __truediv__ = __div__
+    def __rtruediv__(self, other):
+        if isinstance(other, self.convertable):
+            result = other / self.data
+        else:
+            return NotImplemented
+        return self.__class__(result)
 
-    __rtruediv__ = __rdiv__
+    __rdiv__ = __rtruediv__
 
-    def __pow__(self, other, err=None):
-        if other in theRealField:
-            if err == None:
-                return Real(pow(self, float(other)))
-            else:
-                return Real(pow(self, float(other), err))
+    def __pow__(self, other):
+        if isinstance(other, Real):
+            result = math.pow(self.data, other.data)
+        elif isinstance(other, self.convertable):
+            result = math.pow(self.data, other)
+        return result
+
+    def __eq__(self, other):
+        if isinstance(other, Real):
+            return self.data == other.data
+        elif isinstance(other, self.convertable):
+            return self.data == other
         else:
             return NotImplemented
 
     def getRing(self):
+        """
+        Return the real field instance.
+        """
         return theRealField
 
 
-class RealField (ring.Field):
+class RealField(ring.Field):
     """
     RealField is a class of the field of real numbers.
     The class has the single instance 'theRealField'.
     """
 
     def __init__(self):
-        self.properties = ring.CommutativeRingProperties()
-        self.properties.setIsfield(True)
-        self._one = 1.0
-        self._zero = 0.0
+        ring.Field.__init__(self)
+        self._one = Real(1)
+        self._zero = Real(0)
 
     def __str__(self):
         return "R"
@@ -80,20 +143,27 @@ class RealField (ring.Field):
         return "%s()" % (self.__class__.__name__, )
 
     def __contains__(self, element):
-        reduced = +element
-        if reduced in rational.theRationalField:
+        if isinstance(element, Constant):
+            element = element.cache
+        if isinstance(element, (int, long, float, Float, Real, rational.Rational)):
             return True
-        if isinstance(reduced, float):
+        else:
+            try:
+                if check_real_or_complex(element):
+                    return True
+            except TypeError:
+                if hasattr(element, 'conjugate'):
+                    return element == element.conjugate()
+                pass
+        if hasattr(element, 'getRing') and element.getRing().issubring(self):
             return True
-        if isinstance(reduced, Real):
-            return True
-        return False  ## How to know a number is real ?
+        return False
 
     def __eq__(self, other):
         return isinstance(other, self.__class__)
 
     def __ne__(self, other):
-        return not (self == other)
+        return not self.__eq__(other)
 
     def __hash__(self):
         return 2
@@ -127,7 +197,7 @@ class RealField (ring.Field):
         return aRing.issubring(self)
 
     def createElement(self, seed):
-        return float(seed)
+        return Float(seed)
 
     def getCharacteristic(self):
         """
@@ -136,8 +206,12 @@ class RealField (ring.Field):
         return 0
 
 
-class RelativeError:
+class RelativeError(object):
+    """
+    Ralative error of real number
+    """
     def __init__(self, comparity, numerator, denominator=1):
+        warnings.warn(DeprecationWarning("RelativeError is deprecated"))
         self.comparity = comparity
         self.relativeerrorrange = rational.Rational(numerator, denominator)
 
@@ -163,13 +237,11 @@ class RelativeError:
 
     def nearlyEqual(self, x, y):
         """
-
         Compare two real numbers with respect to this error, whether
         they are within the given range or not.  If self.issmall(),
         the first argument must be smaller than the second.  If
         self.islarge(), the first argument must be bigger than the
         second.
-
         """
         return self.absoluteerror(x).nearlyEqual(x, y)
 
@@ -200,8 +272,9 @@ class RelativeError:
     __truediv__ = __div__
 
 
-class AbsoluteError:
+class AbsoluteError(object):
     def __init__(self, comparity, numerator, denominator=1):
+        warnings.warn(DeprecationWarning("AbsoluteError is deprecated"))
         self.comparity = comparity
         self.absoluteerrorrange = abs(rational.Rational(numerator, denominator))
 
@@ -223,13 +296,11 @@ class AbsoluteError:
 
     def nearlyEqual(self, x, y):
         """
-
         Compare two real numbers with respect to this error, whether
         they are within the given range or not.  If self.issmall(),
         the first argument must be smaller than the second.  If
         self.islarge(), the first argument must be bigger than the
         second.
-
         """
         if self.issmall():
             return 0 <= y - x < self.absoluteerrorrange
@@ -259,29 +330,23 @@ class AbsoluteError:
 
 
 ### function rewrite
-class ExponentialPowerSeries:
+class ExponentialPowerSeries(object):
     """
-
     A class for exponential power serieses, whose n-th term has form:
       a_n * x ** n / n!
-
     """
     def __init__(self, iterator):
         """
-
         ExponentialPowerSeries(iterator) constructs an exponential
         power series with coefficient generated by the given iterator,
         which can be an infinite iterator.
-
         """
         self.iterator = iterator
         self.dirtyflag = False
 
     def terms(self, x):
         """
-
         Generator of terms of series with assigned x value.
-
         """
         if x == 0:
             yield rational.Rational(self.iterator.next())
@@ -370,9 +435,7 @@ def exp(x, err=defaultError):
 
 def sqrt(x, err=defaultError):
     """
-
     sqrt(x [,err]) returns the positive square root of real number x.
-
     """
     rx = rational.Rational(x)
     if rx.numerator < 0:
@@ -387,15 +450,13 @@ def sqrt(x, err=defaultError):
             rt = newrt
             newrt = (rt + rx / rt) / 2
     else:
-        newrt = rational.Rational(math.sqrt(x))
+        newrt = rational.Rational(math.sqrt(x.toFloat()))
     return newrt
 
 def log(x, base=None, err=defaultError):
     """
-
     log(x) returns logarithm of a positive number x.  If an additional
     argument base is given, it returns logarithm of x to the base.
-
     """
     if isinstance(x, complex):
         raise TypeError("real.log is not for complex numbers.")
@@ -450,16 +511,12 @@ def log1piter(xx):
 
 def _log2(err=defaultError):
     """
-
     _log2([err]) returns the logarithm of 2.
-
     """
     def log_iter_half():
         """
-
         log_iter_half generates the terms of Taylor expansion series
         of logarithm of 1/2.
-
         """
         d = 1
         t = rational.Rational(1, 2)
@@ -478,12 +535,10 @@ def _log2(err=defaultError):
 
 def piGaussLegendre(err=defaultError):
     """
-
     piGaussLegendre computes pi by Gauss-Legendre algorithm.
-
     """
     if isinstance(err, RelativeError):
-        _err = err.absoluteerror(math.pi)
+        _err = err.absoluteerror(3.1415926535897932)
     else:
         _err = err
     werr = AbsoluteError(0, _err.absoluteerrorrange ** 2)
@@ -525,10 +580,8 @@ def eContinuedFraction(err=defaultError):
 
 def floor(x):
     """
-
     floor(x) returns the integer; if x is an integer then x itself,
     otherwise the biggest integer less than x.
-
     """
     rx = rational.Rational(x)
     if rx.denominator == 1:
@@ -537,10 +590,8 @@ def floor(x):
 
 def ceil(x):
     """
-
     ceil(x) returns the integer; if x is an integer then x itself,
     otherwise the smallest integer greater than x.
-
     """
     rx = rational.Rational(x)
     if rx.denominator == 1:
@@ -549,11 +600,9 @@ def ceil(x):
 
 def tranc(x):
     """
-
     tranc(x) returns the integer; if x is an integer then x itself,
     otherwise the nearest integer to x.  If x has the fraction part
     1/2, then bigger one will be chosen.
-
     """
     rx = rational.Rational(x)
     if rx.denominator == 1:
@@ -562,9 +611,7 @@ def tranc(x):
 
 def sin(x, err=defaultError):
     """
-
     sin(x [,err]) returns the sine of x.
-
     """
     if not isinstance(err, defaultError.__class__) or err <= defaultError:
         rx = rational.Rational(x)
@@ -607,10 +654,8 @@ def sin(x, err=defaultError):
 
 def _sinTaylor(x, err=defaultError):
     """
-
     _sinTaylor(x [,err]) returns the sine of x by Taylor expansion.
     It is recommended to use only for 0 <= x <= pi / 4.
-
     """
     rx = rational.Rational(x)
     sinSeries = ExponentialPowerSeries(itertools.cycle((0, rational.Integer(1), 0, rational.Integer(-1))))
@@ -618,9 +663,7 @@ def _sinTaylor(x, err=defaultError):
 
 def cos(x, err=defaultError):
     """
-
     cos(x [,err]) returns the cosine of x.
-
     """
     if err <= defaultError:
         rx = rational.Rational(x)
@@ -660,10 +703,8 @@ def cos(x, err=defaultError):
 
 def _cosTaylor(x, err=defaultError):
     """
-
     _cosTaylor(x [,err]) returns the cosine of x by Taylor series.
     It is recomended to use only for 0 <= x <= pi / 4.
-
     """
     cosSeries = ExponentialPowerSeries(itertools.cycle((rational.Integer(1), 0, rational.Integer(-1), 0)))
     rx = rational.Rational(x)
@@ -671,17 +712,13 @@ def _cosTaylor(x, err=defaultError):
 
 def tan(x, err=defaultError):
     """
-
     tan(x [,err]) returns the tangent of x.
-
     """
     return sin(x, err) / cos(x, err)
 
 def sinh(x, err=defaultError):
     """
-
     sinh(x [,err]) returns the hyperbolic sine of x.
-
     """
     if not isinstance(err, defaultError.__class__) or err <= defaultError:
         series = ExponentialPowerSeries(itertools.cycle((0, rational.Integer(1),)))
@@ -694,9 +731,7 @@ def sinh(x, err=defaultError):
 
 def cosh(x, err=defaultError):
     """
-
     cosh(x [,err]) returns the hyperbolic cosine of x.
-
     """
     if err <= defaultError:
         series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1), 0,)))
@@ -709,18 +744,14 @@ def cosh(x, err=defaultError):
 
 def tanh(x, err=defaultError):
     """
-
     tanh(x [,err]) returns the hyperbolic tangent of x.
-
     """
     rx = rational.Rational(x)
     return sinh(rx, err) / cosh(rx, err)
 
 def acos(x, err= defaultError):
     """
-
     acos(x [,err]) returns arc cosine of x.
-
     """
     if x > 1 or x < -1:
         raise ValueError("%s is not in the range [-1, 1]." % str(x))
@@ -738,9 +769,7 @@ def acos(x, err= defaultError):
 
 def asin(x, err=defaultError):
     """
-
     asin(x [,err]) returns arc sine of x.
-
     """
     if x > 1 or x < -1:
         raise ValueError("%s is not in the range [-1, 1]." % str(x))
@@ -769,9 +798,7 @@ def asin(x, err=defaultError):
 
 def atan(x, err=defaultError):
     """
-
     atan(x [,err]) returns arc tangent of x.
-
     """
     if not isinstance(err, defaultError.__class__) or err <= defaultError:
         # atan(x) = -atan(-x)
@@ -801,12 +828,10 @@ def atan(x, err=defaultError):
 
 def atan2(y, x, err=defaultError):
     """
-
     atan2(y, x [,err]) returns the arc tangent of y/x.
     Unlike atan(y/x), the signs of both x and y are considered.
 
     It is unrecomended to obtain the value of pi with atan2(0,1).
-
     """
     if x > 0 and y > 0:
         return atan(y/x)
@@ -822,17 +847,13 @@ def atan2(y, x, err=defaultError):
 
 def hypot(x, y, err=defaultError):
     """
-
     hypot(x, y [,err]) returns sqrt(x**2 + y**2).
-
     """
     return sqrt(x**2 + y**2, err)
 
 def pow(x, y, err=defaultError):
     """
-
     x ** y
-
     """
     if isinstance(y, (int, long)):
         return rational.Rational(x) ** y
@@ -840,34 +861,26 @@ def pow(x, y, err=defaultError):
 
 def degrees(rad, err=defaultError):
     """
-
     converts angle rad from radians to degrees.
-
     """
     return rad * 180 / pi(err)
 
 def radians(deg, err=defaultError):
     """
-
     converts angle deg from degrees to radians.
-
     """
     return deg * pi(err) / 180
 
 def fabs(x):
     """
-
     returns absolute value of x.
-
     """
     return abs(rational.Rational(x))
 
 def fmod(x, y):
     """
-
     returns x - n * y, where n is the quotient of x / y, rounded
     towards zero to an integer.
-
     """
     fquot = rational.Rational(x) / y
     if fquot < 0:
@@ -878,12 +891,10 @@ def fmod(x, y):
 
 def frexp(x):
     """
-
-    returns a tuple (m, e) where x = m * 2 ** e, 1/2 <= abs(m) < 1 and
+    Return a tuple (m, e) where x = m * 2 ** e, 1/2 <= abs(m) < 1 and
     e is an integer.
     This function is provided as the counter-part of math.frexp, but it
     might not be useful.
-
     """
     if x == 0:
         return (rational.Rational(0), 0)
@@ -907,18 +918,14 @@ def frexp(x):
 
 def ldexp(x, i):
     """
-
     returns x * 2 ** i.
-
     """
     return x * 2 ** i
 
 def EulerTransform(iterator):
     """
-
     Return an iterator which yields terms of Euler transform of the
     given iterator.
-
     """
     stock = []
     b = rational.Rational(1, 2)
@@ -931,9 +938,8 @@ def EulerTransform(iterator):
         b /= 2
         l += 1
 
-class Constant:
+class Constant(object):
     """
-
     Constant provides constant-like behavior for Float calculation
     context.  It caches the constant value and re-computes for more
     precision by request.
@@ -946,15 +952,12 @@ class Constant:
     4.14159265358979
     >>> pi(RelativeError(0,1,2**100)) # for 100 bit precision
     3.1415926535897932384626433832795
-
     """
     def __init__(self, getValue, err=defaultError):
         """
-
         The first argument must be a function which computes the
         constant with an argument specifies error.
         The second argument can be used to set the default error.
-
         """
         self.getValue = getValue
         self.err = err
@@ -962,9 +965,7 @@ class Constant:
 
     def __call__(self, err):
         """
-
         Return the value at least as accurate as the given error.
-
         """
         if self.err < err:
             self.cache = self.getValue(err)
@@ -973,7 +974,12 @@ class Constant:
 
     # delegations
     def __add__(self, other):
-        return self.cache.__add__(other)
+        if isinstance(other, Constant):
+            return self.cache.__add__(other.cache)
+        try:
+            return self.cache.__add__(other)
+        except:
+            return NotImplemented
 
     def __radd__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -982,7 +988,12 @@ class Constant:
             return self.cache.__radd__(other)
 
     def __sub__(self, other):
-        return self.cache.__sub__(other)
+        if isinstance(other, Constant):
+            return self.cache.__sub__(other.cache)
+        try:
+            return self.cache.__sub__(other)
+        except:
+            return NotImplemented
 
     def __rsub__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -991,7 +1002,12 @@ class Constant:
             return self.cache.__rsub__(other)
 
     def __mul__(self, other):
-        return self.cache.__mul__(other)
+        if isinstance(other, Constant):
+            return self.cache.__mul__(other.cache)
+        try:
+            return self.cache.__mul__(other)
+        except:
+            return NotImplemented
 
     def __rmul__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -1000,7 +1016,12 @@ class Constant:
             return self.cache.__rmul__(other)
 
     def __div__(self, other):
-        return self.cache.__div__(other)
+        if isinstance(other, Constant):
+            return self.cache.__div__(other.cache)
+        try:
+            return self.cache.__div__(other)
+        except:
+            return NotImplemented
 
     def __rdiv__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -1009,7 +1030,12 @@ class Constant:
             return self.cache.__rdiv__(other)
 
     def __truediv__(self, other):
-        return self.cache.__truediv__(other)
+        if isinstance(other, Constant):
+            return self.cache.__truediv__(other.cache)
+        try:
+            return self.cache.__truediv__(other)
+        except:
+            return NotImplemented
 
     def __rtruediv__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -1018,7 +1044,12 @@ class Constant:
             return self.cache.__rtruediv__(other)
 
     def __divmod__(self, other):
-        return self.cache.__divmod__(other)
+        if isinstance(other, Constant):
+            return self.cache.__divmod__(other.cache)
+        try:
+            return self.cache.__divmod__(other)
+        except:
+            return NotImplemented
 
     def __rdivmod__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -1027,7 +1058,12 @@ class Constant:
             return self.cache.__rdivmod__(other)
 
     def __mod__(self, other):
-        return self.cache.__mod__(other)
+        if isinstance(other, Constant):
+            return self.cache.__mod__(other.cache)
+        try:
+            return self.cache.__mod__(other)
+        except:
+            return NotImplemented
 
     def __rmod__(self, other):
         if isinstance(other, self.cache.__class__):
@@ -1083,8 +1119,8 @@ class Constant:
         except:
             raise
 
+# constants
+theRealField = RealField()
 pi = Constant(piGaussLegendre)
 e = Constant(eContinuedFraction)
 Log2 = Constant(lambda err: _log2(err))
-
-theRealField = RealField()

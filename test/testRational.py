@@ -2,6 +2,7 @@ from __future__ import division
 import unittest
 from nzmath.rational import *
 import nzmath.finitefield as finitefield
+from nzmath.plugins import FLOATTYPE as Float
 # Rational, Integer, theIntegerRing, theRationalField
 
 class RationalTest (unittest.TestCase):
@@ -59,8 +60,12 @@ class RationalTest (unittest.TestCase):
         self.assertEqual(500000000000000000000000000000000000000,
             1000000000000000000000000000000000000000 * Rational(1,2))
         self.assertEqual(Rational(1, 36), Rational(1,2) * Rational(1,3) * Rational(1,6))
-        self.assertEqual(Rational(1,4), Rational(1,2) * 0.5)
-        self.assertEqual(Rational(1,4), 0.5 * Rational(1,2))
+        ## self.assertEqual(Rational(1,4), Rational(1,2) * 0.5)
+        ## self.assertEqual(Rational(1,4), 0.5 * Rational(1,2))
+        self.assertEqual(0.25, Rational(1,2) * 0.5)
+        self.assertEqual(0.25, 0.5 * Rational(1,2))
+        self.assertEqual(Float(0.25), Rational(1,2) * Float(0.5))
+        self.assertEqual(Float(0.25), Float(0.5) * Rational(1,2))
 
     def testImul(self):
         a = Rational(1,2)

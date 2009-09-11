@@ -1,8 +1,9 @@
+from __future__ import division
 import unittest
-import math
 import nzmath.real as real
 import nzmath.rational as rational
 import nzmath.imaginary as imaginary
+from nzmath.plugins import MATHMODULE as math
 
 
 class ErrorTest (unittest.TestCase):
@@ -96,7 +97,8 @@ class NewFunctionTest (unittest.TestCase):
     def testPiGaussLegendre(self):
         pi = real.pi
         self.assertEqual(rational.Rational(355, 113), pi.trim(365))
-        self.assert_(abs(pi - real.piGaussLegendre(self.err)) < self.absolute)
+        pi_to_err = real.piGaussLegendre(self.err)
+        self.assertAlmostEqual(pi, pi_to_err, 14, (pi - pi_to_err).trim(2**80))
 
     def testFloor(self):
         self.assertEqual(3, real.floor(3))
@@ -140,7 +142,7 @@ class NewFunctionTest (unittest.TestCase):
         self.assertEqual(0, real.asin(0))
         self.assert_(abs(real.pi / 2 - real.acos(0)) < self.absolute)
         self.assertEqual(0, real.atan(0))
-        self.assert_(real.defaultError.nearlyEqual(real.pi/4, real.atan(1.0/2)+real.atan(1.0/3)))
+        self.assertAlmostEqual(real.pi / 4, real.atan(1/2) + real.atan(1/3))
 
     def testHypot(self):
         self.assert_(abs(real.hypot(3, 4) - 5) < self.absolute)

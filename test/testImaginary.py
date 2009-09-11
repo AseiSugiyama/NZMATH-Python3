@@ -1,5 +1,5 @@
+from __future__ import division
 import unittest
-import time
 import nzmath.imaginary as imaginary
 import nzmath.real as real
 import nzmath.rational as rational
@@ -13,21 +13,21 @@ class ImaginaryTest (unittest.TestCase):
 
     def testInverse(self):
         a = imaginary.Complex(1, 1)
-        assert a == a.inverse().inverse()
+        self.assertEqual(a, a.inverse().inverse())
         b = imaginary.Complex(2, 0)
-        assert b.inverse() in real.theRealField
+        self.assert_(b.inverse() in real.theRealField, b.inverse())
 
     def testConjugate(self):
         a = imaginary.Complex(1, 1)
         b = imaginary.Complex(1, -1)
-        assert a.conjugate() == b
-        assert a == a.conjugate().conjugate()
+        self.assertEqual(a.conjugate(), b)
+        self.assertEqual(a, a.conjugate().conjugate())
 
     def testAbs(self):
         root2 = real.sqrt(2)
-        assert root2 == abs(imaginary.Complex(1,1))
-        assert 1 == abs(imaginary.Complex(1, 0))
-        assert 1 == abs(imaginary.Complex(0, 1.0))
+        self.assertAlmostEqual(root2, abs(imaginary.Complex(1, 1)))
+        self.assertEqual(1, abs(imaginary.Complex(1, 0)))
+        self.assertEqual(1, abs(imaginary.Complex(0, 1.0)))
 
     def testWithFloat(self):
         a = imaginary.Complex(8, 1)
@@ -64,26 +64,28 @@ class ImaginaryTest (unittest.TestCase):
     def testSin(self):
         sin1 = imaginary.sin(1)
         sinc1 = imaginary.sin(imaginary.Complex(1, 0))
-        assert imaginary.defaultError.nearlyEqual(imaginary.exp(imaginary.j).imag, sin1)
-        assert sin1 == sinc1, (sin1, sinc1, sin1 - sinc1)
+        #assert imaginary.defaultError.nearlyEqual(imaginary.exp(imaginary.j).imag, sin1)
+        self.assertAlmostEqual(imaginary.exp(imaginary.j).imag, sin1)
+        self.assertAlmostEqual(sin1, sinc1, 7, (sin1, sinc1, sin1 - sinc1))
 
     def testCos(self):
         cos1 = imaginary.cos(1)
         cosc1 = imaginary.cos(imaginary.Complex(rational.Integer(1), 0))
         assert isinstance(cos1, rational.Rational) or imaginary.exp(imaginary.Complex(0, rational.Integer(1))).real == cos1.real
-        assert cos1 == cosc1, (cos1, cosc1, cos1 - cosc1)
+        self.assertAlmostEqual(cos1, cosc1, 7, (cos1, cosc1, cos1 - cosc1))
 
     def testTan(self):
         tan1 = imaginary.tan(1)
         tanc1 = imaginary.tan(imaginary.Complex(rational.Integer(1), 0))
-        assert tan1 == tanc1
+        self.assertEqual(tan1, tanc1)
         assert isinstance(tan1, rational.Rational) and tan1 > 0 or tan1.real > 0
 
     def testLog(self):
         log2 = imaginary.log(2)
         logf2 = imaginary.log(rational.Integer(2))
-        logc2 = imaginary.log(imaginary.Complex(2,0))
-        assert log2 == logf2 == logc2
+        logc2 = imaginary.log(imaginary.Complex(2, 0))
+        self.assertEqual(log2, logf2)
+        self.assertAlmostEqual(logf2, logc2)
         log2inverse = real.log(.5)
         assert abs(imaginary.log(2) + log2inverse) <= rational.Rational(1, 2**(-53))
 
@@ -93,8 +95,8 @@ class ImaginaryTest (unittest.TestCase):
         assert imaginary.tanh(1)
 
     def testConstants(self):
-        assert imaginary.pi ==real.pi
-        assert (0,1) == (imaginary.j.real, imaginary.j.imag)
+        self.assertAlmostEqual(imaginary.pi, real.pi)
+        self.assertEqual((0, 1), (imaginary.j.real, imaginary.j.imag))
 
     def testGetRing(self):
         self.assertEqual(imaginary.theComplexField, imaginary.Complex(1).getRing())

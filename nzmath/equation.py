@@ -1,13 +1,29 @@
+"""
+equation -- methods to solve algebraic equations.
+
+If you would like to solve an equation in the complex field and need
+more precision, then you can import and use plugins.SETPRECISION.
+
+e.g:
+from nzmath.plugins import SETPRECISION
+SETPRECISION(200)
+
+Then, the following computations will be done in such precision, if
+plugins.PRECISION_CHANGEABLE is true.
+"""
+
 from __future__ import division
-import math
-import cmath
 import logging
 
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.bigrange as bigrange
 import nzmath.finitefield as finitefield
+import nzmath.imaginary as imaginary
 import nzmath.poly.uniutil as uniutil
+
+from nzmath.plugins import MATHMODULE as math, CMATHMODULE as cmath, \
+     FLOATTYPE as Float, COMPLEXTYPE as Complex
 
 _log = logging.getLogger('nzmath.equation')
 _log.setLevel(logging.DEBUG)
@@ -45,7 +61,7 @@ def e2(x):
         sqrtd = cmath.sqrt(d)
     return ((-b + sqrtd)/(2*a), (-b - sqrtd)/(2*a))
 
-def e2_Fp(x,p):
+def e2_Fp(x, p):
     """
     p is prime
     f = x[0] + x[1]*t + x[2]*t**2
@@ -73,9 +89,10 @@ def e3(x):
     """
     0 = x[0] + x[1]*t + x[2]*t**2 + x[3]*t**3
     """
-    a = x[2]/x[3]
-    b = x[1]/x[3]
-    c = x[0]/x[3]
+    x3 = Float(x[3])
+    a = x[2] / x3
+    b = x[1] / x3
+    c = x[0] / x3
     p = b - (a**2)/3
     q = 2*(a**3)/27 - a*b/3 + c
     w = (-1 + cmath.sqrt(-3)) / 2
@@ -126,8 +143,8 @@ def Newton(f, initial=1, repeat=250):
         df.append(i * f[i])
     l = initial
     for k in range(repeat):
-        coeff = 0.0
-        dfcoeff = 0.0
+        coeff = Float(0)
+        dfcoeff = Float(0)
         for i in range(1, length):
             coeff = coeff * l + f[-i]
             dfcoeff += dfcoeff * l + df[-i]
@@ -170,7 +187,7 @@ def _SimMethod(g, initials=None, newtoninitial=None, repeat=250):
     else:
         z = initials
 
-    f = uniutil.OneVariableDensePolynomial(g, 'x')
+    f = uniutil.polynomial(enumerate(g), imaginary.theComplexField)
     deg = f.degree()
     df = f.differentiate()
 
@@ -210,7 +227,7 @@ def _initialize(g, newtoninitial=None):
     deg = len(g) - 1
     center = -g[-2]/(deg*g[-1])
     about_two_pi = 6
-    angular_step = cmath.exp(1j * about_two_pi / deg)
+    angular_step = cmath.exp(Complex(0, 1) * about_two_pi / deg)
     angular_move = r
     z = []
     for i in range(deg):
@@ -228,96 +245,96 @@ def _upper_bound_of_roots(g):
     return max([pow(weight*abs(c/g[-1]), 1/len(g)) for c in g])
 
 def root_Fp(g, p, flag=True):
-	"""
-	Return a root over F_p of nonzero polynomial g.
-	p must be prime.
-	If flag = False, return a root randomly
-	"""
-	if isinstance(g, list):
-		if not isinstance(g[0], tuple):
-			g = zip(range(len(g)),g)
-	Fp = finitefield.FinitePrimeField(p)
-	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
-	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
-	g = g.gcd(h)
-	deg_g = g.degree()
-	if g[0] == 0:
-		deg_g = deg_g - 1
-		g = g.shift_degree_to(deg_g) 
-	while True:
-		if deg_g == 0:
-			return None
-		if deg_g == 1:
-			return (-g[0]/g[1]).toInteger()
-		elif deg_g == 2:
-			d = g[1]*g[1]-4*g[0]
-			e = arith1.modsqrt(d.toInteger(), p)
-			return ((-g[1]-e)/(2*g[2])).toInteger()
-		deg_h = 0
-		x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
-		if flag == True:
-			a = 0
-			while (deg_h == 0) or (deg_h == deg_g):
-				b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
-				v = g(b)
-				h = x.gcd(v)
-				a = a + 1
-				deg_h = h.degree()
-				b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
-		else:
-			while (deg_h == 0) or (deg_h == deg_g):
-				a = bigrandom.randrange(0, p)
-				b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
-				v = g(b)
-				h = x.gcd(v)
-				deg_h = h.degree()
-				b = uniutil.FinitePrimeFieldPolynomial({0:a, 1:1}, Fp)
-		g = h(b)
-		deg_g = deg_h
+    """
+    Return a root over F_p of nonzero polynomial g.
+    p must be prime.
+    If flag = False, return a root randomly
+    """
+    if isinstance(g, list):
+        if not isinstance(g[0], tuple):
+            g = zip(range(len(g)), g)
+    Fp = finitefield.FinitePrimeField(p)
+    g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
+    h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
+    g = g.gcd(h)
+    deg_g = g.degree()
+    if g[0] == 0:
+        deg_g = deg_g - 1
+        g = g.shift_degree_to(deg_g) 
+    while True:
+        if deg_g == 0:
+            return None
+        if deg_g == 1:
+            return (-g[0]/g[1]).toInteger()
+        elif deg_g == 2:
+            d = g[1]*g[1] - 4*g[0]
+            e = arith1.modsqrt(d.toInteger(), p)
+            return ((-g[1]-e)/(2*g[2])).toInteger()
+        deg_h = 0
+        x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+        if flag:
+            a = 0
+            while deg_h == 0 or deg_h == deg_g:
+                b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+                v = g(b)
+                h = x.gcd(v)
+                a = a + 1
+                deg_h = h.degree()
+                b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+        else:
+            while deg_h == 0 or deg_h == deg_g:
+                a = bigrandom.randrange(p)
+                b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+                v = g(b)
+                h = x.gcd(v)
+                deg_h = h.degree()
+                b = uniutil.FinitePrimeFieldPolynomial({0:a, 1:1}, Fp)
+        g = h(b)
+        deg_g = deg_h
 
 def allroots_Fp(g, p):
-	"""
-	Return roots over F_p of nonzero polynomial g.
-	p must be prime.
-	"""
-	if isinstance(g, list):
-		if not isinstance(g[0], tuple):
-			g = zip(range(len(g)),g)
-	Fp = finitefield.FinitePrimeField(p)
-	g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
-	h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
-	g = g.gcd(h)
-	deg_g = g.degree()
-	roots = []
-	if g[0] == 0:
-		roots.append(0)
-		deg_g = deg_g - 1
-		g = g.shift_degree_to(deg_g)
-	return roots + roots_loop(g, deg_g, p, Fp)
+    """
+    Return roots over F_p of nonzero polynomial g.
+    p must be prime.
+    """
+    if isinstance(g, list):
+        if not isinstance(g[0], tuple):
+            g = zip(range(len(g)), g)
+    Fp = finitefield.FinitePrimeField(p)
+    g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
+    h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
+    g = g.gcd(h)
+    deg_g = g.degree()
+    roots = []
+    if g[0] == 0:
+        roots.append(0)
+        deg_g = deg_g - 1
+        g = g.shift_degree_to(deg_g)
+    return roots + roots_loop(g, deg_g, p, Fp)
 
 def roots_loop(g, deg_g, p, Fp):
-	if deg_g == 0:
-		return []
-	if deg_g == 1:
-		return [(-g[0]/g[1]).toInteger()]
-	elif deg_g == 2:
-		d = g[1]*g[1]-4*g[0]
-		e = arith1.modsqrt(d.toInteger(), p)
-		g1 = -g[1]
-		g2 = 2*g[2]
-		return [((g1-e)/g2).toInteger(), ((g1+e)/g2).toInteger()]
-	deg_h = 0
-	x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
-	a = 0
-	while (deg_h == 0) or (deg_h == deg_g):
-		b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
-		v = g(b)
-		h = x.gcd(v)
-		a = a + 1
-		deg_h = h.degree()
-	b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
-	s = h(b)
-	deg_s = deg_h
-	t = g.exact_division(s)
-	deg_t = t.degree()
-	return roots_loop(s, deg_s, p, Fp) + roots_loop(t, deg_t, p, Fp)
+    if deg_g == 0:
+        return []
+    if deg_g == 1:
+        return [(-g[0]/g[1]).toInteger()]
+    elif deg_g == 2:
+        d = g[1]*g[1]-4*g[0]
+        e = arith1.modsqrt(d.toInteger(), p)
+        g1 = -g[1]
+        g2 = 2*g[2]
+        return [((g1 - e) / g2).toInteger(), ((g1 + e) / g2).toInteger()]
+    deg_h = 0
+    x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+    a = 0
+    while deg_h == 0 or deg_h == deg_g:
+        b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)
+        v = g(b)
+        h = x.gcd(v)
+        a = a + 1
+        deg_h = h.degree()
+    b = uniutil.FinitePrimeFieldPolynomial({0:a-1, 1:1}, Fp)
+    s = h(b)
+    deg_s = deg_h
+    t = g.exact_division(s)
+    deg_t = t.degree()
+    return roots_loop(s, deg_s, p, Fp) + roots_loop(t, deg_t, p, Fp)

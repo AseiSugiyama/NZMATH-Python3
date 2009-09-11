@@ -3,10 +3,10 @@ Miscellaneous arithmetic functions
 """
 
 import itertools
-import math
 import random
 import bisect
 import nzmath.gcd as gcd
+from nzmath.plugins import MATHMODULE as math
 
 
 def floorsqrt(a):

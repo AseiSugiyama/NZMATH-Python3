@@ -2,9 +2,9 @@
 rational module provides Rational, Integer, RationalField, and IntegerRing.
 """
 
-import math
 import nzmath.gcd as gcd
 import nzmath.ring as ring
+from nzmath.plugins import MATHMODULE as math, FLOATTYPE as Float
 
 
 class Rational (ring.QuotientFieldElement):
@@ -51,24 +51,53 @@ class Rational (ring.QuotientFieldElement):
                 initDispatcher[(t1, t2)](self, numerator, denominator)
                 break
         else:
+            try:
+                cfe = continued_fraction_expansion(numerator / denominator, 50)
+                approx0 = Rational(cfe[0])
+                approx1 = Rational(cfe[1] * cfe[0] + 1, cfe[1])
+                for q in cfe[2:]:
+                    approx0, approx1 = approx1, Rational(q * approx1.numerator + approx0.numerator, q * approx1.denominator + approx0.denominator)
+                self.numerator, self.denominator = approx1.numerator, approx1.denominator
+                return
+            except Exception:
+                # maybe some type could raise strange error ...
+                pass
             raise TypeError("Rational cannot be created with %s(%s) and %s(%s)." % (numerator, numerator.__class__, denominator, denominator.__class__))
         self._reduce()
 
     def __add__(self, other):
+        """
+        self + other
+
+        If other is a rational or an integer, the result will be a
+        rational.  If other is a kind of float the result is an
+        instance of other's type.  Otherwise, other would do the
+        computation.
+        """
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator + self.denominator*other.numerator
             denominator = self.denominator*other.denominator
-            return  +Rational(numerator, denominator)
+            return +Rational(numerator, denominator)
         elif isIntegerObject(other):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
-            return  +Rational(numerator, denominator)
+            return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return self.toFloat() + other
         elif isinstance(other, float):
-            return self + Rational(other)
+            return float(self) + other
         else:
             return NotImplemented
 
     def __sub__(self, other):
+        """
+        self - other
+
+        If other is a rational or an integer, the result will be a
+        rational.  If other is a kind of float the result is an
+        instance of other's type.  Otherwise, other would do the
+        computation.
+        """
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator - self.denominator*other.numerator
             denominator = self.denominator*other.denominator
@@ -77,12 +106,22 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator - self.denominator*other
             denominator = self.denominator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return self.toFloat() - other
         elif isinstance(other, float):
-            return self - Rational(other)
+            return float(self) - other
         else:
             return NotImplemented
 
     def __mul__(self, other):
+        """
+        self * other
+
+        If other is a rational or an integer, the result will be a
+        rational.  If other is a kind of float the result is an
+        instance of other's type.  Otherwise, other would do the
+        computation.
+        """
         if isinstance(other, Rational):
             numerator = self.numerator*other.numerator
             denominator = self.denominator*other.denominator
@@ -91,12 +130,23 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator*other
             denominator = self.denominator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return self.toFloat() * other
         elif isinstance(other, float):
-            return self * Rational(other)
+            return float(self) * other
         else:
             return NotImplemented
 
     def __truediv__(self, other):
+        """
+        self / other
+        self // other
+
+        If other is a rational or an integer, the result will be a
+        rational.  If other is a kind of float the result is an
+        instance of other's type.  Otherwise, other would do the
+        computation.
+        """
         if isinstance(other, Rational):
             numerator = self.numerator*other.denominator
             denominator = self.denominator*other.numerator
@@ -108,8 +158,10 @@ class Rational (ring.QuotientFieldElement):
             numerator = self.numerator
             denominator = self.denominator*other
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return self.toFloat() / other
         elif isinstance(other, float):
-            return self / Rational(other)
+            return float(self) / other
         else:
             return NotImplemented
 
@@ -117,44 +169,81 @@ class Rational (ring.QuotientFieldElement):
     __floordiv__ = __truediv__
 
     def __radd__(self, other):
+        """
+        other + self
+
+        If other is an integer, the result will be a rational.  If
+        other is a kind of float the result is an instance of other's
+        type.  Otherwise, other would do the computation.
+        """
         if isIntegerObject(other):
             numerator = self.numerator + self.denominator*other
             denominator = self.denominator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return other + self.toFloat()
         elif isinstance(other, float):
-            return Rational(other) + self
+            return other + float(self)
         else:
             return NotImplemented
 
     def __rsub__(self, other):
+        """
+        other - self
+
+        If other is an integer, the result will be a rational.  If
+        other is a kind of float the result is an instance of other's
+        type.  Otherwise, other would do the computation.
+        """
         if isIntegerObject(other):
             numerator = self.denominator*other - self.numerator
             denominator = self.denominator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return other - self.toFloat()
         elif isinstance(other, float):
-            return Rational(other) - self
+            return other - float(self)
         else:
             return NotImplemented
 
     def __rmul__(self, other):
+        """
+        other * self
+
+        If other is an integer, the result will be a rational.  If
+        other is a kind of float the result is an instance of other's
+        type.  Otherwise, other would do the computation.
+        """
         if isIntegerObject(other):
             numerator = self.numerator*other
             denominator = self.denominator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return other * self.toFloat()
         elif isinstance(other, float):
-            return Rational(other) * self
+            return other * float(self)
         else:
             return NotImplemented
 
     def __rtruediv__(self, other):
+        """
+        other / self
+        other // self
+
+        If other is an integer, the result will be a rational.  If
+        other is a kind of float the result is an instance of other's
+        type.  Otherwise, other would do the computation.
+        """
         if isIntegerObject(other):
             if other == 1:
                 return Rational(self.denominator, self.numerator)
             numerator = self.denominator*other
             denominator = self.numerator
             return +Rational(numerator, denominator)
+        elif isinstance(other, Float):
+            return other / self.toFloat()
         elif isinstance(other, float):
-            return Rational(other) / self
+            return other / float(self)
         else:
             return NotImplemented
 
@@ -310,6 +399,8 @@ class Rational (ring.QuotientFieldElement):
             return self.numerator - self.denominator * other
         if isinstance(other, float):
             return self.compare(Rational(other))
+        if isinstance(other, Float):
+            return cmp(self.toFloat(), other)
         return self.numerator*other.denominator - self.denominator*other.numerator
 
     def getRing(self):
@@ -325,6 +416,9 @@ class Rational (ring.QuotientFieldElement):
             self.denominator //= common_divisor
     def __float__(self):
         return float(self.decimalString(17))
+
+    def toFloat(self):
+        return Float(self.numerator) / Float(self.denominator)
 
     def decimalString(self, N):
         """
@@ -849,3 +943,28 @@ def IntegerIfIntOrLong(anObject):
     elif isinstance(anObject, (list,tuple)):
         return objectClass([IntegerIfIntOrLong(i) for i in anObject])
     return anObject
+
+##
+def continued_fraction_expansion(target, terms):
+    """
+    Return continued fraction expansion of a real number.
+
+    >>> continued_fraction_expansion(1.4142, 2)
+    [1, 2, 2]
+
+    The first component is the integer part, and rest is fractional
+    part, whose number of terms is specified by the second argument.
+    """
+    # integer part
+    ipart = math.floor(target)
+    target -= ipart
+    result = [int(ipart)]
+
+    # expansion
+    for i in range(terms):
+        reverse = 1 / target
+        term = math.floor(reverse)
+        target = reverse - term
+        result.append(int(term))
+
+    return result

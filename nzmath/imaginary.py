@@ -1,11 +1,14 @@
 from __future__ import division
 # standard modules
 import itertools
-import cmath
 # NZMATH modules
 import nzmath.real as real
 import nzmath.rational as rational
 import nzmath.ring as ring
+
+from nzmath.plugins import MATHMODULE as math, CMATHMODULE as cmath, \
+     FLOATTYPE as Float, CHECK_REAL_OR_COMPLEX as check_real_or_complex
+
 
 class Complex (ring.FieldElement):
     """
@@ -142,7 +145,7 @@ class Complex (ring.FieldElement):
             return abs(self.real)
         if self.real == 0:
             return abs(self.imag)
-        return real.hypot(self.real, self.imag)
+        return math.hypot(self.real, self.imag)
 
     def __pos__(self):
         if self.imag == 0:
@@ -189,7 +192,7 @@ class Complex (ring.FieldElement):
     def arg(self):
         x = self.real
         y = self.imag
-        return real.atan2(y,x)
+        return math.atan2(y,x)
 
     def __complex__(self):
         return complex(float(self.real), float(self.imag))
@@ -439,9 +442,9 @@ def log(x, err=defaultError):
                 return real.log(x, err=_err)
             elif x < 0:
                 return Complex(real.log(abs(x), _err), real.pi(_err))
-        return Complex(real.log(abs(x), err=_err), real.atan2(x.real, x.imag, _err))
+        return Complex(real.log(abs(x), err=_err), real.atan2(x.imag, x.real, _err))
     else:
-        return Complex(cmath.log(complex(x.real,x.imag)))
+        return Complex(cmath.log(complex(x.real, x.imag)))
 
 class ExponentialPowerSeries:
     """
@@ -530,9 +533,5 @@ def atanh(z, err=defaultError):
 
 
 def sqrt(z, err=defaultError):
-    if hasattr(z, 'arg'):
-        return real.sqrt(abs(z))*expi(z.arg()/2)
-    elif z >= 0:
-        return real.sqrt(abs(z))
-    elif z < 0:
-        return Complex(0, real.sqrt(abs(z)))
+    return real.sqrt(abs(z))*expi(z.arg()/2)
+
