@@ -91,6 +91,23 @@ HAVE_PSYCO = None
 CHECK_PSYCO = True
 
 #
+# plug-ins
+# ========
+#
+# math
+# ----
+# Python standard float/comple types and math/cmath modules only
+# provide fixed precision (double precision), but sometimes
+# multiprecision floating point is needed.
+# If you have mpmath installed, set HAVE_MPMATH True and use:
+#PLUGIN_MATH = 'mpmath'
+#CHECK_PLUGIN_MATH = False
+# Otherwise, use only Python float/complex as default (but use mpmath
+# if possible):
+PLUGIN_MATH = None
+CHECK_PLUGIN_MATH = True
+
+#
 # Assumptions
 # ===========
 #
@@ -257,6 +274,22 @@ if CHECK_PSYCO:
     HAVE_PSYCO = check_psyco()
         
 #
+# math plug-in
+#
+def check_plugin_math():
+    """
+    Return 'mpmath' if HAVE_MPMATH, None otherwise.
+    """
+    if HAVE_MPMATH:
+        return 'mpmath'
+    else:
+        return None
+
+if CHECK_PLUGIN_MATH:
+    PLUGIN_MATH = check_plugin_math()
+
+
+#
 # data directory
 # --------------
 #
@@ -285,4 +318,4 @@ if CHECK_DATADIR:
 # Declare exported variables.
 
 __all__ = ['HAVE_MPMATH', 'HAVE_SQLITE3', 'HAVE_NET', 'HAVE_PSYCO',
-           'GRH', 'DATADIR']
+           'PLUGIN_MATH', 'GRH', 'DATADIR']
