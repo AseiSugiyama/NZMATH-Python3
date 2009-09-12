@@ -673,7 +673,12 @@ class RingMatrix(Matrix):
         """
         return -self.
         """
-        return (-1) * self
+        one = self.coeff_ring.one
+        try:
+            minus_one = -one
+        except:
+            minus_one = self.coeff_ring.zero - one
+        return self.map(lambda ele: minus_one * ele)
 
     def getCoefficientRing(self):
         """
