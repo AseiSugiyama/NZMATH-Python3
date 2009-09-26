@@ -61,38 +61,38 @@ def c_root_p(a, p):
         b = (b * y) % p
     return [ x, (x * sym) % p, (x * pow(sym, 2, p)) % p ]
 
-def c_residue(a1, b1):
+def c_residue(a, p):
     """
-    Check whether rational integer a1 is cubic residue mod prime b1.
-    If a1 % b1 == 0, then return 0,
+    Check whether rational integer a is cubic residue mod prime p.
+    If a % p == 0, then return 0,
     elif cubic residue, then return 1,
     elif cubic non-residue, then return -1.
     """
-    if b1 == 3:
-        if a1 % b1 == 0:
+    if p == 3:
+        if a % p == 0:
             return 0
         else:
             return 1
-    elif b1 % 3 == 1:
-        b1, b2 = decomposite_p(b1)
-        return c_symbol(a1, 0, b1, b2)
+    elif p % 3 == 1:
+        b1, b2 = decomposite_p(p)
+        return c_symbol(a, 0, b1, b2)
     else:
-        return c_symbol(a1, 0, b1, 0)
+        return c_symbol(a, 0, p, 0)
 
 def c_symbol(a1, a2, b1, b2):
     """
     Return the (Jacobi) cubic residue symbol of 2 Eisenstein Integers ((a1+a2*w)/(b1+b2*w)).
     assume that b1+b2*w is not divisable 1-w. 
     """
-    r1, r2, j1 = divides(a1, a2)
-    r1, r2, i1 = FormAdj_w(r1, r2)
-    d1, d2, i2 = FormAdj_w(b1, b2)
+    r1, r2, j1 = _divides(a1, a2)
+    r1, r2, i1 = _FormAdj_w(r1, r2)
+    d1, d2, i2 = _FormAdj_w(b1, b2)
     m = (d1 - 1) / 3
     n = d2 / 3
     t = ((m * j1) + (-(m + n) * i1)) % 3
     a1, a2 = r1, r2
     b1, b2 = d1, d2    
-    nrm_a, nrm_b = arygcd.ap_norm(a1, a2, b1, b2)
+    nrm_a, nrm_b = arygcd._ap_norm_w(a1, a2, b1, b2)
     if nrm_a < nrm_b:
         tmpre, tmpim = a1, a2
         a1, a2 = b1, b2
@@ -101,11 +101,11 @@ def c_symbol(a1, a2, b1, b2):
         n = b2 / 3
     while not((a1 == b1) and (a2 == b2)):
         sub_re_ab, sub_im_ab = a1 - b1, a2 - b2
-        tmp_sub_re_ab, tmp_sub_im_ab, j = divides(sub_re_ab, sub_im_ab)
-        r1, r2, i = FormAdj_w(tmp_sub_re_ab, tmp_sub_im_ab)
+        tmp_sub_re_ab, tmp_sub_im_ab, j = _divides(sub_re_ab, sub_im_ab)
+        r1, r2, i = _FormAdj_w(tmp_sub_re_ab, tmp_sub_im_ab)
         t = (t + (m * j) + (-(m + n) * i)) % 3
         a1, a2 = r1, r2
-        nrm_a, nrm_b = arygcd.ap_norm(a1, a2, b1, b2)
+        nrm_a, nrm_b = arygcd._ap_norm_w(a1, a2, b1, b2)
         if nrm_a < nrm_b:
             tmpre, tmpim = a1, a2
             a1, a2 = b1, b2
@@ -119,7 +119,7 @@ def c_symbol(a1, a2, b1, b2):
     else:
         return -1
 
-def FormAdj_w(a1, a2):
+def _FormAdj_w(a1, a2):
     """
     Transform Eisenstein Integer a1+a2*w  ->  (-w)^i * (x+y*w)
     x+y*w is primary element
@@ -141,7 +141,7 @@ def FormAdj_w(a1, a2):
         elif a2 % 3 == 0:
             return -a1, -a2, 3
 
-def divides(a1, a2):
+def _divides(a1, a2):
     """
     divide 1-w
     (i.e. a1+a2*w -> (1-w)^k * (x+y*w))
