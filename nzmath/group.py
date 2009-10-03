@@ -14,34 +14,34 @@ class Group:
     This is a class for finite group.
     """
 
-    def __init__(self, value, main=-1):
+    def __init__(self, value, operation=-1):
         if isinstance(value, Group):
-            self.classes = value.classes
-            if main == -1:
-                self.main = value.main
+            self.entity = value.entity
+            if operation == -1:
+                self.operation = value.operation
             else:
-                self.setmain(main)
+                self.setOperation(operation)
         else:
-            self.classes = value
-            if main == -1:
-                self.setmain(0)
+            self.entity = value
+            if operation == -1:
+                self.setOperation(0)
             else:
-                self.setmain(main)
+                self.setOperation(operation)
 
     def __repr__(self):
-        if hasattr(self.classes, "__repr__"):
-            return self.classes.__repr__()
+        if hasattr(self.entity, "__repr__"):
+            return self.entity.__repr__()
         else:
-            return repr(self.classes.__class__.__name__)
+            return repr(self.entity.__class__.__name__)
 
     def __str__(self):
-        if hasattr(self.classes, "__str__"):
-            return self.classes.__str__()
+        if hasattr(self.entity, "__str__"):
+            return self.entity.__str__()
         else:
-            return str(self.classes.__class__.__name__)
+            return str(self.entity.__class__.__name__)
 
     def __eq__(self, other):
-        if self.classes == other.classes and self.main == other.main:
+        if self.entity == other.entity and self.operation == other.operation:
             return True
         else:
             return False
@@ -49,47 +49,47 @@ class Group:
     def __ne__(self, other):
         return not (self == other)
 
-    def setmain(self, value):
+    def setOperation(self, value):
         """
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) :
-            self.main = (value & 1)
+            self.operation = (value & 1)
         else:
             raise TypeError("invalid input")
 
-    def createElement(self, value):
+    def createElement(self, *value):
         """
         Create group element with value.
         Return GroupElement instance.
         """
-        return GroupElement(self.classes.createElement(value), self.main)
+        return GroupElement(self.entity.createElement(*value), self.operation)
 
     def identity(self):
         """
         Return identity element(unit).
         Return addtive 0 or multiplicative 1.
         """
-        if hasattr(self.classes, "identity"):
-            return GroupElement(self.classes.identity(), self.main)
+        if hasattr(self.entity, "identity"):
+            return GroupElement(self.entity.identity(), self.operation)
         else:
-            if self.main:
-                return GroupElement(self.classes.one, 1)
+            if self.operation:
+                return GroupElement(self.entity.one, 1)
             else:
-                return GroupElement(self.classes.zero, 0)
+                return GroupElement(self.entity.zero, 0)
 
     def grouporder(self):
         """
         Return group order(Cardinality).
         """
         order = 0
-        if hasattr(self.classes, "grouporder"):
-            order = self.classes.grouporder()
-        elif hasattr(self.classes, "card"):
-            order = card(self.classes)
+        if hasattr(self.entity, "grouporder"):
+            order = self.entity.grouporder()
+        elif hasattr(self.entity, "card"):
+            order = card(self.entity)
         else:
-            order = self.classes.m
-        if self.main and hasattr(self.classes, "zero"): # *-cyclic group
+            order = self.entity.m
+        if self.operation and hasattr(self.entity, "zero"): # *-group
             order -= 1
         return order
 
@@ -99,28 +99,28 @@ class GroupElement:
     This is a class for finite group element.
     """
 
-    def __init__(self, value, main=-1):
-        self.main = main
+    def __init__(self, value, operation=-1):
+        self.operation = operation
         if isinstance(value, GroupElement):
             self.element = value.element
-            self.classes = value.classes
+            self.set = value.set
             self.class_name = value.class_name
-            if main == -1:
-                self.main = value.main
+            if operation == -1:
+                self.operation = value.operation
             else:
-                self.setmain(main)
+                self.setOperation(operation)
         else:
             self.element = value
-            if main == -1:
+            if operation == -1:
                 if self.type_check(1):
-                    self.main = 1
+                    self.operation = 1
                 if self.type_check(0):
-                    self.main = 0
-                if self.main == -1:
+                    self.operation = 0
+                if self.operation == -1:
                     raise TypeError("This element isn't Group")
-            self.classes = self.getGroup()
-            self.setmain(self.main) # mainly operation
-            self.class_name = self.classes.classes.__class__.__name__
+            self.set = self.getGroup()
+            self.setOperation(self.operation) # mainly operation
+            self.class_name = self.set.entity.__class__.__name__
 
     def __repr__(self):
         return self.class_name + ',' + repr(self.element)
@@ -129,7 +129,7 @@ class GroupElement:
         return self.class_name + ',' + str(self.element)
 
     def __eq__(self, other):
-        if self.element == other.element and self.main == other.main:
+        if self.element == other.element and self.operation == other.operation:
             return True
         else:
             return False
@@ -153,34 +153,34 @@ class GroupElement:
             else:
                 return False
 
-    def setmain(self, value):
+    def setOperation(self, value):
         """
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) and self.type_check(value):
-            self.main = (value & 1)
+            self.operation = (value & 1)
         else:
             raise TypeError("invalid input")
-        self.classes.setmain(self.main)
+        self.set.setOperation(self.operation)
 
     def ope(self, other):
         """
         Group basic operation.
         """
-        if  not self.main:
-            return GroupElement(self.element + other.element, self.main)
+        if  not self.operation:
+            return GroupElement(self.element + other.element, self.operation)
         else:
-            return GroupElement(self.element * other.element, self.main)
+            return GroupElement(self.element * other.element, self.operation)
 
     def ope2(self, other):
         """
         Group extended operation
         """
         if rational.isIntegerObject(other):
-            if not self.main:
-                return GroupElement(self.element * other, self.main)
+            if not self.operation:
+                return GroupElement(self.element * other, self.operation)
             else:
-                return GroupElement(self.element ** other, self.main)
+                return GroupElement(self.element ** other, self.operation)
         else:
             raise TypeError("input integer")
 
@@ -189,27 +189,27 @@ class GroupElement:
         Return inverse element.
         """
         ele = self.element
-        cla = self.classes
-        main = self.main
-        if hasattr(cla.classes, "zero") and (ele == cla.classes.zero):
+        cla = self.set
+        operation = self.operation
+        if hasattr(cla.entity, "zero") and (ele == cla.entity.zero):
             return self
         else:
-            if not main:
-                return GroupElement(-ele, main)
+            if not operation:
+                return GroupElement(-ele, operation)
             elif hasattr(ele, "inverse"):
-                return GroupElement(ele.inverse(), main)
+                return GroupElement(ele.inverse(), operation)
             else:
-                return GroupElement(self.ope2(cla.order() - 1), main)
+                return GroupElement(self.ope2(cla.order() - 1), operation)
 
     def order(self):
         """
         Compute order using grouporder factorization.
         """
-        clas = self.classes.classes
+        clas = self.set.entity
         if hasattr(clas, "zero") and self.element == clas.zero:
             return 1
-        ordfact = factor_misc.FactoredInteger(self.classes.grouporder())
-        identity = self.classes.identity()
+        ordfact = factor_misc.FactoredInteger(self.set.grouporder())
+        identity = self.set.identity()
         k = 1
         for p, e in ordfact:
             b = self.ope2(int(ordfact) // (p ** e))
@@ -224,8 +224,8 @@ class GroupElement:
         """
         if (v < 1) or not(rational.isIntegerObject(v)):
             raise TypeError("input integer v >= 1")
-        e = self.classes.identity()
-        a = self.classes.identity()
+        e = self.set.identity()
+        a = self.set.identity()
         R = [(e, 0)]
         for i in range(1, v + 1):
             a = self.ope(a)
@@ -252,14 +252,14 @@ class GroupElement:
         """
         if self.type_check(0) and self.type_check(1):
             if hasattr(self.element, "getRing"):
-                return Group(self.element.getRing(), self.main)
+                return Group(self.element.getRing(), self.operation)
             else:
-                return Group(self.element, self.main)
+                return Group(self.element, self.operation)
         else:
             if hasattr(self.element, "getGroup"):
-                return Group(self.element.getGroup(), self.main)
+                return Group(self.element.getGroup(), self.operation)
             else:
-                return Group(self.element, self.main)
+                return Group(self.element, self.operation)
 
 
 class GenerateGroup(Group):
@@ -267,22 +267,22 @@ class GenerateGroup(Group):
     This is a class for finite group with generator.
     """
 
-    def __init__(self, value, main=-1):
+    def __init__(self, value, operation=-1):
         if isinstance(value, list):
             temp = value
-            self.classes = GroupElement(value[0]).classes.classes
+            self.entity = GroupElement(value[0]).set.entity
         elif isinstance(value, tuple): # (generator, class_name)
             temp = value[0]
-            self.classes = value[1]
+            self.entity = value[1]
         else:
             TypeError("invalid input")
         self.generator = []
         for a in temp:
             self.generator.append(GroupElement(a))
-        if main == -1:
-            self.main = self.generator[0].main
+        if operation == -1:
+            self.operation = self.generator[0].operation
         else:
-            self.setmain(main)
+            self.setOperation(operation)
 
     def isGroupElement(self, other):
         """
@@ -290,16 +290,16 @@ class GenerateGroup(Group):
         """
         pass
 
-    def setmain(self, value):
+    def setOperation(self, value):
         """
         Change group type for additive(0) or multiplicative(1).
         """
         if isinstance(value, int) :
-            self.main = (value & 1)
+            self.operation = (value & 1)
         else:
             raise TypeError("invalid input")
         for a in self.generator:
-            a.setmain(value)
+            a.setOperation(value)
 
 
 class AbelianGenerate(GenerateGroup):
@@ -313,83 +313,85 @@ class AbelianGenerate(GenerateGroup):
         If B[j]=transpose(b[1,j],b[2,j],..,b[l,j]),
         it satisfies that product(generator[i]**b[i,j])=1 for each j.
         """
-        l = len(self.generator)
-        b = matrix.RingSquareMatrix(l)
-        H1 = [(self.identity(), vector.Vector([0] * l))]
-        H2 = list(H1)
-        m = 1
-        a_baby_s, giant_s = list(H1), list(H2)
-        pro_I1, pro_I2, pro_diag = 1, 1, 1
-        e_vec = []
-        g_gen = []
-        for i in range(1, l + 1):
-            e_i = vector.Vector([0] * l)
-            e_i[i] = 1
-            e_vec.append(e_i)
-            g_gen.append(self.generator[i - 1])
-        for j in range(1, l + 1):
-            e = 1
-            baby_s = list(a_baby_s)
-            baby_e = GroupElement(g_gen[j - 1])
-            giant_e = GroupElement(g_gen[j - 1])
-            flag = False
-            while not flag:
-                for (g_g, v) in giant_s:
-                    for (g_b, w) in baby_s:
-                        if g_g.ope(giant_e) == g_b:
-                            b[j] = v + w + (e * (e + 1) // 2) * e_vec[j - 1]
-                            flag = True
+        if not hasattr(self, "relation"):
+            l = len(self.generator)
+            b = matrix.RingSquareMatrix(l)
+            H1 = [(self.identity(), vector.Vector([0] * l))]
+            H2 = list(H1)
+            m = 1
+            a_baby_s, giant_s = list(H1), list(H2)
+            pro_I1, pro_I2, pro_diag = 1, 1, 1
+            e_vec = []
+            g_gen = []
+            for i in range(1, l + 1):
+                e_i = vector.Vector([0] * l)
+                e_i[i] = 1
+                e_vec.append(e_i)
+                g_gen.append(self.generator[i - 1])
+            for j in range(1, l + 1):
+                e = 1
+                baby_s = list(a_baby_s)
+                baby_e = GroupElement(g_gen[j - 1])
+                giant_e = GroupElement(g_gen[j - 1])
+                flag = False
+                while not flag:
+                    for (g_g, v) in giant_s:
+                        for (g_b, w) in baby_s:
+                            if g_g.ope(giant_e) == g_b:
+                                b[j] = v + w + (e * (e + 1) // 2) * e_vec[j - 1]
+                                flag = True
+                                break
+                        if flag:
                             break
                     if flag:
                         break
-                if flag:
-                    break
-                for (g_a, v_a) in a_baby_s:
-                    baby_s.append((g_a.ope(baby_e), v_a - e * e_vec[j - 1]))
-                e += 1
-                baby_e = baby_e.ope(g_gen[j - 1])
-                giant_e = giant_e.ope(baby_e)
-            if (j < l) and (b[j, j] > 1):
-                pro_diag *= b[j, j]
-                pro_diag_root = math.sqrt(pro_diag)
-                if (b[j, j] * pro_I1) <= pro_diag_root or j == 1:
-                    temp = list(H1)
-                    for (g, v) in temp:
-                        g_j_inv = g_gen[j - 1].inverse()
-                        H1_1 = GroupElement(g)
-                        for x in range(1, b[j, j]):
-                            H1_1 = H1_1.ope(g_j_inv)
-                            H1.append((H1_1, v + x * e_vec[j - 1]))
-                    pro_I1 *= b[j, j]
-                else:
-                    if m > 1:
-                        temp = list(H2)
+                    for (g_a, v_a) in a_baby_s:
+                        baby_s.append((g_a.ope(baby_e), v_a - e * e_vec[j - 1]))
+                    e += 1
+                    baby_e = baby_e.ope(g_gen[j - 1])
+                    giant_e = giant_e.ope(baby_e)
+                if (j < l) and (b[j, j] > 1):
+                    pro_diag *= b[j, j]
+                    pro_diag_root = math.sqrt(pro_diag)
+                    if (b[j, j] * pro_I1) <= pro_diag_root or j == 1:
+                        temp = list(H1)
                         for (g, v) in temp:
-                            H2_1 = GroupElement(g)
-                            for x in range(1, b[m, m]):
-                                H2_1 = H2_1.ope(g_gen[m - 1])
-                                H2.append((H2_1, v + x * e_vec[m - 1]))
-                        pro_I2 *= b[m, m]
-                    m = j
-                s = int(math.ceil(pro_diag_root / pro_I1))
-                if len(H2) > 1:
-                    t = int(math.ceil(pro_diag_root / pro_I2))
-                else:
-                    t = 1
-                a_baby_s, giant_s = list(H1), list(H2)
-                g_m_inv = g_gen[m - 1].inverse()
-                for (h1, v) in H1:
-                    H1_1 = GroupElement(h1)
-                    for r in range(1, s):
-                        H1_1 = H1_1.ope(g_m_inv)
-                        a_baby_s.append((H1_1, v + r * e_vec[m - 1]))
-                g_m_s = g_gen[m - 1].ope2(s)
-                for (h2, v) in H2:
-                    H2_1 = GroupElement(h2)
-                    for q in range(1, t):
-                        H2_1 = H2_1.ope(g_m_s)
-                        giant_s.append((H2_1, v + (q * s) * e_vec[m - 1]))
-        return b
+                            g_j_inv = g_gen[j - 1].inverse()
+                            H1_1 = GroupElement(g)
+                            for x in range(1, b[j, j]):
+                                H1_1 = H1_1.ope(g_j_inv)
+                                H1.append((H1_1, v + x * e_vec[j - 1]))
+                        pro_I1 *= b[j, j]
+                    else:
+                        if m > 1:
+                            temp = list(H2)
+                            for (g, v) in temp:
+                                H2_1 = GroupElement(g)
+                                for x in range(1, b[m, m]):
+                                    H2_1 = H2_1.ope(g_gen[m - 1])
+                                    H2.append((H2_1, v + x * e_vec[m - 1]))
+                            pro_I2 *= b[m, m]
+                        m = j
+                    s = int(math.ceil(pro_diag_root / pro_I1))
+                    if len(H2) > 1:
+                        t = int(math.ceil(pro_diag_root / pro_I2))
+                    else:
+                        t = 1
+                    a_baby_s, giant_s = list(H1), list(H2)
+                    g_m_inv = g_gen[m - 1].inverse()
+                    for (h1, v) in H1:
+                        H1_1 = GroupElement(h1)
+                        for r in range(1, s):
+                            H1_1 = H1_1.ope(g_m_inv)
+                            a_baby_s.append((H1_1, v + r * e_vec[m - 1]))
+                    g_m_s = g_gen[m - 1].ope2(s)
+                    for (h2, v) in H2:
+                        H2_1 = GroupElement(h2)
+                        for q in range(1, t):
+                            H2_1 = H2_1.ope(g_m_s)
+                            giant_s.append((H2_1, v + (q * s) * e_vec[m - 1]))
+            self.relation = b
+        return self.relation
 
     def computeStructure(self):
         """
