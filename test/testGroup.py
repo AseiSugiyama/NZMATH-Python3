@@ -15,7 +15,7 @@ bb1 = b1.getGroup()
 c1_a = GroupElement(FinitePrimeFieldElement(20, 37)) #Field
 cc1_a = c1_a.getGroup()
 c2 = GroupElement(FinitePrimeFieldElement(15, 37))
-c1_m = GroupElement(c1_a.element)
+c1_m = GroupElement(c1_a.entity)
 cc1_m = c1_m.getGroup()
 c1_m.setOperation(1)
 cc1_m.setOperation(1)
