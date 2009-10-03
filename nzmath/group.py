@@ -102,34 +102,34 @@ class GroupElement:
     def __init__(self, value, operation=-1):
         self.operation = operation
         if isinstance(value, GroupElement):
-            self.element = value.element
+            self.entity = value.entity
             self.set = value.set
-            self.class_name = value.class_name
+            self._set_name = value._set_name
             if operation == -1:
                 self.operation = value.operation
             else:
                 self.setOperation(operation)
         else:
-            self.element = value
+            self.entity = value
             if operation == -1:
-                if self.type_check(1):
+                if self._type_check(1):
                     self.operation = 1
-                if self.type_check(0):
+                if self._type_check(0):
                     self.operation = 0
                 if self.operation == -1:
                     raise TypeError("This element isn't Group")
             self.set = self.getGroup()
             self.setOperation(self.operation) # mainly operation
-            self.class_name = self.set.entity.__class__.__name__
+            self._set_name = self.set.entity.__class__.__name__
 
     def __repr__(self):
-        return self.class_name + ',' + repr(self.element)
+        return self._set_name + ',' + repr(self.entity)
 
     def __str__(self):
-        return self.class_name + ',' + str(self.element)
+        return self._set_name + ',' + str(self.entity)
 
     def __eq__(self, other):
-        if self.element == other.element and self.operation == other.operation:
+        if self.entity == other.entity and self.operation == other.operation:
             return True
         else:
             return False
@@ -137,11 +137,11 @@ class GroupElement:
     def __ne__(self, other):
         return not (self == other)
 
-    def type_check(self, value):
+    def _type_check(self, value):
         """
         Check group type is value or not.
         """
-        a = self.element
+        a = self.entity
         if not (value & 1):
             if hasattr(a, "__add__") and hasattr(a, "__mul__"):
                 return True
@@ -157,7 +157,7 @@ class GroupElement:
         """
         Change group type for additive(0) or multiplicative(1).
         """
-        if isinstance(value, int) and self.type_check(value):
+        if isinstance(value, int) and self._type_check(value):
             self.operation = (value & 1)
         else:
             raise TypeError("invalid input")
@@ -168,9 +168,9 @@ class GroupElement:
         Group basic operation.
         """
         if  not self.operation:
-            return GroupElement(self.element + other.element, self.operation)
+            return GroupElement(self.entity + other.entity, self.operation)
         else:
-            return GroupElement(self.element * other.element, self.operation)
+            return GroupElement(self.entity * other.entity, self.operation)
 
     def ope2(self, other):
         """
@@ -178,9 +178,9 @@ class GroupElement:
         """
         if rational.isIntegerObject(other):
             if not self.operation:
-                return GroupElement(self.element * other, self.operation)
+                return GroupElement(self.entity * other, self.operation)
             else:
-                return GroupElement(self.element ** other, self.operation)
+                return GroupElement(self.entity ** other, self.operation)
         else:
             raise TypeError("input integer")
 
@@ -188,7 +188,7 @@ class GroupElement:
         """
         Return inverse element.
         """
-        ele = self.element
+        ele = self.entity
         cla = self.set
         operation = self.operation
         if hasattr(cla.entity, "zero") and (ele == cla.entity.zero):
@@ -206,7 +206,7 @@ class GroupElement:
         Compute order using grouporder factorization.
         """
         clas = self.set.entity
-        if hasattr(clas, "zero") and self.element == clas.zero:
+        if hasattr(clas, "zero") and self.entity == clas.zero:
             return 1
         ordfact = factor_misc.FactoredInteger(self.set.grouporder())
         identity = self.set.identity()
@@ -250,16 +250,16 @@ class GroupElement:
         """
         Return the group which element belongs.
         """
-        if self.type_check(0) and self.type_check(1):
-            if hasattr(self.element, "getRing"):
-                return Group(self.element.getRing(), self.operation)
+        if self._type_check(0) and self._type_check(1):
+            if hasattr(self.entity, "getRing"):
+                return Group(self.entity.getRing(), self.operation)
             else:
-                return Group(self.element, self.operation)
+                return Group(self.entity, self.operation)
         else:
-            if hasattr(self.element, "getGroup"):
-                return Group(self.element.getGroup(), self.operation)
+            if hasattr(self.entity, "getGroup"):
+                return Group(self.entity.getGroup(), self.operation)
             else:
-                return Group(self.element, self.operation)
+                return Group(self.entity, self.operation)
 
 
 class GenerateGroup(Group):
@@ -267,15 +267,15 @@ class GenerateGroup(Group):
     This is a class for finite group with generator.
     """
 
-    def __init__(self, value, operation=-1):
+    def __init__(self, value, operation=-1, entity=None):
         if isinstance(value, list):
             temp = value
-            self.entity = GroupElement(value[0]).set.entity
-        elif isinstance(value, tuple): # (generator, class_name)
-            temp = value[0]
-            self.entity = value[1]
         else:
             TypeError("invalid input")
+        if entity:
+            self.entity = entity
+        else:
+            self.entity = GroupElement(value[0]).set.entity
         self.generator = []
         for a in temp:
             self.generator.append(GroupElement(a))
