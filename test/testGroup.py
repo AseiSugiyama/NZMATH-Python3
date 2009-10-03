@@ -17,8 +17,8 @@ cc1_a = c1_a.getGroup()
 c2 = GroupElement(FinitePrimeFieldElement(15, 37))
 c1_m = GroupElement(c1_a.element)
 cc1_m = c1_m.getGroup()
-c1_m.setmain(1)
-cc1_m.setmain(1)
+c1_m.setOperation(1)
+cc1_m.setOperation(1)
 
 bg = AbelianGenerate([b1, b2])
 
