@@ -144,9 +144,9 @@ class Permute:
         else:
             self.key = range(1, len(data) + 1)
 
-    def getData(self):
+    def getValue(self):
         """
-        Get data expressed by key
+        Get value expressed by key
         """
         return [self.key[self.data[i] - 1] for i in range(len(self.data))]
 
@@ -286,10 +286,10 @@ class Permute:
         return not self == other
 
     def __repr__(self):
-        return repr(self.key)+" -> "+repr(self.getData())
+        return repr(self.key)+" -> "+repr(self.getValue())
 
     def __str__(self):
-        return str(self.key)+" -> "+str(self.getData())
+        return str(self.key)+" -> "+str(self.getValue())
 
 
 class ExPermute:
@@ -416,7 +416,7 @@ class ExPermute:
         else:
             self.key = range(1, self.dim + 1)
 
-    def getData(self):
+    def getValue(self):
         """
         Get data expressed by key
         """
@@ -535,11 +535,11 @@ class ExPermute:
         return not self == other
 
     def __repr__(self):
-        return repr(self.getData()) + " <" + repr(self.key) + ">"
+        return repr(self.getValue()) + " <" + repr(self.key) + ">"
 
     def __str__(self):
         self.data = self.simplify().data
-        return str(self.getData()) + " <" + str(self.key) + ">"
+        return str(self.getValue()) + " <" + str(self.key) + ">"
 
 class PermGroup:
     """
@@ -570,7 +570,7 @@ class PermGroup:
     def __ne__(self, other):
         return not(self == other)
 
-    def __len__(self):
+    def card(self):
         return self.grouporder()
 
     def createElement(self, seed):
