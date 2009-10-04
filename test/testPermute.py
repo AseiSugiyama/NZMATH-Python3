@@ -46,10 +46,10 @@ class PermTest(unittest.TestCase):
         a3.setKey([1, 2, 3, 4, 5])
         assert(Permute([4, 5, 2, 1, 3]) == a3)
 
-    def testGetData(self):
-        assert([3, 4, 1, 0, 2] == a3.getData())
+    def testGetValue(self):
+        assert([3, 4, 1, 0, 2] == a3.getValue())
         a6.setKey(['a', 'b', 'c', 'd', 'e'])
-        assert(['b', 'c', 'a', 'd', 'e'] == a6.getData())
+        assert(['b', 'c', 'a', 'd', 'e'] == a6.getValue())
 
     def testInverse(self):
         assert(Permute([3, 0, 2, 1, 4], 0) == a2.inverse())
@@ -108,8 +108,8 @@ class ExPermTest(unittest.TestCase):
         b5.setKey(['a', 'b', 'c', 'd', 'e'])
         assert(b4 == b5)
 
-    def testGetData(self):
-        assert([(2, 3, 4), (0, 1)] == b3.getData())
+    def testGetValue(self):
+        assert([(2, 3, 4), (0, 1)] == b3.getValue())
 
     def testInverse(self):
         assert(ExPermute(5, [(1, 3, 2)], 0) == b2.inverse())
