@@ -12,7 +12,7 @@ import nzmath.ring as _ring
 import nzmath.poly.formalsum as formalsum
 
 
-class PolynomialInterface (formalsum.FormalSumContainerInterface):
+class PolynomialInterface(formalsum.FormalSumContainerInterface):
     """
     Base class for all univariate polynomials.
     """
@@ -57,13 +57,13 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
                     mul_coeff[term_degree] += cs*co
                 else:
                     mul_coeff[term_degree] = cs*co
-        return self.__class__([(d, c) for (d, c) in mul_coeff.iteritems() if c], **self._init_kwds)
+        return self.construct_with_default(sorted([(d, c) for (d, c) in mul_coeff.iteritems() if c]))
 
     def scalar_mul(self, scale):
         """
         Return the result of scalar multiplication.
         """
-        return self.__class__([(d, c * scale) for (d, c) in self if c], **self._init_kwds)
+        return self.construct_with_default([(d, c * scale) for (d, c) in self if c])
 
     def term_mul(self, term):
         """
@@ -75,7 +75,7 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
             degree, coeff = iter(term).next()
         else:
             degree, coeff = term
-        return self.__class__([(d + degree, c * coeff) for (d, c) in self], **self._init_kwds)
+        return self.construct_with_default([(d + degree, c * coeff) for (d, c) in self])
 
     def square(self):
         """
@@ -93,7 +93,7 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
                 dc = d * c
                 if dc:
                     result[d - 1] = dc
-        return self.__class__(result, **self._init_kwds)
+        return self.construct_with_default(result)
 
     def upshift_degree(self, slide):
         """
@@ -130,10 +130,18 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
             b, c = func(*t)
             if c:
                 terms.append((b, c))
+        return self.construct_with_default(terms)
+
+    def construct_with_default(self, terms):
+        """
+        Create a new univariate polynomial of the same class with
+        self, with given only the terms and use copy of self's data if
+        necessary.
+        """
         return self.__class__(terms, **self._init_kwds)
 
 
-class BasicPolynomial (PolynomialInterface):
+class BasicPolynomial(PolynomialInterface):
     """
     Basic polynomial data type ignoring a variable name and the ring.
     """
@@ -157,7 +165,7 @@ class BasicPolynomial (PolynomialInterface):
                 sum_coeff[term] += coeff
             else:
                 sum_coeff[term] = coeff
-        return self.__class__([(d, c) for (d, c) in sum_coeff.iteritems() if c], **self._init_kwds)
+        return self.construct_with_default([(d, c) for (d, c) in sum_coeff.iteritems() if c])
 
     def __sub__(self, other):
         """
@@ -169,7 +177,7 @@ class BasicPolynomial (PolynomialInterface):
                 dif_coeff[term] -= coeff
             else:
                 dif_coeff[term] = -coeff
-        return self.__class__([(d, c) for (d, c) in dif_coeff.iteritems() if c], **self._init_kwds)
+        return self.construct_with_default([(d, c) for (d, c) in dif_coeff.iteritems() if c])
 
     def __mul__(self, other):
         """
@@ -203,13 +211,13 @@ class BasicPolynomial (PolynomialInterface):
         """
         -self
         """
-        return self.__class__([(d, -c) for (d, c) in self], **self._init_kwds)
+        return self.construct_with_default([(d, -c) for (d, c) in self])
 
     def __pos__(self):
         """
         +self
         """
-        return self.__class__(self._coefficients, **self._init_kwds)
+        return self.construct_with_default(self._coefficients)
 
     def square(self):
         """
@@ -221,11 +229,11 @@ class BasicPolynomial (PolynomialInterface):
         data_length = len(self._coefficients)
         # monomial
         if data_length == 1:
-            return self.__class__([(d*2, c**2) for (d, c) in self], **self._init_kwds)
+            return self.construct_with_default([(d*2, c**2) for (d, c) in self])
         # binomial
         if data_length == 2:
             (d1, c1), (d2, c2) = self.terms()
-            return self.__class__({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2}, **self._init_kwds)
+            return self.construct_with_default({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2})
         # general (inefficient)
         items = self._coefficients.items()
         fst, snd = {}, {}
@@ -256,7 +264,7 @@ class BasicPolynomial (PolynomialInterface):
                     break
             else:
                 one = 1
-            return self.__class__({0: one}, **self._init_kwds)
+            return self.construct_with_default({0: one})
         elif index == 1:
             return self
         elif index == 2:
@@ -265,9 +273,9 @@ class BasicPolynomial (PolynomialInterface):
         if not self:
             return self
         elif len(self._coefficients) == 1:
-            return self.__class__([(d*index, c**index) for (d, c) in self], **self._init_kwds)
+            return self.construct_with_default([(d*index, c**index) for (d, c) in self])
         # general
-        power_product = self.__class__({0: 1}, **self._init_kwds)
+        power_product = self.construct_with_default({0: 1})
         power_of_2 = self
         while index:
             if index & 1:
@@ -363,6 +371,7 @@ class SortedPolynomial (PolynomialInterface):
         else:
             self.sorted = list(coefficients)
         self._init_kwds = kwds
+        self._init_kwds['_sorted'] = True
 
     def _insort(self, term):
         """
@@ -403,13 +412,13 @@ class SortedPolynomial (PolynomialInterface):
         """
         +self
         """
-        return self.__class__(self.sorted, _sorted=True, **self._init_kwds)
+        return self.construct_with_default(self.sorted)
 
     def __neg__(self):
         """
         -self
         """
-        return self.__class__([(d, -c) for (d, c) in self], _sorted=True, **self._init_kwds)
+        return self.construct_with_default([(d, -c) for (d, c) in self])
 
     def __add__(self, other):
         """
@@ -464,7 +473,7 @@ class SortedPolynomial (PolynomialInterface):
             sorted.append(other_term)
             for term in iter_other:
                 sorted.append(term)
-        return self.__class__(sorted, _sorted=True, **self._init_kwds)
+        return self.construct_with_default(sorted)
 
     def __sub__(self, other):
         """
@@ -521,7 +530,7 @@ class SortedPolynomial (PolynomialInterface):
             sorted.append((other_term[0], -other_term[1]))
             for term in iter_other:
                 sorted.append((term[0], -term[1]))
-        return self.__class__(sorted, _sorted=True, **self._init_kwds)
+        return self.construct_with_default(sorted)
 
     def __mul__(self, other):
         """
@@ -557,10 +566,10 @@ class SortedPolynomial (PolynomialInterface):
 
         Computation is carried out by Karatsuba method.
         """
-        polynomial = self.__class__
+        polynomial = self.construct_with_default
         # zero
         if not self or not other:
-            return polynomial((), **self._init_kwds)
+            return polynomial(())
         # monomial
         if len(self.sorted) == 1:
             return other.term_mul(self)
@@ -587,10 +596,10 @@ class SortedPolynomial (PolynomialInterface):
             return (self.downshift_degree(black_left_degree).ring_mul_karatsuba(other)).upshift_degree(black_left_degree)
         if not red_half_index:
             return (self.ring_mul_karatsuba(other.downshift_degree(red_left_degree))).upshift_degree(red_left_degree)
-        club = polynomial([(d - left_degree, c) for (d, c) in self.sorted[:black_half_index]], **self._init_kwds)
-        spade = polynomial([(d - half_degree, c) for (d, c) in self.sorted[black_half_index:]], **self._init_kwds)
-        dia = polynomial([(d - left_degree, c) for (d, c) in other.sorted[:red_half_index]], **self._init_kwds)
-        heart = polynomial([(d - half_degree, c) for (d, c) in other.sorted[red_half_index:]], **self._init_kwds)
+        club = polynomial([(d - left_degree, c) for (d, c) in self.sorted[:black_half_index]])
+        spade = polynomial([(d - half_degree, c) for (d, c) in self.sorted[black_half_index:]])
+        dia = polynomial([(d - left_degree, c) for (d, c) in other.sorted[:red_half_index]])
+        heart = polynomial([(d - half_degree, c) for (d, c) in other.sorted[red_half_index:]])
         weaker = club.ring_mul_karatsuba(dia)
         stronger = spade.ring_mul_karatsuba(heart)
         karatsuba = (club + spade).ring_mul_karatsuba(dia + heart) - weaker - stronger
@@ -620,7 +629,7 @@ class SortedPolynomial (PolynomialInterface):
             self._init_kwds["coeffring"] = coeffring
         else:
             new_coeff = [(d, c * scale) for (d, c) in self if c]
-        return self.__class__(new_coeff, _sorted=True, **self._init_kwds)
+        return self.construct_with_default(new_coeff)
 
     def square(self):
         """
@@ -630,26 +639,26 @@ class SortedPolynomial (PolynomialInterface):
         if not self:
             return self
 
-        polynomial = self.__class__
+        polynomial = self.construct_with_default
         data_length = len(self.sorted)
         # monomial
         if data_length == 1:
             d, c = self.sorted[0]
             if d:
-                return polynomial([(d*2, c**2)], _sorted=True, **self._init_kwds)
+                return polynomial([(d*2, c**2)])
             else:
-                return polynomial([(0, c**2)], _sorted=True, **self._init_kwds)
+                return polynomial([(0, c**2)])
         # binomial
         if data_length == 2:
             (d1, c1), (d2, c2) = [(d, c) for (d, c) in self]
-            return polynomial({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2}, **self._init_kwds)
+            return polynomial({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2})
         # general (Karatsuba)
         right_degree = self.sorted[-1][0]
         left_degree = self.sorted[0][0]
         half_degree = (right_degree + left_degree) // 2
         half_index = self._bisect(half_degree)
-        fst = polynomial([(d - left_degree, c) for (d, c) in self.sorted[:half_index]], **self._init_kwds)
-        snd = polynomial([(d - half_degree, c) for (d, c) in self.sorted[half_index:]], **self._init_kwds)
+        fst = polynomial([(d - left_degree, c) for (d, c) in self.sorted[:half_index]])
+        snd = polynomial([(d - half_degree, c) for (d, c) in self.sorted[half_index:]])
         fst_squared = fst.square()
         snd_squared = snd.square()
         karatsuba = (fst + snd).square() - fst_squared - snd_squared
@@ -679,7 +688,7 @@ class SortedPolynomial (PolynomialInterface):
                     break
             else:
                 one = 1
-            return self.__class__({0: one}, **self._init_kwds)
+            return self.construct_with_default([(0, one)])
         elif index == 1:
             return self
         elif index == 2:
@@ -688,9 +697,9 @@ class SortedPolynomial (PolynomialInterface):
         if not self:
             return self
         elif len(self.sorted) == 1:
-            return self.__class__([(d*index, c**index) for (d, c) in self], **self._init_kwds)
+            return self.construct_with_default([(d*index, c**index) for (d, c) in self])
         # general
-        power_product = self.__class__({0: 1}, **self._init_kwds)
+        power_product = self.construct_with_default([(0, 1)])
         power_of_2 = self
         while index:
             if index & 1:

@@ -56,7 +56,7 @@ class OrderProvider(object):
         if difference == 0:
             return self
         elif difference < 0:
-            return self.__class__([(d + difference, c) for (d, c) in self if d + difference >= 0], **self._init_kwds)
+            return self.construct_with_default([(d + difference, c) for (d, c) in self if d + difference >= 0])
         else:
             return self.upshift_degree(difference)
 
@@ -72,8 +72,8 @@ class OrderProvider(object):
                 lower.append((d, c))
             else:
                 upper.append((d, c))
-        return (self.__class__(lower, **self._init_kwds),
-                self.__class__(upper, **self._init_kwds))
+        return (self.construct_with_default(lower),
+                self.construct_with_default(upper))
 
 
 class DivisionProvider(object):
@@ -109,7 +109,7 @@ class DivisionProvider(object):
             q = rdegree - degree, rlc / lc
             remainder = remainder - other.term_mul(q)
             quotient.append(q)
-        quotient = self.__class__(quotient, **self._init_kwds)
+        quotient = self.construct_with_default(quotient)
         return quotient, remainder
 
     def __floordiv__(self, other):
@@ -123,7 +123,7 @@ class DivisionProvider(object):
             q = rdegree - degree, rlc / lc
             remainder = remainder - other.term_mul(q)
             quotient.append(q)
-        return self.__class__(quotient, **self._init_kwds)
+        return self.construct_with_default(quotient)
 
     def __mod__(self, other):
         """
@@ -167,7 +167,7 @@ class DivisionProvider(object):
             dividend_degrees = sorted(dividend.iterbases(), reverse=True)
             dividend_degrees = [deg for deg in dividend_degrees if deg > degree]
             self._populate_reduced_more(dividend_degrees)
-        accum = self.__class__((), **self._init_kwds)
+        accum = self.construct_with_default(())
         lowers = []
         for d, c in dividend:
             if c:
@@ -175,7 +175,7 @@ class DivisionProvider(object):
                     lowers.append((d, c))
                 else:
                     accum += self._reduced[d].scalar_mul(c)
-        return accum + self.__class__(lowers, **self._init_kwds)
+        return accum + self.construct_with_default(lowers)
 
     def mod_pow(self, polynom, index):
         """
@@ -190,7 +190,7 @@ class DivisionProvider(object):
             return self.getRing().createElement([(0, polynom[0]**index)])
         acoefficient = polynom.itercoefficients().next()
         one = ring.getRing(acoefficient).one
-        power_product = self.__class__({0: one}, **self._init_kwds)
+        power_product = self.construct_with_default([(0, one)])
         if index:
             power_of_2 = polynom
             while index:
@@ -210,7 +210,7 @@ class DivisionProvider(object):
         one = ring.getRing(self.itercoefficients().next()).one
         if not self._reduced:
             minimum = degree
-            redux = self.__class__([(degree - 1, one)], **self._init_kwds)
+            redux = self.construct_with_default([(degree - 1, one)])
         else:
             minimum = max(self._reduced.keys()) + 1
             redux = self._reduced[minimum - 1]
@@ -357,14 +357,14 @@ class PseudoDivisionProvider(object):
             assert self.order is order
         degree, lc = order.leading_term(other)
         # step 1
-        quotient, remainder = self.__class__((), **self._init_kwds), self
+        quotient, remainder = self.construct_with_default(()), self
         rdegree, rlc = order.leading_term(remainder)
         e = rdegree - degree + 1
         if e <= 0:
             return quotient, remainder
         while rdegree >= degree:
             # step 3
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             quotient = quotient.scalar_mul(lc) + canceller
             remainder = remainder.scalar_mul(lc) - canceller * other
             e -= 1
@@ -389,14 +389,14 @@ class PseudoDivisionProvider(object):
             assert self.order is order
         degree, lc = order.leading_term(other)
         # step 1
-        quotient, remainder = self.__class__((), **self._init_kwds), self
+        quotient, remainder = self.construct_with_default(()), self
         rdegree, rlc = order.leading_term(remainder)
         e = order.degree(remainder) - degree + 1
         if e <= 0:
             return quotient
         while rdegree >= degree:
             # step 3
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             quotient = quotient.scalar_mul(lc) + canceller
             remainder = remainder.scalar_mul(lc) - canceller * other
             e -= 1
@@ -425,7 +425,7 @@ class PseudoDivisionProvider(object):
             return remainder
         while rdegree >= degree:
             # step 3
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             remainder = remainder.scalar_mul(lc) - canceller * other
             e -= 1
             rdegree, rlc = order.leading_term(remainder)
@@ -477,13 +477,13 @@ class PseudoDivisionProvider(object):
             assert self.order is order
 
         degree = order.degree(other)
-        quotient, remainder = self.__class__((), **self._init_kwds), self
+        quotient, remainder = self.construct_with_default(()), self
         rdegree, rlc = order.leading_term(remainder)
         if rdegree < degree:
             return quotient, remainder
         while rdegree >= degree:
             # step 3
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             quotient += canceller
             remainder -= canceller * other
             rdegree, rlc = order.leading_term(remainder)
@@ -505,13 +505,13 @@ class PseudoDivisionProvider(object):
             assert self.order is order
         degree = order.degree(other)
         # step 1
-        quotient, remainder = self.__class__((), **self._init_kwds), self
+        quotient, remainder = self.construct_with_default(()), self
         rdegree, rlc = order.leading_term(remainder)
         if rdegree < degree:
             return quotient
         while rdegree >= degree:
             # step 3
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             quotient += canceller
             remainder -= canceller * other
             rdegree, rlc = order.leading_term(remainder)
@@ -537,7 +537,7 @@ class PseudoDivisionProvider(object):
         if rdegree < degree:
             return remainder
         while rdegree >= degree:
-            canceller = self.__class__([(rdegree - degree, rlc)], **self._init_kwds)
+            canceller = self.construct_with_default([(rdegree - degree, rlc)])
             remainder -= canceller * other
             rdegree, rlc = order.leading_term(remainder)
 
@@ -775,14 +775,14 @@ class PrimeCharacteristicFunctionsProvider(object):
                 q *= self.ch
                 index //= self.ch
             if q > 1:
-                powered = self.__class__([(d * q, c ** q) for (d, c) in self], **self._init_kwds)
+                powered = self.construct_with_default([(d * q, c ** q) for (d, c) in self])
             else:
                 powered = self
         if index == 1:
             return powered
         acoefficient = self.itercoefficients().next()
         one = ring.getRing(acoefficient).one
-        power_product = self.__class__({0: one}, **self._init_kwds)
+        power_product = self.construct_with_default([(0, one)])
         if index:
             power_of_2 = powered
             while index:
@@ -880,7 +880,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         the characteristic.  If the polynomial does not consist of
         p-th powered terms only, result is nonsense.
         """
-        return self.__class__([(d // self.ch, c) for (d, c) in self if c], **self._init_kwds)
+        return self.construct_with_default([(d // self.ch, c) for (d, c) in self if c])
 
     def distinct_degree_factorization(self):
         """
@@ -898,7 +898,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         Fq = ring.getRing(self.itercoefficients().next())
         q = card(Fq)
         f = self
-        x = f.__class__([(1, Fq.one)], **self._init_kwds)
+        x = f.construct_with_default([(1, Fq.one)])
         w = x
         i = 1
         result = {}
@@ -927,7 +927,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         p = Fq.getCharacteristic()
         if degree == 1:
             result = []
-            X = self.__class__([(1, Fq.one)], **self._init_kwds)
+            X = self.construct_with_default([(1, Fq.one)])
             f = self
             while not f[0]:
                 f = f // X
@@ -943,14 +943,14 @@ class PrimeCharacteristicFunctionsProvider(object):
                 rand_coeff[i] = Fq.createElement(bigrandom.randrange(q))
             if not rand_coeff[2 * degree - 1]:
                 rand_coeff[2 * degree - 1] = Fq.one
-            randpoly = self.__class__(rand_coeff, **self._init_kwds)
+            randpoly = self.construct_with_default(rand_coeff)
             if p == 2:
-                G = self.__class__((), **self._init_kwds)
+                G = self.construct_with_default(())
                 for i in range(degree):
                     G = G + randpoly
                     randpoly = self.mod(randpoly.square())
             else:
-                one = self.__class__([(0, Fq.one)], **self._init_kwds)
+                one = self.construct_with_default([(0, Fq.one)])
                 G = pow(randpoly, (q**degree - 1)//2, self) - one
             subresult = []
             while result:
@@ -1029,10 +1029,9 @@ class KaratsubaProvider(object):
 
         Computation is carried out by Karatsuba method.
         """
-        polynomial = self.__class__
         # zero
         if not self or not other:
-            return polynomial((), **self._init_kwds)
+            return self.construct_with_default(())
         # monomial
         if len(self) == 1:
             return other.term_mul(self)
@@ -1079,21 +1078,21 @@ class KaratsubaProvider(object):
         if not self:
             return self
 
-        polynomial = self.__class__
+        polynomial = self.construct_with_default
         data_length = len(self)
         # monomial
         if data_length == 1:
             d, c = iter(self).next()
             if d:
-                return polynomial([(d*2, c**2)], _sorted=True, **self._init_kwds)
+                return polynomial([(d*2, c**2)])
             else:
-                return polynomial([(0, c**2)], _sorted=True, **self._init_kwds)
+                return polynomial([(0, c**2)])
         # binomial
         if data_length == 2:
             (d1, c1), (d2, c2) = [(d, c) for (d, c) in self]
             if "_sorted" in self._init_kwds:
                 del self._init_kwds["_sorted"]
-            return polynomial({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2}, _sorted=False, **self._init_kwds)
+            return polynomial({d1*2:c1**2, d1+d2:c1*c2*2, d2*2:c2**2}, _sorted=False)
         # general (Karatsuba)
         least_degree = self.order.tail_degree(self)
         if least_degree:
@@ -1528,7 +1527,7 @@ class FinitePrimeFieldPolynomial(FiniteFieldPolynomial):
                     else:
                         mul_coeff[term_degree] = cs*co
             ## back to decorated datatype automatically
-            return self.__class__(mul_coeff, **self._init_kwds)
+            return self.construct_with_default(mul_coeff)
         except AttributeError:
             # maybe fail due to lacking attribute .n sometimes
             _log.debug("fall back to good old ring_mul")
@@ -1557,7 +1556,7 @@ class FinitePrimeFieldPolynomial(FiniteFieldPolynomial):
                     dj, cj = self.sorted[j][0], self.sorted[j][1]
                     result[di + dj] = result.get(di + dj, 0) + 2 * ci * cj
             # back to decorated datatype automatically
-            return self.__class__(result, **self._init_kwds)
+            return self.construct_with_default(result)
         except AttributeError:
             _log.debug("fall back to old square")
             return FieldPolynomial.square(self)

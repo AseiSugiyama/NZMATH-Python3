@@ -122,7 +122,7 @@ class FormalSumContainerInterface (object):
                 sum_coeff[base] += coeff
             else:
                 sum_coeff[base] = coeff
-        return self.__class__([(b, c) for (b, c) in sum_coeff.iteritems() if c])
+        return self.construct_with_default([(b, c) for (b, c) in sum_coeff.iteritems() if c])
 
     def __sub__(self, other):
         """
@@ -134,7 +134,7 @@ class FormalSumContainerInterface (object):
                 sub_coeff[base] -= coeff
             else:
                 sub_coeff[base] = -coeff
-        return self.__class__([(b, c) for (b, c) in sub_coeff.iteritems() if c])
+        return self.construct_with_default([(b, c) for (b, c) in sub_coeff.iteritems() if c])
 
     def __neg__(self):
         """
@@ -211,7 +211,7 @@ class FormalSumContainerInterface (object):
             b, c = func(*t)
             if c:
                 terms.append((b, c))
-        return self.__class__(terms)
+        return self.construct_with_default(terms)
 
     def coefficients_map(self, func):
         """
@@ -226,6 +226,15 @@ class FormalSumContainerInterface (object):
         base.
         """
         return self.terms_map(lambda x, y: (func(x), y))
+
+    def construct_with_default(self, maindata):
+        """
+        Create a new formal sum container of the same class with self,
+        with given only the maindata and use copy of self's data if
+        necessary.
+        """
+        # Do not extend the signature of this method.
+        raise NotImplementedError("method 'construct_with_default' must be overridden")
 
 
 class DictFormalSum (FormalSumContainerInterface):
@@ -284,13 +293,13 @@ class DictFormalSum (FormalSumContainerInterface):
         """
         -self
         """
-        return self.__class__([(b, -c) for (b, c) in self])
+        return self.construct_with_default([(b, -c) for (b, c) in self])
 
     def __pos__(self):
         """
         +self
         """
-        return self.__class__(self._data)
+        return self.construct_with_default(self._data)
 
     def __eq__(self, other):
         """
@@ -341,6 +350,14 @@ class DictFormalSum (FormalSumContainerInterface):
 
     def __repr__(self): # for debug
         return "%s(%s)" % (self.__class__.__name__, repr(self._data))
+
+    def construct_with_default(self, maindata):
+        """
+        Create a new formal sum container of the same class with self,
+        with given only the maindata and use copy of self's data if
+        necessary.
+        """
+        return self.__class__(maindata, defaultvalue=self._defaultvalue)
 
 
 class ListFormalSum (FormalSumContainerInterface):
@@ -394,13 +411,13 @@ class ListFormalSum (FormalSumContainerInterface):
         """
         -self
         """
-        return self.__class__([(b, -c) for (b, c) in self])
+        return self.construct_with_default([(b, -c) for (b, c) in self])
 
     def __pos__(self):
         """
         +self
         """
-        return self.__class__(self._data)
+        return self.construct_with_default(self._data)
 
     def __eq__(self, other):
         """
@@ -456,3 +473,11 @@ class ListFormalSum (FormalSumContainerInterface):
 
     def __repr__(self): # for debug
         return "%s(%s)" % (self.__class__.__name__, repr(self._data))
+
+    def construct_with_default(self, maindata):
+        """
+        Create a new formal sum container of the same class with self,
+        with given only the maindata and use copy of self's data if
+        necessary.
+        """
+        return self.__class__(maindata, defaultvalue=self._defaultvalue)

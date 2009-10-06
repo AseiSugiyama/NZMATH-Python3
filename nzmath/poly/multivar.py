@@ -16,7 +16,7 @@ import nzmath.poly.formalsum as formalsum
 _log = logging.getLogger('nzmath.poly.multivar')
 
 
-class TermIndeces (object):
+class TermIndeces(object):
     """
     Indeces of terms of multivariate polynomials.
     """
@@ -153,7 +153,7 @@ class TermIndeces (object):
         return sum(self)
 
 
-class PolynomialInterface (formalsum.FormalSumContainerInterface):
+class PolynomialInterface(formalsum.FormalSumContainerInterface):
     """
     Base class for all multivariate polynomials.
     """
@@ -172,7 +172,7 @@ class PolynomialInterface (formalsum.FormalSumContainerInterface):
         return max([b.total_degree() for b in self.iterbases()])
 
 
-class BasicPolynomial (PolynomialInterface):
+class BasicPolynomial(PolynomialInterface):
     """
     The class for basic multivariate polynomials.
     """
@@ -215,9 +215,7 @@ class BasicPolynomial (PolynomialInterface):
                 sum_coeff[term] += coeff
             else:
                 sum_coeff[term] = coeff
-        return self.__class__([(d, c) for (d, c) in sum_coeff.iteritems() if c],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(d, c) for (d, c) in sum_coeff.iteritems() if c])
 
     def __sub__(self, other):
         """
@@ -263,17 +261,13 @@ class BasicPolynomial (PolynomialInterface):
                     mul_coeff[indeces] += cs*co
                 else:
                     mul_coeff[indeces] = cs*co
-        return self.__class__([(d, c) for (d, c) in mul_coeff.iteritems() if c],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(d, c) for (d, c) in mul_coeff.iteritems() if c])
 
     def scalar_mul(self, scale):
         """
         Return the result of scalar multiplication.
         """
-        return self.__class__([(i, c * scale) for (i, c) in self if c],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(i, c * scale) for (i, c) in self if c])
 
     def term_mul(self, term):
         """
@@ -285,9 +279,7 @@ class BasicPolynomial (PolynomialInterface):
             degrees, coeff = iter(term).next()
         else:
             degrees, coeff = term
-        return self.__class__([(d + degrees, c * coeff) for (d, c) in self],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(d + degrees, c * coeff) for (d, c) in self])
 
     def __pow__(self, index):
         """
@@ -306,7 +298,7 @@ class BasicPolynomial (PolynomialInterface):
                     break
             else:
                 one = 1
-            return self.__class__({indeces: one}, **self._init_kwds)
+            return self.construct_with_default({indeces: one})
         elif index == 1:
             return self
         elif index == 2:
@@ -315,16 +307,14 @@ class BasicPolynomial (PolynomialInterface):
         if not self:
             return self
         elif len(self) == 1:
-            return self.__class__([(d*index, c**index) for (d, c) in self],
-                                  number_of_variables=self.number_of_variables,
-                                  **self._init_kwds)
+            return self.construct_with_default([(d*index, c**index) for (d, c) in self])
         # general
         for i, c in self:
             if c:
                 zero = (0,) * len(i)
                 one = _ring.getRing(c).one
                 break
-        power_product = self.__class__({zero: one}, **self._init_kwds)
+        power_product = self.construct_with_default({zero: one})
         power_of_2 = self
         while index:
             if index & 1:
@@ -342,21 +332,21 @@ class BasicPolynomial (PolynomialInterface):
         if not self:
             return self
 
-        polynomial = self.__class__
+        polynomial = self.construct_with_default
         data_length = len(self)
         # monomial
         if data_length == 1:
             for i, c in self:
-                result = polynomial([(i * 2, c ** 2)], **self._init_kwds)
+                result = polynomial([(i * 2, c ** 2)])
         # binomial
         elif data_length == 2:
             (i1, c1), (i2, c2) = [(i, c) for (i, c) in self]
-            result = polynomial({i1 * 2: c1**2, i1 + i2: c1*c2*2, i2 * 2: c2**2}, **self._init_kwds)
+            result = polynomial({i1 * 2: c1**2, i1 + i2: c1*c2*2, i2 * 2: c2**2})
         # general (recursive)
         else:
             half = data_length // 2
             coefficients = [(i, c) for (i, c) in self]
-            left, right = polynomial(coefficients[:half], **self._init_kwds), polynomial(coefficients[half:], **self._init_kwds)
+            left, right = polynomial(coefficients[:half], **self._init_kwds), polynomial(coefficients[half:])
             result = left.square() + left * right * 2 + right.square()
         return result
 
@@ -364,26 +354,13 @@ class BasicPolynomial (PolynomialInterface):
         """
         -self
         """
-        return self.__class__([(d, -c) for (d, c) in self],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(d, -c) for (d, c) in self])
 
     def __pos__(self):
         """
         +self
         """
-        return self.__class__(self._coefficients,
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
-
-    def __nonzero__(self):
-        """
-        if self is not zero, return True.
-        """
-        for c in self.itercoefficients():
-            if c:
-                return True
-        return False
+        return self.construct_with_default(self._coefficients)
 
     def __hash__(self):
         """
@@ -466,9 +443,7 @@ class BasicPolynomial (PolynomialInterface):
             index_diffed[target] -= 1
             index_diffed = tuple(i)
             partial[index_diffed] = target_degree * c
-        return self.__class__([(i, c) for (i, c) in partial.iteritems() if c],
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        return self.construct_with_default([(i, c) for (i, c) in partial.iteritems() if c])
 
     def erase_variable(self, target=0):
         """
@@ -498,9 +473,7 @@ class BasicPolynomial (PolynomialInterface):
         (degree, coefficient) pairs.  The target variable is specified
         by the position in indeces.
         """
-        zero = self.__class__((),
-                              number_of_variables=self.number_of_variables,
-                              **self._init_kwds)
+        zero = self.construct_with_default(())
         result = {}
         for i, c in self:
             result[i[target]] = result.get(i[target], zero) + self.__class__([(i, c)], **self._init_kwds)
@@ -510,3 +483,12 @@ class BasicPolynomial (PolynomialInterface):
 
     def __repr__(self): # debug use
         return "BasicPolynomial(%s)" % repr(self._coefficients)
+
+    def construct_with_default(self, maindata):
+        """
+        Create a new multivar polynomial of the same class with self,
+        with given only the maindata and use copy of self's data if
+        necessary.
+        """
+        return self.__class__(maindata,
+                              **self._init_kwds)
