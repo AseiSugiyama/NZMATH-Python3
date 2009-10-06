@@ -76,6 +76,8 @@ class FormalSumContainerInterface (object):
         This implementaion is not optimal for more structured
         descendants.
         """
+        if self is other:
+            return True
         if not isinstance(other, FormalSumContainerInterface):
             return False
         self_bases = set(self.iterbases())

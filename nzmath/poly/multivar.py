@@ -157,19 +157,23 @@ class PolynomialInterface(formalsum.FormalSumContainerInterface):
     """
     Base class for all multivariate polynomials.
     """
-    def __eq__(self, other):
-        """
-        self == other
-        """
-        if not isinstance(other, PolynomialInterface):
-            warnings.warn("comparison falls back to that of formal sum.")
-        return formalsum.FormalSumContainerInterface.__eq__(self, other)
-
     def total_degree(self):
         """
         Return the maximum total degree of terms.
         """
         return max([b.total_degree() for b in self.iterbases()])
+
+    def __neg__(self):
+        """
+        -self
+        """
+        return self.construct_with_default([(d, -c) for (d, c) in self])
+
+    def __pos__(self):
+        """
+        +self
+        """
+        return self.construct_with_default(self._coefficients)
 
 
 class BasicPolynomial(PolynomialInterface):
@@ -193,35 +197,6 @@ class BasicPolynomial(PolynomialInterface):
                 if len(i) > self.number_of_variables:
                     self.number_of_variables = len(i)
         self._init_kwds = kwds
-
-    def __eq__(self, other):
-        """
-        self == other
-        """
-        if self is other:
-            return True
-        return PolynomialInterface.__eq__(self, other)
-
-    def __add__(self, other):
-        """
-        self + other
-
-        Both self and other must have the same length tuples of
-        indeces for every term.
-        """
-        sum_coeff = dict(iter(self))
-        for term, coeff in other:
-            if term in sum_coeff:
-                sum_coeff[term] += coeff
-            else:
-                sum_coeff[term] = coeff
-        return self.construct_with_default([(d, c) for (d, c) in sum_coeff.iteritems() if c])
-
-    def __sub__(self, other):
-        """
-        self - other
-        """
-        return self + (-other)
 
     def __mul__(self, other):
         """
@@ -349,18 +324,6 @@ class BasicPolynomial(PolynomialInterface):
             left, right = polynomial(coefficients[:half], **self._init_kwds), polynomial(coefficients[half:])
             result = left.square() + left * right * 2 + right.square()
         return result
-
-    def __neg__(self):
-        """
-        -self
-        """
-        return self.construct_with_default([(d, -c) for (d, c) in self])
-
-    def __pos__(self):
-        """
-        +self
-        """
-        return self.construct_with_default(self._coefficients)
 
     def __hash__(self):
         """
