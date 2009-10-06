@@ -140,7 +140,7 @@ def inverse(x, p):
 
 def CRT(nlist):
     """
-    This function is Chinese Rmainder Theorem using Algorithm 2.1.7 
+    This function is Chinese Remainder Theorem using Algorithm 2.1.7 
     of C.Pomerance and R.Crandall's book.
 
     For example:
