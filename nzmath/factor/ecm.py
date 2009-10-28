@@ -17,11 +17,11 @@ _log = logging.getLogger('nzmath.factor.ecm')
 # curve types
 S = SUYAMA = 1
 B = BERNSTEIN = 2
-A1 = ASSUNCION1 = 5
-A2 = ASSUNCION2 = 6
-A3 = ASSUNCION3 = 8
-A4 = ASSUNCION4 = 9
-A5 = ASSUNCION5 = 10
+A1 = ASUNCION1 = 5
+A2 = ASUNCION2 = 6
+A3 = ASUNCION3 = 8
+A4 = ASUNCION4 = 9
+A5 = ASUNCION5 = 10
 
 
 class Curve (object):
@@ -49,11 +49,11 @@ class Curve (object):
         to parameters:
           S: Suyama's parameter selection strategy
           B: Bernstein's [2:1], [16,18,4,2]
-          A1: Assuncion's [2:1], [4,14,1,1]
-          A2: Assuncion's [2:1], [16,174,4,41]
-          A3: Assuncion's [3:1], [9,48,1,2]
-          A4: Assuncion's [3:1], [9,39,1,1]
-          A5: Assuncion's [4:1], [16,84,1,1]
+          A1: Asuncion's [2:1], [4,14,1,1]
+          A2: Asuncion's [2:1], [16,174,4,41]
+          A3: Asuncion's [3:1], [9,48,1,2]
+          A4: Asuncion's [3:1], [9,39,1,1]
+          A5: Asuncion's [4:1], [16,84,1,1]
 
         This is a class method.
         """
@@ -73,23 +73,23 @@ class Curve (object):
             d = random.randrange(1, bound + 1)
             start_point = Point(2, 1)
             curve = cls((4*d + 2) % n)
-        elif curve_type == ASSUNCION1:
+        elif curve_type == ASUNCION1:
             d = random.randrange(1, bound + 1)
             start_point = Point(2, 1)
             curve = cls((d + 1) % n)
-        elif curve_type == ASSUNCION2:
+        elif curve_type == ASUNCION2:
             d = random.randrange(1, bound + 1)
             start_point = Point(2, 1)
             curve = cls((4*d + 41) % n)
-        elif curve_type == ASSUNCION3:
+        elif curve_type == ASUNCION3:
             d = random.randrange(1, bound + 1)
             start_point = Point(3, 1)
             curve = cls((d + 2) % n)
-        elif curve_type == ASSUNCION4:
+        elif curve_type == ASUNCION4:
             d = random.randrange(1, bound + 1)
             start_point = Point(3, 1)
             curve = cls((d + 1) % n)
-        elif curve_type == ASSUNCION5:
+        elif curve_type == ASUNCION5:
             d = random.randrange(1, bound + 1)
             start_point = Point(4, 1)
             curve = cls((d + 1) % n)
@@ -174,7 +174,7 @@ class Bounds (object):
 def ecm(n, curve_type=A1, incs=3, trials=20, **options):
     """
     Find a factor of n with Elliptic Curve Method.
-    An unseccessful factorization returns 1.
+    An unsuccessful factorization returns 1.
 
     There are a few optional arguments.
 
