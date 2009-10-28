@@ -114,8 +114,8 @@ def modsqrt(a, p):
 
 def expand(n, m):
     """
-    This function returns m-adic expansion for n.
-    n and m should satisfy n > m > 0.
+    This function returns m-adic expansion of n.
+    n and m should satisfy 0 <= n, 2 <= m.
     """
     k = []
     while n >= m:
@@ -174,30 +174,30 @@ def AGM(a, b):
         x, y = (x+y) * 0.5, math.sqrt(x*y)
     return x
 
-def _BhaskaraBrouncker(n):
-    """
-
-    _BhaskaraBrouncker returns the minimum tuple (p,q) such that:
-        p ** 2 - n * q ** 2 = 1 or -1,
-    for positive integer n, which is not a square.
-
-    A good approximation for square root of n is given by the ratio
-    p/q; the error is at most 1/2*q**2.
-
-    """
-    floorOfSqrt = floorsqrt(n)
-    a = floorOfSqrt
-    b0, b1 = 0, floorOfSqrt
-    c0, c1 = 1, n - floorOfSqrt * floorOfSqrt
-    p0, p1 = 1, floorOfSqrt
-    q0, q1 = 0, 1
-    while c1 != 1:
-        a = (floorOfSqrt + b1)//c1
-        b0, b1 = b1, a * c1 - b1
-        c0, c1 = c1, c0 + a * (b0 - b1)
-        p0, p1 = p1, p0 + a * p1
-        q0, q1 = q1, q0 + a * q1
-    return (p1, q1)
+#def _BhaskaraBrouncker(n):
+#    """
+#
+#    _BhaskaraBrouncker returns the minimum tuple (p,q) such that:
+#        p ** 2 - n * q ** 2 = 1 or -1,
+#    for positive integer n, which is not a square.
+#
+#    A good approximation for square root of n is given by the ratio
+#    p/q; the error is at most 1/2*q**2.
+#
+#    """
+#    floorOfSqrt = floorsqrt(n)
+#    a = floorOfSqrt
+#    b0, b1 = 0, floorOfSqrt
+#    c0, c1 = 1, n - floorOfSqrt * floorOfSqrt
+#    p0, p1 = 1, floorOfSqrt
+#    q0, q1 = 0, 1
+#    while c1 != 1:
+#        a = (floorOfSqrt + b1)//c1
+#        b0, b1 = b1, a * c1 - b1
+#        c0, c1 = c1, c0 + a * (b0 - b1)
+#        p0, p1 = p1, p0 + a * p1
+#        q0, q1 = q1, q0 + a * q1
+#    return (p1, q1)
 
 def vp(n, p, k=0):
     """
