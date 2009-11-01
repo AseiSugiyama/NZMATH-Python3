@@ -285,12 +285,12 @@ def _cmm_find_disc(p, absbound=DEFAULT_ABS_BOUND):
 def cornacchiamodify(d, p):
     """
     Algorithm 26 (Modified cornacchia)
-    Input : p be a prime and d be an integer such that 0 < d < 4p with
-            -d = 0, 1 (mod 4)
-    Output : the solution of u^2 + d * v^2 = 4p.
+    Input : p be a prime and d be an integer such that d < 0 and d > -4p with
+            d = 0, 1 (mod 4)
+    Output : the solution of u^2 -d * v^2 = 4p.
     """
-    q = 4*p
-    if (d >= 0) or (-d >= q):
+    q = 4 * p
+    if (d >= 0) or (d <= -q):
         raise ValueError("invalid input")
     if p == 2:
         b = arith1.issquare(d + 8)
@@ -303,15 +303,15 @@ def cornacchiamodify(d, p):
     x0 = arith1.modsqrt(d, p)
     if (x0 - d) % 2 != 0:
         x0 = p - x0
-    a = 2*p
+    a = 2 * p
     b = x0
-    c = arith1.floorsqrt(q)
-    while b > c:
+    l = arith1.floorsqrt(q)
+    while b > l:
         a, b = b, a % b
-    l, r = divmod(q - b * b, -d)
+    c, r = divmod(q - b * b, -d)
     if r:
         raise ValueError("no solution")
-    t = arith1.issquare(l)
+    t = arith1.issquare(c)
     if t:
         return (b, t)
     else:
