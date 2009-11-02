@@ -217,6 +217,7 @@ def _initialize(g, newtoninitial=None):
     """
     create initial values of equation given as a list g.
     """
+    g = [float(c) for c in g[:]]
     q = [-abs(c) for c in g[:-1]]
     q.append(abs(g[-1]))
     if newtoninitial is None:
