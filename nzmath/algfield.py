@@ -286,8 +286,6 @@ class NumberField (ring.Field):
                     return MatAlgNumber(seed[0], self.polynomial)
             else:
                 raise NotImplementedError
-        elif len(seed) == 2:
-            return ApproxAlgNumber(seed[0], seed[1], self.polynomial)
         else:
             raise NotImplementedError
 
@@ -472,6 +470,9 @@ class BasicAlgNumber(object):
         jcoeff = [j[i] for i in range(self.degree)]
         return BasicAlgNumber([jcoeff, d], self.polynomial)
 
+    __div__ = __truediv__
+    __floordiv__ = __truediv__
+
     def getConj(self):
         """
         Return (approximate) solutions of self.polynomial.
@@ -497,8 +498,8 @@ class BasicAlgNumber(object):
 
     def getCharPoly(self):
         """
-        Return the characteristic polynomial of theta 
-        by compute products of (x-theta_i).
+        Return the characteristic polynomial of self 
+        by compute products of (x-self^{(i)}).
         """
         if not hasattr(self, "charpoly"):
             Conj = self.getApprox()
@@ -684,7 +685,7 @@ class MatAlgNumber(object):
 
     __rmul__ = __mul__
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if isinstance(other, (int, long, rational.Rational)):
             return self * (rational.Rational(other) ** -1)
         elif not isinstance(other, MatAlgNumber):
@@ -694,6 +695,9 @@ class MatAlgNumber(object):
         for i in range(mat.row):
             coeff.append(mat[i+1][1])
         return MatAlgNumber(coeff, self.polynomial)
+
+    __div__ = __truediv__
+    __floordiv__ = __truediv__
 
     def __pow__(self, other):
         mat = self.matrix ** other
@@ -777,18 +781,28 @@ def _main_prime_decomp(p, polynomial):
     # import nzmath.module as module
     raise NotImplementedError
 
-def changetype(a, polynomial):
+def changetype(a, polynomial=[0, 1]):
     """
-    Change a integer 'a' to be an element of field K defined polynomial
+    Change 'a' to be an element of field K defined polynomial
     """
-    n = len(polynomial)
-    coeff = []
-    for i in range(n - 1):
-        if i == 0:
-            coeff.append(a)
+    if isinstance(a, (int, long)):
+        coeff = [a] + [0] * (len(polynomial) - 2)
+        return BasicAlgNumber([coeff, 1], polynomial)
+    elif isinstance(a, rational.Rational):
+        coeff = [a.numerator] + [0] * (len(polynomial) - 2)
+        return BasicAlgNumber([coeff, a.denominator], polynomial)
+    else:
+        deg = len(a) - 1
+        coeff = [0, 1] + [0] * (deg - 2)
+        if a[-1] != 1:
+            polynomial = [a[-2], 1]
+            mul = a[-1]
+            for j in range(deg - 2, -1, -1):
+                polynomial.insert(0, a[j] * mul)
+                mul *= a[-1]
+            return BasicAlgNumber([coeff, a[-1]], polynomial)
         else:
-            coeff.append(0)
-    return BasicAlgNumber([coeff, 1], polynomial)
+            return BasicAlgNumber([coeff, 1], a)
 
 def disc(A):
     """
@@ -798,7 +812,7 @@ def disc(A):
     list = []
     for i in range(n):
         for j in range(n):
-            s = A[i]*A[j]
+            s = A[i] * A[j]
             list.append(s.trace())
     M = matrix.createMatrix(n, n, list)
     return M.determinant()
