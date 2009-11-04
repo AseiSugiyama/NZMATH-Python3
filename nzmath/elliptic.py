@@ -3,6 +3,7 @@
 
 from __future__ import division
 import logging
+import random
 
 import nzmath.poly.uniutil as uniutil
 import nzmath.poly.multiutil as multiutil
@@ -69,7 +70,6 @@ def _PolyMulRed(multipliees, poly):
         return poly.getRing().zero
     product = multipliees.pop()
     for factor in multipliees:
-        #print type(product)
         #if factor.degree() >= poly.degree():
         #factor = PolyMod(factor, poly)
         #if factor == 0:
@@ -155,7 +155,6 @@ class ECGeneric:
                 pass # support for subclass
         else:
             raise ValueError("parameters must be (coefficient, basefield)")
-
     def __len__(self):
         return len(self.coefficient)
 
