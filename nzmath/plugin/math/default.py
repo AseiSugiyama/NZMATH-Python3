@@ -17,14 +17,10 @@ def CHECK_REAL_OR_COMPLEX(testee):
     If testee is not a complex number, raise an exception.
     """
     try:
-        COMPLEXTYPE(testee)
+        comp = COMPLEXTYPE(testee)
+        return 1 if 0 == comp.imag else 0
     except TypeError:
         raise
-    try:
-        FLOATTYPE(testee)
-        return 1
-    except TypeError:
-        return 0
 
 def SETPRECISION(prec):
     """
