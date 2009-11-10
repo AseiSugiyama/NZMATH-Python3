@@ -10,7 +10,13 @@ Poly = uniutil.polynomial
 Int = rational.theIntegerRing
 
 # sub test
-from nzmath.test.testMatrixFiniteField import *
+try:
+    from test.testMatrixFiniteField import *
+except:
+    try:
+        from nzmath.test.testMatrixFiniteField import *
+    except:
+        from testMatrixFiniteField import *
 
 ## for RingMatrix
 a1 = createMatrix(1, 2, [3, 2])

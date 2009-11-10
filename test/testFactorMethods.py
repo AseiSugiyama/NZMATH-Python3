@@ -2,7 +2,13 @@ import unittest
 import logging
 import nzmath.factor.methods as mthd
 
-_log = logging.getLogger('nzmath.test.testFactorMethod')
+try:
+    _log = logging.getLogger('test.testFactorMethod')
+except:
+    try:
+        _log = logging.getLogger('nzmath.test.testFactorMethod')
+    except:
+        _log = logging.getLogger('testFactorMethod')
 _log.setLevel(logging.INFO)
 
 class FactorTest (unittest.TestCase):
