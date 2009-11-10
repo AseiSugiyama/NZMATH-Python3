@@ -18,7 +18,7 @@ def CHECK_REAL_OR_COMPLEX(testee):
     """
     try:
         comp = COMPLEXTYPE(testee)
-        return 1 if 0 == comp.imag else 0
+        return 0 == comp.imag
     except TypeError:
         raise
 
