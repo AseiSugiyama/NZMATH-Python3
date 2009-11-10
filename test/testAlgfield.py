@@ -26,34 +26,34 @@ class NumberFieldTest (unittest.TestCase):
         self.assertEqual((2, 0), (self.K).signature())
         self.assertEqual((0, 1), (self.KI).signature())
 
-    def testPOLRED(self):
-        polred1 = (self.CF1).POLRED()[1]
-        self.assertEqual([1L, 0L, 1L], [polred1[i] for i in range(polred1.degree() + 1)])
-        polred2 = (self.CF2).POLRED()[1]
-        self.assertEqual([1L, 0L, -1L, 0L, 1L], [polred2[i] for i in range(polred2.degree() + 1)])
+#    def testPOLRED(self):
+#        polred1 = (self.CF1).POLRED()[1]
+#        self.assertEqual([1L, 0L, 1L], [polred1[i] for i in range(polred1.degree() + 1)])
+#        polred2 = (self.CF2).POLRED()[1]
+#        self.assertEqual([1L, 0L, -1L, 0L, 1L], [polred2[i] for i in range(polred2.degree() + 1)])
 
 class BasicAlgNumberTest (unittest.TestCase):
     def setUp(self):
-        self.a = algfield.BasicAlgNumber([[1,1],1],[-2,0,1])
-        self.b = algfield.BasicAlgNumber([[-1,2],1],[-2,0,1])
+        self.a = algfield.BasicAlgNumber([[1, 1], 1], [-2, 0, 1])
+        self.b = algfield.BasicAlgNumber([[-1, 2], 1], [-2, 0, 1])
 
     def testAdd(self):
-        c = [[0,3],1]
+        c = [[0, 3], 1]
         self.assertEqual(c, (self.a + self.b).value)
 
     def testMul(self):
-        d = [[3,1],1]
+        d = [[3, 1], 1]
         self.assertEqual(d, (self.a * self.b).value)
 
     def testPow(self):
-        a_pow = [[3,2],1]
-        b_pow = [[-25,22],1]
+        a_pow = [[3, 2], 1]
+        b_pow = [[-25, 22], 1]
         self.assertEqual(a_pow, (self.a**2).value)
         self.assertEqual(b_pow, (self.b**3).value)
 
     def testInverse(self):
-        a_inv = [[-1,1],1]
-        b_inv = [[1,2],7]
+        a_inv = [[-1, 1], 1]
+        b_inv = [[1, 2], 7]
         self.assertEqual(a_inv, (self.a).inverse().value)
         self.assertEqual(b_inv, (self.b).inverse().value)
 
@@ -71,8 +71,8 @@ class BasicAlgNumberTest (unittest.TestCase):
 
 class MatAlgNumberTest (unittest.TestCase):
     def setUp(self):
-        self.a = algfield.MatAlgNumber([0,1,1],[-2,0,0,1])
-        self.b = algfield.MatAlgNumber([rational.Rational(-1,2),rational.Rational(3,2),rational.Rational(1,1)],[-2,0,0,1])
+        self.a = algfield.MatAlgNumber([0, 1, 1], [-2, 0, 0, 1])
+        self.b = algfield.MatAlgNumber([rational.Rational(-1, 2), rational.Rational(3, 2), rational.Rational(1, 1)], [-2, 0, 0, 1])
 
     def testAdd(self):
         c = [rational.Rational(-1, 2), rational.Rational(5, 2), rational.Rational(2, 1)]
@@ -89,51 +89,20 @@ class MatAlgNumberTest (unittest.TestCase):
         self.assertEqual(b_inv, (self.b).inverse().coeff)
 
     def testPow(self):
-        a_pow = [4,2,1]
+        a_pow = [4, 2, 1]
         b_pow = [rational.Rational(13, 8), rational.Rational(93, 8), rational.Rational(51, 8)]
         self.assertEqual(a_pow, (self.a**2).coeff)
         self.assertEqual(b_pow, (self.b**3).coeff)
 
     def testNorm(self):
         a_norm = 6
-        b_norm = rational.Rational(121,8)
+        b_norm = rational.Rational(121, 8)
         self.assertEqual(a_norm, (self.a).norm())
         self.assertEqual(b_norm, (self.b).norm())
 
     def testTrace(self):
         a_trace = 0
-        b_trace = rational.Rational(-3,2)
-        self.assertEqual(a_trace, (self.a).trace())
-        self.assertEqual(b_trace, (self.b).trace())
-
-class ApproxAlgNumberTest (unittest.TestCase):
-    def setUp(self):
-        self.a = algfield.ApproxAlgNumber([1,1],1.73205,[-3,0,1])
-        self.b = algfield.ApproxAlgNumber([2,1],1.73205,[-3,0,1])
-        
-    def testAdd(self):
-        c = [-3,-6,1]
-        self.assertEqual(c, (self.a + self.b).charpoly)
-
-    def testMul(self):
-        d = [-2,-10,1]
-        self.assertEqual(d, (self.a * self.b).charpoly)
-
-    def testPow(self):
-        a_pow = [4,-8,1]
-        b_pow = [1,-52,1]
-        self.assertEqual(a_pow, (self.a**2).charpoly)
-        self.assertEqual(b_pow, (self.b**3).charpoly)
-   
-    def testNorm(self):
-        a_norm = -2
-        b_norm = 1
-        self.assertEqual(a_norm, (self.a).norm())
-        self.assertEqual(b_norm, (self.b).norm())
-
-    def testTrace(self):
-        a_trace = 2
-        b_trace = 4
+        b_trace = rational.Rational(-3, 2)
         self.assertEqual(a_trace, (self.a).trace())
         self.assertEqual(b_trace, (self.b).trace())
 
