@@ -195,6 +195,23 @@ class PartitionNumberTest (unittest.TestCase):
                          partition_number(101))
 
 
+class PermutationTest(unittest.TestCase):
+    """
+    test for permutationGenerator
+    """
+    def testNumber(self):
+        self.assertEqual(factorial(2), len(list(permutationGenerator(2))))
+        self.assertEqual(factorial(3), len(list(permutationGenerator(3))))
+        self.assertEqual(factorial(4), len(list(permutationGenerator(4))))
+
+    def testIsPermutation(self):
+        setof100 = set(range(100))
+        # test only first 10, since 100! is to big to test all.
+        for i, perm in zip(range(10), permutationGenerator(100)):
+            self.assertEqual(100, len(perm))
+            self.assertEqual(setof100, set(perm))
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

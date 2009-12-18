@@ -361,3 +361,50 @@ def partition_number(n):
     Return the partition number for '''n'''.
     """
     return partition_numbers_upto(n)[-1]
+
+def permutationGenerator(n):
+    """
+    Generate all permutations of n elements as lists.
+
+    The number of generated list is n!, so be careful to use big n.
+
+    For example:
+    >>> for perm in permutationGenerator(3):
+    ...     print perm
+    ...
+    [0, 1, 2]
+    [0, 2, 1]
+    [1, 0, 2]
+    [1, 2, 0]
+    [2, 0, 1]
+    [2, 1, 0]
+    >>>
+    """
+    # traverse tree by depth first, using a stack
+    stack = [[0]]
+    unused = set(range(1, n))
+    while True:
+        if unused:
+            # yet on inner node
+            part = stack[-1] + [min(unused)]
+            stack.append(part)
+            unused.discard(min(unused))
+            continue
+        # leaf is reached, thus yield the value.
+        perm = stack.pop()
+        yield perm
+        # track back until node with subtree yet to be traversed
+        unused.add(perm[-1])
+        while stack and stack[-1][-1] > max(unused):
+            part = stack.pop()
+            unused.add(part[-1])
+        else:
+            if not stack:
+                # end of stack means traversal is done
+                break
+            prev = stack[-1][-1]
+            replacer = min(d for d in unused if d > prev)
+            stack[-1][-1] = replacer
+            unused.discard(replacer)
+            unused.add(prev)
+
