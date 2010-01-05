@@ -170,6 +170,9 @@ class PartitionTest (unittest.TestCase):
     def testMaxiExceedNumber(self):
         self.assertEqual(11, len([p for p in partitionGenerator(6, 12)]))
 
+    def testDual(self):
+        self.assertEqual((3, 2, 2, 1, 1), partition_dual((5, 3, 1)))
+
 
 class PartitionNumberTest (unittest.TestCase):
     def testPartitionNumbersUpto(self):
