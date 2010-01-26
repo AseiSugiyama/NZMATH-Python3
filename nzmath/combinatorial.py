@@ -362,18 +362,18 @@ def partition_number(n):
     """
     return partition_numbers_upto(n)[-1]
 
-def partition_dual(partition):
+def partition_conjugate(partition):
     """
-    Return the dual partition of 'partition'.
+    Return the conjugate partition of 'partition'.
 
     For example:
-    >>> partition_dual((5, 3, 1))
+    >>> partition_conjugate((5, 3, 1))
     (3, 2, 2, 1, 1)
     """
-    dual = []
+    conj = []
     for i in range(1, max(partition) + 1):
-        dual.append(len([addendum for addendum in partition if addendum >= i]))
-    return tuple(dual)
+        conj.append(len([addendum for addendum in partition if addendum >= i]))
+    return tuple(conj)
 
 def permutationGenerator(n):
     """
