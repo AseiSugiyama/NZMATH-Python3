@@ -164,6 +164,22 @@ class CombinationIngexGeneratorTest(unittest.TestCase):
                           [2, 3, 4]], list(combinationIndexGenerator(5, 3)))
 
 
+class PermutationGeneratorTest(unittest.TestCase):
+    def testOne(self):
+        self.assertEqual([[0]], list(permutationGenerator(1)))
+
+    def testTwo(self):
+        self.assertEqual([[0, 1]], list(combinationIndexGenerator(2)))
+
+    def testTwo(self):
+        self.assertEqual([[0, 1, 2],
+                          [0, 2, 1],
+                          [1, 0, 2],
+                          [1, 2, 0],
+                          [2, 0, 1],
+                          [2, 1, 0]], list(permutationGenerator(3)))
+
+
 class PartitionTest (unittest.TestCase):
     def testForZero(self):
         self.assertEqual([()], [p for p in partitionGenerator(0)])
