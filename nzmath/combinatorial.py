@@ -297,47 +297,254 @@ def partitionGenerator(n, maxi=None):
     Generate partitions of n.
     If maxi is given, then addends are limited to at most maxi.
     """
+    if not n:
+        yield ()
+        raise StopIteration
     if maxi is None or maxi > n:
         maxi = n
     partition = [maxi]
     rest = n - maxi
     while True:
         key = partition[-1]
-        q, r = divmod(rest, key)
-        if q:
-            partition.extend([key] * q)
-        if r:
-            partition.append(r)
-        rest = 0
+        while rest >= key:
+            partition.append(key)
+            rest -= key
+        if rest:
+            partition.append(rest)
 
         yield tuple(partition)
 
         try:
             # wind up all 1's.
             first_one = partition.index(1)
+            if not first_one:
+                # partition was [1]*n means all partitions have been generated.
+                raise StopIteration
             rest = len(partition) - first_one
             del partition[first_one:]
-            level = first_one -1
         except ValueError:
             # 1 is not found
-            level = len(partition) - 1
-        if level >= 0:
-            partition[level] -= 1
-            rest += 1
+            rest = 0
+
+        partition[-1] -= 1
+        rest += 1
+
+
+class PartitionDriver(object):
+    """
+    PartitionDriver knows how to construct partitions.
+
+    This class can generate all partitions without any additional
+    condition, yet it should be usable as a base class for subclasses
+    to generate conditioned partitions, such as limited maximum, with
+    odd parts, with distinct parts, etc.
+    """
+    def __init__(self):
+        """
+        Initialize the class.
+
+        Public attributes are partition and rest, though they are not
+        expected to be modified directly.
+        """
+        self.partition = []
+        self.rest = 0
+
+    def set_parameters(self, integer):
+        """
+        Set parameters for generate:
+          integer: the number to be partitioned
+
+        The method signature may differ class to class.
+        """
+        self.partition = []
+        self.rest = integer
+
+    def ispreconditioned(self):
+        """
+        Check whether preconditions are satisfied or not.
+
+        For example, partition into evens needs rest be even.
+        """
+        return True
+
+    def pull(self):
+        """
+        Pull the maximum part obtainable from rest to partition.
+        """
+        # raise LookupError if no parts can be pulled.
+        if self.partition:
+            if self.rest >= self.partition[-1]:
+                part = self.partition[-1]
+            else:
+                part = self.rest
         else:
-            # partition==[1]*n: it means all partitions have been generated.
+            part = self.rest
+
+        self.partition.append(part)
+        self.rest -= part
+
+    def backtrack(self):
+        """
+        Back track the history from either broken or complete partition.
+        """
+        try:
+            if self.partition[-1] == 1:
+                # wind up all 1's.
+                first_one = self.partition.index(1)
+                self.rest = len(self.partition) - first_one
+                del self.partition[first_one:]
+            else:
+                self.rest = 0
+        except Exception:
+            print self.partition
+            print self.rest
+
+    def push(self):
+        """
+        On each end of backtrack, the tail of partition has to be
+        decreased and the decrement is cancelled by an increment of
+        rest.
+        """
+        self.partition[-1] -= 1
+        self.rest += 1
+
+    def shouldterminate(self):
+        """
+        Knowing that the generation should terminate, return True to
+        stop the loop.
+        """
+        if not self.partition:
+            return True
+
+    def generate(self, *args):
+        """
+        Generate all partitions of integer
+
+        Variable arguments *args is used for inheritance.
+        """
+        self.set_parameters(*args)
+        if not self.ispreconditioned():
             raise StopIteration
 
-def _pentagonal():
+        while True:
+            while self.rest:
+                self.pull()
+
+            if not self.rest:
+                yield tuple(self.partition)
+
+            self.backtrack()
+            if self.shouldterminate():
+                break
+            self.push()
+
+
+class LimitedMaximumPartitionDriver(PartitionDriver):
     """
-    Generates pentagonal and skew pentagonal numbers.
-    (1, 2, 5, 7, 12, 15, ...)
+    Only limit the muximum of addendum.
     """
-    j = 1
-    while True:
-        yield j*(3*j - 1)//2
-        yield j*(3*j + 1)//2
-        j += 1
+    def __init__(self):
+        PartitionDriver.__init__(self)
+        self.limit = 0
+
+    def set_parameters(self, integer, limit):
+        """
+        Set parameters for generate:
+          integer: the number to be partitioned
+          limit: the maximum of addendum
+        """
+        self.partition = []
+        self.rest = integer
+        self.limit = limit
+
+    def pull(self):
+        """
+        Pull the maximum part obtainable from rest to partition.
+        """
+        if self.partition:
+            if self.rest >= self.partition[-1]:
+                part = self.partition[-1]
+            else:
+                part = self.rest
+        elif self.rest >= self.limit:
+            part = self.limit
+        else:
+            part = self.rest
+
+        self.partition.append(part)
+        self.rest -= part
+
+
+class OddPartitionDriver(PartitionDriver):
+    """
+    All addenda are odd.
+    """
+    def __init__(self):
+        PartitionDriver.__init__(self)
+
+    def pull(self):
+        """
+        Pull the maximum odd part obtainable from rest to partition.
+        """
+        if self.partition and self.rest >= self.partition[-1]:
+            part = self.partition[-1]
+        elif self.rest % 2:
+            part = self.rest
+        else:
+            part = self.rest - 1
+
+        self.partition.append(part)
+        self.rest -= part
+
+    def push(self):
+        """
+        On each end of backtrack, the tail of partition has to be
+        decreased and the decrement is cancelled by an increment of
+        rest.
+        """
+        self.partition[-1] -= 2
+        self.rest += 2
+
+
+class OddMaximumPartitionDriver(LimitedMaximumPartitionDriver, OddPartitionDriver):
+    def __init__(self):
+        # Calling LimitedMaximum suffices, since extra work isn't needed for Odd
+        LimitedMaximumPartitionDriver.__init__(self)
+
+    def set_parameters(self, integer, limit):
+        """
+        Set parameters for generate:
+          integer: the number to be partitioned
+          limit: the maximum of addendum
+        """
+        if not (limit % 2):
+            limit -= 1
+        LimitedMaximumPartitionDriver.set_parameters(self, integer, limit)
+
+    def pull(self):
+        """
+        Pull the maximum odd part obtainable from rest to partition.
+        """
+        if self.partition and self.rest >= self.partition[-1]:
+            part = self.partition[-1]
+        elif self.rest >= self.limit:
+            part = self.limit
+        elif self.rest % 2:
+            part = self.rest
+        else:
+            part = self.rest - 1
+
+        self.partition.append(part)
+        self.rest -= part
+
+
+def partition_into_odd_generator(n, maxi=None):
+    if maxi is None:
+        driver = OddPartitionDriver()
+        return driver.generate(n)
+    else:
+        driver = OddMaximumPartitionDriver()
+        return driver.generate(n, maxi)
 
 def partition_numbers_upto(n):
     """
@@ -355,6 +562,17 @@ def partition_numbers_upto(n):
             s += sign * p[i - k]
         p.append(s)
     return p
+
+def _pentagonal():
+    """
+    Generates pentagonal and skew pentagonal numbers.
+    (1, 2, 5, 7, 12, 15, ...)
+    """
+    j = 1
+    while True:
+        yield j*(3*j - 1)//2
+        yield j*(3*j + 1)//2
+        j += 1
 
 def partition_number(n):
     """

@@ -144,6 +144,9 @@ class StirlingTest (unittest.TestCase):
 
 
 class PartitionTest (unittest.TestCase):
+    def testForZero(self):
+        self.assertEqual([()], [p for p in partitionGenerator(0)])
+
     def testForOne(self):
         self.assertEqual([(1,)], [p for p in partitionGenerator(1)])
 
@@ -172,6 +175,42 @@ class PartitionTest (unittest.TestCase):
 
     def testConjugate(self):
         self.assertEqual((3, 2, 2, 1, 1), partition_conjugate((5, 3, 1)))
+
+
+class OddPartitionTest (unittest.TestCase):
+    def setUp(self):
+        self.generator = partition_into_odd_generator
+
+    def testForOne(self):
+        self.assertEqual([(1,)], [p for p in self.generator(1)])
+
+    def testForTwo(self):
+        for partition in self.generator(2):
+            self.assertEqual(2, sum(partition))
+            self.assert_(all(x % 2 for x in partition))
+        self.assertEqual(1, len([p for p in self.generator(2)]))
+        self.assertEqual([(1, 1)], [p for p in self.generator(2, 1)])
+
+    def testForSix(self):
+        for partition in self.generator(6):
+            self.assertEqual(6, sum(partition))
+            self.assert_(all(x % 2 for x in partition))
+        # 5+1,3*2,3+1*3,1*6
+        self.assertEqual(4, len([p for p in self.generator(6)]))
+        self.assertEqual(3, len([p for p in self.generator(6, 3)]))
+        self.assertEqual([(1,)*6], [p for p in self.generator(6, 1)])
+
+    def testForNine(self):
+        for partition in self.generator(9):
+            self.assertEqual(9, sum(partition))
+            self.assert_(all(x % 2 for x in partition))
+        # 9,7+1*2,5+3+1,5+1*4,3*3,3*2+1*3,3+1*6,1*9
+        self.assertEqual(8, len([p for p in self.generator(9)]))
+        self.assertEqual(6, len([p for p in self.generator(9, 5)]))
+        self.assertEqual([(1,)*9], [p for p in self.generator(9, 1)])
+
+    def testMaxiExceedNumber(self):
+        self.assertEqual(4, len([p for p in self.generator(6, 12)]))
 
 
 class PartitionNumberTest (unittest.TestCase):
