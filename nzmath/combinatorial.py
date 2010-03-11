@@ -115,7 +115,7 @@ def combinationIndexGenerator(n, m):
     assert n >= m > 0
     idx = range(m)
     while True:
-        yield idx
+        yield list(idx)
         for i in range(1, m+1):
             if idx[-i] != n-i:
                 idx[-i] += 1

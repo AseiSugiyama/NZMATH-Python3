@@ -143,6 +143,27 @@ class StirlingTest (unittest.TestCase):
         self.assertEqual(52, bell(5))
 
 
+class CombinationIngexGeneratorTest(unittest.TestCase):
+    def testOne(self):
+        self.assertEqual([[0]], [i for i in combinationIndexGenerator(1, 1)])
+
+    def testTwo(self):
+        self.assertEqual([[0, 1]], list(combinationIndexGenerator(2, 2)))
+        self.assertEqual([[0], [1]], list(combinationIndexGenerator(2, 1)))
+
+    def test53(self):
+        self.assertEqual([[0, 1, 2],
+                          [0, 1, 3],
+                          [0, 1, 4],
+                          [0, 2, 3],
+                          [0, 2, 4],
+                          [0, 3, 4],
+                          [1, 2, 3],
+                          [1, 2, 4],
+                          [1, 3, 4],
+                          [2, 3, 4]], list(combinationIndexGenerator(5, 3)))
+
+
 class PartitionTest (unittest.TestCase):
     def testForZero(self):
         self.assertEqual([()], [p for p in partitionGenerator(0)])
