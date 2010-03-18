@@ -69,6 +69,7 @@ class PrimeTest(unittest.TestCase):
             p = prime.randPrime(n)
             self.assert_(10**(n-1) < p < 10**n)
             self.assert_(prime.smallSpsp(p)) # primeq is too heavy..
+        self.assert_(prime.randPrime(1) in (2, 3, 5, 7))
 
 
 class LpspTest (unittest.TestCase):
