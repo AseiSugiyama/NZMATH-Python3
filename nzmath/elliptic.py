@@ -529,9 +529,10 @@ class ECoverQ(ECGeneric):
         while i < limit:
             s = random.randrange(1, i)
             t = random.randrange(1, i)
-            y = self.coordinateY(rational.Rational(s, t))
+            x = rational.Rational(s, t);
+            y = self.coordinateY(x)
             if y != False:
-                return [s, self.coordinateY(s)]
+                return [x, y]
             i = i+10
         raise ValueError("Times exceeded for limit.")
 
