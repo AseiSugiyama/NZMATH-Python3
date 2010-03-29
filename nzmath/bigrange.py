@@ -144,7 +144,7 @@ def multirange_restrictions(triples, ascending=(), descending=(), strictly_ascen
     """
     multirange_restrictions is an iterator similar to the multirange
     but putting restrictions on each ranges.  A restriction ascending
-    is a sequence that specifies the indeces where the number emitted
+    is a sequence that specifies the indices where the number emitted
     by the range should be greater than or equal to the number at the
     previous index.  Other restrictions descending, strictly_ascending
     and strictly_descending are similar.

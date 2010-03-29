@@ -94,7 +94,7 @@ def euler(n):
 
 def combinationIndexGenerator(n, m):
     """
-    Generate indeces of m elment subsets of n element set.
+    Generate indices of m elment subsets of n element set.
 
     For example:
     >>> for idx in combinationIndexGenerator(5,3):
