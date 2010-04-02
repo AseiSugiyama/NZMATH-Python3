@@ -551,7 +551,7 @@ class PseudoDivisionProvider(object):
         """
         if index < 0:
             raise ValueError("negative index is not allowed.")
-        # special indeces
+        # special indices
         elif index == 0:
             return self.getRing().one
         elif index == 1:
@@ -1405,7 +1405,7 @@ class FieldPolynomial(DivisionProvider,
 
         if index < 0:
             raise ValueError("negative index is not allowed.")
-        # special indeces
+        # special indices
         elif index == 0:
             return self.getRing().one
         elif index == 1:

@@ -254,7 +254,7 @@ class BasicPolynomial(PolynomialInterface):
         """
         self ** index
         """
-        # special indeces
+        # special indices
         if index < 0:
             raise ValueError("negative index is not allowed.")
         elif index == 0:
@@ -678,7 +678,7 @@ class SortedPolynomial (PolynomialInterface):
         No ternary powering is defined here, because there is no
         modulus operator defined.
         """
-        # special indeces
+        # special indices
         if index < 0:
             raise ValueError("negative index is not allowed.")
         elif index == 0:

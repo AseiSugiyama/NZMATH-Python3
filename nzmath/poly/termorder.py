@@ -17,7 +17,7 @@ class TermOrderInterface (object):
     are ordered.
 
     More precisely in terms of Python, a term order accepts two tuples
-    of integers, each of which represents power indeces of the term,
+    of integers, each of which represents power indices of the term,
     and returns 0, 1 or -1 just like cmp built-in function.
 
     A TermOrder object provides not only the precedence function, but
@@ -27,7 +27,7 @@ class TermOrderInterface (object):
     def __init__(self, comparator):
         """
         'comparator' accepts two tuples of integers, each of which
-        represents power indeces of the term, and returns 0, 1 or -1
+        represents power indices of the term, and returns 0, 1 or -1
         just like cmp built-in function.
         """
         if type(self) is TermOrderInterface:
@@ -36,7 +36,7 @@ class TermOrderInterface (object):
 
     def cmp(self, left, right):
         """
-        Compare two indeces left and right and determine precedence by
+        Compare two indices left and right and determine precedence by
         self.comparator.
         """
         raise NotImplementedError(_INTERFACE_MSG % self.__class__.__name__)
@@ -85,7 +85,7 @@ class UnivarTermOrder (TermOrderInterface):
 
     def cmp(self, left, right):
         """
-        Compare two indeces left and right and determine precedence by
+        Compare two indices left and right and determine precedence by
         self.comparator.
         """
         return self.comparator(left, right)
@@ -196,14 +196,14 @@ class MultivarTermOrder (TermOrderInterface):
     def __init__(self, comparator):
         """
         'comparator' accepts two tuples of integers, each of which
-        represents power indeces of the term, and returns 0, 1 or -1
+        represents power indices of the term, and returns 0, 1 or -1
         just like cmp built-in function.
         """
         self.comparator = comparator
 
     def cmp(self, left, right):
         """
-        Compare two indeces left and right and determine precedence by
+        Compare two indices left and right and determine precedence by
         self.comparator.
         """
         return self.comparator(left, right)
@@ -236,7 +236,7 @@ class MultivarTermOrder (TermOrderInterface):
         """
         Return formatted term string.
 
-        'term' is a tuple of indeces and coefficient.
+        'term' is a tuple of indices and coefficient.
         """
         if not term[1]:
             return ""
@@ -271,20 +271,20 @@ class MultivarTermOrder (TermOrderInterface):
         """
         if hasattr(polynom, 'leading_term'):
             return polynom.leading_term()
-        max_indeces = self._max(polynom.bases())
-        return max_indeces, polynom[max_indeces]
+        max_indices = self._max(polynom.bases())
+        return max_indices, polynom[max_indices]
 
-    def _max(self, indeces_list):
+    def _max(self, indecis_list):
         """
-        Return the maximum indeces with respect to the comparator.
+        Return the maximum indices with respect to the comparator.
         """
-        if not indeces_list:
+        if not indices_list:
             raise ValueError("max() arg is an empty sequence")
-        it = iter(indeces_list)
+        it = iter(indices_list)
         maxi = it.next()
-        for indeces in it:
-            if self.comparator(maxi, indeces) < 0:
-                maxi = indeces
+        for indices in it:
+            if self.comparator(maxi, indices) < 0:
+                maxi = indices
         return maxi
 
 

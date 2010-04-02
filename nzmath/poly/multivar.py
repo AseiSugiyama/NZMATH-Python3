@@ -16,34 +16,34 @@ import nzmath.poly.formalsum as formalsum
 _log = logging.getLogger('nzmath.poly.multivar')
 
 
-class TermIndeces(object):
+class TermIndices(object):
     """
-    Indeces of terms of multivariate polynomials.
+    Indices of terms of multivariate polynomials.
     """
-    def __init__(self, indeces):
+    def __init__(self, indices):
         """
-        Termindeces(indeces)
+        TermIndices(indices)
 
-        The constructor does not check the validity of indeces,
+        The constructor does not check the validity of indices,
         such as integerness, nonnegativity, etc.
         """
-        self._tuple = tuple(indeces)
+        self._tuple = tuple(indices)
 
     def __hash__(self):
         """
-        hash(indeces)
+        hash(indices)
         """
         return hash(self.__class__.__name__) ^ hash(self._tuple)
 
     def __len__(self):
         """
-        len(indeces)
+        len(indices)
         """
         return len(self._tuple)
 
     def __iter__(self):
         """
-        iter(indeces)
+        iter(indices)
 
         Return iterator yielding successive elements.
         """
@@ -95,7 +95,7 @@ class TermIndeces(object):
         (i1, ..., in) + (j1, ..., jn) = (i1 + j1, ..., in + jn)
         """
         if len(self) != len(other):
-            raise TypeError("different length indeces")
+            raise TypeError("different length indices")
         return self.__class__([i + j for (i, j) in zip(self, other)])
 
     def __sub__(self, other):
@@ -103,7 +103,7 @@ class TermIndeces(object):
         (i1, ..., in) - (j1, ..., jn) = (i1 - j1, ..., in - jn)
         """
         if len(self) != len(other):
-            raise TypeError("different length indeces")
+            raise TypeError("different length indices")
         return self.__class__([i - j for (i, j) in zip(self, other)])
 
     def __mul__(self, scale):
@@ -120,8 +120,8 @@ class TermIndeces(object):
 
     def pop(self, pos):
         """
-        Return the index at 'pos' and a new TermIndeces object as the
-        omitting-the-'pos' indeces.
+        Return the index at 'pos' and a new TermIndices object as the
+        omitting-the-'pos' indices.
         """
         index = self.__class__(self._tuple[:pos] + self._tuple[pos + 1:])
         return self._tuple[pos], index
@@ -133,7 +133,7 @@ class TermIndeces(object):
         gcd((i1, ..., in), (j1, ..., jn)) = (min(i1, j1), ..., min(in, jn))
         """
         if len(self) != len(other):
-            raise TypeError("different length indeces")
+            raise TypeError("different length indices")
         return self.__class__([min(i, j) for (i, j) in zip(self, other)])
 
     def lcm(self, other):
@@ -143,12 +143,12 @@ class TermIndeces(object):
         lcm((i1, ..., in), (j1, ..., jn)) = (max(i1, j1), ..., max(in, jn))
         """
         if len(self) != len(other):
-            raise TypeError("different length indeces")
+            raise TypeError("different length indices")
         return self.__class__([max(i, j) for (i, j) in zip(self, other)])
 
     def total_degree(self):
         """
-        Return the total degree of indeces, i.e. the sum of indeces.
+        Return the total degree of indices, i.e. the sum of indices.
         """
         return sum(self)
 
@@ -188,7 +188,7 @@ class BasicPolynomial(PolynomialInterface):
         coefficients can be any dict initial values.
         """
         PolynomialInterface.__init__(self)
-        self._coefficients = dict([(TermIndeces(i), c) for (i, c) in dict(coefficients).iteritems()])
+        self._coefficients = dict([(TermIndices(i), c) for (i, c) in dict(coefficients).iteritems()])
         if "number_of_variables" in kwds:
             self.number_of_variables = kwds.pop("number_of_variables")
         else:
@@ -221,7 +221,7 @@ class BasicPolynomial(PolynomialInterface):
         self * other
 
         Both self and other must have the same length tuples of
-        indeces for every term.
+        indices for every term.
         """
         mul_coeff = {}
         for ds, cs in self:
@@ -231,11 +231,11 @@ class BasicPolynomial(PolynomialInterface):
                 if not co:
                     continue
                 assert len(ds) == len(do)
-                indeces = ds + do
-                if indeces in mul_coeff:
-                    mul_coeff[indeces] += cs*co
+                indices = ds + do
+                if indices in mul_coeff:
+                    mul_coeff[indices] += cs*co
                 else:
-                    mul_coeff[indeces] = cs*co
+                    mul_coeff[indices] = cs*co
         return self.construct_with_default([(d, c) for (d, c) in mul_coeff.iteritems() if c])
 
     def scalar_mul(self, scale):
@@ -247,7 +247,7 @@ class BasicPolynomial(PolynomialInterface):
     def term_mul(self, term):
         """
         Return the result of multiplication with the given term.
-        The term can be given as a tuple (degree indeces, coeff)
+        The term can be given as a tuple (degree indices, coeff)
         or as a Polynomial instance.
         """
         if isinstance(term, PolynomialInterface):
@@ -265,15 +265,15 @@ class BasicPolynomial(PolynomialInterface):
         if index < 0:
             raise ValueError("negative index is not allowed.")
         elif index == 0:
-            indeces = (0,)
+            indices = (0,)
             for i, c in self:
                 if c:
-                    indeces = (0,) * len(i)
+                    indices = (0,) * len(i)
                     one = _ring.getRing(c).one
                     break
             else:
                 one = 1
-            return self.construct_with_default({indeces: one})
+            return self.construct_with_default({indices: one})
         elif index == 1:
             return self
         elif index == 2:
@@ -340,7 +340,7 @@ class BasicPolynomial(PolynomialInterface):
     def __call__(self, target, value):
         """
         Substitute 'value' to 'target' index variable.
-        If 'target' is a tuple of indeces, it has to be sorted and
+        If 'target' is a tuple of indices, it has to be sorted and
         'value' also has to be a tuple of the same length.
 
         Note that the result will not be a univar polynomial nor a
@@ -411,10 +411,10 @@ class BasicPolynomial(PolynomialInterface):
     def erase_variable(self, target=0):
         """
         Erase a variable from the polynomial.  The target variable is
-        specified by the position in indeces.
+        specified by the position in indices.
 
         The method takes no care about resulting polynomial type, i.e.
-        the result remains as the same type even if their indeces have
+        the result remains as the same type even if their indices have
         length less than 2.
         """
         result = dict()
@@ -434,7 +434,7 @@ class BasicPolynomial(PolynomialInterface):
         Combine similar terms and return the resulting univariate
         polynomial with polynomial coefficients in the form of list of
         (degree, coefficient) pairs.  The target variable is specified
-        by the position in indeces.
+        by the position in indices.
         """
         zero = self.construct_with_default(())
         result = {}

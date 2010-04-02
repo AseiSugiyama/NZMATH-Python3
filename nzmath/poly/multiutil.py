@@ -648,7 +648,7 @@ def polynomial(coefficients, coeffring, number_of_variables=None):
     """
     Return a polynomial.
     - coefficients has to be a initializer for dict, whose keys are
-      variable indeces and values are coefficients at the indeces.
+      variable indices and values are coefficients at the indices.
     - coeffring has to be an object inheriting ring.Ring.
     - number_of_variable has to be the number of variables.
 

@@ -112,23 +112,23 @@ class BasicPolynomialTest (unittest.TestCase):
         self.assertEqual(p1, p.combine_similar_terms(1))
 
 
-class TermIndecesTest (unittest.TestCase):
+class TermIndicesTest (unittest.TestCase):
     def setUp(self):
-        self.term = multivar.TermIndeces((1, 2, 3))
+        self.term = multivar.TermIndices((1, 2, 3))
 
     def testEq(self):
-        identical = multivar.TermIndeces((1, 2, 3))
+        identical = multivar.TermIndices((1, 2, 3))
         self.assertEqual(identical, self.term)
-        different = multivar.TermIndeces((1, 2, 4))
+        different = multivar.TermIndices((1, 2, 4))
         self.assertNotEqual(self.term, different)
 
     def testCmp(self):
         """
         comparisons just like for tuples
         """
-        identical = multivar.TermIndeces((1, 2, 3))
+        identical = multivar.TermIndices((1, 2, 3))
         self.assertEqual(0, cmp(self.term, identical))
-        lower = multivar.TermIndeces((0, 1, 2))
+        lower = multivar.TermIndices((0, 1, 2))
         self.assertEqual(1, cmp(self.term, lower))
         self.assertEqual(-1, cmp(lower, self.term))
         self.assert_(self.term >= lower)
