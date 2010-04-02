@@ -215,7 +215,7 @@ class ECGeneric:
                        rational.Rational(self.a6+V[1]*self.a4+V[1]**2*self.a2+V[1]**3-V[3]*self.a3-V[3]**2-V[1]*V[3]*self.a1, V[0]**6)])
         else:
             for v in V:
-                if not isinstance(v, (int, long)) or not (v in self.basefield):
+                if not isinstance(v, (int, long)) and not (v in self.basefield):
                     raise ValueError("transform V must be integer sequence.")
             v = self.basefield.createElement(V[0]).inverse()
             return EC([(self.a1+2*V[2])*v,
@@ -529,9 +529,10 @@ class ECoverQ(ECGeneric):
         while i < limit:
             s = random.randrange(1, i)
             t = random.randrange(1, i)
-            y = self.coordinateY(rational.Rational(s, t))
+            x = rational.Rational(s, t);
+            y = self.coordinateY(x)
             if y != False:
-                return [s, self.coordinateY(s)]
+                return [x, y]
             i = i+10
         raise ValueError("Times exceeded for limit.")
 
