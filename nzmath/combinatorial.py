@@ -589,8 +589,13 @@ def partition_conjugate(partition):
     (3, 2, 2, 1, 1)
     """
     conj = []
-    for i in range(1, max(partition) + 1):
-        conj.append(len([part for part in partition if part >= i]))
+    last_index = len(partition) - 1
+    for i, part in enumerate(partition):
+        if i == last_index:
+            conj.extend([i + 1] * part)
+        elif part != partition[i + 1]:
+            conj.extend([i + 1] * (part - partition[i + 1]))
+    conj.reverse()
     return tuple(conj)
 
 def permutation_generator(n):
