@@ -92,7 +92,7 @@ def euler(n):
         E[i] = sum([-binomial(i, j) * E[j] for j in range(0, i, 2)])
     return E[n]
 
-def combinationIndexGenerator(n, m):
+def combination_index_generator(n, m):
     """
     Generate indices of m elment subsets of n element set.
 
@@ -292,10 +292,10 @@ def bell(n):
     """
     return sum([stirling2(n, i) for i in range(n + 1)])
 
-def partitionGenerator(n, maxi=None):
+def partition_generator(n, maxi=None):
     """
     Generate partitions of n.
-    If maxi is given, then addends are limited to at most maxi.
+    If maxi is given, then parts are limited to at most maxi.
     """
     if not n:
         yield ()
@@ -413,8 +413,7 @@ class PartitionDriver(object):
         Knowing that the generation should terminate, return True to
         stop the loop.
         """
-        if not self.partition:
-            return True
+        return not self.partition
 
     def generate(self, *args):
         """
@@ -441,7 +440,7 @@ class PartitionDriver(object):
 
 class LimitedMaximumPartitionDriver(PartitionDriver):
     """
-    Only limit the muximum of addendum.
+    Only limit the muximum of parts.
     """
     def __init__(self):
         PartitionDriver.__init__(self)
@@ -451,7 +450,7 @@ class LimitedMaximumPartitionDriver(PartitionDriver):
         """
         Set parameters for generate:
           integer: the number to be partitioned
-          limit: the maximum of addendum
+          limit: the maximum of parts
         """
         self.partition = []
         self.rest = integer
@@ -477,7 +476,7 @@ class LimitedMaximumPartitionDriver(PartitionDriver):
 
 class OddPartitionDriver(PartitionDriver):
     """
-    All addenda are odd.
+    All parts are odd.
     """
     def __init__(self):
         PartitionDriver.__init__(self)
@@ -500,7 +499,7 @@ class OddPartitionDriver(PartitionDriver):
         """
         On each end of backtrack, the tail of partition has to be
         decreased and the decrement is cancelled by an increment of
-        rest.
+        rest keeping oddity of parts.
         """
         self.partition[-1] -= 2
         self.rest += 2
@@ -515,7 +514,7 @@ class OddMaximumPartitionDriver(LimitedMaximumPartitionDriver, OddPartitionDrive
         """
         Set parameters for generate:
           integer: the number to be partitioned
-          limit: the maximum of addendum
+          limit: the maximum of parts
         """
         if not (limit % 2):
             limit -= 1
@@ -545,6 +544,7 @@ def partition_into_odd_generator(n, maxi=None):
     else:
         driver = OddMaximumPartitionDriver()
         return driver.generate(n, maxi)
+
 
 def partition_numbers_upto(n):
     """
@@ -590,10 +590,10 @@ def partition_conjugate(partition):
     """
     conj = []
     for i in range(1, max(partition) + 1):
-        conj.append(len([addendum for addendum in partition if addendum >= i]))
+        conj.append(len([part for part in partition if part >= i]))
     return tuple(conj)
 
-def permutationGenerator(n):
+def permutation_generator(n):
     """
     Generate all permutations of n elements as lists.
 
@@ -641,6 +641,6 @@ def permutationGenerator(n):
 
 
 # aliases
-combination_index_generator = combinationIndexGenerator
-partition_generator = partitionGenerator
-permutation_generator = permutationGenerator
+combinationIndexGenerator = combination_index_generator
+partitionGenerator = partition_generator
+permutationGenerator = permutation_generator
