@@ -1,0 +1,453 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+\section{finitefield -- Finite Field}\linkedzero{finitefield}
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \negok \linkingone{finitefield}{FiniteField}
+     \item \negok \linkingone{finitefield}{FiniteFieldElement}
+     \item \linkingone{finitefield}{FinitePrimeField}
+     \item \linkingone{finitefield}{FinitePrimeFieldElement}
+     \item \linkingone{finitefield}{ExtendedField}
+     \item \linkingone{finitefield}{ExtendedFieldElement}
+   \end{itemize}
+   %\item {\bf Functions}
+   %  \begin{itemize}
+   %    \item \linkingone{rational}{innerProduct}
+   %  \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{\negok FiniteField -- finite field, abstract}\linkedone{finitefield}{FiniteField}
+ 
+ Abstract class for finite fields. Do not use the class directly, but use the subclasses \linkingone{finitefield}{FinitePrimeField} or \linkingone{finitefield}{ExtendedField}.
+
+ The class is a subclass of \linkingone{ring}{Field}.
+\C
+ \subsection{\negok FiniteFieldElement -- element in finite field, abstract}\linkedone{finitefield}{FiniteFieldElement}
+ Abstract class for finite field elements. Do not use the class directly, but use the subclasses \linkingone{finitefield}{FinitePrimeFieldElement} or \linkingone{finitefield}{ExtendedFieldElement}.
+
+ The class is a subclass of \linkingone{ring}{FieldElement}.
+
+%%   \initialize
+%%   \func{IntegerResidueClassRing}{\hiki{modulus}{integer}}{\out{IntegerResidueClassRing}}\\
+%%   \spacing
+%%   % document of basic document
+%%   \quad Create an instance of IntegerResidueClassRing. 
+%%   % added document
+%%   The argument \param{modulus} = $m$ specifies an ideal $m\mathbb{Z}$.
+%%   % \spacing
+%%   % input, output document
+%%   %See \linkingone{module}{point} for \param{point}.
+%%   \begin{at}
+%%     \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ It expresses The additive unit 0. (read only)
+%%     \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ It expresses The multiplicative unit 1. (read only)
+%%   \end{at}
+%%   \begin{op}
+%%   %  \verb|+| & Vector sum.\\
+%%   %  \verb|-| & Vector subtraction.\\
+%%   %  \verb|*| & Scalar multiplication.\\
+%%   %  \verb|//| & Scalar division.\\
+%%   %  \verb|-(unary)| & element negation.\\
+%%     \verb|==| & ring equality.\\
+%%   %  \verb|!=| & inequality or not.\\
+%%   %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+%%   %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+%%     \verb|card| & return cardinality. See also \linkingzero{compatibility} module.\\
+%%     \verb|in| & return whether an element is in or not.\\
+%%     \verb|repr| & return representation string.\\
+%%     \verb|str| & return string.\\
+%%   \end{op} 
+%% %\begin{ex}
+%% %>>> A = vector.Vector([1,2])
+%% %>>> A
+%% %Vector([1, 2])
+%% %>>> A.compo
+%% %[1, 2]
+%% %>>>
+%% %\end{ex}%Don't indent!
+\C
+ \subsection{FinitePrimeField -- finite prime field}\linkedone{finitefield}{FinitePrimeField}
+ 
+Finite prime field is also known as $\mathbb{F}_p$ or $\mathrm{GF}(p)$. It has prime number cardinality.
+
+ The class is a subclass of \linkingone{finitefield}{FiniteField}.
+
+   \initialize
+   \func{FinitePrimeField}
+        {\hiki{characteristic}{integer}} 
+        {\out{FinitePrimeField}}\\
+   \spacing
+   % document of basic document
+   \quad Create a FinitePrimeField instance with the given \param{characteristic}.
+   % added document
+   %\spacing
+   % input, output document
+   \param{characteristic} must be positive prime integer.
+   \begin{at}
+    \item[zero]\linkedtwo{finitefield}{FinitePrimeField}{zero}:\\ It expresses the additive unit 0. (read only)
+    \item[one]\linkedtwo{finitefield}{FinitePrimeField}{one}:\\ It expresses the multiplicative unit 1. (read only)
+   \end{at}
+   \begin{op}
+     \verb|F==G| & equality test.\\
+     \verb|x in F| & membership test.\\
+     \verb|card(F)| & Cardinality of the field. \\
+   \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{createElement -- create element of finite prime field}\linkedtwo{finitefield}{FinitePrimeField}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{FinitePrimeFieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad Create \linkingone{finitefield}{FinitePrimeFieldElement} with \param{seed}. 
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   \spacing
+   % input, output document
+   \quad \param{seed} must be int or long.\\
+%
+  \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{finitefield}{FinitePrimeField}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic of the field.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{finitefield}{FinitePrimeField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the field as subring.
+
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{finitefield}{FinitePrimeField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the field is a superring of another ring.
+
+   Since the field is a prime field, it can be a superring of itself only.
+
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{FinitePrimeFieldElement -- element of finite prime field}\linkedone{finitefield}{FinitePrimeFieldElement}
+ The class provides elements of finite prime fields.
+
+ It is a subclass of \linkingone{finitefield}{FiniteFieldElement} and \linkingone{intresidue}{IntegerResidueClass}. 
+
+  \initialize
+  \func{FinitePrimeFieldElement}
+       {\hiki{representative}{integer},\ 
+       \hiki{modulus}{integer}}
+       {\out{FinitePrimeFieldElement}}\\
+  \spacing
+  % document of basic document
+  \quad Create element in finite prime field of modulus with residue representative.
+  % added document
+  \spacing
+  % input, output document
+  \param{modulus} must be positive prime integer.
+  %\begin{at}
+  %  \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of Vector.
+  %\end{at}
+  \begin{op}
+    \verb|a+b| & addition.\\
+    \verb|a-b| & subtraction.\\
+    \verb|a*b| & multiplication.\\
+    %\verb|/| & division.\\
+    \verb|a**n,pow(a,n)| & power.\\
+    \verb|-a| & negation.\\
+    \verb|+a| & make a copy.\\
+    \verb|a==b| & equality test.\\
+    \verb|a!=b| & inequality test.\\
+    \verb|repr(a)| & return representation string.\\
+    \verb|str(a)| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{finitefield}{FinitePrimeFieldElement}{getRing}
+   \func{getRing}{\param{self}}{\out{FinitePrimeField}}\\
+   \spacing
+   % document of basic document
+   \quad Return an instance of FinitePrimeField to which the element belongs.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{order -- order of multiplicative group}\linkedtwo{finitefield}{FinitePrimeFieldElement}{order}
+   \func{order}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Find and return the order of the element in the multiplicative group of $\mathbb{F}_p$.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{ExtendedField -- extended field of finite field}\linkedone{finitefield}{ExtendedField}
+ ExtendedField is a class for finite field, whose cardinality $q = p^n$ with a prime $p$ and $n>1$. It is usually called $\mathbb{F}_q$ or $\mathrm{GF}(q)$.
+
+ The class is a subclass of \linkingone{finitefield}{FiniteField}.
+
+   \initialize
+   \func{ExtendedField}
+        {\hiki{basefield}{FiniteField},\ 
+          \hiki{modulus}{FiniteFieldPolynomial}} 
+        {\out{ExtendedField}}\\
+   \spacing
+   % document of basic document
+   \quad Create a field extension $\mathtt{basefield}[X]/(\mathtt{modulus}(X))$.
+
+FinitePrimeField instance with the given \param{characteristic}.
+   % added document
+   %\spacing
+   % input, output document
+   The \param{modulus} has to be an irreducible polynomial with coefficients in the \param{basefield}.
+   \begin{at}
+    \item[zero]\linkedtwo{finitefield}{ExtendedField}{zero}:\\ It expresses the additive unit 0. (read only)
+    \item[one]\linkedtwo{finitefield}{ExtendedField}{one}:\\ It expresses the multiplicative unit 1. (read only)
+   \end{at}
+   \begin{op}
+     \verb|F==G| & equality or not.\\
+     \verb|x in F| & membership test.\\
+     \verb|card(F)| & Cardinality of the field. \\
+     \verb|repr(F)| & representation string.\\
+     \verb|str(F)| & string.\\
+   \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{createElement -- create element of extended field}\linkedtwo{finitefield}{ExtendedField}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{extended element seed}}{\out{ExtendedFieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad Create an element of the field from seed. The result is an instance of \linkingone{finitefield}{ExtendedFieldElement}.
+
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad The \param{seed} can be:
+ \begin{itemize}
+ \item a \linkingone{poly.uniutil}{FinitePrimeFieldPolynomial}
+ \item an integer, which will be expanded in card(\param{basefield}) and interpreted as a polynomial. 
+ \item \param{basefield} element. 
+ \item a list of basefield elements interpreted as a polynomial coefficient.
+ \end{itemize}
+%
+  \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{finitefield}{ExtendedField}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic of the field.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{finitefield}{ExtendedField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the field as subring.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{finitefield}{ExtendedField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the field is a superring of another ring.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{primitive\_element -- generator of multiplicative group}\linkedtwo{finitefield}{ExtendedField}{primitive\_element}
+   \func{primitive\_element}{\param{self}}{\out{ExtendedFieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return a primitive element of the field, i.e., a generator of the multiplicative group.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{ExtendedFieldElement -- element of finite field}\linkedone{finitefield}{ExtendedFieldElement}
+ ExtendedFieldElement is a class for an element of $F_q$. 
+
+ The class is a subclass of \linkingone{finitefield}{FiniteFieldElement}.
+
+  \initialize
+  \func{ExtendedFieldElement}
+       {\hiki{representative}{FiniteFieldPolynomial},\ 
+       \hiki{field}{ExtendedField}}
+       {\out{ExtendedFieldElement}}\\
+  \spacing
+  % document of basic document
+  \quad Create an element of the finite extended field.
+  % added document
+  \spacing
+  % input, output document
+  The argument \param{representative} must be an \linkingone{poly.uniutil}{FiniteFieldPolynomial} has same \param{basefield}.
+  Another argument \param{field} must be an instance of ExtendedField.
+
+  %\begin{at}
+  %  \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of Vector.
+  %\end{at}
+  \begin{op}
+    \verb|a+b| & addition.\\
+    \verb|a-b| & subtraction.\\
+    \verb|a*b| & multiplication.\\
+    \verb|a/b| & inverse multiplication.\\
+    \verb|a**n,pow(a,n)| & power.\\
+    \verb|-a| & negation.\\
+    \verb|+a| & make a copy.\\
+    \verb|a==b| & equality test.\\
+    \verb|a!=b| & inequality test.\\
+    \verb|repr(a)| & return representation string.\\
+    \verb|str(a)| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{finitefield}{FinitePrimeFieldElement}{getRing}
+   \func{getRing}{\param{self}}{\out{FinitePrimeField}}\\
+   \spacing
+   % document of basic document
+   \quad Return an instance of FinitePrimeField to which the element belongs.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{inverse -- inverse element}\linkedtwo{finitefield}{ExtendedFieldElement}{inverse}
+   \func{inverse}{\param{self}}{\out{ExtendedFieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse element.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+%%   \subsubsection{order -- order of multiplicative group}\linkedtwo{finitefield}{FinitePrimeFieldElement}{order}
+%%    \func{order}{\param{self}}{\out{integer}}\\
+%%    \spacing
+%%    % document of basic document
+%%    \quad Find and return the order of the element in the multiplicative group of $F_p$.
+%%    %\spacing
+%%    % added document
+%%    %\quad \negok Note that this function returns integer only.\\
+%%    %\spacing
+%%    % input, output document
+%%    %\quad \param{a} must be int, long or rational.Integer.\\
+%
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

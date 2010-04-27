@@ -1,0 +1,292 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{group -- algorithms for finite groups}\linkedzero{group}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{group}{Group}
+     \item \linkingone{group}{GroupElement}
+     \item \linkingone{group}{GenerateGroup}
+     \item \linkingone{group}{AbelianGenerate}
+   \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{\negok Group -- group structure}\linkedone{group}{Group}
+ \initialize
+  \func{Group}{\hiki{value}{class},\ \hikiopt{operation}{int}{-1}}{Group}\\
+  \spacing
+  % document of basic document
+  \quad Create an object which wraps \param{value} (typically a ring or a field)
+  only to expose its group structure. \\
+  \spacing
+  % added document
+  \quad The instance has methods defined for (abstract) group.
+  For example, \linkingtwo{group}{Group}{identity} returns the identity element of the group from wrapped \param{value}.\\
+  \spacing
+  % input, output document
+  \quad \param{value} must be an instance of a class expresses group structure.
+  \param{operation} must be 0 or 1;
+  If \param{operation} is 0, \param{value} is regarded as the additive group.
+  On the other hand, if \param{operation} is 1, \param{value} is considered as the multiplicative group.
+  The default value of \param{operation} is 0.\\
+  \negok You can input an instance of \linkingone{group}{Group} itself as \param{value}.
+  In this case, the default value of \param{operation} is the attribute \linkingtwo{group}{Group}{operation} of the instance.
+  \begin{at}
+    \item[entity]\linkedtwo{group}{Group}{entity}:\\ The wrapped object.
+    \item[operation]\linkedtwo{group}{Group}{operation}:\\ It expresses the mode of operation;
+$0$ means additive, while $1$ means multiplicative.
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Return whether A and B are equal or not.\\
+    \verb+A!=B+ & Check whether A and B are not equal.\\
+    \verb+repr(A)+ & representation\\
+    \verb+str(A)+ & simple representation\\
+  \end{op} 
+\begin{ex}
+>>> G1=group.Group(finitefield.FinitePrimeField(37), 1)
+>>> print G1
+F_37
+>>> G2=group.Group(intresidue.IntegerResidueClassRing(6), 0)
+>>> print G2
+Z/6Z
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{setOperation -- change operation}\linkedtwo{group}{Group}{setOperation}
+   \func{setOperation}{\param{self},\ \hiki{operation}{int}}{(None)}\\
+   \spacing
+   % document of basic document
+   \quad Change group type to additive ($0$) or multiplicative ($1$).\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{operation} must be 0 or 1.\\
+ \subsubsection{\negok createElement -- generate a GroupElement instance}\linkedtwo{group}{Group}{createElement}
+   \func{createElement}{\param{self},\ \param{*value}}{\out{GroupElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return \linkingone{group}{GroupElement} object whose group is \param{self}, initialized with \param{value}.\\
+   \spacing
+   % added document
+   \quad \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.createElement.\\
+   \spacing
+   % input, output document
+   \quad \param{value} must fit the form of argument for \param{self}.\linkingtwo{group}{Group}{entity}.createElement.\\
+  \subsubsection{\negok identity -- identity element}\linkedtwo{group}{Group}{identity}
+   \func{identity}{\param{self}}{\param{GroupElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return identity element (unit) of group.\\
+   \spacing
+   % added document
+   \quad Return zero (additive) or one (multiplicative) corresponding to \linkingtwo{group}{Group}{operation}.
+   \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.identity or \linkingtwo{group}{Group}{entity} does not have the attribute then returns one or zero.
+   \spacing
+   % input, output document
+  \subsubsection{grouporder -- order of the group}\linkedtwo{group}{Group}{grouporder}
+   \func{grouporder}{\param{self}}{\param{long}}\\
+   \spacing
+   % document of basic document
+   \quad Return group order (cardinality) of \param{self}.\\
+   \spacing
+   % added document
+   \quad \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.grouporder, card or \_\_len\_\_.\\
+   We assume that the group is finite, so returned value is expected as some long integer.
+   If the group is infinite, we do not define the type of output by the method.
+   \spacing
+   % input, output document
+\begin{ex}
+>>> G1=group.Group(finitefield.FinitePrimeField(37), 1)
+>>> G1.grouporder()
+36
+>>> G1.setOperation(0)
+>>> print G1.identity()
+FinitePrimeField,0 in F_37
+>>> G1.grouporder()
+37
+\end{ex}%Don't indent!
+\C
+
+ \subsection{GroupElement -- elements of group structure}\linkedone{group}{GroupElement}
+ \initialize
+  \func{GroupElement}{\hiki{value}{class},\ \hikiopt{operation}{int}{-1}}{GroupElement}\\
+  \spacing
+  % document of basic document
+  \quad Create an object which wraps \param{value} (typically a ring element or
+  a field element) to make it behave as an element of group.\\
+  \spacing 
+  % added document
+  \quad The instance has methods defined for an (abstract) element of group.
+  For example, \linkingtwo{group}{GroupElement}{inverse} returns the inverse element of \param{value} as the element of group object.\\
+  \spacing
+  % input, output document
+  \quad \param{value} must be an instance of a class expresses an element of group structure.
+  \param{operation} must be $0$ or $1$;
+  If \param{operation} is $0$, \param{value} is regarded as the additive group.
+  On the other hand, if \param{operation} is $1$, \param{value} is considered as the multiplicative group.
+  The default value of \param{operation} is $0$.\\
+  \negok You can input an instance of \linkingone{group}{GroupElement} itself as \param{value}.
+  In this case, the default value of \param{operation} is the attribute \linkingtwo{group}{GroupElement}{operation} of the instance.
+  \begin{at}
+    \item[entity]\linkedtwo{group}{GroupElement}{entity}:\\ The wrapped object.
+    \item[set]\linkedtwo{group}{GroupElement}{set}:\\ It is an instance of \linkingone{group}{Group}, which expresses the group to which \param{self} belongs.
+    \item[operation]\linkedtwo{group}{GroupElement}{operation}:\\ It expresses the mode of operation;
+$0$ means additive, while $1$ means multiplicative.
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Return whether A and B are equal or not.\\
+    \verb+A!=B+ & Check whether A and B are not equal.\\
+    \verb+A.ope(B)+ & Basic operation (additive $+$, multiplicative $*$)\\
+    \verb+A.ope2(n)+ & Extended operation (additive $*$, multiplicative $**$)\\
+    \verb+A.inverse()+\linkedtwo{group}{GroupElement}{inverse} & Return the inverse element of \param{self}\\
+    \verb+repr(A)+ & representation\\
+    \verb+str(A)+ & simple representation\\
+  \end{op} 
+\begin{ex}
+>>> G1=group.GroupElement(finitefield.FinitePrimeFieldElement(18, 37), 1)
+>>> print G1
+FinitePrimeField,18 in F_37
+>>> G2=group.Group(intresidue.IntegerResidueClass(3, 6), 0)
+IntegerResidueClass(3, 6)
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{setOperation -- change operation}\linkedtwo{group}{GroupElement}{setOperation}
+   \func{setOperation}{\param{self},\ \hiki{operation}{int}}{(None)}\\
+   \spacing
+   % document of basic document
+   \quad Change group type to additive ($0$) or multiplicative ($1$).\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{operation} must be $0$ or $1$.\\
+ \subsubsection{\negok getGroup -- generate a Group instance}\linkedtwo{group}{GroupElement}{getGroup}
+   \func{getGroup}{\param{self}}{\out{Group}}\\
+   \spacing
+   % document of basic document
+   \quad Return \linkingone{group}{Group} object to which \param{self} belongs.\\
+   \spacing
+   % added document
+   \quad \negok This method calls \param{self}.\linkingtwo{group}{GroupElement}{entity}.getRing or getGroup.\\
+   \negok In an initialization of \linkingone{group}{GroupElement}, the attribute \linkingtwo{group}{GroupElement}{set} is set as the value returned from the method.\\
+   \spacing
+   % input, output document
+  \subsubsection{order -- order by factorization method}\linkedtwo{group}{GroupElement}{order}
+   \func{order}{\param{self}}{\param{long}}\\
+   \spacing
+   % document of basic document
+   \quad Return the order of \param{self}.\\
+   \spacing
+   % added document
+   \quad \negok This method uses the factorization of order of group.\\
+   \negok We assume that the group is finite, so returned value is expected as some long integer.
+   \negok If the group is infinite, the method would raise an error or return an invalid value.\\
+   \spacing
+   % input, output document
+  \subsubsection{t\_order -- order by baby-step giant-step}\linkedtwo{group}{GroupElement}{t\_order}
+   \func{t\_order}{\param{self},\ \hikiopt{v}{int}{2}}{\param{long}}\\
+   \spacing
+   % document of basic document
+   \quad Return the order of \param{self}.\\
+   \spacing
+   % added document
+   \quad \negok This method uses Terr's baby-step giant-step algorithm.\\
+   This method does not use the order of group.
+   You can put number of baby-step to \param{v}.
+   \negok We assume that the group is finite, so returned value is expected as some long integer.
+   \negok If the group is infinite, the method would raise an error or return an invalid value.\\
+   \spacing
+   % input, output document
+   \quad \param{v} must be some int integer.\\
+\begin{ex}
+>>> G1=group.GroupElement(finitefield.FinitePrimeFieldElement(18, 37), 1)
+>>> G1.order()
+36
+>>> G1.t_order()
+36
+\end{ex}%Don't indent!
+\C
+
+ \subsection{\negok GenerateGroup -- group structure with generator}\linkedone{group}{GenerateGroup}
+ \initialize
+  \func{GenerateGroup}{\hiki{value}{class},\ \hikiopt{operation}{int}{-1}}{GroupElement}\\
+  \spacing
+  % document of basic document
+  \quad Create an object which is generated by \param{value} as the element of group structure. \\
+  \spacing
+  % added document
+  \quad This initializes a group `including' the group elements, not a group with generators, now.
+  We do not recommend using this module now.
+  The instance has methods defined for an (abstract) element of group.
+  For example, \linkingtwo{group}{GroupElement}{inverse} returns the inverse element of \param{value} as the element of group object.\\
+  The class inherits the class \linkingone{group}{Group}.\\
+  \spacing
+  % input, output document
+  \quad \param{value} must be a list of generators.
+  Each generator should be an instance of a class expresses an element of group structure.
+  \param{operation} must be $0$ or $1$;
+  If \param{operation} is $0$, \param{value} is regarded as the additive group.
+  On the other hand, if \param{operation} is $1$, \param{value} is considered as the multiplicative group.
+  The default value of \param{operation} is $0$.\\
+\begin{ex}
+>>> G1=group.GenerateGroup([intresidue.IntegerResidueClass(2, 20),
+... intresidue.IntegerResidueClass(6, 20)])
+>>> G1.identity()
+intresidue.IntegerResidueClass(0, 20)
+\end{ex}%Don't indent!
+\C
+
+ \subsection{AbelianGenerate -- abelian group structure with generator}\linkedone{group}{AbelianGenerate}
+ \initialize
+  \quad The class inherits the class \linkingone{group}{GenerateGroup}.\\
+  
+  \subsubsection{relationLattice -- relation between generators}\linkedtwo{group}{AbelianGenerate}{relationLattice}
+   \func{relationLattice}{\param{self}}{\out{\linkingone{matrix}{Matrix}}}\\
+   \spacing
+   % document of basic document
+   \quad Return a list of relation lattice basis as a square matrix each of whose column vector is a relation basis.\\
+   \spacing
+   % added document
+   \quad The relation basis, $V$ satisfies that $\prod_{i} \mbox{generator}_i V_i=1$.
+   \spacing
+   % input, output document
+  \subsubsection{computeStructure -- abelian group structure}\linkedtwo{group}{AbelianGenerate}{computeStructure}
+   \func{computeStructure}{\param{self}}{\param{tuple}}\\
+   \spacing
+   % document of basic document
+   \quad Compute finite abelian group structure.\\
+   \spacing
+   % added document
+   \quad If \param{self} $G \simeq \oplus_i <h_i>$, return [($h_1$, ord($h_1$)),..($h_n$, ord($h_n$))] and $^\# G$,
+   where $<h_i>$ is a cyclic group with the generator $h_i$.\\
+   \spacing
+   % input, output document
+   \quad The output is a tuple which has two elements;
+   the first element is a list which elements are a list of $h_i$ and its order,
+   on the other hand, the second element is the order of the group.
+\begin{ex}
+>>> G=AbelianGenerate([intresidue.IntegerResidueClass(2, 20),
+... intresidue.IntegerResidueClass(6, 20)])
+>>> G.relationLattice()
+10 7
+ 0 1
+>>> G.computeStructure()
+([IntegerResidueClassRing,IntegerResidueClass(2, 20), 10)], 10L)
+\end{ex}%Don't indent!
+\C
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

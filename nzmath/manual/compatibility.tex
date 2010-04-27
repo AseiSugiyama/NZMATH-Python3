@@ -1,0 +1,46 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Basic Utilities}
+
+%---------- start document ---------- %
+ \section{compatibility -- Keep compatibility between \python versions}\linkedzero{compatibility}
+%
+This module should be simply imported:\\
+{\tt import nzmath.compatibility}\\
+then it will do its tasks.
+
+  \subsection{set, frozenset}\linkedone{compatibility}{set}
+
+  The module provides {\tt set} for \python~2.3. \python \(\geq\) 2.4
+  have \linklibraryone{stdtypes\#set-types-set-frozenset}{set} in
+  built-in namespace, while \python~2.3 has {\tt sets} module and
+  {\tt sets.Set}. The {\tt set} the module provides for \python~2.3
+  is the {\tt sets.Set}. Similarly, {\tt sets.ImmutableSet} would be
+  assigned to {\tt frozenset}. Be careful that the compatibility
+  is not perfect.  Note also that \nzmath's recommendation is
+  \python~2.5 or higher in 2.x series.
+
+  \subsection{card(virtualset)}\linkedone{compatibility}{card}
+
+  Return cardinality of the virtualset.
+
+  The built-in \linklibraryone{stdfunc\#len}{len()} raises 
+  \linklibraryone{exceptions\#exceptions.OverflowError}{OverflowError}
+  when the result is greater than
+  \linklibrary{sys}.\linklibraryone{sys\#maxint}{maxint}. It is not
+  clear this restriction will go away in the future.
+  The function {\tt card()} ought to be used instead of {\tt len()} for
+  obtaining cardinality of sets or set-like objects in nzmath.
+
+\C
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

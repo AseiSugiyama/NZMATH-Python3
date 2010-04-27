@@ -1,0 +1,66 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{poly.ratfunc -- rational function}\linkedzero{poly.ratfunc}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{poly.ratfunc}{RationalFunction}
+   \end{itemize}
+ \end{itemize}
+
+ A rational function is a ratio of two polynomials.
+
+ Please don't expect this module is useful.
+ It just provides an acceptable container for polynomial division.
+\C
+
+ \subsection{RationalFunction -- rational function class}\linkedone{poly.ratfunc}{RationalFunction}
+ \initialize
+  \func{RationalFunction}{\hiki{numerator}{polynomial},\ \hikiopt{denominator}{polynomial}{1}}{\out{RationalFunction}}\\
+  \spacing
+  % document of basic document
+  \quad Make a rational function with the given \param{numerator} and
+  \param{denominator}.
+  % added document
+  %
+  % \spacing
+  % input, output document
+  If the \param{numerator} is a {\tt RationalFunction} instance and
+  \param{denominator} is not given, then make a copy.
+  If the \param{numerator} is a kind of polynomial, then make a rational
+  function whose numerator is the given polynomial.
+  Additionally, if \param{denominator} is also given,
+  the denominator is set to its values, otherwise the denominator is 1.
+  \begin{at}
+    \item[numerator]\linkedtwo{poly.ratfunc}{RationalFunction}{numerator}:\\
+      polynomial.
+    \item[denominator]\linkedtwo{poly.ratfunc}{RationalFunction}{denominator}:\\
+      polynomial.
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Return whether {\tt A} and {\tt B} are equal or not.\\
+    \verb+str(A)+ & Return readable string.\\
+    \verb+repr(A)+ & Return string representing {\tt A}'s structure.\\
+  \end{op}
+  \method
+  \subsubsection{getRing -- get rational function field}\linkedtwo{poly.ratfunc}{RationalFunction}{getRing}
+   \func{getRing}{\param{self}}{\linkingone{poly.ring}{RationalFunctionField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the rational function field to which the rational function belongs.
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

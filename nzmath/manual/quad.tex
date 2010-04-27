@@ -1,0 +1,266 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{quad -- Imaginary Quadratic Field}\linkedzero{quad}
+ \begin{itemize}
+ \item {\bf Classes}
+   \begin{itemize}
+   \item \linkingone{quad}{ReducedQuadraticForm}
+   \item \linkingone{quad}{ClassGroup}
+   \end{itemize}
+ \item {\bf Functions}
+   \begin{itemize}
+   \item \linkingone{quad}{class\_formula}
+   \item \linkingone{quad}{class\_number}
+   \item \linkingone{quad}{class\_group}
+   \item \linkingone{quad}{class\_number\_bsgs}
+   \item \linkingone{quad}{class\_group\_bsgs}
+   %\item \linkingone{quad}{disc}
+   %\item \linkingone{quad}{compositePDF}
+   %\item \linkingone{quad}{reducePDF}
+   %\item \linkingone{quad}{sqrPDF}
+   %\item \linkingone{quad}{powPDF}
+   \end{itemize}
+ \end{itemize}
+%
+  \subsection{ReducedQuadraticForm -- Reduced Quadratic Form Class}\linkedone{quad}{ReducedQuadraticForm}
+  \initialize
+  \func{ReducedQuadraticForm}{\hiki{f}{list}, \, \hiki{unit}{list}}{\out{ReducedQuadraticForm}}\\
+  \spacing
+  % document of basic document
+  \quad Create ReducedQuadraticForm object.
+  \spacing
+  % added document
+  \spacing
+  % input, output document
+  \quad \param{f}, \param{unit} must be list of \(3\) integers {\tt [a, b, c]},
+  representing a quadratic form \(ax^2+bxy+cy^2\).
+  \param{unit} represents the unit form.
+  \begin{op}
+    \verb|M * N| & Return the composition form of \param{M} and \param{N}. \\
+    \verb|M ** a| & Return the $a$-th powering of \param{M}. \\
+    \verb|M / N| & Division of form. \\
+    \verb|M == N| & Return whether \param{M} and \param{N} are equal or not. \\
+    \verb|M != N| & Return whether \param{M} and \param{N} are unequal or not. \\    
+  \end{op}
+  \method
+  \subsubsection{inverse}\linkedtwo{quad}{ReducedQuadraticForm}{inverse}
+  \func{inverse}{\param{self}}{\out{ReducedQuadraticForm}}\\
+  \spacing
+  % document of basic document
+  \quad Return the inverse of \param{self}. \\
+%
+  \subsubsection{disc}\linkedtwo{quad}{ReducedQuadraticForm}{disc}
+  \func{disc}{\param{self}}{\out{ReducedQuadraticForm}}\\
+  \spacing
+  % document of basic document
+  \quad Return the discriminant of \param{self}. \\
+%
+  \subsection{ClassGroup -- Class Group Class}\linkedone{quad}{ClassGroup}
+  \initialize
+  \func{ClassGroup}{\hiki{disc}{integer}, \, \hiki{cl}{integer}, \, \hikiopt{element}{integer}{None}}{\out{ClassGroup}}\\
+  \spacing
+  % document of basic document
+  \quad Create ClassGroup object.
+  \method
+   
+  \subsection{class\_formula}\linkedone{quad}{class\_formula}
+   \func{class\_formula}{\hiki{d}{integer}, \, \hiki{uprbd}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the approximation of class number $h$ with discriminant \param{d} using class formula. \\
+   \spacing
+   % added document
+   \quad class formula $\DS h = \frac{\sqrt{|\param{d}|}}{\pi}\prod_{p}\left(1 - \left(\frac{\param{d}}{p}\right) \frac{1}{p}\right)^{-1}$. \\
+   \spacing
+   % input, output document
+   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}.  
+%
+  \subsection{class\_number}\linkedone{quad}{class\_number}
+   \func{class\_number}{\hiki{d}{integer}, \, \hikiopt{limit\_of\_d}{integer}{1000000000}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the class number with the discriminant \param{d} by counting reduced forms. \\
+   \spacing
+   % added document
+   \quad \param{d} is not only fundamental discriminant. \\
+   \spacing
+   % input, output document
+   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+%
+  \subsection{class\_group}\linkedone{quad}{class\_group}
+   \func{class\_group}{\hiki{d}{integer}, \, \hikiopt{limit\_of\_d}{integer}{1000000000}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the class number and the class group with the discriminant \param{d} by counting reduced forms. \\
+   \spacing
+   % added document
+   \quad \param{d} is not only fundamental discriminant. \\
+   \spacing
+   % input, output document
+   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+%
+  \subsection{class\_number\_bsgs}\linkedone{quad}{class\_number\_bsgs}
+   \func{class\_number\_bsgs}{\hiki{d}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the class number with the discriminant \param{d} using Baby-step Giant-step algorithm. \\
+   \spacing
+   % added document
+   \quad \param{d} is not only fundamental discriminant. \\
+   \spacing
+   % input, output document
+   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+%
+  \subsection{class\_group\_bsgs}\linkedone{quad}{class\_group\_bsgs}
+   \func{class\_group\_bsgs}{\hiki{d}{integer}, \, \hiki{cl}{integer}, \, \hiki{qin}{list}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the construction of the class group of order $p^{exp}$ with the discriminant \param{disc}, where $\param{qin} = [p, exp]$. \\
+   \spacing
+   % input, output document
+   \quad Input number \param{d}, \param{cl} must be int, long or \linkingone{rational}{Integer}. 
+%
+  %\subsection{disc}\linkedone{quad}{disc}
+   %\func{disc}{\hiki{f}{list}}{\out{integer}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the discriminant of the quadratic form \param{f}.
+   %\spacing
+   % input, output document
+   %\quad \param{f} is a 3-component list just like that of \linkingone{quad}{ReducedQuadraticForm}.
+%
+  %\subsection{compositePDF}\linkedone{quad}{compositePDF}
+   %\func{compositePDF}{\hiki{f\_1}{list}, \, \hiki{f\_2}{list}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the  form of the positive definite form \param{f}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{reducePDF}\linkedone{quad}{reducePDF}
+   %\func{reducePDF}{\hiki{f}{list}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the reduced form of the positive definite form \param{f}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{sqrPDF}\linkedone{quad}{sqrPDF}
+   %\func{sqrPDF}{\hiki{f}{list}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the square of the positive definite form \param{f}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{powPDF}\linkedone{quad}{powPDF}
+   %\func{powPDF}{\hiki{f}{list}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the reduced form of the positive definite form \param{f}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{compositePDF}\linkedone{quad}{compositePDF}
+   %\func{compositePDF}{\hiki{f\_1}{list}, \, \hiki{f\_2}{list}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the composition of forms \param{f\_1}, \param{f\_2}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{unit\_form}\linkedone{quad}{unit\_form}
+   %\func{unit\_form}{\hiki{disc}{integer}}{\out{ReducedQuadraticForm}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return generated form with the discriminant \param{disc}.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{kronecker}\linkedone{quad}{kronecker}
+   %\func{kronecker}{\hiki{a}{integer}, \, \hiki{b}{integer}}{\out{integer}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the Kronecker symbol $\DS (\frac{\param{a}}{\param{b}})$.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{number\_unit}\linkedone{quad}{kronecker}
+   %\func{kronecker}{\hiki{a}{integer}, \, \hiki{b}{integer}}{\out{integer}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the Kronecker symbol $\frac{\param{a}}{\param{b}}$.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+  %\subsection{crt}\linkedone{quad}{crt}
+   %\func{crt}{\hiki{inlist}{list}}{\out{integer}}\\
+   %\spacing
+   % document of basic document
+   %\quad Return the Kronecker symbol $\frac{\param{a}}{\param{b}}$.
+   %\spacing
+   % added document
+   %\quad Not only fundamental discriminant.
+   %\spacing
+   % input, output document
+%
+\begin{ex}
+>>> quad.class_formula(-1200, 100000)
+12
+>>> quad.class_number(-1200)
+12
+>>> quad.class_group(-1200)
+(12, [ReducedQuadraticForm(1, 0, 300), ReducedQuadraticForm(3, 0, 100), 
+ReducedQuadraticForm(4, 0, 75), ReducedQuadraticForm(12, 0, 25), 
+ReducedQuadraticForm(7, 2, 43), ReducedQuadraticForm(7, -2, 43), 
+ReducedQuadraticForm(16, 4, 19), ReducedQuadraticForm(16, -4, 19), 
+ReducedQuadraticForm(13, 10, 25), ReducedQuadraticForm(13, -10, 25), 
+ReducedQuadraticForm(16, 12, 21), ReducedQuadraticForm(16, -12, 21)])
+>>> quad.class_number_bsgs(-1200)
+12L
+>>> quad.class_group_bsgs(-1200, 12, [3, 1])
+([ReducedQuadraticForm(16, -12, 21)], [[3L]])
+>>> quad.class_group_bsgs(-1200, 12, [2, 2])
+([ReducedQuadraticForm(12, 0, 25), ReducedQuadraticForm(4, 0, 75)], 
+[[2L], [2L, 0]])
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

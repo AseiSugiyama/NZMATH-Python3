@@ -1,0 +1,197 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{factor.util -- utilities for factorization}\linkedzero{factor.util}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{factor.util}{FactoringInteger}
+     \item \linkingone{factor.util}{FactoringMethod}
+   \end{itemize}
+ \end{itemize}
+
+ This module uses following type:
+ \begin{description}
+   \item[factorlist]\linkedone{factor.util}{factorlist}:\\
+     \param{factorlist} is a list which consists of pairs {\tt (base, index)}.
+     Each pair means \(base^{index}\).
+     The product of those terms expresses whole prime factorization.
+ \end{description}
+
+\C
+
+ \subsection{FactoringInteger -- keeping track of factorization}\linkedone{factor.util}{FactoringInteger}
+ \initialize
+  \func{FactoringInteger}{\hiki{number}{integer}}{\out{FactoringInteger}}\\
+  \spacing
+  % document of basic document
+  \quad This is the base class for factoring integers.\\
+  \spacing
+  % added document
+  \quad  \param{number} is stored in the attribute \linkingtwo{factor.util}{FactoringInteger}{number}. The factors will be stored in the attribute \linkingtwo{factor.util}{FactoringInteger}{factors}, and primality of factors will be tracked in the attribute \linkingtwo{factor.util}{FactoringInteger}{primality}.\\
+  \spacing
+  % input/output document
+  \quad The given \param{number} must be a composite number.\\
+  \begin{at}
+    \item[number]\linkedtwo{factor.util}{FactoringInteger}{number}:\\ The composite number.
+    \item[factors]\linkedtwo{factor.util}{FactoringInteger}{factors}:\\ Factors known at the time being referred.
+    \item[primality]\linkedtwo{factor.util}{FactoringInteger}{primality}:\\ A dictionary of primality information of known factors.
+      {\tt True} if the factor is prime, {\tt False} composite, or {\tt None} undetermined.
+  \end{at}
+%   \begin{op}
+%     \verb+A==B+ & Return whether M and N are equal or not.\\
+%   \end{op} 
+% \begin{ex}
+% >>> A = factor.util.FactoringInteger((1,2))
+% >>> print A
+% (1, 2)
+% >>> A.point
+% (1, 2)
+% >>>
+% \end{ex}%Don't indent!
+  \method
+  \subsubsection{getNextTarget -- next target}\linkedtwo{factor.util}{FactoringInteger}{getNextTarget}
+   \func{getNextTarget}{\param{self},\ \hikiopt{cond}{function}{{\tt None}}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the next target which meets \param{cond}.\\
+   \spacing
+   % added document
+   If \param{cond} is not specified, then the next target is a composite (or undetermined) factor of \linkingtwo{factor.util}{FactoringInteger}{number}.\\
+   \spacing
+   % input, output document
+   \quad \param{cond} should be a binary predicate whose arguments are base and index.\\
+   \quad If there is no target factor, \linklibraryone{exceptions\#exceptions.LookupError}{LookupError} will be raised.\\
+%
+ \subsubsection{getResult -- result of factorization}\linkedtwo{factor.util}{FactoringInteger}{getResult}
+   \func{getResult}{\param{self}}{\out{\linkingone{factor.util}{factors}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the currently known factorization of the \linkingtwo{factor.util}{FactoringInteger}{number}.\\
+%
+ \subsubsection{register -- register a new factor}\linkedtwo{factor.util}{FactoringInteger}{register}
+   \func{register}{\param{self},\ \hiki{divisor}{integer},\ \hikiopt{isprime}{bool}{{\tt None}}}{}\\
+   \spacing
+   Register a \param{divisor} of the \linkingtwo{factor.util}{FactoringInteger}{number} if the \param{divisor} is a true divisor of the number.\\
+   \spacing
+   %added document
+   \quad The number is divided by the \param{divisor} as many times as possible.\\
+   \spacing
+   % input/output document
+   The optional argument \param{isprime} tells the primality of the
+   \param{divisor} (default to undetermined).\\
+%
+ \subsubsection{sortFactors -- sort factors}\linkedtwo{factor.util}{FactoringInteger}{sortFactors}
+   \func{sortFactors}{\param{self}}{}
+   \spacing
+   \quad Sort factors list.\\
+   \spacing
+    % added document
+    \quad This affects the result of \linkingtwo{factor.util}{FactoringInteger}{getResult}.\\
+%
+\begin{ex}
+>>> A = factor.util.FactoringInteger(100)
+>>> A.getNextTarget()
+100
+>>> A.getResult()
+[(100, 1)]
+>>> A.register(5, True)
+>>> A.getResult()
+[(5, 2), (4, 1)]
+>>> A.sortFactors()
+>>> A.getResult()
+[(4, 1), (5, 2)
+>>> A.primality
+{4: None, 5: True}
+>>> A.getNextTarget()
+4
+\end{ex}%Don't indent!
+\C
+
+ \subsection{FactoringMethod -- method of factorization}\linkedone{factor.util}{FactoringMethod}
+ \initialize
+  \func{FactoringMethod}{}{\out{FactoringMethod}}\\
+  \spacing
+  % document of basic document
+  \quad Base class of factoring methods.\\
+  \spacing
+  % added document
+  \quad All methods defined in \linkingzero{factor.methods} are
+  implemented as derived classes of this class. The method which users may call is  \linkingtwo{factor.util}{FactoringMethod}{factor} only. 
+  Other methods are explained for future implementers of a new factoring method.\\
+  \method
+  \subsubsection{factor -- do factorization}\linkedtwo{factor.util}{FactoringMethod}{factor}
+   \func{factor}{\param{self},\ %
+     \hiki{number}{integer},\ %
+     \hikiopt{return\_type}{str}{'list'},\ %
+     \hikiopt{need\_sort}{bool}{False}
+   }{\out{\linkingone{factor.util}{factorlist}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the factorization of the given positive integer \param{number}.
+   \spacing
+   % input, output document
+   \quad The default returned type is a \linkingone{factor.util}{factorlist}.\\
+   \quad A keyword option \param{return\_type} can be as the following:
+   \begin{enumerate}
+   \item {\tt 'list'} for default type (\linkingone{factor.util}{factorlist}).
+   \item {\tt 'tracker'} for \linkingone{factor.util}{FactoringInteger}.
+   \end{enumerate}
+   \quad Another keyword option \param{need\_sort} is Boolean:
+   {\tt True} to sort the result.
+   This should be specified with {\tt return\_type='list'}.\\
+%
+  \subsubsection{\negok continue\_factor -- continue factorization}\linkedtwo{factor.util}{FactoringMethod}{continue\_factor}
+  \func{continue\_factor}{\param{self},\ %
+    \hiki{tracker}{\linkingone{factor.util}{FactoringInteger}},\ %
+    \hikiopt{return\_type}{str}{'tracker'},\ %
+    \hikiopt{primeq}{func}{\linkingone{prime}{primeq}}
+  }{\out{\linkingone{factor.util}{FactoringInteger}}}\\
+  \spacing
+  \quad Continue factoring of the given \param{tracker} and return the
+  result of factorization.\\
+  \spacing
+  \quad The default returned type is \linkingone{factor.util}{FactoringInteger},
+  but if \param{return\_type} is specified as {\tt 'list'}
+  then it returns \linkingone{factor.util}{factorlist}.
+  The primality is judged by a function specified in \param{primeq}
+  optional keyword argument, which default is \linkingone{prime}{primeq}.\\
+%
+  \subsubsection{\negok find -- find a factor}\linkedtwo{factor.util}{FactoringMethod}{find}
+  \func{find}{\param{self},\ %
+    \hiki{target}{integer},\ %
+    **\param{options}
+  }{\out{integer}}\\
+  \spacing
+  \quad Find a factor from the \param{target} number.\\
+  \spacing
+  \quad This method has to be overridden, or \linkingtwo{factor.util}{FactoringMethod}{factor} method should be overridden not to call this method.\\
+%
+  \subsubsection{\negok generate -- generate prime factors}\linkedtwo{factor.util}{FactoringMethod}{generate}
+  \func{generate}{\param{self},\ %
+    \hiki{target}{integer},\ %
+    **\param{options}
+  }{\out{integer}}\\
+  \spacing
+ % basic document
+  \quad Generate prime factors of the \param{target} number with their valuations.\\
+ \spacing
+ % added document
+  \quad The method may terminate with yielding {\tt (1, 1)}
+  to indicate the factorization is incomplete.\\
+  This method has to be overridden, or \linkingtwo{factor.util}{FactoringMethod}{factor} method should be overridden not to call this method.\\
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

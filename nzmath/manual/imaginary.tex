@@ -1,0 +1,509 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{imaginary -- complex numbers and its functions}\linkedzero{imaginary}
+The module {\tt imaginary} provides complex numbers. The functions provided are mainly corresponding to the \linklibrary{cmath} standard module.
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{imaginary}{ComplexField}
+     \item \linkingone{imaginary}{Complex}
+     \item \negok \linkingone{imaginary}{ExponentialPowerSeries}
+     \item \negok \linkingone{imaginary}{AbsoluteError}
+     \item \negok \linkingone{imaginary}{RelativeError}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{imaginary}{exp}
+       \item \linkingone{imaginary}{expi}
+       \item \linkingone{imaginary}{log}
+       \item \linkingone{imaginary}{sin}
+       \item \linkingone{imaginary}{cos}
+       \item \linkingone{imaginary}{tan}
+       \item \linkingone{imaginary}{sinh}
+       \item \linkingone{imaginary}{cosh}
+       \item \linkingone{imaginary}{tanh}
+       \item \linkingone{imaginary}{atanh}
+       \item \linkingone{imaginary}{sqrt}
+
+     \end{itemize}
+ \end{itemize}
+
+This module also provides following constants:
+\begin{description}
+   \item[e]\linkedone{imaginary}{e}:\\
+     \param{e} is the base of the natural logarithm function, also called Napier's constant.
+     This is the same as \linkingzero{real}.\linkingone{real}{e}.
+   \item[pi]\linkedone{imaginary}{pi}:\\
+     \param{pi} is the circular constant, also denoted by $\pi$ .
+
+     This is the same as \linkingzero{real}.\linkingone{real}{pi}.
+   \item[j]\linkedone{imaginary}{j}:\\
+     \param{j} is the imaginary unit.
+   \item[defaultError]\linkedone{imaginary}{defaultError}:\\
+     \param{defaultError} is the instance of \linkingone{imaginary}{RelativeError}.
+   \item[theComplexField]\linkedone{imaginary}{theComplexField}:\\
+     \param{theComplexField} is the instance of \linkingone{imaginary}{ComplexField}.
+ \end{description}
+
+\C
+ \subsection{ComplexField -- field of complex numbers}\linkedone{imaginary}{ComplexField}
+ The class is for the field of complex numbers. The class has the single instance \linkingone{imaginary}{theComplexField}.
+
+ This class is a subclass of \linkingone{ring}{Field}.
+
+  \initialize
+  \func{ComplexField}{}{\out{ComplexField}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of ComplexField. 
+  % added document
+  You may not want to create an instance, since there is already \linkingone{imaginary}{theComplexField}.
+  % \spacing
+  % input, output document
+  %See \linkingone{module}{point} for \param{point}.
+  \begin{at}
+    \item[zero]\linkedtwo{imaginary}{ComplexField}{zero}:\\ It expresses The additive unit 0. (read only)
+    \item[one]\linkedtwo{imaginary}{ComplexField}{one}:\\ It expresses The multiplicative unit 1. (read only)
+  \end{at}
+  \begin{op}
+  %  \verb|+| & Vector sum.\\
+  %  \verb|-| & Vector subtraction.\\
+  %  \verb|*| & Scalar multiplication.\\
+  %  \verb|//| & Scalar division.\\
+  %  \verb|-(unary)| & element negation.\\
+  %  \verb|==| & equality or not.\\
+  %  \verb|!=| & inequality or not.\\
+  %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+  %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+  %  \verb|len| & return length of \linkingtwo{vector}{Vector}{compo}.\\
+    \verb|in| & membership test; return whether an element is in or not.\\
+    \verb|repr| & return representation string.\\
+    \verb|str| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+   \subsubsection{createElement -- create Imaginary object}\linkedtwo{imaginary}{ComplexField}{createElement}
+    \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
+    \spacing
+    % document of basic document
+    \quad Return a Complex object with \param{seed}. 
+    \spacing
+    % added document
+    %\quad \negok Note that this function returns integer only.\\
+    \spacing
+    % input, output document
+    \quad \param{seed} must be complex or numbers having embedding to complex.\\
+%
+%
+  \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{imaginary}{ComplexField}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic, zero.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{imaginary}{ComplexField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the complex field as subring.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{imaginary}{ComplexField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the complex field contains another ring as subring.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+
+\C
+ \subsection{Complex -- a complex number}\linkedone{imaginary}{Complex}
+ Complex is a class of complex number. Each instance has a coupled numbers; real and imaginary part of the number.
+
+ This class is a subclass of \linkingone{ring}{FieldElement}.
+
+ All implemented operators in this class are delegated to complex type. 
+  \initialize
+  \func{Complex}
+       {\hiki{re}{number}
+        \hikiopt{im}{number}{0}
+       }
+       {\out{Imaginary}}\\
+  \spacing
+  % document of basic document
+  \quad Create a complex number.
+  % added document
+  \spacing
+  % input, output document
+  \param{re} can be either real or complex number. If \param{re} is real and \param{im} is not given, then its imaginary part is zero. 
+  \begin{at}
+    \item[real]\linkedtwo{imaginary}{Complex}{real}:\\ It expresses the real part of complex number.
+    \item[imag]\linkedtwo{imaginary}{Complex}{imag}:\\ It expresses the imaginary part of complex number.
+  \end{at}
+  %\begin{op}
+  %  \verb|+| & Vector sum.\\
+  %  \verb|-| & Vector subtraction.\\
+  %  \verb|*| & Scalar multiplication.\\
+  %  \verb|//| & Scalar division.\\
+  %  \verb|-(unary)| & element negation.\\
+  %  \verb|==| & equality or not.\\
+  %  \verb|!=| & inequality or not.\\
+  %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+  %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+  %  \verb|len| & return length of \linkingtwo{vector}{Vector}{compo}.\\
+  %  \verb|repr| & return representation string.\\
+  %  \verb|str| & return string of \linkingtwo{vector}{Vector}{compo}.\\
+  %\end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{imaginary}{Complex}{getRing}
+   \func{getRing}{\param{self}}{\out{ComplexField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the complex field instance.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{arg -- argument of complex}\linkedtwo{imaginary}{Complex}{arg}
+   \func{arg}{\param{self}}{\out{radian}}\\
+   \spacing
+   % document of basic document
+   \quad Return the angle between the x-axis and the number in the Gaussian plane.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad \out{radian} must be Float.\\
+%
+  \subsubsection{conjugate -- complex conjugate}\linkedtwo{imaginary}{Complex}{conjugate}
+   \func{conjugate}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the complex conjugate of the number.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \out{radian} must be Float.\\
+%
+  \subsubsection{copy -- copied number}\linkedtwo{imaginary}{Complex}{copy}
+   \func{copy}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the copy of the number itself.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \out{radian} must be Float.\\
+%
+  \subsubsection{inverse -- complex inverse}\linkedtwo{imaginary}{Complex}{inverse}
+   \func{inverse}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse of the number.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad If the number is zero, ZeroDivisionError is raised.
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{ExponentialPowerSeries -- exponential power series}\linkedone{imaginary}{ExponentialPowerSeries}
+ExponentialPowerSeries is a class for exponential power series, whose n-th term has form $\frac{a_n{x^n}}{n!}$.
+  \initialize
+  \func{ExponentialPowerSeries}
+       {\hiki{iterator}{iterator}}
+       {\out{ExponentialPowerSeries}}\\
+  \spacing
+  % document of basic document
+  \quad Construct an exponential power series with coefficient generated by the given \param{iterator}, which can be an infinite iterator.
+  % added document
+  %You may not want to create an instance, since there is already theRationalField.
+  % \spacing
+  % input, output document
+  %See \linkingone{module}{point} for \param{point}.
+%  \begin{at}
+%    \item[zero]\linkedtwo{integer}{RationalField}{zero}:\\ It expresses The additive unit 0, namely Rational(0, 1). (read only)
+%    \item[one]\linkedtwo{integer}{RationalField}{one}:\\ It expresses The multiplicative unit 1, namely Rational(1, 1). (read only)
+%  \end{at}
+  \begin{op}
+    \verb|(x,maxerror)| & Return the value of the series with \param{x} assigned. The maximum error \param{maxerror} must be given as a \linkingone{imaginary}{RelativeError} or \linkingone{imaginary}{AbsoluteError} instance.\\
+  %  \verb|repr| & return representation string.\\
+  \end{op} 
+\begin{ex}
+>>> expo = ExponentialPowerSeries(itertools.cycle([1]))
+>>> expo(.5, defaultError)
+Rational(5434422938503507, 3296144130048000)
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{terms -- generator of terms of series}\linkedtwo{imaginary}{ExponentialPowerSeries}{terms}
+   \func{terms}
+        {\param{self},\ 
+          \hiki{x}{numbers}
+        }{\out{ExponentialPowerSeries}}\\
+   \spacing
+   % document of basic document
+   \quad Generator of terms of series with assigned x value.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad \param{x} must be int, long or Float.\\
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{AbsoluteError -- absolute error}\linkedone{imaginary}{AbsoluteError}
+ AbsoluteError is the class of absolute error of imaginary numbers.
+
+ This class is deprecated.
+
+\C
+ \subsection{RelativeError -- relative error}\linkedone{imaginary}{RelativeError}
+ AbsoluteError is the class of relative error of imaginary numbers.
+
+ This class is deprecated.
+\C
+  \subsection{exp(function) -- exponential value}\linkedone{imaginary}{exp}
+  \func{exp}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return exponential of \param{x}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{exp(function) -- exponential value}\linkedone{imaginary}{exp}
+  \func{exp}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return exponential of \param{x}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{expi(function) -- imaginary exponential value}\linkedone{imaginary}{expi}
+  \func{expi}{\hiki{x}{real number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return exponential of (\param{x}$\times$\linkingone{imaginary}{j}).
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{x} must be in real numbers. \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{log(function) -- logarithm}\linkedone{imaginary}{log}
+  \func{log}
+       {\hiki{x}{number},\ 
+         \hikiopt{base}{number}{None},\ 
+         \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}
+       {\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the natural logarithm of \param{x}.
+
+    There is one branch cut, from 0 along the negative real axis to -infinity,
+    continuous from above.
+    \spacing
+    % added document
+    %\quad \negok  
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{sin(function) -- sine function}\linkedone{imaginary}{sin}
+  \func{sin}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the sine of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{cos(function) -- cosine function}\linkedone{imaginary}{cos}
+  \func{cos}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the cosine of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{tan(function) -- tangent function}\linkedone{imaginary}{tan}
+  \func{tan}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the tangent of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{sinh(function) -- hyperbolic sine function}\linkedone{imaginary}{sinh}
+  \func{sinh}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic sine of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{cosh(function) -- hyperbolic cosine function}\linkedone{imaginary}{cosh}
+  \func{cosh}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic cosine of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{tanh(function) -- hyperbolic tangent function}\linkedone{imaginary}{tanh}
+  \func{tanh}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic tangent of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{atanh(function) -- hyperbolic arc tangent function}\linkedone{imaginary}{atanh}
+  \func{atanh}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the arc tangent of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+%
+  \subsection{sqrt(function) -- square root}\linkedone{imaginary}{sqrt}
+  \func{sqrt}{\hiki{z}{number}, \ \hikiopt{err}{Error}{\linkingone{imaginary}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return square root of \param{z}.
+    \spacing
+    % added document
+    %\quad \negok 
+    %\spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{imaginary}{AbsoluteError} or \linkingone{imaginary}{RelativeError}.
+    %(See \cite{Cohen1} or \nzmathtnt.)\\
+% 
+%
+% \begin{ex}
+% >>> A = vector.Vector([1,2,3])
+% >>> B = vector.Vector([2,1,0])
+% >>> vector.innerProduct(A,B)
+% 4
+% >>>
+% \end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

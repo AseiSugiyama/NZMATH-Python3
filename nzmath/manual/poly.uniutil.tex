@@ -1,0 +1,415 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{poly.uniutil -- univariate utilities}\linkedzero{poly.uniutil}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{poly.uniutil}{RingPolynomial}
+     \item \linkingone{poly.uniutil}{DomainPolynomial}
+     \item \linkingone{poly.uniutil}{UniqueFactorizationDomainPolynomial}
+     \item \linkingone{poly.uniutil}{IntegerPolynomial}
+     \item \linkingone{poly.uniutil}{FieldPolynomial}
+     \item \linkingone{poly.uniutil}{FinitePrimeFieldPolynomial}
+     \item OrderProvider
+     \item DivisionProvider
+     \item PseudoDivisionProvider
+     \item ContentProvider
+     \item SubresultantGcdProvider
+     \item PrimeCharacteristicFunctionsProvider
+     \item VariableProvider
+     \item RingElementProvider
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{poly.uniutil}{polynomial}
+     \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{RingPolynomial -- polynomial over commutative ring}\linkedone{poly.uniutil}{RingPolynomial}
+
+ \initialize
+  \func{RingPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{CommutativeRing},\ %
+    **\hiki{keywords}{dict}}{\out{RingPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad This class inherits from \linkingone{poly.univar}{SortedPolynomial},
+  \linkingone{poly.uniutil}{OrderProvider} and \linkingone{poly.uniutil}{RingElementProvider}.\\
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing}.\\
+  \method
+  \subsubsection{getRing}\linkedtwo{poly.uniutil}{RingPolynomial}{getRing}
+  \func{getRing}{\param{self}}{\out{Ring}}\\
+  \spacing
+  \quad Return an object of a subclass of {\tt Ring},
+  to which the polynomial belongs.\\
+  (This method overrides the definition in RingElementProvider)
+
+  \subsubsection{getCoefficientRing}\linkedtwo{poly.uniutil}{RingPolynomial}{getCoefficientRing}
+  \func{getCoefficientRing}{\param{self}}{\out{Ring}}\\
+  \spacing
+  \quad Return an object of a subclass of {\tt Ring},
+  to which the all coefficients belong.\\
+  (This method overrides the definition in RingElementProvider)
+
+  \subsubsection{shift\_degree\_to}\linkedtwo{poly.uniutil}{RingPolynomial}{shift\_degree\_to}
+  \func{shift\_degree\_to}{\param{self}, \hiki{degree}{integer}}{\out{polynomial}}\\
+  \spacing
+  \quad Return polynomial whose degree is the given \param{degree}.
+  More precisely, let \(f(X) = a_0 + ... + a_n X^n\), then
+  {\tt f.shift\_degree\_to(m)} returns:
+  \begin{itemize}
+  \item zero polynomial, if f is zero polynomial
+  \item \(a_{n-m} + ... + a_n X^m\), if \(0 \leq m < n\)
+  \item \(a_0 X^{m-n} + ... + a_n X^m\), if \(m \geq n\)
+  \end{itemize}
+  (This method is inherited from OrderProvider)
+
+  \subsubsection{split\_at}\linkedtwo{poly.uniutil}{RingPolynomial}{split\_at}
+  \func{split\_at}{\param{self},\ \hiki{degree}{integer}}{\out{polynomial}}\\
+  \spacing
+  \quad Return tuple of two polynomials, which are split at the
+  given degree. The term of the given degree, if exists, belongs to
+  the lower degree polynomial.\\
+  (This method is inherited from OrderProvider)  
+
+ \subsection{DomainPolynomial -- polynomial over domain}\linkedone{poly.uniutil}{DomainPolynomial}
+ \initialize
+  \func{DomainPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{CommutativeRing},\ %
+    **\hiki{keywords}{dict}}{\out{DomainPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given domain \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad In addition to the basic polynomial operations,
+  it has pseudo division methods.\\
+  \spacing
+  \quad This class inherits \linkingone{poly.uniutil}{RingPolynomial} and
+  \linkingone{poly.uniutil}{PseudoDivisionProvider}.
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing} which satisfies {\tt coeffring.isdomain()}.\\
+  \spacing
+  \method
+  \subsubsection{pseudo\_divmod}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_divmod}
+  \func{pseudo\_divmod}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
+  \spacing
+  \quad Return a tuple {\tt (Q, R)},
+  where \(Q\), \(R\) are polynomials such that:
+  \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
+  where \(d\) is the leading coefficient of \param{other}.\\
+  (This method is inherited from PseudoDivisionProvider)
+
+  \subsubsection{pseudo\_floordiv}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_floordiv}
+  \func{pseudo\_floordiv}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return a polynomial \(Q\) such that:
+  \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
+  where \(d\) is the leading coefficient of \param{other}.\\
+  (This method is inherited from PseudoDivisionProvider)
+
+  \subsubsection{pseudo\_mod}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_mod}
+  \func{pseudo\_mod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return a polynomial \(R\) such that:
+  \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
+  where \(d\) is the leading coefficient of \param{other}.\\
+  (This method is inherited from PseudoDivisionProvider)
+
+  \subsubsection{exact\_division}\linkedtwo{poly.uniutil}{DomainPolynomial}{exact\_division}
+  \func{exact\_division}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return quotient of exact division.\\
+  (This method is inherited from PseudoDivisionProvider)
+
+  \subsubsection{scalar\_exact\_division}\linkedtwo{poly.uniutil}{DomainPolynomial}{scalar\_exact\_division}
+  \func{scalar\_exact\_division}{\param{self},\ \hiki{scale}{CommutativeRingElement}}{\out{polynomial}}\\
+  \spacing
+  \quad Return quotient by \param{scale} which can divide each
+  coefficient exactly.\\
+  (This method is inherited from PseudoDivisionProvider)
+
+  \subsubsection{discriminant}\linkedtwo{poly.uniutil}{DomainPolynomial}{discriminant}
+  \func{discriminant}{\param{self}}{\out{CommutativeRingElement}}\\
+  \spacing
+  \quad Return discriminant of the polynomial.
+
+  \subsubsection{to\_field\_polynomial}\linkedtwo{poly.uniutil}{DomainPolynomial}{to\_field\_polynomial}
+  \func{to\_field\_polynomial}{\param{self}}{\out{FieldPolynomial}}\\
+  \spacing
+  \quad Return a {\tt FieldPolynomial} object obtained by embedding
+  the polynomial ring over the domain \(D\) to over the quotient
+  field of \(D\).
+
+ \subsection{UniqueFactorizationDomainPolynomial -- polynomial over UFD}\linkedone{poly.uniutil}{UniqueFactorizationDomainPolynomial}
+ \initialize
+  \func{UniqueFactorizationDomainPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{CommutativeRing},\ %
+    **\hiki{keywords}{dict}}{\out{UniqueFactorizationDomainPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given UFD \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad This class inherits from \linkingone{poly.uniutil}{DomainPolynomial},
+  \linkingone{poly.uniutil}{SubresultantGcdProvider} and \linkingone{poly.uniutil}{ContentProvider}.\\
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing} which satisfies {\tt coeffring.isufd()}.
+
+  \subsubsection{content}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{content}
+  \func{content}{\param{self}}{\out{CommutativeRingElement}}\\
+  \spacing
+  \quad Return content of the polynomial.\\
+  (This method is inherited from ContentProvider)
+
+  \subsubsection{primitive\_part}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{primitive\_part}
+  \func{primitive\_part}{\param{self}}{\out{UniqueFactorizationDomainPolynomial}}\\
+  \spacing
+  \quad Return the primitive part of the polynomial.\\
+  (This method is inherited from ContentProvider)
+
+  \subsubsection{subresultant\_gcd}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{subresultant\_gcd}
+  \func{subresultant\_gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{UniqueFactorizationDomainPolynomial}}\\
+  \spacing
+  \quad Return the greatest common divisor of given polynomials.
+  They must be in the polynomial ring and its coefficient ring must be a UFD.\\
+  (This method is inherited from SubresultantGcdProvider)\\
+  Reference: \cite{Cohen1}{Algorithm 3.3.1}
+
+  \subsubsection{subresultant\_extgcd}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{subresultant\_extgcd}
+  \func{subresultant\_extgcd}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
+  \spacing
+  \quad Return {\tt (A, B, P)} s.t. \(A\times self + B \times other=P\),
+  where \(P\) is the greatest common divisor of given polynomials.
+  They must be in the polynomial ring and its coefficient ring must be a UFD.\\
+  Reference: \cite{Kida}{p.18}\\
+  (This method is inherited from SubresultantGcdProvider)
+
+  \subsubsection{resultant}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{resultant}
+  \func{resultant}{\param{self}, \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \quad Return the resultant of \param{self} and \param{other}.\\
+  (This method is inherited from SubresultantGcdProvider)
+
+ \subsection{IntegerPolynomial -- polynomial over ring of rational integers}\linkedone{poly.uniutil}{IntegerPolynomial}
+ \initialize
+  \func{IntegerPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{CommutativeRing},\ %
+    **\hiki{keywords}{dict}}{\out{IntegerPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad This class is required because special initialization must be
+  done for built-in int/long.\\
+  \spacing
+  \quad This class inherits from \linkingone{poly.uniutil}{UniqueFactorizationDomainPolynomial}.\\
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of \linkingone{rational}{IntegerRing}.
+  You have to give the rational integer ring, though it seems redundant.
+
+ \subsection{FieldPolynomial -- polynomial over field}\linkedone{poly.uniutil}{FieldPolynomial}
+ \initialize
+  \func{FieldPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{Field},\ %
+    **\hiki{keywords}{dict}}{\out{FieldPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given field \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad Since the polynomial ring over field is a Euclidean domain,
+  it provides divisions.\\
+  \spacing
+  \quad This class inherits from \linkingone{poly.uniutil}{RingPolynomial},
+  \linkingone{poly.uniutil}{DivisionProvider} and \linkingone{poly.uniutil}{ContentProvider}.\\
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of descendant of \linkingone{ring}{Field}.\\
+%
+  \begin{op}
+    \verb+f // g+ & quotient of floor division\\
+    \verb+f % g+ & remainder\\
+    \verb+divmod(f, g)+ & quotient and remainder\\
+    \verb+f / g+ & division in rational function field\\
+  \end{op}
+  \method
+
+  \subsubsection{content}\linkedtwo{poly.uniutil}{FieldPolynomial}{content}
+  \func{content}{\param{self}}{\out{FieldElement}}\\
+  \spacing
+  \quad Return content of the polynomial.\\
+  (This method is inherited from ContentProvider)
+
+  \subsubsection{primitive\_part}\linkedtwo{poly.uniutil}{FieldPolynomial}{primitive\_part}
+  \func{primitive\_part}{\param{self}}{\out{polynomial}}\\
+  \spacing
+  \quad Return the primitive part of the polynomial.\\
+  (This method is inherited from ContentProvider)
+
+  \subsubsection{mod}\linkedtwo{poly.uniutil}{FieldPolynomial}{mod}
+  \func{mod}{\param{self},\ \hiki{dividend}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return \(dividend \bmod self\).\\
+  (This method is inherited from DivisionProvider)
+
+  \subsubsection{scalar\_exact\_division}\linkedtwo{poly.uniutil}{FieldPolynomial}{scalar\_exact\_division}
+  \func{scalar\_exact\_division}{\param{self},\ \hiki{scale}{FieldElement}}{\out{polynomial}}\\
+  \spacing
+  \quad Return quotient by \param{scale} which can divide each
+  coefficient exactly.\\
+  (This method is inherited from DivisionProvider)
+
+  \subsubsection{gcd}\linkedtwo{poly.uniutil}{FieldPolynomial}{gcd}
+  \func{gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return a greatest common divisor of self and other.\\
+  \spacing
+  \quad Returned polynomial is always monic.\\
+  (This method is inherited from DivisionProvider)
+
+  \subsubsection{extgcd}\linkedtwo{poly.uniutil}{FieldPolynomial}{extgcd}
+  \func{extgcd}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
+  \spacing
+  \quad Return a tuple {\tt (u, v, d)}; they are the greatest common
+  divisor \(d\) of two polynomials \param{self} and \param{other} and
+  \(u\), \(v\) such that
+  \[ d = self \times u + other \times v\]
+  \spacing
+  See \linkingone{gcd}{extgcd}.\\
+  (This method is inherited from DivisionProvider)
+
+ \subsection{FinitePrimeFieldPolynomial -- polynomial over finite prime field}\linkedone{poly.uniutil}{FinitePrimeFieldPolynomial}
+ \initialize
+  \func{FinitePrimeFieldPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    \hiki{coeffring}{FinitePrimeField},\ %
+    **\hiki{keywords}{dict}}{\out{FinitePrimeFieldPolynomial object}}\\
+  \spacing
+  % document of basic document
+  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \spacing
+  % added document
+  \quad This class inherits from \linkingone{poly.uniutil}{FieldPolynomial} and
+  \linkingone{poly.uniutil}{PrimeCharacteristicFunctionsProvider}.\\
+  \spacing
+  % input, output document
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \param{coeffring} is an instance of descendant of \linkingone{finitefield}{FinitePrimeField}.
+  \method
+  \subsubsection{mod\_pow -- powering with modulus}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{mod\_pow}
+  \func{mod\_pow}{\param{self},\ \hiki{polynom}{polynomial}, \hiki{index}{integer}}{\out{polynomial}}\\
+  \spacing
+  \quad Return \(polynom ^ {index} \bmod self\).\\
+  \spacing
+  \quad Note that \param{self} is the modulus.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{pthroot}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{pthroot}
+  \func{pthroot}{\param{self}}{\out{polynomial}}\\
+  \spacing
+  \quad Return a polynomial obtained by sending \(X^p\) to \(X\),
+  where \(p\) is the characteristic. If the polynomial does not consist
+  of \(p\)-th powered terms only, result is nonsense.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{squarefree\_decomposition}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{squarefree\_decomposition}
+  \func{squarefree\_decomposition}{\param{self}}{\out{dict}}\\
+  \spacing
+  \quad Return the square free decomposition of the polynomial.\\
+  \spacing
+  \quad The return value is a dict whose keys are integers and values are
+  corresponding powered factors.  For example, If
+\begin{ex}
+>>> A = A1 * A2**2
+>>> A.squarefree_decomposition()
+{1: A1, 2: A2}.
+\end{ex}%Don't indent!
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{distinct\_degree\_decomposition}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{distinct\_degree\_decomposition}
+  \func{distinct\_degree\_decomposition}{\param{self}}{\out{dict}}\\
+  \spacing
+  \quad Return the distinct degree factorization of the polynomial.\\
+  \spacing
+  \quad The return value is a dict whose keys are integers and values are
+  corresponding product of factors of the degree. For example, if
+  \(A = A1 \times A2\), and all irreducible factors of \(A1\) having
+  degree \(1\) and all irreducible factors of \(A2\) having degree \(2\),
+  then the result is: {\tt \{1: A1, 2: A2\}}.\\
+
+  \quad The given polynomial must be square free, and its coefficient
+  ring must be a finite field.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{split\_same\_degrees}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{split\_same\_degrees}
+  \func{split\_same\_degrees}{\param{self}, \hiki{degree}}{\out{list}}\\
+  \spacing
+  \quad Return the irreducible factors of the polynomial.\\
+  \spacing
+  \quad The polynomial must be a product of irreducible factors of
+  the given degree.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{factor}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{factor}
+  \func{factor}{\param{self}}{\out{list}}\\
+  \spacing
+  \quad Factor the polynomial.\\
+  \spacing
+  \quad The returned value is a list of tuples whose first component
+  is a factor and second component is its multiplicity.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+  \subsubsection{isirreducible}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{isirreducible}
+  \func{isirreducible}{\param{self}}{\out{bool}}\\
+  \quad If the polynomial is irreducible return {\tt True},
+  otherwise {\tt False}.\\
+  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+
+
+  \subsection{polynomial -- factory function for various polynomials}\linkedone{poly.uniutil}{polynomial}
+  \func{polynomial}{\hiki{coefficients}{terminit},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   \quad Return a polynomial.\\
+   \spacing
+   \quad \negok One can override the way to choose a polynomial type
+   from a coefficient ring, by setting:\\
+   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\
+   before the function call.
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

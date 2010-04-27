@@ -1,0 +1,151 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{lattice -- Lattice}\linkedzero{algfield}
+ \begin{itemize}
+ \item {\bf Classes}
+   \begin{itemize}
+   \item \linkingone{lattice}{Lattice}
+   \item \linkingone{lattice}{LatticeElement}
+   \end{itemize}
+ \item {\bf Functions}
+   \begin{itemize}
+   \item \linkingone{lattice}{LLL}
+   \end{itemize}
+ \end{itemize}
+%
+  \subsection{Lattice -- lattice}\linkedone{lattice}{Lattice}
+  \initialize
+  \func{Lattice}{
+    \hiki{basis}{\linkingone{matrix}{Matrix}},\ \hiki{quadraticForm}{\linkingone{matrix}{Matrix}}}{\out{Lattice}}\\
+  \spacing
+  % document of basic document
+  \quad Create Lattice object. \\
+  \spacing
+  % added document
+  \spacing
+  % input, output document
+  \begin{at}
+    \item[basis]\linkedtwo{lattice}{Lattice}{basis}: The basis of \param{self} lattice.
+    \item[quadraticForm]\linkedtwo{lattice}{Lattice}{quadraticForm}: The quadratic form of 
+  \end{at}
+  \begin{op}
+  \end{op}
+\begin{ex}
+\end{ex}%Don't indent!
+\C
+  \method
+  \subsubsection{createElement -- create element}\linkedtwo{lattice}{Lattice}{createElement}
+  \func{createElement}{\param{self}, \ \hiki{compo}{list}}{\out{\linkingone{lattice}{LatticeElement}}}\\
+  \spacing
+  % document of basic document
+  \quad Create the element which has coefficients with given \param{compo}. \\
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{bilinearForm -- bilinear form}\linkedtwo{lattice}{Lattice}{bilinearForm}
+  \func{bilinearForm}{\param{self}, \ \param{v_1}{}, \, \param{v_2} }{\out{integer}}\\
+  \spacing
+  % document of basic document
+  \quad Return the (polynomial) discriminant of the \param{self}.\linkingtwo{lattice}{Lattice}{polynomial}. \\
+  \spacing
+  % add document
+  \quad \negok The output is not discriminant of the number field itself. \\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{isCyclic -- Check whether cyclic lattice or not}\linkedtwo{lattice}{Lattice}{isCyclic}
+  \func{isCyclic}{\param{self}}{\out{bool}}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{self} lattice is a cyclic lattice or not.
+  \spacing
+  % add document
+  \quad 
+  %\spacing
+  % input, output document
+%
+  \subsubsection{isIdeal -- Check whether ideal lattice or not}\linkedtwo{lattice}{Lattice}{isIdeal}
+  \func{signature}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{self} lattice is a ideal lattice or not.
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+\begin{ex}
+\end{ex}%Don't indent!
+\C
+  \subsection{LatticeElement -- Lattice Element}\linkedone{lattice}{LatticeElement}
+  \initialize
+  \func{Lattice}{
+   \hiki{lattice}{list},\
+   \hiki{compo}{list},\ 
+  }{
+   \out{LatticeElement}
+  }\\
+  \spacing
+  % document of basic document
+  \spacing
+  % added document
+  %\spacing
+  % input, output document
+  \begin{at}
+    \item[lattice]\linkedtwo{lattice}{LatticeElement}{lattice}: 
+    \item[row]\linkedtwo{lattice}{LatticeElement}{row}: 
+    \item[column]\linkedtwo{lattice}{LatticeElement}{column}: 
+    \item[compo]\linkedtwo{lattice}{LatticeElement}{compo}: 
+  \end{at}
+  \begin{op}
+  \end{op}
+\begin{ex}
+\end{ex}%Don't indent!
+\C
+  \method
+  \subsubsection{getLattice -- FInd lattice belongs to}\linkedtwo{lattice}{LatticeElement}{getLattice}
+  \func{getLattice}{\param{self}}{\out{\linkingone{lattice}{Lattice}}}\\
+  \spacing
+  % document of basic document
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+\begin{ex}
+\end{ex}%Don't indent!
+\C
+  \subsection{LLL(function) -- LLL reduction}\linkedone{lattice}{LLL}
+  \func{LLL}{\hiki{M}{\linkingone{matrix}{Matrix}}}{\out{Matrix}, \ \out{Matrix}} \\
+  \spacing
+  % document of basic document
+  \quad Return 
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+%
+\begin{ex}
+>>> M=mat.Matrix(3,3,[1,0,12,0,1,26,0,0,13]);
+>>> lat.LLL(M);
+([1, 0, 0]+[0, 1, 0]+[0, 0, 13], [1L, 0L, -12L]+[0L, 1L, -26L]+[0L, 0L, 1L])
+>>> 
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

@@ -1,0 +1,171 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Functions}
+
+%---------- start document ---------- %
+ \section{squarefree -- Squarefreeness tests}\linkedzero{squarefree}
+
+There are two method groups.
+A function in one group raises \linkingone{squarefree}{Undetermined} when it cannot determine squarefreeness.
+A function in another group returns {\tt None} in such cases.
+The latter group of functions have ``\_ternary'' suffix on their names.
+We refer a set \(\{{\tt True}, {\tt False}, {\tt None}\}\) as {\it ternary}\linkedone{squarefree}{ternary}.
+
+The parameter type {\it integer}\linkedone{squarefree}{integer} means either {\it int}, {\it long} or \linkingone{rational}{Integer}.
+
+This module provides an exception class.
+\begin{description}
+  \item[Undetermined]:\ Report undetermined state of calculation.
+    The exception will be raised by
+    \linkingone{squarefree}{lenstra} or
+    \linkingone{squarefree}{trivial\_test}.
+\end{description}
+
+\subsection{Definition}
+
+  We define squarefreeness as:\\
+  \(n\) is squarefree \(\iff\) there is no prime \(p\) whose square divides \(n\).
+
+\vspace{1em}
+\noindent Examples:
+  \begin{itemize}
+  \item \(0\) is non-squarefree because any square of prime can divide \(0\).
+  \item \(1\) is squarefree because there is no prime dividing \(1\).
+  \item \(2\), \(3\), \(5\), and any other primes are squarefree.
+  \item \(4\), \(8\), \(9\), \(12\), \(16\) are non-squarefree composites.
+  \item \(6\), \(10\), \(14\), \(15\), \(21\) are squarefree composites.
+\end{itemize}
+
+ \subsection{lenstra -- Lenstra's condition}\linkedone{squarefree}{lenstra}
+ \func{lenstra}{\hiki{n}{integer}}{\out{bool}}\\
+ \spacing
+ % document of basic document
+ \quad If return value is True, \param{n} is squarefree.  Otherwise, the
+ squarefreeness is still unknown and \linkingone{squarefree}{Undetermined} is raised.
+ The algorithm is based on~\cite{Lenstra1979}. \\
+ \spacing
+ % added document
+ \negok The condition is so strong that it seems \param{n} has to be a
+ prime or a Carmichael number to satisfy it.\\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an odd \linkingone{squarefree}{integer}.
+ % 
+ \subsection{trial\_division -- trial division}\linkedone{squarefree}{trial\_division}
+ \func{trial\_division}{\hiki{n}{integer}}{\out{bool}}\\
+ \spacing
+ % document of basic document
+ \quad Check whether \param{n} is squarefree or not. \\
+ \spacing
+ % added document
+ The method is a kind of trial division and inefficient for large numbers. \\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+ \subsection{trivial\_test -- trivial tests}\linkedone{squarefree}{trivial\_test}
+ \func{trivial\_test}{\hiki{n}{integer}}{\out{bool}}\\
+ \spacing
+ % document of basic document
+ \quad Check whether \param{n} is squarefree or not.  If the squarefreeness is still unknown, then \linkingone{squarefree}{Undetermined} is raised. \\
+ \spacing
+ % added document
+ This method do anything but factorization including Lenstra's method. \\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an odd \linkingone{squarefree}{integer}.
+% 
+ \subsection{viafactor -- via factorization}\linkedone{squarefree}{viafactor}
+ \func{viafactor}{\hiki{n}{integer}}{\out{bool}}\\
+ \spacing
+ % document of basic document
+ \quad Check whether \param{n} is squarefree or not. \\
+ \spacing
+ % added document
+ It is obvious that if one knows the prime factorization of the number, he/she can tell whether the number is squarefree or not. \\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+ \subsection{viadecomposition -- via partial factorization}\linkedone{squarefree}{viadecomposition}
+ \func{viadecomposition}{\hiki{n}{integer}}{\out{bool}}\\
+ \spacing
+ % document of basic document
+ \quad Test the squarefreeness of \param{n}.
+ The return value is either one of {\tt True} or {\tt False};
+ {\tt None} never be returned. \\
+ \spacing
+ % added document
+ The method uses partial factorization into squarefree parts,
+ if such partial factorization is possible.  In other cases,
+ It completely factor \param{n} by trial division.
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+ \subsection{lenstra\_ternary -- Lenstra's condition, ternary version}\linkedone{squarefree}{lenstra\_ternary}
+ \func{lenstra\_ternary}{\hiki{n}{integer}}{\out{ternary}}\\
+ \spacing
+ % document of basic document
+ \quad Test the squarefreeness of \param{n}. The return value is one of the ternary logical constants.  If return value is {\tt True}, \param{n} is squarefree.  Otherwise, the squarefreeness is still unknown and {\tt None} is returned. \\
+ \spacing
+ % added document
+ \negok The condition is so strong that it seems \param{n} has to be a
+ prime or a Carmichael number to satisfy it.\\
+ This is a ternary version of \linkingone{squarefree}{lenstra}. \\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an odd \linkingone{squarefree}{integer}.
+ % 
+ \subsection{trivial\_test\_ternary -- trivial tests, ternary version}\linkedone{squarefree}{trivial\_test\_ternary}
+ \func{trivial\_test\_ternary}{\hiki{n}{integer}}{\out{ternary}}\\
+ \spacing
+ % document of basic document
+ \quad Test the squarefreeness of \param{n}.
+ The return value is one of the ternary logical constants. \\
+ \spacing
+ % added document
+ The method uses a series of trivial tests including \linkingone{squarefree}{lenstra\_ternary}. \\
+ This is a ternary version of \linkingone{squarefree}{trivial\_test}. \\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+ \subsection{trial\_division\_ternary  -- trial division, ternary version}\linkedone{squarefree}{trial\_division\_ternary}
+ \func{trial\_division\_ternary}{\hiki{n}{integer}}{\out{ternary}}\\
+ \spacing
+ % document of basic document
+ \quad Test the squarefreeness of \param{n}.
+ The return value is either one of {\tt True} or {\tt False};
+ {\tt None} never be returned. \\
+ \spacing
+ % added document
+ The method is a kind of trial division. \\
+ This is a ternary version of \linkingone{squarefree}{trial\_division}.\\
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+ \subsection{viafactor\_ternary -- via factorization, ternary version}\linkedone{squarefree}{viafactor\_ternary}
+ \func{viafactor\_ternary}{\hiki{n}{integer}}{\out{ternary}}\\
+ \spacing
+ % document of basic document
+ \quad Just for symmetry, this function is defined as an alias of \linkingone{squarefree}{viafactor}. \\
+ \spacing
+ % added document
+ \spacing
+ % input, output document
+ \quad Input parameter \param{n} ought to be an \linkingone{squarefree}{integer}.
+% 
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+\end{document}

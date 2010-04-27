@@ -1,0 +1,444 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{permute -- permutation (symmetric) group}\linkedzero{permute}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{permute}{Permute}
+     \item \linkingone{permute}{ExPermute}
+     \item \linkingone{permute}{PermGroup}
+   \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{Permute -- element of permutation group}\linkedone{permute}{Permute}
+ \initialize
+  \func{Permute}{\hiki{value}{list/tuple},\ \hiki{key}{list/tuple}}{Permute}\\
+  \func{Permute}{\hiki{val\_key}{dict}}{Permute}\\
+  \func{Permute}{\hiki{value}{list/tuple}, \hikiopt{key}{int}{None}}{Permute}\\
+  \spacing
+  % document of basic document
+  \quad Create an element of a permutation group.\\
+  \spacing
+  % added document
+  \quad An instance will be generated with ``normal'' way.
+  That is, we input a \param{key}, which is a list of (indexed) all elements from some set, and a \param{value}, which is a list of all permuted elements.\\
+  \spacing
+  % input, output document
+  \quad Normally, you input two lists (or tuples) \param{value} and \param{key} with same length.
+  Or you can input \param{val\_key} as a dict whose {\tt values()} is a list ``value'' and {\tt keys()} is a list ``key'' in the sense of above. 
+  Also, there are some short-cut for inputting \param{key}:
+  \begin{itemize}
+    \item If key is $[1,\ 2, \ldots, N]$, you do not have to input \param{key}.
+    \item If key is $[0,\ 1, \ldots, N]$, input $0$ as \param{key}.
+    \item If key equals the list arranged through \param{value} in ascending order, input $1$.
+    \item If key equals the list arranged through \param{value} in descending order, input $-1$.
+  \end{itemize}
+  \begin{at}
+    \item[key]:\linkedtwo{permute}{Permute}{key}\\ It expresses \param{key}.
+    \item[data]:\linkedtwo{permute}{Permute}{data}\\ \negok It expresses indexed form of \param{value}.
+  \end{at}
+  \C
+  \begin{op}
+    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
+    \verb+A*B+ & right multiplication (that is, $A \circ B$ with normal mapping way)\\
+    \verb+A/B+ & division (that is, $A \circ B^{-1}$)\\
+    \verb+A**B+ & powering\\
+    \verb+A.inverse()+ & inverse\\
+    \verb+A[c]+ & the element of \param{value} corresponding to \param{c} in \param{key}\\
+    \verb+A(lst)+ & permute \param{lst} with A\\
+  \end{op}
+\begin{ex}
+>>> p1 = permute.Permute(['b','c','d','a','e'], ['a','b','c','d','e'])
+>>> print p1
+['a', 'b', 'c', 'd', 'e'] -> ['b', 'c', 'd', 'a', 'e']
+>>> p2 = permute.Permute([2, 3, 0, 1, 4], 0)
+>>> print p2
+[0, 1, 2, 3, 4] -> [2, 3, 0, 1, 4]
+>>> p3 = permute.Permute(['c','a','b','e','d'], 1)
+>>> print p3
+['a', 'b', 'c', 'd', 'e'] -> ['c', 'a', 'b', 'e', 'd']
+>>> print p1 * p3
+['a', 'b', 'c', 'd', 'e'] -> ['d', 'b', 'c', 'e', 'a']
+>>> print p3 * p1
+['a', 'b', 'c', 'd', 'e'] -> ['a', 'b', 'e', 'c', 'd']
+>>> print p1 ** 4
+['a', 'b', 'c', 'd', 'e'] -> ['a', 'b', 'c', 'd', 'e']
+>>> p1['d']
+'a'
+>>> p2([0, 1, 2, 3, 4])
+[2, 3, 0, 1, 4]
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{setKey -- change key}\linkedtwo{permute}{Permute}{setKey}
+   \func{setKey}{\param{self},\ \hiki{key}{list/tuple}}{\out{Permute}}\\
+   \spacing
+   % document of basic document
+   \quad Set other key.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{key} must be list or tuple with same length to \linkingtwo{permute}{Permute}{key}.\\
+ \subsubsection{getValue -- get ``value''}\linkedtwo{permute}{Permute}{getValue}
+   \func{getValue}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return (not \param{data}) \param{value} of \param{self}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{getGroup -- get PermGroup}\linkedtwo{permute}{Permute}{getGroup}
+   \func{getGroup}{\param{self}}{\out{PermGroup}}\\
+   \spacing
+   % document of basic document
+   \quad Return \linkingone{permute}{PermGroup} to which \param{self} belongs.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{numbering -- give the index}\linkedtwo{permute}{Permute}{numbering}
+   \func{numbering}{\param{self}}{\out{int}}\\
+   \spacing
+   % document of basic document
+   \quad Number \param{self} in the permutation group. (Slow method)\\
+   \spacing
+   % added document
+   \quad The numbering is made to fit the following inductive definition for dimension of the permutation group.\\
+   If numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ \sigma_{n-1}]$ on $(n-1)$-dimension is $k$,
+   numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\sigma_{n-1},n]$ on $n$-dimension is $k$ and
+   numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ n,\ \sigma_{n-1}]$ on $n$-dimension is $k+(n-1)!$, and so on.
+   (See \href{http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm}{Room of Points And Lines, part 2, section 15, paragraph 2 (Japanese)})\\
+   %\spacing
+   % input, output document
+ \subsubsection{order -- order of the element}\linkedtwo{permute}{Permute}{order}
+   \func{order}{\param{self}}{\out{int/long}}\\
+   \spacing
+   % document of basic document
+   \quad Return order as the element of group.\\
+   \spacing
+   % added document
+   \quad This method is faster than general group method.
+   \spacing
+   % input, output document
+ \subsubsection{ToTranspose -- represent as transpositions}\linkedtwo{permute}{Permute}{ToTranspose}
+   \func{ToTranspose}{\param{self}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Represent \param{self} as a composition of transpositions.\\
+   \spacing
+   % added document
+   \quad Return the element of \linkingone{permute}{ExPermute} with transpose (2-dimensional cyclic) type.
+   It is recursive program, and it would take more time than the method \linkingtwo{permute}{Permute}{ToCyclic}.\\
+   \spacing
+   % input, output document
+ \subsubsection{ToCyclic -- corresponding ExPermute element}\linkedtwo{permute}{Permute}{ToCyclic}
+   \func{ToTranspose}{\param{self}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Represent \param{self} as a composition of cyclic representations.\\
+   \spacing
+   % added document
+   \quad Return the element of \linkingone{permute}{ExPermute}.
+   \negok This method decomposes \param{self} into coprime cyclic permutations, so each cyclic is commutative.
+   \spacing
+   % input, output document
+ \subsubsection{sgn -- sign of the permutation}\linkedtwo{permute}{Permute}{sgn}
+   \func{sgn}{\param{self}}{\out{int}}\\
+   \spacing
+   % document of basic document
+   \quad Return the sign of permutation group element.\\
+   \spacing
+   % added document
+   \quad If \param{self} is even permutation, that is, \param{self} can be written as a composition of an even number of transpositions, it returns $1$.
+   Otherwise,that is, for odd permutation, it returns $-1$.
+   \spacing
+   % input, output document
+ \subsubsection{types -- type of cyclic representation}\linkedtwo{permute}{Permute}{types}
+   \func{types}{\param{self}}{\out{str}}\\
+   \spacing
+   % document of basic document
+   \quad Return cyclic type defined by each cyclic permutation element length.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{ToMatrix -- permutation matrix}\linkedtwo{permute}{Permute}{ToMatrix}
+   \func{ToMatrix}{\param{self}}{\out{\linkingone{matrix}{Matrix}}}\\
+   \spacing
+   % document of basic document
+   \quad Return permutation matrix.\\
+   \spacing
+   % added document
+   \quad The row and column correspond to \param{key}.
+   If \param{self} $G$ satisfies $G[a]=b$, then $(a,\ b)$-element of the matrix is $1$.
+   Otherwise, the element is $0$.
+   %\spacing
+   % input, output document
+\begin{ex}
+>>> p=Permute([2,3,1,5,4])
+>>> p.numbering()
+28
+>>> p.order()
+6
+>>> p.ToTranspose()
+[(4,5)(1,3)(1,2)](5)
+>>> p.sgn()
+-1
+>>> p.ToCyclic()
+[(1,2,3)(4,5)](5)
+>>> p.types()
+'(2,3)type'
+>>> print p.ToMatrix()
+0 1 0 0 0
+0 0 1 0 0
+1 0 0 0 0
+0 0 0 0 1
+0 0 0 1 0
+\end{ex}%Don't indent!
+\C
+
+ \subsection{ExPermute -- element of permutation group as cyclic representation}\linkedone{permute}{ExPermute}
+ \initialize
+  \func{ExPermute}{\hiki{dim}{int},\ \hiki{value}{list},\ \hikiopt{key}{list}{None}}{ExPermute}\\
+  \spacing
+  % document of basic document
+  \quad Create an element of a permutation group.\\
+  \spacing
+  % added document
+  \quad An instance will be generated with ``cyclic'' way.
+  That is, we input a \param{key}, which is a list of tuples and each tuple expresses a cyclic permutation.
+  For example, $(\sigma_1,\ \sigma_2,\ \sigma_3,\ldots,\sigma_k)$ is one-to-one mapping, $\sigma_1 \mapsto \sigma_2,\ \sigma_2 \mapsto \sigma_3,\ldots,\sigma_k \mapsto \sigma_1$.\\
+  \spacing
+  % input, output document
+  \quad \param{dim} must be positive integer, that is, an instance of int, long or \linkedone{rational}{Integer}. 
+  \param{key} should be a list whose length equals \param{dim}.
+  Input a list of tuples whose elements are in \param{key} as \param{value}.
+  Note that you can abbreviate \param{key} if \param{key} has the form $[1,\ 2,\ldots,N]$.
+  Also, you can input $0$ as \param{key} if  \param{key} has the form $[0,\ 2,\ldots,N-1]$.
+  \begin{at}
+    \item{dim}:\linkedtwo{permute}{ExPermute}{dim}\\ It expresses \param{dim}.
+    \item[key]:\linkedtwo{permute}{ExPermute}{key}\\ It expresses \param{key}.
+    \item[data]:\linkedtwo{permute}{ExPermute}{data}\\ \negok It expresses indexed form of \param{value}.
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
+    \verb+A*B+ & right multiplication (that is, $A \circ B$ with normal mapping way)\\
+    \verb+A/B+ & division (that is, $A \circ B^{-1}$)\\
+    \verb+A**B+ & powering\\
+    \verb+A.inverse()+ & inverse\\
+    \verb+A[c]+ & the element of \param{value} corresponding to \param{c} in \param{key}\\
+    \verb+A(lst)+ & permute \param{lst} with A\\
+    \verb+str(A)+ & simple representation. use \linkingtwo{permute}{ExPermute}{simplify}.\\
+    \verb+repr(A)+ & representation \\
+  \end{op}
+\begin{ex}
+>>> p1 = permute.ExPermute(5, [('a', 'b')], ['a','b','c','d','e'])
+>>> print p1
+[('a', 'b')] <['a', 'b', 'c', 'd', 'e']>
+>>> p2 = permute.ExPermute(5, [(0, 2), (3, 4, 1)], 0)
+>>> print p2
+[(0, 2), (1, 3, 4)] <[0, 1, 2, 3, 4]>
+>>> p3=nzmath.permute.ExPermute(5,[('b','c')],['a','b','c','d','e'])
+>>> print p1 * p3
+[('a', 'b'), ('b', 'c')] <['a', 'b', 'c', 'd', 'e']>
+>>> print p3 * p1
+[('b', 'c'), ('a', 'b')] <['a', 'b', 'c', 'd', 'e']>
+>>> p1['c']
+'c'
+>>> p2([0, 1, 2, 3, 4])
+[2, 4, 0, 1, 3]
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{setKey -- change key}\linkedtwo{permute}{ExPermute}{setKey}
+   \func{setKey}{\param{self},\ \hiki{key}{list}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Set other key.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{key} must be a list whose length equals \linkingtwo{permute}{ExPermute}{dim}.\\
+ \subsubsection{getValue -- get ``value''}\linkedtwo{permute}{ExPermute}{getValue}
+   \func{getValue}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return (not \param{data}) \param{value} of \param{self}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{getGroup -- get PermGroup}\linkedtwo{permute}{ExPermute}{getGroup}
+   \func{getGroup}{\param{self}}{\out{PermGroup}}\\
+   \spacing
+   % document of basic document
+   \quad Return \linkingone{permute}{PermGroup} to which \param{self} belongs.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{order -- order of the element}\linkedtwo{permute}{ExPermute}{order}
+   \func{order}{\param{self}}{\out{int/long}}\\
+   \spacing
+   % document of basic document
+   \quad Return order as the element of group.\\
+   \spacing
+   % added document
+   \quad This method is faster than general group method.\\
+   \spacing
+   % input, output document
+ \subsubsection{ToNormal -- represent as normal style}\linkedtwo{permute}{ExPermute}{ToNormal}
+   \func{ToNormal}{\param{self}}{\out{Permute}}\\
+   \spacing
+   % document of basic document
+   \quad Represent \param{self} as an instance of \linkingone{permute}{Permute}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{simplify -- use simple value}\linkedtwo{permute}{ExPermute}{simplify}
+   \func{simplify}{\param{self}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Return the more simple cyclic element.\\
+   \spacing
+   % added document
+   \quad \negok This method uses \linkingtwo{permute}{ExPermute}{ToNormal} and \linkingtwo{permute}{Permute}{ToCyclic}.
+   \spacing
+   % input, output document
+ \subsubsection{sgn -- sign of the permutation}\linkedtwo{permute}{ExPermute}{sgn}
+   \func{sgn}{\param{self}}{\out{int}}\\
+   \spacing
+   % document of basic document
+   \quad Return the sign of permutation group element.\\
+   \spacing
+   % added document
+   \quad If \param{self} is even permutation, that is, \param{self} can be written as a composition of an even number of transpositions, it returns $1$.
+   Otherwise,that is, for odd permutation, it returns $-1$.\\
+   \spacing
+   % input, output document
+\begin{ex}
+>>> p=permute.ExPermute(5, [(1, 2, 3), (4, 5)])
+>>> p.order()
+6
+>>> print p.ToNormal()
+[1, 2, 3, 4, 5] -> [2, 3, 1, 5, 4]
+>>> p * p
+[(1, 2, 3), (4, 5), (1, 2, 3), (4, 5)] <[1, 2, 3, 4, 5]>
+>>> (p * p).simplify()
+[(1, 3, 2)] <[1, 2, 3, 4, 5]>
+\end{ex}%Don't indent!
+\C
+
+ \subsection{PermGroup -- permutation group}\linkedone{permute}{PermGroup}
+ \initialize
+  \func{PermGroup}{\hiki{key}{int/long}}{PermGroup}\\
+  \func{PermGroup}{\hiki{key}{list/tuple}}{PermGroup}\\
+  \spacing
+  % document of basic document
+  \quad Create a permutation group.\\
+  \spacing
+  % added document
+  % \spacing
+  % input, output document
+  \quad Normally, input list as \param{key}.
+  If you input some integer $N$, \param{key} is set as $[1,\ 2,\ldots,N]$. 
+  \begin{at}
+    \item[key]:\linkedtwo{permute}{PermGroup}{key}\\ It expresses \param{key}.
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
+    \verb+card(A)+ & same as \linkingtwo{permute}{PermGroup}{grouporder}\\ 
+    \verb+str(A)+ & simple representation\\
+    \verb+repr(A)+ & representation \\
+  \end{op}
+\begin{ex}
+>>> p1 = permute.PermGroup(['a','b','c','d','e'])
+>>> print p1
+['a','b','c','d','e']
+>>> card(p1)
+120L
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{createElement -- create an element from seed}\linkedtwo{permute}{PermGroup}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{list/tuple/dict}}{\out{Permute}}\\
+   \func{createElement}{\param{self},\ \hiki{seed}{list}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Create new element in \param{self}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{seed} must be the form of ``value'' on \linkingone{permute}{Permute} or \linkingone{permute}{ExPermute}
+ \subsubsection{identity -- group identity}\linkedtwo{permute}{PermGroup}{identity}
+   \func{identity}{\param{self}}{\out{Permute}}\\
+   \spacing
+   % document of basic document
+   \quad Return the identity of \param{self} as normal type.\\
+   \spacing
+   % added document
+   \quad For cyclic type, use \linkingtwo{permute}{PermGroup}{identity\_c}.
+   \spacing
+   % input, output document
+ \subsubsection{identity\_c -- group identity as cyclic type}\linkedtwo{permute}{PermGroup}{identity\_c}
+   \func{identity\_c}{\param{self}}{\out{ExPermute}}\\
+   \spacing
+   % document of basic document
+   \quad Return permutation group identity as cyclic type.\\
+   \spacing
+   % added document
+   \quad For normal type, use \linkingtwo{permute}{PermGroup}{identity}.
+   \spacing
+   % input, output document
+ \subsubsection{grouporder -- order as group}\linkedtwo{permute}{PermGroup}{grouporder}
+   \func{grouporder}{\param{self}}{\out{int/long}}\\
+   \spacing
+   % document of basic document
+   \quad Compute the order of \param{self} as group.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{randElement -- random permute element}\linkedtwo{permute}{PermGroup}{randElement}
+   \func{randElement}{\param{self}}{\out{Permute}}\\
+   \spacing
+   % document of basic document
+   \quad Create random new element as normal type in \param{self}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+\begin{ex}
+>>> p=permute.PermGroup(5)
+>>> print p.createElement([3, 4, 5, 1, 2])
+[1, 2, 3, 4, 5] -> [3, 4, 5, 1, 2]
+>>> print p.createElement([(1, 2), (3, 4)])
+[(1, 2), (3, 4)] <[1, 2, 3, 4, 5]>
+>>> print p.identity()
+[1, 2, 3, 4, 5] -> [1, 2, 3, 4, 5]
+>>> print p.identity_c()
+[] <[1, 2, 3, 4, 5]>
+>>> p.grouporder()
+120L
+>>> print p.randElement()
+[1, 2, 3, 4, 5] -> [3, 4, 5, 2, 1]
+\end{ex}%Don't indent!
+\C
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

@@ -1,0 +1,487 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{real -- real numbers and its functions}\linkedzero{real}
+The module {\tt real} provides arbitrary precision real numbers and
+their utilities. The functions provided are corresponding to the
+\linklibrary{math} standard module.
+
+
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{real}{RealField}
+     \item \linkingone{real}{Real}
+     \item \negok \linkingone{real}{Constant}
+     \item \negok \linkingone{real}{ExponentialPowerSeries}
+     \item \negok \linkingone{real}{AbsoluteError}
+     \item \negok \linkingone{real}{RelativeError}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{real}{exp}
+       \item \linkingone{real}{sqrt}
+       \item \linkingone{real}{log}
+       \item \linkingone{real}{log1piter}
+       \item \linkingone{real}{piGaussLegendre}
+       \item \linkingone{real}{eContinuedFraction}
+       \item \linkingone{real}{floor}
+       \item \linkingone{real}{ceil}
+       \item \linkingone{real}{tranc}
+       \item \linkingone{real}{sin}
+       \item \linkingone{real}{cos}
+       \item \linkingone{real}{tan}
+       \item \linkingone{real}{sinh}
+       \item \linkingone{real}{cosh}
+       \item \linkingone{real}{tanh}
+       \item \linkingone{real}{asin}
+       \item \linkingone{real}{acos}
+       \item \linkingone{real}{atan}
+       \item \linkingone{real}{atan2}
+       \item \linkingone{real}{hypot}
+       \item \linkingone{real}{pow}
+       \item \linkingone{real}{degrees}
+       \item \linkingone{real}{radians}
+       \item \linkingone{real}{fabs}
+       \item \linkingone{real}{fmod}
+       \item \linkingone{real}{frexp}
+       \item \linkingone{real}{ldexp}
+       \item \linkingone{real}{EulerTransform}
+
+     \end{itemize}
+ \end{itemize}
+
+This module also provides following constants:
+\begin{description}
+   \item[e]\linkedone{real}{e}:\\
+     \param{e} is the base of the natural logarithm function, also called Napier's constant.
+   \item[pi]\linkedone{real}{pi}:\\
+     \param{pi} is the circular constant, also denoted by $\pi$ .
+   \item[Log2]\linkedone{real}{Log2}:\\
+     \param{Log2} is the natural logarithm of 2.
+   \item[\negok defaultError]\linkedone{real}{defaultError}:\\
+     \param{defaultError} is the instance of \linkingone{real}{RelativeError}.
+   \item[theRealField]\linkedone{real}{theRealField}:\\
+     \param{theRealField} is the instance of \linkingone{real}{RealField}.
+ \end{description}
+
+\C
+ \subsection{RealField -- field of real numbers}\linkedone{real}{RealField}
+ The class is for the field of real numbers. The class has the single instance \linkingone{real}{theRealField}.
+
+ This class is a subclass of \linkingone{ring}{Field}.
+
+
+  \initialize
+  \func{RealField}{}{\out{RealField}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of RealField. 
+  % added document
+  You may not want to create an instance, since there is already \linkingone{real}{theRealField}.
+  % \spacing
+  % input, output document
+  %See \linkingone{module}{point} for \param{point}.
+  \begin{at}
+    \item[zero]\linkedtwo{real}{RealField}{zero}:\\ It expresses the additive unit 0. (read only)
+    \item[one]\linkedtwo{real}{RealField}{one}:\\ It expresses the multiplicative unit 1. (read only)
+  \end{at}
+  \begin{op}
+    \verb|x in R| & membership test; return whether an element is in or not.\\
+    \verb|repr(R)| & return representation string.\\
+    \verb|str(R)| & return string.\\
+  \end{op} 
+  \method
+%
+  \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{real}{RealField}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic, zero.
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{real}{RealField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the real field as subring.
+   \spacing
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{real}{RealField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the real field contains another ring as subring.
+   \spacing
+
+\C
+ \subsection{Real -- a Real number}\linkedone{real}{Real}
+ Real is a class of real number.  This class is only for consistency for other \linkingone{ring}{Ring} object.
+
+ This class is a subclass of \linkingone{ring}{CommutativeRingElement}.
+
+ All implemented operators in this class are delegated to Float type. 
+  \initialize
+  \func{Real}{\hiki{value}{number}}{\out{Real}}\\
+  \spacing
+  % document of basic document
+  \quad Construct a Real object.
+  % added document
+  \spacing
+  % input, output document
+  \param{value} must be int, long, Float or \linkingone{rational}{Rational}.
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{real}{Real}{getRing}
+   \func{getRing}{\param{self}}{\out{RealField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the real field instance.
+%
+\C
+ \subsection{Constant -- real number with error correction}\linkedone{real}{Constant}
+ Constant provides constant-like behavior for Float calculation context. It caches the constant value and re-computes for more precision by request.
+
+  Almost every operators are delegated to the cached value.
+  \initialize
+  \func{Constant}
+       {\hiki{getValue}{numbers},\ 
+         \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}
+       {\out{Constant}}\\
+  \spacing
+  % document of basic document
+  \quad Construct Constant from Float and error.
+  % input, output document
+  \param{getValue} must be Float, and \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+  \begin{op}
+    \verb|S(err)| & Return the value at least as accurate as the given error \param{err}. 
+
+.\\
+  \end{op}
+\begin{ex}
+>>> pi = Constant(piGaussLegendre)
+>>> print pi
+3.14159265358979
+>>> pi + 1
+4.14159265358979
+>>> pi(RelativeError(0,1,2**100)) # for 100 bit precision
+3.1415926535897932384626433832795
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{inverse -- inverse value}\linkedtwo{real}{Constant}{inverse}
+   \func{inverse}{\param{self}}{\out{Constant}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse of the number.
+%
+  \subsubsection{toRational -- convert to Rational}\linkedtwo{real}{Constant}{toRational}
+   \func{toRational}{\param{self}}{\out{Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return a rational number approximating the number.
+   \spacing
+%
+\C
+ \subsection{ExponentialPowerSeries -- exponential power series}\linkedone{real}{ExponentialPowerSeries}
+ExponentialPowerSeries is a class for exponential power series, whose n-th term has form $\frac{a_n{x^n}}{n!}$.
+  \initialize
+  \func{ExponentialPowerSeries}
+       {\hiki{iterator}{iterator}}
+       {\out{ExponentialPowerSeries}}\\
+  \spacing
+  % document of basic document
+  \quad Construct an exponential power series with coefficient generated by the given \param{iterator}, which can be an infinite iterator.\\
+  \begin{op}
+    \verb|S(x,maxerror)| & Return the value of the series with \param{x} assigned.The maximum error \param{maxerror}\\
+    & must be given as a \linkingone{real}{RelativeError} or \linkingone{real}{AbsoluteError} instance.\\
+  \end{op} 
+\begin{ex}
+>>> expo = ExponentialPowerSeries(itertools.cycle([1]))
+>>> expo(.5, defaultError)
+Rational(5434422938503507, 3296144130048000)
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{terms -- generator of terms of series}\linkedtwo{real}{ExponentialPowerSeries}{terms}
+   \func{terms}
+        {\param{self},\ 
+          \hiki{x}{numbers}
+        }{\out{ExponentialPowerSeries}}\\
+   \spacing
+   % document of basic document
+   \quad Generator of terms of series with assigned x value.
+   \spacing
+   % input, output document
+   \quad \param{x} must be int, long or Float.\\
+%
+\C
+ \subsection{AbsoluteError -- absolute error}\linkedone{real}{AbsoluteError}
+ AbsoluteError is the class of absolute error of real numbers.
+
+ this class is deprecated.
+
+\C
+ \subsection{RelativeError -- relative error}\linkedone{real}{RelativeError}
+ AbsoluteError is the class of relative error of real numbers.
+
+ this class is deprecated.
+\C
+  \subsection{exp(function) -- exponential value}\linkedone{real}{exp}
+  \func{exp}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return exponential of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{sqrt(function) -- square root}\linkedone{real}{sqrt}
+  \func{sqrt}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return square root of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{log(function) -- logarithm}\linkedone{real}{log}
+  \func{log}
+       {\hiki{x}{number},\ 
+         \hikiopt{base}{number}{None},\ 
+         \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}
+       {\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return logarithm of a positive number \param{x}.
+
+    If an additional argument \param{base} is given, it returns logarithm of \param{x} to the \param{base}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{log1piter(function) -- iterator of log(1+x)}\linkedone{real}{log1piter}
+  \func{log1piter}{\hiki{xx}{number}}{\out{iterator}}\\
+    \spacing
+    % document of basic document
+    \quad Return iterator for $\log(1+x)$.
+    \spacing
+%
+  \subsection{piGaussLegendre(function) -- pi by Gauss-Legendre}\linkedone{real}{piGaussLegendre}
+  \func{piGaussLegendre}{\hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return pi by Gauss-Legendre algorithm.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{eContinuedFraction(function) -- Napier's Constant by continued fraction expansion}\linkedone{real}{eContinuedFraction}
+  \func{eContinuedFraction}{\hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the base of natural logarithm \linkingone{real}{e} by continued fraction expansion.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{floor(function) -- floor the number}\linkedone{real}{floor}
+  \func{floor}{\hiki{x}{number}}{\out{integer}}\\
+    \spacing
+    % document of basic document
+    \quad Return the biggest integer not more than \param{x}.
+    \spacing
+%
+  \subsection{ceil(function) -- ceil the number}\linkedone{real}{ceil}
+  \func{ceil}{\hiki{x}{number}}{\out{integer}}\\
+    \spacing
+    % document of basic document
+    \quad Return the smallest integer not less than \param{x}.
+    \spacing
+%
+  \subsection{tranc(function) -- round-off the number}\linkedone{real}{tranc}
+  \func{tranc}{\hiki{x}{number}}{\out{integer}}\\
+    \spacing
+    % document of basic document
+    \quad Return the number of rounded off \param{x}.
+    \spacing
+%
+  \subsection{sin(function) -- sine function}\linkedone{real}{sin}
+  \func{sin}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the sine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{cos(function) -- cosine function}\linkedone{real}{cos}
+  \func{cos}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the cosine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{tan(function) -- tangent function}\linkedone{real}{tan}
+  \func{tan}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the tangent of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{sinh(function) -- hyperbolic sine function}\linkedone{real}{sinh}
+  \func{sinh}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic sine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{cosh(function) -- hyperbolic cosine function}\linkedone{real}{cosh}
+  \func{cosh}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic cosine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{tanh(function) -- hyperbolic tangent function}\linkedone{real}{tanh}
+  \func{tanh}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the hyperbolic tangent of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{asin(function) -- arc sine function}\linkedone{real}{asin}
+  \func{asin}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the arc sine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{acos(function) -- arc cosine function}\linkedone{real}{acos}
+  \func{acos}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the arc cosine of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{atan(function) -- arc tangent function}\linkedone{real}{atan}
+  \func{atan}{\hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the arc tangent of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{atan2(function) -- arc tangent function}\linkedone{real}{atan2}
+  \func{atan2}{\hiki{y}{number}, \ \hiki{x}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return the arc tangent of \param{y/x}.
+
+    Unlike \linkingone{real}{atan}\param{(y/x)}, the signs of both \param{x} and \param{y} are considered.
+    \spacing
+    % added document
+    \quad \negok It is unrecommended to obtain the value of \linkingone{real}{pi} with atan2(0,1).
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{hypot(function) -- Euclidean distance function}\linkedone{real}{hypot}
+  \func{hypot}{\hiki{x}{number}, \ \hiki{y}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return $\sqrt{x^2+y^2}$.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{pow(function) -- power function}\linkedone{real}{pow}
+  \func{pow}{\hiki{x}{number}, \ \hiki{y}{number}, \ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return \param{y}th power of \param{x}.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{degrees(function) -- convert angle to degree}\linkedone{real}{degrees}
+  \func{degrees}{\hiki{rad}{number},\ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Converts angle \param{rad} from radians to degrees.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{radians(function) -- convert angle to radian}\linkedone{real}{radians}
+  \func{radians}{\hiki{deg}{number},\ \hikiopt{err}{Error}{\linkingone{real}{defaultError}}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Converts angle \param{deg} from degrees to radians.
+    \spacing
+    % input, output document
+    \quad \param{err} must be \linkingone{real}{AbsoluteError} or \linkingone{real}{RelativeError}.
+%
+  \subsection{fabs(function) -- absolute value}\linkedone{real}{fabs}
+  \func{fabs}{\hiki{x}{number}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return absolute value of \param{x}
+    \spacing
+%
+  \subsection{fmod(function) -- modulo function over real}\linkedone{real}{fmod}
+  \func{fmod}{\hiki{x}{number},\ \hiki{y}{number}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return $x - ny$, where \param{n} is the quotient of \param{x / y}, rounded towards zero to an integer.
+    \spacing
+%
+  \subsection{frexp(function) -- expression with base and binary exponent}\linkedone{real}{frexp}
+  \func{frexp}{\hiki{x}{number}}{(\out{m},\out{e})}\\
+    \spacing
+    % document of basic document
+    \quad Return a tuple \param{(m,e)}, where $x = m \times 2^e$, $1/2 \leq \mathtt{abs(m)} < 1$ and \param{e} is an integer.
+    \spacing
+    % added document
+    \quad \negok This function is provided as the counter-part of math.frexp, but it might not be useful.
+%
+  \subsection{ldexp(function) -- construct number from base and binary exponent}\linkedone{real}{ldexp}
+  \func{ldexp}{\hiki{x}{number},\ \hiki{i}{number}}{\out{number}}\\
+    \spacing
+    % document of basic document
+    \quad Return $x \times 2^i$.
+    \spacing
+%
+  \subsection{EulerTransform(function) -- iterator yields terms of Euler transform}\linkedone{real}{EulerTransform}
+  \func{EulerTransform}{\hiki{iterator}{iterator}}{\out{iterator}}\\
+    \spacing
+    % document of basic document
+    \quad Return an iterator which yields terms of Euler transform of the given \param{iterator}.
+    \spacing
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

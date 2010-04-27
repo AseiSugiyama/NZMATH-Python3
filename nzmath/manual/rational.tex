@@ -1,0 +1,272 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{rational -- integer and rational number}\linkedzero{rational}
+rational module provides integer and rational numbers, as class Rational, Integer, RationalField, and IntegerRing.
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{rational}{Integer}
+     \item \linkingone{rational}{IntegerRing}
+     \item \linkingone{rational}{Rational}
+     \item \linkingone{rational}{RationalField}
+   \end{itemize}
+ \end{itemize}
+
+This module also provides following constants:
+\begin{description}
+   \item[theIntegerRing]\linkedone{rational}{theIntegerRing}:\\
+     \param{theIntegerRing} is represents the ring of rational integers.
+     An instance of \linkingone{rational}{IntegerRing}.
+   \item[theRationalField]\linkedone{rational}{theRationalField}:\\
+     \param{theRationalField} is represents the field of rational numbers.
+     An instance of \linkingone{rational}{RationalField}.
+ \end{description}
+
+\C
+
+ \subsection{Integer -- integer}\linkedone{rational}{Integer}
+ Integer is a class of integer. Since 'int' and 'long' do not return rational for division, it is needed to create a new class.
+
+ This class is a subclass of \linkingone{ring}{CommutativeRingElement} and long.
+
+  \initialize
+  \func{Integer}{\hiki{integer}{integer}}{\out{Integer}}\\
+  \spacing
+  % document of basic document
+  \quad Construct a Integer object.
+  % added document
+  If argument is omitted, the value becomes 0.
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{rational}{Integer}{getRing}
+   \func{getRing}{\param{self}}{\out{IntegerRing}}\\
+   \spacing
+   % document of basic document
+   \quad Return an IntegerRing object.
+%
+  \subsubsection{actAdditive -- addition of binary addition chain}\linkedtwo{rational}{Integer}{actAdditive}
+   \func{actAdditive}{\param{self},\ \hiki{other}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Act on other additively, i.e. n is expanded to n time additions of \param{other}. Naively, it is:
+
+   \verb|return sum([+other for _ in range(self)])|
+
+   but, here we use a binary addition chain.\\
+   \spacing
+%
+  \subsubsection{actMultiplicative -- multiplication of binary addition chain}\linkedtwo{rational}{Integer}{actMultiplicative}
+   \func{actMultiplicative}{\param{self},\ \hiki{other}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Act on other multiplicatively, i.e. n is expanded to n time multiplications of \param{other}. Naively, it is:
+
+\verb|return reduce(lambda x,y: x*y, [+other for _ in range(self)])|
+
+   but, here we use a binary addition chain.
+   \spacing
+\C
+ \subsection{IntegerRing -- integer ring}\linkedone{rational}{IntegerRing}
+ The class is for the ring of rational integers.
+
+ This class is a subclass of \linkingone{ring}{CommutativeRing}.
+
+
+  \initialize
+  \func{IntegerRing}{}{\out{IntegerRing}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of IntegerRing. 
+  % added document
+  You may not want to create an instance, since there is already theIntegerRing.\\
+  \begin{at}
+    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ It expresses the additive unit 0. (read only)
+    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ It expresses the multiplicative unit 1. (read only)
+  \end{at}
+  \begin{op}
+    \verb|x in Z| & return whether an element is in or not.\\
+    \verb|repr(Z)| & return representation string.\\
+    \verb|str(Z)| & return string.\\
+  \end{op}
+  \method
+  \subsubsection{createElement -- create Integer object}\linkedtwo{rational}{IntegerRing}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return an Integer object with \param{seed}. 
+   \spacing
+   % input, output document
+   \quad \param{seed} must be int, long or rational.Integer.\\
+%
+  \subsubsection{gcd -- greatest common divisor}\linkedtwo{rational}{IntegerRing}{gcd}
+   \func{gcd}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor of given 2 integers.\\
+%
+  \subsubsection{extgcd -- extended GCD}\linkedtwo{rational}{IntegerRing}{extgcd}
+   \func{extgcd}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return a tuple ($u$, $v$, $d$); they are the greatest common divisor $d$ of two given integers \param{n} and \param{m} and $u$, $v$ such that $d = \mathtt{n}u + \mathtt{m}v$.\\
+   \spacing
+%
+  \subsubsection{lcm -- lowest common multiplier}\linkedtwo{rational}{IntegerRing}{lcm}
+   \func{lcm}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the lowest common multiple of given 2 integers. 
+   % added document
+   \quad If both are zero, it raises an exception.\\
+%
+  \subsubsection{getQuotientField -- get rational field object}\linkedtwo{rational}{IntegerRing}{getQuotientField}
+   \func{getQuotientField}{\param{self}}{\out{RationalField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the rational field (\linkingone{rational}{RationalField}).\\
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{rational}{IntegerRing}{issubring}
+   \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the integer ring as subring.
+
+   If other is also the integer ring, the output is True. In other cases it depends on the implementation of another ring's issuperring method.\\
+   \spacing
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{rational}{IntegerRing}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the integer ring contains another ring as subring.
+
+If other is also the integer ring, the output is True. In other cases it depends on the implementation of another ring's issubring method.\\
+   \spacing
+
+\C
+ \subsection{Rational -- rational number}\linkedone{rational}{Rational}
+ The class of rational numbers.
+
+  \initialize
+  \func{Rational}
+       {\hiki{numerator}{numbers},\ 
+         \hikiopt{denominator}{numbers}{1}}
+       {\out{Integer}}\\
+  \spacing
+  % document of basic document
+  \quad Construct a rational number from:
+  \begin{itemize}
+  \item integers,
+  \item float, or
+  \item Rational.
+  \end{itemize}
+  % added document
+  Other objects can be converted if they have toRational methods. Otherwise raise TypeError.
+
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{rational}{Rational}{getRing}
+   \func{getRing}{\param{self}}{\out{RationalField}}\\
+   \spacing
+   % document of basic document
+   \quad Return a RationalField object.
+%
+  \subsubsection{decimalString -- represent decimal}\linkedtwo{rational}{Rational}{decimalString}
+   \func{decimalString}{\param{self},\ \hiki{N}{integer}}{\out{string}}\\
+   \spacing
+   % document of basic document
+   \quad Return a string of the number to \param{N} decimal places.
+   \spacing
+%
+  \subsubsection{expand -- continued-fraction representation}\linkedtwo{rational}{Rational}{expand}
+   \func{expand}
+        {\param{self},\ 
+          \hiki{base}{integer},\ 
+          \hiki{limit}{integer}}
+        {\out{string}}\\
+   \spacing
+   % document of basic document
+   \quad Return the nearest rational number whose denominator is a power of \param{base} and at most \param{limit} if \param{base} is positive integer.
+
+   Otherwise, i.e. \param{base}=0, returns the nearest rational number whose denominator is at most \param{limit}.
+   \spacing
+   % input, output document
+   \quad \param{base} must be non-negative integer.\\
+%
+\C
+ \subsection{RationalField -- the rational field}\linkedone{rational}{RationalField}
+RationalField is a class of field of rationals. The class has the single instance \linkingone{rational}{theRationalField}.
+
+ This class is a subclass of \linkingone{ring}{QuotientField}.
+
+
+  \initialize
+  \func{RationalField}{}{\out{RationalField}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of RationalField. 
+  % added document
+  You may not want to create an instance, since there is already theRationalField.
+  \begin{at}
+    \item[zero]\linkedtwo{integer}{RationalField}{zero}:\\ It expresses the additive unit 0, namely Rational(0, 1). (read only)
+    \item[one]\linkedtwo{integer}{RationalField}{one}:\\ It expresses the multiplicative unit 1, namely Rational(1, 1). (read only)
+  \end{at}
+  \begin{op}
+    \verb|x in Q| & return whether an element is in or not.\\
+    \verb|str(Q)| & return string.\\
+  \end{op}
+  \method
+  \subsubsection{createElement -- create Rational object}\linkedtwo{rational}{RationalField}{createElement}
+   \func{createElement}
+        {\param{self},\ 
+          \hiki{numerator}{integer or \linkingone{rational}{Rational}},\ 
+          \hikiopt{denominator}{integer}{1} 
+        }{\out{Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Create a Rational object.
+%
+  \subsubsection{classNumber -- get class number}\linkedtwo{rational}{RationalField}{classNumber}
+   \func{classNumber}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return 1, since the class number of the rational field is one.
+%
+  \subsubsection{getQuotientField -- get rational field object}\linkedtwo{rational}{RationalField}{getQuotientField}
+   \func{getQuotientField}{\param{self}}{\out{RationalField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the rational field itself.
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{rational}{RationalField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the rational field as subring.
+
+   If other is also the rational field, the output is True. In other cases it depends on the implementation of another ring's issuperring method.
+   \spacing
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{rational}{RationalField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the rational field contains another ring as subring.
+
+If other is also the rational field, the output is True. In other cases it depends on the implementation of another ring's issubring method.
+   \spacing
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

@@ -1,0 +1,99 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Functions}
+
+%---------- start document ---------- %
+ \section{cubic\_root -- cubic root, residue, and so on}\linkedzero{cubic\_root}
+%
+  \subsection{c\_root\_p -- cubic root mod p}\linkedone{cubic\_root}{c\_root\_p}
+   \func{func1}{\hiki{a}{integer},\ \hiki{p}{integer}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the cubic root of \param{a} modulo prime \param{p}. (i.e. solutions of the equation $x^3 = \param{a} \pmod{\param{p}}$).\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{p} must be a prime integer.\\
+   This function returns the list of all cubic roots of \param{a}.\\
+%
+  \subsection{c\_residue -- cubic residue mod p}\linkedone{cubic\_root}{c\_residue}
+   \func{c\_residue}{\hiki{a}{integer},\ \hiki{p}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether the rational integer \param{a} is cubic residue modulo prime \param{p}.\\
+   \spacing
+   % added document
+   \quad If $\param{p}\ |\ \param{a}$, then this function returns $0$,
+   elif \param{a} is cubic residue modulo \param{p}, then it returns $1$,
+   otherwise (i.e. cubic non-residue), it returns $-1$.\\
+   \spacing
+   % input, output document
+   \quad \param{p} must be a prime integer.\\
+%
+  \subsection{c\_symbol -- cubic residue symbol for Eisenstein-integers}\linkedone{cubic\_root}{c\_symbol}
+   \func{c\_symbol}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the (Jacobi) cubic residue symbol of two Eisenstein-integers $\left(\frac{\param{a1}+\param{a2}\omega}{\param{b1}+\param{b2}\omega}\right)_3$,
+where $\omega$ is a primitive cubic root of unity.\\
+   \spacing
+   % added document
+   If $\param{b1}+\param{b2}\omega$ is a prime in $\mathbb{Z}[\omega]$, it shows $\param{a1}+\param{a2}\omega$ is cubic residue or not.\\
+   \spacing
+   % input, output document
+   \quad We assume that $\param{b1}+\param{b2}\omega$ is not divisible $1-\omega$.\\
+%
+  \subsection{decomposite\_p -- decomposition to Eisenstein-integers}\linkedone{cubic\_root}{decomposite\_p}
+   \func{decomposite\_p}{\hiki{p}{integer}}{(\out{integer},\ \out{integer})}\\
+   \spacing
+   % document of basic document
+   \quad Return one of prime factors of \param{p} in $\mathbb{Z}[\omega]$.\\
+   \spacing
+   % added document
+   \quad If the output is (\param{a},\ \param{b}), then $\frac{\param{p}}{\param{a}+\param{b}\omega}$ is a prime in $\mathbb{Z}[\omega]$.
+   In other words, \param{p} decomposes into two prime factors $\param{a}+\param{b}\omega$ and $\param{p}/(\param{a}+\param{b}\omega)$ in $\mathbb{Z}[\omega]$.\\
+   \spacing
+   % input, output document
+   \quad \param{p} must be a prime rational integer.
+   We assume that $\param{p}\equiv 1 \pmod 3$.\\
+%
+  \subsection{cornacchia -- solve $x^2+dy^2=p$}\linkedone{cubic\_root}{cornacchia}
+   \func{cornacchia}{\hiki{d}{integer},\ \hiki{p}{integer}}{(\out{integer},\ \out{integer})}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of $x^2 + \param{d}y^2 = \param{p}$.\\
+   \spacing
+   % added document
+   \quad This function uses Cornacchia's algorithm. See \cite{Cohen1}.\\
+   \spacing
+   % input, output document
+   \quad \param{p} must be prime rational integer.
+   \param{d} must be satisfied with the condition $0<\param{d}<\param{p}$.
+   This function returns (\param{x},\ \param{y}) as one of solutions of the equation $x^2 + \param{d} y^2 = \param{p}$.\\
+%
+\begin{ex}
+>>> cubic_root.c_root_p(1, 13)
+[1, 3, 9]
+>>> cubic_root.c_residue(2, 7)
+-1
+>>> cubic_root.c_symbol(3, 6, 5, 6)
+1
+>>> cubic_root.decomposite_p(19)
+(2, 5)
+>>> cubic_root.cornacchia(5, 29)
+(3, 2)
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

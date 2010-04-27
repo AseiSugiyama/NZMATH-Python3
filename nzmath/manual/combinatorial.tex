@@ -1,0 +1,291 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Functions}
+
+%---------- start document ---------- %
+ \section{combinatorial -- combinatorial functions}\linkedzero{combinatorial}
+%
+  \subsection{binomial -- binomial coefficient}\linkedone{combinatorial}{binomial}
+   \func{binomial}
+   {%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the binomial coefficient for \param{n} and \param{m}.
+   In other words, $\displaystyle{\frac{\param{n} !}{(\param{n} - \param{m}) ! \param{m} !}}$.\\
+   \spacing
+   % added document
+   \negok For convenience, {\tt binomial(n, n+i)} returns \(0\) for positive \(i\), and {\tt binomial(0,0)} returns \(1\).\\
+   \spacing
+   % input, output document
+   \quad \param{n} must be a positive integer and \param{m} must be
+   a non-negative integer. \\
+
+  \subsection{combinationIndexGenerator -- iterator for combinations}\linkedone{combinatorial}{combinationIndexGenerator}
+
+   \func{combinationIndexGenerator}{%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator which generates indices of \param{m}
+   element subsets of \param{n} element set.\\
+   \spacing 
+   \quad {\tt combination\_index\_generator}\linkedone{combinatorial}{combination\_index\_generator}
+   is an alias of {\tt combinationIndexGenerator}.\\
+
+  \subsection{factorial -- factorial}\linkedone{combinatorial}{factorial}
+   \func{factorial}{%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return \(\param{n}!\) for non-negative integer \param{n}.\\
+
+  \subsection{permutationGenerator -- iterator for permutation}\linkedone{combinatorial}{permutationGenerator}
+  \func{permutationGenerator}{%
+    \hiki{n}{integer}
+  }{%
+    \out{iterator}
+  }
+   \spacing
+   \quad Generate all permutations of \param{n} elements as list iterator.\\
+   % 
+   \spacing 
+   \quad The number of generated list is \param{n}'s
+   \linkingone{combinatorial}{factorial}, so be careful to use
+   big \param{n}.\\
+   \spacing 
+   \quad {\tt permutation\_generator}\linkedone{combinatorial}{permutation\_generator}
+   is an alias of {\tt permutationGenerator}.\\
+
+  \subsection{fallingfactorial -- the falling factorial}\linkedone{combinatorial}{fallingfactorial}
+   \func{fallingfactorial}{%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the falling factorial; \param{n} to the \param{m} falling,
+   i.e. \(n(n-1)\cdots(n-m+1)\).\\
+
+  \subsection{risingfactorial -- the rising factorial}\linkedone{combinatorial}{risingfactorial}
+   \func{risingfactorial}{%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the rising factorial; \param{n} to the \param{m} rising,
+   i.e.\, \(n(n+1)\cdots(n+m-1)\).\\
+
+  \subsection{multinomial -- the multinomial coefficient}\linkedone{combinatorial}{multinomial}
+   \func{multinomial}{%
+     \hiki{n}{integer},\ %
+     \hiki{parts}{list}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the multinomial coefficient.\\
+   \spacing
+   % input, output document
+   \quad \param{parts} must be a sequence of natural numbers and the sum of elements in \param{parts} should be equal to \param{n}.\\
+
+  \subsection{bernoulli -- the Bernoulli number}\linkedone{combinatorial}{bernoulli}
+   \func{bernoulli}{%
+     \hiki{n}{integer}
+   }{%
+     \out{Rational}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the \param{n}-th Bernoulli number.\\
+
+  \subsection{catalan -- the Catalan number}\linkedone{combinatorial}{catalan}
+   \func{catalan}{%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the \param{n}-th Catalan number.\\
+
+  \subsection{euler -- the Euler number}\linkedone{combinatorial}{euler}
+   \func{euler}{%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the \param{n}-th Euler number.\\
+
+  \subsection{bell -- the Bell number}\linkedone{combinatorial}{bell}
+   \func{bell}{%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the \param{n}-th Bell number.\\
+   \spacing
+   % added document
+   \quad The Bell number \(b\) is defined by:
+   \[b(n) = \sum_{i=0}^{n} S(n, i),\ \]
+   where \(S\) denotes Stirling number of the second kind (\linkingone{combinatorial}{stirling2}).\\
+
+  \subsection{stirling1 -- Stirling number of the first kind}\linkedone{combinatorial}{stirling1}
+   \func{stirling1}{%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return Stirling number of the first kind.\\
+   \spacing
+   % added document
+   \quad Let \(s\) denote the Stirling number and \((x)_n\) the falling factorial, then
+   \[(x)_n = \sum_{i=0}^{n} s(n,\ i) x^i. \]\\
+   \(s\) satisfies the recurrence relation:
+   \[s(n,\ m) = s(n-1,\ m-1) - (n-1)S(n-1,\ m)\ .\]\\
+
+  \subsection{stirling2 -- Stirling number of the second kind}\linkedone{combinatorial}{stirling2}
+   \func{stirling2}{%
+     \hiki{n}{integer},\ %
+     \hiki{m}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return Stirling number of the second kind.\\
+   \spacing
+   % added document
+   \quad Let \(S\) denote the Stirling number, \((x)_i\) falling factorial, then:
+   \[x^n = \sum_{i=0}^{n} S(n,\ i) (x)_i\]
+   \(S\) satisfies:
+   \[S(n,\ m) = S(n-1,\ m-1) + m S(n-1,\ m)\]\\
+
+  \subsection{partition\_number -- the number of partitions}\linkedone{combinatorial}{partition\_number}
+   \func{partition\_number}{%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the number of partitions of \param{n}.\\
+
+  \subsection{partitionGenerator -- iterator for partition}\linkedone{combinatorial}{partitionGenerator}
+   \func{partitionGenerator}{%
+     \hiki{n}{integer},\ %
+     \hikiopt{maxi}{integer}{0}
+   }{%
+     \out{iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator which generates partitions of \param{n}.\\
+   % input, output document
+   \spacing
+   \quad If \param{maxi} is given, then summands are limited not to exceed \param{maxi}.\\
+   \quad The number of partitions (given by
+   \linkingone{combinatorial}{partition\_number}) grows exponentially,
+   so be careful to use big \param{n}.\\
+   \spacing 
+   \quad {\tt partition\_generator}\linkedone{combinatorial}{partition\_generator}
+   is an alias of {\tt partitionGenerator}.\\
+
+  \subsection{partition\_conjugate -- the conjugate of partition}\linkedone{combinatorial}{partition\_conjugate}
+   \func{partition\_conjugate}{%
+     \hiki{partition}{tuple}
+   }{%
+     \out{tuple}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the conjugate of \param{partition}.\\
+
+\begin{ex}
+>>> combinatorial.binomial(5, 2)
+10L
+>>> combinatorial.factorial(3)
+6L
+>>> combinatorial.fallingfactorial(7, 3) == 7 * 6 * 5
+True
+>>> combinatorial.risingfactorial(7, 3) == 7 * 8 * 9
+True
+>>> combinatorial.multinomial(7, [2, 2, 3])
+210L
+>>> for idx in combinatorial.combinationIndexGenerator(5, 3):
+...     print idx
+...
+[0, 1, 2]
+[0, 1, 3]
+[0, 1, 4]
+[0, 2, 3]
+[0, 2, 4]
+[0, 3, 4]
+[1, 2, 3]
+[1, 2, 4]
+[1, 3, 4]
+[2, 3, 4]
+>>> for part in combinatorial.partitionGenerator(5):
+...     print part
+...
+(5,)
+(4, 1)
+(3, 2)
+(3, 1, 1)
+(2, 2, 1)
+(2, 1, 1, 1)
+(1, 1, 1, 1, 1)
+>>> combinatorial.partition_number(5)
+7
+>>> def limited_summands(n, maxi):
+...     "partition with limited number of summands"
+...     for part in combinatorial.partitionGenerator(n, maxi):
+...         yield combinatorial.partition_conjugate(part)
+...
+>>> for part in limited_summands(5, 3):
+...     print part
+...
+(2, 2, 1)
+(3, 1, 1)
+(3, 2)
+(4, 1)
+(5,)
+\end{ex}%Don't indent!(indent causes an error.)
+
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

@@ -1,0 +1,756 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \negok \section{ring -- for ring object}\linkedzero{ring}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{ring}{Ring}
+     \item \linkingone{ring}{CommutativeRing}
+     \item \linkingone{ring}{Field}
+     \item \linkingone{ring}{QuotientField}
+     \item \linkingone{ring}{RingElement}
+     \item \linkingone{ring}{CommutativeRingElement}
+     \item \linkingone{ring}{FieldElement}
+     \item \linkingone{ring}{QuotientFieldElement}
+     \item \linkingone{ring}{Ideal}
+     \item \linkingone{ring}{ResidueClassRing}
+     \item \linkingone{ring}{ResidueClass}
+     \item \linkingone{ring}{CommutativeRingProperties}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{ring}{getRingInstance}
+       \item \linkingone{ring}{getRing}
+       \item \linkingone{ring}{inverse}
+       \item \linkingone{ring}{exact\_division}
+     \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{\negok Ring -- abstract ring}\linkedone{ring}{Ring}
+  %\func{Ring}{(None)}{Ring}\\
+  \spacing
+  % document of basic document
+  \quad Ring is an abstract class which expresses that
+    the derived classes are (in mathematical meaning) rings.\\
+  \spacing
+  % added document
+  \quad Definition of ring (in mathematical meaning) is as follows:
+  Ring is a structure with addition and multiplication. 
+  It is an abelian group with addition, and a monoid with multiplication.
+  The multiplication obeys the distributive law.\\
+  \spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \begin{at}
+    \item[zero]\linkedtwo{ring}{Ring}{zero}  additive unit\\
+    \item[one]\linkedtwo{ring}{Ring}{one} multiplicative unit\\
+  \end{at}
+  \begin{op}
+    \verb+A==B+ & Return whether M and N are equal or not.\\
+  \end{op} 
+  \method
+  \subsubsection{createElement -- create an element}\linkedtwo{ring}{Ring}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{(undefined)}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return an element of the ring with seed.\\
+   \spacing
+   % added document
+   \quad This is an abstract method.\\
+   \spacing
+   % input, output document
+  \subsubsection{getCharacteristic -- characteristic as ring}\linkedtwo{ring}{Ring}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic of the ring.\\
+   \spacing
+   % added document
+   \quad The Characteristic of a ring is the smallest positive integer $n$ 
+   s.t. $na=0$ for any element $a$ of the ring, 
+   or $0$ if there is no such natural number.\\
+   This is an abstract method.\\
+   \spacing
+   % input, output document
+  \subsubsection{issubring -- check subring}\linkedtwo{ring}{Ring}{issubring}
+   \func{issubring}{\param{self},\ \hiki{other}{RingElement}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the ring as a subring.\\
+   \spacing
+   % added document
+   \quad This is an abstract method.\\
+   \spacing
+   % input, output document
+  \subsubsection{issuperring -- check superring}\linkedtwo{ring}{Ring}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{other}{RingElement}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the ring is a superring of another ring.\\
+   \spacing
+   % added document
+   \quad This is an abstract method.\\
+   \spacing
+   % input, output document
+  \subsubsection{getCommonSuperring -- get common ring}\linkedtwo{ring}{Ring}{issuperring}
+   \func{getCommonSuperring}{\param{self},\ \hiki{other}{RingElement}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return common super ring of self and another ring.\\
+   \spacing
+   % added document
+   \quad This method uses \linkingtwo{ring}{Ring}{issubring},\ \linkingtwo{ring}{Ring}{issuperring}.\\
+   \spacing
+   % input, output document
+\C
+
+ \subsection{\negok CommutativeRing -- abstract commutative ring}\linkedone{ring}{CommutativeRing}
+  %\func{CommutativeRing}{(None)}{CommutativeRing}\\
+  \spacing
+  % document of basic document
+  \quad CommutativeRing is an abstract subclass of \linkingone{ring}{Ring} whose multiplication is commutative.\\
+  \spacing
+  % added document
+  \quad CommutativeRing is subclass of \linkingone{ring}{Ring}.\\
+  There are some properties of commutative rings, algorithms should be chosen accordingly. To express such properties, there is a class \linkingone{ring}{CommutativeRingProperties}. 
+  \\
+  \spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \begin{at}
+    \item[properties] an instance of \linkingone{ring}{CommutativeRingProperties}
+  \end{at}
+  \method
+  \subsubsection{getQuotientField -- create quotient field}\linkedtwo{ring}{CommutativeRing}{getQuotientField}
+   \func{getQuotientField}{\param{self}}{\out{QuotientField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the quotient field of the ring.\\
+   \spacing
+   % added document
+   \quad This is an abstract method.\\
+   If quotient field of \param{self} is not available, it should raise exception.
+   \spacing
+   % input, output document
+  \subsubsection{isdomain -- check domain}\linkedtwo{ring}{CommutativeRing}{isdomain}
+   \func{isdomain}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a domain,
+        False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{isnoetherian -- check Noetherian domain}\linkedtwo{ring}{CommutativeRing}{isnoetherian}
+   \func{isnoetherian}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a Noetherian
+        domain, False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{isufd -- check UFD}\linkedtwo{ring}{CommutativeRing}{isufd}
+   \func{isufd}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a unique
+        factorization domain (UFD), False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{ispid -- check PID}\linkedtwo{ring}{CommutativeRing}{ispid}
+   \func{ispid}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a principal
+        ideal domain (PID), False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{iseuclidean -- check Euclidean domain}\linkedtwo{ring}{CommutativeRing}{iseuclidean}
+   \func{iseuclidean}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a Euclidean
+        domain, False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{isfield -- check field}\linkedtwo{ring}{CommutativeRing}{isfield}
+   \func{isfield}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the ring is actually a field,
+        False if not, or None if uncertain.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{registerModuleAction -- register action as ring}\linkedtwo{ring}{CommutativeRing}{registerModuleAction}
+   \func{registerModuleAction}{\param{self},\ \hiki{action\_ring}{RingElement},\ \hiki{action}{function}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Register a ring \param{action\_ring}, which act on the ring through
+        \param{action} so the ring be an \param{action\_ring} module.\\
+   \spacing
+   % added document
+   \quad See \linkingtwo{ring}{CommutativeRing}{hasaction},\ \linkingtwo{ring}{CommutativeRing}{getaction}.\\
+   \spacing
+   % input, output document
+  \subsubsection{hasaction -- check if the action has}\linkedtwo{ring}{CommutativeRing}{hasaction}
+   \func{hasaction}{\param{self},\ \hiki{action\_ring}{RingElement}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if \param{action\_ring} is registered to provide action.\\
+   \spacing
+   % added document
+   \quad See \linkingtwo{ring}{CommutativeRing}{registerModuleAction},\ \linkingtwo{ring}{CommutativeRing}{getaction}.\\
+   \spacing
+   % input, output document
+  \subsubsection{getaction -- get the registered action }\linkedtwo{ring}{CommutativeRing}{getaction}
+   \func{hasaction}{\param{self},\ \hiki{action\_ring}{RingElement}}{\out{function}}\\
+   \spacing
+   % document of basic document
+   \quad Return the registered action for \param{action\_ring}.\\
+   \spacing
+   % added document
+   \quad See \linkingtwo{ring}{CommutativeRing}{registerModuleAction},\ \linkingtwo{ring}{CommutativeRing}{hasaction}.\\
+   \spacing
+   % input, output document
+\C
+
+ \subsection{\negok Field -- abstract field}\linkedone{ring}{Field}
+  %\func{Field}{(None)}{Field}\\
+  \spacing
+  % document of basic document
+  \quad Field is an abstract class which expresses that
+    the derived classes are (in mathematical meaning) fields,
+    i.e., a commutative ring whose multiplicative monoid is a group.
+  \spacing
+  % added document
+  \quad Field is subclass of \linkingone{ring}{CommutativeRing}.
+  \linkingtwo{ring}{Ring}{getQuotientField} and \linkingtwo{ring}{CommutativeRing}{isfield} are not abstract (trivial methods).\\
+  \spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \method
+  \subsubsection{gcd -- gcd}\linkedtwo{ring}{Field}{gcd}
+   \func{gcd}{\param{self},\ \hiki{a}{FieldElement},\ \hiki{b}{FieldElement}}{\out{FieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor of \param{a} and \param{b}.\\
+   \spacing
+   % added document
+   \quad  A field is trivially a UFD and should provide gcd.
+   If we can implement an algorithm for computing gcd in an Euclidean domain, 
+   we should provide the method corresponding to the algorithm. 
+   \\
+   \spacing
+   % input, output document
+\C
+
+ \subsection{\negok QuotientField -- abstract quotient field}\linkedone{ring}{QuotientField}
+  %\func{QuotientField}{\hiki{domain}{CommutativeRing Element}}{QuotientField}\\
+  \spacing
+  % document of basic document
+  \quad QuotientField is an abstract class which expresses that
+    the derived classes are (in mathematical meaning) quotient fields.\\
+  \spacing
+  % added document
+  \quad \param{self} is the quotient field of \param{domain}.\\
+  QuotientField is subclass of \linkingone{ring}{Field}.\\
+  In the initialize step, it registers trivial action named as baseaction;
+  i.e. it expresses that an element of a domain acts an element of the quotient field by using the multiplication in the domain.\\
+  \spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \begin{at}
+    \item[basedomain] domain which generates the quotient field \param{self}
+  \end{at}
+\C
+
+ \subsection{\negok RingElement -- abstract element of ring}\linkedone{ring}{RingElement}
+  %\func{RingElement}{\hiki{*args}{(undefined)},\ \hiki{*kwd}{(undefined)}}{RingElement}\\
+  \spacing
+  % document of basic document
+  \quad RingElement is an abstract class for elements of rings.\\
+  \spacing
+  % added document
+  %\quad \\
+  %\spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \begin{op}
+    \verb+A==B+ & equality (abstract) \\
+  \end{op}
+  \method
+ \subsubsection{getRing -- getRing}\linkedtwo{ring}{RingElement}{getRing}
+   \func{getRing}{\param{self}}{\out{Ring}}\\
+   \spacing
+   % document of basic document
+   \quad Return an object of a subclass of Ring,
+        to which the element belongs.\\
+   \spacing
+   % added document
+   \quad  This is an abstract method.\\
+   \spacing
+   % input, output document
+\C
+
+ \subsection{\negok CommutativeRingElement -- abstract element of commutative ring}\linkedone{ring}{CommutativeRingElement}
+  %\func{CommutativeRingElement}{(None)}{RingElement}\\
+  \spacing
+  % document of basic document
+  \quad CommutativeRingElement is an abstract class for elements of
+    commutative rings.\\
+  \spacing
+  % added document
+  %\quad \\
+  %\spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+  \method
+ \subsubsection{mul\_module\_action -- apply a module action}\linkedtwo{ring}{CommutativeRingElement}{mul\_module\_action}
+   \func{mul\_module\_action}{\param{self},\ \hiki{other}{RingElement}}{\out{(undefined)}}\\
+   \spacing
+   % document of basic document
+   \quad Return the result of a module action.
+        other must be in one of the action rings of self's ring.\\
+   \spacing
+   % added document
+   \quad  This method uses \linkingtwo{ring}{RingElement}{getRing},\ \linkingone{ring}{CommutativeRing}{getaction}.
+   We should consider that the method is abstract.\\
+   \spacing
+   % input, output document
+ \subsubsection{exact\_division -- division exactly}\linkedtwo{ring}{CommutativeRingElement}{exact\_division}
+   \func{exact\_division}{\param{self},\ \hiki{other}{CommutativeRingElement}}{\out{CommutativeRingElement}}\\
+   \spacing
+   % document of basic document
+   \quad In UFD, if \param{other} divides \param{self},
+   return the quotient as a UFD element. \\
+   \spacing
+   % added document
+   \quad  The main difference with / is that / may return the
+        quotient as an element of quotient field.\\
+    Simple cases:
+    \begin{itemize}
+      \item in a Euclidean domain, 
+         if remainder of euclidean division is zero, the division // is exact.
+      \item in a field, there's no difference with /.
+    \end{itemize}
+   If \param{other} doesn't divide self, raise ValueError.
+   Though \_\_divmod\_\_ can be used automatically,
+   we should consider that the method is abstract.\\
+   \spacing
+   % input, output document 
+\C
+
+ \subsection{\negok FieldElement -- abstract element of field}\linkedone{ring}{FieldElement}
+  %\func{FieldElement}{(None)}{FieldElement}\\
+  \spacing
+  % document of basic document
+  \quad FieldElement is an abstract class for elements of
+    fields.\\
+  \spacing
+  % added document
+  \quad FieldElement is subclass of \linkingone{ring}{CommutativeRingElement}.
+  \linkingtwo{ring}{CommutativeRingElement}{exact\_division} are not abstract (trivial methods).\\
+  \spacing
+  % input, output document
+  This class is abstract and cannot be instantiated.\\
+\C
+
+\subsection{\negok QuotientFieldElement -- abstract element of quotient field}\linkedone{ring}{QuotientFieldElement}
+  %\initialize
+  %\func{QuotientFieldElement}{\hiki{numerator}{CommutativeRingElement},\ \hiki{denominator}{CommutativeRingElement}}{QuotientFieldElement}\\
+  \spacing
+  % document of basic document
+  \quad QuotientFieldElement class is an abstract class to be used as a
+    super class of concrete quotient field element classes.\\
+  \spacing
+  % added document
+  \quad QuotientFieldElement is subclass of \linkingone{ring}{FieldElement}.\\
+  \param{self} expresses $\frac{\mbox{\param{numerator}}}{\mbox{\param{denominator}}}$ in the quotient field.\\
+  \spacing
+  % input, output document
+  \quad  This class is abstract and should not be instantiated.\\
+  \param{denominator} should not be $0$.\\
+ \begin{at}
+    \item[numerator]\linkedtwo{ring}{QuotientField}{numerator} numerator of \param{self}\\
+    \item[denominator]\linkedtwo{ring}{QuotientField}{denominator} denominator of \param{self}\\
+  \end{at}
+  \begin{op}
+    \verb|A+B| & addition\\
+    \verb+A-B+ & subtraction\\
+    \verb+A*B+ & multiplication\\
+    \verb+A**B+ & powering\\
+    \verb+A/B+ & division\\
+    \verb+-A+ & sign reversion (additive inversion)\\
+    \verb+inverse(A)+ & multiplicative inversion\\
+    \verb+A==B+ & equality\\
+  \end{op}
+\C
+
+\subsection{\negok Ideal -- abstract ideal}\linkedone{ring}{Ideal}
+  %\initialize
+  %\func{Ideal}{\hiki{generators}{list},\ \hiki{aring}{CommutativeRing}}{Ideal}\\
+  %\func{Ideal}{\hiki{generators}{CommutativeRingElement},\ \hiki{aring}{CommutativeRing}}{Ideal}\\
+  \spacing
+  % document of basic document
+  \quad Ideal class is an abstract class to represent the finitely
+    generated ideals.\\
+  \spacing
+  % added document
+  \quad \negok Because the finitely-generatedness is not a
+    restriction for Noetherian rings and in the most cases only
+    Noetherian rings are used, it is general enough.\\
+  \\
+  \spacing
+  % input, output document
+  \quad  This class is abstract and should not be instantiated.\\
+  \param{generators} must be an element of the \param{aring} or a list of elements of the \param{aring}.\\
+  If \param{generators} is an element of the \param{aring}, we consider \param{self} is the principal ideal generated by \param{generators}.
+ \begin{at}
+    \item[ring]\linkedtwo{ring}{Ideal}{ring} the ring belonged to by \param{self}\\
+    \item[generators]\linkedtwo{ring}{Ideal}{generators} generators of the ideal \param{self}\\
+  \end{at}
+  \begin{op}
+    \verb|I+J| & addition $\{i+j\ |\ i \in I,\ j \in J\}$\\
+    \verb+I*J+ & multiplication $IJ = \{ \sum_{i,j} ij\ |\ i \in I,\  j\in  J\}$\\
+    \verb+I==J+ & equality\\
+    \verb+e in I+ &  For \param{e} in the ring, to which the ideal \param{I} belongs.\\
+  \end{op}
+  \method
+   \subsubsection{issubset -- check subset}\linkedtwo{ring}{Ideal}{issubset}
+   \func{issubset}{\param{self},\ \hiki{other}{Ideal}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ideal contains this ideal.\\
+   \spacing
+   % added document
+   We should consider that the method is abstract.\\
+   \spacing
+   % input, output document
+  \subsubsection{issuperset -- check superset}\linkedtwo{ring}{Ideal}{issuperset}
+   \func{issuperset}{\param{self},\ \hiki{other}{Ideal}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether this ideal contains another ideal.\\
+   \spacing
+   % added document
+   We should consider that the method is abstract.\\
+   \spacing
+   % input, output document
+  \subsubsection{reduce -- reduction with the ideal}\linkedtwo{ring}{Ideal}{reduce}
+  \func{issuperset}{\param{self},\ \hiki{other}{Ideal}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Reduce an element with the ideal to simpler representative.\\
+   \spacing
+   % added document
+   This method is abstract.\\
+   \spacing
+   % input, output document
+\C
+
+\subsection{\negok ResidueClassRing -- abstract residue class ring}\linkedone{ring}{ResidueClassRing}
+  \initialize
+  \func{ResidueClassRing}{\hiki{ring}{CommutativeRing},\ \hiki{ideal}{Ideal}}{ResidueClassRing}\\
+  \spacing
+  % document of basic document
+  \quad A residue class ring $R/I$, where $R$ is a commutative ring and $I$ is its ideal.
+  \spacing
+  % added document
+  \quad   ResidueClassRing is subclass of \linkingone{ring}{CommutativeRing}.\\
+  \linkingtwo{ring}{Ring}{one},\ \linkingtwo{ring}{Ring}{zero} are not abstract (trivial methods).\\
+  Because we assume that \param{ring} is Noetherian, so is \param{ring}.
+  \spacing
+  % input, output document
+  \quad  This class is abstract and should not be instantiated.\\
+  \param{ring} should be an instance of \linkingone{ring}{CommutativeRing},
+  and \param{ideal} must be an instance of \linkingone{ring}{Ideal},
+  whose ring attribute points the same ring with the given ring.
+ \begin{at}
+    \item[ring]\linkedtwo{ring}{ResidueClassRing}{ring} the base ring $R$\\
+    \item[ideal]\linkedtwo{ring}{ResidueClassRing}{ideal} the ideal $I$\\
+  \end{at}
+  \begin{op}
+     \verb+A==B+ & equality\\
+    \verb+e in A+ &  report whether \param{e} is in the residue ring \param{self}.\\
+  \end{op}
+\C
+
+\subsection{\negok ResidueClass -- abstract an element of residue class ring}\linkedone{ring}{ResidueClass}
+  \initialize
+  \func{ResidueClass}{\hiki{x}{CommutativeRingElement},\ \hiki{ideal}{Ideal}}{ResidueClass}\\
+  \spacing
+  % document of basic document
+  \quad Element of residue class ring $x+I$, where $I$ is the modulus ideal
+    and $x$ is a representative element.
+  \spacing
+  % added document
+  \quad   ResidueClass is subclass of \linkingone{ring}{CommutativeRingElement}.\\
+  \spacing
+  % input, output document
+  \quad  This class is abstract and should not be instantiated.\\
+  \param{ideal} corresponds to the ideal $I$.
+  \begin{op}
+     \verb|x+y| & addition\\
+     \verb+x-y+ & subtraction\\
+     \verb+x*y+ & multiplication\\
+     \verb+A==B+ & equality\\
+  \end{op}
+  These operations uses \linkingtwo{ring}{Ideal}{reduce}.
+\C
+
+\subsection{\negok CommutativeRingProperties -- properties for CommutativeRingProperties}\linkedone{ring}{CommutativeRingProperties}
+  \initialize
+  \func{CommutativeRingProperties}{(None)}{CommutativeRingProperties}\\
+  \spacing
+  % document of basic document
+  \quad Boolean properties of ring.\\
+  \spacing
+  % added document
+  \quad Each property can have one of three values; {\it True}, {\it False}, or {\it None}.
+    Of course {\it True} is true and {\it False} is false,
+    and {\it None} means that the property is
+    not set neither directly nor indirectly.\\
+    CommutativeRingProperties class treats
+  \begin{itemize}
+    \item Euclidean (Euclidean domain),
+    \item PID (Principal Ideal Domain),
+    \item UFD (Unique Factorization Domain),
+    \item Noetherian (Noetherian ring (domain)),
+    \item field (Field)
+  \end{itemize}
+  \quad\\
+  \spacing
+  % input, output document
+  \method
+  \subsubsection{isfield -- check field}\linkedtwo{ring}{CommutativeRingProperties}{isfield}
+   \func{isfield}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the field flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIsfield -- set field}\linkedtwo{ring}{CommutativeRingProperties}{setIsfield}
+   \func{isfield}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the field flag.\\
+   Propagation:
+   \begin{itemize}
+     \item True $\to$ euclidean\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{iseuclidean -- check euclidean}\linkedtwo{ring}{CommutativeRingProperties}{iseuclidean}
+   \func{iseuclidean}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the euclidean flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIseuclidean -- set euclidean}\linkedtwo{ring}{CommutativeRingProperties}{setIseuclidean}
+   \func{isfield}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the euclidean flag.\\
+   Propagation:
+   \begin{itemize}
+    \item True $\to$ PID\\
+    \item False $\to$ field\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{ispid -- check PID}\linkedtwo{ring}{CommutativeRingProperties}{ispid}
+   \func{ispid}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the PID flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIspid -- set PID}\linkedtwo{ring}{CommutativeRingProperties}{setIspid}
+   \func{ispid}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the euclidean flag.\\
+   Propagation:
+   \begin{itemize}
+    \item True $\to$ UFD,\ Noetherian\\
+    \item False $\to$ euclidean\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+ \subsubsection{isufd -- check UFD}\linkedtwo{ring}{CommutativeRingProperties}{isufd}
+   \func{isufd}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the UFD flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIsufd -- set UFD}\linkedtwo{ring}{CommutativeRingProperties}{setIsufd}
+   \func{isufd}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the UFD flag.\\
+   Propagation:
+   \begin{itemize}
+    \item True $\to$ domain\\
+    \item False $\to$ PID\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{isnoetherian -- check Noetherian}\linkedtwo{ring}{CommutativeRingProperties}{isnoetherian}
+   \func{isnoetherian}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the Noetherian flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIsnoetherian -- set Noetherian}\linkedtwo{ring}{CommutativeRingProperties}{setIsnoetherian}
+   \func{isnoetherian}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the Noetherian flag.\\
+   Propagation:
+   \begin{itemize}
+    \item True $\to$ domain\\
+    \item False $\to$ PID\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{isdomain -- check domain}\linkedtwo{ring}{CommutativeRingProperties}{isdomain}
+   \func{isdomain}{\param{self}}{\out{True/False/None}}\\
+   \spacing
+   % document of basic document
+   \quad Return True/False according to the domain flag value being set,
+        otherwise return None.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+  \subsubsection{setIsdomain -- set domain}\linkedtwo{ring}{CommutativeRingProperties}{setIsdomain}
+   \func{isdomain}{\param{self},\ \hiki{value}{True/False}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Set True/False value to the domain flag.\\
+   Propagation:
+   \begin{itemize}
+    \item False $\to$ UFD,\ Noetherian\\
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+\C
+  \subsection{getRingInstance(function)}\linkedone{ring}{getRingInstance}
+  \func{getRingInstance}{\hiki{obj}{RingElement}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad  Return a RingElement instance which equals \param{obj}.\\
+   \spacing
+   % added document
+   \quad Mainly for python built-in objects such as int or float.\\
+   \spacing
+   % input, output document
+  \subsection{getRing(function)}\linkedone{ring}{getRing}
+  \func{getRing}{\hiki{obj}{RingElement}}{\out{Ring}}\\
+   \spacing
+   % document of basic document
+   \quad  Return a ring to which \param{obj} belongs.\\
+   \spacing
+   % added document
+   \quad Mainly for python built-in objects such as int or float.\\
+   \spacing
+   % input, output document
+  \subsection{inverse(function)}\linkedone{ring}{inverse}
+  \func{inverse}{\hiki{obj}{CommutativeRingElement}}{\out{QuotientFieldElement}}\\
+   \spacing
+   % document of basic document
+   \quad  Return the inverse of \param{obj}.
+   The inverse can be in the quotient field,
+   if the \param{obj} is an element of non-field domain.\\
+   \spacing
+   % added document
+   \quad Mainly for python built-in objects such as int or float.\\
+   \spacing
+   % input, output document
+  \subsection{exact\_division(function)}\linkedone{ring}{exact\_division}
+  \func{exact\_division}{\hiki{self}{RingElement},\ \hiki{other}{RingElement}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad  Return the division of \param{self} by \param{other} if the division is exact.
+   \spacing
+   % added document
+   \quad Mainly for python built-in objects such as int or float.\\
+   \spacing
+   % input, output document
+\begin{ex}
+>>> print ring.getRing(3)
+Z
+>>> print ring.exact_division(6, 3)
+2L
+\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

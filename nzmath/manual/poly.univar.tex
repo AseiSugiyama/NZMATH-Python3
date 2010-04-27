@@ -1,0 +1,154 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{poly.univar -- univariate polynomial}\linkedzero{poly.univar}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \negok\linkingone{poly.univar}{PolynomialInterface}
+     \item \negok\linkingone{poly.univar}{BasicPolynomial}
+     \item \linkingone{poly.univar}{SortedPolynomial}
+   \end{itemize}
+ \end{itemize}
+
+ This poly.univar using following type:
+ \begin{description}
+   \item[polynomial]\linkedone{poly.univar}{polynomial}:\\
+     \param{polynomial} is an instance of some descendant class of
+     \linkingone{poly.univar}{PolynomialInterface}
+     in this context.
+ \end{description}
+
+\C
+
+ \subsection{PolynomialInterface -- base class for all univariate polynomials}\linkedone{poly.univar}{PolynomialInterface}
+ \initialize
+  Since the interface is an abstract class, do not instantiate.\\
+  The class is derived from \linkingone{poly.formalsum}{FormalSumContainerInterface}.
+  \spacing
+%Some of attributes may be treated as a public one.
+%  \begin{at}
+%  \end{at}
+  \begin{op}
+    \verb+f * g+ & multiplication\footnote{in FormalSumContainerInterface, there is only scalar multiplication}\\
+    \verb+f ** i+ & powering\\
+  \end{op} 
+  \method
+  \subsubsection{differentiate -- formal differentiation}\linkedtwo{poly.univar}{PolynomialInterface}{differentiate}
+   \func{differentiate}{\param{self}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   \quad Return the formal differentiation of this polynomial.
+ \subsubsection{downshift\_degree -- decreased degree polynomial}\linkedtwo{poly.univar}{PolynomialInterface}{downshift\_degree}
+   \func{downshift\_degree}{\param{self},\ \hiki{slide}{integer}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   \quad Return the polynomial obtained by shifting downward all terms
+   with degrees of \param{slide.}
+
+   Be careful that if the least degree term has the degree less than
+   \param{slide} then the result is not mathematically a
+   polynomial. Even in such a case, the method does not raise an
+   exception.\\
+   \spacing
+   % added document
+   \quad \negok {\tt f.downshift\_degree(slide)} is equivalent to
+   {\tt f.\linkingtwo{poly.univar}{PolynomialInterface}{upshift\_degree}(-slide)}.
+
+ \subsubsection{upshift\_degree -- increased degree polynomial}\linkedtwo{poly.univar}{PolynomialInterface}{upshift\_degree}
+   \func{upshift\_degree}{\param{self},\ \hiki{slide}{integer}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   \quad Return the polynomial obtained by shifting upward all terms
+   with degrees of \param{slide}.
+   \spacing
+   % added document
+   \quad \negok {\tt f.upshift\_degree(slide)} is equivalent to
+   {\tt f.term\_mul((slide, 1))}.
+
+   \subsubsection{ring\_mul -- multiplication in the ring}\linkedtwo{poly.univar}{PolynomialInterface}{ring\_mul}
+   \func{ring\_mul}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   Return the result of multiplication with the \param{other} polynomial.
+
+   \subsubsection{scalar\_mul -- multiplication with a scalar}\linkedtwo{poly.univar}{PolynomialInterface}{scalar\_mul}
+   \func{scalar\_mul}{\param{self},\ \hiki{scale}{scalar}}{\out{polynomial}}\\
+   \spacing
+   Return the result of multiplication by scalar \param{scale}.
+
+   \subsubsection{term\_mul -- multiplication with a term}\linkedtwo{poly.univar}{PolynomialInterface}{term\_mul}
+   \func{term\_mul}{\param{self},\ \hiki{term}{term}}{\out{polynomial}}\\
+   \spacing
+   Return the result of multiplication with the given \param{term}.
+   The \param{term} can be given as a tuple {\tt (degree, coeff)} or as a {\tt polynomial}.
+
+   \subsubsection{square -- multiplication with itself}\linkedtwo{poly.univar}{PolynomialInterface}{square}
+   \func{square}{\param{self}}{\out{polynomial}}\\
+   Return the square of this polynomial.
+
+%
+ \subsection{BasicPolynomial -- basic implementation of polynomial}\linkedone{poly.univar}{BasicPolynomial}
+ Basic polynomial data type.
+ There are no concept such as variable name and ring.
+
+  \initialize
+  \func{BasicPolynomial}{\hiki{coefficients}{terminit},\ %
+    **\hiki{keywords}{dict}}{\out{BasicPolynomial}}\\
+  \spacing
+  \quad This class inherits and implements \linkingone{poly.univar}{PolynomialInterface}.
+  \spacing
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+
+ \subsection{SortedPolynomial -- polynomial keeping terms sorted}\linkedone{poly.univar}{SortedPolynomial}
+ \initialize
+  \func{SortedPolynomial}{\hiki{coefficients}{terminit},\ %
+    \hikiopt{\_sorted}{bool}{False},\ %
+    **\hiki{keywords}{dict}}{\out{SortedPolynomial}}\\
+  The class is derived from \linkingone{poly.univar}{PolynomialInterface}.
+  \spacing
+  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  Optionally \param{\_sorted} can be {\tt True} if the coefficients is an
+  already sorted list of terms.
+
+  \method
+  \subsubsection{degree -- degree}\linkedtwo{poly.univar}{SortedPolynomial}{degree}
+   \func{degree}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   Return the degree of this polynomial.
+   If the polynomial is the zero polynomial, the degree is \(-1\).
+
+  \subsubsection{leading\_coefficient -- the leading coefficient}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_coefficient}
+  \func{leading\_coefficient}{\param{self}}{\out{object}}\\
+
+  Return the coefficient of highest degree term.
+
+  \subsubsection{leading\_term -- the leading term}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_term}
+  \func{leading\_term}{\param{self}}{\out{tuple}}\\
+
+  Return the leading term as a tuple {\tt (degree, coefficient)}.
+
+  \subsubsection{\negok ring\_mul\_karatsuba -- the leading term}\linkedtwo{poly.univar}{SortedPolynomial}{ring\_mul\_karatsuba}
+  \func{ring\_mul\_karatsuba}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+
+  Multiplication of two polynomials in the same ring.
+  Computation is carried out by Karatsuba method.
+
+  This may run faster when degree is higher than 100 or so.
+  It is off by default, if you need to use this, do by yourself.
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}

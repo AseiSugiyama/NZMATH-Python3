@@ -1,0 +1,75 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Classes}
+
+%---------- start document ---------- %
+ \section{poly.multivar -- multivariate polynomial}\linkedzero{poly.multivar}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \negok \linkingone{poly.multivar}{PolynomialInterface}
+     \item \negok \linkingone{poly.multivar}{BasicPolynomial}
+     \item \linkingone{poly.multivar}{TermIndices}
+   \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{PolynomialInterface -- base class for all multivariate polynomials}\linkedone{poly.multivar}{PolynomialInterface}
+  Since the interface is an abstract class, do not instantiate.\\
+
+  % No Documentation Yet
+%
+ \subsection{BasicPolynomial -- basic implementation of polynomial}\linkedone{poly.multivar}{BasicPolynomial}
+  Basic polynomial data type.
+
+  % No Documentation Yet
+%
+ \subsection{TermIndices -- Indices of terms of multivariate polynomials}\linkedone{poly.multivar}{TermIndices}
+  It is a tuple-like object.
+  \initialize
+  \func{TermIndices}{\hiki{indices}{tuple}}{\out{TermIndices}}\\
+  \spacing
+  \quad The constructor does not check the validity of indices, such
+  as integerness, nonnegativity, etc.
+  \begin{op}
+    \verb/t == u/ & equality\\
+    \verb/t != u/ & inequality\\
+    \verb/t + u/ & (componentwise) addition\\
+    \verb/t - u/ & (componentwise) subtraction\\
+    \verb/t * a/ & (componentwise) multiplication by scalar {\tt a}\\
+    \verb/t <= u, t < u, t >= u, t > u/ & ordering\\
+    \verb/t[k]/ & {\tt k}-th index\\
+    \verb/len(t)/ & length\\
+    \verb/iter(t)/ & iterator\\
+    \verb/hash(t)/ & hash\\
+  \end{op}
+  \method
+  \subsubsection{pop}\linkedtwo{poly.multivar}{TermIndices}{pop}
+   \func{pop}{\param{self},\ \hiki{pos}{integer}}{(\out{integer}, \out{TermIndices})}\\
+   \spacing
+   % document of basic document
+   \quad Return the index at pos and a new TermIndices object as the
+   omitting-the-pos indices.
+
+  \subsubsection{gcd}\linkedtwo{poly.multivar}{TermIndices}{gcd}
+  \func{gcd}{\param{self},\ \hiki{other}{TermIndices}}{\out{TermIndices}}\\
+  \quad Return the ``gcd'' of two indices.
+
+  \subsubsection{lcm}\linkedtwo{poly.multivar}{TermIndices}{lcm}
+  \func{lcm}{\param{self},\ \hiki{other}{TermIndices}}{\out{TermIndices}}\\
+  \quad Return the ``lcm'' of two indices.
+
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}
+\bibliography{nzmath_references}
+
+\end{document}
