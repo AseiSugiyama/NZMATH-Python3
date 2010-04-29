@@ -20,95 +20,112 @@ mainly developed by the Nakamula laboratory at Tokyo Metropolitan University.
 The most distinctive feature of NZMATH is that it is written entirely 
 using a scripting language called Python.
 
-If you want to learn how to start using NZMATH, see Installation(section \ref{installation}) and Tutorial(section \ref{tutorial}).
+If you want to learn how to start using NZMATH, 
+see Installation (section \ref{installation}) and 
+Tutorial (section \ref{tutorial}).
+%
  \subsection{Philosophy -- Advantages over Other Systems}
  In this section, we discuss philosophy of NZMATH, that is, the advantages of 
 NZMATH compared to other similar systems.
 %
 \subsubsection{Open Source Software}
 %
-Computational algebra systems, such as Maple\cite{Maple}, 
+Many computational algebra systems, such as Maple\cite{Maple}, 
 Mathematica\cite{Mathematica}, and Magma\cite{Magma} are fare-paying systems.
 These non-free systems are not distributed with source codes.
-In this regard, users cannot modify such systems.
-It narrows these system's potentials for users not to take part in developing it.
-NZMATH, on the other hand, is an open-source software and the source code is 
-openly available.
+Then, users cannot modify such systems easily.
+It narrows these system's potentials 
+for users not to take part in developing them.
+NZMATH, on the other hand, is an open-source software 
+and the source codes are openly available.
 Furthermore, NZMATH is distributed under the BSD license.
 BSD license claims as-is and redistribution or commercial use are permitted 
 provided that these packages retain the copyright notice.
-%Users can use NZMATH as they like.
+NZMATH users can develop it just as they like.
 %
 \subsubsection{Speed of Development}
 %
 We took over developing of SIMATH\cite{SIMATH}, 
-which was developed under the leadership of Prof.Zimmer at Saarlandes University 
-in Germany.
+which was developed under the leadership of Prof.Zimmer 
+at Saarlandes University in Germany.
 However, it costs a lot of time and efforts to develop these system.
-Almost all systems including SIMATH are implemented in C or C++ for execution speed,
+Almost all systems including SIMATH are 
+implemented in C or C++ for execution speed,
 but we have to take the time to work memory management, 
-construction of an interactive interpreter, preparation for multiple precision package 
-and so on.
+construction of an interactive interpreter, 
+preparation for multiple precision package and so on.
 In this regard, we chose Python which is a modern programming language.
 Python provides automatic memory management, a sophisticated interpreter 
 and many useful packages.
 We can concentrate on development of mathematical matters by using Python.
-%So Python enables us to concentrate on development of mathematical matters.
 %
-\subsubsection{Bridging the Gap between Users and Developers}
+\subsubsection{Bridging the Gap between Users And Developers}
 %
 KANT/KASH\cite{KANT} and PARI/GP\cite{PARI} are similar systems to NZMATH.
-But these systems have different languages for users and developers.
-We think the gap between languages makes evolution of systems slow.
-NZMATH is being developed with using Python, we bridge this gap. 
-Users are easy to understand Python grammar and read codes written by Python.
-And NZMATH which is one of Python libraries works on very wide platform 
+But programming languages for modifying these systems are 
+different between users and developers.
+We think the gap makes evolution speed of these systems slow.
+On the other hand, NZMATH has been developed with Python for bridging this gap. 
+Python grammar is easy to understand 
+and users can read easily codes written by Python.
+And NZMATH, which is one of Python libraries, works on very wide platform 
 including UNIX/Linux, Macintosh, Windows, and so forth.
-Users can modify the programs and feedback to developers.
-Developers can absorb their thinking.
+Users can modify the programs and feedback to developers with a light heart.
+So developers can absorb their thinking.
 Then NZMATH will progress to more flexible user-friendly system.
 %
 \subsubsection{Link with Other Softwares}
 %
-NZMATH distributed as a Python library enables us to link other Python packages with it.
-For example, NZMATH can use with IPython\cite{IPython} 
+NZMATH distributed as a Python library 
+enables us to link other Python packages with it.
+For example, NZMATH can be used with IPython\cite{IPython}, 
 which is a comfortable interactive interpreter.
-And it can be linked with matplotlib\cite{matplotlib} 
+And it can be linked with matplotlib\cite{matplotlib},
 which is a powerful graphic software.
-There are many libraries and packages for softwares implemented in Python.
+Also mpmath\cite{mpmath}, which is a module for floating-point operation, 
+can improve efficiency of NZMATH.
+In fact, the module ecpp\linkingzero{ecpp} improves performance with mpmath.
+There are many softwares implemented in Python.
 Many of these packages are freely available.
-Users can use NZMATH with these packages and create an unthinkable powerful system.
+Users can use NZMATH with these packages 
+and create an unthinkable powerful system.
 %
 \subsection{Information}
   NZMATH has more than 25 modules.
-It has modules related with elementary number theory, combinatorial theory, solving equations, 
-primality, factorization, multiplicative number theoretic functions, 
-matrix, vector, polynomial, rational field, finite field, elliptic curve, and so on.
+These modules cover a lot of territory including
+elementary number theoretic methods, combinatorial theoretic methods, 
+solving equations, primality, factorization, 
+multiplicative number theoretic functions, 
+matrix, vector, polynomial, rational field, finite field, 
+elliptic curve, and so on.
 NZMATH manual for users is at:
 \begin{verbatim}
 http://tnt.math.metro-u.ac.jp/nzmath/manual/
 \end{verbatim}
 If you are interested in NZMATH, please visit the official website 
-below to get more information about it.
+below to obtain more information about it.
 \begin{verbatim}
 http://tnt.math.metro-u.ac.jp/nzmath/
 \end{verbatim}
-Note that NZMATH can be used even if user do not have experience 
+Note that NZMATH can be used even if users do not have any experience of
 writing programs in Python.
 %
 \subsection{Installation}\label{installation}
 In this section, we explain how to install NZMATH.
-If your operating system (OS) is windows, then see \ref{windows install} Install for Windows Users.
+If you use Windows (Windows XP, Windows Vista, Windows 7 etc.) 
+as an operating system (OS), 
+then see \ref{windows install} ``Install for Windows Users''.
+%
 \subsubsection{Basic Installation}
 There are three steps for installation of NZMATH.
 
 %First, make preparation of computer with the Python installed.
-First, check that Python is installed in the computer.
+First, check whether Python is installed in the computer.
 Python 2.5 or a higher version is needed for NZMATH.
 If you do not have a copy of Python, please install it first.
 Python is available from \verb+http://www.python.org/+.
 
-Second, download NZMATH package and expand it.
+Second, download a NZMATH package and expand it.
 It is distributed at official web site:
 \begin{verbatim}
 http://tnt.math.metro-u.ac.jp/nzmath/download
@@ -135,9 +152,9 @@ For example, if the latest version is 1.0.0, then type the following command.
 Then, a subdirectory named NZMATH-*.*.* is created.
 
 Finally, install NZMATH to the standard python path.
-Usually, this translates to writing files somewhere 
-under \verb+/usr/lib+ or \verb+/usr/local/lib+, 
-and thus appropriate write permission is required.
+Usually, this can be translated into writing files somewhere 
+under \verb+/usr/lib+ or \verb+/usr/local/lib+. 
+So the appropriate write permission may be required at this step.
 Typically, type commands below:
 \begin{verbatim}
     % cd NZMATH-*.*.*
@@ -146,10 +163,10 @@ Typically, type commands below:
 \end{verbatim}
 
 \subsubsection{Installation for Windows Users}\label{windows install}
-We also distribute the installation packages for specific platforms.
-Especially, we started distributing installer for Windows in 2007.
+We also distribute installation packages for specific platforms.
+Especially, we started distributing the installer for Windows in 2007.
 
-Please download an installer(NZMATH-*.*.*.win32Install.exe) from
+Please download the installer (NZMATH-*.*.*.win32Install.exe) from
 \begin{verbatim}
 http://tnt.math.metro-u.ac.jp/nzmath/download
 \end{verbatim}
@@ -158,16 +175,19 @@ or at sourceforge.net:
 http://sourceforge.net/project/showfiles.php?group_id=171032
 \end{verbatim}
 
-Please open the installer.
-If you use Windows Vista or higher version, UAC asks if you run the program. click "Allow".
+Here, we explain a way of installing NZMATH with the installer.
+First please open the installer.
+If you use Windows Vista or higher version, 
+UAC (User Account Control) may ask if you run the program. click "Allow".
 Then the setup window will open.
-Following the steps in the setup wizard can install NZMATH with only three clicks.
+Following the steps in the setup wizard, 
+you can install NZMATH with only three clicks.
 %
-  \subsection{Tutorial}\label{tutorial}
+\subsection{Tutorial}\label{tutorial}
   In this section, we describe how to use NZMATH.
-  \subsubsection{Sample Session}
-  Start your Python interpriter.
-  That is, open your command interpriter such as Finder for MacOS or bash/csh for linux, type the strings ``python'' and press the key Enter.
+\subsubsection{Sample Session}
+  Start your Python interpreter.
+  That is, open your command interpreter such as Terminal for MacOS or bash/csh for linux, type the strings ``python'' and press the key Enter.
 \begin{ex}
 % python
 Python 2.6.1 (r261:67515, Jan 14 2009, 10:59:13)
@@ -175,7 +195,7 @@ Python 2.6.1 (r261:67515, Jan 14 2009, 10:59:13)
 Type "help", "copyright", "credits" or "license" for more information.
 >>>
 \end{ex}
-  For windows users, it normally means open IDLE (Python GUI), which is a Python software. 
+  For windows users, it normally means opening IDLE (Python GUI), which is a Python software. 
 \begin{ex}
 Python 2.6.1 (r261:67517, Dec  4 2008, 16:51:00) [MSC v.1500 32 bit (Intel)] on win32
 Type "copyright", "credits" or "license()" for more information.
@@ -190,27 +210,45 @@ Type "copyright", "credits" or "license()" for more information.
 IDLE 2.6.1      
 >>> 
 \end{ex}
-Here, '\verb+>>>+' is a Python prompt, which means that system waits you to input commands.
+Here, '\verb+>>>+' is a Python prompt, which means that the system waits you to input commands.
 
 Then, type:
 \begin{ex}
 >>> from nzmath import *
 >>>
 \end{ex}
-You are ready to use NZMATH package.
-For example, type the string ``prime.nextPrime(1000)'', then you will obtain `1009'' as the smallest prime among numbers greater than $1000$.
+This command enables you to use all NZMATH features.
+If you use only a specific module (the term ``module'' is explained later), for example, prime, type as the following:
+\begin{ex}
+>>> from nzmath import prime
+>>>
+\end{ex}
+You are ready to use NZMATH.
+For example, type the string ``prime.nextPrime(1000)'', 
+then you obtain `1009'' 
+as the smallest prime among numbers greater than $1000$.
 \begin{ex}
 >>> prime.nextPrime(1000)
 1009
 >>>
 \end{ex}
 ``prime'' is a name of a module, which is a NZMATH file including Python codes.
-``nextPrime'' is a name of a function, which outputs values after executing some process for inputs.
-NZMATH has various functions for mathematical or algorithmical computations.
+``nextPrime'' is a name of a function, which outputs values after the system executes some processes for inputs.
+NZMATH has various functions for mathematical or algorithmic computations.
 See \ref{function} Functions.
 
 Also, we can create some mathematical objects.
-For example, you may use the module ``matrix'' as the following.
+For example, you may use the module ``matrix''.
+If you want to define the matrix
+\begin{equation*}
+\left(
+\begin{array}{rl}
+1 & 2\\
+5 & 6\\
+\end{array}
+\right)
+\end{equation*}
+and compute the square, then type as the following:
 \begin{ex}
 >>> A = matrix.Matrix(2, 2, [1, 2]+[5, 6])
 >>> print A
@@ -225,28 +263,42 @@ For example, you may use the module ``matrix'' as the following.
 See \ref{class} Classes for using NZMATH classes.
 
 The command ``print'' enables us to represent outputs with good-looking forms.
-The data structure ``[a, b, c, $\cdots$]'' is called list.
-Also, we use various Python data structures like tuple ``(a, b, c, $\cdots$)'', dictionary ``$\{x_1:y_1, x_2:y_2, x_3:y_3, \cdots\}$'' etc.
-These follow syntax of Python programming language.
-We do not explain Python's syntax in detail because it is not absolutely necessary to use NZMATH.
-However, we recommend that you learn Python for development of your potential.
-You are easy to study Python grammers.
-For instance, see \verb+http://docs.python.org+.
+The data structure such as ``[a, b, c, $\cdots$]'' is called list.
+Also, we use various Python data structures like 
+tuple ``(a, b, c, $\cdots$)'', 
+dictionary ``$\{x_1:y_1, x_2:y_2, x_3:y_3, \cdots\}$'' etc.
+%These follow syntax of Python programming language.
+Note that we do not explain Python's syntax in detail 
+because it is not absolutely necessary to use NZMATH.
+However, we recommend that you learn Python for developing your potential.
+Python grammar are easy to study.
+For information on how to use Python, 
+see \verb+http://docs.python.org+ or many other documents about Python.
   
  % \subsection{Python $\&$ NZMATH}
  %  \subsubsection{Save to a file}
  \subsection{Note on the Document}
    \paragraph{$\dagger$}
-   The sections, sentences and words, which is marked $\dagger$, are documents for advanced users.
-   For example, the class \textit{FiniteFieldElement} (See \ref{}) is one of the abstract classes in NZMATH, which can be used for making new classes similar to the finite field.
+   Some beginnings of lines or blocks such as sections or sentences
+    may be marked $\dagger$.
+   This means these lines or blocks is for advanced users.
+   For example, the class \textit{FiniteFieldElement} %
+   (See \linkingone{finitefield}{FinitePrimeFieldElement}) is %
+   one of abstract classes in NZMATH, %
+   which can be inherited to new classes similar to the finite field.
    \paragraph{[$\cdots$]}
-   For example, we may sometimes write as \textit{function(a,b[,c,d])} and this means the argument ``c, d'' or only ``d'' can be discarded.
-   This function uses``default argument values'', which is one of the feature of Python (See [default augment values]).
+   For example, we may sometimes write as \textit{function(a,b[,c,d])}. 
+   It means the argument ``c, d'' or only ``d'' can be discarded.
+   Such functions use ``default argument values'', 
+   which is one of the feature of Python.\\
+   (See 
+   \verb+http://docs.python.org/tutorial/controlflow.html#default-argument-values+)
    
    \textbf{Warning}:\ Python also have the feature ``keyword arguments''.
-   We have tried to keep the feature in NZMATH too,
-   but some modules could rearrange arguments
-   depending not on keywords but on the place where one do not give arguments. 
+   We have tried to keep the feature in NZMATH too.
+   However, some functions cannot be used with this feature 
+   because these functions are written 
+   expecting that arguments are given in order.
 %
 
 \chapter{Basic Utilities}\label{utility}
@@ -268,7 +320,6 @@ For instance, see \verb+http://docs.python.org+.
  %%--<quad>--%%
  %%--<round2>--%%
  %%--<squarefree>--%%
- %%--<zassenhaus>--%%
 %
 \chapter{Classes}\label{class}
  %%--<algfield>--%%
@@ -280,7 +331,6 @@ For instance, see \verb+http://docs.python.org+.
  %%--<lattice>--%%
  %%--<matrix>--%%
  %%--<permute>--%%
- %%--<polynomial>--%%
  %%--<rational>--%%
  %%--<real>--%%
  %%--<ring>--%%
