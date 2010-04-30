@@ -66,13 +66,15 @@ class ImaginaryTest (unittest.TestCase):
         sinc1 = imaginary.sin(imaginary.Complex(1, 0))
         #assert imaginary.defaultError.nearlyEqual(imaginary.exp(imaginary.j).imag, sin1)
         self.assertAlmostEqual(imaginary.exp(imaginary.j).imag, sin1)
-        self.assertAlmostEqual(sin1, sinc1, 7, (sin1, sinc1, sin1 - sinc1))
+        self.assertAlmostEqual(sin1, sinc1.real, 7, (sin1, sinc1, sin1 - sinc1))
+        self.assertAlmostEqual(0, sinc1.imag, 7, (sin1, sinc1, sin1 - sinc1))
 
     def testCos(self):
         cos1 = imaginary.cos(1)
         cosc1 = imaginary.cos(imaginary.Complex(rational.Integer(1), 0))
         assert isinstance(cos1, rational.Rational) or imaginary.exp(imaginary.Complex(0, rational.Integer(1))).real == cos1.real
-        self.assertAlmostEqual(cos1, cosc1, 7, (cos1, cosc1, cos1 - cosc1))
+        self.assertAlmostEqual(cos1, cosc1.real, 7, (cos1, cosc1, cos1 - cosc1))
+        self.assertAlmostEqual(0, cosc1.imag, 7, (cos1, cosc1, cos1 - cosc1))
 
     def testTan(self):
         tan1 = imaginary.tan(1)
