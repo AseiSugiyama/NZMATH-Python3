@@ -44,11 +44,12 @@
 % function macros
 \newcommand{\hiki}[2]{{\tt #1}:\ {\em #2}}
 \newcommand{\hikiopt}[3]{{\tt #1}:\ {\em #2}=#3}
-\newcommand{\func}[3]{%
+
 \newdimen\hoge
+\newdimen\truetextwidth
+\newcommand{\func}[3]{%
 \setbox0\hbox{#1(#2)}
 \hoge=\wd0
-\newdimen\truetextwidth
 \truetextwidth=\textwidth
 \advance \truetextwidth by -2\oddsidemargin
 \ifdim\hoge<\truetextwidth % short form
@@ -63,6 +64,7 @@
    }%
 \fi%
 }
+
 \newcommand{\out}[1]{{\em #1}}
 \newcommand{\initialize}{%
   \paragraph{\large \colorbox{skyblue}{Initialize (Constructor)}}%
