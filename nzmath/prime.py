@@ -277,7 +277,6 @@ def randPrime(n):
         return bigrandom.map_choice(lambda i: (2, 3, 5, 7)[i], 4)
 
     p = bigrandom.randrange(10**(n-1)+1, 10**n, 2)
-    print p
     while not primeq(p):
         p += 2
     if p < 10**n:
