@@ -1,4 +1,3 @@
-import nzmath.polynomial as polynomial
 import nzmath.rational as rational
 import unittest
 import nzmath.algfield as algfield

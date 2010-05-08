@@ -10,7 +10,6 @@ import logging
 import nzmath.arith1 as arith1
 import nzmath.bigrandom as bigrandom
 import nzmath.gcd as gcd
-import nzmath.polynomial as old_polynomial
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.poly.univar as univar
@@ -1177,10 +1176,8 @@ class RingElementProvider(ring.CommutativeRingElement):
     def set_coefficient_ring(self, coeffring):
         if self._coefficient_ring is None:
             self._coefficient_ring = coeffring
-            if isinstance(self, VariableProvider):
-                self._ring = old_polynomial.PolynomialRing(self._coefficient_ring, self.getVariable())
-            else:
-                self._ring = poly_ring.PolynomialRing.getInstance(self._coefficient_ring)
+            # variable names are ignored now
+            self._ring = poly_ring.PolynomialRing.getInstance(self._coefficient_ring)
 
 
 class RingPolynomial(OrderProvider,

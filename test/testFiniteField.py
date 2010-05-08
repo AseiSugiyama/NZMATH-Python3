@@ -117,8 +117,8 @@ class FinitePrimeFieldTest(unittest.TestCase):
         self.assert_(self.F17.issubring(self.F17))
         self.assert_(self.F17.issuperring(self.F17))
         # polynomial ring
-        import nzmath.polynomial as polynomial
-        F17X = polynomial.PolynomialRing(self.F17, 'X')
+        import nzmath.poly.ring as ring
+        F17X = ring.PolynomialRing(self.F17, 1)
         self.assert_(self.F17.issubring(F17X))
         self.failIf(self.F17.issuperring(F17X))
         # rational field

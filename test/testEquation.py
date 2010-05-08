@@ -3,7 +3,7 @@ import unittest
 import logging
 import nzmath.equation as equation
 from nzmath.arith1 import product
-from nzmath.polynomial import OneVariableDensePolynomial
+from nzmath.poly.uniutil import OneVariableDensePolynomial
 
 
 class GlobalEquationTestBase (unittest.TestCase):
@@ -71,11 +71,11 @@ class SimMethodTest (GlobalEquationTestBase):
 
 class SimMethodPluginTest (GlobalEquationTestBase):
     def setUp(selt):
-        from sandbox.plugins import SETPRECISION
+        from nzmath.plugins import SETPRECISION
         SETPRECISION(200)
 
     def tearDown(self):
-        from sandbox.plugins import SETPRECISION
+        from nzmath.plugins import SETPRECISION
         SETPRECISION(53)
 
     def test_degree3(self):
