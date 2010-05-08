@@ -1,3 +1,14 @@
+version 0.92.0 to 1.0.0
+------------------------
+* add TeX(PDF) documents of each module, class and function.
+* add configs for using math/mpmath plugin.
+* change algfield.
+* change combinatorial.
+* fix a few bugs in elliptic.
+* fix a bug in prime.randPrime.
+* fix a bug in round2._kernel_of_qpow.
+* fix a bug in combinatorial.combinationIndexGenerator.
+
 version 0.91.0 to 0.92.0
 ------------------------
 * add a new module config, ecpp, poly.ratfunc, poly.ring and poly.hensel.
