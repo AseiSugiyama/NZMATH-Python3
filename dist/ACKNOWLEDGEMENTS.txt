@@ -13,13 +13,16 @@ Tanaka Satoru:
 Involved in the development of elliptic, finitefield, imaginary,
 lattice, matrix, rational, real and vector.
 
-Nishimoto Keiichiro: 
-Involved in the development of equation, factor and algfield.
-
 Ogura Naoki:
 Contributed to development of group and permute. Also, involved in the
 development of arith1, elliptic, imaginary, matrix and polynomial.
 
+Yasunori Miyamoto:
+Involved in the development of the NZMATH manual.
+
+Nishimoto Keiichiro:
+Contributed to implementation of algfield. Also, involved in the
+development of equation, factor, lattice.
 
 Former Members
 --------------
