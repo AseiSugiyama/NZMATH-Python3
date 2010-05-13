@@ -26,9 +26,14 @@ Steps
    Makefile has OLD_VER and NEW_VER variables, and they should be
    reflect the current and newly decided versions.
 
-2. HTMLize the manual.
+2. Compile the TeX manual.
 
-   Consult dist/nzmathwiki.py for more details.
+   Delete the contents of the following 4 files.
+     header_basic_util.tex
+     header_class.tex
+     header_function.tex
+     footer.tex
+   Then, compile the nzmath_doc.tex.
 
 3. Tag in CVS.
 
