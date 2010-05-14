@@ -29,14 +29,12 @@ html: files
 	 awk '/\(c\)/ {sub(/\(c\)/,"\\&copy;"); sub(/NZMATH/,"<font color=\"#FF0000\">N</font><font color=\"#FF8000\">Z</font><font color=\"#FFFF00\">M</font><font color=\"#00FF00\">A</font><font color=\"#0000FF\">T</font><font color=\"#FF00FF\">H</font>")} 1' > tutorial.html)
 
 files: clean
-	mkdir -p $(TMPDIR)/nzmath
+	mkdir -p $(TMPDIR)/manual
 	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py \
 		logo.bmp setup.cfg nzmathconf.py.example $(TMPDIR)
 	cp -a data $(TMPDIR)
-	cp -a ../manual $(TMPDIR)
-	cp -p ../*.py $(TMPDIR)/nzmath
-	cp -a ../factor $(TMPDIR)/nzmath/
-	cp -a ../poly $(TMPDIR)/nzmath/
+	cp -p ../manual/*.pdf $(TMPDIR)/manual
+	cp -a ../nzmath $(TMPDIR)
 
 clean:
 	rm -fr $(TMPDIR)

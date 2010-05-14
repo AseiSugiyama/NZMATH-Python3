@@ -31,7 +31,7 @@ BEGIN {
     print "                 'Topic :: Scientific/Engineering :: Mathematics',";
     print "                ],";
     print "";
-    print "    packages=['nzmath', 'nzmath.factor', 'nzmath.poly'],";
+    print "    packages=['nzmath', 'nzmath.factor', 'nzmath.poly', 'nzmath.plugin', 'nzmath.plugin.math'],";
     print "";
 #    print "    data_files=["
 #    print "        (data_prefix, ['data/discriminant.csv']),";
