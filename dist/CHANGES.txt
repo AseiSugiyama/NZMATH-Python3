@@ -2,10 +2,10 @@ version 0.92.0 to 1.0.0
 ------------------------
 * add TeX(PDF) manual of each module, class and function.
 * add configs for using math/mpmath plugin.
+* add functions permutationGenerator and partition_conjugate to combinatorial.
 * add methods getConj, integer_ring, field_discriminant in algfield.NumberField.
 * add methods getConj, getApprox, getCharPoly in algfield.BasicAlgNumber.
 * remove a class algfield.ApproxAlgNumber.
-* change combinatorial.
 * fix a few bugs in elliptic.
 * fix a bug in prime.randPrime.
 * fix a bug in round2._kernel_of_qpow.
