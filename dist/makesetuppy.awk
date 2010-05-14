@@ -23,7 +23,8 @@ BEGIN {
     print "    author='NZMATH development group',";
     print "    author_email='nzmath-user@tnt.math.metro-u.ac.jp',";
     print "    description='number theory oriented calculation system',";
-    print "    classifiers=['Development Status :: 4 - Beta',";
+#    print "    classifiers=['Development Status :: 4 - Beta',";
+    print "    classifiers=['Development Status :: 5 - Production/Stable',";
     print "                 'License :: OSI Approved :: BSD License',";
     print "                 'Operating System :: OS Independent',";
     print "                 'Programming Language :: Python',";
@@ -32,12 +33,17 @@ BEGIN {
     print "";
     print "    packages=['nzmath', 'nzmath.factor', 'nzmath.poly'],";
     print "";
-    print "    data_files=["
-    print "        (data_prefix, ['data/discriminant.csv']),";
-    print "        (doc_prefix + 'manual',";
-    print "            ['manual/default.css'] + glob.glob('manual/*.html')),";
-    print "        (doc_prefix + 'manual/modules',";
-    print "            glob.glob('manual/modules/*.html')),";
-    print "    ]";
+#    print "    data_files=["
+#    print "        (data_prefix, ['data/discriminant.csv']),";
+#    print "        (doc_prefix + 'manual',";
+#    print "            ['manual/default.css'] + glob.glob('manual/*.html')),";
+#    print "        (doc_prefix + 'manual/modules',";
+#    print "            glob.glob('manual/modules/*.html')),";
+#    print "    ]";
+     print "    data_files=["
+     print "        (data_prefix, ['data/discriminant.csv']),";
+     print "        (doc_prefix + 'manual',";
+     print "            glob.glob('manual/*.pdf')),";
+     print "    ]";
     print ")";
 }
