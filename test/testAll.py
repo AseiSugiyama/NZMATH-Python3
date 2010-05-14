@@ -20,7 +20,7 @@ import testLattice
 import testMatrix
 import testMultiplicative
 import testPermute
-#import testPolynomial
+#import testPolynomial deprecated
 import testPrime
 import testQuad
 import testRational
@@ -30,7 +30,7 @@ import testRing
 import testRound2
 import testSquarefree
 import testVector
-#import testZassenhaus
+#import testZassenhaus deprecated
 # nzmath.factor
 import testFactorUtil
 import testFactorMpqs
