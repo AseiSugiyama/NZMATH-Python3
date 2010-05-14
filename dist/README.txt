@@ -67,4 +67,4 @@ detail.
 
 .. _LICENSE.txt: LICENSE.txt
 
-Copyright (c) 2003-2008, NZMATH development group, all right reserved.
+Copyright (c) 2003-2010, NZMATH development group, all right reserved.
