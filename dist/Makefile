@@ -43,7 +43,7 @@ clean:
 
 tag:
 	for i in `cat target.files`; do \
-		echo cvs tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
+		echo hg tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
 	done
 
 version:
