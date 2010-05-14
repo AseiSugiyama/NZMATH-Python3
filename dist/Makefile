@@ -39,10 +39,10 @@ files: clean
 clean:
 	rm -fr $(TMPDIR)
 
-tag:
-	for i in `cat target.files`; do \
-		echo hg tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
-	done
+#tag:
+#	for i in `cat target.files`; do \
+#		echo hg tag release-`echo $(NEW_VER) | sed -e 's/\./_/g'` $$i; \
+#	done
 
 version:
 	sed -i -e 's/$(OLD_VER)/$(NEW_VER)/g' README.txt
