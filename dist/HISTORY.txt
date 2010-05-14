@@ -1,6 +1,6 @@
 2010-05-14
 ----------
-The version 1.00.0 is released.
+The version 1.0.0 is released.
 
 2009-05-31
 ----------
