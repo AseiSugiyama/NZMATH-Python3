@@ -208,7 +208,7 @@ class RealField(ring.Field):
 
 class RelativeError(object):
     """
-    Ralative error of real number
+    Relative error of real number
     """
     def __init__(self, comparity, numerator, denominator=1):
         warnings.warn(DeprecationWarning("RelativeError is deprecated"))
