@@ -1,6 +1,8 @@
 import unittest
 import logging
 
+from nzmath import *
+
 import testAlgfield
 import testArith1
 import testArygcd
