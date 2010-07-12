@@ -5,7 +5,7 @@ It is developed at Tokyo Metropolitan University.
 NZMATH is distributed under the BSD license.  See LICENSE.txt for
 detail.
 
-Copyright (c) 2003-2009, NZMATH development group, all right reserved.
+Copyright (c) 2003-2010, NZMATH development group, all right reserved.
 """
 
 __all__ = [
