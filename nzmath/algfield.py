@@ -690,7 +690,9 @@ class MatAlgNumber(object):
             return self * (rational.Rational(other) ** -1)
         elif not isinstance(other, MatAlgNumber):
             return NotImplemented
-        mat = other.matrix.inverse(self.matrix)
+        other_mat = other.matrix.copy()
+        other_mat.toFieldMatrix()
+        mat = other_mat.inverse(self.matrix)
         coeff = []
         for i in range(mat.row):
             coeff.append(mat[i+1][1])
