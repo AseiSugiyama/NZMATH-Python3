@@ -81,6 +81,10 @@ class MatAlgNumberTest (unittest.TestCase):
         d = [rational.Rational(5, 1), rational.Rational(3, 2), rational.Rational(1, 1)]
         self.assertEqual(d, (self.a * self.b).coeff)
 
+    def testDiv(self):
+        a_b_div = [rational.Rational(8, 11), rational.Rational(2, 11), 0]
+        self.assertEqual(a_b_div, (self.a / self.b).coeff)
+
     def testInverse(self):
         a_inv = [rational.Rational(-1, 3), rational.Rational(1, 3), rational.Rational(1, 6)]
         b_inv = [rational.Rational(-2, 11), rational.Rational(2, 11), rational.Rational(2, 11)]
