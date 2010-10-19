@@ -1367,11 +1367,13 @@ class FieldMatrix(RingMatrix):
 
     def solve(self, B):  # modified Algorithm 2.3.4 of Cohen's book
         """
-        Return solution X for self * X = B (B is vector).
+        Return solution X for self * X = B (B is a vector).
         This function returns tuple (V, M) below.
           V: one solution as vector
-          M: kernel of self as vector basis matrix.
+          M: kernel of self as list of basis vectors.
         If you want only one solution, use 'inverseImage'.
+
+        Warning: B should not be a matrix instead of a vector
         """
         M_1 = self.copy()
         M_1.insertColumn(self.column + 1, B.compo)
