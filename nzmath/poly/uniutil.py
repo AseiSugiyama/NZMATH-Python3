@@ -1371,6 +1371,15 @@ class IntegerPolynomial(UniqueFactorizationDomainPolynomial):
         coefficients = [(d, rational.IntegerIfIntOrLong(c)) for (d, c) in dc.iteritems()]
         UniqueFactorizationDomainPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
 
+    def normalize(self):
+        """
+        returns the unique normalized polynomial g
+        which is associate to self (so g=u*self for some unit in coeffring). 
+        For IntegerPolynomial, g is positive.
+        """
+        if self.leading_coefficient() < 0:
+            return -self
+        return self
 
 class FieldPolynomial(DivisionProvider,
                       ContentProvider,
