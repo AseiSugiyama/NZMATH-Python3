@@ -148,6 +148,9 @@ def CRT(nlist):
     23
     """
     r = len(nlist)
+    if r == 1 :
+        return nlist [ 0 ] [ 0 ]
+
     product = []
     prodinv = []
     m = 1
