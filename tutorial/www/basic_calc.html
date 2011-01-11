@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>基本的な数値計算 - NZMATHチュートリアル</title>
+<meta name="description" content="NZMATHの使い方をわかりやすく説明します。" />
+<meta name="keywords" content="NZMATH,チュートリアル,使い方,入門" />
+<link rel="stylesheet" href="tutorial.css" type="text/css" />
+</head>
+<body>
+<div class="top-bar"><a href="./index.html">NZMATHチュートリアル</a></div>
+<h1>基本的な数値計算</h1>
+
+<h2>数値の表現方法</h2>
+■整数<br />
+Python組込みのInteger型を使います。
+<div class="code">
+&gt; number = 12345<br />
+&gt; print(number)<br />
+12345<br />
+</div>
+<br />
+
+■有理数（分数）<br />
+NZMATHのRationalクラスのインスタンスとして表します。
+<div class="code">
+&gt; from nzmath.rational import *<br />
+&gt; a = Rational(2, 3)　　　　// a に 2/3 をセット<br />
+&gt; b = Rational(1, 3)　　　　// b に 1/3 をセット<br />
+&gt; a + b<br />
+Rational(1, 1)<br />
+&gt; a * b<br />
+Rational(2, 9)<br />
+</div>
+ → 詳細は<a href="rational.pdf">こちら</a><br />
+<br />
+
+■実数(近似値)<br />
+Python組込みのFloat型を使います。
+<div class="code">
+&gt; number = 123.45<br />
+&gt; print(number)<br />
+123.45<br />
+</div>
+<br />
+
+■複素数<br />
+NZMATHのComplexクラスのインスタンスとして表します。
+<div class="code">
+&gt; from nzmath.imaginary import *<br />
+&gt; a = Complex(2, 3)　　　　// a に 2+3i をセット<br />
+&gt; b = Complex(0, 1)　　　　// b に i をセット<br />
+&gt; a + b<br />
+Complex(2, 4)<br />
+&gt; a * b<br />
+Complex(-3, 2)<br />
+</div>
+ → 詳細は<a href="imaginary.pdf">こちら</a><br />
+
+<h2>演算</h2>
+■四則演算<br />
+NZMATHに含まれるクラスは、加減乗除がそれぞれ +, -, *, / で行えるように演算子が定義されています。<br />
+<div class="code">
+&gt; 2 + 3　　// 5<br />
+&gt; 2 - 3　　// -1<br />
+&gt; 2 * 3　　// 6<br />
+&gt; 2 / 3　　// 0 (Integerの除算では、小数点以下は切り捨てられます。)<br />
+&gt; 2 % 3　　// 2 (2÷3の剰余)<br />
+</div>
+<br />
+
+■冪乗<br />
+** 演算子、または、Python組込みのpow関数で計算できます。<br />
+<div class="code">
+&gt; 2 ** 10　　// 2 の 10 乗<br />
+1024<br />
+&gt; pow(2, 10)<br />
+1024<br />
+</div>
+<br />
+
+mod m での冪乗を計算したい場合には、pow関数の第3引数にmを指定します。
+<div class="code">
+&gt; pow(2, 10, 100)<br />
+24<br />
+</div>
+
+
+
+<br />
+
+■ルート<br />
+arith1.floorsqrt<br />
+arith1.fllorpowerroot<br />
+<br />
+
+■対数<br />
+arith1.log<br />
+<br />
+
+<h2>nzmath.arith1</h2>
+上述の floorsqrt, fllorpowerroot 以外にも、nzmath.arith1には整数を扱う際に役立つ関数がいくつか定義されています。<br />
+幾つか紹介します。
+nzmath.arith1の詳細は<a href="arith1.pdf">こちら</a><br />
+<br />
+
+■legendre<br />
+<br />
+■modsqrt<br />
+<br />
+■expand<br />
+<br />
+■inverse<br />
+<br />
+■CRT<br />
+<br />
+■vp<br />
+<br />
+■issquare<br />
+<br />
+
+</body>
+</html>
