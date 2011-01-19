@@ -138,7 +138,7 @@
    \spacing
    % input, output document
  \subsubsection{ToCyclic -- corresponding ExPermute element}\linkedtwo{permute}{Permute}{ToCyclic}
-   \func{ToTranspose}{\param{self}}{\out{ExPermute}}\\
+   \func{ToCyclic}{\param{self}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
    \quad Represent \param{self} as a composition of cyclic representations.\\
@@ -181,7 +181,7 @@
    %\spacing
    % input, output document
 \begin{ex}
->>> p=Permute([2,3,1,5,4])
+>>> p = Permute([2,3,1,5,4])
 >>> p.numbering()
 28
 >>> p.order()
@@ -244,7 +244,7 @@
 >>> p2 = permute.ExPermute(5, [(0, 2), (3, 4, 1)], 0)
 >>> print p2
 [(0, 2), (1, 3, 4)] <[0, 1, 2, 3, 4]>
->>> p3=nzmath.permute.ExPermute(5,[('b','c')],['a','b','c','d','e'])
+>>> p3 = permute.ExPermute(5,[('b','c')],['a','b','c','d','e'])
 >>> print p1 * p3
 [('a', 'b'), ('b', 'c')] <['a', 'b', 'c', 'd', 'e']>
 >>> print p3 * p1
@@ -324,7 +324,7 @@
    \spacing
    % input, output document
 \begin{ex}
->>> p=permute.ExPermute(5, [(1, 2, 3), (4, 5)])
+>>> p = permute.ExPermute(5, [(1, 2, 3), (4, 5)])
 >>> p.order()
 6
 >>> print p.ToNormal()
@@ -416,7 +416,7 @@
    %\spacing
    % input, output document
 \begin{ex}
->>> p=permute.PermGroup(5)
+>>> p = permute.PermGroup(5)
 >>> print p.createElement([3, 4, 5, 1, 2])
 [1, 2, 3, 4, 5] -> [3, 4, 5, 1, 2]
 >>> print p.createElement([(1, 2), (3, 4)])
