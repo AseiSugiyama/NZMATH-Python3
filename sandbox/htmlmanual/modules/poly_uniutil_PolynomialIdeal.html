@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/uniutil.py/PolynomialIdeal - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Funiutil.py%2FPolynomialIdeal">poly/uniutil.py/PolynomialIdeal</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_uniutil.html" title="poly/uniutil.py">uniutil</a></p>
+<h2 id="content_1_0">PolynomialIdeal  <a class="anchor_super" id="y1ac29b7">&dagger;</a></h2>
+<p>A class to represent an ideal of univariate polynomial ring.</p>
+<p>This class inherits <a href="ring.html" title="ring.py">ring</a>.Ideal.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="y25e1061">&dagger;</a></h3>
+
+<h4 id="content_1_2">PolynomialIdeal(<em>generators</em>, <em>polyring</em>)  <a class="anchor_super" id="d30e2596">&dagger;</a></h4>
+<p>Initialize an ideal in the given <em>polyring</em> (polynomial ring).</p>
+<p><em>generators</em>: a generator polynomial or a list of polynomials</p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="v37ac791">&dagger;</a></h3>
+
+<h4 id="content_1_4">issubset(<em>other</em>)  <a class="anchor_super" id="teb6d621">&dagger;</a></h4>
+<p>Report whether another ideal contains this ideal.</p>
+
+<h4 id="content_1_5">issuperset(<em>other</em>)  <a class="anchor_super" id="b1c48c02">&dagger;</a></h4>
+<p>Report whether this ideal contains another ideal.</p>
+
+<h4 id="content_1_6">reduce(<em>element</em>)  <a class="anchor_super" id="l73b6d15">&dagger;</a></h4>
+<p>Reduce the given element by the ideal.  The result is an
+element of the class which represents the equivalent class.</p>
+
+<h3 id="content_1_7">Operators  <a class="anchor_super" id="z736ee34">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">I + J</td><td class="style_td">addition</td></tr><tr><td class="style_td">I * J</td><td class="style_td">multiplication</td></tr><tr><td class="style_td">I == J</td><td class="style_td">equality</td></tr><tr><td class="style_td">I != J</td><td class="style_td">inequality</td></tr><tr><td class="style_td">e in I</td><td class="style_td">membership test</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

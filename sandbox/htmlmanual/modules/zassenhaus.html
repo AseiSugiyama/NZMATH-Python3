@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>zassenhaus.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?zassenhaus.py">zassenhaus.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">zassenhaus  <a class="anchor_super" id="s8c2f5a9">&dagger;</a></h2>
+<p>The zassenhaus module is for factorizations of integer coefficient one variable polynomials.
+It is based on a van Hoeij's paper.</p>
+
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="x46bc495">&dagger;</a></h3>
+
+<h4 id="content_1_2">bruteForceSearch(<em>f</em>, <em>fp_factors</em>, <em>q</em>)  <a class="anchor_super" id="t6c6067b">&dagger;</a></h4>
+<p>bruteForceSearch(f, fp_factors, q) -&gt; [factors]</p>
+<p>Find the factorization of <em>f</em> by searching a factor which is a
+product of some combination in <em>fp_factors</em>.  The combination is
+searched by brute force.</p>
+
+<h4 id="content_1_3">combinationIndexGenerator(<em>n</em>, <em>m</em>)  <a class="anchor_super" id="p6a2c9ee">&dagger;</a></h4>
+<p>Generate indeces of m elment subsets of n element set.</p>
+<p>For example:</p>
+<pre>       &gt;&gt;&gt; for idx in combinationIndexGenerator(5,3):
+       ...     print idx
+       ...
+       [0, 1, 2]
+       [0, 1, 3]
+       [0, 1, 4]
+       [0, 2, 3]
+       [0, 2, 4]
+       [0, 3, 4]
+       [1, 2, 3]
+       [1, 2, 4]
+       [1, 3, 4]
+       [2, 3, 4]
+       &gt;&gt;&gt;</pre>
+<p>(moved to <a href="combinatorial.html" title="combinatorial.py">combinatorial.py</a> in 0.5.0)</p>
+
+<h4 id="content_1_4">complexRootAbsoluteUpperBound(<em>f</em>)  <a class="anchor_super" id="ma668c85">&dagger;</a></h4>
+<p>complexRootAbsoluteUpperBound(f) -&gt; m</p>
+<p>Return an upper bound of absolute value of complex root of given
+(complex coefficient) polynomial <em>f</em>.</p>
+
+<h4 id="content_1_5">divisibilityTest(<em>f</em>, <em>g</em>)  <a class="anchor_super" id="t242c34a">&dagger;</a></h4>
+<p>Return boolean value whether <em>f</em> is divisible by <em>g</em> or not, for polynomials.</p>
+
+<h4 id="content_1_6">extgcdp(<em>f</em>, <em>g</em>, <em>p</em>)  <a class="anchor_super" id="k610ee22">&dagger;</a></h4>
+<p>extgcdp(f,g,p) -&gt; u,v,w</p>
+<p>Find u,v,w such that <em>f</em>*u + <em>g</em>*v = w = gcd(<em>f</em>,<em>g</em>) mod <em>p</em>.</p>
+
+<h4 id="content_1_7">findCombination(<em>f</em>, <em>d</em>, <em>factors</em>, <em>q</em>)  <a class="anchor_super" id="u191ed9b">&dagger;</a></h4>
+<p>findCombination(f, d, factors, q) -&gt; g, list</p>
+<p>Find a combination of <em>d</em> factors which divides <em>f</em> (or its
+complement).  The returned values are: the product g of the
+combination and a list consisting of the combination itself.
+If there is no combination, return (0,[]).</p>
+
+<h4 id="content_1_8">minimumAbsoluteInjection(<em>f</em>)  <a class="anchor_super" id="g3903954">&dagger;</a></h4>
+<p>minimumAbsoluteInjection(f) -&gt; F</p>
+<p>Return an integer coefficient polynomial F by injection of a Z/pZ
+coefficient polynomial <em>f</em> with sending each coefficient to minimum
+absolute representatives.</p>
+
+<h4 id="content_1_9">newMatrix(s, d)  <a class="anchor_super" id="ba251b7a">&dagger;</a></h4>
+<p>create a random <em>s</em> by <em>d</em> matrix.</p>
+
+<h4 id="content_1_10">padicFactorization(<em>f</em>)  <a class="anchor_super" id="td3a3e76">&dagger;</a></h4>
+<p>padicFactorization(f) -&gt; p, factors</p>
+<p>Return a prime p and a p-adic factorization of given integer
+coefficient squarefree polynomial <em>f</em>.
+The result factors have
+integer coefficients, injected from F_p to its minimum absolute
+representation.
+The prime is chosen to be:</p>
+<pre>1) f is still squarefree mod p,
+2) the number of factors is not greater than with the successive prime.</pre>
+
+<h4 id="content_1_11">padicLiftList(<em>f</em>, <em>factors</em>, <em>p</em>, <em>q</em>)  <a class="anchor_super" id="kc1e1d3b">&dagger;</a></h4>
+<p>padicLift(f, factors, p, q) -&gt; lifted_factors</p>
+<p>Find a lifted integer coefficient polynomials such that:</p>
+<pre>'''f''' = G1*G2*...*Gm (mod '''q'''*'''p'''),
+Gi = gi (mod '''q'''),</pre>
+<p>from <em>f</em> and gi's of integer coefficient polynomials such that:</p>
+<pre>'''f''' = g1*g2*...*gm (mod '''q'''),
+gi's are pairwise coprime</pre>
+<p>with positive integers <em>p</em> dividing <em>q</em>.</p>
+
+<h4 id="content_1_12">tri(<em>f</em>)  <a class="anchor_super" id="c6715dd4">&dagger;</a></h4>
+<p>tr(f) -&gt; list of Tr_i(f)</p>
+<p>Return the list of Tr_i(<em>f</em>) for a monic integer coefficient
+polynomial f in range 0 &lt; i &lt;= deg(<em>f</em>).  Tr_i(<em>f</em>) is defined as the
+sum of i-th powered roots of <em>f</em>.</p>
+
+<h4 id="content_1_13">upperBoundOfCoefficient(<em>f</em>)  <a class="anchor_super" id="ed1f7a86">&dagger;</a></h4>
+<p>upperBoundOfCoefficient(polynomial) -&gt; long</p>
+<p>Compute Landau-Mignotte bound of coefficients of factors, whose
+degree is no greater than half of the given <em>polynomial</em>.  The given
+<em>polynomial</em> must have integer coefficients.</p>
+
+<h4 id="content_1_14">vanHoeij(<em>f</em>)  <a class="anchor_super" id="f1a49156">&dagger;</a></h4>
+<p>vanHoeij(f) -&gt; list of factors of f.</p>
+<p>Factor a squarefree monic integer coefficient polynomial <em>f</em> with
+van Hoeij's knapsack method.</p>
+
+<h4 id="content_1_15">zassenhaus(<em>f</em>)  <a class="anchor_super" id="b2436ed3">&dagger;</a></h4>
+<p>zassenhaus(f) -&gt; list of factors of f.</p>
+<p>Factor a squarefree monic integer coefficient polynomial <em>f</em> with
+Berlekamp-Zassenhaus method.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

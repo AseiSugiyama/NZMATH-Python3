@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>permute.py/Permute - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?permute.py%2FPermute">permute.py/Permute</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="permute.html" title="permute.py">permute.py</a></p>
+<h2 id="content_1_0">Permute  <a class="anchor_super" id="s87302fa">&dagger;</a></h2>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#s87302fa"> Permute </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#b93ae3f4"> Operation </a></li>
+<li><a href="#p558013b"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#lfa6d38e"> setKey(key) </a></li>
+<li><a href="#ac6796ff"> getData() </a></li>
+<li><a href="#k00fe019"> getGroup() </a></li>
+<li><a href="#fb9b3cf6"> inverse() </a></li>
+<li><a href="#t0a21b7f"> identity()&lt;Moved&gt; </a></li>
+<li><a href="#m7274706"> numbering() </a></li>
+<li><a href="#ya2da006"> grouporder()&lt;Moved&gt; </a></li>
+<li><a href="#reaf052e"> order() </a></li>
+<li><a href="#v089fb7c"> ToTranspose() </a></li>
+<li><a href="#zc819ca2"> ToCyclic() </a></li>
+<li><a href="#o35e39b1"> sgn() </a></li>
+<li><a href="#j1e52ca5"> types() </a></li>
+<li><a href="#tc789b17"> ToMatrix() </a></li>
+<li><a href="#t2bba965"> permute(list) </a></li></ul></li></ul></li></ul>
+</div>
+
+<p>This is a class for permutation group element.<br class="spacer" />
+Create element with 'normal' way.<br class="spacer" />
+For example,<br class="spacer" /></p>
+<pre>  [&sigma;1,&sigma;2,&sigma;3,&sigma;4,&sigma;5]</pre>
+<p>(1:1 onto mapping(bijection), 1-&gt;&sigma;1, 2-&gt;&sigma;2, 3-&gt;&sigma;3, 4-&gt;&sigma;4, 5-&gt;&sigma;5.)</p>
+<blockquote><p class="quotation">
+<strong>Initialize</strong><br class="spacer" />
+Initialize with 'normal' list.</p>
+<pre>&gt;&gt;&gt;pm=Permute([&sigma;1,&sigma;2,...,&sigma;n])</pre>
+<p class="quotation">Or, you can specify key as list.</p>
+<pre>&gt;&gt;&gt;pm=Permute([key(&sigma;1),key(&sigma;2),...,key(&sigma;n)], key_list)</pre></blockquote>
+
+<div class="spacer">&nbsp;</div>
+<p>Example</p>
+<pre>&gt;&gt;&gt;Pr=Permute([2,3,1,5,4])
+&gt;&gt;&gt;Pr
+[1, 2, 3, 4, 5] -&gt; [2, 3, 1, 5, 4]
+&gt;&gt;&gt;Prk=Permute(['b','c','d','a','e'],['a','b','c','d','e'])
+Or,
+&gt;&gt;&gt;Prk=Permute({'a':'b','b':'c','c':'d','d':'a','e':'e'})
+&gt;&gt;&gt;Prk
+['a', 'b', 'c', 'd', 'e'] -&gt; ['b', 'c', 'd', 'a', 'e']</pre>
+<p><strong>Special key</strong> <br class="spacer" />
+We define some special key.</p>
+<pre>&gt;&gt;&gt;d1=Permute([3,4,2,0,1],0)
+&gt;&gt;&gt;d1
+[0, 1, 2, 3, 4] -&gt; [3, 4, 2, 0, 1]</pre>
+<pre>&gt;&gt;&gt;d2=Permute(['b','c','a','e','d'], 1)
+&gt;&gt;&gt;d2
+['a', 'b', 'c', 'd', 'e'] -&gt; ['b', 'c', 'a', 'e', 'd']
+(key is Python sorted list.)</pre>
+<pre>&gt;&gt;&gt;d3=Permute(['b','c','a','e','d'], -1)
+&gt;&gt;&gt;d3
+['e', 'd', 'c', 'b', 'a'] -&gt; ['b', 'c', 'a', 'e', 'd']
+(key is Python reverse sorted list.)</pre>
+
+<h3 id="content_1_1">Operation  <a class="anchor_super" id="b93ae3f4">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">==</td><td class="style_td">Equality</td></tr><tr><td class="style_td">*</td><td class="style_td">Multiplication</td></tr><tr><td class="style_td">/</td><td class="style_td">Division</td></tr><tr><td class="style_td">**</td><td class="style_td">Powering</td></tr></tbody></table></div>
+<p>Multiplication with normal mapping way(right multiply).<br class="spacer" />
+i.e. &sigma;=[&sigma;1,&sigma;2,..,&sigma;n],&tau;=[&tau;1,&tau;2,..,&tau;n], &sigma;*&tau; is mapping,&tau;i-&gt;&sigma;i.<br class="spacer" /></p>
+<div class="spacer">&nbsp;</div>
+<p>You can get &sigma;i.<br class="spacer" /></p>
+<pre>&gt;&gt;&gt;Pr[3]
+1
+&gt;&gt;&gt;Prk['b']
+'c'</pre>
+<dl class="list1" style="padding-left:16px;margin-left:16px"><dt>WARNING!</dt>
+<dd>Equality test checks only value and key(list)'s equality because of efficiency.<br class="spacer" />
+So, for example, Permute([2,3,1])!=Permute([3,1,2],[2,3,1]).(despite the mapping is same)<br class="spacer" />
+If you want to test equality precisely, use setKey for key's normalization.<br class="spacer" />
+(Or, use only Permute instance for same key.)</dd></dl>
+
+<h3 id="content_1_2">Methods  <a class="anchor_super" id="p558013b">&dagger;</a></h3>
+
+<h4 id="content_1_3">setKey(key)  <a class="anchor_super" id="lfa6d38e">&dagger;</a></h4>
+<p>Set other key.<br class="spacer" />
+(other key order.)</p>
+<pre>&gt;&gt;&gt;Prk.setKey(['a','c','b','d','e'])
+&gt;&gt;&gt;Prk
+['a', 'c', 'b', 'd', 'e'] -&gt; ['b', 'd', 'c', 'a', 'e']</pre>
+<p>(normal representation.)</p>
+<pre>&gt;&gt;&gt;Prk.setKey([1,2,3,4,5])
+&gt;&gt;&gt;Prk
+[1, 2, 3, 4, 5] -&gt; [2, 3, 4, 1, 5]</pre>
+<p>Normal representation can be simply done by setKey().</p>
+
+<h4 id="content_1_4">getData()  <a class="anchor_super" id="ac6796ff">&dagger;</a></h4>
+<p>Get data(don't return key).</p>
+<pre>&gt;&gt;&gt;Pr.getData()
+[2,3,1,5,4]</pre>
+
+<h4 id="content_1_5">getGroup()  <a class="anchor_super" id="k00fe019">&dagger;</a></h4>
+<p>Return group(<a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> instance) belonged to self.</p>
+
+<h4 id="content_1_6">inverse()  <a class="anchor_super" id="fb9b3cf6">&dagger;</a></h4>
+<p>Return inverse(-1 powering).</p>
+<pre>&gt;&gt;&gt;Pr.inverse()
+[3,1,2,5,4]</pre>
+
+<h4 id="content_1_7">identity()&lt;Moved&gt;  <a class="anchor_super" id="t0a21b7f">&dagger;</a></h4>
+<p>(In current version, moved to <a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> as identity)</p>
+
+<h4 id="content_1_8">numbering()  <a class="anchor_super" id="m7274706">&dagger;</a></h4>
+<p>Return number of permutation element.(Slow method)<br class="spacer" />
+It is symmetrical arranging.</p>
+<div class="spacer">&nbsp;</div>
+<p>This is inductive definition for dimension.<br class="spacer" /><br class="spacer" />
+If (n-1) dimension numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),&sigma;(n-1)] is k,<br class="spacer" />
+numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),&sigma;(n-1),n] is k and<br class="spacer" />
+numbering of [&sigma;1,&sigma;2,...,&sigma;(n-2),n,&sigma;(n-1)] is k+(n-1)! and so on.<br class="spacer" />
+(Goto <a href="http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm" rel="nofollow">点と線の部屋 第二部第十五章第二節</a>)</p>
+<pre>&gt;&gt;&gt;Pr.numbering()
+28</pre>
+
+<h4 id="content_1_9">grouporder()&lt;Moved&gt;  <a class="anchor_super" id="ya2da006">&dagger;</a></h4>
+<p>(In current version, moved to <a href="permute_PermGroup.html" title="permute.py/PermGroup">PermGroup</a> as grouporder)</p>
+
+<h4 id="content_1_10">order()  <a class="anchor_super" id="reaf052e">&dagger;</a></h4>
+<p>Return element order.<br class="spacer" />
+This method is faster than general group method.</p>
+<pre>&gt;&gt;&gt;Pr.order()
+6</pre>
+
+<h4 id="content_1_11">ToTranspose()  <a class="anchor_super" id="v089fb7c">&dagger;</a></h4>
+<p>Return the <a href="permute_ExPermute.html" title="permute.py/ExPermute">ExPermute</a> element with transpose(2-dimensional cyclic) type.<br class="spacer" />
+It is recursive program,and it takes more time than ToCyclic module.</p>
+<pre>&gt;&gt;&gt;Pr.ToTranspose()
+[(4,5)(1,3)(1,2)](5)</pre>
+
+<h4 id="content_1_12">ToCyclic()  <a class="anchor_super" id="zc819ca2">&dagger;</a></h4>
+<p>Return the <a href="permute_ExPermute.html" title="permute.py/ExPermute">ExPermute</a> element.This method decomposite self into coprime cyclic permutation, so each cyclic is commutable.</p>
+<pre>&gt;&gt;&gt;Pr.ToCyclic()
+[(1,2,3)(4,5)](5)</pre>
+
+<h4 id="content_1_13">sgn()  <a class="anchor_super" id="o35e39b1">&dagger;</a></h4>
+<p>Return the sign of permutation group element.<br class="spacer" />
+It returns even permutation is 1,odd one is -1.</p>
+<pre>&gt;&gt;Pr.sgn()
+-1</pre>
+
+<h4 id="content_1_14">types()  <a class="anchor_super" id="j1e52ca5">&dagger;</a></h4>
+<p>Return cyclic type defined by each cyclic permutation element length.<br class="spacer" /></p>
+<pre>&gt;&gt;&gt;Pr.types()
+'(2,3)type'</pre>
+
+<h4 id="content_1_15">ToMatrix()  <a class="anchor_super" id="tc789b17">&dagger;</a></h4>
+<p>Return permutation matrix,A.<br class="spacer" />
+A[i,&sigma;i]=1,other A[k,j]=0.</p>
+<pre>&gt;&gt;&gt;Pr.ToMatrix()
+0 0 1 0 0
+1 0 0 0 0
+0 1 0 0 0
+0 0 0 0 1
+0 0 0 1 0</pre>
+
+<h4 id="content_1_16">permute(list)  <a class="anchor_super" id="t2bba965">&dagger;</a></h4>
+<p>Permute list following with self permutation.<br class="spacer" />
+Warning: This permutation is independent on key (except dict type)</p>
+<pre>&gt;&gt;&gt;Pr.permute(['a','b','c','d','e'])
+['c', 'a', 'b', 'e', 'd']</pre>
+<p>d1 type permutation is usuful for this method.(index starts 0)</p>
+<pre>&gt;&gt;&gt;d1.permute(['a','b','c','d','e'])
+['d', 'e', 'c', 'a', 'b']</pre>
+<p>You can use simply __call__ method.</p>
+<pre>&gt;&gt;&gt;Pr(['a','b','c','d','e'])
+['c', 'a', 'b', 'e', 'd']</pre>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

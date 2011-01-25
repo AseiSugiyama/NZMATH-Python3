@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>equation.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?equation.py">equation.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | (<a href="http://nzmath.sourceforge.net/doc/?equation%20%28ja%29" title="equation (ja)">日本語</a>)</p>
+<h2 id="content_1_0">equation  <a class="anchor_super" id="p17d2e4c">&dagger;</a></h2>
+<p>This module provides functions which solve roots of equation and congruence.</p>
+
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="m01401d5">&dagger;</a></h3>
+<p>Input of function f is the following: <br />
+f := a_0 + a_1 * x + ... + a_n * x**n =&gt; f = [a_0, a_1, ... ,a_n] <br />
+n is a rational integer, p is a prime number.</p>
+
+<h4 id="content_1_2">e1(<em>f</em>)  <a class="anchor_super" id="hf7e56dc">&dagger;</a></h4>
+<p>Return the solution a*x + b = 0, where <em>f</em>=[b,a].</p>
+
+<h4 id="content_1_3">e1_Zn(<em>c</em>,<em>n</em>)  <a class="anchor_super" id="hf7e56dc">&dagger;</a></h4>
+<p>Return the solution a*x = b (mod n), where <em>c</em>=[a,b].</p>
+
+<h4 id="content_1_4">e2(<em>f</em>)  <a class="anchor_super" id="u7394786">&dagger;</a></h4>
+<p>Return the roots of a * x**2 + b * x + c = 0, where <em>f</em>=[c,b,a].</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
+
+<h4 id="content_1_5">e2_Fp(<em>f</em>,<em>p</em>)  <a class="anchor_super" id="qab6bc7f">&dagger;</a></h4>
+<p>Return the solutions of a*x**2 + b*x + c = 0 mod p, where <em>f</em>=[c,b,a].</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
+
+<h4 id="content_1_6">e3(<em>f</em>)  <a class="anchor_super" id="r4eb80ac">&dagger;</a></h4>
+<p>Return the roots of a * x**3 + b * x**2 + c * x + d = 0, where <em>f</em>=[d,c,b,a].</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
+
+<h4 id="content_1_7">e3_Fp(<em>f</em>,<em>p</em>)  <a class="anchor_super" id="f2f9e8c5">&dagger;</a></h4>
+<p>Return the solutions of a * x**3 + b * x**2 + c * x + d = 0 mod p, where <em>f</em>=[d,c,b,a].</p>
+<p>If the same values are returned, then the values are multiple roots.</p>
+
+<h4 id="content_1_8">Newton(<em>f</em>,<em>Initial</em>,<em>Repeat</em>)  <a class="anchor_super" id="of8a34fb">&dagger;</a></h4>
+<p>Return a approximation root of f, where coeffcients of f is the real number. <br />
+Initial inputs as a initial number of Newton, Repeat inputs as the number of steps. <br />
+Default of Initial is 1, Repeat is 100.</p>
+<pre>Remark : There is a case which this method returns False output. For example, f(x) = x**2 + 1 </pre>
+
+<h4 id="content_1_9">SimMethod(<em>f</em>,<em>Repeat</em>,<em>NewtonInitial</em>)  <a class="anchor_super" id="b3fbf267">&dagger;</a></h4>
+<p>Return the approximation roots, where coefficients of f is the complex number. <br />
+Repeat is the number of this method's steps, NewtonInitial is a Initial number of Newton Method which use in this method. <br />
+If this method returns Error in Newton Method, Then please change the NewtonInitial's value. <br />
+Default of NewtonInitial is 1, Repeat is 200.</p>
+<pre>Remark : If f has multiple root, maybe return Error.</pre>
+
+<h4 id="content_1_10">root_Fp(<em>g = [a_0,a_1, ...]</em>,<em>p</em>,<em>flag=True</em>)  <a class="anchor_super" id="x0ede1ef">&dagger;</a></h4>
+<p>Return a root over F_p of nonzero polynomial a_0 + a_1 * x + ... = 0 ( mod p ). <br />
+p must be prime. We can take a dictionary type as polynomial g.<br />
+If flag = False, return a root randomly.</p>
+
+<h4 id="content_1_11">allroots_Fp(<em>g = [a_0,a_1, ...]</em>,<em>p</em>)  <a class="anchor_super" id="fa9fa30e">&dagger;</a></h4>
+<p>Return roots over F_p of nonzero polynomial a_0 + a_1 * x + ... = 0 ( mod p ). <br />
+p must be prime. We can take a dictionary type as polynomial g.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

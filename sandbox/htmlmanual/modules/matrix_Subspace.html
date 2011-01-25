@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>matrix.py/Subspace - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?matrix.py%2FSubspace">matrix.py/Subspace</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="matrix.html" title="matrix.py">matrix</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29%2FSubspace%20%28ja%29" title="matrix (ja)/Subspace (ja)">Japanese</a>)</p>
+<h2 id="content_1_0">Subspace  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for subspace of some vector space over a field.
+It inherits <a href="matrix_FieldMatrix.html" title="matrix.py/FieldMatrix">FieldMatrix</a></p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  Subspace </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#a215fa87"> Constructor </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#t1e34eea"> Subspace(row[, column, compo, coeff_ring, isbasis]) </a></li></ul></li>
+<li><a href="#z777cfb9">  Attribute </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#wa875907">  isbasis </a></li></ul></li>
+<li><a href="#w6388042"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#y9abb5aa"> fromMatrix(mat [,isbasis]) </a></li>
+<li><a href="#n684df9e"> isSubspace(other) </a></li>
+<li><a href="#i8c82a66"> toBasis() </a></li>
+<li><a href="#afcae39a"> supplementBasis() </a></li>
+<li><a href="#sumofssp"> sumOfSubspaces(other) </a></li>
+<li><a href="#intofssp"> intersectionOfSubspaces(other) </a></li></ul></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="a215fa87">&dagger;</a></h3>
+
+<h4 id="content_1_2">Subspace(<em>row</em>[, <em>column</em>, <em>compo</em>, <em>coeff_ring</em>, <em>isbasis</em>])  <a class="anchor_super" id="t1e34eea">&dagger;</a></h4>
+<p><em>row</em> and <em>column</em> must be a positive integer.
+<em>compo</em> must be a <strong><a href="matrix.html#listform" title="matrix.py">list form</a></strong>.
+<em>coeff_ring</em> must be an instance of <a href="ring.html" title="ring.py">ring.Ring</a>.
+If <em>isbasis</em> is True, we assume column vectors are linearly independent.</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(3, 2, [1,2]+[3,4]+[5,7])
+&gt;&gt;&gt; print A
+1 2
+3 4
+5 7</pre>
+
+<h3 id="content_1_3">Attribute  <a class="anchor_super" id="z777cfb9">&dagger;</a></h3>
+
+<h4 id="content_1_4"><a class="anchor" id="isbasis"></a>isbasis  <a class="anchor_super" id="wa875907">&dagger;</a></h4>
+<p>The attribute indicates the linear independence of column vectors, i.e., if they form a basis of the space then it's True, otherwise False.<br />
+(new in 0.90.0)</p>
+
+<h3 id="content_1_5">Methods  <a class="anchor_super" id="w6388042">&dagger;</a></h3>
+
+<h4 id="content_1_6"><a class="anchor" id="fromMatrix"></a>fromMatrix(<em>mat</em> [,<em>isbasis</em>])  <a class="anchor_super" id="y9abb5aa">&dagger;</a></h4>
+<p>Create a Subspace instance from a matrix instance <em>mat</em>, whose class can be any of subclasses of Matrix.
+Please use this method if you want a Subspace instance for sure.</p>
+<p>This is a class method.<br />
+(new in 0.90.0)</p>
+
+<h4 id="content_1_7"><a class="anchor" id="isSubspace"></a>isSubspace(<em>other</em>)  <a class="anchor_super" id="n684df9e">&dagger;</a></h4>
+<p>Return True if the subspace instance is a subspace of the <em>other</em>,
+or False otherwise.<br />
+(new in 0.90.0)</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(4, 2, [1,2]+[3,4]+[5,6]+[7,9])
+&gt;&gt;&gt; B = matrix.Subspace(4, 3, [1,2,-4]+[5,9,-3]+[9,16,-2]+[12,26,-1])
+&gt;&gt;&gt; A.isSubspace(B)
+True</pre>
+
+<h4 id="content_1_8"><a class="anchor" id="toBasis"></a>toBasis()  <a class="anchor_super" id="i8c82a66">&dagger;</a></h4>
+<p>Rewrite <em>self</em> so that its column vectors form a basis, and set True to
+<a href="matrix_Subspace.html#isbasis" title="matrix.py/Subspace">isbasis</a>.
+The attempt might be avoided if <a href="matrix_Subspace.html#isbasis" title="matrix.py/Subspace">isbasis</a> is already True.<br />
+(new in 0.90.0)</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(4, 3, [1,2,3]+[4,5,6]+[7,8,9]+[10,11,12])
+&gt;&gt;&gt; A.toBasis()
+&gt;&gt;&gt; print A
+ 1  2
+ 4  5
+ 7  8
+10 11</pre>
+
+<h4 id="content_1_9"><a class="anchor" id="supplementBasis"></a>supplementBasis()  <a class="anchor_super" id="afcae39a">&dagger;</a></h4>
+<p>Return full rank matrix by supplementing basises for <em>self</em>.</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(3, 2, [1,2]+[3,4]+[5,7])
+&gt;&gt;&gt; print A
+1 2 0
+3 4 0
+5 7 1</pre>
+
+<h4 id="content_1_10"><a class="anchor" id="sumOfSubspaces"></a>sumOfSubspaces(<em>other</em>)  <a class="anchor_super" id="sumofssp">&dagger;</a></h4>
+<p>Given columns span a subspace <em>m</em> x <em>n</em> matrix <em>self</em> and <em>other</em>, return a matrix whose columns form a basis for sum of two subspaces.<br />
+(new in 0.90.0.  It was provided as a module function in old versions.)</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(4, 1, [1,2,3,4])
+&gt;&gt;&gt; B = matrix.Subspace(4, 2, [2,-4]+[4,-3]+[6,-2]+[8,-1])
+&gt;&gt;&gt; print A.sumOfSubspaces(B)
+1 -4
+2 -3
+3 -2
+4 -1</pre>
+
+<h4 id="content_1_11"><a class="anchor" id="intersectionOfSubspaces"></a>intersectionOfSubspaces(<em>other</em>)  <a class="anchor_super" id="intofssp">&dagger;</a></h4>
+<p>Given columns span a subspace <em>m</em> &times; <em>n</em> matrix <em>self</em> and <em>other</em>, return a matrix whose columns form a basis for intersection of two subspaces.<br />
+(new in 0.90.0.  It was provided as a module function in old versions.)</p>
+<pre>&gt;&gt;&gt; A = matrix.Subspace(4, 1, [1,2,3,4])
+&gt;&gt;&gt; B = matrix.Subspace(4, 2, [2,-4]+[4,-3]+[6,-2]+[8,-1])
+&gt;&gt;&gt; print A.sumOfSubspaces(B)
+-2/1
+-4/1
+-6/1
+-8/1</pre>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

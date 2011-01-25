@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>elliptic.py/ECoverQ - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?elliptic.py%2FECoverQ">elliptic.py/ECoverQ</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p>nzmath.<a href="elliptic.html" title="elliptic.py">elliptic</a></p>
+<h2 id="content_1_0">ECoverQ  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for elliptic curves over Q (rational field).<br />
+The class is a subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>.</p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  ECoverQ </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#c3ae12a3"> ECoverQ(Weierstrass list form) </a></li></ul></li>
+<li><a href="#method"> Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#u3474fc1"> point(limit) [Experimental] </a></li></ul></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
+
+<h4 id="content_1_2">ECoverQ(<em>Weierstrass list form</em>)  <a class="anchor_super" id="c3ae12a3">&dagger;</a></h4>
+<p>All elements of <em>Weierstrass list form</em> have to be object of <a href="rational.html" title="rational.py">rational</a>.<a href="rational_Rational.html" title="rational.py/Rational">Rational</a> or an Python long integer.<br /></p>
+<p>In general, given EC characteristic specified, you should call <strong><a href="elliptic.html#cec" title="elliptic.py">EC</a></strong> for your profit. It is not recommended to call this class directly.
+<br /></p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+
+<h4 id="content_1_4">point(<em>limit</em>) <span style="color:red">[Experimental]</span>  <a class="anchor_super" id="u3474fc1">&dagger;</a></h4>
+<p>Returns a random point on elliptic curve.<br />
+If <em>limit</em> set, try search <em>limit</em> times. default is 1000 .<br />
+This function is <span style="color:red">Experimental</span>. Since class definition, probably failed to searching point.<br /></p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

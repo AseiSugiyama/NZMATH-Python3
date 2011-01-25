@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>elliptic.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?elliptic.py">elliptic.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">elliptic  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>elliptic module provides elliptic curves.</p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  elliptic </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cec"> EC(Weierstrass list form, basefield) </a></li></ul></li>
+<li><a href="#class">  Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ecgen"> ECGeneric </a></li>
+<li><a href="#ecoverq"> ECoverQ </a></li>
+<li><a href="#ecovergf"> ECoverGF </a></li></ul></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="function">&dagger;</a></h3>
+
+<h4 id="content_1_2">EC(<em>Weierstrass list form</em>, <em>basefield</em>)  <a class="anchor_super" id="cec">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a> or <a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>. and their are subclass of <a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>, see also as use.<br />
+If <em>basefield</em> is a object inheriting <a href="finitefield.html" title="finitefield.py">finitefield</a>.<a href="finitefield_FiniteField.html" title="finitefield.py/FiniteField">FiniteField</a> or a prime number, create elliptic curve over finite field(<a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>).
+Otherwise (if <em>basefield</em> is not given or object of <a href="rational.html" title="rational.py">rational</a>.<a href="rational_RationalField.html" title="rational.py/RationalField">RationalField</a> or 0), create elliptic curve over rational field(<a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>) .<br /></p>
+<p>How to asssign curves in <strong><em>Weierstrass list form</em></strong> given by the equation:<br /></p>
+<blockquote><p class="quotation">
+E: y^2 + a1 xy + a3 y = x^3 + a2 x^2 + a4 x + a6<br /></p></blockquote>
+
+<pre>&gt;&gt;&gt; E=EC([a1,a2,a3,a4,a6],basefield) </pre>
+<p>or for</p>
+<blockquote><p class="quotation">
+E: y^2= x^3 + A x + B<br /></p></blockquote>
+
+<pre>&gt;&gt;&gt; E=EC([A,B],basefield)</pre>
+
+<h3 id="content_1_3">Classes  <a class="anchor_super" id="class">&dagger;</a></h3>
+
+<h4 id="content_1_4"><a href="elliptic_ECGeneric.html" title="elliptic.py/ECGeneric">ECGeneric</a>  <a class="anchor_super" id="ecgen">&dagger;</a></h4>
+
+<h4 id="content_1_5"><a href="elliptic_ECoverQ.html" title="elliptic.py/ECoverQ">ECoverQ</a>  <a class="anchor_super" id="ecoverq">&dagger;</a></h4>
+
+<h4 id="content_1_6"><a href="elliptic_ECoverGF.html" title="elliptic.py/ECoverGF">ECoverGF</a>  <a class="anchor_super" id="ecovergf">&dagger;</a></h4>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

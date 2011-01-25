@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>bigrandom.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?bigrandom.py">bigrandom.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">bigrandom  <a class="anchor_super" id="h09af3ec">&dagger;</a></h2>
+<p>The module provides random number generator for long integer.</p>
+
+<h4 id="content_1_1">historical note  <a class="anchor_super" id="rf76b4f7">&dagger;</a></h4>
+<p>The module was written for replacement of the Python standard module <a href="http://docs.python.org/lib/module-random.html" rel="nofollow">random</a>,
+because in the era of Python 2.2 (prehistorical period of NZMATH) the random module raises OverflowError for long integer arguments for the randrange function, which is the only function having a use case in NZMATH.</p>
+<p>After the creation of Python 2.3, it was theoretically possible to use random.randrange.  Use of it is, however, not considered, since there is the bigrandom module.  It is lucky for us and users.  In fall of 2006, we found a bug in random.randrange and reported it (see <a href="http://bugs.python.org/issue1590891" rel="nofollow">issue tracker</a>); the random.randrange accepts long integers but returns unreliable result for truly big integers.
+The bug was fixed for Python 2.5.1.  You can, therefore, use random.randrange instead of bigrandom.randrange for Python 2.5.1 or higher.</p>
+
+<h3 id="content_1_2">Function  <a class="anchor_super" id="n95dc22c">&dagger;</a></h3>
+
+<h4 id="content_1_3">randrange(<em>start</em> [,<em>stop</em>[, <em>step</em>]])  <a class="anchor_super" id="bbb96b62">&dagger;</a></h4>
+<p>returns a big random integer. You may set the parameters <em>start</em>, <em>stop</em>, (this means the interval [start, stop)) and <em>step</em>, the increment. For example: <br /></p>
+<pre>&gt;&gt;&gt; randrange(4,10000,3) 
+9919L </pre>
+<p>Or you can ignore the last two arguments. For example:<br /></p>
+<pre>&gt;&gt;&gt; randrange(4) 
+3L</pre>
+
+<h4 id="content_1_4"><a class="anchor" id="map_choice"></a>map_choice(<em>mapping</em>, <em>upperbound</em>)  <a class="anchor_super" id="d343c4e2">&dagger;</a></h4>
+<p>Return a choice from a set given as the image of the mapping from
+natural numbers (more precisely range(upperbound)).  In other
+words, it is equivalent to
+random.choice([mapping(i) for i in range(upperboud) if mapping(i) != None])
+if upperbound is small enough for the list size limit.</p>
+<p>The mapping can be a partial function, i.e. it may return None for
+some input.  However, if the resulting set is empty, it will end
+up with an infinite loop.<br />
+(new in 0.90.0)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+okeya上でFiniteExtendedField.__pow__とsuccessive squareはどっちが速いか
+profileを使って白黒つけた結果. (changeset:130あたり)
+
+>>> import profile
+>>> from sandbox.finitefield import *
+>>> F=FiniteExtendedField(3, FinitePrimeFieldPolynomial([(0, FinitePrimeFieldElement(2, 3)), (1, FinitePrimeFieldElement(1, 3)), (2, FinitePrimeFieldElement(1, 3))], FinitePrimeField(3)))
+>>> XX=F.createElement(4)
+>>> def test(X):
+...     i=0
+...     while i<10:
+...       N=X**65536
+...       i=i+1
+...     return N
+...
+>>> def test2(X):
+...   i = 0
+...   while i<10:
+...     j = 0
+...     N = X
+...     while j<16:
+...       N = N * N
+...       j = j+1
+...     i= i+1
+...   return N
+...
+>>> test2(XX) == test(XX)
+True
+>>> profile.run("test(XX)")
+         11 function calls in 0.084 CPU seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+        1    0.000    0.000    0.000    0.000 :0(isinstance)
+        1    0.000    0.000    0.084    0.084 :0(pow)
+        1    0.000    0.000    0.084    0.084 <stdin>:1(test)
+        1    0.000    0.000    0.084    0.084 <string>:1(<module>)
+        1    0.000    0.000    0.084    0.084 division1.py:453(__pow__)
+        1    0.000    0.000    0.084    0.084 division1.py:496(mod_pow)
+        1    0.000    0.000    0.084    0.084 finitefield.py:513(__pow__)
+        1    0.084    0.084    0.084    0.084 formalsum.py:96(__nonzero__)
+        1    0.000    0.000    0.000    0.000 integerResidueClass.py:115(__nonzero__)
+        0    0.000             0.000          profile:0(profiler)
+        1    0.000    0.000    0.084    0.084 profile:0(test(XX))
+        1    0.000    0.000    0.000    0.000 univar.py:695(itercoefficients)
+
+
+>>> profile.run("test2(XX)")
+         48814 function calls in 0.583 CPU seconds
+
+   Ordered by: standard name
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      730    0.004    0.000    0.004    0.000 :0(append)
+       40    0.000    0.000    0.000    0.000 :0(cmp)
+      160    0.001    0.000    0.001    0.000 :0(getattr)
+      960    0.005    0.000    0.005    0.000 :0(hasattr)
+      970    0.005    0.000    0.005    0.000 :0(insert)
+     5280    0.025    0.000    0.025    0.000 :0(isinstance)
+     1040    0.005    0.000    0.005    0.000 :0(iter)
+     2160    0.011    0.000    0.011    0.000 :0(iteritems)
+      970    0.005    0.000    0.005    0.000 :0(len)
+        1    0.000    0.000    0.000    0.000 :0(setprofile)
+        1    0.001    0.001    0.583    0.583 <stdin>:1(test2)
+        1    0.000    0.000    0.583    0.583 <string>:1(<module>)
+      320    0.026    0.000    0.466    0.001 division1.py:128(mod)
+     1160    0.008    0.000    0.008    0.000 division1.py:18(__init__)
+     1160    0.008    0.000    0.008    0.000 division1.py:444(__init__)
+     1160    0.008    0.000    0.008    0.000 division1.py:74(__init__)
+     1160    0.017    0.000    0.037    0.000 division1.py:818(__init__)
+     1160    0.023    0.000    0.176    0.000 division1.py:848(set_coefficient_ring)
+     1160    0.031    0.000    0.147    0.000 division1.py:865(__init__)
+     1160    0.005    0.000    0.005    0.000 finitefield.py:115(getCharacteristic)
+      320    0.006    0.000    0.009    0.000 finitefield.py:144(__init__)
+      840    0.012    0.000    0.020    0.000 finitefield.py:289(__contains__)
+     1160    0.054    0.000    0.368    0.000 finitefield.py:346(__init__)
+     1160    0.037    0.000    0.430    0.000 finitefield.py:368(__init__)
+      160    0.001    0.000    0.001    0.000 finitefield.py:405(getCoefficientRing)
+      160    0.006    0.000    0.229    0.001 finitefield.py:422(__init__)
+      160    0.006    0.000    0.580    0.004 finitefield.py:450(_op)
+      160    0.002    0.000    0.582    0.004 finitefield.py:490(__mul__)
+      680    0.007    0.000    0.016    0.000 formalsum.py:44(__iter__)
+     1610    0.009    0.000    0.009    0.000 integerResidueClass.py:115(__nonzero__)
+      840    0.004    0.000    0.004    0.000 integerResidueClass.py:137(getModulus)
+      260    0.005    0.000    0.013    0.000 integerResidueClass.py:27(__mul__)
+       60    0.001    0.000    0.003    0.000 integerResidueClass.py:62(__add__)
+        0    0.000             0.000          profile:0(profiler)
+        1    0.000    0.000    0.583    0.583 profile:0(test2(XX))
+     1160    0.005    0.000    0.005    0.000 ring.py:170(isfield)
+     1160    0.008    0.000    0.008    0.000 ring.py:19(__init__)
+     1160    0.007    0.000    0.007    0.000 ring.py:212(__init__)
+     1160    0.014    0.000    0.020    0.000 ring.py:244(__init__)
+     1160    0.009    0.000    0.009    0.000 ring.py:474(__init__)
+     1160    0.013    0.000    0.068    0.000 ring.py:506(setIseuclidean)
+     1160    0.019    0.000    0.056    0.000 ring.py:526(setIspid)
+     1160    0.012    0.000    0.019    0.000 ring.py:547(setIsufd)
+     1160    0.012    0.000    0.018    0.000 ring.py:567(setIsnoetherian)
+     2320    0.012    0.000    0.012    0.000 ring.py:587(setIsdomain)
+     1160    0.021    0.000    0.038    0.000 ring.py:67(__init__)
+      640    0.010    0.000    0.024    0.000 termorder.py:123(degree)
+      320    0.005    0.000    0.013    0.000 termorder.py:148(leading_term)
+     1160    0.007    0.000    0.007    0.000 univar.py:19(__init__)
+     1160    0.033    0.000    0.073    0.000 univar.py:325(__init__)
+      970    0.016    0.000    0.026    0.000 univar.py:342(_insort)
+      340    0.013    0.000    0.155    0.000 univar.py:389(__add__)
+      160    0.009    0.000    0.094    0.001 univar.py:41(ring_mul)
+      160    0.003    0.000    0.098    0.001 univar.py:501(__mul__)
+       20    0.001    0.000    0.012    0.001 univar.py:575(scalar_mul)
+      640    0.008    0.000    0.011    0.000 univar.py:653(degree)
+      320    0.004    0.000    0.006    0.000 univar.py:671(leading_term)
+      680    0.006    0.000    0.010    0.000 univar.py:680(iterterms)
+
+
+>>>
+
+total time(tottime)を分析すると, 体の乗算による冪乗計算はringの呼び出しで相当の時間を消費していることが確認される.
+
+また, FormalSumContainerInterface.__nonzero__もかなり時間を浪費するmethodである.
+皮肉なことに, __pow__の99%がこのmethodに費やされているという結果であった.
+
+この時点での結論:
+- 下手にarith1.expandで展開して乗算するよりbuilt-in powを使った方が圧倒的に速い
+- ringの初期化は必要な回数だけ呼び出すようにしないと時間を浪費する.
+  -> おそらく多数の部分について変更が必要. 楽観視はやや危険.

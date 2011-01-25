@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/termorder.py/UnivarTermOrder - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Ftermorder.py%2FUnivarTermOrder">poly/termorder.py/UnivarTermOrder</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_termorder.html" title="poly/termorder.py">termorder</a></p>
+<h2 id="content_1_0">UnivarTermOrder  <a class="anchor_super" id="e0930e88">&dagger;</a></h2>
+<p>Term order for univariate polynomials.</p>
+<p>One thing special to univariate case is that powers are not tuples
+but integers.</p>
+<p>This class inherits <a href="poly_termorder_TermOrderInterface.html" title="poly/termorder.py/TermOrderInterface">TermOrderInterface</a>.</p>
+
+<h3 id="content_1_1">constructor  <a class="anchor_super" id="x0459f3c">&dagger;</a></h3>
+
+<h4 id="content_1_2">UnivarTermOrder(<em>comparator</em>)  <a class="anchor_super" id="cf6989e7">&dagger;</a></h4>
+<p><em>comparator</em> can be any callable that accepts two integers and
+returns 0, 1 or -1 just like cmp, i.e. if they are equal it
+returns 0, first one is greater 1, and otherwise -1.
+Theoretically acceptable comparator is only the cmp function.</p>
+
+<h3 id="content_1_3">methods  <a class="anchor_super" id="va79fef5">&dagger;</a></h3>
+
+<h4 id="content_1_4">cmp(<em>left</em>, <em>right</em>)  <a class="anchor_super" id="z9f0b357">&dagger;</a></h4>
+<p>Compare two indeces left and right and determine precedence by
+self.comparator.</p>
+
+<h4 id="content_1_5">format(<em>polynom</em> [, <em>varname</em>=&quot;X&quot; [, <em>reverse</em>=False]])  <a class="anchor_super" id="j411bb91">&dagger;</a></h4>
+<p>Return the formatted string of the polynomial.</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><em>polynom</em> must be a univariate polynomial.</li>
+<li><em>varname</em> can be set to the name of the variable (default to &quot;X&quot;).</li>
+<li><em>reverse</em> can be either True or False. If it's True, terms appear in reverse (descending) order.</li></ul>
+
+<h4 id="content_1_6">degree(<em>polynom</em>)  <a class="anchor_super" id="l4e94162">&dagger;</a></h4>
+<p>Return the degree of the polynomial <em>polynom</em>.</p>
+
+<h4 id="content_1_7">leading_coefficient('<strong>polynom</strong>7)  <a class="anchor_super" id="w5d4770a">&dagger;</a></h4>
+<p>Return the leading coefficient of polynomial <em>polynom</em> with respect to the term order.</p>
+
+<h4 id="content_1_8">leading_term(<em>polynom</em>)  <a class="anchor_super" id="xdeceafa">&dagger;</a></h4>
+<p>Return the leading term of polynomial <em>polynom</em> as tuple of
+(degree, coefficient) with respect to the term order.</p>
+
+<h4 id="content_1_9">tail_degree(<em>polynom</em>)  <a class="anchor_super" id="k9c52796">&dagger;</a></h4>
+<p>Return the least degree among all terms of the polynomial <em>polynom</em>.<br />
+This method is EXPERIMENTAL.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

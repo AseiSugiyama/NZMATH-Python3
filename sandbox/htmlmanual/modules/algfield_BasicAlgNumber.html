@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>algfield.py/BasicAlgNumber - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?algfield.py%2FBasicAlgNumber">algfield.py/BasicAlgNumber</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="algfield.html" title="algfield.py">algfield.py</a></p>
+<h2 id="content_1_0">BasicAlgNumber  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for algebraic number represented by coefficient of standard basis.</p>
+
+<h3 id="content_1_1">Initialize  <a class="anchor_super" id="init">&dagger;</a></h3>
+
+<h4 id="content_1_2">BasicAlgNumber(<em>valuelist</em>, <em>polynomial</em>)  <a class="anchor_super" id="bnumber">&dagger;</a></h4>
+<p><em>polynomial</em> must be a monic irreducible polynomial defining the number field.
+type of <em>polynomial</em> must be a list.
+<em>valuelist</em> is made from integer coefficient and denominator for standard basis.</p>
+<p>Ex.1</p>
+<pre>&gt;&gt;&gt; a = algfield.BasicAlgNumber([[1, 1], 1], [-3, 0, 1])
+&gt;&gt;&gt; print a
+BasicAlgNumber([[1, 1], 1], [-3, 0, 1])</pre>
+<p>Ex.2</p>
+<pre>&gt;&gt;&gt; b = algfield.BasicAlgNumber([[0, 1, 1], 2], [-2, 0, 0, 1])
+&gt;&gt;&gt; print b
+BasicAlgNumber([[0, 1, 1], 2], [-2, 0, 0, 1])</pre>
+
+<h3 id="content_1_3">Attribute  <a class="anchor_super" id="attribute">&dagger;</a></h3>
+
+<h4 id="content_1_4">value  <a class="anchor_super" id="te4d6a36">&dagger;</a></h4>
+<p>integer coefficient and denominator.</p>
+
+<h4 id="content_1_5">coeff  <a class="anchor_super" id="eead1f8c">&dagger;</a></h4>
+<p>integer coefficient of the algebraic number.</p>
+
+<h4 id="content_1_6">denom  <a class="anchor_super" id="h874fa65">&dagger;</a></h4>
+<p>denominator of the algebraic number.</p>
+
+<h4 id="content_1_7">polynomial  <a class="anchor_super" id="f8cda87d">&dagger;</a></h4>
+<p>defining polynomial of the field including the algebraic number.</p>
+
+<h4 id="content_1_8">degree  <a class="anchor_super" id="pf2bb1e3">&dagger;</a></h4>
+<p>degree of the polynomial.</p>
+
+<h4 id="content_1_9">field  <a class="anchor_super" id="ofcf8862">&dagger;</a></h4>
+<p>field defined by the polynomial.</p>
+
+<h3 id="content_1_10">Methods  <a class="anchor_super" id="methods">&dagger;</a></h3>
+
+<h4 id="content_1_11">inverse()  <a class="anchor_super" id="inverse">&dagger;</a></h4>
+<p>Return the inverse of the algebraic number.</p>
+
+<h4 id="content_1_12">trace()  <a class="anchor_super" id="trace">&dagger;</a></h4>
+<p>Compute the trace of the algebraic number.</p>
+
+<h4 id="content_1_13">norm()  <a class="anchor_super" id="norm">&dagger;</a></h4>
+<p>Compute the norm of the algebraic number.</p>
+
+<h4 id="content_1_14">isAlgInteger()  <a class="anchor_super" id="alginteger">&dagger;</a></h4>
+<p>Determine whether the algebraic number is an algebraic integer or not.</p>
+
+<h4 id="content_1_15">ch_matrix()  <a class="anchor_super" id="ch_matrix">&dagger;</a></h4>
+<p>Change class to MatAlgNumber.</p>
+
+<h4 id="content_1_16">ch_approx(<em>approx</em>)  <a class="anchor_super" id="ch_approx">&dagger;</a></h4>
+<p>Change class to ApproxAlgNuber with <em>approx</em>.</p>
+
+<h3 id="content_1_17">Operations  <a class="anchor_super" id="oprration">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">a + b</td><td class="style_td">Return a + b.</td></tr><tr><td class="style_td">a - b</td><td class="style_td">Return a - b.</td></tr><tr><td class="style_td">a * b</td><td class="style_td">Return a * b. a must be algebraic number or integer.</td></tr><tr><td class="style_td">a / b</td><td class="style_td">Return a / b. b must not be zero unit.</td></tr><tr><td class="style_td">a ** b</td><td class="style_td">Return a ** b. b must be integer.</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

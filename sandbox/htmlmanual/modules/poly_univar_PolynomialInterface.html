@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/univar.py/PolynomialInterface - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Funivar.py%2FPolynomialInterface">poly/univar.py/PolynomialInterface</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_univar.html" title="poly/univar.py">univar</a></p>
+<h2 id="content_1_0">PolynomialInterface  <a class="anchor_super" id="e97dceee">&dagger;</a></h2>
+<p>Base class for all univariate polynomials.
+Because this class is abstract, do not instanciate.</p>
+<p>This class inherits <a href="poly_formalsum_FormalSumContainerInterface.html" title="poly/formalsum.py/FormalSumContainerInterface">FormalSumContainerInterface</a>.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="bcc0369b">&dagger;</a></h3>
+
+<h4 id="content_1_2">PolynomialInterface(<em>coefficients</em> [, keyword arguments..])  <a class="anchor_super" id="q0f24c0d">&dagger;</a></h4>
+<p>For any descendants of PolynomialInterface, <em>coefficients</em> have to be given.
+Other arguments, if necessary, should be passed as keyword arguments.
+Note that in this initializer, no actual initialization happens.</p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="bbbc6345">&dagger;</a></h3>
+
+<h4 id="content_1_4">differentiate()  <a class="anchor_super" id="f52ed9a7">&dagger;</a></h4>
+<p>Return the formal differentiation of this polynomial.</p>
+
+<h4 id="content_1_5">downshift_degree(<em>slide</em>)  <a class="anchor_super" id="ya0a69d7">&dagger;</a></h4>
+<p>Return the polynomial obtained by shifting downward all terms with degrees of <em>slide</em>.</p>
+<p>Be careful that if the least degree term has the degree less than <em>slide</em> then the result is not mathematically a polynomial.  Even in such a case, the method does not raise an exception.</p>
+<p>f.downshift_degree(slide) is equivalent to f.upshift_degree(-slide).</p>
+
+<h4 id="content_1_6">upshift_degree(<em>slide</em>)  <a class="anchor_super" id="hfd3a098">&dagger;</a></h4>
+<p>Return the polynomial obtained by shifting upward all terms with degrees of <em>slide</em>.</p>
+<p>f.upshift_degree(slide) is equivalent to f.term_mul( (slide, 1) ).</p>
+
+<h4 id="content_1_7">ring_mul(<em>other</em>)  <a class="anchor_super" id="t9d288ba">&dagger;</a></h4>
+<p>Return the result of multiplication with the <em>other</em> polynomial.</p>
+
+<h4 id="content_1_8">scalar_mul(<em>scale</em>)  <a class="anchor_super" id="u37811ea">&dagger;</a></h4>
+<p>Return the result of multiplication by scalar <em>scale</em>.</p>
+
+<h4 id="content_1_9">term_mul(<em>term</em>)  <a class="anchor_super" id="c51da083">&dagger;</a></h4>
+<p>Return the result of multiplication with the given <em>term</em>.
+The term can be given as a tuple (degree, coeff) or as a Polynomial instance.</p>
+
+<h4 id="content_1_10">square()  <a class="anchor_super" id="s90e2cb1">&dagger;</a></h4>
+<p>Return the square of this polynomial.</p>
+
+<h3 id="content_1_11">Operators  <a class="anchor_super" id="kd6399a2">&dagger;</a></h3>
+<p>In addition to the <a href="poly_formalsum_FormalSumContainerInterface.html#operators" title="poly/formalsum.py/FormalSumContainerInterface">operators</a> defined in FormalSumContainerInterface, this class defines:</p>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">f * g</td><td class="style_td">multiplication <a id="notetext_1" href="#notefoot_1" class="note_super" title="in FormalSumContainerInterface, there is only scalar multiplication">*1</a></td></tr><tr><td class="style_td">f ** i</td><td class="style_td">powering</td></tr></tbody></table></div>
+</div>
+
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">in FormalSumContainerInterface, there is only scalar multiplication</span><br /></div>
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

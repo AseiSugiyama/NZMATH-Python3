@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>matrix.py/FieldMatrix - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?matrix.py%2FFieldMatrix">matrix.py/FieldMatrix</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="matrix.html" title="matrix.py">matrix</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29%2FFieldMatrix%20%28ja%29" title="matrix (ja)/FieldMatrix (ja)">Japanese</a>)</p>
+<h2 id="content_1_0">FieldMatrix  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for matrix whose coefficient ring belongs field.
+It is a subclass of <a href="matrix_RingMatrix.html" title="matrix.py/RingMatrix">RingMatrix</a>.</p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  FieldMatrix </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#init">  Constructor </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#ve0b3d8e"> FieldMatrix(row, column [, compo, coeff_ring]) </a></li></ul></li>
+<li><a href="#method">  Methods </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#k1f6d125"> toSubspace([isbasis]) </a></li>
+<li><a href="#a5a8d7e4"> kernel() </a></li>
+<li><a href="#c9b88ff7"> image() </a></li>
+<li><a href="#t37411aa"> rank() </a></li>
+<li><a href="#l8974e37"> inverseimage(V) </a></li>
+<li><a href="#i79cd231"> solve(B) </a></li>
+<li><a href="#kcd8b704"> columnEchelonForm() </a></li></ul></li>
+<li><a href="#operator"> Operators </a></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="init">&dagger;</a></h3>
+
+<h4 id="content_1_2">FieldMatrix(<em>row</em>, <em>column</em> [, <em>compo</em>, <em>coeff_ring</em>])  <a class="anchor_super" id="ve0b3d8e">&dagger;</a></h4>
+<p><em>row</em> and <em>column</em> must be a positive integer.
+<em>compo</em> must be a <strong><a href="matrix.html#listform" title="matrix.py">list form</a></strong>.
+<em>coeff_ring</em> must be an instance of <a href="ring.html" title="ring.py">ring.Ring</a>.
+In general, given matrix size and coefficient ring unspecified, you should call <strong><a href="matrix.html#cmatrix" title="matrix.py">createMatrix</a></strong> for your profit.<br /></p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="method">&dagger;</a></h3>
+
+<h4 id="content_1_4">toSubspace([isbasis])  <a class="anchor_super" id="k1f6d125">&dagger;</a></h4>
+<p>Return the <a href="matrix_Subspace.html" title="matrix.py/Subspace">Subspace</a> instance.
+It overrides the method from <a href="matrix_RingMatrix.html#toSubspace" title="matrix.py/RingMatrix">RingMatrix</a>.</p>
+
+<h4 id="content_1_5">kernel()  <a class="anchor_super" id="a5a8d7e4">&dagger;</a></h4>
+<p>Return the kernel of <em>self</em>.</p>
+
+<h4 id="content_1_6">image()  <a class="anchor_super" id="c9b88ff7">&dagger;</a></h4>
+<p>Return the image of <em>self</em>.</p>
+
+<h4 id="content_1_7">rank()  <a class="anchor_super" id="t37411aa">&dagger;</a></h4>
+<p>Return the rank.</p>
+
+<h4 id="content_1_8">inverseimage(<em>V</em>)  <a class="anchor_super" id="l8974e37">&dagger;</a></h4>
+<p>Return an inverse image of <em>V</em> by <em>self</em>.</p>
+
+<h4 id="content_1_9">solve(<em>B</em>)  <a class="anchor_super" id="i79cd231">&dagger;</a></h4>
+<p>Solve <em>self</em> * X = <em>B</em>.
+Return a particular solution and kernel of <em>self</em>.</p>
+
+<h4 id="content_1_10">columnEchelonForm()  <a class="anchor_super" id="kcd8b704">&dagger;</a></h4>
+<p>Return the column echelon form.</p>
+
+<h3 id="content_1_11">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">M / d</td><td class="style_td">Return the division of M by d. d must be scalar.</td></tr><tr><td class="style_td">M // d</td><td class="style_td">Return the division of M by d. d must be scalar.</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

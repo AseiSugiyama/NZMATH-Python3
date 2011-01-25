@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>intresidue.py/IntegerResidueClassRing - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?intresidue.py%2FIntegerResidueClassRing">intresidue.py/IntegerResidueClassRing</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="intresidue.html" title="intresidue.py">intresidue.py</a></p>
+<h2 id="content_1_0">IntegerResidueClassRing class  <a class="anchor_super" id="c2d72f25">&dagger;</a></h2>
+<p>The class is for rings of integer residue classes.
+A subclass of nzmath.ring.CommutativeRing.</p>
+
+<h3 id="content_1_1">constructor  <a class="anchor_super" id="y9428644">&dagger;</a></h3>
+
+<h4 id="content_1_2">IntegerResidueClassRing(<em>modulus</em>)  <a class="anchor_super" id="eb12bb00">&dagger;</a></h4>
+<p>The argument <em>modulus</em> = m specifies an ideal mZ.</p>
+
+<h3 id="content_1_3">methods  <a class="anchor_super" id="bb6d789c">&dagger;</a></h3>
+
+<h4 id="content_1_4">isfield()  <a class="anchor_super" id="j72da75a">&dagger;</a></h4>
+<p>Return True if the modulus is prime, False if not.
+Since a finite domain is a field, other ring property tests
+are merely aliases of isfield; they are
+isdomain, iseuclidean, isnoetherian,ispid, isufd</p>
+
+<h4 id="content_1_5">createElement(<em>seed</em>)  <a class="anchor_super" id="ebdb904a">&dagger;</a></h4>
+<p>Create a <a href="intresidue_IntegerResidueClass.html" title="intresidue.py/IntegerResidueClass">IntegerResidueClass</a> instance with <em>seed</em>.</p>
+
+<h4 id="content_1_6">issubring(<em>other</em>)  <a class="anchor_super" id="pbc1a339">&dagger;</a></h4>
+
+<h4 id="content_1_7">issuperring(<em>other</em>)  <a class="anchor_super" id="mf72d071">&dagger;</a></h4>
+
+<h3 id="content_1_8">class method  <a class="anchor_super" id="l99ee7f8">&dagger;</a></h3>
+
+<h4 id="content_1_9">getInstance(<em>cls</em>, <em>modulus</em>)  <a class="anchor_super" id="o31507d2">&dagger;</a></h4>
+<p>Return an instance of the class of specified modulus.
+Since this is a class method, use it as:</p>
+<pre>IntegerResidueClassRing.getInstance(3)</pre>
+<p>to create a Z/3Z object, for example.</p>
+
+<h3 id="content_1_10">operators  <a class="anchor_super" id="o19f70c3">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">in</td><td class="style_td">whether an element is in the ring or not.</td></tr><tr><td class="style_td">==</td><td class="style_td">equality</td></tr><tr><td class="style_td">repr</td><td class="style_td">return repr string like &quot;IntegerResiduClassRing(3)&quot;.</td></tr><tr><td class="style_td">str</td><td class="style_td">return str string like &quot;Z/3Z&quot;.</td></tr><tr><td class="style_td">card</td><td class="style_td">return cardinality. <a id="notetext_1" href="#notefoot_1" class="note_super" title="see compatibility module">*1</a></td></tr></tbody></table></div>
+</div>
+
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">see <a href="compatibility.html" title="compatibility.py">compatibility</a> module</span><br /></div>
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/formalsum.py/FormalSumContainerInterface - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fformalsum.py%2FFormalSumContainerInterface">poly/formalsum.py/FormalSumContainerInterface</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_formalsum.html" title="poly/formalsum.py">formalsum</a></p>
+<h2 id="content_1_0">FormalSumContainerInterface  <a class="anchor_super" id="ne21f9f4">&dagger;</a></h2>
+<p>Interface of formal sum container.
+Do not instanciate.</p>
+
+<h3 id="content_1_1">methods  <a class="anchor_super" id="l5846918">&dagger;</a></h3>
+
+<h4 id="content_1_2">iterterms, iterbases, itercoefficients  <a class="anchor_super" id="x3a6a2e6">&dagger;</a></h4>
+<p>Iterators over the container.
+iterterms() is equivalent to zip(iterbases(), itercoefficient()).</p>
+
+<h4 id="content_1_3">terms, bases, coefficients  <a class="anchor_super" id="fb30fb6f">&dagger;</a></h4>
+<p>Return a list containing all content of the container.
+terms() is equivalent to list(iterterms()) or zip(bases(), coefficients()).</p>
+
+<h4 id="content_1_4">terms_map(<em>func</em>), bases_map(<em>func</em>), coefficients_map(<em>func</em>)  <a class="anchor_super" id="m50bad5c">&dagger;</a></h4>
+<p>Create a new formal sum container by applying <em>func</em> to each
+term (base or coefficients, resp.).</p>
+
+<h3 id="content_1_5">operators <a class="anchor" id="operators"></a> <a class="anchor_super" id="n55a4f84">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">s + t</td><td class="style_td">addition</td></tr><tr><td class="style_td">s - t</td><td class="style_td">subtraction</td></tr><tr><td class="style_td">+s</td><td class="style_td">same content</td></tr><tr><td class="style_td">-s</td><td class="style_td">negation</td></tr><tr><td class="style_td">s * a, a * s</td><td class="style_td">scalar multiplication by a</td></tr><tr><td class="style_td">s == t</td><td class="style_td">equality</td></tr><tr><td class="style_td">s != t</td><td class="style_td">inequality</td></tr><tr><td class="style_td">s[b]</td><td class="style_td">get coeeficient corresponding to a base b</td></tr><tr><td class="style_td">b in s</td><td class="style_td">return whether base b is in s</td></tr><tr><td class="style_td">len(s)</td><td class="style_td">number of terms</td></tr><tr><td class="style_td">hash(s)</td><td class="style_td">hash</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

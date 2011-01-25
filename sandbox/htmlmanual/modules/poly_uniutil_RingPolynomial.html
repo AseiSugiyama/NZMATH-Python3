@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/uniutil.py/RingPolynomial - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Funiutil.py%2FRingPolynomial">poly/uniutil.py/RingPolynomial</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_uniutil.html" title="poly/uniutil.py">uniutil</a></p>
+<h2 id="content_1_0">RingPolynomial  <a class="anchor_super" id="zc962a23">&dagger;</a></h2>
+<p>General polynomial with commutative ring coefficients.</p>
+<p>This class inherits
+<a href="poly_univar_SortedPolynomial.html" title="poly/univar.py/SortedPolynomial">univar.SortedPolynomial</a>,
+OrderProvider and RingElementProvider.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="tbb0ade4">&dagger;</a></h3>
+
+<h4 id="content_1_2">RingPolynomial(<em>coefficients</em> [,<em>coeffring</em> [,keyword arguments]])  <a class="anchor_super" id="c42362ef">&dagger;</a></h4>
+<p>Initialize the polynomial.</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><em>coefficients</em>: initializer for polynomial coefficients</li>
+<li><em>coeffring</em>: commutative ring</li></ul>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="v64434cc">&dagger;</a></h3>
+
+<h4 id="content_1_4">getRing()  <a class="anchor_super" id="r653b5e4">&dagger;</a></h4>
+<p>Return an object of a subclass of Ring, to which the element belongs.<br />
+(This method overrides the definition in RingElementProvider)</p>
+
+<h4 id="content_1_5">getCoefficientRing()  <a class="anchor_super" id="x0e43116">&dagger;</a></h4>
+<p>Return an object of a subclass of Ring, to which the all coefficients belong.<br />
+(This method overrides the definition in RingElementProvider)</p>
+
+<h4 id="content_1_6">shift_degree_to(<em>degree</em>)  <a class="anchor_super" id="vbb320cd">&dagger;</a></h4>
+<p>Return polynomial whose degree is the given <em>degree</em>.<br />
+More precisely, let f(X) = a_0 + ... + a_n * X**n, then
+f.shift_degree_to(m) returns:</p>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>zero polynomial, if f is zero polynomial</li>
+<li>a_(n-m) + ... + a_n * X**m, if 0 &lt;= m &lt; n</li>
+<li>a_0 * X**(m-n) + ... + a_n * X**m, if m &gt;= n</li></ul>
+<p>(This method is inherited from OrderProvider)</p>
+
+<h4 id="content_1_7">split_at(<em>degree</em>)  <a class="anchor_super" id="ff34c34c">&dagger;</a></h4>
+<p>Return tuple of two polynomials, which are splitted at the
+given <em>degree</em>.  The term of the given degree, if exists,
+belongs to the lower degree polynomial.<br />
+(This method is inherited from OrderProvider)</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>Tutorial - NZMATH</title>
+ <link rel="stylesheet" href="default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?Tutorial">Tutorial</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="index.html" title="UserManual">UserManual</a></p>
+<h2 id="content_1_0">Tutorial  <a class="anchor_super" id="vd00b0a4">&dagger;</a></h2>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#vd00b0a4">  Tutorial </a></li>
+<li><a href="#l2301848">  1. What is it? </a></li>
+<li><a href="#t54ab630">  2. Usage </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#ke0bf4e6">  2.1. Before You Start </a></li>
+<li><a href="#d4aaeaf0">  2.2. Quick Start </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#k510acf4">  2.2.1. User Interfaces </a></li>
+<li><a href="#b8e46717">  2.2.2 Sample Session </a></li></ul></li></ul></li>
+<li><a href="#ad0c8e37">  3. How to Write a Program </a></li>
+<li><a href="#o9026096">  4. Data types </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#t7e3a60e">  4.1 Integer </a></li>
+<li><a href="#yd201e20">  4.2 Rational </a></li>
+<li><a href="#k23dd96d">  4.3 Polynomials </a></li>
+<li><a href="#ab356dcc">  4.4 Rings </a></li></ul></li>
+<li><a href="#d96a6d69">  5. Development </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#i1e2057e">  5.1. Bug Report </a></li>
+<li><a href="#ib0afaad">  5.2. Development Source Code </a></li>
+<li><a href="#p7b8f644">  5.3. Join to the Team </a></li></ul></li>
+<li><a href="#c39df9cf">  6. Contact </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#h579c0e6">  6.1. Mailing List </a></li></ul></li>
+<li><a href="#i7f19845">  7. License </a></li></ul>
+</div>
+
+
+<h2 id="content_1_1">1. What is it?  <a class="anchor_super" id="l2301848">&dagger;</a></h2>
+<p>The purpose of the NZMATH system is to provide mathematical,
+especially number-theoretic computational power to you.  It is written
+in Python scripting language in order to enhance quickly with users'
+experiences.</p>
+
+<h2 id="content_1_2">2. Usage  <a class="anchor_super" id="t54ab630">&dagger;</a></h2>
+
+<h3 id="content_1_3">2.1. Before You Start  <a class="anchor_super" id="ke0bf4e6">&dagger;</a></h3>
+<p>If you have not yet installed NZMATH, please <a href="install.html" title="Install">Install</a> first.</p>
+
+<h3 id="content_1_4">2.2. Quick Start  <a class="anchor_super" id="d4aaeaf0">&dagger;</a></h3>
+
+<h4 id="content_1_5">2.2.1. User Interfaces  <a class="anchor_super" id="k510acf4">&dagger;</a></h4>
+<p>At the time of writing this tutorial, NZMATH is on an early stage of
+development and does not have own interpreter nor graphical interface.
+Users have to use with the raw Python interpreter.  Though the
+interpreter is designed well, of course, it is not specialized for
+mathematical computation.  Please be patient about it.</p>
+
+<h4 id="content_1_6">2.2.2 Sample Session  <a class="anchor_super" id="b8e46717">&dagger;</a></h4>
+<p>Start your Python interpreter</p>
+<pre>   % python
+   Python 2.5 (r25:51908, Dec 31 2006, 01:05:45)
+   [GCC 3.4.3 (csl-sol210-3_4-branch+sol_rpath)] on sunos5
+   Type &quot;help&quot;, &quot;copyright&quot;, &quot;credits&quot; or &quot;license&quot; for more information.
+   &gt;&gt;&gt;</pre>
+<p>(we use '%' for a command prompt.  If you are on Windows, it may be
+'C:\&gt;' or something.)</p>
+<p>Here, '&gt;&gt;&gt;' is a Python prompt.  You are in the Python interpreter
+until you will type EOF (Ctrl-D on unices and Ctrl-Z on Windows).
+Then, type:</p>
+<pre>   &gt;&gt;&gt; from nzmath import *
+   &gt;&gt;&gt;</pre>
+<p>The whole NZMATH stuff is imported.</p>
+<pre>   &gt;&gt;&gt; r = rational.Rational(113, 355)
+   &gt;&gt;&gt; print r
+   113/355
+   &gt;&gt;&gt; 
+   ....</pre>
+<p>The session continues until you will stop.</p>
+
+<h2 id="content_1_7">3. How to Write a Program  <a class="anchor_super" id="ad0c8e37">&dagger;</a></h2>
+<p>Writing everything at the interpreter prompt is a dull work.  Instead
+of it, you can make a program file.</p>
+<p>The name of file must end with '.py'; for example, 'sample.py'.</p>
+<p>The contents of the file must be a valid Python program.  And, you may
+want to import NZMATH module at the start of the file.</p>
+<p>See the Python documents for detailed Python syntax or built-in data
+types and functions.  NZMATH data types are explained below.</p>
+<p>To invoke your program (sample.py, say), simply:</p>
+<pre>   % python sample.py</pre>
+<p>Or, if you are using unices, make it executable as usual.</p>
+
+<h2 id="content_1_8">4. Data types  <a class="anchor_super" id="o9026096">&dagger;</a></h2>
+<p>Python is an object-oriented programming language, and user can create
+a new data type as class.  The data types provided by NZMATH are also
+classes, which have a lot of methods including overloaded operators.</p>
+
+<h3 id="content_1_9">4.1 Integer  <a class="anchor_super" id="t7e3a60e">&dagger;</a></h3>
+<p>There are two integer data types already in Python; int (single
+precision) and long (arbitrary precision).  NZMATH has Integer
+(nzmath.rational.Integer) to give a rational result for division
+instead of a float.</p>
+
+<h3 id="content_1_10">4.2 Rational  <a class="anchor_super" id="yd201e20">&dagger;</a></h3>
+<p>NZMATH provides Rational (nzmath.rational.Rational) class representing
+a rational number.</p>
+
+<h3 id="content_1_11">4.3 Polynomials  <a class="anchor_super" id="k23dd96d">&dagger;</a></h3>
+<p>There are several polynomial classes.</p>
+
+<h3 id="content_1_12">4.4 Rings  <a class="anchor_super" id="ab356dcc">&dagger;</a></h3>
+<p>Integers are in the integer ring, A polynomial in a certain polynomial
+ring, etc..  They are obtained from elements of them by getRing
+method.  For example, rational.Integer(1).getRing() returns a
+rational.IntegerRing object.</p>
+<p>This is a convention in NZMATH and does not apply to the object
+provided by Python itself such as int or long.</p>
+
+<h2 id="content_1_13">5. Development  <a class="anchor_super" id="d96a6d69">&dagger;</a></h2>
+
+<h3 id="content_1_14">5.1. Bug Report  <a class="anchor_super" id="i1e2057e">&dagger;</a></h3>
+<p>If you encounter a bug, please notify us with, if possible, the data
+you supply, by email to <a href="mailto:nzmath-user@tnt.math.metro-u.ac.jp." rel="nofollow">nzmath-user@tnt.math.metro-u.ac.jp.</a>
+(See 6.1. Mailing List)</p>
+
+<h3 id="content_1_15">5.2. Development Source Code  <a class="anchor_super" id="ib0afaad">&dagger;</a></h3>
+
+<h3 id="content_1_16">5.3. Join to the Team  <a class="anchor_super" id="p7b8f644">&dagger;</a></h3>
+<p>If you are interested in joining to the development team, say so on
+the mailing list.  We will then give you an account on the server
+which provides cvs repository.
+(See 6.1. Mailing List)</p>
+
+<h2 id="content_1_17">6. Contact  <a class="anchor_super" id="c39df9cf">&dagger;</a></h2>
+
+<h3 id="content_1_18">6.1. Mailing List  <a class="anchor_super" id="h579c0e6">&dagger;</a></h3>
+<p>A mailing list <a href="mailto:nzmath-user@tnt.math.metro-u.ac.jp" rel="nofollow">nzmath-user@tnt.math.metro-u.ac.jp</a> is for discussing
+anything about NZMATH.  You can join the list with writing a mail
+containing a line of &quot;subscribe&quot; in the body to
+<a href="mailto:nzmath-user-request@tnt.math.metro-u.ac.jp." rel="nofollow">nzmath-user-request@tnt.math.metro-u.ac.jp.</a>  *Be careful* not to send
+it to nzmath-user.</p>
+
+<h2 id="content_1_19">7. License  <a class="anchor_super" id="i7f19845">&dagger;</a></h2>
+<p>NZMATH is distributed under the BSD license.  Please read LICENSE.txt
+in the distribution tar ball for detail.</p>
+<p>Copyright (c) 2004, NZMATH development group, all right reserved.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

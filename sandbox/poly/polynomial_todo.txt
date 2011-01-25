@@ -1,0 +1,41 @@
+- 次の関数を作れ
+  + mod m 正最小剰余    (Z -> Z)
+  + mod m 絶対値最小剰余 (Z -> Z)
+  + 正最小剰余での引き戻し (Z/mZ -> Z)
+  + 絶対値最小剰余での引き戻し (Z/mZ -> Z)
+- Z に特化した因数分解
+- 効率的な割算、gcd
+- Fp[] = Z[]/(p)
+
+済み
+----
+- DivisionProvider は gcd も提供できる
+- GCD domain (または UFD) 用の Provider クラス
+  容量(content)、原始部分(primitive part)
+- Sorted で termorder を保持するのをやめる
+  1変数多項式の termorder は1種類しかないから
+  - init の(signature の)統一
+- 全ての係数に対して関数を適用することで新たな多項式を生成するメソッド
+  F = Σa_i X^i |-> G = Σfunc(a_i) X^i
+  を F.coefficients_map(func) といった形で
+  - formalsum にも
+- 素数標数用の Provider クラス
+  効率的な冪乗、因数分解
+- variable name provider クラス
+- ringElement interface.
+- division1 という名前は失敗だった
+- multivar も平行した構成に
+- Z 用の Provider クラス
+
+
+取り止め
+--------
+- Sorted の iterator で逆順も取れるようにする
+
+  
+未定
+----
+- PseudoDivisionProvider では gcd は提供できるのか
+- 掛け算を FFT でできるのはいつ?
+- 現在の Sorted は項のソートされたリストだが、係数を次数順に保持するタプルのものも作る。
+  Sorted の下にリスト型とタプル型を統合するか、子クラスに

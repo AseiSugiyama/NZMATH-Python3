@@ -1,0 +1,8 @@
+syntax: regexp
+
+.*py.$
+.*~$
+.*.aux$
+.*.log$
+.*.out$
+.*.toc$

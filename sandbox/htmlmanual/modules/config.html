@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>config.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?config.py">config.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="manual.html" title="manual">nzmath</a></p>
+<h2 id="content_1_0">config  <a class="anchor_super" id="occ70e03">&dagger;</a></h2>
+<p>NZMATH configurations.</p>
+<p>All constants in the module can be set in user's config file.
+See the <a href="#usersettings">User Settings</a> section for more detailed description.</p>
+
+<h2 id="content_1_1">Default Settings  <a class="anchor_super" id="c16113ce">&dagger;</a></h2>
+
+<h3 id="content_1_2">Dependencies  <a class="anchor_super" id="i759fa26">&dagger;</a></h3>
+<p>Some third party / platform dependent modules are possibly used,
+and they are configurable.</p>
+
+<h4 id="content_1_3">HAVE_MPMATH  <a class="anchor_super" id="q640b2e3">&dagger;</a></h4>
+<p>mpmath is a package providing multiprecision math.<br />
+<a href="http://code.google.com/p/mpmath" rel="nofollow">http://code.google.com/p/mpmath</a>
+This package is used in ecpp module.</p>
+
+<h4 id="content_1_4">HAVE_SQLITE3  <a class="anchor_super" id="vcbd05ac">&dagger;</a></h4>
+<p>sqlite3 is the default database module for Python, but it need to be
+enabled at the build time.</p>
+
+<h4 id="content_1_5">HAVE_NET  <a class="anchor_super" id="qf17c029">&dagger;</a></h4>
+<p>Some functions will connect to the Net (not yet; this is a sample.)
+Desktop machines are usually connected to the Net, but notebooks
+may have connectivity only occasionally.</p>
+
+<h3 id="content_1_6">Assumptions  <a class="anchor_super" id="lc4a4782">&dagger;</a></h3>
+<p>Some conjectures are useful for assuring the validity of a faster
+algorithm.</p>
+<p>All assumptions are default to False, but you can set them True if
+you believe them.</p>
+
+<h4 id="content_1_7">GRH  <a class="anchor_super" id="j0334333">&dagger;</a></h4>
+<p>Generalized Riemann Hypothesis.<br />
+For example, primality test is O((log n)**2) if GRH is true
+while O((log n)**6) or something without it.</p>
+
+<h3 id="content_1_8">Files  <a class="anchor_super" id="icac97bd">&dagger;</a></h3>
+
+<h4 id="content_1_9">DATADIR  <a class="anchor_super" id="qb250ed0">&dagger;</a></h4>
+<p>The directory where nzmath (static) data files are stored.
+The default will be os.path.join(sys.prefix, 'share', 'nzmath')
+or os.path.join(sys.prefix, 'Data', 'nzmath') on Windows.</p>
+
+<h2 id="content_1_10">Automatic Configuration  <a class="anchor_super" id="u3dbe60c">&dagger;</a></h2>
+<p>The items above can be set automatically by testing the environment.</p>
+
+<h3 id="content_1_11">Checks  <a class="anchor_super" id="z7b27362">&dagger;</a></h3>
+<p>Here are check functions.</p>
+<p>The constants acompanying the check functions which enable the check if it is True, can be overridden in <a href="#usersettings">User Settings</a>.</p>
+<p>Both check functions and constants are not exported.</p>
+
+<h4 id="content_1_12">check_mpmath()  <a class="anchor_super" id="bf5a19fe">&dagger;</a></h4>
+<p>Check whether mpmath is available or not.</p>
+<p>constant: CHECK_MPMATH</p>
+
+<h4 id="content_1_13">check_sqlite3()  <a class="anchor_super" id="a3b7a80d">&dagger;</a></h4>
+<p>Check if sqlite3 is importable or not.
+pysqlite2 may be a substitution.</p>
+<p>constant: CHECK_SQLITE3</p>
+
+<h4 id="content_1_14">check_net()  <a class="anchor_super" id="f8f5cb86">&dagger;</a></h4>
+<p>Check the net connection by http call.</p>
+<p>constant: CHECK_NET</p>
+
+<h4 id="content_1_15">default_datadir()  <a class="anchor_super" id="cd399369">&dagger;</a></h4>
+<p>Return default value for DATADIR.</p>
+<p>If this function is called despite that DATADIR is set, the value of DATADIR is the first candidate to be returned.
+Other possibilities are, sys.prefix + 'Data/nzmath' on Windows, or sys.prefix + 'share/nzmath' on other platforms.</p>
+<p>Be careful that all the above paths do not exist, the function returns None.</p>
+<p>constant: CHECK_DATADIR</p>
+
+<h2 id="content_1_16"><a class="anchor" id="usersettings"></a>User Settings  <a class="anchor_super" id="qb2233df">&dagger;</a></h2>
+<p>The module try to load the user's config file named &quot;nzmathconf.py&quot;.
+The places searched are the followings:</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>The directory which is specified by an environment variable NZMATHCONFDIR.</li>
+<li>If the platform is Windows, then
+<ol class="list2" style="padding-left:16px;margin-left:16px"><li>If an environment variable APPDATA is set, APPDATA/nzmath.</li>
+<li>If, alternatively, an environment variable USERPROFILE is set, USERPROFILE/Application Data/nzmath.</li></ol></li>
+<li>On other platforms, if an environment variable HOME is set, HOME/.nzmath.d.</li></ol>
+<p>nzmathconf.py is a Python script.
+Users can set the constants like HAVE_MPMATH, which will override the default settings.
+These constants, except assumption ones, are automatically set, unless constants acompanying the check functions are false (see Automatic Configuration above).</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

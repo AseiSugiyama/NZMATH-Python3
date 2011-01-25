@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/ratfunc.py/RationalFunction - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fratfunc.py%2FRationalFunction">poly/ratfunc.py/RationalFunction</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_ratfunc.html" title="poly/ratfunc.py">ratfunc</a></p>
+<h2 id="content_1_0">RationalFunction  <a class="anchor_super" id="u2334ef0">&dagger;</a></h2>
+<p>The class of rational functions.<br />
+(new in 0.92.0)</p>
+
+<h3 id="content_1_1">constructor  <a class="anchor_super" id="ieaef318">&dagger;</a></h3>
+
+<h4 id="content_1_2">RationalFunction(numerator, [denominator])  <a class="anchor_super" id="leb9a07d">&dagger;</a></h4>
+<p>Make a rational function with the given numerator and denominator.
+If the numerator is a RationalFunction instance and denominator is not given, then make a copy.
+If the numerator is a kind of polynomial, then make a rational function whose numerator is the given polynomial. Additionally, if denominator is also given, the denominator is set to its valus, otherwise the denominator is 1.</p>
+
+<h3 id="content_1_3">methods  <a class="anchor_super" id="m09fc39a">&dagger;</a></h3>
+
+<h4 id="content_1_4">getRing()  <a class="anchor_super" id="xe3c47fb">&dagger;</a></h4>
+<p>Return the rational function field.</p>
+
+<h3 id="content_1_5">operators  <a class="anchor_super" id="a1f47d6c">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">=</td><td class="style_td">equality</td></tr><tr><td class="style_td">str</td><td class="style_td">string</td></tr><tr><td class="style_td">repr</td><td class="style_td">repr string</td></tr></tbody></table></div>
+<p>Other operators are inherited from nzmath.ring.QuotientFieldElement.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

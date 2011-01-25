@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/hensel.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fhensel.py">poly/hensel.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a></p>
+<h2 id="content_1_0">hensel  <a class="anchor_super" id="kbd7a424">&dagger;</a></h2>
+<p>A module for Hensel lift.<br />
+(new in 0.92.0)</p>
+<p>Generally, users only need the function <a href="poly_hensel.html#b6bb5469" title="poly/hensel.py">list_upto</a>.</p>
+
+<h4 id="content_1_1">Note  <a class="anchor_super" id="qc95803c">&dagger;</a></h4>
+<p>A basic implementation of Hensel lift has been there in <a href="poly.html" title="poly">poly</a>.<a href="poly_factor.html" title="poly/factor.py">factor</a>.</p>
+
+<h3 id="content_1_2">functions  <a class="anchor_super" id="f6dfb396">&dagger;</a></h3>
+
+<h4 id="content_1_3">lift_upto(<em>target</em>, <em>factors</em>, <em>p</em>, <em>bound</em>)  <a class="anchor_super" id="b6bb5469">&dagger;</a></h4>
+<p>Hensel lift <em>factors</em> mod <em>p</em> of <em>target</em> upto <em>bound</em> and return factors mod q and the q itself.</p>
+<p>PRECONDITIONS:</p>
+<blockquote><p class="quotation"><em>target</em> is monic.<br />
+<em>target</em> == product(<em>factors</em>) mod <em>p</em></p></blockquote>
+<p>POSTCONDITIONS:</p>
+
+<blockquote><p class="quotation">there exist k s.t. q == <em>p</em>**k &gt;= <em>bound</em> and<br />
+<em>target</em> == product(result) mod q</p></blockquote>
+
+<h3 id="content_1_4">classes  <a class="anchor_super" id="r93e2f29">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="poly_hensel_HenselLiftPair.html" title="poly/hensel.py/HenselLiftPair">HenselLiftPair</a></li>
+<li><a href="poly_hensel_HenselLiftMulti.html" title="poly/hensel.py/HenselLiftMulti">HenselLiftMulti</a></li>
+<li><a href="poly_hensel_HenselLiftSimultaneously.html" title="poly/hensel.py/HenselLiftSimultaneously">HenselLiftSimultaneously</a></li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>matrix.py - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?matrix.py">matrix.py</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">UserManual</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29" title="matrix (ja)">Japanese</a>)</p>
+<h2 id="content_1_0">matrix  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>matrix module provides matrices.</p>
+<div class="contents">
+<a id="contents_1"></a>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li><a href="#index">  matrix </a>
+<ul class="list2" style="padding-left:16px;margin-left:16px"><li><a href="#function">  Functions </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#cmatrix"> createMatrix(row[, column, compo, coeff_ring]) </a></li>
+<li><a href="#wd84bb69"> identityMatrix(size [,coeff]) </a></li>
+<li><a href="#unit"> unitMatrix(size [,coeff]) </a></li>
+<li><a href="#zero"> zeroMatrix(row [,column, coeff] </a></li></ul></li>
+<li><a href="#class">  Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#matrix"> Matrix </a></li>
+<li><a href="#sqmatrix"> SquareMatrix </a></li>
+<li><a href="#f3c7caaa"> RingMatrix </a></li>
+<li><a href="#m31b4b8c"> RingSquareMatrix </a></li>
+<li><a href="#z66839cd"> FieldMatrix </a></li>
+<li><a href="#c27cfb25"> FieldSquareMatrix </a></li>
+<li><a href="#matring"> MatrixRing </a></li>
+<li><a href="#subspace"> Subspace </a></li></ul></li>
+<li><a href="#except">  Exception Classes </a>
+<ul class="list3" style="padding-left:16px;margin-left:16px"><li><a href="#sizeerr"> MatrixSizeError </a></li>
+<li><a href="#vecdep"> VectorsNotIndependent </a></li>
+<li><a href="#noinvimg"> NoInverseImage </a></li>
+<li><a href="#noinvs"> NoInverse </a></li></ul></li></ul></li></ul>
+</div>
+
+
+<h3 id="content_1_1">Functions  <a class="anchor_super" id="function">&dagger;</a></h3>
+
+<h4 id="content_1_2">createMatrix(<em>row</em>[, <em>column</em>, <em>compo<a id="notetext_1" href="#notefoot_1" class="note_super" title="Of cource, compo means component.">*1</a></em>, <em>coeff_ring</em>])  <a class="anchor_super" id="cmatrix">&dagger;</a></h4>
+<p>A factory function to create an instance of <a href="matrix_RingMatrix.html" title="matrix.py/RingMatrix">RingMatrix</a>, <a href="matrix_RingSquareMatrix.html" title="matrix.py/RingSquareMatrix">RingSquareMatrix</a>, <a href="matrix_FieldMatrix.html" title="matrix.py/FieldMatrix">FieldMatrix</a> or <a href="matrix_FieldSquareMatrix.html" title="matrix.py/FieldSquareMatrix">FieldSquareMatrix</a>.<br />
+Your input determines the class automatically by examining the matrix size and the coefficient ring.<br />
+<em>row</em> and <em>column</em> must be interger, and <em>coeff_ring</em> must be an instance of <a href="ring.html" title="ring.py">ring.Ring</a>.</p>
+<p><a class="anchor" id="listform"></a>
+<em>compo</em> must be one of these forms below.</p>
+<ol class="list1" style="padding-left:16px;margin-left:16px"><li>concatenated <em>row</em> lists<a id="notetext_2" href="#notefoot_2" class="note_super" title="or you can pass straight list, i.e. [1, 2, 3, 4, 5, 6].">*2</a>, such as:
+<pre>matrix.createMatrix(3, 2, [1,2]+[3,4]+[5,6])</pre></li>
+<li>list of <em>row</em> lists, such as:
+<pre>matrix.createMatrix(3, 2, [[1,2], [3,4], [5,6]])</pre></li>
+<li>list of <em>column</em> tuples, such as:
+<pre>matrix.createMatrix(3, 2, [(1,3,5), (2,4,6)])</pre></li>
+<li>list of the vectors whose dimension equals <em>column</em>, such as:
+<pre>matrix.createMatrix(3, 2, [vector.Vector([1,3,5]), vector.Vector([2,4,6])])
+</pre>
+The examples above represent the same matrix form as follows:
+<pre>1 2
+3 4
+5 6</pre></li></ol>
+<p>If you abbreviate <em>compo</em>, it will be deemed to all zero list.</p>
+<p>Ex.</p>
+<pre>&gt;&gt;&gt; print matrix.createMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
+1 2 3
+4 5 6
+7 8 9</pre>
+
+<h4 id="content_1_3">identityMatrix(<em>size</em> [,<em>coeff</em>])  <a class="anchor_super" id="wd84bb69">&dagger;</a></h4>
+
+<h4 id="content_1_4">unitMatrix(<em>size</em> [,<em>coeff</em>])  <a class="anchor_super" id="unit">&dagger;</a></h4>
+<p>return unit matrix of <em>size</em>.
+<em>coeff</em> enables us to create matrix not in integer but in coefficient ring which is determined by <em>coeff</em>.
+<em>coeff</em> must be an instance of <a href="ring.html" title="ring.py">ring.Ring</a> or a multiplication unit(one).</p>
+
+<h4 id="content_1_5">zeroMatrix(<em>row</em> [,<em>column</em>, <em>coeff</em>]  <a class="anchor_super" id="zero">&dagger;</a></h4>
+<p>return zero matrix whose row is <em>row</em> and column is <em>column</em>.
+<em>coeff</em> enables us to create matrix not in integer but in coefficient ring which is determined by <em>coeff</em>.
+<em>coeff</em> must be an instance of <a href="ring.html" title="ring.py">ring.Ring</a> or an addition unit(zero).</p>
+
+<h3 id="content_1_6">Classes  <a class="anchor_super" id="class">&dagger;</a></h3>
+
+<h4 id="content_1_7"><a href="matrix_Matrix.html" title="matrix.py/Matrix">Matrix</a>  <a class="anchor_super" id="matrix">&dagger;</a></h4>
+
+<h4 id="content_1_8"><a href="matrix_SquareMatrix.html" title="matrix.py/SquareMatrix">SquareMatrix</a>  <a class="anchor_super" id="sqmatrix">&dagger;</a></h4>
+
+<h4 id="content_1_9"><a href="matrix_RingMatrix.html" title="matrix.py/RingMatrix">RingMatrix</a>  <a class="anchor_super" id="f3c7caaa">&dagger;</a></h4>
+
+<h4 id="content_1_10"><a href="matrix_RingSquareMatrix.html" title="matrix.py/RingSquareMatrix">RingSquareMatrix</a>  <a class="anchor_super" id="m31b4b8c">&dagger;</a></h4>
+
+<h4 id="content_1_11"><a href="matrix_FieldMatrix.html" title="matrix.py/FieldMatrix">FieldMatrix</a>  <a class="anchor_super" id="z66839cd">&dagger;</a></h4>
+
+<h4 id="content_1_12"><a href="matrix_FieldSquareMatrix.html" title="matrix.py/FieldSquareMatrix">FieldSquareMatrix</a>  <a class="anchor_super" id="c27cfb25">&dagger;</a></h4>
+
+<h4 id="content_1_13"><a href="matrix_MatrixRing.html" title="matrix.py/MatrixRing">MatrixRing</a>  <a class="anchor_super" id="matring">&dagger;</a></h4>
+
+<h4 id="content_1_14"><a href="matrix_Subspace.html" title="matrix.py/Subspace">Subspace</a>  <a class="anchor_super" id="subspace">&dagger;</a></h4>
+
+<h3 id="content_1_15">Exception Classes  <a class="anchor_super" id="except">&dagger;</a></h3>
+
+<h4 id="content_1_16">MatrixSizeError  <a class="anchor_super" id="sizeerr">&dagger;</a></h4>
+
+<h4 id="content_1_17">VectorsNotIndependent  <a class="anchor_super" id="vecdep">&dagger;</a></h4>
+
+<h4 id="content_1_18">NoInverseImage  <a class="anchor_super" id="noinvimg">&dagger;</a></h4>
+
+<h4 id="content_1_19">NoInverse  <a class="anchor_super" id="noinvs">&dagger;</a></h4>
+</div>
+
+<div id="note">
+<hr class="note_hr" /><a id="notefoot_1" href="#notetext_1" class="note_super">*1</a>
+<span class="small">Of cource, <em>compo</em> means component.</span><br />
+<a id="notefoot_2" href="#notetext_2" class="note_super">*2</a>
+<span class="small">or you can pass straight list, i.e. [1, 2, 3, 4, 5, 6].</span><br /></div>
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>matrix.py/MatrixRing - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?matrix.py%2FMatrixRing">matrix.py/MatrixRing</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="matrix.html" title="matrix.py">matrix</a> | (<a href="http://nzmath.sourceforge.net/doc/?matrix%20%28ja%29%2FMatrixRing%20%28ja%29" title="matrix (ja)/MatrixRing (ja)">Japanese</a>)</p>
+<h2 id="content_1_0">MatrixRing  <a class="anchor_super" id="t136413e">&dagger;</a></h2>
+<p>The class is for rings of matrices.
+It is a subclass of <a href="ring.html" title="ring.py">ring</a>.Ring.</p>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="d27aae61">&dagger;</a></h3>
+
+<h4 id="content_1_2">MatrixRing(<em>size</em>, <em>scalars</em>)  <a class="anchor_super" id="constructor">&dagger;</a></h4>
+<p>Create a ring of matrices with given size and ring of scalars.</p>
+
+<h3 id="content_1_3">Methods  <a class="anchor_super" id="z613ab0e">&dagger;</a></h3>
+
+<h4 id="content_1_4">unitMatrix()  <a class="anchor_super" id="unitmatrix">&dagger;</a></h4>
+<p>Return the unit matrix.</p>
+
+<h4 id="content_1_5">getInstance(<em>cls</em>, <em>size</em>, <em>scalars</em>)  <a class="anchor_super" id="getinstance">&dagger;</a></h4>
+<p>Return an instance of MatrixRing of given size and ring of scalars.
+The merit of using the method instead of the <a href="#constructor">constructor</a> is
+that the instances created by the method are cached and reused for efficiency.<br />
+This is a class method.
+A method call looks like:</p>
+<pre>MatrixRing.getInstance(3, rational.theIntegerRing)</pre>
+<p>then, it returns the cached instance or a newly created instance.</p>
+
+<h3 id="content_1_6">Properties  <a class="anchor_super" id="jd7c6e84">&dagger;</a></h3>
+<ul class="list1" style="padding-left:16px;margin-left:16px"><li>one (read only) The multiplicative unit of the ring, i.e. the unit matrix.</li>
+<li>zero (read only) The additive unit of the ring, i.e. the zero matrix.</li></ul>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

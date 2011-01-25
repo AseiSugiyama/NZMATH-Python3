@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>algfield.py/NumberField - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?algfield.py%2FNumberField">algfield.py/NumberField</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="algfield.html" title="algfield.py">algfield.py</a></p>
+<h2 id="content_1_0">NumberField  <a class="anchor_super" id="index">&dagger;</a></h2>
+<p>The class is for number field.</p>
+
+<h3 id="content_1_1">Initialize  <a class="anchor_super" id="init">&dagger;</a></h3>
+
+<h4 id="content_1_2">NumberField(<em>polynomial</em>)  <a class="anchor_super" id="nfield">&dagger;</a></h4>
+<p><em>polynomial</em> must be a monic irreducible polynomial defining the number field.</p>
+<p>Ex.</p>
+<pre>&gt;&gt;&gt; K = algfield.NumberField([-2, 0, 1])
+&gt;&gt;&gt; F = algfield.NumberField([-3, 0, 0, 1])
+&gt;&gt;&gt; print K
+NumberField([-2, 0, 1])
+&gt;&gt;&gt; print F
+NumberField([-3, 0, 0, 1])</pre>
+
+<h3 id="content_1_3">Attribute  <a class="anchor_super" id="attribute">&dagger;</a></h3>
+
+<h4 id="content_1_4">polynomial  <a class="anchor_super" id="ta9c8fa8">&dagger;</a></h4>
+<p>defining polynomial of the number field.</p>
+
+<h4 id="content_1_5">degree  <a class="anchor_super" id="r3a5d440">&dagger;</a></h4>
+<p>degree of number field.</p>
+
+<h3 id="content_1_6">Methods  <a class="anchor_super" id="methods">&dagger;</a></h3>
+
+<h4 id="content_1_7">disc()  <a class="anchor_super" id="disc">&dagger;</a></h4>
+<p>Compute the discriminant of the number field.
+<span style="color:red">However the output is not disc of the number field itself but disc of defining polynomial.</span></p>
+
+<h4 id="content_1_8">signature()  <a class="anchor_super" id="sign">&dagger;</a></h4>
+<p>Using Strum's algorithm, compute the signature of the number field.</p>
+
+<h4 id="content_1_9">POLRED()  <a class="anchor_super" id="polred">&dagger;</a></h4>
+<p>Given a polynomial f i.e. a field defined by f, output some polynomials
+defining subfield of the given number field.</p>
+
+<h4 id="content_1_10">isIntBasis()  <a class="anchor_super" id="IntBasis">&dagger;</a></h4>
+<p>Determine whether standard basis of the number field is integral basis of the field.</p>
+
+<h4 id="content_1_11">isGaloisField()  <a class="anchor_super" id="Galois">&dagger;</a></h4>
+<p>Determine whether self/other is Galois field.</p>
+
+<h4 id="content_1_12">getCharacteristic()  <a class="anchor_super" id="characteristic">&dagger;</a></h4>
+<p>Return characteristic of the number field (it is always zero).</p>
+
+<h3 id="content_1_13">Operators  <a class="anchor_super" id="operator">&dagger;</a></h3>
+<div class="ie5"><table class="style_table" cellspacing="1" border="0"><tbody><tr><td class="style_td">operator</td><td class="style_td">explanation</td></tr><tr><td class="style_td">K * F</td><td class="style_td">composite field K and F</td></tr></tbody></table></div>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>

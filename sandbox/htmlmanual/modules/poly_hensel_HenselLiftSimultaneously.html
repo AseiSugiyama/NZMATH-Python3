@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="EUC-JP"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+<head>
+ <meta http-equiv="content-type" content="application/xhtml+xml; charset=EUC-JP" />
+ <meta http-equiv="content-style-type" content="text/css" />
+
+
+ <title>poly/hensel.py/HenselLiftSimultaneously - NZMATH</title>
+ <link rel="stylesheet" href="../default.css" type="text/css" media="screen,print" charset="Shift_JIS" />
+</head>
+<body>
+
+<div id="header">
+ <h1 class="title"><a href="http://nzmath.sourceforge.net/doc/?poly%2Fhensel.py%2FHenselLiftSimultaneously">poly/hensel.py/HenselLiftSimultaneously</a></h1>
+</div>
+
+
+<hr class="full_hr" />
+<div id="body"><p><a href="../index.html" title="UserManual">nzmath</a>.<a href="poly.html" title="poly">poly</a>.<a href="poly_hensel.html" title="poly/hensel.py">hensel</a></p>
+<h2 id="content_1_0">HenselLiftSimultaneously  <a class="anchor_super" id="x9c86406">&dagger;</a></h2>
+<p>A class represents integer polynomials which will be lifted by
+Hensel's lemma.</p>
+<p>REFERENCE:<br />
+G.E.Collins &amp; M.J.Encarnaci&oacute;n.
+Improved Techniques for factoring Univariate Polynomials,
+J.Symb.Comp. 21, 313--327 (1996).</p>
+<p>INVARIANTS:</p>
+<blockquote><p class="quotation">ai's, pi's and gi's are monic<br />
+f == g1*g2*...*gr (mod p)<br />
+f == d0 + d1*p + d2*p**2 +...+ dk*p**k<br />
+hi == g(i+1)*...*gr<br />
+1 == gi*si + hi*ti (mod p) (i = 1, 2,..., r)<br />
+deg(si) &lt; deg(hi), deg(ti) &lt; deg(gi)<br />
+p | q<br />
+f == l1*l2*...*lr (mod q/p)<br />
+f == a1*a2*...*ar (mod q)<br />
+ui == ai*yi + bi*zi (mod p) (i = 1, 2,..., r)</p></blockquote>
+
+<h3 id="content_1_1">Constructor  <a class="anchor_super" id="j2f73006">&dagger;</a></h3>
+
+<h4 id="content_1_2">HenselLiftSimultaneously(<em>target</em>, <em>factors</em>, <em>cofactors</em>, <em>bases</em>, <em>p</em>)  <a class="anchor_super" id="re0bb27d">&dagger;</a></h4>
+<p>f = <em>target</em>, gi's in <em>factors</em>, hi's in <em>cofactors</em> and
+si's and ti's are in <em>bases</em>.</p>
+
+<h4 id="content_1_3">from_factors(<em>target</em>, <em>factors</em>, <em>p</em> [,<em>ubound</em>])  <a class="anchor_super" id="l535e2cb">&dagger;</a></h4>
+<p>A class method to create and return an instance of HenselLiftSimultaneously,
+whose factors are lifted by <a href="poly_hensel_HenselLiftMulti.html" title="poly/hensel.py/HenselLiftMulti">HenselLiftMulti</a> upto <em>ubound</em> (if it is smaller than sys.maxint, or upto sys.maxint).</p>
+<p>The parameters satisfy that:</p>
+<blockquote><p class="quotation"><em>f</em> == <em>a1</em>*<em>a2</em> (mod <em>p</em>)</p></blockquote>
+<p>with a prime number <em>p</em> and ai's in <em>factors</em>.</p>
+
+
+<h3 id="content_1_4">Methods  <a class="anchor_super" id="n3404eba">&dagger;</a></h3>
+
+<h4 id="content_1_5">first_lift()  <a class="anchor_super" id="kf2b4025">&dagger;</a></h4>
+<p>Start lifting.</p>
+<blockquote><p class="quotation">f == l1*l2*...*lr (mod p**2)</p></blockquote>
+<p>Initialize di's, ui's, yi's and zi's.
+Update ai's, bi's.
+Then, update q with p**2.</p>
+
+
+<h4 id="content_1_6">general_lift()  <a class="anchor_super" id="q976cfe9">&dagger;</a></h4>
+<p>Continue lifting.</p>
+<blockquote><p class="quotation">f == a1*a2*...*ar (mod p*q)</p></blockquote>
+<p>Update ai's, bi's, ui's, yi's and zi's.
+Then, update q with p*q.</p>
+
+
+<h4 id="content_1_7">lift()  <a class="anchor_super" id="jfefe110">&dagger;</a></h4>
+<p>The lift. You should call this method.</p>
+</div>
+
+
+
+<hr class="full_hr" />
+
+
+<div id="footer">
+ Copyright &copy; 2003-2009, <a href="http://tnt.math.metro-u.ac.jp/nzmath/">NZMATH</a> deveropment group
+</div>
+
+</body>
+</html>
