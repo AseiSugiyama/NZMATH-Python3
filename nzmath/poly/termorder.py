@@ -274,7 +274,7 @@ class MultivarTermOrder (TermOrderInterface):
         max_indices = self._max(polynom.bases())
         return max_indices, polynom[max_indices]
 
-    def _max(self, indecis_list):
+    def _max(self, indices_list):
         """
         Return the maximum indices with respect to the comparator.
         """
