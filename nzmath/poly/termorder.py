@@ -294,7 +294,7 @@ def _total_degree_lexicographic(left, right):
       L < R iff
       (1) sum(li) < sum(ri) or
       (2) sum(li) = sum(ri) and
-          there exists i s.t. l0 == r0, ..., li == ri, l(i+1) < r(i+1).
+          there exists i s.t. l0 == r0, ..., l(i-1) == r(i-1), li < ri.
     """
     sum_left, sum_right = sum(left), sum(right)
     if sum_left != sum_right:
@@ -308,12 +308,12 @@ def _total_degree_reverse_lexicographic(left, right):
       L < R iff
       (1) sum(li) < sum(ri) or
       (2) sum(li) = sum(ri) and
-          there exists i s.t. l0 == r0, ..., li == ri, l(i+1) > r(i+1).
+          there exists i s.t. ln == rn, ..., l(i+1) == r(i+1), li > ri.
     """
     sum_left, sum_right = sum(left), sum(right)
     if sum_left != sum_right:
         return cmp(sum_left, sum_right)
-    return cmp(right, left)
+    return cmp(right[::-1], left[::-1])
 
 
 lexicographic_order = MultivarTermOrder(cmp)

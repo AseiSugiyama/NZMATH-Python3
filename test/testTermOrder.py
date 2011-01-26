@@ -89,7 +89,7 @@ class MultivarTermOrderTest (unittest.TestCase):
         self.assertEqual(const4, self.deglex.format(f, varnames=("X", "Y")))
         self.assertEqual(const4, self.degrevlex.format(f, varnames=("X", "Y")))
 
-    def testFormatHomogeneous(self):
+    def testFormatHomogeneousTwoVars(self):
         """
         format works for homogeneous polynomials.
         """
@@ -97,21 +97,35 @@ class MultivarTermOrderTest (unittest.TestCase):
         qf = "4 * Y ** 2 + X * Y + 3 * X ** 2"
         self.assertEqual(qf, self.lex.format(f, varnames=("X", "Y")))
         self.assertEqual(qf, self.deglex.format(f, varnames=("X", "Y")))
+        self.assertEqual(qf, self.degrevlex.format(f, varnames=("X", "Y")))
         qfr = "3 * X ** 2 + X * Y + 4 * Y ** 2"
         self.assertEqual(qfr, self.lex.format(f, varnames=("X", "Y"), reverse=True))
-        self.assertEqual(qfr, self.degrevlex.format(f, varnames=("X", "Y")))
+
+    def testFormatHomogeneous(self):
+        """
+        format works for homogeneous polynomials.
+        """
+        f = multivar.BasicPolynomial({(1, 0, 2): 4, (0, 2, 1): 1, (2, 1, 0): 3})
+        fl = "Y ** 2 * Z + 4 * X * Z ** 2 + 3 * X ** 2 * Y"
+        self.assertEqual(fl, self.lex.format(f, varnames=("X", "Y", "Z")))
+        self.assertEqual(fl, self.deglex.format(f, varnames=("X", "Y", "Z")))
+        flr = "3 * X ** 2 * Y + 4 * X * Z ** 2 + Y ** 2 * Z"
+        self.assertEqual(flr, self.lex.format(f, varnames=("X", "Y", "Z"), reverse=True))
+        frl = "4 * X * Z ** 2 + Y ** 2 * Z + 3 * X ** 2 * Y"
+        self.assertEqual(frl, self.degrevlex.format(f, varnames=("X", "Y", "Z")))
 
     def testFormatInhomogeneous(self):
         """
         format works for inhomogeneous polynomials.
         """
-        f = multivar.BasicPolynomial({(0, 2): 4, (1, 1): 1, (1, 0): 3})
-        flex = "4 * Y ** 2 + 3 * X + X * Y"
-        self.assertEqual(flex, self.lex.format(f, varnames=("X", "Y")))
-        fdlex = "3 * X + 4 * Y ** 2 + X * Y"
-        self.assertEqual(fdlex, self.deglex.format(f, varnames=("X", "Y")))
-        fdrl = "3 * X + X * Y + 4 * Y ** 2"
-        self.assertEqual(fdrl, self.degrevlex.format(f, varnames=("X", "Y")))
+        f = multivar.BasicPolynomial({(1, 1, 2): 2, (1, 2, 0): 1, (2, 0, 1): 3})
+        fl = "2 * X * Y * Z ** 2 + X * Y ** 2 + 3 * X ** 2 * Z"
+        self.assertEqual(fl, self.lex.format(f, varnames=("X", "Y", "Z")))
+        fdl = "X * Y ** 2 + 3 * X ** 2 * Z + 2 * X * Y * Z ** 2"
+        self.assertEqual(fdl, self.deglex.format(f, varnames=("X", "Y", "Z")))
+        flr = "3 * X ** 2 * Z + X * Y ** 2 + 2 * X * Y * Z ** 2"
+        self.assertEqual(flr, self.lex.format(f, varnames=("X", "Y", "Z"), reverse=True))
+        self.assertEqual(flr, self.degrevlex.format(f, varnames=("X", "Y", "Z")))
 
     def testFormatNull(self):
         """
