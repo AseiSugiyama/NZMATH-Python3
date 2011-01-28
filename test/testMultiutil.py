@@ -50,8 +50,8 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         because the leading term varies.
         """
         Q = rational.Rational
-        q = self.p([((0, 2), Q(1)), ((1, 1), Q(1)), ((2, 0), Q(1))])
-        r = self.p([((0, 0), Q(1))])
+        q = self.p([((0, 2), Q(-1)), ((1, 1), Q(-1)), ((2, 0), Q(-1))])
+        r = self.p([((0, 0), Q(-1))])
         # total degree reverse lexicographic order
         self.f.order = termorder.total_degree_reverse_lexicographic_order
         self.assertEqual((q, r), self.f.pseudo_divmod(self.g))
@@ -60,8 +60,8 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         fz.set_coefficient_ring(rational.theRationalField)
         gz = self.g.bases_map(lambda b: tuple(b) + (1,))
         gz.set_coefficient_ring(rational.theRationalField)
-        qz = - q.bases_map(lambda b: tuple(b) + (3,))
-        rz = - r.bases_map(lambda b: tuple(b) + (4,))
+        qz = q.bases_map(lambda b: tuple(b) + (3,))
+        rz = r.bases_map(lambda b: tuple(b) + (4,))
         self.assertEqual((qz, rz), fz.pseudo_divmod(gz))
 
     def testPseudoFloordiv(self):
@@ -72,7 +72,7 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         because the leading term varies.
         """
         Q = rational.Rational
-        q = self.p([((0, 2), Q(1)), ((1, 1), Q(1)), ((2, 0), Q(1))])
+        q = self.p([((0, 2), Q(-1)), ((1, 1), Q(-1)), ((2, 0), Q(-1))])
         # total degree reverse lexicographic order
         self.f.order = termorder.total_degree_reverse_lexicographic_order
         self.assertEqual(q, self.f.pseudo_floordiv(self.g))
@@ -81,7 +81,7 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         fz.set_coefficient_ring(rational.theRationalField)
         gz = self.g.bases_map(lambda b: tuple(b) + (1,))
         gz.set_coefficient_ring(rational.theRationalField)
-        qz = - q.bases_map(lambda b: tuple(b) + (3,))
+        qz = q.bases_map(lambda b: tuple(b) + (3,))
         self.assertEqual(qz, fz.pseudo_floordiv(gz))
 
     def testPseudoMod(self):
@@ -92,7 +92,7 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         because the leading term varies.
         """
         Q = rational.Rational
-        r = self.p([((0, 0), Q(1))])
+        r = self.p([((0, 0), Q(-1))])
         # total degree reverse lexicographic order
         self.f.order = termorder.total_degree_reverse_lexicographic_order
         self.assertEqual(r, self.f.pseudo_mod(self.g))
@@ -101,7 +101,7 @@ class PseudoDivisionProviderTest (unittest.TestCase):
         fz.set_coefficient_ring(rational.theRationalField)
         gz = self.g.bases_map(lambda b: tuple(b) + (1,))
         gz.set_coefficient_ring(rational.theRationalField)
-        rz = - r.bases_map(lambda b: tuple(b) + (4,))
+        rz = r.bases_map(lambda b: tuple(b) + (4,))
         self.assertEqual(rz, fz.pseudo_mod(gz))
 
     def testTruediv(self):
