@@ -680,7 +680,37 @@ def MultiVariableSparsePolynomial(coefficient, variable, coeffring=None):
     their number is used.
     """
     if not isinstance(variable, list) or not isinstance(coefficient, dict):
-        raise ValueError("You must input MultiVariableSparsePolynomial(dict,list) but (%s, %s)." % (coefficient.__class__, variable.__class__))
+        raise ValueError("You must input MultiVariableSparsePolynomial(dict, list) but (%s, %s)." % (coefficient.__class__, variable.__class__))
     if coeffring is None:
         coeffring = uniutil.init_coefficient_ring(coefficient)
     return polynomial(coefficient, coeffring=coeffring, number_of_variables=len(variable))
+
+def prepare_indeterinates(names, ctx, coeffring=None):
+    """
+    From space separated names of indeterinates, prepare variables
+    representing the indeterinates.  The result will be stored in ctx
+    dictionary.
+
+    The variables should be prepared at once, otherwise it will
+    confuse you with wrong aliases of variables in later calculation.
+
+    If an optional coeffring is not given, it will be an integer
+    coefficient polynomial.
+
+    Example:
+    >>> ctx = {}
+    >>> prepare_indeterinates("X Y Z", ctx)
+    >>> for var in ctx:
+    ...    exec "%s = ctx['%s']" % (var, var)
+    >>> Y
+    UniqueFactorizationDomainPolynomial({(0, 1, 0): 1})
+
+    """
+    split_names = names.split()
+    number_of_variables = len(split_names)
+    if coeffring is None:
+        coeffring = uniutil.init_coefficient_ring({1:1})
+    for i, name in enumerate(split_names):
+        e_i = tuple([0] * i + [1] + [0] * (number_of_variables - i - 1))
+        ctx[name] = polynomial({e_i: 1}, coeffring, number_of_variables)
+

@@ -175,6 +175,20 @@ class GcdProviderTest (unittest.TestCase):
         self.assertEqual(self.g, self.fz.gcd(self.gz))
 
 
+class PrepareIndeterinateTest(unittest.TestCase):
+    def testXYZ(self):
+        ctx = {}
+        multiutil.prepare_indeterinates("S T X Y", ctx)
+        self.assert_("X" in ctx)
+        for var in ctx:
+            exec "%s = ctx['%s']" % (var, var)
+        self.assert_(S)
+        self.assert_(T)
+        Z = rational.theIntegerRing
+        XY = multiutil.polynomial({(0, 0, 1, 1): 1}, Z)
+        self.assertEqual(XY, X * Y)
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()
