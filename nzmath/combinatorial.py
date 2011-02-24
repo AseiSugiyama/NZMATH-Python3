@@ -370,8 +370,11 @@ class PartitionDriver(object):
     def pull(self):
         """
         Pull the maximum part obtainable from rest to partition.
+
+        When you override the method, please try to make it precise.
+        If it is unavoidable to do some failing attempt, raising a
+        LookupError is the signal to tell that no parts can be pulled.
         """
-        # raise LookupError if no parts can be pulled.
         if self.partition:
             if self.rest >= self.partition[-1]:
                 part = self.partition[-1]
@@ -427,7 +430,10 @@ class PartitionDriver(object):
 
         while True:
             while self.rest:
-                self.pull()
+                try:
+                    self.pull()
+                except LookupError:
+                    break
 
             if not self.rest:
                 yield tuple(self.partition)
