@@ -179,7 +179,7 @@ def stirling1(n, m):
     Let s denote the Stirling number, (x)_n falling factorial, then
       (x)_n = \sum_{i=0}^{n} s(n, i) * x**i
     and s satisfies the recurrence relation:
-      s(n, m) = s(n-1, m-1) - (n-1)*S(n-1, m)
+      s(n, m) = s(n-1, m-1) - (n-1)*s(n-1, m)
     """
     if n == m:
         return 1
