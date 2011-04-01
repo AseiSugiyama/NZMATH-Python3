@@ -69,14 +69,19 @@ class SimMethodTest (GlobalEquationTestBase):
         # example from H.Cohen's book p.169 (Olivier's example)
         self.assert_solve(equation.SimMethod, [4, 17, 10, -12, -7, 2, 1])
 
+
 class SimMethodPluginTest (GlobalEquationTestBase):
     def setUp(selt):
-        from nzmath.plugins import SETPRECISION
-        SETPRECISION(200)
+        from nzmath.config import PLUGIN_MATH
+        if PLUGIN_MATH is not None:
+            from nzmath.plugins import SETPRECISION
+            SETPRECISION(200)
 
     def tearDown(self):
-        from nzmath.plugins import SETPRECISION
-        SETPRECISION(53)
+        from nzmath.config import PLUGIN_MATH
+        if PLUGIN_MATH is not None:
+            from nzmath.plugins import SETPRECISION
+            SETPRECISION(53)
 
     def test_degree3(self):
         self.assert_solve(equation.SimMethod, [1, 0, 0, 1])
