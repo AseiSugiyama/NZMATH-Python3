@@ -50,6 +50,8 @@ import testMultiutil
 import testPolyFactor
 import testPolyRing
 import testRatfunc
+import testGroebner
+
 
 def suite():
     suite = unittest.TestSuite()
