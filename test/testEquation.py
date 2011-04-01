@@ -133,7 +133,7 @@ class LocalEquationTest (unittest.TestCase):
         thesolutions = [9, 11, 23]
         self.assertEquals(len(thesolutions), len(solutions))
         for s in thesolutions:
-            self.assert_(s in solutions)
+            self.assertTrue(s in solutions)
 
 
 def suite(suffix="Test"):

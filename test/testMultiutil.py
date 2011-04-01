@@ -179,11 +179,11 @@ class PrepareIndeterinateTest(unittest.TestCase):
     def testXYZ(self):
         ctx = {}
         multiutil.prepare_indeterinates("S T X Y", ctx)
-        self.assert_("X" in ctx)
+        self.assertTrue("X" in ctx)
         for var in ctx:
             exec "%s = ctx['%s']" % (var, var)
-        self.assert_(S)
-        self.assert_(T)
+        self.assertTrue(S)
+        self.assertTrue(T)
         Z = rational.theIntegerRing
         XY = multiutil.polynomial({(0, 0, 1, 1): 1}, Z)
         self.assertEqual(XY, X * Y)

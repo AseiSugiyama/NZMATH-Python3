@@ -8,53 +8,53 @@ from nzmath.plugins import MATHMODULE as math
 
 class ErrorTest (unittest.TestCase):
     def testRelativeError(self):
-        self.assert_(real.RelativeError(0, 1, 2))
-        self.assert_(isinstance(real.RelativeError(0, 1, 2).absoluteerror(3, 4), real.AbsoluteError))
+        self.assertTrue(real.RelativeError(0, 1, 2))
+        self.assertTrue(isinstance(real.RelativeError(0, 1, 2).absoluteerror(3, 4), real.AbsoluteError))
 
     def testAbsoluteError(self):
-        self.assert_(real.AbsoluteError(0, 1, 2))
+        self.assertTrue(real.AbsoluteError(0, 1, 2))
 
     def testRelativeNearlyEqual(self):
-        self.assert_(real.RelativeError(0, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.assert_(real.RelativeError(-1, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.failIf(real.RelativeError(1, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.assert_(real.RelativeError(1, 1, 3).nearlyEqual(rational.Rational(1, 3), rational.Rational(1, 4)))
+        self.assertTrue(real.RelativeError(0, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertTrue(real.RelativeError(-1, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertFalse(real.RelativeError(1, 1, 2).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertTrue(real.RelativeError(1, 1, 3).nearlyEqual(rational.Rational(1, 3), rational.Rational(1, 4)))
 
     def testAbsoluteNearlyEqual(self):
-        self.assert_(real.AbsoluteError(0, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.assert_(real.AbsoluteError(-1, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.failIf(real.AbsoluteError(1, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
-        self.assert_(real.AbsoluteError(1, 1, 10).nearlyEqual(rational.Rational(1, 3), rational.Rational(1, 4)))
+        self.assertTrue(real.AbsoluteError(0, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertTrue(real.AbsoluteError(-1, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertFalse(real.AbsoluteError(1, 1, 8).nearlyEqual(rational.Rational(1, 4), rational.Rational(1, 3)))
+        self.assertTrue(real.AbsoluteError(1, 1, 10).nearlyEqual(rational.Rational(1, 3), rational.Rational(1, 4)))
 
     def testLt(self):
-        self.assert_(real.RelativeError(0, 1, 4) < real.RelativeError(0, 1, 3))
-        self.assert_(real.AbsoluteError(0, 1, 4) < real.AbsoluteError(0, 1, 3))
-        self.failIf(real.RelativeError(0, 1, 4) < real.RelativeError(0, 1, 5))
-        self.failIf(real.AbsoluteError(0, 1, 4) < real.AbsoluteError(0, 1, 5))
-        self.assert_(real.RelativeError(1, 1, 4) < real.RelativeError(0, 1, 3))
-        self.assert_(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(0, 1, 3))
-        self.failIf(real.RelativeError(1, 1, 4) < real.RelativeError(-1, 1, 3))
-        self.failIf(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(-1, 1, 3))
-        self.failIf(real.RelativeError(0, 1, 4) < real.AbsoluteError(0, 1, 3))
-        self.failIf(real.AbsoluteError(0, 1, 4) < real.RelativeError(0, 1, 3))
-        self.failIf(real.RelativeError(1, 1, 4) < real.RelativeError(1, 1, 4))
-        self.failIf(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(1, 1, 4))
+        self.assertTrue(real.RelativeError(0, 1, 4) < real.RelativeError(0, 1, 3))
+        self.assertTrue(real.AbsoluteError(0, 1, 4) < real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.RelativeError(0, 1, 4) < real.RelativeError(0, 1, 5))
+        self.assertFalse(real.AbsoluteError(0, 1, 4) < real.AbsoluteError(0, 1, 5))
+        self.assertTrue(real.RelativeError(1, 1, 4) < real.RelativeError(0, 1, 3))
+        self.assertTrue(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.RelativeError(1, 1, 4) < real.RelativeError(-1, 1, 3))
+        self.assertFalse(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(-1, 1, 3))
+        self.assertFalse(real.RelativeError(0, 1, 4) < real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.AbsoluteError(0, 1, 4) < real.RelativeError(0, 1, 3))
+        self.assertFalse(real.RelativeError(1, 1, 4) < real.RelativeError(1, 1, 4))
+        self.assertFalse(real.AbsoluteError(1, 1, 4) < real.AbsoluteError(1, 1, 4))
 
     def testLe(self):
         # same for "less than"
-        self.assert_(real.RelativeError(0, 1, 4) <= real.RelativeError(0, 1, 3))
-        self.assert_(real.AbsoluteError(0, 1, 4) <= real.AbsoluteError(0, 1, 3))
-        self.failIf(real.RelativeError(0, 1, 4) <= real.RelativeError(0, 1, 5))
-        self.failIf(real.AbsoluteError(0, 1, 4) <= real.AbsoluteError(0, 1, 5))
-        self.assert_(real.RelativeError(1, 1, 4) <= real.RelativeError(0, 1, 3))
-        self.assert_(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(0, 1, 3))
-        self.failIf(real.RelativeError(1, 1, 4) <= real.RelativeError(-1, 1, 3))
-        self.failIf(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(-1, 1, 3))
-        self.failIf(real.RelativeError(0, 1, 4) <= real.AbsoluteError(0, 1, 3))
-        self.failIf(real.AbsoluteError(0, 1, 4) <= real.RelativeError(0, 1, 3))
+        self.assertTrue(real.RelativeError(0, 1, 4) <= real.RelativeError(0, 1, 3))
+        self.assertTrue(real.AbsoluteError(0, 1, 4) <= real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.RelativeError(0, 1, 4) <= real.RelativeError(0, 1, 5))
+        self.assertFalse(real.AbsoluteError(0, 1, 4) <= real.AbsoluteError(0, 1, 5))
+        self.assertTrue(real.RelativeError(1, 1, 4) <= real.RelativeError(0, 1, 3))
+        self.assertTrue(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.RelativeError(1, 1, 4) <= real.RelativeError(-1, 1, 3))
+        self.assertFalse(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(-1, 1, 3))
+        self.assertFalse(real.RelativeError(0, 1, 4) <= real.AbsoluteError(0, 1, 3))
+        self.assertFalse(real.AbsoluteError(0, 1, 4) <= real.RelativeError(0, 1, 3))
         # equal
-        self.assert_(real.RelativeError(1, 1, 4) <= real.RelativeError(1, 1, 4))
-        self.assert_(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(1, 1, 4))
+        self.assertTrue(real.RelativeError(1, 1, 4) <= real.RelativeError(1, 1, 4))
+        self.assertTrue(real.AbsoluteError(1, 1, 4) <= real.AbsoluteError(1, 1, 4))
 
     def testDiv(self):
         re2 = real.RelativeError(0, 1, 6) / 5
@@ -73,26 +73,26 @@ class NewFunctionTest (unittest.TestCase):
         sqrt0 = real.sqrt(0)
         self.assertEqual(0, sqrt0)
         sqrt2 = real.sqrt(2)
-        self.assert_(abs(sqrt2 ** 2 - 2) < self.absolute)
+        self.assertTrue(abs(sqrt2 ** 2 - 2) < self.absolute)
 
     def testExp(self):
         self.assertEqual(1, real.exp(0))
         exp1 = real.exp(1)
         exp1e = real.exp(1, self.err)
-        self.assert_(exp1 < exp1e < exp1 * self.relative)
+        self.assertTrue(exp1 < exp1e < exp1 * self.relative)
         exp2 = real.exp(2)
         exp2e = real.exp(2, self.err)
-        self.assert_(exp2 < exp2e < exp2 * self.relative)
+        self.assertTrue(exp2 < exp2e < exp2 * self.relative)
         self.assertEqual("2.718281828459045", exp1.decimalString(15))
 
     def testLog(self):
         log1 = real.log(1)
         self.assertEqual(0, log1)
         log2inverse = real.log(.5)
-        self.assert_(log2inverse < 0)
-        self.assert_(abs(real.log(2) + log2inverse) < self.absolute)
-        self.assert_(abs(real.log(real.exp(1)) - 1)  < 2 * self.absolute)
-        self.assert_(abs(real.log(real.exp(1).trim(2**53)) - 1) < 2 * self.absolute)
+        self.assertTrue(log2inverse < 0)
+        self.assertTrue(abs(real.log(2) + log2inverse) < self.absolute)
+        self.assertTrue(abs(real.log(real.exp(1)) - 1)  < 2 * self.absolute)
+        self.assertTrue(abs(real.log(real.exp(1).trim(2**53)) - 1) < 2 * self.absolute)
 
     def testPiGaussLegendre(self):
         pi = real.pi
@@ -123,12 +123,12 @@ class NewFunctionTest (unittest.TestCase):
         self.assertEqual(1, real.cos(0))
         self.assertEqual(0, real.tan(0))
         pi = real.pi
-        self.assert_(abs(real.sin(pi)) < self.absolute)
-        self.assert_(-1 <= (real.cos(pi)) < -1 + self.absolute)
-        self.assert_(abs(real.tan(pi)) < self.absolute)
+        self.assertTrue(abs(real.sin(pi)) < self.absolute)
+        self.assertTrue(-1 <= (real.cos(pi)) < -1 + self.absolute)
+        self.assertTrue(abs(real.tan(pi)) < self.absolute)
         abs7 = real.sin(7, real.AbsoluteError(0, 1, 10**20))
         rel7 = real.sin(7, real.RelativeError(0, 1, 10**20))
-        self.assert_(abs(abs7 - rel7) < rational.Rational(1, 10**20), abs(abs7 - rel7).trim(10**20))
+        self.assertTrue(abs(abs7 - rel7) < rational.Rational(1, 10**20), abs(abs7 - rel7).trim(10**20))
 
     def testHyperbolic(self):
         self.assertEqual(0, real.sinh(0))
@@ -140,31 +140,31 @@ class NewFunctionTest (unittest.TestCase):
 
     def testInverseTrigonometric(self):
         self.assertEqual(0, real.asin(0))
-        self.assert_(abs(real.pi / 2 - real.acos(0)) < self.absolute)
+        self.assertTrue(abs(real.pi / 2 - real.acos(0)) < self.absolute)
         self.assertEqual(0, real.atan(0))
         self.assertAlmostEqual(real.pi / 4, real.atan(1/2) + real.atan(1/3))
 
     def testHypot(self):
-        self.assert_(abs(real.hypot(3, 4) - 5) < self.absolute)
+        self.assertTrue(abs(real.hypot(3, 4) - 5) < self.absolute)
 
     def testPow(self):
         self.assertEqual(32, real.pow(2, 5))
         self.assertEqual(rational.Rational(1, 32), real.pow(2, -5))
-        self.assert_(real.defaultError.nearlyEqual(real.sqrt(2), real.pow(2, rational.Rational(1, 2))))
+        self.assertTrue(real.defaultError.nearlyEqual(real.sqrt(2), real.pow(2, rational.Rational(1, 2))))
 
     def testDegrees(self):
-        self.assert_(real.defaultError.nearlyEqual(real.degrees(real.pi / 2), 90))
+        self.assertTrue(real.defaultError.nearlyEqual(real.degrees(real.pi / 2), 90))
 
     def testRadians(self):
-        self.assert_(real.defaultError.nearlyEqual(real.radians(90), real.pi / 2))
+        self.assertTrue(real.defaultError.nearlyEqual(real.radians(90), real.pi / 2))
 
     def testFabs(self):
         self.assertEqual(rational.Rational(3, 2), real.fabs(-1.5))
 
     def testFmod(self):
         self.assertEqual(0, real.fmod(2 * real.pi, real.pi))
-        self.assert_(real.defaultError.nearlyEqual(real.pi / 6, real.fmod(real.pi / 2, real.pi / 3)))
-        self.assert_(real.defaultError.nearlyEqual(- real.pi / 6, real.fmod(-real.pi / 2, real.pi / 3)))
+        self.assertTrue(real.defaultError.nearlyEqual(real.pi / 6, real.fmod(real.pi / 2, real.pi / 3)))
+        self.assertTrue(real.defaultError.nearlyEqual(- real.pi / 6, real.fmod(-real.pi / 2, real.pi / 3)))
 
     def testFrexp(self):
         self.assertEqual((rational.Rational(0), 0), real.frexp(0))
@@ -179,17 +179,17 @@ class NewFunctionTest (unittest.TestCase):
 
 class ConstantTest (unittest.TestCase):
     def testToRational(self):
-        self.assert_(isinstance(real.pi.toRational(), rational.Rational))
+        self.assertTrue(isinstance(real.pi.toRational(), rational.Rational))
 
     def testRadd(self):
-        self.assert_(4 + real.pi)
-        self.assert_(rational.Integer(4) + real.pi)
-        self.assert_(rational.Rational(4, 3) + real.pi)
+        self.assertTrue(4 + real.pi)
+        self.assertTrue(rational.Integer(4) + real.pi)
+        self.assertTrue(rational.Rational(4, 3) + real.pi)
 
     def testRmul(self):
-        self.assert_(4 * real.pi)
-        self.assert_(rational.Integer(4) * real.pi)
-        self.assert_(rational.Rational(4, 3) * real.pi)
+        self.assertTrue(4 * real.pi)
+        self.assertTrue(rational.Integer(4) * real.pi)
+        self.assertTrue(rational.Rational(4, 3) * real.pi)
 
 
 class RealFieldTest (unittest.TestCase):
@@ -203,10 +203,10 @@ class RealFieldTest (unittest.TestCase):
 
     def testSubring(self):
         R = real.theRealField
-        self.failUnless(R.issuperring(R))
-        self.failUnless(R.issuperring(rational.theRationalField))
-        self.failUnless(R.issubring(imaginary.theComplexField))
-        self.failIf(R.issubring(rational.theRationalField))
+        self.assertTrue(R.issuperring(R))
+        self.assertTrue(R.issuperring(rational.theRationalField))
+        self.assertTrue(R.issubring(imaginary.theComplexField))
+        self.assertFalse(R.issubring(rational.theRationalField))
 
     def testHash(self):
         dictionary = {}

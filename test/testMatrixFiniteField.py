@@ -45,7 +45,7 @@ class FiniteFieldMatrixTest (unittest.TestCase):
 
     def testGetRing(self):
         invertible = _matrix.createMatrix(2, [self.F7.createElement(c) for c in [2, 5, 3, 1]])
-        self.assert_(invertible.getRing())
+        self.assertTrue(invertible.getRing())
         M2F7 = _matrix.MatrixRing.getInstance(2, self.F7)
         self.assertEqual(M2F7, invertible.getRing())
         M3F7 = _matrix.MatrixRing.getInstance(3, self.F7)

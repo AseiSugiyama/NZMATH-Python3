@@ -36,7 +36,7 @@ class DivisionProviderTest (unittest.TestCase):
 	divisions
 	"""
         self.assertEqual("RationalFunction", (self.f / self.g).__class__.__name__)
-        self.assert_(self.f % self.g)
+        self.assertTrue(self.f % self.g)
 
     def testGcd(self):
         one = univar.BasicPolynomial({0: rational.Rational(1)})
@@ -98,12 +98,12 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
         self.assertEqual(1, len(h_decomp))
         self.assertEqual(1, h_decomp.keys()[0])
         self.assertEqual(self.h, h_decomp.values()[0], str(h_decomp.items()[0]))
-        self.assert_(self.thirty.gcd(self.thirty.differentiate()))
+        self.assertTrue(self.thirty.gcd(self.thirty.differentiate()))
         p_decomp = self.h.squarefree_decomposition()
         self.assertEqual(1, len(p_decomp))
         self.assertEqual(1, p_decomp.keys()[0])
         self.assertEqual(self.h, p_decomp.values()[0], str(p_decomp.items()[0]))
-        self.assert_(self.thirty.gcd(self.thirty.differentiate()))
+        self.assertTrue(self.thirty.gcd(self.thirty.differentiate()))
 
     def testDistinctDegreeFactorization(self):
         h_ddf = self.h.distinct_degree_factorization()
@@ -121,12 +121,12 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
 
     def testFactor(self):
         factored = self.p.factor()
-        self.assert_(isinstance(factored, list))
+        self.assertTrue(isinstance(factored, list))
         self.assertEqual(3, len(factored), str(factored))
         for factor in factored:
-            self.assert_(isinstance(factor, tuple))
+            self.assertTrue(isinstance(factor, tuple))
             self.assertEqual(2, len(factor))
-            self.assert_(isinstance(factor[1], (int,long)))
+            self.assertTrue(isinstance(factor[1], (int,long)))
         product = self.p.__class__([(0, ring.getRing(self.p.itercoefficients().next()).one)], coeffring=self.p.getCoefficientRing())
         for factor, index in factored:
             product = product * factor ** index
@@ -149,12 +149,12 @@ class PrimeCharacteristicFunctionsProviderTest (unittest.TestCase):
         self.assertEqual(rami, r_factor[0] ** 3)
 
     def testIsIrreducible(self):
-        self.assert_(self.f.isirreducible())
-        self.failIf(self.g.isirreducible())
-        self.failIf(self.h.isirreducible())
+        self.assertTrue(self.f.isirreducible())
+        self.assertFalse(self.g.isirreducible())
+        self.assertFalse(self.h.isirreducible())
         # degree 1 polynomial is irreducible.
         x = uniutil.FinitePrimeFieldPolynomial({1:2}, coeffring=self.F5)
-        self.assert_(x.isirreducible())
+        self.assertTrue(x.isirreducible())
 
 
 class SubresultantGcdProviderTest (unittest.TestCase):
@@ -221,7 +221,7 @@ class IntegerPolynomialTest (unittest.TestCase):
         g = uniutil.polynomial(enumerate(range(7, 10)), Z)
         h = uniutil.polynomial(enumerate([8, 10, 12, 4, 5]), Z)
         self.assertEqual(h, f + g)
-        self.assert_(isinstance(f + g, uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(f + g, uniutil.IntegerPolynomial))
         # sf bug # 1937925
         f2 = uniutil.polynomial(enumerate([2, 2, 3, 4, 5]), Z)
         self.assertEqual(f2, f + 1)
@@ -260,8 +260,8 @@ class IntegerPolynomialTest (unittest.TestCase):
         Z = self.Z
         nonmonic = uniutil.polynomial({0:1, 1:3}, Z)
         monic = uniutil.polynomial({0:1, 1:1}, Z)
-        self.failIf(nonmonic.ismonic())
-        self.assert_(monic.ismonic())
+        self.assertFalse(nonmonic.ismonic())
+        self.assertTrue(monic.ismonic())
 
 
 class FinitePrimeFieldPolynomialTest (unittest.TestCase):
@@ -272,7 +272,7 @@ class FinitePrimeFieldPolynomialTest (unittest.TestCase):
     def testMod(self):
         f = uniutil.FinitePrimeFieldPolynomial([(0, 1), (3, 1), (30, 1)], coeffring=finitefield.FinitePrimeField.getInstance(2))
         df = f.differentiate()
-        self.assert_(f % df)
+        self.assertTrue(f % df)
 
     def testDiscriminant(self):
         F7 = finitefield.FinitePrimeField.getInstance(7)
@@ -292,23 +292,23 @@ class FinitePrimeFieldPolynomialTest (unittest.TestCase):
     def testEmptyTerm(self):
         F17 = finitefield.FinitePrimeField.getInstance(17)
         q = uniutil.FinitePrimeFieldPolynomial({1:F17.one}, coeffring=F17)
-        self.assert_(F17.zero is q[0])
-        self.failIf(0 is q[0])
+        self.assertTrue(F17.zero is q[0])
+        self.assertFalse(0 is q[0])
 
 class InjectVariableTest (unittest.TestCase):
     def testInject(self):
         f = univar.SortedPolynomial([(0, 1), (1, 3), (2, 2)])
         X = "X"
-        self.assert_(uniutil.VariableProvider not in f.__class__.__bases__)
+        self.assertTrue(uniutil.VariableProvider not in f.__class__.__bases__)
         uniutil.inject_variable(f, X)
         self.assertEqual(X, f.getVariable())
         self.assertEqual([X], f.getVariableList())
-        self.assert_(uniutil.VariableProvider in f.__class__.__bases__)
+        self.assertTrue(uniutil.VariableProvider in f.__class__.__bases__)
         self.assertEqual("VarSortedPolynomial", f.__class__.__name__)
         f += f
         self.assertEqual("VarSortedPolynomial", f.__class__.__name__)
         # varname lost
-        self.assert_(hasattr(f, "getVariable"))
+        self.assertTrue(hasattr(f, "getVariable"))
         self.assertRaises(AttributeError, f.getVariable)
 
 

@@ -56,7 +56,7 @@ class FactoredIntegerTest(unittest.TestCase):
     def testSquarePart(self):
         fifteen = misc.FactoredInteger(15)
         self.assertEqual(1, fifteen.square_part())
-        self.assert_(isinstance(fifteen.square_part(True), misc.FactoredInteger))
+        self.assertTrue(isinstance(fifteen.square_part(True), misc.FactoredInteger))
         self.assertEqual(1, fifteen.square_part(True).integer)
         self.assertEqual({}, fifteen.square_part(True).factors)
         factored45 = misc.FactoredInteger(45, {3:2, 5:1})
@@ -65,7 +65,7 @@ class FactoredIntegerTest(unittest.TestCase):
     def testSquarefreePart(self):
         fifteen = misc.FactoredInteger(15)
         self.assertEqual(15, fifteen.squarefree_part())
-        self.assert_(isinstance(fifteen.squarefree_part(True), misc.FactoredInteger))
+        self.assertTrue(isinstance(fifteen.squarefree_part(True), misc.FactoredInteger))
         self.assertEqual(15, fifteen.squarefree_part(True).integer)
         self.assertEqual({3:1, 5:1}, fifteen.squarefree_part(True).factors)
         factored45 = misc.FactoredInteger(45, {3:2, 5:1})
@@ -83,12 +83,12 @@ class FactoredIntegerTest(unittest.TestCase):
 
     def testIsDivisibleBy(self):
         factored45 = misc.FactoredInteger(45, {3:2, 5:1})
-        self.failIf(factored45.is_divisible_by(2))
-        self.assert_(factored45.is_divisible_by(3))
-        self.assert_(factored45.is_divisible_by(5))
-        self.failIf(factored45.is_divisible_by(7))
-        self.assert_(factored45.is_divisible_by(9))
-        self.assert_(factored45.is_divisible_by(15))
+        self.assertFalse(factored45.is_divisible_by(2))
+        self.assertTrue(factored45.is_divisible_by(3))
+        self.assertTrue(factored45.is_divisible_by(5))
+        self.assertFalse(factored45.is_divisible_by(7))
+        self.assertTrue(factored45.is_divisible_by(9))
+        self.assertTrue(factored45.is_divisible_by(15))
 
     def testExactDivision(self):
         fortyfive = misc.FactoredInteger(45)

@@ -131,10 +131,10 @@ class TermIndicesTest (unittest.TestCase):
         lower = multivar.TermIndices((0, 1, 2))
         self.assertEqual(1, cmp(self.term, lower))
         self.assertEqual(-1, cmp(lower, self.term))
-        self.assert_(self.term >= lower)
-        self.assert_(lower <= self.term)
-        self.assert_(self.term > lower)
-        self.assert_(lower < self.term)
+        self.assertTrue(self.term >= lower)
+        self.assertTrue(lower <= self.term)
+        self.assertTrue(self.term > lower)
+        self.assertTrue(lower < self.term)
 
 
 def suite(suffix="Test"):

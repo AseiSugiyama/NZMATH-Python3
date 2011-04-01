@@ -32,7 +32,7 @@ class Round2Test (unittest.TestCase):
         using Q(sqrt(2)).
 	"""
         q2 = round2.round2(self.root2)
-        self.assert_(q2)
+        self.assertTrue(q2)
         self.assertEqual(2, len(q2))
         self.assertEqual(8, q2[1], q2) # disc K = 8
 
@@ -43,7 +43,7 @@ class Round2Test (unittest.TestCase):
         using Q(sqrt(-1)).
 	"""
         q1i = round2.round2(self.root1i)
-        self.assert_(q1i)
+        self.assertTrue(q1i)
         self.assertEqual(2, len(q1i))
         self.assertEqual(-4, q1i[1], q1i) # disc K = -4
 
@@ -54,7 +54,7 @@ class Round2Test (unittest.TestCase):
         poly_disc = uniutil.polynomial(enumerate(self.cubic), self.Z).discriminant()
         self.assertEqual(-3**3 * 109, poly_disc)
         result = round2.round2(self.cubic)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(2, len(result))
         self.assertEqual(-327, result[1], result) # disc K = -327 = -3 * 109
 
@@ -65,7 +65,7 @@ class Round2Test (unittest.TestCase):
         poly_disc = uniutil.polynomial(enumerate(self.quartic), self.Z).discriminant()
         self.assertEqual(147456, poly_disc)
         result = round2.round2(self.quartic)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(2, len(result))
         self.assertEqual(2304, result[1], result)
 
@@ -76,7 +76,7 @@ class Round2Test (unittest.TestCase):
         poly_disc = uniutil.polynomial(enumerate(self.sextic), self.Z).discriminant()
         self.assertEqual(-2**16 * 7**4, poly_disc)
         result = round2.round2(self.sextic)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(2, len(result))
         self.assertEqual(-9834496, result[1], result) # disc K = - 2**12 * 7**4
 
@@ -87,7 +87,7 @@ class Round2Test (unittest.TestCase):
         poly_disc = uniutil.polynomial(enumerate(self.septic), self.Z).discriminant()
         self.assertEqual(-2**16 * 3**12, poly_disc)
         result = round2.round2(self.septic)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(2, len(result))
         self.assertEqual(-2**12 * 3**10, result[1], result)
 
@@ -95,11 +95,11 @@ class Round2Test (unittest.TestCase):
         coeff = [6480, 1296, -252, 36, -7, 1]
         poly_disc = uniutil.polynomial(enumerate(coeff), self.Z).discriminant()
         result = round2.round2(coeff)
-        self.assert_(result)
+        self.assertTrue(result)
         self.assertEqual(2, len(result))
         bases, disc = result
-        self.assert_(poly_disc > disc, result)
-        self.failIf(poly_disc % disc.numerator, result)
+        self.assertTrue(poly_disc > disc, result)
+        self.assertFalse(poly_disc % disc.numerator, result)
         #(by magma)
         #> IntegralBasis(NumberField(PolynomialRing(RationalField())![6480,1296,-252,36,-7,1]));
         #[

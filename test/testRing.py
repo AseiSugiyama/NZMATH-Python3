@@ -95,12 +95,12 @@ class ResidueClassTest (unittest.TestCase):
         self.C = ring.ResidueClass(1, self.I)
 
     def testEq(self):
-        self.assert_(self.R == self.R)
-        self.assert_(self.C == self.C)
-        self.failIf(self.R != self.R)
-        self.failIf(self.C != self.C)
-        self.failIf(self.R == self.C)
-        self.failIf(self.C == self.R)
+        self.assertTrue(self.R == self.R)
+        self.assertTrue(self.C == self.C)
+        self.assertFalse(self.R != self.R)
+        self.assertFalse(self.C != self.C)
+        self.assertFalse(self.R == self.C)
+        self.assertFalse(self.C == self.R)
 
 
 class GetRingTest (unittest.TestCase):

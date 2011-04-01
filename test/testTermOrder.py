@@ -12,7 +12,7 @@ class UnivarTermOrderTest (unittest.TestCase):
         """
 	__init__ works.
 	"""
-        self.assert_(termorder.UnivarTermOrder(lambda x, y: 0))
+        self.assertTrue(termorder.UnivarTermOrder(lambda x, y: 0))
         self.assertRaises(TypeError, termorder.UnivarTermOrder)
 
     def testFormat(self):
@@ -48,7 +48,7 @@ class UnivarTermOrderTest (unittest.TestCase):
         g = univar.SortedPolynomial([(1, 2), (4, -1)])
         self.assertEqual(4, termorder.ascending_order.degree(g))
         zero = univar.BasicPolynomial(())
-        self.assert_(termorder.ascending_order.degree(zero) < 0)
+        self.assertTrue(termorder.ascending_order.degree(zero) < 0)
 
     def testLeadingCoefficient(self):
         f = univar.BasicPolynomial({1:2, 4:-1})
@@ -73,9 +73,9 @@ class MultivarTermOrderTest (unittest.TestCase):
         self.degrevlex = termorder.total_degree_reverse_lexicographic_order
 
     def testInit(self):
-        self.assert_(self.lex)
-        self.assert_(self.deglex)
-        self.assert_(self.degrevlex)
+        self.assertTrue(self.lex)
+        self.assertTrue(self.deglex)
+        self.assertTrue(self.degrevlex)
         self.assertRaises(TypeError, termorder.MultivarTermOrder)
 
     def testFormatConst(self):

@@ -29,11 +29,11 @@ class ECPPTest(unittest.TestCase):
         #import nzmath.prime as prime
         p = 300000000000000000053 # prime.nextPrime(3*10**20)
         #p = 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000267 #prime.nextPrime(10**100)
-        self.assert_(ecpp.ecpp(p))
+        self.assertTrue(ecpp.ecpp(p))
 
     def testComposite(self):
         n = 10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000139
-        self.failIf(ecpp.ecpp(n))
+        self.assertFalse(ecpp.ecpp(n))
 
 
 class CMMethodTest(unittest.TestCase):
@@ -42,12 +42,12 @@ class CMMethodTest(unittest.TestCase):
     """
     def test_cmm(self):
         result = ecpp.cmm(7)
-        self.assert_(isinstance(result, list))
+        self.assertTrue(isinstance(result, list))
         self.assertEqual(2, len(result[0]))
 
     def test_cmm_order(self):
         result = ecpp.cmm_order(7)
-        self.assert_(isinstance(result, list))
+        self.assertTrue(isinstance(result, list))
         self.assertEqual(3, len(result[0]))
 
     def test_param_gen(self):
@@ -78,7 +78,7 @@ if HAVE_MPMATH:
             omega = (-1+mpmath.sqrt(3)*1j) / 2
             eta3 = ecpp.dedekind(omega, 18)
             theta3 = mpmath.jtheta(2, mpmath.pi/6, q(omega/3))/mpmath.sqrt(3)
-            self.assert_(mpmath.almosteq(theta3, eta3), eta3 - theta3)
+            self.assertTrue(mpmath.almosteq(theta3, eta3), eta3 - theta3)
 
         def testIdentity2(self):
             """eta(t)**3 = theta_2(0,q(t))theta_3(0,q(t))theta_4(0,q(t))/2"""
@@ -89,7 +89,7 @@ if HAVE_MPMATH:
                       * mpmath.jtheta(3, 0, q(omega))
                       * mpmath.jtheta(4, 0, q(omega))
                       / 2)
-            self.assert_(mpmath.almosteq(triple, eta3cubed), triple - eta3cubed)
+            self.assertTrue(mpmath.almosteq(triple, eta3cubed), triple - eta3cubed)
 
 
 # The following part is always unedited.

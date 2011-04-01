@@ -7,8 +7,8 @@ class SetTest(unittest.TestCase):
         """
         set and frozen set is ready to use.
         """
-        self.assert_(set([1]))
-        self.assert_(frozenset([1]))
+        self.assertTrue(set([1]))
+        self.assertTrue(frozenset([1]))
 
 
 class CardTest(unittest.TestCase):

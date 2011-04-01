@@ -77,14 +77,14 @@ class MatrixTest(unittest.TestCase):
         self.assertEqual(vector.Vector([21, 1, 0]), a4[1])
 
     def testEqual(self):
-        self.assert_(a1 == Matrix(1, 2, [3, 2]))
-        self.assert_(isinstance(a1 == a1, bool))
+        self.assertTrue(a1 == Matrix(1, 2, [3, 2]))
+        self.assertTrue(isinstance(a1 == a1, bool))
 
     def testNonZero(self):
-        self.assert_(not zeroMatrix(2, 3))
+        self.assertTrue(not zeroMatrix(2, 3))
 
     def testContains(self):
-        self.assert_(5 in a2)
+        self.assertTrue(5 in a2)
 
     def testCall(self):
         call = createMatrix(1, 2, [13, 4])
@@ -256,7 +256,7 @@ class RingSquareMatrixTest(unittest.TestCase):
     def testDeterminant(self):
         self.assertEqual(-2, b1.determinant())
         #sf.bug #1914349
-        self.assert_(isinstance(b3.determinant(), (int, long)))
+        self.assertTrue(isinstance(b3.determinant(), (int, long)))
         self.assertEqual(36, b3.determinant())
 
     def testCofactor(self):
@@ -306,7 +306,7 @@ class FieldMatrixTest(unittest.TestCase):
 
     def testKernel(self):
         ker = c2.kernel()
-        self.assert_(not c2 * ker)
+        self.assertTrue(not c2 * ker)
 
     def testImage(self):
         img = createMatrix(4,3,[1,2,-1]+[5,12,-2]+[1,3,-1]+[1,2,0])
@@ -399,15 +399,15 @@ class MatrixRingTest (unittest.TestCase):
         m3z = MatrixRing.getInstance(3, Int)
         m2q = MatrixRing.getInstance(2, rational.theRationalField)
         # issubring
-        self.failIf(self.m2z.issubring(Int))
-        self.assert_(self.m2z.issubring(self.m2z))
-        self.assert_(self.m2z.issubring(m2q))
-        self.failIf(self.m2z.issubring(m3z))
+        self.assertFalse(self.m2z.issubring(Int))
+        self.assertTrue(self.m2z.issubring(self.m2z))
+        self.assertTrue(self.m2z.issubring(m2q))
+        self.assertFalse(self.m2z.issubring(m3z))
         # issuperring
-        self.failIf(self.m2z.issuperring(Int))
-        self.assert_(self.m2z.issuperring(self.m2z))
-        self.failIf(self.m2z.issuperring(m2q))
-        self.failIf(self.m2z.issuperring(m3z))
+        self.assertFalse(self.m2z.issuperring(Int))
+        self.assertTrue(self.m2z.issuperring(self.m2z))
+        self.assertFalse(self.m2z.issuperring(m2q))
+        self.assertFalse(self.m2z.issuperring(m3z))
         # getCommonSuperring
         self.assertRaises(TypeError, self.m2z.getCommonSuperring, Int)
 
@@ -439,20 +439,20 @@ class FunctionTest(unittest.TestCase):
         mat2 = createMatrix(2, 3, [[2,3,4], [5,6,7]], Q)
         self.assertEqual(mat2.coeff_ring, Q)
         mat3 = createMatrix(3, [(1, 2, 3), (4, 5, 6), (7, 8, 9)], Q)
-        self.assert_(mat3.row == mat3.column)
-        self.assert_(mat3.__class__, FieldSquareMatrix)
+        self.assertTrue(mat3.row == mat3.column)
+        self.assertTrue(mat3.__class__, FieldSquareMatrix)
         mat4 = createMatrix(2, [vector.Vector([1, 4]), vector.Vector([6, 8])])
         self.assertEqual(mat4.coeff_ring, Int)
         mat5 = createMatrix(5, 6, Int)
-        self.assert_(mat5 == 0)
+        self.assertTrue(mat5 == 0)
         mat6 = createMatrix(1, 4)
-        self.assert_(mat6 == 0)
+        self.assertTrue(mat6 == 0)
         mat7 = createMatrix(3, Q)
-        self.assert_(mat7.row == mat7.column)
-        self.assert_(mat7 == 0)
+        self.assertTrue(mat7.row == mat7.column)
+        self.assertTrue(mat7 == 0)
         self.assertEqual(mat7.coeff_ring, Q)
         mat8 = createMatrix(7)
-        self.assert_(mat8 == 0)
+        self.assertTrue(mat8 == 0)
 
 
 def suite(suffix="Test"):

@@ -112,12 +112,12 @@ class PolynomialDatTaypeTest (unittest.TestCase):
         self.assertEqual(0, self.s[3])
 
     def testContains(self):
-        self.assert_(0 in self.b)
-        self.assert_(8 in self.b)
-        self.failIf(3 in self.b)
-        self.assert_(0 in self.s)
-        self.assert_(8 in self.s)
-        self.failIf(3 in self.s)
+        self.assertTrue(0 in self.b)
+        self.assertTrue(8 in self.b)
+        self.assertFalse(3 in self.b)
+        self.assertTrue(0 in self.s)
+        self.assertTrue(8 in self.s)
+        self.assertFalse(3 in self.s)
 
     def testComparability(self):
         self.assertEqual(self.s, self.b)

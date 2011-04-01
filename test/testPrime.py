@@ -7,28 +7,28 @@ logging.basicConfig()
 
 class PrimeTest(unittest.TestCase):
     def testPrimeqComposite(self):
-        self.failIf(prime.primeq(1))
-        self.failIf(prime.primeq(2 ** 2))
-        self.failIf(prime.primeq(2 * 7))
-        self.failIf(prime.primeq(3 * 5))
-        self.failIf(prime.primeq(11 * 31))
-        self.failIf(prime.primeq(1111111111111111111 * 11111111111111111111111))
+        self.assertFalse(prime.primeq(1))
+        self.assertFalse(prime.primeq(2 ** 2))
+        self.assertFalse(prime.primeq(2 * 7))
+        self.assertFalse(prime.primeq(3 * 5))
+        self.assertFalse(prime.primeq(11 * 31))
+        self.assertFalse(prime.primeq(1111111111111111111 * 11111111111111111111111))
 
     def testPrimeqPrime(self):
-        self.assert_(prime.primeq(2))
-        self.assert_(prime.primeq(3))
-        self.assert_(prime.primeq(23))
-        self.assert_(prime.primeq(1662803))
-        self.assert_(prime.primeq(1111111111111111111))
+        self.assertTrue(prime.primeq(2))
+        self.assertTrue(prime.primeq(3))
+        self.assertTrue(prime.primeq(23))
+        self.assertTrue(prime.primeq(1662803))
+        self.assertTrue(prime.primeq(1111111111111111111))
 ##         assert prime.primeq(9127065170209166627512577049835050786319879175417462565489372634726057)
 
     def testBigprimeq(self):
-        self.assert_(prime.bigprimeq(1111111111111111111))
+        self.assertTrue(prime.bigprimeq(1111111111111111111))
 ##         assert prime.bigprimeq(9127065170209166627512577049835050786319879175417462565489372634726057)
 
     def testMuller(self):
-        self.assert_(prime.miller(1111111111111111111))
-        self.failIf(prime.miller(11111111111111111111111111111))
+        self.assertTrue(prime.miller(1111111111111111111))
+        self.assertFalse(prime.miller(11111111111111111111111111111))
 
     def testGenerator(self):
         g = prime.generator()
@@ -41,11 +41,11 @@ class PrimeTest(unittest.TestCase):
         self.assertEqual(29, g2.next())
 
     def testTrialDivision(self):
-        self.assert_(prime.trialDivision(3))
-        self.assert_(prime.trialDivision(23))
-        self.failIf(prime.trialDivision(7 * 13))
-        self.assert_(prime.trialDivision(97))
-        self.failIf(prime.trialDivision(11 * 13))
+        self.assertTrue(prime.trialDivision(3))
+        self.assertTrue(prime.trialDivision(23))
+        self.assertFalse(prime.trialDivision(7 * 13))
+        self.assertTrue(prime.trialDivision(97))
+        self.assertFalse(prime.trialDivision(11 * 13))
 
     def testPrime(self):
         self.assertEqual(541, prime.prime(100))
@@ -67,42 +67,42 @@ class PrimeTest(unittest.TestCase):
     def testRandPrime(self):
         for n in range(3, 52, 6):
             p = prime.randPrime(n)
-            self.assert_(10**(n-1) < p < 10**n)
-            self.assert_(prime.smallSpsp(p)) # primeq is too heavy..
-        self.assert_(prime.randPrime(1) in (2, 3, 5, 7))
+            self.assertTrue(10**(n-1) < p < 10**n)
+            self.assertTrue(prime.smallSpsp(p)) # primeq is too heavy..
+        self.assertTrue(prime.randPrime(1) in (2, 3, 5, 7))
 
 
 class LpspTest (unittest.TestCase):
     def testLucasTestForPrime(self):
-        self.assert_(prime.lpsp(101, 2, 3))
+        self.assertTrue(prime.lpsp(101, 2, 3))
 
     def testLucasTestForPseudoPrime(self):
         # Lucas but not Frobenius example
-        self.assert_(prime.lpsp(323, 1, -1))
+        self.assertTrue(prime.lpsp(323, 1, -1))
         # Frobenius pseudoprime
-        self.assert_(prime.lpsp(4181, 1, -1))
-        self.assert_(prime.lpsp(5777, 1, -1))
+        self.assertTrue(prime.lpsp(4181, 1, -1))
+        self.assertTrue(prime.lpsp(5777, 1, -1))
 
     def testLucasTestForDetectedComposite(self):
-        self.failIf(prime.lpsp(4187, 1, -1))
+        self.assertFalse(prime.lpsp(4187, 1, -1))
 
 
 class FpspTest (unittest.TestCase):
     def testFrobeniusTestForPrime(self):
-        self.assert_(prime.fpsp(101, 2, 3))
+        self.assertTrue(prime.fpsp(101, 2, 3))
 
     def testFrobeniusTestForPseudoPrime(self):
         # Prime Numbers example
-        self.assert_(prime.fpsp(4181, 1, -1)) # smallest
-        self.assert_(prime.fpsp(5777, 1, -1))
+        self.assertTrue(prime.fpsp(4181, 1, -1)) # smallest
+        self.assertTrue(prime.fpsp(5777, 1, -1))
         # Shinohara's example
-        self.assert_(prime.fpsp(291409, 3, 8))
+        self.assertTrue(prime.fpsp(291409, 3, 8))
 
     def testFrobeniusTestForDetectedComposite(self):
         # not Lucas => not Frobenius
-        self.failIf(prime.fpsp(4187, 1, -1))
+        self.assertFalse(prime.fpsp(4187, 1, -1))
         # Lucas pseudoprime but not Frobenius pseudoprime
-        self.failIf(prime.fpsp(323, 1, -1))
+        self.assertFalse(prime.fpsp(323, 1, -1))
 
 
 def suite(suffix="Test"):

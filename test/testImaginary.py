@@ -15,7 +15,7 @@ class ImaginaryTest (unittest.TestCase):
         a = imaginary.Complex(1, 1)
         self.assertEqual(a, a.inverse().inverse())
         b = imaginary.Complex(2, 0)
-        self.assert_(b.inverse() in real.theRealField, b.inverse())
+        self.assertTrue(b.inverse() in real.theRealField, b.inverse())
 
     def testConjugate(self):
         a = imaginary.Complex(1, 1)
@@ -130,8 +130,8 @@ class ComplexFieldTest (unittest.TestCase):
 
     def testSubring(self):
         C = imaginary.theComplexField
-        self.failUnless(C.issuperring(real.theRealField))
-        self.failUnless(C.issuperring(rational.theRationalField))
+        self.assertTrue(C.issuperring(real.theRealField))
+        self.assertTrue(C.issuperring(rational.theRationalField))
 
     def testHash(self):
         dictionary = {}

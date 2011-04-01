@@ -31,9 +31,9 @@ class PolynomialRingTest(unittest.TestCase):
             # should be raised.
             pass
         except:
-            self.failIf(False, "unexcepted error is raised")
+            self.assertFalse(False, "unexcepted error is raised")
         else:
-            self.failIf(False, "assignment should be prohibited")
+            self.assertFalse(False, "assignment should be prohibited")
 
     def testZero(self):
         zero = uniutil.polynomial((), rational.theIntegerRing)
@@ -44,9 +44,9 @@ class PolynomialRingTest(unittest.TestCase):
             # should be raised.
             pass
         except:
-            self.failIf(False, "unexcepted error is raised")
+            self.assertFalse(False, "unexcepted error is raised")
         else:
-            self.failIf(False, "assignment should be prohibited")
+            self.assertFalse(False, "assignment should be prohibited")
 
 
 class MultivarPolynomialRingTest(unittest.TestCase):
@@ -82,24 +82,24 @@ class PolynomialIdealTest(unittest.TestCase):
         self.qx = poly_ring.PolynomialRing.getInstance(self.Q)
 
     def testNonzero(self):
-        self.failIf(poly_ring.PolynomialIdeal(self.Q.zero, self.qx))
+        self.assertFalse(poly_ring.PolynomialIdeal(self.Q.zero, self.qx))
 
     def testReduceFieldPolynomial(self):
         whole = poly_ring.PolynomialIdeal(self.Q.one, self.qx)
         f = uniutil.polynomial([(1, self.Q.createElement(3, 4))], self.Q)
-        self.failIf(whole.reduce(f))
-        self.assert_(poly_ring.PolynomialIdeal(f, self.qx).reduce(self.Q.one))
+        self.assertFalse(whole.reduce(f))
+        self.assertTrue(poly_ring.PolynomialIdeal(f, self.qx).reduce(self.Q.one))
 
     def testReduceEuclideanPolynomial(self):
         whole = poly_ring.PolynomialIdeal(-1, self.zx)
         f = uniutil.polynomial([(0, 3), (1, 2)], self.Z)
         f_ideal = poly_ring.PolynomialIdeal(f, self.zx)
-        self.failIf(whole.reduce(f))
-        self.assert_(f_ideal.reduce(self.Z.one))
+        self.assertFalse(whole.reduce(f))
+        self.assertTrue(f_ideal.reduce(self.Z.one))
 
         two_generators = poly_ring.PolynomialIdeal([f, self.zx.createElement(5)], self.zx)
-        self.failIf(two_generators.reduce(f))
-        self.assert_(two_generators.reduce(self.Z.one))
+        self.assertFalse(two_generators.reduce(f))
+        self.assertTrue(two_generators.reduce(self.Z.one))
 
     def testNormalizeGenerators(self):
         f = uniutil.polynomial([(0, 3), (1, 2)], self.Z)
@@ -110,8 +110,8 @@ class PolynomialIdealTest(unittest.TestCase):
 
     def testZeroIdeal(self):
         null = poly_ring.PolynomialIdeal(self.zx.zero, self.zx)
-        self.assert_(self.zx.zero in null)
-        self.failIf(self.zx.one in null)
+        self.assertTrue(self.zx.zero in null)
+        self.assertFalse(self.zx.one in null)
 
 
 class MultivariablePolynomialIdealTest (unittest.TestCase):
@@ -122,13 +122,13 @@ class MultivariablePolynomialIdealTest (unittest.TestCase):
         self.Q3 = poly_ring.PolynomialRing(self.Q, 3)
 
     def testNonzero(self):
-        self.failIf(poly_ring.PolynomialIdeal(self.Q3.zero, self.Q3))
-        self.assert_(poly_ring.PolynomialIdeal([self.Q3.one], self.Q3))
+        self.assertFalse(poly_ring.PolynomialIdeal(self.Q3.zero, self.Q3))
+        self.assertTrue(poly_ring.PolynomialIdeal([self.Q3.one], self.Q3))
 
     def testZeroIdeal(self):
         null = poly_ring.PolynomialIdeal(self.Z2.zero, self.Z2)
-        self.assert_(self.Z2.zero in null)
-        self.failIf(self.Z2.one in null)
+        self.assertTrue(self.Z2.zero in null)
+        self.assertFalse(self.Z2.one in null)
 
 
 def suite(suffix="Test"):

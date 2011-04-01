@@ -15,8 +15,8 @@ class DictFormalSumTest (unittest.TestCase):
         pass
 
     def testNonzero(self):
-        self.assert_(self.x)
-        self.failIf(self.zero)
+        self.assertTrue(self.x)
+        self.assertFalse(self.zero)
 
     def testLookup(self):
         self.assertEqual(1, self.x['x'])
@@ -32,7 +32,7 @@ class DictFormalSumTest (unittest.TestCase):
 
     def testPos(self):
         self.assertEqual(self.x, +self.x)
-        self.assert_(self.x is not +self.x)
+        self.assertTrue(self.x is not +self.x)
 
     def testNeg(self):
         mx = formalsum.DictFormalSum({'x': -1})
@@ -82,7 +82,7 @@ class DictFormalSumTest (unittest.TestCase):
         self.assertEqual([('x', 1)], [t for t in self.x.iterterms()])
 
     def testContains(self):
-        self.assert_('x' in self.x)
+        self.assertTrue('x' in self.x)
 
     def testLen(self):
         self.assertEqual(1, len(self.x))
@@ -103,8 +103,8 @@ class ListFormalSumTest (unittest.TestCase):
         pass
 
     def testNonzero(self):
-        self.assert_(self.x)
-        self.failIf(self.zero)
+        self.assertTrue(self.x)
+        self.assertFalse(self.zero)
 
     def testLookup(self):
         self.assertEqual(1, self.x['x'])
@@ -120,7 +120,7 @@ class ListFormalSumTest (unittest.TestCase):
 
     def testPos(self):
         self.assertEqual(self.x, +self.x)
-        self.assert_(self.x is not +self.x)
+        self.assertTrue(self.x is not +self.x)
 
     def testNeg(self):
         mx = formalsum.ListFormalSum([('x', -1)])
@@ -170,7 +170,7 @@ class ListFormalSumTest (unittest.TestCase):
         self.assertEqual([('x', 1)], [t for t in self.x.iterterms()])
 
     def testContains(self):
-        self.assert_('x' in self.x)
+        self.assertTrue('x' in self.x)
 
     def testLen(self):
         self.assertEqual(1, len(self.x))

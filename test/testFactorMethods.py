@@ -71,15 +71,15 @@ class TrialDivisionTest (unittest.TestCase):
     def testTrialDivisionTracker(self):
         tdm = mthd.TrialDivision()
         factorization_of_49 = tdm.factor(49, return_type='tracker')
-        self.assert_(isinstance(factorization_of_49, mthd.util.FactoringInteger))
-        self.assert_(7 in factorization_of_49.primality)
+        self.assertTrue(isinstance(factorization_of_49, mthd.util.FactoringInteger))
+        self.assertTrue(7 in factorization_of_49.primality)
 
         # fail to factor is iterator is short
         factorization_of_10201 = tdm.factor(10201,
                                             return_type='tracker',
                                             iterator=iter(range(3, 100, 2)))
-        self.assert_(10201 in factorization_of_10201.primality) # not factored
-        self.failIf(factorization_of_10201.primality[10201]) # not a prime
+        self.assertTrue(10201 in factorization_of_10201.primality) # not factored
+        self.assertFalse(factorization_of_10201.primality[10201]) # not a prime
 
 
 def suite(suffix = "Test"):

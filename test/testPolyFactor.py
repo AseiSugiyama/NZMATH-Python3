@@ -12,18 +12,18 @@ class ZassenhausTest (unittest.TestCase):
     def testRegular(self):
         f = uniutil.polynomial(enumerate([12, 7, 1]), Z)
         r = zassenhaus.zassenhaus(f)
-        self.assert_(isinstance(r, list))
+        self.assertTrue(isinstance(r, list))
         self.assertEqual(2, len(r), r)
-        self.assert_(isinstance(r[0], uniutil.UniqueFactorizationDomainPolynomial))
-        self.assert_(isinstance(r[1], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assertTrue(isinstance(r[0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assertTrue(isinstance(r[1], uniutil.UniqueFactorizationDomainPolynomial))
         self.assertEqual(f, r[0] * r[1])
 
     def testIrreducible(self):
         f = uniutil.polynomial(enumerate([12, 6, 1]), Z)
         r = zassenhaus.zassenhaus(f)
-        self.assert_(isinstance(r, list), r)
+        self.assertTrue(isinstance(r, list), r)
         self.assertEqual(1, len(r))
-        self.assert_(isinstance(r[0], uniutil.UniqueFactorizationDomainPolynomial))
+        self.assertTrue(isinstance(r[0], uniutil.UniqueFactorizationDomainPolynomial))
         self.assertEqual(f, r[0])
 
 
@@ -31,16 +31,16 @@ class PadicFactorizationTest (unittest.TestCase):
     def testRegular(self):
         f = uniutil.polynomial(enumerate([12, 7, 1]), Z)
         r = zassenhaus.padic_factorization(f)
-        self.assert_(isinstance(r, tuple))
+        self.assertTrue(isinstance(r, tuple))
         self.assertEqual(2, len(r))
-        self.assert_(prime.primeq(r[0]))
-        self.assert_(isinstance(r[1], list))
+        self.assertTrue(prime.primeq(r[0]))
+        self.assertTrue(isinstance(r[1], list))
         self.assertEqual(2, len(r[1]))
 
     def testIrreducible(self):
         f = uniutil.polynomial(enumerate([12, 6, 1]), Z)
         r = zassenhaus.padic_factorization(f)
-        self.assert_(isinstance(r, tuple), r)
+        self.assertTrue(isinstance(r, tuple), r)
 
 class IntegerPolynomialFactorizationTest (unittest.TestCase):
     def testNonMonic(self):
@@ -51,12 +51,12 @@ class IntegerPolynomialFactorizationTest (unittest.TestCase):
         f = f1**5 * f2**3 * f3_1 * f3_2
 
         r = zassenhaus.integerpolynomialfactorization(f)
-        self.assert_(isinstance(r, list))
+        self.assertTrue(isinstance(r, list))
         self.assertEqual(4, len(r), r)
-        self.assert_(isinstance(r[0][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[1][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[2][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[3][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[0][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[1][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[2][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[3][0], uniutil.IntegerPolynomial))
         self.assertEqual(f, r[0][0]**r[0][1] * r[1][0]**r[1][1] * r[2][0]**r[2][1] * r[3][0]**r[3][1])
 
     def testNonPrimitive(self):
@@ -66,12 +66,12 @@ class IntegerPolynomialFactorizationTest (unittest.TestCase):
         f = f1**3 * f2**2 * f3
 
         r = zassenhaus.integerpolynomialfactorization(f)
-        self.assert_(isinstance(r, list))
+        self.assertTrue(isinstance(r, list))
         self.assertEqual(4, len(r), r)
-        self.assert_(isinstance(r[0][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[1][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[2][0], uniutil.IntegerPolynomial))
-        self.assert_(isinstance(r[3][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[0][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[1][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[2][0], uniutil.IntegerPolynomial))
+        self.assertTrue(isinstance(r[3][0], uniutil.IntegerPolynomial))
         self.assertEqual(f, r[0][0]**r[0][1] * r[1][0]**r[1][1] * r[2][0]**r[2][1] * r[3][0]**r[3][1])
 
 def suite(suffix = "Test"):

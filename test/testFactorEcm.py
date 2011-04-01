@@ -12,13 +12,13 @@ class EcmTest (unittest.TestCase):
         n = 26927*63719
         for curve_type in self.curve_types:
             f = ecm.ecm(n, curve_type)
-            self.assert_(n % f == 0)
+            self.assertTrue(n % f == 0)
 
     def test_152077_172259(self):
         n = 152077*172259
         for curve_type in self.curve_types:
             f = ecm.ecm(n, curve_type)
-            self.assert_(n % f == 0)
+            self.assertTrue(n % f == 0)
 
     # the following tests can take too long time.
     def xxxtestRun(self):
@@ -33,19 +33,19 @@ class EcmTest (unittest.TestCase):
                   ):
             for curve_type in self.curve_types:
                 f = ecm.ecm(n, curve_type)
-                self.assert_(n % f == 0)
+                self.assertTrue(n % f == 0)
 
     def xxxtestM67(self):
         n = 2**67 - 1 #n has 21 digits, #EF=9 digits
         for curve_type in self.curve_types:
             f = ecm.ecm(n, curve_type)
-            self.assert_(n % f == 0)
+            self.assertTrue(n % f == 0)
 
     def xxxtestF7(self):
         n = 2**(2**7) + 1 #Ef=17digits
         for curve_type in self.curve_types:
             f = ecm.ecm(n, curve_type)
-            self.assert_(n % f == 0)
+            self.assertTrue(n % f == 0)
 
 
 class BoundsTest (unittest.TestCase):

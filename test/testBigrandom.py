@@ -15,7 +15,7 @@ class BigrandomTest(unittest.TestCase):
             rnd = bigrandom.randrange(5, 100, 10)
             dist[rnd] += 1
         for i in range(5, 100, 10):
-            self.assert_(abs(0.1 - dist[i]/float(trial_times)) < error_range)
+            self.assertTrue(abs(0.1 - dist[i]/float(trial_times)) < error_range)
 
         dist = {}
         for i in range(trial_times):
@@ -32,13 +32,13 @@ class BigrandomTest(unittest.TestCase):
             step = random.randrange(1, 200)
             d = bigrandom.randrange(start, stop, step)
             self.assertEqual(0, (d - start) % step)
-            self.assert_(start <= d < stop)
+            self.assertTrue(start <= d < stop)
             d = bigrandom.randrange(start**2, -stop**2, -step)
             self.assertEqual(0, (d - start**2) % step)
-            self.assert_(start**2 >= d > -stop**2)
+            self.assertTrue(start**2 >= d > -stop**2)
 
     def testHugeRange(self):
-        self.assert_(2 <= bigrandom.randrange(2, 10**500) < 10**500)
+        self.assertTrue(2 <= bigrandom.randrange(2, 10**500) < 10**500)
 
     def testValueError(self):
         self.assertRaises(ValueError, bigrandom.randrange, 1, 50, 0)
@@ -55,11 +55,11 @@ class ChoiceTest (unittest.TestCase):
     """
     def testidentity(self):
         i = lambda x: x
-        self.assert_(0 <= bigrandom.map_choice(i, 2**100) < 2**100)
+        self.assertTrue(0 <= bigrandom.map_choice(i, 2**100) < 2**100)
 
     def testeven(self):
         double = lambda x: x + x
-        self.assert_(0 <= bigrandom.map_choice(double, 2**100) < 2**101)
+        self.assertTrue(0 <= bigrandom.map_choice(double, 2**100) < 2**101)
         self.assertEqual(0, bigrandom.map_choice(double, 2**100) % 2)
 
     def testpartial(self):

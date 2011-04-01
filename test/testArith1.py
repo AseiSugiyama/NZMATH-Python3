@@ -11,8 +11,8 @@ class Arith1Test (unittest.TestCase):
         self.assertEqual(0, arith1.legendre(13*(2**107-1), 2**107-1))
 
     def testModsqrt(self):
-        self.assert_(arith1.modsqrt(2, 17) in (6, 11))
-        self.assert_(arith1.modsqrt(124413, 2**17-1) in (3988, 127073))
+        self.assertTrue(arith1.modsqrt(2, 17) in (6, 11))
+        self.assertTrue(arith1.modsqrt(124413, 2**17-1) in (3988, 127073))
         self.assertEqual(1, arith1.modsqrt(1, 2**13-1))
 
     def testExpand(self):
@@ -33,8 +33,8 @@ class Arith1Test (unittest.TestCase):
         self.assertEqual(3, arith1.floorsqrt(10))
         self.assertEqual(arith1.floorsqrt(400000000000000000000), 20000000000)
         self.assertEqual(arith1.floorsqrt(400000000000000000000 - 1), 19999999999)
-        self.assert_(arith1.floorsqrt(2**60 - 1) ** 2 <= 2**60 - 1)
-        self.assert_(arith1.floorsqrt(2**59 - 1) ** 2 <= 2**59 - 1)
+        self.assertTrue(arith1.floorsqrt(2**60 - 1) ** 2 <= 2**60 - 1)
+        self.assertTrue(arith1.floorsqrt(2**59 - 1) ** 2 <= 2**59 - 1)
 
     def testFloorpowerroot(self):
         self.assertEqual(0, arith1.floorpowerroot(0, 1))
@@ -66,16 +66,16 @@ class Arith1Test (unittest.TestCase):
         self.assertEqual(3, arith1.log(15, 2))
         self.assertEqual(3, arith1.log(1000, 10))
         self.assertEqual(9, arith1.log(1000000001, 10))
-        self.assert_(10 ** arith1.log(1000000001, 10) <= 1000000001)
+        self.assertTrue(10 ** arith1.log(1000000001, 10) <= 1000000001)
 
     def testIssquare(self):
-        self.assert_(arith1.issquare(1))
+        self.assertTrue(arith1.issquare(1))
         self.assertEqual(1, arith1.issquare(1))
-        self.assert_(arith1.issquare(289))
+        self.assertTrue(arith1.issquare(289))
         self.assertEqual(17, arith1.issquare(289))
-        self.failIf(arith1.issquare(2))
+        self.assertFalse(arith1.issquare(2))
         self.assertEqual(0, arith1.issquare(2))
-        self.failIf(arith1.issquare(0))
+        self.assertFalse(arith1.issquare(0))
         self.assertEqual(0, arith1.issquare(0))
 
     def testAGM(self):

@@ -16,7 +16,7 @@ class FactoringIntegerTest (unittest.TestCase):
         self.tracker100.register(5) # Unknown primality
         self.assertEqual(5, self.tracker100.getNextTarget())
         self.tracker100.register(5, True) # 5 is prime
-        self.failUnlessRaises(LookupError, self.tracker100.getNextTarget)
+        self.assertRaises(LookupError, self.tracker100.getNextTarget)
 
     def testPrime(self):
         self.tracker100.register(2, isprime=True)
@@ -56,11 +56,11 @@ class FactoringMethodTest (unittest.TestCase):
 
     def testVerbose(self):
         # initial value
-        self.failIf(self.method.verbose)
+        self.assertFalse(self.method.verbose)
         # set value
         self.method.verbose = True
         # confirm the value
-        self.failUnless(self.method.verbose)
+        self.assertTrue(self.method.verbose)
 
 
 def suite(suffix = "Test"):

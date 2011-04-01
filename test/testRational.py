@@ -98,59 +98,59 @@ class RationalTest (unittest.TestCase):
         self.assertEqual(8, a)
 
     def testLt(self):
-        self.assert_(Rational(5,7) < Rational(3,4))
-        self.failIf(Rational(3,4) < Rational(5,7))
-        self.failIf(Rational(3,4) < Rational(3,4))
-        self.assert_(Rational(132,133) < 1)
-        self.assert_(Rational(-13,12) < -1L)
-        self.assert_(1 > Rational(132,133))
-        self.assert_(Rational(132,133) < 1.000001)
+        self.assertTrue(Rational(5,7) < Rational(3,4))
+        self.assertFalse(Rational(3,4) < Rational(5,7))
+        self.assertFalse(Rational(3,4) < Rational(3,4))
+        self.assertTrue(Rational(132,133) < 1)
+        self.assertTrue(Rational(-13,12) < -1L)
+        self.assertTrue(1 > Rational(132,133))
+        self.assertTrue(Rational(132,133) < 1.000001)
 
     def testLe(self):
-        self.assert_(Rational(5,7) <= Rational(3,4))
-        self.failIf(Rational(3,4) <= Rational(5,7))
-        self.assert_(Rational(3,4) <= Rational(3,4))
-        self.assert_(Rational(132,133) <= 1)
-        self.assert_(Rational(-13,12) <= -1L)
-        self.assert_(1 >= Rational(132,133))
+        self.assertTrue(Rational(5,7) <= Rational(3,4))
+        self.assertFalse(Rational(3,4) <= Rational(5,7))
+        self.assertTrue(Rational(3,4) <= Rational(3,4))
+        self.assertTrue(Rational(132,133) <= 1)
+        self.assertTrue(Rational(-13,12) <= -1L)
+        self.assertTrue(1 >= Rational(132,133))
 
     def testEq(self):
-        self.assert_(Rational(1,2) == Rational(1,2))
-        self.assert_(Rational(-1,2) == Rational(-1,2))
-        self.assert_(Rational(4,2) == 2)
-        self.assert_(2L == Rational(14,7))
-        self.failIf(Rational(3,5) == Rational(27,46))
+        self.assertTrue(Rational(1,2) == Rational(1,2))
+        self.assertTrue(Rational(-1,2) == Rational(-1,2))
+        self.assertTrue(Rational(4,2) == 2)
+        self.assertTrue(2L == Rational(14,7))
+        self.assertFalse(Rational(3,5) == Rational(27,46))
 
     def testNe(self):
-        self.assert_(Rational(1,2) != Rational(1,3))
-        self.assert_(Rational(1,2) != Rational(-1,2))
-        self.failIf(Rational(1,2) != Rational(1,2))
+        self.assertTrue(Rational(1,2) != Rational(1,3))
+        self.assertTrue(Rational(1,2) != Rational(-1,2))
+        self.assertFalse(Rational(1,2) != Rational(1,2))
 
     def testGt(self):
-        self.assert_(Rational(3,4) > Rational(5,7))
-        self.failIf(Rational(5,7) > Rational(3,4))
-        self.failIf(Rational(3,4) > Rational(3,4))
-        self.assert_(Rational(13,12) > 1)
-        self.assert_(Rational(-11,12) > -1L)
-        self.assert_(1 < Rational(134,133))
+        self.assertTrue(Rational(3,4) > Rational(5,7))
+        self.assertFalse(Rational(5,7) > Rational(3,4))
+        self.assertFalse(Rational(3,4) > Rational(3,4))
+        self.assertTrue(Rational(13,12) > 1)
+        self.assertTrue(Rational(-11,12) > -1L)
+        self.assertTrue(1 < Rational(134,133))
 
     def testGe(self):
-        self.assert_(Rational(3,4) >= Rational(5,7))
-        self.failIf(Rational(5,7) >= Rational(3,4))
-        self.assert_(Rational(3,4) >= Rational(3,4))
-        self.assert_(Rational(13,12) >= 1)
-        self.assert_(Rational(-11,12) >= -1L)
-        self.assert_(1 <= Rational(134,133))
+        self.assertTrue(Rational(3,4) >= Rational(5,7))
+        self.assertFalse(Rational(5,7) >= Rational(3,4))
+        self.assertTrue(Rational(3,4) >= Rational(3,4))
+        self.assertTrue(Rational(13,12) >= 1)
+        self.assertTrue(Rational(-11,12) >= -1L)
+        self.assertTrue(1 <= Rational(134,133))
 
     def testLong(self):
-        self.assert_(1 == long(Rational(13,12)))
-        self.assert_(0 == long(Rational(12,13)))
-        self.assert_(-1 == long(Rational(-1,14)))
+        self.assertTrue(1 == long(Rational(13,12)))
+        self.assertTrue(0 == long(Rational(12,13)))
+        self.assertTrue(-1 == long(Rational(-1,14)))
 
     def testInt(self):
-        self.assert_(1 == int(Rational(13,12)))
-        self.assert_(0 == int(Rational(12,13)))
-        self.assert_(-1 == int(Rational(-1,14)))
+        self.assertTrue(1 == int(Rational(13,12)))
+        self.assertTrue(0 == int(Rational(12,13)))
+        self.assertTrue(-1 == int(Rational(-1,14)))
 
     def testTrim(self):
         self.assertEqual(Rational(1,3), Rational(333,1000).trim(5))
@@ -161,7 +161,7 @@ class RationalTest (unittest.TestCase):
         self.assertEqual(Rational(-33,100), Rational(-1, 3).expand(10,100))
 
     def testFloat(self):
-        self.assert_(isinstance(float(Rational(1,4)), float))
+        self.assertTrue(isinstance(float(Rational(1,4)), float))
         self.assertEqual(0.25, float(Rational(1,4)))
 
     def testDecimalString(self):
@@ -169,11 +169,11 @@ class RationalTest (unittest.TestCase):
         self.assertEqual("0.33333", Rational(1,3).decimalString(5))
 
     def testNonzero(self):
-        self.failUnless(Rational(1,1))
-        self.failIf(Rational(0,1))
+        self.assertTrue(Rational(1,1))
+        self.assertFalse(Rational(0,1))
 
     def testHash(self):
-        self.assert_(hash(Rational(1,2)))
+        self.assertTrue(hash(Rational(1,2)))
         self.assertEqual(hash(Rational(1)), hash(Rational(1)))
         self.assertNotEqual(hash(Rational(1)), hash(Rational(2)))
         self.assertNotEqual(hash(Rational(1,2)), hash(Rational(2,3)))
@@ -218,41 +218,41 @@ class IntegerTest(unittest.TestCase):
         self.assertEqual(theIntegerRing, self.three.getRing())
 
     def testNonzero(self):
-        self.failUnless(Integer(1))
-        self.failIf(Integer(0))
+        self.assertTrue(Integer(1))
+        self.assertFalse(Integer(0))
 
     def testHash(self):
-        self.assert_(hash(Integer(12)))
+        self.assertTrue(hash(Integer(12)))
         self.assertEqual(hash(Integer(1)), hash(Integer(1)))
         self.assertNotEqual(hash(Integer(1)), hash(Integer(2)))
 
 
 class IntegerRingTest(unittest.TestCase):
     def testContains(self):
-        self.assert_(1 in theIntegerRing)
-        self.assert_(1L in theIntegerRing)
-        self.assert_(Integer(1) in theIntegerRing)
-        self.assert_(Rational(1,2) not in theIntegerRing)
-        self.assert_((1,) not in theIntegerRing)
+        self.assertTrue(1 in theIntegerRing)
+        self.assertTrue(1L in theIntegerRing)
+        self.assertTrue(Integer(1) in theIntegerRing)
+        self.assertTrue(Rational(1,2) not in theIntegerRing)
+        self.assertTrue((1,) not in theIntegerRing)
 
     def testGetQuotientField(self):
-        self.assert_(theRationalField is theIntegerRing.getQuotientField())
+        self.assertTrue(theRationalField is theIntegerRing.getQuotientField())
 
     def testIssubring(self):
-        self.assert_(theIntegerRing.issubring(theRationalField))
-        self.assert_(theIntegerRing.issubring(theIntegerRing))
+        self.assertTrue(theIntegerRing.issubring(theRationalField))
+        self.assertTrue(theIntegerRing.issubring(theIntegerRing))
 
     def testIssuperring(self):
-        self.failIf(theIntegerRing.issuperring(theRationalField))
-        self.assert_(theIntegerRing.issuperring(theIntegerRing))
+        self.assertFalse(theIntegerRing.issuperring(theRationalField))
+        self.assertTrue(theIntegerRing.issuperring(theIntegerRing))
 
     def testProperties(self):
-        self.assert_(theIntegerRing.isdomain())
-        self.assert_(theIntegerRing.isnoetherian())
-        self.assert_(theIntegerRing.iseuclidean())
-        self.assert_(theIntegerRing.isufd())
-        self.assert_(theIntegerRing.ispid())
-        self.failIf(theIntegerRing.isfield())
+        self.assertTrue(theIntegerRing.isdomain())
+        self.assertTrue(theIntegerRing.isnoetherian())
+        self.assertTrue(theIntegerRing.iseuclidean())
+        self.assertTrue(theIntegerRing.isufd())
+        self.assertTrue(theIntegerRing.ispid())
+        self.assertFalse(theIntegerRing.isfield())
 
     def testGcd(self):
         self.assertEqual(1, theIntegerRing.gcd(1, 2))
@@ -273,9 +273,9 @@ class IntegerRingTest(unittest.TestCase):
 
     def testConstants(self):
         self.assertEqual(1, theIntegerRing.one)
-        self.failUnless(isinstance(theIntegerRing.one, Integer))
+        self.assertTrue(isinstance(theIntegerRing.one, Integer))
         self.assertEqual(0, theIntegerRing.zero)
-        self.failUnless(isinstance(theIntegerRing.zero, Integer))
+        self.assertTrue(isinstance(theIntegerRing.zero, Integer))
 
     def testStrings(self):
         # str
@@ -291,33 +291,33 @@ class IntegerRingTest(unittest.TestCase):
 
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
-        self.assert_(1 in theRationalField)
-        self.assert_(1L in theRationalField)
-        self.assert_(Integer(1) in theRationalField)
-        self.assert_(Rational(1,2) in theRationalField)
-        self.assert_(3.14 not in theRationalField)
-        self.assert_((1,2) not in theRationalField)
+        self.assertTrue(1 in theRationalField)
+        self.assertTrue(1L in theRationalField)
+        self.assertTrue(Integer(1) in theRationalField)
+        self.assertTrue(Rational(1,2) in theRationalField)
+        self.assertTrue(3.14 not in theRationalField)
+        self.assertTrue((1,2) not in theRationalField)
 
     def testGetQuotientField(self):
-        self.assert_(theRationalField is theRationalField.getQuotientField())
+        self.assertTrue(theRationalField is theRationalField.getQuotientField())
 
     def testIssubring(self):
-        self.assert_(theRationalField.issubring(theRationalField))
-        self.failIf(theRationalField.issubring(theIntegerRing))
+        self.assertTrue(theRationalField.issubring(theRationalField))
+        self.assertFalse(theRationalField.issubring(theIntegerRing))
 
     def testIssuperring(self):
-        self.assert_(theRationalField.issuperring(theRationalField))
-        self.assert_(theRationalField.issuperring(theIntegerRing))
+        self.assertTrue(theRationalField.issuperring(theRationalField))
+        self.assertTrue(theRationalField.issuperring(theIntegerRing))
 
     def testProperties(self):
-        self.assert_(theRationalField.isfield())
-        self.assert_(theRationalField.isdomain())
+        self.assertTrue(theRationalField.isfield())
+        self.assertTrue(theRationalField.isdomain())
 
     def testConstants(self):
         self.assertEqual(1, theRationalField.one)
-        self.failUnless(isinstance(theRationalField.one, Rational))
+        self.assertTrue(isinstance(theRationalField.one, Rational))
         self.assertEqual(0, theRationalField.zero)
-        self.failUnless(isinstance(theRationalField.zero, Rational))
+        self.assertTrue(isinstance(theRationalField.zero, Rational))
 
     def testStrings(self):
         # str
@@ -334,36 +334,36 @@ class RationalFieldTest(unittest.TestCase):
 class IntegerIfIntOrLongTest (unittest.TestCase):
     def testInt(self):
         b = IntegerIfIntOrLong(1)
-        self.assert_(isinstance(b, Integer))
+        self.assertTrue(isinstance(b, Integer))
 
     def testLong(self):
         b = IntegerIfIntOrLong(1L)
-        self.assert_(isinstance(b, Integer))
+        self.assertTrue(isinstance(b, Integer))
 
     def testRational(self):
         b = IntegerIfIntOrLong(Rational(1,2))
-        self.failIf(isinstance(b, Integer))
-        self.assert_(isinstance(b, Rational))
+        self.assertFalse(isinstance(b, Integer))
+        self.assertTrue(isinstance(b, Rational))
 
     def testTuple(self):
         s = IntegerIfIntOrLong((1,1L))
-        self.assert_(isinstance(s, tuple))
+        self.assertTrue(isinstance(s, tuple))
         for i in s:
-            self.assert_(isinstance(i, Integer))
+            self.assertTrue(isinstance(i, Integer))
 
     def testList(self):
         s = IntegerIfIntOrLong([1,1L])
-        self.assert_(isinstance(s, list))
+        self.assertTrue(isinstance(s, list))
         for i in s:
-            self.assert_(isinstance(i, Integer))
+            self.assertTrue(isinstance(i, Integer))
 
     def testListOfTuple(self):
         ss = IntegerIfIntOrLong([(1,1L),(2L,2)])
-        self.assert_(isinstance(ss, list))
+        self.assertTrue(isinstance(ss, list))
         for s in ss:
-            self.assert_(isinstance(s, tuple))
+            self.assertTrue(isinstance(s, tuple))
             for i in s:
-                self.assert_(isinstance(i, Integer))
+                self.assertTrue(isinstance(i, Integer))
 
 
 def suite(suffix = "Test"):

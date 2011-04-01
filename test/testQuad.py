@@ -4,7 +4,7 @@ import nzmath.quad as quad
 
 class ClassNumberTest (unittest.TestCase):
     def testClassNumber(self):
-        self.assert_(quad.class_number(-4))
+        self.assertTrue(quad.class_number(-4))
         #self.assertEqual("[1, 0, 1]", repr(quad.class_number(-4)))
         self.assertEqual(1, quad.class_number(-3))
         self.assertEqual(2, quad.class_number(-15))
@@ -22,7 +22,7 @@ class ClassNumberTest (unittest.TestCase):
         warnings.resetwarnings()
 
     def testClassGroup(self):
-        self.assert_(quad.class_group(-4))
+        self.assertTrue(quad.class_group(-4))
         self.assertEqual("[ReducedQuadraticForm(1, 1, 1)]", repr(quad.class_group(-3)[1]))
         self.assertEqual("[ReducedQuadraticForm(1, 1, 4), ReducedQuadraticForm(2, 1, 2)]", repr(quad.class_group(-15)[1]))
         self.assertEqual("[ReducedQuadraticForm(1, 1, 6), ReducedQuadraticForm(2, 1, 3), ReducedQuadraticForm(2, -1, 3)]", repr(quad.class_group(-23)[1]))
@@ -103,24 +103,24 @@ class KroneckerTest (unittest.TestCase):
 class DiscriminantTest(unittest.TestCase):
     def test_isfundamental(self):
         # d = 1 mod 4 and squarefree
-        self.assert_(quad.isfundamental(5))
-        self.assert_(quad.isfundamental(-3))
-        self.assert_(quad.isfundamental(-7))
-        self.assert_(quad.isfundamental(-11))
-        self.assert_(quad.isfundamental(-15))
+        self.assertTrue(quad.isfundamental(5))
+        self.assertTrue(quad.isfundamental(-3))
+        self.assertTrue(quad.isfundamental(-7))
+        self.assertTrue(quad.isfundamental(-11))
+        self.assertTrue(quad.isfundamental(-15))
         # d = 0 mod 4 and d/4 is squarefree and d/4 = 2 or 3 mod 4
-        self.assert_(quad.isfundamental(12))
-        self.assert_(quad.isfundamental(8))
-        self.assert_(quad.isfundamental(-4))
-        self.assert_(quad.isfundamental(-8))
-        self.assert_(quad.isfundamental(-20))
+        self.assertTrue(quad.isfundamental(12))
+        self.assertTrue(quad.isfundamental(8))
+        self.assertTrue(quad.isfundamental(-4))
+        self.assertTrue(quad.isfundamental(-8))
+        self.assertTrue(quad.isfundamental(-20))
         # otherwise
-        self.failIf(quad.isfundamental(4)) # 0 mod 4 but d/4 != 2, 3 mod 4
-        self.failIf(quad.isfundamental(3)) # not 0, 1 mod 4
-        self.failIf(quad.isfundamental(1)) # trivial
-        self.failIf(quad.isfundamental(-1)) # not 0, 1 mod 4
-        self.failIf(quad.isfundamental(-48)) # 0 mod 4 but d/4 is non-squarefree
-        self.failIf(quad.isfundamental(-63)) # 1 mod 4 but non-squarefree
+        self.assertFalse(quad.isfundamental(4)) # 0 mod 4 but d/4 != 2, 3 mod 4
+        self.assertFalse(quad.isfundamental(3)) # not 0, 1 mod 4
+        self.assertFalse(quad.isfundamental(1)) # trivial
+        self.assertFalse(quad.isfundamental(-1)) # not 0, 1 mod 4
+        self.assertFalse(quad.isfundamental(-48)) # 0 mod 4 but d/4 is non-squarefree
+        self.assertFalse(quad.isfundamental(-63)) # 1 mod 4 but non-squarefree
 
 
 def suite(suffix="Test"):

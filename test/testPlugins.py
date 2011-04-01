@@ -16,14 +16,14 @@ class ModulesTest(unittest.TestCase):
                         'hypot', 'ldexp', 'log', 'log10', 'modf', 'pi', 'pow',
                         'radians', 'sin', 'sinh', 'sqrt', 'tan', 'tanh')
         for member in math_members:
-            self.assert_(member in dir(math), member)
+            self.assertTrue(member in dir(math), member)
 
     def testCmath(self):
         cmath_members = ('acos', 'acosh', 'asin', 'asinh', 'atan', 'atanh',
                          'cos', 'cosh', 'e', 'exp', 'log', 'log10', 'pi', 'sin',
                          'sinh', 'sqrt', 'tan', 'tanh')
         for member in cmath_members:
-            self.assert_(member in dir(cmath), member)
+            self.assertTrue(member in dir(cmath), member)
 
 
 def suite(suffix="Test"):

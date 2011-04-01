@@ -12,8 +12,8 @@ class GroebnerTest (unittest.TestCase):
         I.e. f divides g and g divides f.
         """
         r1, r2 = f.pseudo_mod(g), g.pseudo_mod(f)
-        self.failIf(r1)
-        self.failIf(r2)
+        self.assertFalse(r1)
+        self.assertFalse(r2)
     
     def setUp(self):
         self.lex = termorder.lexicographic_order

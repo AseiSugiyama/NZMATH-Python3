@@ -37,25 +37,25 @@ class EllipticTest(unittest.TestCase):
 
     def testStr(self):
         e = elliptic.EC([1, 3, 4, 0, 1], 7)
-        self.assert_(str(e))
+        self.assertTrue(str(e))
 
     def testSimple(self): 
         self.assertEqual('y ** 2 = x ** 3 - 432/1 * x + 8208/1', str(self.a.simple()))
         # ch > 0
         e = elliptic.EC([1, 1, 1, 3, 4], 7)
-        self.assert_(e.simple())
+        self.assertTrue(e.simple())
 
     def testWhetherOn(self):
-        self.assert_(self.c.whetherOn(self.P1))
-        self.assert_(self.c.whetherOn(self.P2))
-        self.assert_(self.c.whetherOn(self.P3))
-        self.assert_(self.c.whetherOn(self.P4))
-        self.assert_(self.c.whetherOn(self.P5))
-        self.assert_(self.c.whetherOn(self.P6))
-        self.assert_(self.c.whetherOn(self.P7))
-        self.assert_(self.c.whetherOn(self.P8))
-        self.failIf(self.c.whetherOn([-15,-2]))
-        self.failIf(self.c.whetherOn([99999,66666666]))
+        self.assertTrue(self.c.whetherOn(self.P1))
+        self.assertTrue(self.c.whetherOn(self.P2))
+        self.assertTrue(self.c.whetherOn(self.P3))
+        self.assertTrue(self.c.whetherOn(self.P4))
+        self.assertTrue(self.c.whetherOn(self.P5))
+        self.assertTrue(self.c.whetherOn(self.P6))
+        self.assertTrue(self.c.whetherOn(self.P7))
+        self.assertTrue(self.c.whetherOn(self.P8))
+        self.assertFalse(self.c.whetherOn([-15,-2]))
+        self.assertFalse(self.c.whetherOn([99999,66666666]))
 
     def testAdd(self):
         self.assertEqual(self.c.add(self.P3, self.P7), self.c.mul(3, self.P1))
@@ -80,9 +80,9 @@ class EllipticTest(unittest.TestCase):
         e = elliptic.EC([1, 3], 7)
         f = elliptic.EC([11, 3], 13)
 
-        self.assert_(d.whetherOn(d.point()))
-        self.assert_(e.whetherOn(e.point()))
-        self.assert_(f.whetherOn(f.point()))
+        self.assertTrue(d.whetherOn(d.point()))
+        self.assertTrue(e.whetherOn(e.point()))
+        self.assertTrue(f.whetherOn(f.point()))
 
     def testChangeCurve(self):
         self.assertEqual('y ** 2 + 6/1 * x * y + 8/1 * y = x ** 3 - 3/1 * x ** 2 - 10/1 * x',
@@ -246,9 +246,9 @@ class PairingTest(unittest.TestCase):
         F_65537 = finitefield.FinitePrimeField(65537)
         e2 = elliptic.EC([-1, 0], F_65537)
         P1 = map(F_65537.createElement, [30840, 53250])
-        self.failIf(256 % e2.pointorder(P1))
+        self.assertFalse(256 % e2.pointorder(P1))
         P2 = map(F_65537.createElement, [10657, 46245])
-        self.failIf(256 % e2.pointorder(P2))
+        self.assertFalse(256 % e2.pointorder(P2))
         weil10 = set(e2.WeilPairing(256, P1, P2) for i in range(10))
         # since Weil pairing is a function, the result is always same
         self.assertEqual(1, len(weil10))
@@ -264,7 +264,7 @@ class PairingTest(unittest.TestCase):
         P = map(e.basefield.createElement,[3, 6])
         R = e.TatePairing(5, P, P)
         l = map(finitefield.FinitePrimeFieldElement, [5, 6], [11]*2)
-        self.assert_(R in l, R)
+        self.assertTrue(R in l, R)
 
     def testTatePairing_Extend(self):
         # this example was refered to Kim Nguyen.
@@ -291,9 +291,9 @@ class PairingTest(unittest.TestCase):
         F_65537 = finitefield.FinitePrimeField(65537)
         e2 = elliptic.EC([-1, 0], F_65537)
         P1 = map(F_65537.createElement, [30840, 53250])
-        self.failIf(256 % e2.BSGS(P1))
+        self.assertFalse(256 % e2.BSGS(P1))
         P2 = map(F_65537.createElement, [10657, 46245])
-        self.failIf(256 % e2.BSGS(P2))
+        self.assertFalse(256 % e2.BSGS(P2))
         
 
 def suite(suffix="Test"):

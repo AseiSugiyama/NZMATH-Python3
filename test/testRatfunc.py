@@ -15,14 +15,14 @@ class RationalFunctionTest (unittest.TestCase):
                                            uniutil.polynomial({3:1, 1:-2}, Z))
 
     def testInit(self):
-        self.assert_(self.f)
+        self.assertTrue(self.f)
 
     def testEquals(self):
         self.assertEqual(self.f, self.f2)
         self.assertEqual(self.f, self.f3)
 
     def testGetRing(self):
-        self.assert_(isinstance(self.f.getRing(), ring.RationalFunctionField))
+        self.assertTrue(isinstance(self.f.getRing(), ring.RationalFunctionField))
         self.assertEqual(ring.RationalFunctionField(Q, 1), self.f.getRing())
 
 

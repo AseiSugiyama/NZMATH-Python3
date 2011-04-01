@@ -224,14 +224,14 @@ class OddPartitionTest (unittest.TestCase):
     def testForTwo(self):
         for partition in self.generator(2):
             self.assertEqual(2, sum(partition))
-            self.assert_(all(x % 2 for x in partition))
+            self.assertTrue(all(x % 2 for x in partition))
         self.assertEqual(1, len(list(self.generator(2))))
         self.assertEqual([(1, 1)], list(self.generator(2, 1)))
 
     def testForSix(self):
         for partition in self.generator(6):
             self.assertEqual(6, sum(partition))
-            self.assert_(all(x % 2 for x in partition))
+            self.assertTrue(all(x % 2 for x in partition))
         # 5+1,3*2,3+1*3,1*6
         self.assertEqual(4, len(list(self.generator(6))))
         self.assertEqual(3, len(list(self.generator(6, 3))))
@@ -240,7 +240,7 @@ class OddPartitionTest (unittest.TestCase):
     def testForNine(self):
         for partition in self.generator(9):
             self.assertEqual(9, sum(partition))
-            self.assert_(all(x % 2 for x in partition))
+            self.assertTrue(all(x % 2 for x in partition))
         # 9,7+1*2,5+3+1,5+1*4,3*3,3*2+1*3,3+1*6,1*9
         self.assertEqual(8, len(list(self.generator(9))))
         self.assertEqual(6, len(list(self.generator(9, 5))))
@@ -256,9 +256,9 @@ class PartitionNumberTest (unittest.TestCase):
         self.assertEqual([1, 1, 2], partition_numbers_upto(2))
         # Ramanujan
         p_upto_1000 = partition_numbers_upto(1000)
-        self.failIf([p for p in p_upto_1000[4::5] if p % 5]) 
-        self.failIf([p for p in p_upto_1000[5::7] if p % 7]) 
-        self.failIf([p for p in p_upto_1000[6::11] if p % 11]) 
+        self.assertFalse([p for p in p_upto_1000[4::5] if p % 5]) 
+        self.assertFalse([p for p in p_upto_1000[5::7] if p % 7]) 
+        self.assertFalse([p for p in p_upto_1000[6::11] if p % 11]) 
 
     def testPartitionNumber(self):
         self.assertEqual(1, partition_number(0))
