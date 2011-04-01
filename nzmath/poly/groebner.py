@@ -90,7 +90,7 @@ def reduce_groebner(gbasis, order):
                 break
         else:
             g = lb_rel[lbi]
-            if g[lbi] != g[lbi].getRing().one:
+            if g[lbi] != ring.getRing(g[lbi]).one:
                 # make it monic
                 g = g.scalar_mul(ring.inverse(g[lbi]))
             reduced_basis.append(g)
