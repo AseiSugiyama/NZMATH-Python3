@@ -8,6 +8,8 @@ The following descriptions of each module will be updated by each
 authors.  The modules followed by an asterisk are already in the
 nzmath package.
 
+modules
+=======
 
 __init__
 --------
@@ -32,9 +34,19 @@ algfield *
 ----------
 (keinmoto)
 
+algorithm
+---------
+Abstract (higher order) functions
+(mft, naoki_lab)
+
 analytic
 --------
 A collection of analytic number theory related functions.
+(mft)
+
+cardinal
+--------
+Cardinal numbers
 (mft)
 
 cartesian
@@ -42,14 +54,14 @@ cartesian
 A module provides cartesian product (of rings).
 (mft)
 
-chainop
--------
-A module for abstract chains of operations, like binary powerings.
-(mft)
-
 cf
 --
 A module for continued fractions.
+(mft)
+
+chainop
+-------
+A module for abstract chains of operations, like binary powerings.
 (mft)
 
 cyclicgroup
@@ -63,11 +75,26 @@ Group by declaration.  Some kind of structures is treated as a group
 by declaring it is a group.
 (mft)
 
+dlp
+---
+DLP(discrete logarithm problem) for finite field, which provides the
+Silver-Pohlig-Hellman algorithm.
+(mft)
+
 ecdemo
 ------
 elliptic curve demo script for nzmath & matplotlib
 After running this script, it draws k-scaler multiplication of points in E(F_p).
 (naoki_labo)
+
+ecpp *
+------
+
+elliptic *
+----------
+
+equation *
+----------
 
 ffextension
 -----------
@@ -109,10 +136,23 @@ A replacement for nzmath.integerResidueClass.
 The name is changed to conform with the standard convention.
 (mft)
 
+linrec
+------
+Linearly Recurrent Sequence
+(mft)
+
+module
+------
+module, ideal etc. for number field
+(naoki_labo)
+
 padic
 -----
 p-adic numbers and their rings / fields.
 (mft)
+
+plugins *
+---------
 
 powering
 --------
@@ -151,10 +191,16 @@ squarefree *
 ------------
 (mft)
 
+symbol
+------
+define short symbols (for user friendly initialization)
+(naoki_labo)
+
 ternary
 -------
 Ternary logic.
 (mft)
+
 
 algebraiccurve
 ==============
@@ -168,24 +214,25 @@ algebraiccurve._sup_elliptic
 ----------------------------
 support modules of elliptic curves. (private)
 
+
 poly
 ====
 A new implementation of polynomials.
 (mft)
 
-poly.factor
-----------------
+poly.factor *
+-------------
 A implement of Integer Polynomial Factorization, with poly.hensel (salt3des)
 
 poly.formalsum *
 ----------------
 
-poly.groebner
--------------
+poly.groebner *
+---------------
 A collection of functions related to Groebner basis of an ideal.
 
-poly.hensel
------------
+poly.hensel *
+-------------
 Hensel lift classes.
 
 poly.multiutil *
@@ -194,12 +241,12 @@ poly.multiutil *
 poly.multivar *
 ----------------
 
-poly.ratfunc
-------------
+poly.ratfunc *
+--------------
 A module for rational functions, which will replace nzmath.rationalFunction.
 
-poly.ring
----------
+poly.ring *
+-----------
 A module for polynomial rings and rational function fields.
 These will replace those rings in poly.{uni,multi}util and rationalFunction.
 
