@@ -30,10 +30,6 @@ algebraicessence
 ----------------
 (salt3des)
 
-algfield *
-----------
-(keinmoto)
-
 algorithm
 ---------
 Abstract (higher order) functions
@@ -87,13 +83,7 @@ elliptic curve demo script for nzmath & matplotlib
 After running this script, it draws k-scaler multiplication of points in E(F_p).
 (naoki_labo)
 
-ecpp *
-------
-
 elliptic *
-----------
-
-equation *
 ----------
 
 ffextension
@@ -130,10 +120,14 @@ Abstract Group-like structure provided module.
 Support Group-like Properties.
 (salt3des)
 
-intresidue *
-------------
-A replacement for nzmath.integerResidueClass.
-The name is changed to conform with the standard convention.
+hddb
+----
+DB for class numbers of imaginary quadratic fields.
+(mft)
+
+homo
+----
+A replacement of nzmath.ring, aimed to provide homomorphism, etc.
 (mft)
 
 linrec
@@ -151,9 +145,6 @@ padic
 p-adic numbers and their rings / fields.
 (mft)
 
-plugins *
----------
-
 powering
 --------
 For sample powering(or scalar multiplication in additive group) method.
@@ -169,26 +160,9 @@ This module is reference design for finite field characteristic two.
 but I recommend that this field should be used only checking Python syntax.
 (salt3des)
 
-quad *
-------
-(mft)
-
 rewrite
 -------
 String rewrite systems.
-(mft)
-
-ring
-----
-A replacement of nzmath.ring, aimed to provide homomorphism, etc.
-(mft)
-
-round2 *
---------
-(mft)
-
-squarefree *
-------------
 (mft)
 
 symbol
@@ -218,47 +192,18 @@ support modules of elliptic curves. (private)
 poly
 ====
 A new implementation of polynomials.
+
+poly.factor_work
+----------------
+factor
+(salt3des)
+
+poly.irreducible
+----------------
+tests for irreducibility of integer coefficient polynomials.
 (mft)
-
-poly.factor *
--------------
-A implement of Integer Polynomial Factorization, with poly.hensel (salt3des)
-
-poly.formalsum *
-----------------
-
-poly.groebner *
----------------
-A collection of functions related to Groebner basis of an ideal.
-
-poly.hensel *
--------------
-Hensel lift classes.
-
-poly.multiutil *
-----------------
-
-poly.multivar *
-----------------
-
-poly.ratfunc *
---------------
-A module for rational functions, which will replace nzmath.rationalFunction.
-
-poly.ring *
------------
-A module for polynomial rings and rational function fields.
-These will replace those rings in poly.{uni,multi}util and rationalFunction.
 
 poly.semigroupalgebra
 ---------------------
 Semigroup algebra is a kind of generalization to polynomial.
-
-poly.termorder *
-----------------
-
-poly.uniutil *
---------------
-
-poly.univar *
--------------
+(mft)
