@@ -135,6 +135,14 @@ class MultivarTermOrderTest (unittest.TestCase):
         flex = "0"
         self.assertEqual(flex, self.lex.format(f, varnames=("X", "Y")))
 
+    def testFormatMinusOne(self):
+        """
+        format works for null terms polynomials.
+        """
+        f = multivar.BasicPolynomial({(0, 2): -1, (1, 1): 0, (1, 0): 0})
+        flex = "- Y ** 2"
+        self.assertEqual(flex, self.lex.format(f, varnames=("X", "Y")))
+
 
 class WeightOrderTest(unittest.TestCase):
     """
@@ -169,8 +177,6 @@ class WeightOrderTest(unittest.TestCase):
 
         # Note that if no tie breaker is given, an exception occurs.
         order = termorder.weight_order((1, 2, 4))
-        self.assertRaises(TypeError, order, (1, 2, 0), (1, 2, 0))
-        # TypeError: 'NoneType' object is not callable
         self.assertRaises(TypeError, order, (1, 2, 0), (1, 0, 1))
         # TypeError: 'NoneType' object is not callable
 

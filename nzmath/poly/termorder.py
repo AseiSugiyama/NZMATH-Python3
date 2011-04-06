@@ -24,6 +24,9 @@ class TermOrderInterface (object):
     also a method to format a string for a polynomial, to tell degree,
     leading coefficients, etc.
     """
+
+    _PLUS_MINUS = re.compile(r"(^-|\+ -)")
+
     def __init__(self, comparator):
         """
         'comparator' accepts two tuples of integers, each of which
@@ -69,9 +72,6 @@ class UnivarTermOrder (TermOrderInterface):
     One thing special to univariate case is that powers are not tuples
     but integers.
     """
-
-    _PLUS_MINUS = re.compile(r"\+ -")
-
     def __init__(self, comparator):
         """
         UnivarTermOrder(comparator)
@@ -190,9 +190,6 @@ class MultivarTermOrder (TermOrderInterface):
     """
     A class of term orders for multivariate polynomials.
     """
-
-    _PLUS_MINUS = re.compile(r"\+ -")
-
     def __init__(self, comparator):
         """
         'comparator' accepts two tuples of integers, each of which
@@ -226,6 +223,12 @@ class MultivarTermOrder (TermOrderInterface):
         result = " + ".join([self._format_term((base, polynom[base]), varnames) for base in bases if polynom[base]])
         # minus terms
         result = self._PLUS_MINUS.sub("- ", result)
+        # coefficient is 1 (or -1)
+        if hasattr(polynom, "getCoefficientRing"):
+            one_times = re.compile(r"(^| )%s \* " % polynom.getCoefficientRing().one)
+        else:
+            one_times = re.compile(r"(^| )1 \* ")
+        result = one_times.sub(" ", result)
 
         result = result.lstrip()
         if not result:
@@ -251,7 +254,7 @@ class MultivarTermOrder (TermOrderInterface):
                 powlist.append(v)
 
         if not powlist:
-            # coefficient is one and every variable has degree 0
+            # coefficient is plus/minus one and every variable has degree 0
             return str(term[1])
         return " * ".join(powlist)
 
