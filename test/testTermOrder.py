@@ -136,6 +136,46 @@ class MultivarTermOrderTest (unittest.TestCase):
         self.assertEqual(flex, self.lex.format(f, varnames=("X", "Y")))
 
 
+class WeightOrderTest(unittest.TestCase):
+    """
+    tests for weight_order
+    """
+    def test_wikipedia(self):
+        """
+        A case in wikipedia.
+        weight = (1,2,4), then x**2*z**2 > x*y**2*z > z**2 > x**3.
+        (in this case, tie breaker is not used)
+        """
+        t1 = (2, 0, 2)
+        t2 = (1, 2, 1)
+        t3 = (0, 0, 2)
+        t4 = (3, 0, 0)
+        order = termorder.weight_order((1, 2, 4), tie_breaker=None)
+        self.assertEqual(1, order(t1, t2))
+        self.assertEqual(1, order(t2, t3))
+        self.assertEqual(1, order(t3, t4))
+        self.assertEqual(1, order(t1, t3)) # transitive
+        self.assertEqual(-1, order(t2, t1)) # reverse direction
+
+    def test_tie_breaker(self):
+        """
+        tie breaker use cases.
+        """
+        order = termorder.weight_order((1, 2, 4), cmp) # LEX tie breaker
+        # trivially, the same monomials are equal
+        self.assertEqual(0, order((1, 2, 0), (1, 2, 0)))
+        # non-trivial case
+        self.assertEqual(1, order((1, 2, 0), (1, 0, 1)))
+
+        # Note that if no tie breaker is given, an exception occurs.
+        order = termorder.weight_order((1, 2, 4))
+        self.assertRaises(TypeError, order, (1, 2, 0), (1, 2, 0))
+        # TypeError: 'NoneType' object is not callable
+        self.assertRaises(TypeError, order, (1, 2, 0), (1, 0, 1))
+        # TypeError: 'NoneType' object is not callable
+
+
+
 def suite(suffix="Test"):
     suite = unittest.TestSuite()
     all_names = globals()

@@ -288,6 +288,30 @@ class MultivarTermOrder (TermOrderInterface):
         return maxi
 
 
+def weight_order(weight, tie_breaker=None):
+    """
+    Return a comparator of weight ordering.
+
+    The weight ordering is defined for arguments x and y that x < y
+    if w.x < w.y (dot products) or w.x == w.y and tie breaker tells
+    x < y.
+
+    The option 'tie_breaker' is another comparator that will be used
+    if dot products with the weight vector leaves arguments tie.  If
+    the option is None (default) and a tie breaker is indeed necessary
+    to order given arguments, a TypeError is raised.
+    """
+    def _order(mono, mial):
+        if mono == mial:
+            return 0
+        wx = sum(w * x for (w, x) in zip(weight, mono))
+        wy = sum(w * y for (w, y) in zip(weight, mial))
+        if wx != wy:
+            return cmp(wx, wy)
+        return tie_breaker(mono, mial)
+    return _order
+
+
 def _total_degree_lexicographic(left, right):
     """
     Total degree lexicographic (or graded lexicographic) term order :

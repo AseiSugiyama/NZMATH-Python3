@@ -11,6 +11,10 @@
      \item \negok \linkingone{poly.termorder}{UnivarTermOrder}
      \item \linkingone{poly.termorder}{MultivarTermOrder}
      \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{poly.termorder}{weight\_order}
+     \end{itemize}
  \end{itemize}
 
 \C
@@ -113,6 +117,28 @@
   Though this class is the main purpose of the module, descriptions of
   every methods are identical to the base class.
 
+  \subsection{weight\_order -- weight order}\linkedone{poly.termorder}{weight\_order}
+  \func{weight\_order}{\hiki{weight}{sequence},\ \hikiopt{tie\_breaker}{function}{None}}{\out{function}}\\
+  \spacing
+   % document of basic document
+   \quad Return a comparator of weight ordering by \param{weight}.\\
+   \spacing
+   \quad Let \(w\) denote the \param{weight}.
+   The weight ordering is defined for arguments \(x\) and \(y\) that
+   \(x < y\) if \(w\cdot x < w\cdot y\) or \(w\cdot x == w\cdot y\) and 
+   tie breaker tells \(x < y\).\\
+   \spacing
+   \quad The option \param{tie\_breaker} is another comparator that will
+   be used if dot products with the weight vector leaves arguments tie.
+   If the option is {\tt None} (default) and a tie breaker is indeed necessary
+   to order given arguments, a {\tt TypeError} is raised.
+
+\begin{ex}
+>>> w = termorder.MultivarTermOrder(
+...     termorder.weight_order((6, 3, 1), cmp))
+>>> w.cmp((1, 0, 0), (0, 1, 2))
+1
+\end{ex}%Don't indent!
 \C
 
 %---------- end document ---------- %
