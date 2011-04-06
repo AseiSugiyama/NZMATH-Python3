@@ -48,7 +48,7 @@
   determine precedence.
 
   \subsubsection{format}\linkedtwo{poly.termorder}{TermOrderInterface}{format}
-  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ **{keywords}{dict}}{\out{string}}\\
+  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ **\hiki{keywords}{dict}}{\out{string}}\\
   \spacing
   \quad Return the formatted string of the polynomial \param{polynom}.
 
@@ -114,8 +114,25 @@
   \func{MultivarTermOrder}{\hiki{comparator}{function}}{\out{MultivarTermOrder}}\\
   \spacing
   \quad This class inherits \linkingone{poly.termorder}{TermOrderInterface}.
-  Though this class is the main purpose of the module, descriptions of
-  every methods are identical to the base class.
+
+  \method
+  \subsubsection{format}\linkedtwo{poly.termorder}{MultivarTermOrder}{format}
+  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ %
+    \hikiopt{varname}{tuple}{None}, \hikiopt{reverse}{bool}{False},\ %
+    **\hiki{kwds}{dict}}{%
+    \out{string}}\\
+  \spacing
+  \quad Return the formatted string of the polynomial \param{polynom}.\\
+  \spacing
+  \quad  An additional argument \param{varnames} is required to name
+  variables.\\
+
+  \begin{itemize}
+  \item \param{polynom} is a multivariate polynomial.
+  \item \param{varnames} is the sequence of the variable names.
+  \item \param{reverse} can be either {\tt True} or {\tt False}.
+    If it's {\tt True}, terms appear in reverse (descending) order.
+  \end{itemize}
 
   \subsection{weight\_order -- weight order}\linkedone{poly.termorder}{weight\_order}
   \func{weight\_order}{\hiki{weight}{sequence},\ \hikiopt{tie\_breaker}{function}{None}}{\out{function}}\\
