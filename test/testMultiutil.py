@@ -175,10 +175,10 @@ class GcdProviderTest (unittest.TestCase):
         self.assertEqual(self.g, self.fz.gcd(self.gz))
 
 
-class PrepareIndeterinateTest(unittest.TestCase):
+class PrepareIndeterminateTest(unittest.TestCase):
     def testXYZ(self):
         ctx = {}
-        multiutil.prepare_indeterinates("S T X Y", ctx)
+        multiutil.prepare_indeterminates("S T X Y", ctx)
         self.assertTrue("X" in ctx)
         for var in ctx:
             exec "%s = ctx['%s']" % (var, var)

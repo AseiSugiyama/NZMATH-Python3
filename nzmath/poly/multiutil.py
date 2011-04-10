@@ -650,7 +650,7 @@ def polynomial(coefficients, coeffring, number_of_variables=None):
     - coefficients has to be a initializer for dict, whose keys are
       variable indices and values are coefficients at the indices.
     - coeffring has to be an object inheriting ring.Ring.
-    - number_of_variable has to be the number of variables.
+    - number_of_variables has to be the number of variables.
 
     One can override the way to choose a polynomial type from a
     coefficient ring, by setting:
@@ -665,6 +665,11 @@ def polynomial(coefficients, coeffring, number_of_variables=None):
         poly_type = DomainPolynomial
     else:
         poly_type = multivar.BasicPolynomial
+    if number_of_variables is None:
+        coefficients = dict(coefficients)
+        for k in coefficients:
+            number_of_variables = len(k)
+            break
     return poly_type(coefficients, coeffring=coeffring, number_of_variables=number_of_variables)
 
 def MultiVariableSparsePolynomial(coefficient, variable, coeffring=None):
@@ -685,23 +690,20 @@ def MultiVariableSparsePolynomial(coefficient, variable, coeffring=None):
         coeffring = uniutil.init_coefficient_ring(coefficient)
     return polynomial(coefficient, coeffring=coeffring, number_of_variables=len(variable))
 
-def prepare_indeterinates(names, ctx, coeffring=None):
+def prepare_indeterminates(names, ctx, coeffring=None):
     """
-    From space separated names of indeterinates, prepare variables
-    representing the indeterinates.  The result will be stored in ctx
+    From space separated names of indeterminates, prepare variables
+    representing the indeterminates.  The result will be stored in ctx
     dictionary.
 
-    The variables should be prepared at once, otherwise it will
-    confuse you with wrong aliases of variables in later calculation.
+    The variables should be prepared at once, otherwise wrong aliases
+    of variables may confuse you in later calculation.
 
-    If an optional coeffring is not given, it will be an integer
-    coefficient polynomial.
+    If an optional coeffring is not given, indeterminates will be
+    initialized as integer coefficient polynomials.
 
     Example:
-    >>> ctx = {}
-    >>> prepare_indeterinates("X Y Z", ctx)
-    >>> for var in ctx:
-    ...    exec "%s = ctx['%s']" % (var, var)
+    >>> prepare_indeterminates("X Y Z", globals())
     >>> Y
     UniqueFactorizationDomainPolynomial({(0, 1, 0): 1})
 
