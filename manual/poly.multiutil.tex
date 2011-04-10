@@ -189,6 +189,23 @@
    {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\
    before the function call.
 
+ \subsection{prepare\_indeterminates -- simultaneous declarations of indeterminates}\linkedone{poly.multiutil}{prepare\_indeterminates}
+ \func{prepare\_indeterminates}{\hiki{names}{string},\ \hiki{ctx}{dict},\ %
+   \hikiopt{coeffring}{CoefficientRing}{None}}{\out{None}}\\
+ \spacing
+ \quad From space separated \param{names} of indeterminates, prepare variables
+ representing the indeterminates.  The result will be stored in \param{ctx}
+ dictionary.\\
+ \quad The variables should be prepared at once, otherwise wrong aliases of
+ variables may confuse you in later calculation.\\
+ \quad If an optional \param{coeffring} is not given, indeterminates will be
+ initialized as integer coefficient polynomials.\\
+
+\begin{ex}
+>>> prepare_indeterminates("X Y Z", globals())
+>>> Y
+UniqueFactorizationDomainPolynomial({(0, 1, 0): 1})
+\end{ex}
 \C
 
 %---------- end document ---------- %
