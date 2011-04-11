@@ -1,0 +1,45 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Functions}
+
+%---------- start document ---------- %
+ \section{prime\_decomp -- prime decomposition}\linkedzero{prime\_decomp}
+%
+  \subsection{prime\_decomp -- prime decomposition}\linkedone{prime\_decomp}{prime\_decomp}
+   \func{prime\_decomp}{\hiki{p}{Integer},\ \hiki{polynomial}{list}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return prime decomposition of the ideal $(\param{p})$ over the number field $\mathbf{Q}[x]/(\param{polynomial})$.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{p} should be a (rational) prime. 
+   \param{polynomial} should be a list of integers which defines a monic irreducible polynomial.\\
+   This method returns a list of $(P_k,\ e_k,\ f_k)$,\\ 
+    where $P_k$ is an instance of \linkingone{module}{Ideal\_with\_generator} expresses a prime ideal which divides $(\param{p})$, 
+          $e_k$ is the ramification index of $P_k$, 
+          $f_k$ is the residue degree of $P_k$.
+%
+\begin{ex}
+>>> for fact in prime_decomp.prime_decomp(3,[1,9,0,1]):
+...   print fact
+...
+(Ideal_with_generator([BasicAlgNumber([[3, 0, 0], 1], [1, 9, 0, 1]), BasicAlgNum
+ber([[7L, 20L, 4L], 3L], [1, 9, 0, 1])]), 1, 1)
+(Ideal_with_generator([BasicAlgNumber([[3, 0, 0], 1], [1, 9, 0, 1]), BasicAlgNum
+ber([[10L, 20L, 4L], 3L], [1, 9, 0, 1])]), 2, 1)
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}

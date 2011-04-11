@@ -1,0 +1,179 @@
+\documentclass{report}
+
+\input{macros}
+
+\tableofcontents
+\C
+
+\chapter{Functions}
+
+%---------- start document ---------- %
+ \section{algorithm -- basic number theoretic algorithms}\linkedzero{algorithm}
+%
+  \subsection{digital\_method -- univariate polynomial evaluation}\linkedone{algorithm}{digital\_method}
+   \func{digital\_method}
+   {%
+     \hiki{coefficients}{list},\ %
+     \hiki{val}{object},\ %
+     \hiki{add}{function},\ %
+     \hiki{mul}{function},\ %
+     \hiki{act}{function},\ %
+     \hiki{power}{function},\ %
+     \hiki{zero}{object},\ %
+     \hiki{one}{object}
+   }{%
+     \out{object}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Evaluate a univariate polynomial corresponding to \param{coefficients} at \param{val}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad  If the polynomial corresponding to \param{coefficients} is of $R$-coefficients for some ring $R$, 
+   then \param{val} should be in an $R$-algebra $D$.\\
+   \param{coefficients} should be a descending ordered list of tuples $(d,\ c)$, 
+   where $d$ is an integer which expresses the degree and $c$ is an element of $R$ which expresses the coefficient. 
+   All operations 'add', 'mul', 'act', 'power', 'zero', 'one' should be explicitly given, where:\\
+      'add' means addition $(D \times D \to D)$,
+      'mul' multiplication $(D \times D \to D)$,
+      'act' action of $R$ $(R \times D \to D)$,
+      'power' powering $(D \times \mathbf{Z} \to D)$,
+      'zero' the additive unit (an constant) in $D$ and
+      'one', the multiplicative unit (an constant) in $D$.
+%
+  \subsection{digital\_method\_func -- function of univariate polynomial evaluation}\linkedone{algorithm}{digital\_method\_func}
+   \func{digital\_method}
+   {%
+     \hiki{add}{function},\ %
+     \hiki{mul}{function},\ %
+     \hiki{act}{function},\ %
+     \hiki{power}{function},\ %
+     \hiki{zero}{object},\ %
+     \hiki{one}{object}
+   }{%
+     \out{function}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a function which evaluates polynomial corresponding to 'coefficients' at 'val' 
+from an iterator 'coefficients' and an object 'val'.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad  All operations 'add', 'mul', 'act', 'power', 'zero', 'one' should be inputted 
+   in a manner similar to \linkingone{algorithm}{digital\_method}.\\
+%
+  \subsection{rl\_binary\_powering -- right-left powering}\linkedone{algorithm}{rl\_binary\_powering}
+   \func{rl\_binary\_powering}
+   {%
+     \hiki{element}{object},\ %
+     \hiki{index}{integer},\ %
+     \hiki{mul}{function},\ %
+     \hikiopt{square}{function}{None},\ %
+     \hikiopt{one}{object}{None},\ %
+   }{%
+     \out{object}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return \param{element} to the \param{index} power by using right-left binary method.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad  \param{index} should be a non-negative integer.
+   If \param{square} is None, \param{square} is defined by using \param{mul}.\\
+%
+  \subsection{lr\_binary\_powering -- left-right powering}\linkedone{algorithm}{lr\_binary\_powering}
+   \func{lr\_binary\_powering}
+   {%
+     \hiki{element}{object},\ %
+     \hiki{index}{integer},\ %
+     \hiki{mul}{function},\ %
+     \hikiopt{square}{function}{None},\ %
+     \hikiopt{one}{object}{None},\ %
+   }{%
+     \out{object}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return \param{element} to the \param{index} power by using left-right binary method.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad  \param{index} should be a non-negative integer.
+   If \param{square} is None, \param{square} is defined by using \param{mul}.\\
+%
+  \subsection{window\_powering -- window powering}\linkedone{algorithm}{window\_powering}
+   \func{window\_powering}
+   {%
+     \hiki{element}{object},\ %
+     \hiki{index}{integer},\ %
+     \hiki{mul}{function},\ %
+     \hikiopt{square}{function}{None},\ %
+     \hikiopt{one}{object}{None},\ %
+   }{%
+     \out{object}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return \param{element} to the \param{index} power by using small-window method.\\
+   \spacing
+   % added document
+   \quad The window size is selected by average analystic optimization.\\
+   \spacing
+   % input, output document
+   \quad  \param{index} should be a non-negative integer.
+   If \param{square} is None, \param{square} is defined by using \param{mul}.\\
+%
+  \subsection{powering\_func -- function of powering}\linkedone{algorithm}{powering\_func}
+   \func{powering\_func}
+   {%
+     \hiki{mul}{function},\ %
+     \hikiopt{square}{function}{None},\ %
+     \hikiopt{one}{object}{None},\ %
+     \hikiopt{type}{integer}{0}
+   }{%
+     \out{function}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a function which computes 'element' to the 'index' power from an object 'element' and an integer 'index'.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad If \param{square} is None, \param{square} is defined by using \param{mul}.
+   \param{type} should be an integer which means one of the following:\\
+   0;\ \linkingone{algorithm}{rl\_binary\_powering}\\
+   1;\ \linkingone{algorithm}{lr\_binary\_powering}\\
+   2;\ \linkingone{algorithm}{window\_powering}\\
+\\
+%
+\begin{ex}
+>>> d_func = algorithm.digital_method_func(
+... lambda a,b:a+b, lambda a,b:a*b, lambda i,a:i*a, lambda a,i:a**i, 
+... matrix.zeroMatrix(3,0), matrix.identityMatrix(3,1)
+... )
+>>> coefficients = [(2,1), (1,2), (0,1)] # X^2+2*X+I
+>>> A = matrix.SquareMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
+>>> d_func(coefficients, A) # A**2+2*A+I
+[33L, 40L, 48L]+[74L, 92L, 108L]+[116L, 142L, 169L]
+>>> p_func = algorithm.powering_func(lambda a,b:a*b, type=2)
+>>> p_func(A, 10) # A**10 by window method
+[132476037840L, 162775103256L, 193074168672L]+[300005963406L, 368621393481L,
+ 437236823556L]+[467535888972L, 574467683706L, 681399478440L]
+
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\bibliographystyle{jplain}%use jbibtex
+\bibliography{nzmath_references}
+
+\end{document}
