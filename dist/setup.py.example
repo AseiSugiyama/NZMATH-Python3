@@ -8,9 +8,9 @@ data_prefix = "nzmath/"
 setup(
     name="NZMATH",
     version=version,
-    url="http://tnt.math.metro-u.ac.jp/nzmath/",
+    url="http://tnt.math.se.tmu.ac.jp/nzmath/",
     author="NZMATH development group",
-    author_email="nzmath-user@tnt.math.metro-u.ac.jp",
+    author_email="nzmath-user@tnt.math.se.tmu.ac.jp",
     description="number theory oriented calculation system",
     classifiers=["Development Status :: 4 - Beta",
                  "License :: OSI Approved :: BSD License",

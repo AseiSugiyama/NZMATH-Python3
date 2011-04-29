@@ -51,7 +51,7 @@ NZMATH-x.y.z.win32Install.exe.
 
 The places to download are:
  * http://sourceforge.net/projects/nzmath/files/
- * http://tnt.math.metro-u.ac.jp/nzmath/download/
+ * http://tnt.math.se.tmu.ac.jp/nzmath/download/
 
 
 2.1.2.1. On Unix sytems including Linux, Mac OS X, etc.
@@ -357,16 +357,16 @@ students of Tokyo Metropolitan University (TMU).  There is the server
 called tnt, which is primalily run for TNT (Tools on Number Theory)
 project, hosting `web pages`_ and the mailing list (see below).
 
-.. _web pages: http://tnt.math.metro-u.ac.jp/nzmath/
+.. _web pages: http://tnt.math.se.tmu.ac.jp/nzmath/
 
 
 6.2.1. Mailing List
 -------------------
 
-A mailing list nzmath-user@tnt.math.metro-u.ac.jp is for discussing
+A mailing list nzmath-user@tnt.math.se.tmu.ac.jp is for discussing
 anything about NZMATH.  You can join the list with writing a mail
 containing a line of "subscribe" in the body to
-nzmath-user-request@tnt.math.metro-u.ac.jp.  *Be careful* not to send
+nzmath-user-request@tnt.math.se.tmu.ac.jp.  *Be careful* not to send
 it to nzmath-user.
 
 

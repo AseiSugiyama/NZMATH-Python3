@@ -19,9 +19,9 @@ BEGIN {
     print "setup(";
     print "    name='NZMATH',";
     print "    version=version,";
-    print "    url='http://tnt.math.metro-u.ac.jp/nzmath/',";
+    print "    url='http://tnt.math.se.tmu.ac.jp/nzmath/',";
     print "    author='NZMATH development group',";
-    print "    author_email='nzmath-user@tnt.math.metro-u.ac.jp',";
+    print "    author_email='nzmath-user@tnt.math.se.tmu.ac.jp',";
     print "    description='number theory oriented calculation system',";
 #    print "    classifiers=['Development Status :: 4 - Beta',";
     print "    classifiers=['Development Status :: 5 - Production/Stable',";

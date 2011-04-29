@@ -34,7 +34,7 @@ cd $TMP
 [ -d nzmath/manual/modules/factor ] || mkdir nzmath/manual/modules/factor
 BASEDIR="$TMP/nzmath/manual"
 $ECHOCMD "ok."
-#WIKIBASE="http://hanaya.math.metro-u.ac.jp/nzmath-doc/"
+#WIKIBASE="http://hanaya.math.se.tmu.ac.jp/nzmath-doc/"
 WIKIBASE="http://nzmath.sourceforge.net/doc/"
 BASEEXPR="http:\/\/nzmath\.sourceforge\.net\/doc"
 $ECHOCMD "start to document source download from nzmath-doc wiki..."

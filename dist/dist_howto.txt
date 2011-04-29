@@ -87,7 +87,7 @@ Steps
    The distribution files NZMATH-x.y.z.tar.gz and
    NZMATH-test-x.y.z.tar.gz have to be made public.
 
-   Currently, we use http://tnt.math.metro-u.ac.jp/nzmath as the main
+   Currently, we use http://tnt.math.se.tmu.ac.jp/nzmath as the main
    web site of the NZMATH project, so put the file onto it.  Then
    update index.html manually, replace README.html by generated one(*)
    and the manual directory by the same files as in the distribution.
