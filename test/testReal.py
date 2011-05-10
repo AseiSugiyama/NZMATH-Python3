@@ -8,40 +8,8 @@ from nzmath.plugins import MATHMODULE as math
 
 class NewFunctionTest (unittest.TestCase):
     def setUp(self):
-        self.err = real.RelativeError(0, 1, 2**100)
         self.relative = rational.Rational(1 + 2**53, 2**53)
         self.absolute = rational.Rational(1, 2**53)
-
-    def testSqrt(self):
-        sqrt0 = real.sqrt(0)
-        self.assertEqual(0, sqrt0)
-        sqrt2 = real.sqrt(2)
-        self.assertTrue(abs(sqrt2 ** 2 - 2) < self.absolute)
-
-    def testExp(self):
-        self.assertEqual(1, real.exp(0))
-        exp1 = real.exp(1)
-        exp1e = real.exp(1, self.err)
-        self.assertTrue(exp1 < exp1e < exp1 * self.relative)
-        exp2 = real.exp(2)
-        exp2e = real.exp(2, self.err)
-        self.assertTrue(exp2 < exp2e < exp2 * self.relative)
-        self.assertEqual("2.718281828459045", exp1.decimalString(15))
-
-    def testLog(self):
-        log1 = real.log(1)
-        self.assertEqual(0, log1)
-        log2inverse = real.log(.5)
-        self.assertTrue(log2inverse < 0)
-        self.assertTrue(abs(real.log(2) + log2inverse) < self.absolute)
-        self.assertTrue(abs(real.log(real.exp(1)) - 1)  < 2 * self.absolute)
-        self.assertTrue(abs(real.log(real.exp(1).trim(2**53)) - 1) < 2 * self.absolute)
-
-    def testPiGaussLegendre(self):
-        pi = real.pi
-        self.assertEqual(rational.Rational(355, 113), pi.trim(365))
-        pi_to_err = real.piGaussLegendre(self.err)
-        self.assertAlmostEqual(pi, pi_to_err, 14, (pi - pi_to_err).trim(2**80))
 
     def testFloor(self):
         self.assertEqual(3, real.floor(3))
@@ -61,53 +29,8 @@ class NewFunctionTest (unittest.TestCase):
         self.assertEqual(3, real.tranc(3.3))
         self.assertEqual(-3, real.tranc(-2.7))
 
-    def testTrigonometric(self):
-        self.assertEqual(0, real.sin(0))
-        self.assertEqual(1, real.cos(0))
-        self.assertEqual(0, real.tan(0))
-        pi = real.pi
-        self.assertTrue(abs(real.sin(pi)) < self.absolute)
-        self.assertTrue(-1 <= (real.cos(pi)) < -1 + self.absolute)
-        self.assertTrue(abs(real.tan(pi)) < self.absolute)
-        abs7 = real.sin(7, real.AbsoluteError(0, 1, 10**20))
-        rel7 = real.sin(7, real.RelativeError(0, 1, 10**20))
-        self.assertTrue(abs(abs7 - rel7) < rational.Rational(1, 10**20), abs(abs7 - rel7).trim(10**20))
-
-    def testHyperbolic(self):
-        self.assertEqual(0, real.sinh(0))
-        self.assertEqual(1, real.cosh(0))
-        self.assertEqual(0, real.tanh(0))
-        self.assertEqual(real.cosh(2), real.cosh(-2))
-        self.assertEqual(real.sinh(2), -real.sinh(-2))
-        self.assertEqual(real.sinh(4), -real.sinh(-4))
-
-    def testInverseTrigonometric(self):
-        self.assertEqual(0, real.asin(0))
-        self.assertTrue(abs(real.pi / 2 - real.acos(0)) < self.absolute)
-        self.assertEqual(0, real.atan(0))
-        self.assertAlmostEqual(real.pi / 4, real.atan(1/2) + real.atan(1/3))
-
-    def testHypot(self):
-        self.assertTrue(abs(real.hypot(3, 4) - 5) < self.absolute)
-
-    def testPow(self):
-        self.assertEqual(32, real.pow(2, 5))
-        self.assertEqual(rational.Rational(1, 32), real.pow(2, -5))
-        self.assertTrue(real.defaultError.nearlyEqual(real.sqrt(2), real.pow(2, rational.Rational(1, 2))))
-
-    def testDegrees(self):
-        self.assertTrue(real.defaultError.nearlyEqual(real.degrees(real.pi / 2), 90))
-
-    def testRadians(self):
-        self.assertTrue(real.defaultError.nearlyEqual(real.radians(90), real.pi / 2))
-
     def testFabs(self):
         self.assertEqual(rational.Rational(3, 2), real.fabs(-1.5))
-
-    def testFmod(self):
-        self.assertEqual(0, real.fmod(2 * real.pi, real.pi))
-        self.assertTrue(real.defaultError.nearlyEqual(real.pi / 6, real.fmod(real.pi / 2, real.pi / 3)))
-        self.assertTrue(real.defaultError.nearlyEqual(- real.pi / 6, real.fmod(-real.pi / 2, real.pi / 3)))
 
     def testFrexp(self):
         self.assertEqual((rational.Rational(0), 0), real.frexp(0))

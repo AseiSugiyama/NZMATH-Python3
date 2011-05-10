@@ -143,8 +143,6 @@ class RealField(ring.Field):
         return "%s()" % (self.__class__.__name__, )
 
     def __contains__(self, element):
-        if isinstance(element, Constant):
-            element = element.cache
         if isinstance(element, (int, long, float, Float, Real, rational.Rational)):
             return True
         else:
