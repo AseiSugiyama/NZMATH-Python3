@@ -281,7 +281,6 @@ j = Complex(0,1)
 
 
 ### function rewrite
-defaultError = RelativeError(1, 2 ** 53)
 
 ###
 ### Note:
@@ -289,71 +288,6 @@ defaultError = RelativeError(1, 2 ** 53)
 ### class AbsoluteError from user assign parameter, and if
 ### accept AbsoluteError, not use cmath module.
 ###
-
-def exp(x, err=defaultError):
-    """
-    exp(x [,err]) is the exponential function.
-    """
-    try:
-        rx = rational.Rational(x)
-        if isinstance(err, RelativeError):
-            _err = real.RelativeError(0, err.relativeerrorrange)
-        elif isinstance(err, AbsoluteError):
-            _err = real.AbsoluteError(0, err.absoluteerrorrange)
-        return real.exp(rx, _err)
-    except TypeError:
-        pass
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        # divide real part and imaginary part
-        if isinstance(err, RelativeError):
-            _err = real.RelativeError(0, err.relativeerrorrange, 2)
-        elif isinstance(err, AbsoluteError):
-            _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-        radius = real.exp(x.real, _err)
-        if isinstance(err, RelativeError):
-            _err = RelativeError(err.relativeerrorrange / 2)
-        elif isinstance(err, AbsoluteError):
-            _err = AbsoluteError(err.absoluteerrorrange / 2)
-        arg = expi(x.imag, _err)
-        return radius * arg
-    else:
-        return Complex(cmath.exp(complex(x.real,x.imag)))
-
-def expi(x, err=defaultError):
-    """
-    expi(x [,err]) returns exp(i * x) where i is the imaginary unit
-    and x must be a real number.
-    """
-    if x == 0:
-        return rational.Integer(1)
-    if isinstance(err, RelativeError):
-        _err = real.RelativeError(0, err.relativeerrorrange, 2)
-    elif isinstance(err, AbsoluteError):
-        _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-    re = real.cos(x, _err)
-    im = real.sin(x, _err)
-    return Complex(re, im)
-
-def log(x, err=defaultError):
-    """
-    log(x [,err]) returns the natural logarithm of x. There is one
-    branch cut, from 0 along the negative real axis to -infinity,
-    continuous from above.
-    """
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        if isinstance(err, RelativeError):
-            _err = real.RelativeError(0, err.relativeerrorrange, 2)
-        elif isinstance(err, AbsoluteError):
-            _err = real.AbsoluteError(0, err.absoluteerrorrange, 2)
-        if x in real.theRealField:
-            x = +x
-            if x > 0:
-                return real.log(x, err=_err)
-            elif x < 0:
-                return Complex(real.log(abs(x), _err), real.pi(_err))
-        return Complex(real.log(abs(x), err=_err), real.atan2(x.imag, x.real, _err))
-    else:
-        return Complex(cmath.log(complex(x.real, x.imag)))
 
 class ExponentialPowerSeries:
     """
@@ -397,50 +331,3 @@ class ExponentialPowerSeries:
             if maxerror.nearlyEqual(value, oldvalue):
                 return value
             oldvalue = +value
-
-def sin(z, err=defaultError):
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),0,rational.Integer(-1))))
-        return series(z, err)
-    else:
-        return Complex(cmath.sin(complex(z.real,z.imag)))
-
-def cos(z, err=defaultError):
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,rational.Integer(-1), 0)))
-        return series(z, err)
-    else:
-        return Complex(cmath.cos(complex(z.real,z.imag)))
-
-def tan(z, err=defaultError):
-    return sin(z, err) / cos(z,err)
-
-def sinh(z, err=defaultError):
-    if z == 0:
-        return rational.Integer(0)
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        series = ExponentialPowerSeries(itertools.cycle((0,rational.Integer(1),)))
-        return series(z, err)
-    else:
-        return Complex(cmath.sinh(complex(z.real,z.imag)))
-
-def cosh(z, err=defaultError):
-    if z == 0:
-        return rational.Integer(1)
-    if (defaultError >= err) or isinstance(err, AbsoluteError):
-        series = ExponentialPowerSeries(itertools.cycle((rational.Integer(1),0,)))
-        return series(z, err)
-    else:
-        return Complex(cmath.cosh(complex(z.real,z.imag)))
-
-def tanh(z, err=defaultError):
-    return sinh(z, err) / cosh(z, err)
-
-
-def atanh(z, err=defaultError):
-    return log((1+z)/(1-z), err=err) / 2
-
-
-def sqrt(z, err=defaultError):
-    return real.sqrt(abs(z))*expi(z.arg()/2)
-
