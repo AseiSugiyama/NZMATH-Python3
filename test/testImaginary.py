@@ -64,7 +64,6 @@ class ImaginaryTest (unittest.TestCase):
     def testSin(self):
         sin1 = imaginary.sin(1)
         sinc1 = imaginary.sin(imaginary.Complex(1, 0))
-        #assert imaginary.defaultError.nearlyEqual(imaginary.exp(imaginary.j).imag, sin1)
         self.assertAlmostEqual(imaginary.exp(imaginary.j).imag, sin1)
         self.assertAlmostEqual(sin1, sinc1.real, 7, (sin1, sinc1, sin1 - sinc1))
         self.assertAlmostEqual(0, sinc1.imag, 7, (sin1, sinc1, sin1 - sinc1))
@@ -102,21 +101,6 @@ class ImaginaryTest (unittest.TestCase):
 
     def testGetRing(self):
         self.assertEqual(imaginary.theComplexField, imaginary.Complex(1).getRing())
-
-
-class ErrorTest (unittest.TestCase):
-    def testRelativeError(self):
-        assert imaginary.RelativeError(1,2)
-        assert isinstance(imaginary.RelativeError(1,2).absoluteerror(imaginary.Complex(3,4)), imaginary.AbsoluteError)
-
-    def testAbsoluteError(self):
-        assert imaginary.AbsoluteError(rational.Rational(1,2))
-
-    def testDiv(self):
-        re2 = imaginary.RelativeError(rational.Rational(1, 6)) / 5
-        assert re2.relativeerrorrange == rational.Rational(1,30)
-        ae2 = imaginary.AbsoluteError(rational.Rational(1, 6)) / 5
-        assert ae2.absoluteerrorrange == rational.Rational(1,30)
 
 
 class ComplexFieldTest (unittest.TestCase):
