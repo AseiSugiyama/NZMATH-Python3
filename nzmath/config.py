@@ -8,6 +8,9 @@ import warnings
 
 WINDOWS_PLATFORMS = ('win32', 'win64', 'cli', )
 
+def nzmath_info():
+	print("NZMATH [Version 1.0.1]")
+
 # ----------------
 # Default Settings
 # ----------------
@@ -167,18 +170,24 @@ if confdir is None:
         # USERPROFILE = "C:\Documents and Settings\%USERNAME%"
         profdir = os.environ.get('USERPROFILE', None)
         if appdir is not None:
-            confdir = os.path.join(appdir, 'nzmath')
+            t_confdir = os.path.join(appdir, 'nzmath')
         elif profdir is not None:
-            confdir = os.path.join(profdir, 'Application Data', 'nzmath')
+            t_confdir = os.path.join(profdir, 'Application Data', 'nzmath')
     else:
         # "~/.nzmath.d/"
         homedir = os.environ.get('HOME', None)
         if homedir is not None:
-            confdir = os.path.join(homedir, '.nzmath.d')
+            t_confdir = os.path.join(homedir, '.nzmath.d')
+
+    # nzmathconf.py exists?
+    if os.path.exists(os.path.join(t_confdir, 'nzmathconf.py')):
+        confdir = t_confdir
+
 if confdir is not None and os.path.exists(confdir):
     sys.path.insert(0, confdir)
 else:
-    warnings.warn("please set NZMATHCONFDIR")
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'config'))
+
 try:
     # overwrite the default settings with user's nzmathconf
     from nzmathconf import *
