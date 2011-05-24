@@ -4,6 +4,7 @@ import logging
 from nzmath import *
 
 import testAlgfield
+import testAlgorithm
 import testArith1
 import testArygcd
 import testBigrandom
@@ -13,6 +14,7 @@ import testCompatibility
 import testCubic_root
 import testElliptic
 import testEquation
+import testFiniteField
 import testGcd
 import testGroup
 import testImaginary
@@ -20,10 +22,12 @@ import testIntresidue
 #import testIntegerResidueClass deprecated
 import testLattice
 import testMatrix
+import testModule
 import testMultiplicative
 import testPermute
 #import testPolynomial deprecated
 import testPrime
+import testPrime_decomp
 import testQuad
 import testRational
 #import testRationalFunction deprecated
@@ -39,7 +43,6 @@ import testFactorMpqs
 import testFactorEcm
 import testFactorMethods
 import testFactorMisc
-import testFiniteField
 # nzmath.poly
 import testFormalsum
 import testTermOrder
@@ -48,6 +51,7 @@ import testUniutil
 import testMultivar
 import testMultiutil
 import testPolyFactor
+import testPolyHensel
 import testPolyRing
 import testRatfunc
 import testGroebner
