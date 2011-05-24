@@ -1,11 +1,12 @@
 version 1.0.1 to 1.1.0
 ------------------------
 * add a new module algorithm, module, prime_decomp, poly.groebner.
-* fix not to give warnings by default.
-* remove classes real.RelativeError, real.AbsoluteError, real.Constant and functions which depend on these.
-* remove classes imaginary.RelativeError, imaginary.AbsoluteError and functions which depend on these.
 * add a method normalize in poly.uniutil.IntegerPolynomial
 * add a method weight_order in poly.termorder
+* add a method nzmath_info in config
+* remove classes real.RelativeError, real.AbsoluteError, real.Constant and functions which depend on these.
+* remove classes imaginary.RelativeError, imaginary.AbsoluteError and functions which depend on these.
+* fix not to give warnings by default.
 * fix a few bugs in algfield, arith1, poly.termorder
 
 version 1.0.0 to 1.0.1
