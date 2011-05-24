@@ -9,7 +9,7 @@ import warnings
 WINDOWS_PLATFORMS = ('win32', 'win64', 'cli', )
 
 def nzmath_info():
-	print("NZMATH [Version 1.0.1]")
+	print("NZMATH [Version 1.1.0]")
 
 # ----------------
 # Default Settings
