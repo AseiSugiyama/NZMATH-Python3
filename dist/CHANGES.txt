@@ -4,8 +4,9 @@ version 1.0.1 to 1.1.0
 * add a method normalize in poly.uniutil.IntegerPolynomial
 * add a method weight_order in poly.termorder
 * add a method nzmath_info in config
-* remove classes real.RelativeError, real.AbsoluteError, real.Constant and functions which depend on these.
-* remove classes imaginary.RelativeError, imaginary.AbsoluteError and functions which depend on these.
+* remove classes real.RelativeError, real.AbsoluteError, real.Constant and functions which depend on these classes.
+* remove classes imaginary.RelativeError, imaginary.AbsoluteError and functions which depend on these classes.
+* fix to load the default config file if an user's file is not found.
 * fix not to give warnings by default.
 * fix a few bugs in algfield, arith1, poly.termorder
 
