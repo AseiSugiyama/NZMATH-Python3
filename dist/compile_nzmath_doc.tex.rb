@@ -1,9 +1,34 @@
 # -*- coding: SJIS -*-
 
-savedir = Dir.pwd
-Dir.chdir("../manual/")
+def tex_compile(file)
+	print file
+	`platex #{file}.tex`
+	print "."
+	`bibtex #{file}.tex`
+	print "."
+	`platex #{file}.tex`
+	print "."
+	`platex #{file}.tex`
+	print "."
+	`dvipdfmx #{file}.dvi > nul 2>&1`
+	puts "."
+end
 
-begin
+def clean
+	# 中間ファイル削除
+	`del *.log *.out *.div *.toc *.aux *.bbl *.blg`
+end
+
+def compile
+	savedir = Dir.pwd
+	Dir.chdir("../manual/")
+
+	# 個別ファイルコンパイル
+	Dir::glob("*.pdf").each do |file|
+		next if "nzmath_doc" == file[0...-4]
+		tex_compile(file[0...-4])
+	end
+
 	header_footer = ["header_basic_util.tex", "header_class.tex",
 		"header_function.tex", "footer.tex"]
 
@@ -17,20 +42,20 @@ begin
 		open(file, "w") {|f|}
 	end
 
-	# コンパイル
-	`platex nzmath_doc.tex`
-	print "."
-	`platex nzmath_doc.tex`
-	print "."
-	`platex nzmath_doc.tex`
-	print "."
-	`dvipdfmx nzmath_doc.dvi`
-	print "."
-
-	# リネーム
-	header_footer.each do |file|
-		File::rename(file + '_', file)
+	begin
+		# コンパイル
+		tex_compile("nzmath_doc")
+	ensure
+		# リネーム
+		header_footer.each do |file|
+			File::rename(file + '_', file)
+		end
 	end
 ensure
+	# 中間ファイル削除
+	clean
+
 	Dir.chdir(savedir)
 end
+
+compile
