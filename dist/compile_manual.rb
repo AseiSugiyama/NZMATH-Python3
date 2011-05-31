@@ -1,14 +1,17 @@
 # -*- coding: SJIS -*-
 
 def is_win
-	return RUBY_PLATFORM.downcase =~ /mswin(?!ce)|mingw|cygwin|bccwin/
+	return RUBY_PLATFORM.downcase =~ /mswin(?!ce)|mingw|bccwin/
 end
+
+# 環境設定
+$bibtex = is_win ? 'pbibtex' : 'jbibtex'
 
 def tex_compile(file)
 	print file
 	`platex #{file}.tex`
 	print "."
-	`pbibtex #{file}.aux`
+	`#{$bibtex} #{file}.aux`
 	print "."
 	`platex #{file}.tex`
 	print "."
