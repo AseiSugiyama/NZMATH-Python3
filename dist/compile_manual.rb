@@ -4,7 +4,7 @@ def tex_compile(file)
 	print file
 	`platex #{file}.tex`
 	print "."
-	`bibtex #{file}.tex`
+	`pbibtex #{file}.tex`
 	print "."
 	`platex #{file}.tex`
 	print "."
