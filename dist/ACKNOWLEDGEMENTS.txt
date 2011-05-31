@@ -20,10 +20,6 @@ development of arith1, elliptic, imaginary, matrix and polynomial.
 Yasunori Miyamoto:
 Involved in the development of the NZMATH manual.
 
-Nishimoto Keiichiro:
-Contributed to implementation of algfield. Also, involved in the
-development of equation, factor, lattice.
-
 Former Members
 --------------
 
@@ -67,6 +63,10 @@ Involved in the development of matrix, lattice and polynomial.
 
 Ichiki Shingo, [2007-2009]:
 Contributed to the implementation of ECPP.
+
+Nishimoto Keiichiro, [2005-2010]:
+Contributed to implementation of algfield. Also, involved in the
+development of equation, factor, lattice.
 
 
 Other Contributors
