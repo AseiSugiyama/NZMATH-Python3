@@ -22,7 +22,7 @@ Steps
 
 1. Update documents in dist directory.
 
-   There are README.txt, CHANGES.txt, HISTORY.txt etc.
+   There are README.txt, CHANGES.txt, HISTORY.txt, LICENSE.txt, tutorial.txt etc.
    Makefile has OLD_VER and NEW_VER variables, and they should be
    reflect the current and newly decided versions.
 

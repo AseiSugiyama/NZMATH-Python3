@@ -380,4 +380,4 @@ in the distribution tar ball for detail.
 .. _LICENSE.txt: LICENSE.txt
 
 
-Copyright (c) 2004,2009, NZMATH development group, all right reserved.
+Copyright (c) 2004-2011, NZMATH development group, all right reserved.
