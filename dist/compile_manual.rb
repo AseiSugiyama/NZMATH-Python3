@@ -1,16 +1,21 @@
 # -*- coding: SJIS -*-
 
+def is_win
+	return RUBY_PLATFORM.downcase =~ /mswin(?!ce)|mingw|cygwin|bccwin/
+end
+
 def tex_compile(file)
 	print file
 	`platex #{file}.tex`
 	print "."
-	`pbibtex #{file}.tex`
+	`pbibtex #{file}.aux`
 	print "."
 	`platex #{file}.tex`
 	print "."
 	`platex #{file}.tex`
 	print "."
-	`dvipdfmx #{file}.dvi > nul 2>&1`
+	nul = is_win ? 'nul' : '/dev/null'
+	`dvipdfmx #{file}.dvi > #{nul} 2>&1`
 	puts "."
 end
 
