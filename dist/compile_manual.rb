@@ -16,7 +16,7 @@ end
 
 def clean
 	# ’†ŠÔƒtƒ@ƒCƒ‹íœ
-	`del *.log *.out *.div *.toc *.aux *.bbl *.blg`
+	`del *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
 end
 
 def compile
