@@ -22,7 +22,7 @@ Steps
 
 1. Update documents in dist directory.
 
-   There are README.txt, CHANGES.txt, HISTORY.txt etc.
+   There are README.txt, CHANGES.txt, HISTORY.txt, LICENSE.txt, tutorial.txt etc.
    Makefile has OLD_VER and NEW_VER variables, and they should be
    reflect the current and newly decided versions.
 
@@ -69,6 +69,9 @@ Steps
    directory (note that it is not ~/tmp you may be using but /tmp).
    For Windows, NZMATH-x.y.z.zip will be in the same directory,
    and NZMATH-x.y.z.win32Install.exe in /tmp/nzmath-build/dist_wininst.
+
+   You can ignore following warning:
+   "Warning: Can't read registry to find the necessary compiler setting"
 
 6. Make a test distribution file.
 
