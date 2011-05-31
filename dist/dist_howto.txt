@@ -28,6 +28,8 @@ Steps
 
 2. Compile the TeX manual.
 
+   Update nzmath_doc.tex (version num).
+
    Run dist/compile_nzmath_doc.tex.rb
 
    # Delete the contents of the following 4 files.
