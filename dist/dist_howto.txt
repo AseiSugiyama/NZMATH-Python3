@@ -70,6 +70,9 @@ Steps
    For Windows, NZMATH-x.y.z.zip will be in the same directory,
    and NZMATH-x.y.z.win32Install.exe in /tmp/nzmath-build/dist_wininst.
 
+   You can ignore following warning:
+   "Warning: Can't read registry to find the necessary compiler setting"
+
 6. Make a test distribution file.
 
    The tests also should be distributed.  There is no automation to
