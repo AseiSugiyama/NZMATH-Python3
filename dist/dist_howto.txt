@@ -28,12 +28,14 @@ Steps
 
 2. Compile the TeX manual.
 
-   Delete the contents of the following 4 files.
-     header_basic_util.tex
-     header_class.tex
-     header_function.tex
-     footer.tex
-   Then, compile the nzmath_doc.tex.
+   Run dist/compile_nzmath_doc.tex.rb
+
+   # Delete the contents of the following 4 files.
+   #   header_basic_util.tex
+   #   header_class.tex
+   #   header_function.tex
+   #   footer.tex
+   # Then, compile the nzmath_doc.tex.
 
 3. Tag in CVS.
 
