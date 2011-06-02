@@ -34,7 +34,7 @@
   Also, there are some short-cut for inputting \param{key}:
   \begin{itemize}
     \item If key is $[1,\ 2, \ldots, N]$, you do not have to input \param{key}.
-    \item If key is $[0,\ 1, \ldots, N]$, input $0$ as \param{key}.
+    \item If key is $[0,\ 1, \ldots, N-1]$, input $0$ as \param{key}.
     \item If key equals the list arranged through \param{value} in ascending order, input $1$.
     \item If key equals the list arranged through \param{value} in descending order, input $-1$.
   \end{itemize}
@@ -212,17 +212,17 @@
   \spacing
   % added document
   \quad An instance will be generated with ``cyclic'' way.
-  That is, we input a \param{key}, which is a list of tuples and each tuple expresses a cyclic permutation.
+  That is, we input a \param{value}, which is a list of tuples and each tuple expresses a cyclic permutation.
   For example, $(\sigma_1,\ \sigma_2,\ \sigma_3,\ldots,\sigma_k)$ is one-to-one mapping, $\sigma_1 \mapsto \sigma_2,\ \sigma_2 \mapsto \sigma_3,\ldots,\sigma_k \mapsto \sigma_1$.\\
   \spacing
   % input, output document
-  \quad \param{dim} must be positive integer, that is, an instance of int, long or \linkedone{rational}{Integer}. 
+  \quad \param{dim} must be positive integer, that is, an instance of int, long or \linkingone{rational}{Integer}. 
   \param{key} should be a list whose length equals \param{dim}.
   Input a list of tuples whose elements are in \param{key} as \param{value}.
   Note that you can abbreviate \param{key} if \param{key} has the form $[1,\ 2,\ldots,N]$.
-  Also, you can input $0$ as \param{key} if  \param{key} has the form $[0,\ 2,\ldots,N-1]$.
+  Also, you can input $0$ as \param{key} if  \param{key} has the form $[0,\ 1,\ldots,N-1]$.
   \begin{at}
-    \item{dim}:\linkedtwo{permute}{ExPermute}{dim}\\ It expresses \param{dim}.
+    \item[dim]:\linkedtwo{permute}{ExPermute}{dim}\\ It expresses \param{dim}.
     \item[key]:\linkedtwo{permute}{ExPermute}{key}\\ It expresses \param{key}.
     \item[data]:\linkedtwo{permute}{ExPermute}{data}\\ \negok It expresses indexed form of \param{value}.
   \end{at}
