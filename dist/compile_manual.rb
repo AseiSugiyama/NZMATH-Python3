@@ -8,7 +8,7 @@ end
 $bibtex = is_win ? 'pbibtex' : 'jbibtex'
 
 def tex_compile(file)
-	print file
+	print File.basename(Dir.pwd) + '/' + file
 	`platex #{file}.tex`
 	print "."
 	`#{$bibtex} #{file}.aux`
@@ -27,9 +27,9 @@ def clean
 	`del *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
 end
 
-def compile
+def compile(dir)
 	savedir = Dir.pwd
-	Dir.chdir("../manual/")
+	Dir.chdir(dir)
 
 	# 個別ファイルコンパイル
 	Dir::glob("*.pdf").each do |file|
@@ -39,6 +39,7 @@ def compile
 
 	header_footer = ["header_basic_util.tex", "header_class.tex",
 		"header_function.tex", "footer.tex"]
+	header_footer.map!{|file| '../' + file}
 
 	# リネーム
 	header_footer.each do |file|
@@ -66,4 +67,5 @@ ensure
 	Dir.chdir(savedir)
 end
 
-compile
+compile("../manual/en/")
+compile("../manual/ja/")
