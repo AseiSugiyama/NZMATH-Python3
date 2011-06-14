@@ -1,0 +1,91 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{multiplicative -- multiplicative number theoretic functions}\linkedzero{multiplicative}
+%
+All functions of this module accept only positive integers,
+unless otherwise noted.
+%
+  \subsection{euler -- the Euler totient function}\linkedone{multiplicative}{euler}
+   \func{euler}
+   {%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return the number of numbers relatively prime to \param{n}
+   and smaller than \param{n}.  In the literature, the function is
+   referred often as \(\varphi\).
+
+  \subsection{moebius -- the M\"obius function}\linkedone{multiplicative}{moebius}
+   \func{moebius}
+   {%
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return:
+   \begin{description}
+   \item[-1] if n has odd distinct prime factors,
+   \item[1] if n has even distinct prime factors, or
+   \item[0] if n has a squared prime factor.
+   \end{description}
+   In the literature, the function is referred often as \(\mu\).
+
+  \subsection{sigma -- sum of divisor powers)}\linkedone{multiplicative}{sigma}
+   \func{sigma}
+   {%
+     \hiki{m}{integer},\ %
+     \hiki{n}{integer}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   Return the sum of \param{m}-th powers of the factors of \param{n}.
+   The argument \param{m} can be zero, then return the number of factors.
+   In the literature, the function is referred often as \(\sigma\).
+%
+\begin{ex}
+>>> multiplicative.euler(1)
+1
+>>> multiplicative.euler(2)
+1
+>>> multiplicative.euler(4)
+2
+>>> multiplicative.euler(5)
+4
+>>> multiplicative.moebius(1)
+1
+>>> multiplicative.moebius(2)
+-1
+>>> multiplicative.moebius(4)
+0
+>>> multiplicative.moebius(6)
+1
+>>> multiplicative.sigma(0, 1)
+1
+>>> multiplicative.sigma(1, 1)
+1
+>>> multiplicative.sigma(0, 2)
+2
+>>> multiplicative.sigma(1, 3)
+4
+>>> multiplicative.sigma(1, 4)
+7
+>>> multiplicative.sigma(1, 6)
+12L
+>>> multiplicative.sigma(2, 7)
+50
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

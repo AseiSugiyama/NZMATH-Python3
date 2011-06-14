@@ -1,0 +1,149 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{bigrange -- range-like generator functions}\linkedzero{bigrange}
+%
+  \subsection{count -- count up}\linkedone{bigrange}{count}
+   \func{count}
+   {%
+     \hikiopt{n}{integer}{0}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Count up infinitely from \param{n} (default to \(0\)).
+   See \linklibrary{itertools}.\linklibraryone{itertools\#count}{count}.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{n} must be int, long or rational.Integer.\\
+
+  \subsection{range -- range-like iterator}\linkedone{bigrange}{range}
+   \func{range}
+   {%
+     \hiki{start}{integer},\ %
+     \hikiopt{stop}{integer}{None},\ %
+     \hikiopt{step}{integer}{1}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a range-like iterator which generates a finite integer sequence.\\
+   \spacing
+   % added document
+   \quad  It can generate more than
+   \linklibrary{sys}.\linklibraryone{sys\#maxint}{maxint} elements,
+   which is the limitation of the \linklibraryone{functions\#range}{range}
+   built-in function.\\
+   \spacing
+   % input, output document
+   \quad The argument names do not correspond to their roles, but
+   users are familiar with the
+   \linklibraryone{functions\#range}{range} built-in function of
+   \python and understand the semantics.
+   Note that the output is not a list.\\
+%
+\begin{ex}
+>>> range(1, 100, 3) # built-in
+[1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34, 37, 40, 43, 46,
+ 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 82, 85, 88, 91,
+ 94, 97]
+>>> bigrange.range(1, 100, 3)
+<generator object at 0x18f8c8>
+\end{ex}%Don't indent!(indent causes an error.)
+
+  \subsection{arithmetic\_progression -- arithmetic progression iterator}\linkedone{bigrange}{arithmetic\_progression}
+   \func{arithmetic\_progression}
+   {%
+     \hiki{init}{integer},\ %
+     \hiki{difference}{integer}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator which generates an arithmetic progression
+   starting form \param{init} and \param{difference} step.\\
+
+  \subsection{geometric\_progression -- geometric progression iterator}\linkedone{bigrange}{geometric\_progression}
+   \func{geometric\_progression}
+   {%
+     \hiki{init}{integer},\ %
+     \hiki{ratio}{integer}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator which generates a geometric progression
+   starting form \param{init} and multiplying \param{ratio}.\\
+
+  \subsection{multirange -- multiple range iterator}\linkedone{bigrange}{multirange}
+   \func{multirange}
+   {%
+     \hiki{triples}{list of range triples}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator over Cartesian product of elements of ranges.\\
+   \spacing
+   % added document
+   \quad Be cautious that using multirange usually means you are
+   trying to do brute force looping.\\
+   \spacing
+   % input / output
+   \quad The range triples may be doubles {\tt (start, stop)} or single {\tt (stop,)},
+   but they have to be always tuples.\\
+   
+%
+\begin{ex}
+>>> bigrange.multirange([(1, 10, 3), (1, 10, 4)])
+<generator object at 0x18f968>
+>>> list(_)
+[(1, 1), (1, 5), (1, 9), (4, 1), (4, 5), (4, 9), (7, 1),
+ (7, 5), (7, 9)]
+\end{ex}%Don't indent!(indent causes an error.)
+
+  \subsection{multirange\_restrictions -- multiple range iterator with restrictions}\linkedone{bigrange}{multirange\_restrictions}
+   \func{multirange\_restrictions}
+   {%
+     \hiki{triples}{list of range triples},\ %
+     \hiki{**kwds}{keyword arguments}
+   }{%
+     {\em iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad {\tt multirange\_restrictions} is an iterator similar to the
+   {\tt multirange} but putting restrictions on each ranges.\\
+   \spacing
+   % added document
+   \quad Restrictions are specified by keyword arguments: \param{ascending},
+   \param{descending}, \param{strictly\_ascending} and
+   \param{strictly\_descending}.
+
+   A restriction \param{ascending}, for example, is a sequence that
+   specifies the indices where the number emitted by the range should
+   be greater than or equal to the number at the previous index.
+   Other restrictions \param{descending}, \param{strictly\_ascending}
+   and \param{strictly\_descending} are similar.  Compare the examples
+   below and of \linkingone{bigrange}{multirange}.
+
+%
+\begin{ex}
+>>> bigrange.multirange_restrictions([(1, 10, 3), (1, 10, 4)], ascending=(1,))
+<generator object at 0x18f978>
+>>> list(_)
+[(1, 1), (1, 5), (1, 9), (4, 5), (4, 9), (7, 9)]
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+%---------- end document ---------- %
+
+\input{footer}

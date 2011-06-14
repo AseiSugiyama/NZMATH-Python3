@@ -1,0 +1,128 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% macros for nzmath manual
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{amssymb,amsmath}
+\usepackage{color}
+\usepackage[dvipdfm,bookmarks=true,bookmarksnumbered=true,%
+ pdftitle={NZMATH Users Manual},%
+ pdfsubject={Manual for NZMATH Users},%
+ pdfauthor={NZMATH Development Group},%
+ pdfkeywords={TeX; dvipdfmx; hyperref; color;},%
+ colorlinks=true]{hyperref}
+\usepackage{fancybox}
+\usepackage[T1]{fontenc}
+%
+\newcommand{\DS}{\displaystyle}
+\newcommand{\C}{\clearpage}
+\newcommand{\NO}{\noindent}
+\newcommand{\negok}{$\dagger$}
+\newcommand{\spacing}{\vspace{1pt}\\ }
+% software macros
+\newcommand{\nzmathzero}{{\footnotesize $\mathbb{N}\mathbb{Z}$}\texttt{MATH}}
+\newcommand{\nzmathbig}{{\Large $\mathbb{N}\mathbb{Z}$}\texttt{MATH}}
+\newcommand{\nzmath}{{\nzmathzero}\ }
+\newcommand{\pythonzero}{$\mbox{\texttt{Python}}$}
+\newcommand{\python}{{\pythonzero}\ }
+% link macros
+\newcommand{\linkingzero}[1]{{\bf \hyperlink{#1}{#1}}}%module
+\newcommand{\linkingone}[2]{{\bf \hyperlink{#1.#2}{#2}}}%module,class/function etc.
+\newcommand{\linkingtwo}[3]{{\bf \hyperlink{#1.#2.#3}{#3}}}%module,class,method
+\newcommand{\linkedzero}[1]{\hypertarget{#1}{}}
+\newcommand{\linkedone}[2]{\hypertarget{#1.#2}{}}
+\newcommand{\linkedtwo}[3]{\hypertarget{#1.#2.#3}{}}
+\newcommand{\linktutorial}[1]{\href{http://docs.python.org/tutorial/#1}{#1}}
+\newcommand{\linktutorialone}[2]{\href{http://docs.python.org/tutorial/#1}{#2}}
+\newcommand{\linklibrary}[1]{\href{http://docs.python.org/library/#1}{#1}}
+\newcommand{\linklibraryone}[2]{\href{http://docs.python.org/library/#1}{#2}}
+\newcommand{\pythonhp}{\href{http://www.python.org/}{\python website}}
+\newcommand{\nzmathwiki}{\href{http://nzmath.sourceforge.net/wiki/}{{\nzmathzero}Wiki}}
+\newcommand{\nzmathsf}{\href{http://sourceforge.net/projects/nzmath/}{\nzmath Project Page}}
+\newcommand{\nzmathtnt}{\href{http://tnt.math.se.tmu.ac.jp/nzmath/}{\nzmath Project Official Page}}
+% parameter name
+\newcommand{\param}[1]{{\tt #1}}
+% function macros
+\newcommand{\hiki}[2]{{\tt #1}:\ {\em #2}}
+\newcommand{\hikiopt}[3]{{\tt #1}:\ {\em #2}=#3}
+
+\newdimen\hoge
+\newdimen\truetextwidth
+\newcommand{\func}[3]{%
+\setbox0\hbox{#1(#2)}
+\hoge=\wd0
+\truetextwidth=\textwidth
+\advance \truetextwidth by -2\oddsidemargin
+\ifdim\hoge<\truetextwidth % short form
+{\bf \colorbox{skyyellow}{#1(#2)\ $\to$ #3}}
+%
+\else % long form
+\fcolorbox{skyyellow}{skyyellow}{%
+   \begin{minipage}{\textwidth}%
+   {\bf #1(#2)\\ %
+    \qquad\quad   $\to$\ #3}%
+   \end{minipage}%
+   }%
+\fi%
+}
+
+\newcommand{\out}[1]{{\em #1}}
+\newcommand{\initialize}{%
+  \paragraph{\large \colorbox{skyblue}{Initialize (Constructor)}}%
+    \quad\\ %
+    \vspace{3pt}\\
+}
+\newcommand{\method}{\C \paragraph{\large \colorbox{skyblue}{Methods}}}
+% Attribute environment
+\newenvironment{at}
+{%begin
+\paragraph{\large \colorbox{skyblue}{Attributes}}
+\quad\\
+\begin{description}
+}%
+{%end
+\end{description}
+}
+% Operation environment
+\newenvironment{op}
+{%begin
+\paragraph{\large \colorbox{skyblue}{Operations}}
+\quad\\
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|l|}
+\hline
+operator & explanation\\
+\hline
+}%
+{%end
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+% Examples environment
+\newenvironment{ex}%
+{%begin
+\paragraph{\large \colorbox{skyblue}{Examples}}
+\VerbatimEnvironment
+\renewcommand{\EveryVerbatim}{\fontencoding{OT1}\selectfont}
+\begin{quote}
+\begin{Verbatim}
+}%
+{%end
+\end{Verbatim}
+\end{quote}
+}
+%
+\definecolor{skyblue}{cmyk}{0.2, 0, 0.1, 0}
+\definecolor{skyyellow}{cmyk}{0.1, 0.1, 0.5, 0}
+%
+%\title{NZMATH User Manual\\ {\large{(for version 1.0)}}}
+%\date{}
+%\author{}
+\begin{document}
+%\maketitle
+%
+\setcounter{tocdepth}{3}
+\setcounter{secnumdepth}{3}

@@ -1,0 +1,528 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{elliptic -- elliptic class object}\linkedzero{elliptic}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{elliptic}{ECGeneric}
+     \item \linkingone{elliptic}{ECoverQ}
+     \item \linkingone{elliptic}{ECoverGF}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{elliptic}{EC}
+     \end{itemize}
+ \end{itemize}
+
+ This module using following type:
+ \begin{description}
+   \item[weierstrassform]\linkedone{elliptic}{weierstrassform}:\\
+     \param{weierstrassform} is a list ($a_1, a_2, a_3, a_4, a_6$) or ($a_4, a_6$), it represents $E:y^2+a_1xy+a_3y=x^3+a_2x^2+a_4x+a_6$ or $E:y^2=x^3+a_4x+a_6$, respectively.
+   \item[infpoint]\linkedone{elliptic}{infpoint}:\\
+     \param{infpoint} is the list {\tt [0]}, which represents infinite point on the elliptic curve.
+   \item[point]\linkedone{elliptic}{point}:\\
+     \param{point} is two-dimensional coordinate list [\param{x}, \param{y}] or \linkingone{elliptic}{infpoint}.
+ \end{description}
+
+\C
+
+ \subsection{\negok ECGeneric -- generic elliptic curve class}\linkedone{elliptic}{ECGeneric}
+\initialize
+  \func{ECGeneric}{
+    \hiki{coefficient}{\linkingone{elliptic}{weierstrassform}},\
+    \hikiopt{basefield}{Field}{None}
+  }{
+    \out{ECGeneric}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create an elliptic curve object.\\
+  \spacing
+  % added document
+  \quad The class is for the definition of elliptic curves over general fields.
+  Instead of using this class directly, we recommend that you call \linkingone{elliptic}{EC}.\\
+  \negok The class precomputes the following values.
+  \begin{itemize}
+    \item shorter form:\ $y^2=b_2 x^3+b_4x^2+b_6x+b_8$
+    \item shortest form:\ $y^2=x^3+c_4x+c_6$
+    \item discriminant
+    \item j-invariant
+  \end{itemize}
+  \quad\\
+  % input, output document
+  \quad All elements of \param{coefficient} must be in \param{basefield}.\\
+  See \linkingone{elliptic}{weierstrassform} for more information about \param{coefficient}.
+  If discriminant of \param{self} equals $0$, it raises ValueError.
+  \begin{at}
+    \item[basefield]\linkedtwo{elliptic}{ECGeneric}{basefield}:\\ It expresses the field which each coordinate of all points in \param{self} is on.
+(This means not only \param{self} is defined over \param{basefield}.)
+    \item[ch]\linkedtwo{elliptic}{ECGeneric}{ch}:\\ It expresses the characteristic of \param{basefield}.
+    \item[infpoint]\linkedtwo{elliptic}{ECGeneric}{infpoint}:\\ It expresses infinity point (i.e. [0]).
+    \item[a1, a2, a3, a4, a6]\linkedtwo{elliptic}{ECGeneric}{a1, a2, a3, a4, a6}:\\ It expresses the coefficients \param{a1}, \param{a2}, \param{a3}, \param{a4}, \param{a6}.
+    \item[b2, b4, b6, b8]\linkedtwo{elliptic}{ECGeneric}{b2, b4, b6, b8}:\\ It expresses the coefficients \param{b2}, \param{b4}, \param{b6}, \param{b8}.
+    \item[c4, c6]\linkedtwo{elliptic}{ECGeneric}{c4, c6}:\\ It expresses the coefficients \param{c4}, \param{c6}.
+    \item[disc]\linkedtwo{elliptic}{ECGeneric}{disc}:\\ It expresses the discriminant of \param{self}.
+    \item[j]\linkedtwo{elliptic}{ECGeneric}{j}:\\ It expresses the j-invariant of \param{self}.
+    \item[coefficient]\linkedtwo{elliptic}{ECGeneric}{coefficient}:\\ It expresses the \linkingone{elliptic}{weierstrassform} of \param{self}.
+\end{at}
+  %\begin{op}
+  %\end{op}
+  \method
+  \subsubsection{simple -- simplify the curve coefficient}\linkedtwo{elliptic}{ECGeneric}{simple}
+   \func{simple}{\param{self}}{\out{\linkingone{elliptic}{ECGeneric}}}\\
+   \spacing
+   % document of basic document
+   \quad Return elliptic curve corresponding to the short Weierstrass form of \param{self} by changing the coordinates.\\
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{changeCurve -- change the curve by coordinate change}\linkedtwo{elliptic}{ECGeneric}{changeCurve}
+   \func{changeCurve}{\param{self},\ \hiki{V}{list}}{\out{\linkingone{elliptic}{ECGeneric}}}\\
+   \spacing
+   % document of basic document
+   \quad Return elliptic curve corresponding to the curve obtained by some coordinate change $x=u^2x'+r,\ y=u^3y'+su^2x'+t$.\\
+   \spacing
+   % added document
+   \quad For $u \ne 0$, the coordinate change gives some curve which is \linkingtwo{elliptic}{ECGeneric}{basefield}-isomorphic to \param{self}.\\
+   \spacing
+   % input, output document
+   \quad $V$ must be a list of the form $[u,r,s,t]$, where $u,r,s,t$ are in \linkingtwo{elliptic}{ECGeneric}{basefield}.\\
+%
+  \subsubsection{changePoint -- change coordinate of point on the curve}\linkedtwo{elliptic}{ECGeneric}{changePoint}
+   \func{changePoint}{\param{self},\ \hiki{P}{\linkingone{elliptic}{point}},\ \hiki{V}{list}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the point corresponding to the point obtained by the coordinate change $x'=(x-r) u^{-2},\ y'=(y-s(x-r)+t)u^{-3}$.\\
+   \spacing
+   % added document
+   \quad Note that the inverse coordinate change is $x=u^2x'+r,\ y=u^3y'+su^2x'+t$.See \linkingtwo{elliptic}{ECGeneric}{changeCurve}.\\
+   \spacing
+   % input, output document
+   \quad $V$ must be a list of the form $[u,r,s,t]$, where $u,r,s,t$ are in \linkingtwo{elliptic}{ECGeneric}{basefield}.$u$ must be non-zero.\\
+%
+  \subsubsection{coordinateY -- Y-coordinate from X-coordinate}\linkedtwo{elliptic}{ECGeneric}{coordinateY}
+   \func{coordinateY}{\param{self},\ \hiki{x}{\linkingone{ring}{FieldElement}}}{\out{\linkingone{ring}{FieldElement} / False}}\\
+   \spacing
+   % document of basic document
+   \quad Return Y-coordinate of the point on \param{self}  whose X-coordinate is \param{x}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad The output would be one Y-coordinate (if a coordinate is found).
+   If such a Y-coordinate does not exist,  it returns False.\\
+%
+  \subsubsection{whetherOn -- Check point is on curve }\linkedtwo{elliptic}{ECGeneric}{whetherOn}
+   \func{whetherOn}{\param{self},\ \hiki{P}{\linkingone{elliptic}{point}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether the point \param{P} is on \param{self} or not.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad Output \param{Y-coordinate} is either one Y-coordinate or 2-component vector containing the Y-coordinates. 
+%
+  \subsubsection{add -- Point addition on the curve}\linkedtwo{elliptic}{ECGeneric}{add}
+   \func{add}{\param{self},\ \hiki{P}{\linkingone{elliptic}{point}},\ \hiki{Q}{\linkingone{elliptic}{point}}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the sum of the point \param{P} and \param{Q} on \param{self}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad Output \param{Y-coordinate} is either one Y-coordinate or 2-component vector containing the Y-coordinates. 
+%
+  \subsubsection{sub -- Point subtraction on the curve}\linkedtwo{elliptic}{ECGeneric}{sub}
+   \func{sub}{\param{self},\ \hiki{P}{\linkingone{elliptic}{point}},\ \hiki{Q}{\linkingone{elliptic}{point}}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the subtraction of the point \param{P} from \param{Q} on \param{self}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad Output \param{Y-coordinate} is either one Y-coordinate or 2-component vector containing the Y-coordinates. 
+%
+  \subsubsection{mul -- Scalar point multiplication on the curve}\linkedtwo{elliptic}{ECGeneric}{mul}
+   \func{mul}{\param{self},\ \hiki{k}{integer},\ \hiki{P}{\linkingone{elliptic}{point}}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the scalar multiplication of the point \param{P} by a scalar \param{k} on \param{self}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad Output \param{Y-coordinate} is either one Y-coordinate or 2-component vector containing the Y-coordinates. 
+%
+  \subsubsection{divPoly -- division polynomial}\linkedtwo{elliptic}{ECGeneric}{divPoly}
+   \func{divPoly}{\param{self},\ \hikiopt{m}{integer}{None}}{\out{\linkingone{poly.uniutil}{FieldPolynomial}/(\hiki{f}{list}, \hiki{H}{integer})}}\\
+   \spacing
+   % document of basic document
+   \quad Return the division polynomial.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad  If \param{m} is odd, this method returns the usual division polynomial. If \param{m} is even, return the quotient of the usual division polynomial by $2y + a_1 x + a_3$.\\
+ \negok If \param{m} is not specified (i.e. \param{m=None}), then return $(\param{f},\ \param{H})$.
+ $\param{H}$ is the least prime satisfying $\prod_{2\le l \le H,\ l:prime} l > 4\sqrt{q}$, where $q$ is the order of \linkingtwo{elliptic}{ECGeneric}{basefield}.
+ $\param{f}$ is the list of $k$-division polynomials up to $k \le \param{H}$.
+ These are used for Schoof's algorithm.\\
+%
+\C
+ \subsection{ECoverQ -- elliptic curve over rational field}\linkedone{elliptic}{ECoverQ}
+ The class is for elliptic curves over the rational field $\mathbb{Q}$ (\linkingone{rational}{RationalField} in nzmath.\linkingzero{rational}).\\
+ The class is a subclass of \linkingone{elliptic}{ECGeneric}.
+
+\initialize
+  \func{ECoverQ}{\hiki{coefficient}{\linkingone{elliptic}{weierstrassform}}}{\out{\linkingone{elliptic}{ECoverQ}}}\\
+  \spacing
+  % document of basic document
+  \quad Create elliptic curve over the rational field.\\
+  \spacing
+  % added document
+  %
+  % \spacing
+  % input, output document
+  \quad All elements of \param{coefficient} must be integer or \linkingone{rational}{Rational}. \\
+  See \linkingone{elliptic}{weierstrassform} for more information about \param{coefficient}.\\
+\begin{ex}
+>>> E = elliptic.ECoverQ([ratinal.Rational(1, 2), 3])
+>>> print E.disc
+-3896/1
+>>> print E.j
+1728/487
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{point -- obtain random point on curve}\linkedtwo{elliptic}{ECoverQ}{point}
+   \func{point}{\param{self},\ \hikiopt{limit}{integer}{1000}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return a random point on \param{self}.\\
+   \spacing
+   % added document
+   \quad  \param{limit} expresses the time of trying to choose points.
+   If failed, raise ValueError.
+   \negok Because it is difficult to search the rational point over the rational field, it might raise error with high frequency.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+\begin{ex}
+>>> print E.changeCurve([1, 2, 3, 4])
+y ** 2 + 6/1 * x * y + 8/1 * y = x ** 3 - 3/1 * x ** 2 - 23/2 * x - 4/1
+>>> E.divPoly(3)
+FieldPolynomial([(0, Rational(-1, 4)), (1, Rational(36, 1)), (2, Rational(3, 1)
+), (4, Rational(3, 1))], RationalField())
+\end{ex}%Don't indent!
+\C
+ \subsection{ECoverGF -- elliptic curve over finite field}\linkedone{elliptic}{ECoverGF}
+ The class is for elliptic curves over a finite field, denoted by $\mathbb{F}_q$ (\linkingone{finitefield}{FiniteField} and its subclasses in nzmath).\\
+ The class is a subclass of \linkingone{elliptic}{ECGeneric}.
+\initialize
+  \func{ECoverGF}{
+    \hiki{coefficient}{\linkingone{elliptic}{weierstrassform}},\ 
+    \hiki{basefield}{\linkingone{finitefield}{FiniteField}}
+    }{
+    \out{\linkingone{elliptic}{ECoverGF}}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create elliptic curve over a finite field.\\
+  \spacing
+  % added document
+  %
+  % \spacing
+  % input, output document
+  \quad All elements of \param{coefficient} must be in \param{basefield}.
+  \param{basefield} should be an instance of \linkingone{finitefield}{FiniteField}.\\
+  See \linkingone{elliptic}{weierstrassform} for more information about \param{coefficient}.
+\begin{ex}
+>>> E = elliptic.ECoverGF([2, 5], finitefield.FinitePrimeField(11))
+>>> print E.j
+7 in F_11
+>>> E.whetherOn([8, 4])
+True
+>>> E.add([3, 4], [9, 9])
+[FinitePrimeFieldElement(0, 11), FinitePrimeFieldElement(4, 11)]
+>>> E.mul(5, [9, 9])
+[FinitePrimeFieldElement(0, 11)]
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{point -- find random point on curve}\linkedtwo{elliptic}{ECoverGF}{point}
+   \func{point}{\param{self}}{\out{\linkingone{elliptic}{point}}}\\
+   \spacing
+   % document of basic document
+   \quad Return a random point on \param{self}.\\
+   \spacing
+   % added document
+   \quad This method uses a probabilistic algorithm.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{naive -- Frobenius trace by naive method}\linkedtwo{elliptic}{ECoverGF}{naive}
+   \func{naive}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return Frobenius trace $t$ by a naive method.\\
+   \spacing
+   % added document
+   \quad \negok The function counts up the Legendre symbols of all rational points on \param{self}.\\
+   Frobenius trace of the curve is $t$ such that $\#E(\mathbb{F}_q)=q+1-t$, where $\#E(\mathbb{F}_q)$ stands for the number of points on \param{self} over \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} $\mathbb{F}_q$. \\
+   \spacing
+   % input, output document
+   \quad The characteristic of \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} must not be $2$ nor $3$.\\
+%
+  \subsubsection{Shanks\_Mestre -- Frobenius trace by Shanks and Mestre method}\linkedtwo{elliptic}{ECoverGF}{Shanks\_Mestre}
+   \func{Shanks\_Mestre}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return Frobenius trace $t$ by Shanks and Mestre method.\\
+   \spacing
+   % added document
+   \quad \negok This uses the method proposed by Shanks and Mestre.
+   \negok See Algorithm 7.5.3 of \cite{Pomerance} for more information about the algorithm.\\
+   Frobenius trace of the curve is $t$ such that $\#E(\mathbb{F}_q)=q+1-t$, where $\#E(\mathbb{F}_q)$ stands for the number of points on \param{self} over \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} $\mathbb{F}_q$. \\
+   \spacing
+   % input, output document
+   \quad \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} must be an instance of \linkingone{finitefield}{FinitePrimeField}.\\
+%
+  \subsubsection{Schoof -- Frobenius trace by Schoof's method}\linkedtwo{elliptic}{ECoverGF}{Schoof}
+   \func{Schoof}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return Frobenius trace $t$ by Schoof's method.\\
+   \spacing
+   % added document
+   \quad \negok This uses the method proposed by Schoof.\\
+   Frobenius trace of the curve is $t$ such that $\#E(\mathbb{F}_q)=q+1-t$, where $\#E(\mathbb{F}_q)$ stands for the number of points on \param{self} over \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} $\mathbb{F}_q$. \\
+   \spacing
+   % input, output document
+%
+  \subsubsection{trace -- Frobenius trace}\linkedtwo{elliptic}{ECoverGF}{trace}
+   \func{trace}{\param{self},\ \hikiopt{r}{integer}{None}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return Frobenius trace $t$.\\
+   \spacing
+   % added document
+   \quad Frobenius trace of the curve is $t$ such that $\#E(\mathbb{F}_q)=q+1-t$, where $\#E(\mathbb{F}_q)$ stands for the number of points on \param{self} over \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} $\mathbb{F}_q$. \\
+   If positive $r$ given, it returns $q^r+1-\#E(\mathbb{F}_{q^r})$.\\
+   \negok The method selects algorithms by investigating \param{self}.\linkingtwo{elliptic}{ECGeneric}{ch} when \param{self}.\linkingtwo{elliptic}{ECGeneric}{basefield} is an instance of \linkingone{finitefield}{
+FinitePrimeField}.
+   If \param{ch}<1000, the method uses \linkingtwo{elliptic}{ECoverGF}{naive}. 
+   If $10^4<\param{ch}<10^{30}$, the method uses \linkingtwo{elliptic}{ECoverGF}{Shanks\_Mestre}. 
+   Otherwise, it uses \linkingtwo{elliptic}{ECoverGF}{Schoof}.\\
+   \spacing
+   % input, output document
+   \quad The parameter $r$ must be positive integer.\\
+%
+  \subsubsection{order -- order of group of rational points on the curve}\linkedtwo{elliptic}{ECoverGF}{order}
+   \func{order}{\param{self},\ \hikiopt{r}{integer}{None}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return order $\#E(\mathbb{F}_q)=q+1-t$. \\
+   \spacing
+   % added document
+   \quad If positive $r$ given, this computes $\#E({\mathbb{F}_q}^r)$ instead. \\
+   \negok On the computation of Frobenius trace $t$, the method calls \linkingtwo{elliptic}{ECoverGF}{trace}.\\
+   \spacing
+   % input, output document
+   \quad The parameter $r$ must be positive integer.\\
+%
+  \subsubsection{pointorder -- order of point on the curve}\linkedtwo{elliptic}{ECoverGF}{pointorder}
+   \func{pointorder}{\param{self},\ \hiki{P}{\linkingone{elliptic}{point}},\ \hikiopt{ord\_factor}{list}{None}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return order of a point \param{P}. \\
+   \spacing
+   % added document
+   \quad \negok The method uses factorization of \linkingtwo{elliptic}{ECoverGF}{order}.\\
+   If \param{ord\_factor} is given, computation of factorizing the order of \param{self} is omitted and it applies \param{ord\_factor} instead.\\
+   \spacing
+   % input, output document
+   %\quad 
+%
+  \subsubsection{TatePairing -- Tate Pairing}\linkedtwo{elliptic}{ECoverGF}{TatePairing}
+   \func{TatePairing}
+        {\param{self},\ 
+          \hiki{m}{integer},\ 
+          \hiki{P}{\linkingone{elliptic}{point}},\ 
+          \hiki{Q}{\linkingone{elliptic}{point}} 
+        }
+        {\out{\linkingone{finitefield}{FiniteFieldElement}}}\\
+   \spacing
+   % document of basic document
+   \quad Return Tate-Lichetenbaum pairing ${\langle P,\ Q\rangle}_m$.\\
+   \spacing
+   % added document
+   \quad \negok The method uses Miller's algorithm.\\
+   The image of the Tate pairing is $\mathbb{F}_q^*/{\mathbb{F}_q^*}^m$, but the method returns an element of $\mathbb{F}_q$, so the value is not uniquely defined.
+   If uniqueness is needed, use \linkingtwo{elliptic}{ECoverGF}{TatePairing\_Extend}.\\
+   \spacing
+   % input, output document
+   \quad The point \param{P} has to be a \param{m}-torsion point (i.e. $mP=$[0]).
+   Also, the number \param{m} must divide \linkingtwo{elliptic}{ECoverGF}{order}.\\
+%
+  \subsubsection{TatePairing\_Extend -- Tate Pairing with final exponentiation}\linkedtwo{elliptic}{ECoverGF}{TatePairing\_Extend}
+   \func{TatePairing\_Extend}
+        {\param{self},\ 
+          \hiki{m}{integer},\ 
+          \hiki{P}{\linkingone{elliptic}{point}},\ 
+          \hiki{Q}{\linkingone{elliptic}{point}} 
+        }
+        {\out{\linkingone{finitefield}{FiniteFieldElement}}}\\
+   \spacing
+   % document of basic document
+   \quad Return Tate Pairing with final exponentiation, i.e. ${{\langle P,\ Q\rangle}_m}^{(q-1)/m}$.\\
+   \spacing
+   % added document
+   \quad \negok The method calls \linkingtwo{elliptic}{ECoverGF}{TatePairing}.\\
+   \spacing
+   % input, output document
+   \quad The point \param{P} has to be a \param{m}-torsion point (i.e. $mP=$[0]). Also the number \param{m} must divide \linkingtwo{elliptic}{ECoverGF}{order}.\\
+   The output is in the group generated by $m$-th root of unity in ${\mathbb{F}_q^*}$.
+%
+  \subsubsection{WeilPairing -- Weil Pairing }\linkedtwo{elliptic}{ECoverGF}{WeilPairing}
+   \func{WeilPairing}
+        {\param{self},\ 
+          \hiki{m}{integer},\ 
+          \hiki{P}{\linkingone{elliptic}{point}},\ 
+          \hiki{Q}{\linkingone{elliptic}{point}} 
+        }
+        {\out{\linkingone{finitefield}{FiniteFieldElement}}}\\
+   \spacing
+   % document of basic document
+   \quad Return Weil pairing  $e_m(P,\ Q)$.\\
+   \spacing
+   % added document
+   \quad \negok The method uses Miller's algorithm.\\
+   \spacing
+   % input, output document
+   \quad The points \param{P} and \param{Q} has to be a \param{m}-torsion point (i.e. $mP=mQ=$[0]).
+   Also, the number \param{m} must divide \linkingtwo{elliptic}{ECoverGF}{order}.
+
+   The output is in the group generated by $m$-th root of unity in ${\mathbb{F}_q^*}$.
+%
+  \subsubsection{BSGS -- point order by Baby-Step and Giant-Step}\linkedtwo{elliptic}{ECoverGF}{BSGS}
+   \func{BSGS}
+        {\param{self},\ 
+          \hiki{P}{\linkingone{elliptic}{point}}
+        }
+        {\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return order of point $P$ by Baby-Step and Giant-Step method.\\
+   \spacing
+   % added document
+   \quad \negok See \cite{Washington} for more information about the algorithm.\\
+   %\spacing
+   % input, output document
+   %\quad
+%
+  \subsubsection{DLP\_BSGS -- solve Discrete Logarithm Problem by Baby-Step and Giant-Step}\linkedtwo{elliptic}{ECoverGF}{DLP\_BSGS}
+   \func{DLP\_BSGS}
+        {\param{self},\ 
+          \hiki{n}{integer},\ 
+          \hiki{P}{\linkingone{elliptic}{point}},\ 
+          \hiki{Q}{\linkingone{elliptic}{point}}
+        }
+        {\out{\hiki{m}{integer}}}\\
+   \spacing
+   % document of basic document
+   \quad Return \param{m} such that $Q=mP$ by Baby-Step and Giant-Step method.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad The points \param{P} and \param{Q} has to be a \param{n}-torsion point (i.e. $nP=nQ=$[0]). Also, the number \param{n} must divide \linkingtwo{elliptic}{ECoverGF}{order}.\\
+   The output \param{m} is an integer.\\
+%
+  \subsubsection{structure -- structure of group of rational points}\linkedtwo{elliptic}{ECoverGF}{structure}
+   \func{structure}
+        {\param{self}}
+        {\out{\hiki{structure}{tuple}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the group structure of \param{self}.\\
+   \spacing
+   % added document
+   \quad  The structure of $E(\mathbb{F}_q)$ is represented as $\mathbb{Z}/d\mathbb{Z} \times \mathbb{Z}/n\mathbb{Z}$.
+   The method uses \linkingtwo{elliptic}{ECoverGF}{WeilPairing}.\\
+   \spacing
+   % input, output document
+   \quad The output \param{structure} is a tuple of positive two integers \param{(d,\  n)}. \param{d} divides \param{n}.
+%
+  \subsubsection{issupersingular -- check supersingular curve}\linkedtwo{elliptic}{ECoverGF}{issupersingular}
+   \func{structure}
+        {\param{self}}
+        {\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is a supersingular curve or not.\\
+   \spacing
+   % added document
+   %\quad  
+   %\spacing
+   % input, output document
+   %\quad
+%
+\begin{ex}
+>>> E=nzmath.elliptic.ECoverGF([2, 5], nzmath.finitefield.FinitePrimeField(11))
+>>> E.whetherOn([0, 4])
+True
+>>> print E.coordinateY(3)
+4 in F_11
+>>> E.trace()
+2
+>>> E.order()
+10
+>>> E.pointorder([3, 4])
+10L
+>>> E.TatePairing(10, [3, 4], [9, 9])
+FinitePrimeFieldElement(3, 11)
+>>> E.DLP_BSGS(10, [3, 4], [9, 9])
+6
+\end{ex}%Don't indent!
+\C
+  \subsection{EC(function)}\linkedone{elliptic}{EC}
+  \func{EC}
+       {\hiki{coefficient}{\linkingone{elliptic}{weierstrassform}},\ 
+        \hiki{basefield}{\linkingone{ring}{Field}}}
+       {\out{\linkingone{elliptic}{ECGeneric}}}\\
+   \spacing
+   \quad Create an elliptic curve object.\\
+   \spacing
+   % added document
+   % \quad \negok
+   % \spacing
+   % input, output document
+   \quad All elements of \param{coefficient} must be in \param{basefield}.\\
+   \param{basefield} must be \linkingone{rational}{RationalField} or \linkingone{finitefield}{FiniteField} or their subclasses. 
+  See also \linkingone{elliptic}{weierstrassform} for \param{coefficient}.
+%\begin{ex}
+%>>> module.hogefunction()
+%(0, 0)
+%>>>
+%\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

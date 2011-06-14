@@ -1,0 +1,71 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{arygcd -- binary-like gcd algorithms}\linkedzero{arygcd}
+%
+  \subsection{bit\_num -- the number of bits}\linkedone{arygcd}{bit\_num}
+   \func{bit\_num}{\hiki{a}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the number of bits for \param{a}\\
+   %\spacing
+   % added document
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or \linkingone{rational}{Integer}.\\
+%
+  \subsection{binarygcd -- gcd by the binary algorithm}\linkedone{arygcd}{binarygcd}
+   \func{binarygcd}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor (gcd) of two integers \param{a},\ \param{b} by the binary gcd algorithm.\\
+   %\spacing
+   % added document
+   %\spacing
+   % input, output document
+   %\quad \param{a},\ \param{b} must be int, long or \linkingone{rational}{Integer}.\\
+%
+  \subsection{arygcd\_i -- gcd over gauss-integer}\linkedone{arygcd}{arygcd\_i}
+   \func{arygcd\_i}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{(\out{integer},\ \out{integer})}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor (gcd) of two gauss-integers \param{a1}+\param{a2}$i$,\ \param{b1}+\param{b2}$i$, where ``$i$'' denotes the imaginary unit. \\
+   \spacing
+   % added document
+   If the output of arygcd\_i(\param{a1}, \param{a2}, \param{b1}, \param{b2}) is (\param{c1}, \param{c2}), then
+   the gcd of \param{a1}+\param{a2}$i$ and \ \param{b1}+\param{b2}$i$ equals \param{c1}+\param{c2}$i$.\\
+   \negok This function uses $(1+i)$-ary gcd algorithm, which is an generalization of the binary algorithm, proposed by A.Weilert\cite{Weilert}.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a},\ \param{b} must be int, long or \linkingone{rational}{Integer}.\\
+%
+  \subsection{arygcd\_w -- gcd over Eisenstein-integer}\linkedone{arygcd}{arygcd\_w}
+   \func{arygcd\_w}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{(\out{integer},\ \out{integer})}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor (gcd) of two Eisenstein-integers \param{a1}+\param{a2}$\omega$,\ \param{b1}+\param{b2}$\omega$, 
+   where ``$\omega$'' denotes a primitive cubic root of unity.\\
+   \spacing
+   % added document
+   If the output of arygcd\_w(\param{a1}, \param{a2}, \param{b1}, \param{b2}) is (\param{c1}, \param{c2}), then
+   the gcd of \param{a1}+\param{a2}$\omega$ and \ \param{b1}+\param{b2}$\omega$ equals \param{c1}+\param{c2}$\omega$.\\
+   \negok This functions uses $(1-\omega)$-ary gcd algorithm, which is an generalization of the binary algorithm, proposed by I.B. Damg{\aa}rd and G.S. Frandsen \cite{Dam-Frand}. \\
+   %\spacing
+   % input, output document
+   %\quad \param{a},\ \param{b} must be int, long or \linkingone{rational}{Integer}.\\
+%
+\begin{ex}
+>>> arygcd.binarygcd(32, 48)
+16
+>>> arygcd_i(1, 13, 13, 9)
+(-3, 1)
+>>> arygcd_w(2, 13, 33, 15)
+(4, 5)
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

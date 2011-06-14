@@ -1,0 +1,205 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{equation -- solving equations, congruences }\linkedzero{equation}
+
+ In the following descriptions, some type aliases are used.
+ \begin{description}
+   \item[poly\_list]\linkedone{equation}{poly\_list}:\\
+     \param{poly\_list} is a list {\tt [a0, a1, \ldots, an]}
+     representing a polynomial coefficients in ascending order, i.e.,
+     meaning \(a_0 + a_1 X + \cdots + a_n X^n\).  The type of each
+     {\tt ai} depends on each function (explained in their descriptions).
+
+   \item[integer]\linkedone{equation}{integer}:\\
+     \param{integer} is one of {\it int}, {\it long} or \linkingone{rational}{Integer}.
+   \item[complex]\linkedone{equation}{complex}:\\
+     \param{complex} includes all number types in the complex field:
+     \linkingone{equation}{integer}, {\it float}, {\it complex} of \python,
+     \linkingone{rational}{Rational} of \nzmath, etc.\\
+ \end{description}
+%
+  \subsection{e1 -- solve equation with degree 1}\linkedone{equation}{e1}
+   \func{e1}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{\linkingone{equation}{complex}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of linear equation $ax + b = 0$.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [b, a]} of \linkingone{equation}{complex}.\\
+%
+  \subsection{e1\_ZnZ -- solve congruent equation modulo n with degree 1}\linkedone{equation}{e1\_ZnZ}
+   \func{e1\_ZnZ}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{n}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of $ax + b  \equiv 0 \pmod{\param{n}}$.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [b, a]} of \linkingone{equation}{integer}.\\
+%
+  \subsection{e2 -- solve equation with degree 2}\linkedone{equation}{e2}
+   \func{e2}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{tuple}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of quadratic equation $ax^2 + bx + c = 0$.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [c, b, a]} of \linkingone{equation}{complex}. \\
+   The result tuple will contain exactly 2 roots, even in the case of
+   double root.\\
+%
+  \subsection{e2\_Fp -- solve congruent equation modulo p with degree 2}\linkedone{equation}{e2\_Fp}
+   \func{e2\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of $ax^2 + bx + c  \equiv 0 \pmod{\param{p}}$.\\
+   \spacing
+   % added document
+   \quad If the same values are returned, then the values are multiple roots. \\
+   \spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of 
+   \linkingone{equation}{integer}s {\tt [c, b, a]}.
+   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+%
+  \subsection{e3 -- solve equation with degree 3}\linkedone{equation}{e3}
+   \func{e3}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution of cubic equation $ax^3 + bx^2 + cx + d = 0$.\\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [d, c, b, a]} of \linkingone{equation}{complex}. \\
+   The result tuple will contain exactly 3 roots, even in the case of including
+   double roots.\\
+%
+  \subsection{e3\_Fp -- solve congruent equation modulo p with degree 3}\linkedone{equation}{e3\_Fp}
+   \func{e3\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solutions of $ax^3 + bx^2 + cx + d  \equiv 0 \pmod{\param{p}}$.\\
+   \spacing
+   % added document
+   \quad If the same values are returned, then the values are multiple roots. \\
+   \spacing
+   % input, output document
+   \quad \param{f} ought be a \linkingone{equation}{poly\_list} {\tt [d, c, b, a]} of \linkingone{equation}{integer}.
+   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+  \subsection{Newton -- solve equation using Newton's method}\linkedone{equation}{Newton}
+   \func{Newton}{%
+     \hiki{f}{\linkingone{equation}{poly\_list}},\ %
+     \hikiopt{initial}{\linkingone{equation}{complex}}{1},\ %
+     \hikiopt{repeat}{integer}{250}}{\out{complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return one of the approximated roots of $a_nx^n + \cdots + a_1x + a_0=0$.\\
+   \spacing
+   % added document
+   \quad If you want to obtain all roots, then use \linkingone{equation}{SimMethod} instead.\\
+   \negok If \param{initial} is a real number but there is no real roots, then this function returns meaningless values. \\
+   \spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
+   \linkingone{equation}{complex}.
+   \param{initial} is an initial approximation \linkingone{equation}{complex} number.
+   \param{repeat} is the number of steps to approximate a root.\\
+%
+  \subsection{SimMethod -- find all roots simultaneously}\linkedone{equation}{SimMethod}
+   \func{SimMethod}{%
+     \hiki{f}{\linkingone{equation}{poly\_list}},\ %
+     \hikiopt{NewtonInitial}{\linkingone{equation}{complex}}{1},\ %
+     \hikiopt{repeat}{integer}{250}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the approximated roots of $a_nx^n + \cdots + a_1x + a_0$.\\
+   \spacing
+   % added document
+   \quad \negok If the equation has multiple root, maybe raise some error. \\
+   \spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
+   \linkingone{equation}{complex}.\\
+   \param{NewtonInitial} and \param{repeat} will be passed to 
+   \linkingone{equation}{Newton} to obtain the first approximations.\\
+%
+  \subsection{root\_Fp --  solve congruent equation modulo p}\linkedone{equation}{root\_Fp}
+   \func{root\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return one of the roots of $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$. \\
+   \spacing
+   % added document
+   \quad If you want to obtain all roots, then use \linkingone{equation}{allroots\_Fp}.\\
+   \spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
+   \linkingone{equation}{integer}.
+   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+   \quad If there is no root at all, then nothing will be returned.\\
+%
+  \subsection{allroots\_Fp -- solve congruent equation modulo p}\linkedone{equation}{allroots\_Fp}
+   \func{allroots\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return all roots of $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$. \\
+   \spacing
+   % added document
+   %\spacing
+   % input, output document
+   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
+   \linkingone{equation}{integer}.
+   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+   \quad If there is no root at all, then an empty list will be returned.\\
+%
+\begin{ex}
+>>> equation.e1([1, 2])
+-0.5
+>>> equation.e1([1j, 2])
+-0.5j
+>>> equation.e1_ZnZ([3, 2], 5)
+1
+>>> equation.e2([-3, 1, 1])
+(1.3027756377319946, -2.3027756377319948)
+>>> equation.e2_Fp([-3, 1, 1], 13)
+[6, 6]
+>>> equation.e3([1, 1, 2, 1])
+[(-0.12256116687665397-0.74486176661974479j), 
+(-1.7548776662466921+1.8041124150158794e-16j), 
+(-0.12256116687665375+0.74486176661974468j)]
+>>> equation.e3_Fp([1, 1, 2, 1], 7)
+[3]
+>>> equation.Newton([-3, 2, 1, 1])
+0.84373427789806899
+>>> equation.Newton([-3, 2, 1, 1], 2)
+0.84373427789806899
+>>> equation.Newton([-3, 2, 1, 1], 2, 1000)
+0.84373427789806899
+>>> equation.SimMethod([-3, 2, 1, 1])
+[(0.84373427789806887+0j), 
+(-0.92186713894903438+1.6449263775999723j), 
+(-0.92186713894903438-1.6449263775999723j)]
+>>> equation.root_Fp([-3, 2, 1, 1], 7)
+>>> equation.root_Fp([-3, 2, 1, 1], 11)
+9L
+>>> equation.allroots_Fp([-3, 2, 1, 1], 7)
+[]
+>>> equation.allroots_Fp([-3, 2, 1, 1], 11)
+[9L]
+>>> equation.allroots_Fp([-3, 2, 1, 1], 13)
+[3L, 7L, 2L]
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

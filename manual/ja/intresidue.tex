@@ -1,0 +1,230 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{intresidue -- integer residue}\linkedzero{intresidue}
+intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{intresidue}{IntegerResidueClass}
+     \item \linkingone{intresidue}{IntegerResidueClassRing}
+   \end{itemize}
+   %\item {\bf Functions}
+   %  \begin{itemize}
+   %    \item \linkingone{rational}{innerProduct}
+   %  \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{IntegerResidueClass -- integer residue class}\linkedone{intresidue}{IntegerResidueClass}
+ 
+ This class is a subclass of \linkingone{ring}{CommutativeRingElement}.
+
+  \initialize
+  \func{IntegerResidueClass}
+       {\hiki{representative}{integer},\ 
+       \hiki{modulus}{integer}}
+       {\out{Integer}}\\
+  \spacing
+  % document of basic document
+  \quad Create a residue class of modulus with residue representative.
+  % added document
+  \spacing
+  % input, output document
+  \param{modulus} must be positive integer.
+  %\begin{at}
+  %  \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of Vector.
+  %\end{at}
+  \begin{op}
+    \verb|a+b| & addition.\\
+    \verb|a-b| & subtraction.\\
+    \verb|a*b| & multiplication.\\
+    \verb|a/b| & division.\\
+    \verb|a**i,pow(a,i)| & power.\\
+    \verb|-a| & negation.\\
+    \verb|+a| & make a copy.\\
+    \verb|a==b| & equality or not.\\
+    \verb|a!=b| & inequality or not.\\
+    \verb|repr(a)| & return representation string.\\
+    \verb|str(a)| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{intresidue}{IntegerResidueClassRing}{getRing}
+   \func{getRing}{\param{self}}{\out{IntegerResidueClassRing}}\\
+   \spacing
+   % document of basic document
+   \quad Return a ring to which it belongs.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{getResidue -- get residue}\linkedtwo{intresidue}{IntegerResidueClassRing}{getResidue}
+   \func{getResidue}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the value of residue.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{getModulus -- get modulus}\linkedtwo{intresidue}{IntegerResidueClassRing}{getModulus}
+   \func{getModulus}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the value of modulus.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{inverse -- inverse element}\linkedtwo{intresidue}{IntegerResidueClassRing}{inverse}
+   \func{inverse}{\param{self}}{\out{IntegerResidueClass}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse element if it is invertible. Otherwise raise ValueError.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{minimumAbsolute -- minimum absolute representative}\linkedtwo{intresidue}{IntegerResidueClassRing}{minimumAbsolute}
+   \func{minimumAbsolute}{\param{self}}{\out{\linkingone{rational}{Integer}}}\\
+   \spacing
+   % document of basic document
+   \quad  Return the minimum absolute representative integer of the residue class.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{minimumNonNegative -- smallest non-negative representative}\linkedtwo{intresidue}{IntegerResidueClassRing}{minimumNonNegative}
+   \func{minimumNonNegative}{\param{self}}{\out{\linkingone{rational}{Integer}}}\\
+   \spacing
+   % document of basic document
+   \quad Return the smallest non-negative representative element of the residue class.
+   %\spacing
+   % added document
+   \quad \negok this method has an alias, named toInteger.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{IntegerResidueClassRing -- ring of integer residue}\linkedone{intresidue}{IntegerResidueClassRing}
+ The class is for rings of integer residue classes.
+
+ This class is a subclass of \linkingone{ring}{CommutativeRing}.
+
+
+  \initialize
+  \func{IntegerResidueClassRing}{\hiki{modulus}{integer}}{\out{IntegerResidueClassRing}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of IntegerResidueClassRing. 
+  % added document
+  The argument \param{modulus} = $m$ specifies an ideal $m\mathbb{Z}$.
+  % \spacing
+  % input, output document
+  %See \linkingone{module}{point} for \param{point}.
+  \begin{at}
+    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ It expresses The additive unit 0. (read only)
+    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ It expresses The multiplicative unit 1. (read only)
+  \end{at}
+  \begin{op}
+  %  \verb|+| & Vector sum.\\
+  %  \verb|-| & Vector subtraction.\\
+  %  \verb|*| & Scalar multiplication.\\
+  %  \verb|//| & Scalar division.\\
+  %  \verb|-(unary)| & element negation.\\
+    \verb|R==A| & ring equality.\\
+  %  \verb|!=| & inequality or not.\\
+  %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+  %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+    \verb|card(R)| & return cardinality. See also \linkingzero{compatibility} module.\\
+    \verb|e in R| & return whether an element is in or not.\\
+    \verb|repr(R)| & return representation string.\\
+    \verb|str(R)| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{createElement -- create IntegerResidueClass object}\linkedtwo{intresidue}{IntegerResidueClassRing}{createElement}
+   \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return an IntegerResidueClass instance with \param{seed}. 
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \\
+%
+  \subsubsection{isfield -- field test}\linkedtwo{intresidue}{IntegerResidueClassRing}{isfield}
+   \func{isfield}{\param{self}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the modulus is prime, False if not. Since a finite domain is a field, other ring property tests are merely aliases of isfield; they are isdomain, iseuclidean, isnoetherian, ispid, isufd.
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{getInstance -- get instance of IntegerResidueClassRing}\linkedtwo{intresidue}{IntegerResidueClassRing}{getInstance}
+   \func{getInstance}{\param{cls},\ \hiki{modulus}{integer}}{\out{IntegerResidueClass}}\\
+   \spacing
+   % document of basic document
+   \quad Return an instance of the class of specified modulus. Since this is a class method, use it as:
+
+\verb|IntegerResidueClassRing.getInstance(3)|
+
+to create a $\mathbb{Z}/3\mathbb{Z}$ object, for example.
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

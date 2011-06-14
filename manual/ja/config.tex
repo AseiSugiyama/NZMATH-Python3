@@ -1,0 +1,143 @@
+\documentclass{report}
+
+\input{header_basic_util}
+
+%---------- start document ---------- %
+ \section{config -- setting features}\linkedzero{config}
+%
+All constants in the module can be set in user's config file.
+See the~\hyperlink{config.user}{User Settings} section for
+more detailed description.
+
+  \subsection{Default Settings}\linkedone{config}{default}
+
+  \subsubsection{Dependencies}\linkedone{config}{dependencies}
+
+  Some third party / platform dependent modules are possibly used, and
+  they are configurable.
+
+  \paragraph{HAVE\_MPMATH}\linkedone{config}{HAVE\_MPMATH}
+
+  {\tt mpmath} is a package providing multiprecision math.
+  See its \href{http://code.google.com/p/mpmath}{project page}.
+  This package is used in \linkingzero{ecpp} module.
+
+  \paragraph{HAVE\_SQLITE3}\linkedone{config}{HAVE\_SQLITE3}
+
+  {\tt sqlite3} is the default database module for \python,
+  but it need to be enabled at the build time.
+
+  \paragraph{HAVE\_NET}\linkedone{config}{HAVE_NET}
+
+  Some functions will connect to the Net.
+  Desktop machines are usually connected to the Net, but notebooks may
+  have connectivity only occasionally.
+
+  \subsubsection{Plug-ins}\linkedone{config}{Plug-ins}
+
+  \paragraph{PLUGIN\_MATH}\linkedone{config}{PLUGIN\_MATH}
+  \python standard float/complex types and \linklibrary{math}/\linklibrary{cmath} modules only
+  provide fixed precision (double precision), but sometimes
+  multiprecision floating point is needed.
+
+  \subsubsection{Assumptions}\linkedone{config}{assumptions}
+
+  Some conjectures are useful for assuring the validity of a faster
+  algorithm.
+
+  All assumptions are default to {\tt False}, but you can set them
+  {\tt True} if you believe them.
+
+  \paragraph{GRH}\linkedone{config}{GRH}
+
+  Generalized Riemann Hypothesis.  For example, primality test is
+  \(O((\log n)^2)\) if GRH is true while \(O((\log n)^6)\) or something
+  without it.
+
+  \subsubsection{Files}\linkedone{config}{files}
+
+  \paragraph{DATADIR}\linkedone{config}{DATADIR}
+
+  The directory where \nzmath (static) data files are stored. The
+  default will be {\tt os.path.join(sys.prefix, 'share', 'nzmath')} or
+  {\tt os.path.join(sys.prefix, 'Data', 'nzmath')} on Windows.
+
+  \subsection{Automatic Configuration}\linkedone{config}{auto}
+
+  The items above can be set automatically by testing the environment.
+
+  \subsubsection{Checks}\linkedone{config}{checks}
+
+  Here are check functions.
+
+  The constants accompanying the check functions which enable the check
+  if it is {\tt True}, can be overridden in user settings.
+
+  Both check functions and constants are not exposed.
+
+  \paragraph{check\_mpmath()}\linkedone{config}{check\_mpmath}
+
+  Check whether {\tt mpmath} is available or not.
+
+  constant: {\tt CHECK\_MPMATH}
+
+  \paragraph{check\_sqlite3()}\linkedone{config}{check\_sqlite3}
+
+  Check if {\tt sqlite3} is importable or not.
+  {\tt pysqlite2} may be a substitution.
+
+  constant: {\tt CHECK\_SQLITE3}
+
+  \paragraph{check\_net()}\linkedone{config}{check\_net}
+
+  Check the net connection by HTTP call.
+
+  constant: {\tt CHECK\_NET}
+
+  \paragraph{check\_plugin\_math()}\linkedone{config}{check\_plugin\_math}
+
+  Check which math plug-in is available.
+
+  constant: {\tt CHECK\_PLUGIN\_MATH}
+
+  \paragraph{default\_datadir()}\linkedone{config}{default\_datadir}
+
+  Return default value for {\tt DATADIR}.
+
+  This function selects the value from various candidates.
+  If this function is called with {\tt DATADIR} set, the value of (previously-defined) {\tt DATADIR} is the first candidate to be returned. Other
+  possibilities are, {\tt sys.prefix + 'Data/nzmath'} on Windows, or
+  {\tt sys.prefix + 'share/nzmath'} on other platforms.
+
+  Be careful that all the above paths do not exist, the function
+  returns {\tt None}.
+
+  constant: {\tt CHECK\_DATADIR}
+
+  \subsection{User Settings}\linkedone{config}{user}
+
+  The module try to load the user's config file named
+  {\it nzmathconf.py}. The search path is the following:
+  \begin{enumerate}
+  \item The directory which is specified by an environment variable
+    {\tt NZMATHCONFDIR}.
+  \item If the platform is Windows, then
+    \begin{enumerate}
+    \item If an environment variable {\tt APPDATA} is set, {\tt
+        APPDATA/nzmath}.
+    \item If, alternatively, an environment variable {\tt USERPROFILE}
+      is set,\linebreak {\tt USERPROFILE/Application~Data/nzmath}.
+    \end{enumerate}
+  \item On other platforms, if an environment variable {\tt HOME} is
+    set, {\tt HOME/.nzmath.d}.
+  \end{enumerate}
+
+  {\it nzmathconf.py} is a \python script. Users can set the constants
+  like {\tt HAVE\_MPMATH}, which will override the default settings. These
+  constants, except assumption ones, are automatically set, unless
+  constants accompanying the check functions are false (see 
+  the~\hyperlink{config.auto}{Automatic Configuration} section above).
+
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,139 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{factor.methods -- factoring methods}\linkedzero{factor.methods}
+
+It uses methods of \linkingzero{factor.find} module
+or some heavier methods of related modules to find a factor.
+Also, classes of \linkingzero{factor.util} module is used to track
+the factorization process.
+\param{options} are normally passed to the underlying function without modification.
+
+ This module uses the following type:
+ \begin{description}
+   \item[factorlist]\linkedone{factor.methods}{factorlist}:\\
+     \param{factorlist} is a list which consists of pairs {\tt (base, index)}.
+     Each pair means \(base^{index}\).
+     The product of these terms expresses prime factorization.
+ \end{description}
+%
+  \subsection{factor -- easiest way to factor}\linkedone{factor.methods}{factor}
+   \func{factor}
+   {%
+     \hiki{n}{integer},\ %
+     \hikiopt{method}{string}{'default'},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Factor the given positive integer \param{n}.\\
+   \spacing
+   \quad By default, use several methods internally.\\
+   \spacing
+   \quad The optional argument \param{method} can be:
+   \begin{itemize}
+   \item {\tt 'ecm'}: use elliptic curve method.
+   \item {\tt 'mpqs'}: use MPQS method.
+   \item {\tt 'pmom'}: use \(p-1\) method.
+   \item {\tt 'rhomethod'}: use Pollard's \(\rho\) method.
+   \item {\tt  'trialDivision'}: use trial division.
+   \end{itemize}
+   (\negok In fact, the initial letter of method name suffices to specify.)\\
+%
+  \subsection{ecm -- elliptic curve method}\linkedone{factor.methods}{ecm}
+  \func{ecm}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Factor the given integer \param{n} by elliptic curve method.\\
+   \spacing
+   % added document
+   (See \linkingone{factor.ecm}{ecm} of \linkingzero{factor.ecm} module.)\\
+%
+  \subsection{mpqs -- multi-polynomial quadratic sieve method}\linkedone{factor.methods}{mpqs}
+  \func{mpqs}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Factor the given integer \param{n} by multi-polynomial quadratic sieve method.\\
+   \spacing
+   % added document
+   (See \linkingone{factor.mpqs}{mpqsfind} of \linkingzero{factor.mpqs} module.)\\
+
+  \subsection{pmom -- $p-1$ method}\linkedone{factor.methods}{pmom}
+  \func{pmom}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Factor the given integer \param{n} by \(p-1\) method.\\
+   \spacing
+   % added document
+   \quad  The method may fail unless n has an appropriate factor for the method.\\
+   (See \linkingone{factor.find}{pmom} of \linkingzero{factor.find} module.)\\
+
+  \subsection{rhomethod -- $\rho$ method}\linkedone{factor.methods}{rhomethod}
+  \func{rhomethod}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Factor the given integer \param{n} by Pollard's \(\rho\) method.\\
+   \spacing
+   % added document
+   \quad The method is a probabilistic method, possibly fails in factorizations.\\
+   (See \linkingone{factor.find}{rhomethod} of \linkingzero{factor.find} module.)\\
+%
+  \subsection{trialDivision -- trial division}\linkedone{factor.methods}{trialDivision}
+  \func{trialDivision}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{\linkingone{factor.methods}{factorlist}}
+   }\\
+   \spacing
+   \quad Factor the given integer \param{n} by trial division.\\
+   \spacing
+   \quad \param{options} for the trial sequence can be either:
+   \begin{enumerate}
+   \item \param{start} and \param{stop} as range parameters.
+   \item \param{iterator} as an iterator of primes.
+   \item \param{eratosthenes} as an upper bound to make prime sequence by sieve.
+   \end{enumerate}
+   If none of the options above are given, the function divides \param{n} by primes from \(2\) to the floor of the square root of \param{n} until a non-trivial factor is found.\\
+   (See \linkingone{factor.find}{trialDivision} of \linkingzero{factor.find} module.)\\
+%
+\begin{ex}
+>>> factor.methods.factor(10001)
+[(73, 1), (137, 1)]
+>>> factor.methods.ecm(1000001)
+[(101L, 1), (9901L, 1)]
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,213 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{poly.multiutil -- utilities for multivariate polynomials}\linkedzero{poly.multiutil}
+ \begin{itemize}
+   \item {\bf Classes}
+     \begin{itemize}
+     \item \linkingone{poly.multiutil}{RingPolynomial}
+     \item \linkingone{poly.multiutil}{DomainPolynomial}
+     \item \linkingone{poly.multiutil}{UniqueFactorizationDomainPolynomial}
+     \item OrderProvider
+     \item NestProvider
+     \item PseudoDivisionProvider
+     \item GcdProvider
+     \item RingElementProvider
+     \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+     \item \linkingone{poly.multiutil}{polynomial}
+     \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{RingPolynomial}\linkedone{poly.multiutil}{RingPolynomial}
+ General polynomial with commutative ring coefficients.
+
+ \initialize
+   \func{RingPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    **\hiki{keywords}{dict}}{\out{RingPolynomial}}\\
+  \spacing
+  % document of basic document
+  \quad The \param{keywords} must include:
+  \begin{description}
+  \item[coeffring] a commutative ring ({\it CommutativeRing})
+  \item[number\_of\_variables] the number of variables({\it integer})
+  \item[order] term order ({\it TermOrder})
+  \end{description}
+  \quad This class inherits \linkingone{poly.multivar}{BasicPolynomial},
+  \linkingone{poly.multiutil}{OrderProvider},
+  \linkingone{poly.multiutil}{NestProvider} and
+  \linkingone{poly.multiutil}{RingElementProvider}.
+%
+  \begin{at}
+    \item[order]\linkedtwo{poly.multiutil}{RingPolynomial}{order}:\\
+      term order.
+  \end{at}
+%
+  \method
+  \subsubsection{getRing}\linkedtwo{poly.multiutil}{RingPolynomial}{getRing}
+  \func{getRing}{\param{self}}{\out{Ring}}\\
+  \spacing
+  \quad Return an object of a subclass of {\tt Ring},
+  to which the polynomial belongs.\\
+  (This method overrides the definition in RingElementProvider)
+
+  \subsubsection{getCoefficientRing}\linkedtwo{poly.multiutil}{RingPolynomial}{getCoefficientRing}
+  \func{getCoefficientRing}{\param{self}}{\out{Ring}}\\
+  \spacing
+  \quad Return an object of a subclass of {\tt Ring},
+  to which the all coefficients belong.\\
+  (This method overrides the definition in RingElementProvider)
+
+  \subsubsection{leading\_variable}\linkedtwo{poly.multiutil}{RingPolynomial}{leading\_variable}
+  \func{leading\_variable}{\param{self}}{\out{integer}}\\
+  \spacing
+  \quad Return the position of the leading variable
+  (the leading term among all total degree one terms).\\
+  The leading term varies with term orders, so does the result. The
+  term order can be specified via the attribute {\tt order}.\\
+  (This method is inherited from NestProvider)
+
+  \subsubsection{nest}\linkedtwo{poly.multiutil}{RingPolynomial}{nest}
+  \func{nest}{\param{self},\ \hiki{outer}{integer},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
+  \spacing
+  \quad Nest the polynomial by extracting \param{outer} variable
+  at the given position.\\
+  (This method is inherited from NestProvider)
+
+  \subsubsection{unnest}\linkedtwo{poly.multiutil}{RingPolynomial}{unnest}
+  \func{nest}{\param{self},\ \hiki{q}{polynomial},\ \hiki{outer}{integer},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
+  \spacing
+  \quad Unnest the nested polynomial \param{q} by inserting \param{outer}
+  variable at the given position.\\
+  (This method is inherited from NestProvider)
+
+ \subsection{DomainPolynomial}\linkedone{poly.multiutil}{DomainPolynomial}
+ Polynomial with domain coefficients.
+ \initialize
+   \func{DomainPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    **\hiki{keywords}{dict}}{\out{DomainPolynomial}}\\
+  \spacing
+  % document of basic document
+  \quad The \param{keywords} must include:
+  \begin{description}
+  \item[coeffring] a commutative ring ({\it CommutativeRing})
+  \item[number\_of\_variables] the number of variables({\it integer})
+  \item[order] term order ({\it TermOrder})
+  \end{description}
+  \quad This class inherits \linkingone{poly.multiutil}{RingPolynomial} and
+  \linkingone{poly.multiutil}{PseudoDivisionProvider}.
+%
+  \begin{op}
+    \verb+f / g+ & division (result is a rational function)\\
+  \end{op}
+  \method
+
+  \subsubsection{pseudo\_divmod}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_divmod}
+  \func{pseudo\_divmod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return \(Q\), \(R\) polynomials such that:
+  \[d^{deg(self) - deg(other) + 1} self = other \times Q + R\]
+  w.r.t. a fixed variable, where \(d\) is the leading coefficient of 
+  \param{other}.\\
+  \quad The leading coefficient varies with term orders,
+  so does the result. The term order can be specified via
+  the attribute {\tt order}.\\
+  (This method is inherited from PseudoDivisionProvider.)
+
+  \subsubsection{pseudo\_floordiv}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_floordiv}
+  \func{pseudo\_floordiv}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return a polynomial \(Q\) such that
+  \[d^{deg(self) - deg(other) + 1} self = other \times Q + R\]
+  w.r.t. a fixed variable, where \(d\) is the leading coefficient of 
+  \param{other} and \(R\) is a polynomial.\\
+
+  The leading coefficient varies with term orders, so does the result.
+  The term order can be specified via the attribute {\tt order}.\\
+  (This method is inherited from PseudoDivisionProvider.)
+
+  \subsubsection{pseudo\_mod}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_mod}
+  \func{pseudo\_mod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \quad Return a polynomial \(R\) such that
+  \[ d^{deg(self) - deg(other) + 1} \times self = other \times Q + R\]
+  where \(d\) is the leading coefficient of \param{other} and \(Q\)
+  a polynomial.\\
+  \quad The leading coefficient varies with term orders,
+  so does the result. The term order can be specified via
+  the attribute {\tt order}.\\
+  (This method is inherited from PseudoDivisionProvider.)
+
+  \subsubsection{exact\_division}\linkedtwo{poly.multiutil}{DomainPolynomial}{exact\_division}
+  \func{exact\_division}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \spacing
+  \quad Return quotient of exact division.\\
+  (This method is inherited from PseudoDivisionProvider.)
+
+ \subsection{UniqueFactorizationDomainPolynomial}\linkedone{poly.multiutil}{UniqueFactorizationDomainPolynomial}
+ Polynomial with unique factorization domain (UFD) coefficients.
+ \initialize
+   \func{UniqueFactorizationDomainPolynomial}{%
+    \hiki{coefficients}{terminit},\ %
+    **\hiki{keywords}{dict}}{\out{UniqueFactorizationDomainPolynomial}}\\
+  \spacing
+  % document of basic document
+  \quad The \param{keywords} must include:
+  \begin{description}
+  \item[coeffring] a commutative ring ({\it CommutativeRing})
+  \item[number\_of\_variables] the number of variables({\it integer})
+  \item[order] term order ({\it TermOrder})
+  \end{description}
+  \quad This class inherits \linkingone{poly.multiutil}{DomainPolynomial} and
+  \linkingone{poly.multiutil}{GcdProvider}.
+  \method
+  \subsubsection{gcd}\linkedtwo{poly.multiutil}{UniqueFactorizationDomainPolynomial}{gcd}
+  \func{gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
+  \quad Return gcd. The nested polynomials' gcd is used.\\
+  (This method is inherited from GcdProvider.)
+
+  \subsubsection{resultant}\linkedtwo{poly.multiutil}{UniqueFactorizationDomainPolynomial}{resultant}
+  \func{resultant}{\param{self},\ \hiki{other}{polynomial},\ \hiki{var}{integer}}{\out{polynomial}}\\
+  \quad Return resultant of two polynomials of the same ring,
+  with respect to the variable specified by its position \param{var}.
+
+% Functions
+ \subsection{polynomial -- factory function for various polynomials}\linkedone{poly.multiutil}{polynomial}
+  \func{polynomial}{\hiki{coefficients}{terminit},\ \hiki{coeffring}{CommutativeRing}, \hikiopt{number\_of\_variables}{integer}{None}}{\out{polynomial}}\\
+   \spacing
+   % document of basic document
+   \quad Return a polynomial.\\
+   \spacing
+   \quad \negok One can override the way to choose a polynomial type
+   from a coefficient ring, by setting:\\
+   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\
+   before the function call.
+
+ \subsection{prepare\_indeterminates -- simultaneous declarations of indeterminates}\linkedone{poly.multiutil}{prepare\_indeterminates}
+ \func{prepare\_indeterminates}{\hiki{names}{string},\ \hiki{ctx}{dict},\ %
+   \hikiopt{coeffring}{CoefficientRing}{None}}{\out{None}}\\
+ \spacing
+ \quad From space separated \param{names} of indeterminates, prepare variables
+ representing the indeterminates.  The result will be stored in \param{ctx}
+ dictionary.\\
+ \quad The variables should be prepared at once, otherwise wrong aliases of
+ variables may confuse you in later calculation.\\
+ \quad If an optional \param{coeffring} is not given, indeterminates will be
+ initialized as integer coefficient polynomials.\\
+
+\begin{ex}
+>>> prepare_indeterminates("X Y Z", globals())
+>>> Y
+UniqueFactorizationDomainPolynomial({(0, 1, 0): 1})
+\end{ex}
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

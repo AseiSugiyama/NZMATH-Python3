@@ -1,0 +1,163 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{poly.termorder -- term orders}\linkedzero{poly.termorder}
+ \begin{itemize}
+   \item {\bf Classes}
+     \begin{itemize}
+     \item \negok \linkingone{poly.termorder}{TermOrderInterface}
+     \item \negok \linkingone{poly.termorder}{UnivarTermOrder}
+     \item \linkingone{poly.termorder}{MultivarTermOrder}
+     \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{poly.termorder}{weight\_order}
+     \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{TermOrderInterface -- interface of term order}\linkedone{poly.termorder}{TermOrderInterface}
+ \initialize
+  \func{TermOrderInterface}{\hiki{comparator}{function}}{\out{TermOrderInterface}}\\
+  \spacing
+  \quad A term order is primarily a function, which determines
+  precedence between two terms (or monomials). By the precedence, all
+  terms are ordered.\\
+  \quad More precisely in terms of \python, a term order accepts two
+  tuples of integers, each of which represents power indices of the
+  term, and returns 0, 1 or -1 just like \linklibraryone{stdfuncs\#cmp}{cmp}
+  built-in function.\\
+  \quad A {\tt TermOrder} object provides not only the precedence function,
+  but also a method to format a string for a polynomial, to tell
+  degree, leading coefficients, etc.\\
+  \spacing
+  \quad \param{comparator} accepts two tuple-like objects of integers,
+  each of which represents power indices of the term, and returns 0, 1
+  or -1 just like {\tt cmp} built-in function.\\
+  \spacing
+  This class is abstract and should not be instantiated.
+  The methods below have to be overridden.
+  \method
+  \subsubsection{cmp}\linkedtwo{poly.termorder}{TermOrderInterface}{cmp}
+  \func{cmp}{\param{self},\ \hiki{left}{tuple},\ \hiki{right}{tuple}}{\out{integer}}\\
+  \spacing
+  \quad Compare two index tuples \param{left} and \param{right} and
+  determine precedence.
+
+  \subsubsection{format}\linkedtwo{poly.termorder}{TermOrderInterface}{format}
+  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ **\hiki{keywords}{dict}}{\out{string}}\\
+  \spacing
+  \quad Return the formatted string of the polynomial \param{polynom}.
+
+  \subsubsection{leading\_coefficient}\linkedtwo{poly.termorder}{TermOrderInterface}{leading\_coefficient}
+  \func{leading\_coefficient}{\param{self},\ \hiki{polynom}{polynomial}}{\out{CommutativeRingElement}}\\
+  \spacing
+  \quad Return the leading coefficient of polynomial \param{polynom}
+  with respect to the term order.
+
+  \subsubsection{leading\_term}\linkedtwo{poly.termorder}{TermOrderInterface}{leading\_term}
+  \func{leading\_term}{\param{self},\ \hiki{polynom}{polynomial}}{\out{tuple}}\\
+  \spacing
+  \quad Return the leading term of polynomial \param{polynom} as tuple
+  of {\tt (degree index, coefficient)} with respect to the term order.
+
+  \subsection{UnivarTermOrder -- term order for univariate polynomials}\linkedone{poly.termorder}{UnivarTermOrder}
+  \initialize
+  \func{UnivarTermOrder}{\hiki{comparator}{function}}{\out{UnivarTermOrder}}\\
+  \spacing
+  \quad There is one unique term order for univariate polynomials.
+  It's known as degree.\\
+  \quad One thing special to univariate case is that powers are not tuples
+  but bare integers.
+  According to the fact, method signatures also need be translated from
+  the definitions in TermOrderInterface, but its easy, and we omit
+  some explanations.\\
+  \spacing
+  \quad \param{comparator} can be any callable that accepts two integers
+  and returns 0, 1 or -1 just like {\tt cmp}, i.e. if they are equal
+  it returns 0, first one is greater 1, and otherwise -1.
+  Theoretically acceptable comparator is only the {\tt cmp} function.\\
+  \spacing
+  \quad This class inherits \linkingone{poly.termorder}{TermOrderInterface}.
+  \method
+  \subsubsection{format}\linkedtwo{poly.termorder}{UnivarTermOrder}{format}
+  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ %
+    \hikiopt{varname}{string}{'X'}, \hikiopt{reverse}{bool}{False}}{%
+    \out{string}}\\
+  \spacing
+  \quad Return the formatted string of the polynomial \param{polynom}.\\
+  \spacing
+  \begin{itemize}
+  \item \param{polynom} must be a univariate polynomial.
+  \item \param{varname} can be set to the name of the variable.
+  \item \param{reverse} can be either {\tt True} or {\tt False}.
+    If it's {\tt True}, terms appear in reverse (descending) order.
+  \end{itemize}
+
+  \subsubsection{degree}\linkedtwo{poly.termorder}{UnivarTermOrder}{degree}
+  \func{degree}{\param{self},\ \hiki{polynom}{polynomial}}{\out{integer}}\\
+  \spacing
+  \quad Return the degree of the polynomial \param{polynom}.
+
+  \subsubsection{tail\_degree}\linkedtwo{poly.termorder}{UnivarTermOrder}{tail\_degree}
+  \func{tail\_degree}{\param{self},\ \hiki{polynom}{polynomial}}{\out{integer}}\\
+  \spacing
+  \quad Return the least degree among all terms of the \param{polynom}.\\
+  \spacing
+  \quad This method is {\em experimental}.
+
+  \subsection{MultivarTermOrder -- term order for multivariate polynomials}\linkedone{poly.termorder}{MultivarTermOrder}
+  \initialize
+  \func{MultivarTermOrder}{\hiki{comparator}{function}}{\out{MultivarTermOrder}}\\
+  \spacing
+  \quad This class inherits \linkingone{poly.termorder}{TermOrderInterface}.
+
+  \method
+  \subsubsection{format}\linkedtwo{poly.termorder}{MultivarTermOrder}{format}
+  \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ %
+    \hikiopt{varname}{tuple}{None}, \hikiopt{reverse}{bool}{False},\ %
+    **\hiki{kwds}{dict}}{%
+    \out{string}}\\
+  \spacing
+  \quad Return the formatted string of the polynomial \param{polynom}.\\
+  \spacing
+  \quad  An additional argument \param{varnames} is required to name
+  variables.\\
+
+  \begin{itemize}
+  \item \param{polynom} is a multivariate polynomial.
+  \item \param{varnames} is the sequence of the variable names.
+  \item \param{reverse} can be either {\tt True} or {\tt False}.
+    If it's {\tt True}, terms appear in reverse (descending) order.
+  \end{itemize}
+
+  \subsection{weight\_order -- weight order}\linkedone{poly.termorder}{weight\_order}
+  \func{weight\_order}{\hiki{weight}{sequence},\ \hikiopt{tie\_breaker}{function}{None}}{\out{function}}\\
+  \spacing
+   % document of basic document
+   \quad Return a comparator of weight ordering by \param{weight}.\\
+   \spacing
+   \quad Let \(w\) denote the \param{weight}.
+   The weight ordering is defined for arguments \(x\) and \(y\) that
+   \(x < y\) if \(w\cdot x < w\cdot y\) or \(w\cdot x == w\cdot y\) and 
+   tie breaker tells \(x < y\).\\
+   \spacing
+   \quad The option \param{tie\_breaker} is another comparator that will
+   be used if dot products with the weight vector leaves arguments tie.
+   If the option is {\tt None} (default) and a tie breaker is indeed necessary
+   to order given arguments, a {\tt TypeError} is raised.
+
+\begin{ex}
+>>> w = termorder.MultivarTermOrder(
+...     termorder.weight_order((6, 3, 1), cmp))
+>>> w.cmp((1, 0, 0), (0, 1, 2))
+1
+\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

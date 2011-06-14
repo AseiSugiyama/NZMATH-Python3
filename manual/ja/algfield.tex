@@ -1,0 +1,602 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{algfield -- Algebraic Number Field}\linkedzero{algfield}
+ \begin{itemize}
+ \item {\bf Classes}
+   \begin{itemize}
+   \item \linkingone{algfield}{NumberField}
+   \item \linkingone{algfield}{BasicAlgNumber}
+   \item \linkingone{algfield}{MatAlgNumber}
+   \end{itemize}
+ \item {\bf Functions}
+   \begin{itemize}
+   \item \linkingone{algfield}{changetype}
+   \item \linkingone{algfield}{disc}
+   \item \linkingone{algfield}{fppoly}
+%   \item \linkingone{algfield}{prime$\_$decomp}
+   \item \linkingone{algfield}{qpoly}
+   \item \linkingone{algfield}{zpoly}
+   \end{itemize}
+ \end{itemize}
+%
+  \subsection{NumberField -- number field}\linkedone{algfield}{NumberField}
+  \initialize
+  \func{NumberField}{
+    \hiki{f}{list},\
+    \hikiopt{precompute}{bool}{False}
+  }{
+    \out{NumberField}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create NumberField object. \\
+  \spacing
+  % added document
+  \quad This field defined by the polynomial \param{f}. \\
+  The class inherits \linkingone{ring}{Field}.\\
+  \spacing
+  % input, output document
+  \quad \param{f}, which expresses coefficients of a polynomial, must be a list of integers.
+  \param{f} should be written in ascending order.  \param{f} must be monic irreducible over rational field. \\
+  If \param{precompute} is True, all solutions of \param{f} (by \linkingtwo{algfield}{NumberField}{getConj}), the discriminant of \param{f} (by \linkingtwo{algfield}{NumberField}{disc}), the signature (by \linkingtwo{algfield}{NumberField}{signature}) and the field discriminant of the basis of the integer ring (by \linkingtwo{algfield}{NumberField}{integer\_ring}) are precomputed.\\
+  \begin{at}
+    \item[degree]\linkedtwo{algfield}{NumberField}{degree}: The (absolute) extension degree of the number field.
+    \item[polynomial]\linkedtwo{algfield}{NumberField}{polynomial}: The defining polynomial of the number field.
+  \end{at}
+  \begin{op}
+    \verb|K * F| & Return the composite field of \param{K} and \param{F}. \\
+    \verb|K == F| & Check whether the equality of \param{K} and \param{F}. \\
+  \end{op}
+\begin{ex}
+>>> K = algfield.NumberField([-2, 0, 1])
+>>> L = algfield.NumberField([-3, 0, 1])
+>>> print K, L
+NumberField([-2, 0, 1]) NumberField([-3, 0, 1])
+>>> print K * L
+NumberField([1L, 0L, -10L, 0L, 1L])
+\end{ex}%Don't indent!
+\C
+  \method
+  \subsubsection{getConj -- roots of polynomial}\linkedtwo{algfield}{NumberField}{getConj}
+  \func{getConj}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return all (approximate) roots of the \param{self}.\linkingtwo{algfield}{NumberField}{polynomial}. \\
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+  \quad The output is a list of (approximate) complex number.\\
+%
+  \subsubsection{disc -- polynomial discriminant}\linkedtwo{algfield}{NumberField}{disc}
+  \func{disc}{\param{self}}{\out{integer}}\\
+  \spacing
+  % document of basic document
+  \quad Return the (polynomial) discriminant of the \param{self}.\linkingtwo{algfield}{NumberField}{polynomial}. \\
+  \spacing
+  % add document
+  \quad \negok The output is not discriminant of the number field itself. \\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{integer\_ring -- integer ring}\linkedtwo{algfield}{NumberField}{integer\_ring}
+  \func{integer\_ring}{\param{self}}{\out{\linkingone{matrix}{FieldSquareMatrix}}}\\
+  \spacing
+  % document of basic document
+  \quad Return a basis of the ring of integers of \param{self}. \\
+  \spacing
+  % add document
+  \quad \negok The function uses \linkingone{round2}{round2}.\\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{field\_discriminant -- discriminant}\linkedtwo{algfield}{NumberField}{field\_discriminant}
+  \func{field\_discriminant}{\param{self}}{\out{\linkingone{rational}{Rational}}}\\
+  \spacing
+  % document of basic document
+  \quad Return the field discriminant of \param{self}. \\
+  \spacing
+  % add document
+  \quad \negok The function uses \linkingone{round2}{round2}.\\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{basis -- standard basis}\linkedtwo{algfield}{NumberField}{basis}
+  \func{basis}{\param{self},\ \hiki{j}{integer}}{\out{\linkingone{algfield}{BasicAlgNumber}}}\\
+  \spacing
+  % document of basic document
+  \quad Return the \param{j}-th basis (over the rational field) of \param{self}. \\
+  \spacing
+  % add document
+  \quad Let $\theta$ be a solution of \param{self}.\linkingtwo{algfield}{NumberField}{polynomial}.
+  Then $\theta^j$ is a part of basis of \param{self}, so the method returns them.This basis is called ``standard basis'' or ``power basis''.\\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{signature -- signature}\linkedtwo{algfield}{NumberField}{signature}
+  \func{signature}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return the signature of \param{self}. \\
+  \spacing
+  % add document
+  \quad \negok The method uses Strum's algorithm.\\
+  %\spacing
+  % input, output document
+%
+  \subsubsection{POLRED -- polynomial reduction}\linkedtwo{algfield}{NumberField}{POLRED}
+  \func{POLRED}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return some polynomials defining subfields of \param{self}. \\
+  \spacing
+  % add document
+  \quad \negok ``POLRED'' means ``polynomial reduction''. 
+  That is, it finds polynomials whose coefficients are not so large.\\
+  %\spacing
+  % input, output document
+%  
+  \subsubsection{isIntBasis -- check integral basis}\linkedtwo{algfield}{NumberField}{isIntBasis}
+  \func{isIntBasis}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether power basis of \param{self} is also an integral basis of the field. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%  
+  \subsubsection{isGaloisField -- check Galois field}\linkedtwo{algfield}{NumberField}{isGaloisField}
+  \func{isGaloisField}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether the extension \param{self} over the rational field is Galois. \\
+  %\spacing
+  % add document
+  \quad \negok As it stands, it only checks the signature.\\
+  %\spacing
+  % input, output document
+%  
+  \subsubsection{isFieldElement -- check field element}\linkedtwo{algfield}{NumberField}{isFieldElement}
+  \func{isFieldElement}{\param{self},\ \hiki{A}{BasicAlgNumber/MatAlgNumber}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{A} is an element of the field \param{self}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+  %\quad The input parameter \param{A} must be an instance of \linkingone{algfield}{BasicAlgNumber} or \linkingone{algfield}{MatAlgNumber}. \\
+%  
+  \subsubsection{getCharacteristic -- characteristic}\linkedtwo{algfield}{NumberField}{getCharacteristic}
+  \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+  \spacing
+  % document of basic document
+  \quad Return the characteristic of \param{self}. \\
+  \spacing
+  % add document
+  \quad It returns always zero. The method is only for ensuring consistency.\\
+  %\spacing
+  % input, output document
+%  
+  \subsubsection{createElement -- create an element}\linkedtwo{algfield}{NumberField}{createElement}
+  \func{createElement}{\param{self},\ \hiki{seed}{list}}{\out{BasicAlgNumber/MatAlgNumber}}\\
+  \spacing
+  % document of basic document
+  \quad Return an element of \param{self} with \param{seed}. \\
+  \spacing
+  % add document
+  \quad \param{seed} determines the class of returned element.\\
+  For example, if \param{seed} forms as $[[e_1, e_2, \ldots, e_n],\ d]$, then it calls \linkingone{algfield}{BasicAlgNumber}.\\
+  %\spacing
+  % input, output document
+%  
+\begin{ex}
+>>> K = algfield.NumberField([3, 0, 1])
+>>> K.getConj()
+[-1.7320508075688774j, 1.7320508075688772j]
+>>> K.disc()
+-12L
+>>> print K.integer_ring()
+1/1 1/2
+0/1 1/2
+>>> K.field_discriminant()
+Rational(-3, 1)
+>>> K.basis(0), K.basis(1)
+BasicAlgNumber([[1, 0], 1], [3, 0, 1]) BasicAlgNumber([[0, 1], 1], [3, 0, 1])
+>>> K.signature()
+(0, 1)
+>>> K.POLRED()                     
+[IntegerPolynomial([(0, 4L), (1, -2L), (2, 1L)], IntegerRing()), 
+IntegerPolynomial([(0, -1L), (1, 1L)], IntegerRing())]
+>>> K.isIntBasis()                 
+False
+\end{ex}%Don't indent!
+\C
+  \subsection{BasicAlgNumber -- Algebraic Number Class by standard basis}\linkedone{algfield}{BasicAlgNumber}
+  \initialize
+  \func{BasicAlgNumber}{
+   \hiki{valuelist}{list},\
+   \hiki{polynomial}{list},\ 
+   \hikiopt{precompute}{bool}{False}
+  }{
+   \out{BasicAlgNumber}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create an algebraic number with standard (power) basis. \\
+  \spacing
+  % added document
+  %\spacing
+  % input, output document
+  \quad $\param{valuelist} = [[e_1, e_2, \ldots, e_n],\ d]$ means $\DS \frac{1}{d}  (e_1 + e_2 \theta + e_3 \theta^2 + \cdots + e_n \theta^{n-1})$,  where $\theta$ is a solution of the polynomial \param{polynomial}.
+  Note that $\langle \theta^i \rangle$ is a (standard) basis of the field defining by \param{polynomial} over the rational field.\\
+  \spacing
+  \quad $e_i,\ d$ must be integers.
+  Also, \param{polynomial} should be list of integers. \\
+  If \param{precompute} is True, all solutions of \param{polynomial} (by \linkingtwo{algfield}{BasicAlgNumber}{getConj}), approximation values of all conjugates of \param{self} (by \linkingtwo{algfield}{BasicAlgNumber}{getApprox}) and a polynomial which is a solution of \param{self} (by \linkingtwo{algfield}{BasicAlgNumber}{getCharPoly}) are precomputed. \\
+  \begin{at}
+    \item[value]\linkedtwo{algfield}{BasicAlgNumber}{value}: The list of numerators (the integer part) and the denominator of \param{self}.
+    \item[coeff]\linkedtwo{algfield}{BasicAlgNumber}{coeff}: The coefficients of numerators (the integer part) of \param{self}.
+    \item[denom]\linkedtwo{algfield}{BasicAlgNumber}{denom}: The denominator of the algebraic number for standard basis.
+    \item[degree]\linkedtwo{algfield}{BasicAlgNumber}{degree}: The degree of extension of the field over the rational field.
+    \item[polynomial]\linkedtwo{algfield}{BasicAlgNumber}{polynomial}: The defining polynomial of the field.
+    \item[field]\linkedtwo{algfield}{BasicAlgNumber}{field}: The number field in which \param{self} is.
+  \end{at}
+  \begin{op}
+    \verb|a + b| & Return the sum of \param{a} and \param{b}. \\
+    \verb|a - b| & Return the subtraction of \param{a} and \param{b}. \\
+    \verb| - a| & Return the negation of \param{a}. \\
+    \verb|a * b| & Return the product of \param{a} and \param{b}. \\ 
+    \verb|a ** k| & Return the \param{k}-th power of \param{a}. \\
+    \verb|a / b| & Return the quotient of \param{a} by \param{b}. \\
+  \end{op}
+\begin{ex}
+>>> a = algfield.BasicAlgNumber([[1, 1], 1], [-2, 0, 1])
+>>> b = algfield.BasicAlgNumber([[-1, 2], 1], [-2, 0, 1])
+>>> print a + b
+BasicAlgNumber([[0, 3], 1], [-2, 0, 1])
+>>> print a * b
+BasicAlgNumber([[3L, 1L], 1], [-2, 0, 1])
+>>> print a ** 3
+BasicAlgNumber([[7L, 5L], 1], [-2, 0, 1])
+>>> a // b
+BasicAlgNumber([[5L, 3L], 7L], [-2, 0, 1])
+\end{ex}%Don't indent!
+\C
+  \method
+  \subsubsection{inverse -- inverse}\linkedtwo{algfield}{BasicAlgNumber}{inverse}
+  \func{inverse}{\param{self}}{\out{BasicAlgNumber}}\\
+  \spacing
+  % document of basic document
+  \quad Return the inverse of \param{self}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{getConj -- roots of polynomial}\linkedtwo{algfield}{BasicAlgNumber}{getConj}
+  \func{getConj}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return all (approximate) roots of \param{self}.\linkingtwo{algfield}{BasicAlgNumber}{polynomial}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{getApprox -- approximate conjugates}\linkedtwo{algfield}{BasicAlgNumber}{getApprox}
+  \func{getApprox}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return all (approximate) conjugates of \param{self}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{getCharPoly -- characteristic polynomial}\linkedtwo{algfield}{BasicAlgNumber}{getCharPoly}
+  \func{getCharPoly}{\param{self}}{\out{list}}\\
+  \spacing
+  % document of basic document
+  \quad Return the characteristic polynomial of \param{self}. \\
+  \spacing
+  % add document
+  \quad \negok \param{self} is a solution of the characteristic polynomial.\\
+  \spacing
+  % input, output document
+  \quad The output is a list of integers. \\
+%
+  \subsubsection{getRing -- the field}\linkedtwo{algfield}{BasicAlgNumber}{getRing}
+  \func{getRing}{\param{self}}{\out{NumberField}}\\
+  \spacing
+  % document of basic document
+  \quad Return the field which \param{self} belongs to. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{trace -- trace}\linkedtwo{algfield}{BasicAlgNumber}{trace}
+  \func{trace}{\param{self}}{\out{Rational}}\\
+  \spacing
+  % document of basic document
+  \quad Return the trace of \param{self} in the \param{self}.\linkingtwo{algfield}{BasicAlgNumber}{field} over the rational field. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{norm -- norm}\linkedtwo{algfield}{BasicAlgNumber}{norm}
+  \func{norm}{\param{self}}{\out{Rational}}\\
+  \spacing
+  % document of basic document
+  \quad Return the norm of \param{self} in the \param{self}.\linkingtwo{algfield}{BasicAlgNumber}{field} over the rational field. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{isAlgInteger -- check (algebraic) integer}\linkedtwo{algfield}{BasicAlgNumber}{isAlgInteger}
+  \func{isAlgInteger}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{self} is an (algebraic) integer or not. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{ch\_matrix -- obtain MatAlgNumber object}\linkedtwo{algfield}{BasicAlgNumber}{ch\_matrix}
+  \func{ch\_matrix}{\param{self}}{\out{MatAlgNumber}}\\
+  \spacing
+  % document of basic document
+  \quad Return \linkingone{algfield}{MatAlgNumber} object corresponding to \param{self}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+\begin{ex}
+>>> a = algfield.BasicAlgNumber([[1, 1], 1], [-2, 0, 1])
+>>> a.inverse()
+BasicAlgNumber([[-1L, 1L], 1L], [-2, 0, 1])
+>>> a.getConj()
+[(1.4142135623730951+0j), (-1.4142135623730951+0j)]
+>>> a.getApprox()
+[(2.4142135623730949+0j), (-0.41421356237309515+0j)]
+>>> a.getCharPoly()
+[-1, -2, 1]
+>>> a.getRing()
+NumberField([-2, 0, 1])
+>>> a.trace(), a.norm()
+2 -1
+>>> a.isAlgInteger()
+True
+>>> a.ch_matrix()
+MatAlgNumber([1, 1]+[2, 1], [-2, 0, 1])
+\end{ex}%Don't indent!
+\C
+  \subsection{MatAlgNumber -- Algebraic Number Class by matrix representation}\linkedone{algfield}{MatAlgNumber}
+  \initialize
+  \func{MatAlgNumber}{
+    \hiki{coefficient}{list},\
+    \hiki{polynomial}{list}
+  }{
+    \out{MatAlgNumber}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create an algebraic number represented by a matrix. \\
+  \spacing
+  % added document
+  \quad ``matrix representation'' means the matrix $A$ over the rational field such that $(e_1 + e_2 \theta + e_3 \theta^2 + \cdots + e_n \theta^{n-1})(1,\theta,\ldots,\theta^{n-1})^T=A(1,\theta,\ldots,\theta^{n-1})^T$, where $^t$ expresses transpose operation.\\
+  \spacing
+  % input, output document
+  \quad $\param{coefficient} = [e_1, e_2, \ldots, e_n]$ means $e_1 + e_2 \theta + e_3 \theta^2 + \cdots + e_n \theta^{n-1}$,  where $\theta$ is a solution of the polynomial \param{polynomial}.
+  Note that $\langle \theta^i \rangle$ is a (standard) basis of the field defining by \param{polynomial} over the rational field.\\
+  \param{coefficient} must be a list of (not only integers) rational numbers.
+  \param{polynomial} must be a list of integers. \\
+  \begin{at}
+    \item[coeff]\linkedtwo{algfield}{MatAlgNumber}{coeff}: The coefficients of the algebraic number for standard basis.
+    \item[degree]\linkedtwo{algfield}{MatAlgNumber}{degree}: The degree of extension of the field over the rational field.
+    \item[matrix]\linkedtwo{algfield}{MatAlgNumber}{matrix}: The representation matrix of the algebraic number.
+    \item[polynomial]\linkedtwo{algfield}{MatAlgNumber}{polynomial}: The defining polynomial of the field.
+    \item[field]\linkedtwo{algfield}{MatAlgNumber}{field}: The number field in which \param{self} is.
+    
+  \end{at}
+  \begin{op}
+    \verb|a + b| & Return the sum of \param{a} and \param{b}. \\
+    \verb|a - b| & Return the subtraction of \param{a} and \param{b}. \\
+    \verb| - a| & Return the negation of \param{a}. \\
+    \verb|a * b| & Return the product of \param{a} and \param{b}. \\
+    \verb|a ** k| & Return the \param{k}-th power of \param{a}. \\
+    \verb|a / b| & Return the quotient of \param{a} by \param{b}. \\
+  \end{op}
+\begin{ex}
+>>> a = algfield.MatAlgNumber([1, 2], [-2, 0, 1])
+>>> b = algfield.MatAlgNumber([-2, 3], [-2, 0, 1])
+>>> print a + b
+MatAlgNumber([-1, 5]+[10, -1], [-2, 0, 1])
+>>> print a * b
+MatAlgNumber([10, -1]+[-2, 10], [-2, 0, 1])
+>>> print a ** 3
+MatAlgNumber([25L, 22L]+[44L, 25L], [-2, 0, 1])
+>>> print a / b
+MatAlgNumber([Rational(1, 1), Rational(1, 2)]+
+[Rational(1, 1), Rational(1, 1)], [-2, 0, 1])
+\end{ex}%Don't indent!
+\C
+  \method
+  \subsubsection{inverse -- inverse}\linkedtwo{algfield}{MatAlgNumber}{inverse}
+  \func{inverse}{\param{self}}{\out{MatAlgNumber}}\\
+  \spacing
+  % document of basic document
+  \quad Return the inverse of \param{self}. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{getRing -- the field}\linkedtwo{algfield}{MatAlgNumber}{getRing}
+  \func{getRing}{\param{self}}{\out{NumberField}}\\
+  \spacing
+  % document of basic document
+  \quad Return the field which \param{self} belongs to. \\  
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{trace -- trace}\linkedtwo{algfield}{MatAlgNumber}{trace}
+  \func{trace}{\param{self}}{\out{Rational}}\\
+  \spacing
+  % document of basic document
+  \quad Return the trace of \param{self} in the \param{self}.\linkingtwo{algfield}{MatAlgNumber}{field} over the rational field. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{norm -- norm}\linkedtwo{algfield}{MatAlgNumber}{norm}
+  \func{norm}{\param{self}}{\out{Rational}}\\
+  \spacing
+  % document of basic document
+  \quad Return the norm of \param{self} in the \param{self}.\linkingtwo{algfield}{MatAlgNumber}{field} over the rational field. \\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{ch\_basic -- obtain BasicAlgNumber object}\linkedtwo{algfield}{BasicAlgNumber}{ch\_basic}
+  \func{ch\_basic}{\param{self}}{\out{BasicAlgNumber}}\\
+  \spacing
+  % document of basic document
+  \quad Return \linkingone{algfield}{BasicAlgNumber} object corresponding to \param{self}.\\
+  %\spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+\begin{ex}
+>>> a = algfield.MatAlgNumber([1, -1, 1], [-3, 1, 2, 1])
+>>> a.inverse()
+MatAlgNumber([Rational(2, 3), Rational(4, 9), Rational(1, 9)]+
+[Rational(1, 3), Rational(5, 9), Rational(2, 9)]+
+[Rational(2, 3), Rational(1, 9), Rational(1, 9)], [-3, 1, 2, 1])
+>>> a.trace()
+Rational(7, 1)
+>>> a.norm()
+Rational(27, 1)
+>>> a.getRing()
+NumberField([-3, 1, 2, 1])
+>>> a.ch_basic()
+BasicAlgNumber([[1, -1, 1], 1], [-3, 1, 2, 1])
+\end{ex}
+\C
+  \subsection{changetype(function) -- obtain BasicAlgNumber object}\linkedone{algfield}{changetype}
+  \func{changetype}{
+    \hiki{a}{integer},\ 
+    \hikiopt{polynomial}{list}{[0, 1]}
+  }{
+    \out{BasicAlgNumber}
+  } \\
+  \func{changetype}{
+    \hiki{a}{Rational},\
+    \hikiopt{polynomial}{list}{[0, 1]}
+  }{
+    \out{BasicAlgNumber}
+  } \\
+  \func{changetype}{
+    \hiki{polynomial}{list}
+  }{
+    \out{BasicAlgNumber}
+  } \\
+  \spacing
+  % document of basic document
+%  \quad Return the value of that changed \param{a} into the element in the field defined by the polynomial \param{polynomial}. \\
+  \quad Return a BasicAlgNumber object corresponding to \param{a}.
+  \spacing
+  % add document
+  \spacing
+  \quad If \param{a} is an integer or an instance of \linkingone{rational}{Rational}, the function returns \linkingone{algfield}{BasicAlgNumber} object whose field is defined by \param{polynomial}.
+  If \param{a} is a list, the function returns \linkingone{algfield}{BasicAlgNumber} corresponding to a solution of \param{a}, considering \param{a} as the polynomial.\\
+  \spacing
+  % input, output document
+  The input parameter \param{a} must be an integer, \linkingone{rational}{Rational} or a list of integers.\\
+%
+  \subsection{disc(function) -- discriminant}\linkedone{algfield}{disc}
+  \func{disc}{\hiki{A}{list}}{\out{Rational}} \\
+  \spacing
+  % document of basic document
+  \quad Return the discriminant of $a_i$, where $\param{A} = [a_1, a_2, \cdots, a_n]$. \\
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+  \param{$a_i$} must be an instance of \linkingone{algfield}{BasicAlgNumber} or \linkingone{algfield}{MatAlgNumber} defined over a same number field.\\
+%
+  \subsection{fppoly(function) -- polynomial over finite prime field}\linkedone{algfield}{fppoly}
+  \func{fppoly}{\hiki{coeffs}{list},\ \hiki{p}{integer}}{\out{\linkingone{poly.uniutil}{FinitePrimeFieldPolynomial}}} \\
+  \spacing
+  % document of basic document
+  \quad Return the polynomial whose coefficients \param{coeffs} are defined over the prime field $\mathbb{Z}_\param{p}$. \\
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+  \quad \param{coeffs} should be a list of integers or of instances of \linkingone{finitefield}{FinitePrimeFieldElement}.\\
+%
+%  \subsection{prime\_decomp}\linkedone{algfield}{prime\_decomp}
+%  \func{prime\_decpomp}{\hiki{p}{integer}, \, \hiki{f}{list}}{\out{BasicAlgNumber}} \\
+%  \spacing
+  % document of basic document
+%  \quad Return prime decomposition of $(\param{p})$ over $\mathbb{Q}[x]/ (\param{f})$ . \\
+%  \spacing
+  % add document
+  % \spacing
+  % input, output document
+%  \quad If output is $((\alpha, \beta), (\alpha, \gamma))$, this means $\param{p} = (\alpha, \beta)(\alpha, \gamma)$. \\
+%
+  \subsection{qpoly(function) -- polynomial over rational field}\linkedone{algfield}{qpoly}
+  \func{qpoly}{\hiki{coeffs}{list}}{\out{\linkingone{poly.uniutil}{FieldPolynomial}}} \\
+  \spacing
+  % document of basic document
+  \quad Return the polynomial whose coefficients \param{coeffs} are defined over the rational field. \\
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+  \quad \param{coeffs} must be a list of integers or instances of \linkingone{rational}{Rational}.\\
+%
+  \subsection{zpoly(function) -- polynomial over integer ring}\linkedone{algfield}{zpoly}
+  \func{zpoly}{\hiki{coeffs}{list}}{\out{\linkingone{poly.uniutil}{IntegerPolynomial}}} \\
+  \spacing
+  % document of basic document
+  \quad Return the polynomial whose coefficients \param{coeffs} are defined over the (rational) integer ring.  \\
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+  \quad \param{coeffs} must be a list of integers.\\
+%
+\begin{ex}
+>>> a = algfield.changetype(3, [-2, 0, 1])
+>>> b = algfield.BasicAlgNumber([[1, 2], 1], [-2, 0, 1])
+>>> A = [a, b]
+>>> algfield.disc(A)
+288L
+\end{ex}%Don't indent!(indent causes an error.)
+%>>> algfield.prime_decomp(5, [-3, 1, 2, 1])
+%[((BasicAlgNumber([[5, 0, 0], 1], [-3, 1, 2, 1]), 
+%BasicAlgNumber([[3L, 1L, 0], 1], [-3, 1, 2, 1])), 1), 
+%((BasicAlgNumber([[5, 0, 0], 1], [-3, 1, 2, 1]), 
+%BasicAlgNumber([[2L, 1L, 0], 1], [-3, 1, 2, 1])), 2)]
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

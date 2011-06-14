@@ -1,0 +1,314 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{imaginary -- complex numbers and its functions}\linkedzero{imaginary}
+The module {\tt imaginary} provides complex numbers. The functions provided are mainly corresponding to the \linklibrary{cmath} standard module.
+
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{imaginary}{ComplexField}
+     \item \linkingone{imaginary}{Complex}
+     \item \negok \linkingone{imaginary}{ExponentialPowerSeries}
+     \item \negok \linkingone{imaginary}{AbsoluteError}
+     \item \negok \linkingone{imaginary}{RelativeError}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{imaginary}{exp}
+       \item \linkingone{imaginary}{expi}
+       \item \linkingone{imaginary}{log}
+       \item \linkingone{imaginary}{sin}
+       \item \linkingone{imaginary}{cos}
+       \item \linkingone{imaginary}{tan}
+       \item \linkingone{imaginary}{sinh}
+       \item \linkingone{imaginary}{cosh}
+       \item \linkingone{imaginary}{tanh}
+       \item \linkingone{imaginary}{atanh}
+       \item \linkingone{imaginary}{sqrt}
+
+     \end{itemize}
+ \end{itemize}
+
+This module also provides following constants:
+\begin{description}
+   \item[e]\linkedone{imaginary}{e}:\\
+     This constant is obsolete (Ver 1.1.0).
+   \item[pi]\linkedone{imaginary}{pi}:\\
+     This constant is obsolete (Ver 1.1.0).
+   \item[j]\linkedone{imaginary}{j}:\\
+     \param{j} is the imaginary unit.
+   \item[theComplexField]\linkedone{imaginary}{theComplexField}:\\
+     \param{theComplexField} is the instance of \linkingone{imaginary}{ComplexField}.
+ \end{description}
+
+\C
+ \subsection{ComplexField -- field of complex numbers}\linkedone{imaginary}{ComplexField}
+ The class is for the field of complex numbers. The class has the single instance \linkingone{imaginary}{theComplexField}.
+
+ This class is a subclass of \linkingone{ring}{Field}.
+
+  \initialize
+  \func{ComplexField}{}{\out{ComplexField}}\\
+  \spacing
+  % document of basic document
+  \quad Create an instance of ComplexField. 
+  % added document
+  You may not want to create an instance, since there is already \linkingone{imaginary}{theComplexField}.
+  % \spacing
+  % input, output document
+  %See \linkingone{module}{point} for \param{point}.
+  \begin{at}
+    \item[zero]\linkedtwo{imaginary}{ComplexField}{zero}:\\ It expresses The additive unit 0. (read only)
+    \item[one]\linkedtwo{imaginary}{ComplexField}{one}:\\ It expresses The multiplicative unit 1. (read only)
+  \end{at}
+  \begin{op}
+  %  \verb|+| & Vector sum.\\
+  %  \verb|-| & Vector subtraction.\\
+  %  \verb|*| & Scalar multiplication.\\
+  %  \verb|//| & Scalar division.\\
+  %  \verb|-(unary)| & element negation.\\
+  %  \verb|==| & equality or not.\\
+  %  \verb|!=| & inequality or not.\\
+  %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+  %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+  %  \verb|len| & return length of \linkingtwo{vector}{Vector}{compo}.\\
+    \verb|in| & membership test; return whether an element is in or not.\\
+    \verb|repr| & return representation string.\\
+    \verb|str| & return string.\\
+  \end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+   \subsubsection{createElement -- create Imaginary object}\linkedtwo{imaginary}{ComplexField}{createElement}
+    \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
+    \spacing
+    % document of basic document
+    \quad Return a Complex object with \param{seed}. 
+    \spacing
+    % added document
+    %\quad \negok Note that this function returns integer only.\\
+    \spacing
+    % input, output document
+    \quad \param{seed} must be complex or numbers having embedding to complex.\\
+%
+%
+  \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{imaginary}{ComplexField}{getCharacteristic}
+   \func{getCharacteristic}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic, zero.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{issubring -- subring test}\linkedtwo{imaginary}{ComplexField}{issubring}
+   \func{issubring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether another ring contains the complex field as subring.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%
+  \subsubsection{issuperring -- superring test}\linkedtwo{imaginary}{ComplexField}{issuperring}
+   \func{issuperring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
+   \spacing
+   % document of basic document
+   \quad Report whether the complex field contains another ring as subring.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad if \param{as\_column} is True, try to create column matrix.\\
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+
+\C
+ \subsection{Complex -- a complex number}\linkedone{imaginary}{Complex}
+ Complex is a class of complex number. Each instance has a coupled numbers; real and imaginary part of the number.
+
+ This class is a subclass of \linkingone{ring}{FieldElement}.
+
+ All implemented operators in this class are delegated to complex type. 
+  \initialize
+  \func{Complex}
+       {\hiki{re}{number}
+        \hikiopt{im}{number}{0}
+       }
+       {\out{Imaginary}}\\
+  \spacing
+  % document of basic document
+  \quad Create a complex number.
+  % added document
+  \spacing
+  % input, output document
+  \param{re} can be either real or complex number. If \param{re} is real and \param{im} is not given, then its imaginary part is zero. 
+  \begin{at}
+    \item[real]\linkedtwo{imaginary}{Complex}{real}:\\ It expresses the real part of complex number.
+    \item[imag]\linkedtwo{imaginary}{Complex}{imag}:\\ It expresses the imaginary part of complex number.
+  \end{at}
+  %\begin{op}
+  %  \verb|+| & Vector sum.\\
+  %  \verb|-| & Vector subtraction.\\
+  %  \verb|*| & Scalar multiplication.\\
+  %  \verb|//| & Scalar division.\\
+  %  \verb|-(unary)| & element negation.\\
+  %  \verb|==| & equality or not.\\
+  %  \verb|!=| & inequality or not.\\
+  %  \verb+V[i]+ & Return the coefficient of i-th element of Vector.\\
+  %  \verb+V[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+  %  \verb|len| & return length of \linkingtwo{vector}{Vector}{compo}.\\
+  %  \verb|repr| & return representation string.\\
+  %  \verb|str| & return string of \linkingtwo{vector}{Vector}{compo}.\\
+  %\end{op} 
+%\begin{ex}
+%>>> A = vector.Vector([1,2])
+%>>> A
+%Vector([1, 2])
+%>>> A.compo
+%[1, 2]
+%>>>
+%\end{ex}%Don't indent!
+  \method
+  \subsubsection{getRing -- get ring object}\linkedtwo{imaginary}{Complex}{getRing}
+   \func{getRing}{\param{self}}{\out{ComplexField}}\\
+   \spacing
+   % document of basic document
+   \quad Return the complex field instance.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+%
+  \subsubsection{arg -- argument of complex}\linkedtwo{imaginary}{Complex}{arg}
+   \func{arg}{\param{self}}{\out{radian}}\\
+   \spacing
+   % document of basic document
+   \quad Return the angle between the x-axis and the number in the Gaussian plane.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad \out{radian} must be Float.\\
+%
+  \subsubsection{conjugate -- complex conjugate}\linkedtwo{imaginary}{Complex}{conjugate}
+   \func{conjugate}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the complex conjugate of the number.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \out{radian} must be Float.\\
+%
+  \subsubsection{copy -- copied number}\linkedtwo{imaginary}{Complex}{copy}
+   \func{copy}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the copy of the number itself.
+   %\spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \out{radian} must be Float.\\
+%
+  \subsubsection{inverse -- complex inverse}\linkedtwo{imaginary}{Complex}{inverse}
+   \func{inverse}{\param{self}}{\out{Complex}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse of the number.
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad If the number is zero, ZeroDivisionError is raised.
+%
+%\begin{ex}
+%>>> A = module.HogeClass((1,2))
+%>>> A.hogemethod1(2)
+%(2, 4)
+%>>>
+%\end{ex}%Don't indent!
+\C
+ \subsection{ExponentialPowerSeries -- exponential power series}\linkedone{imaginary}{ExponentialPowerSeries}
+  This class is obsolete (Ver 1.1.0).
+
+ \subsection{AbsoluteError -- absolute error}\linkedone{imaginary}{AbsoluteError}
+  This class is obsolete (Ver 1.1.0).
+
+ \subsection{RelativeError -- relative error}\linkedone{imaginary}{RelativeError}
+  This class is obsolete (Ver 1.1.0).
+
+  \subsection{exp(function) -- exponential value}\linkedone{imaginary}{exp}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{expi(function) -- imaginary exponential value}\linkedone{imaginary}{expi}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{log(function) -- logarithm}\linkedone{imaginary}{log}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{sin(function) -- sine function}\linkedone{imaginary}{sin}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{cos(function) -- cosine function}\linkedone{imaginary}{cos}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{tan(function) -- tangent function}\linkedone{imaginary}{tan}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{sinh(function) -- hyperbolic sine function}\linkedone{imaginary}{sinh}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{cosh(function) -- hyperbolic cosine function}\linkedone{imaginary}{cosh}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{tanh(function) -- hyperbolic tangent function}\linkedone{imaginary}{tanh}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{atanh(function) -- hyperbolic arc tangent function}\linkedone{imaginary}{atanh}
+   This function is obsolete (Ver 1.1.0).
+
+  \subsection{sqrt(function) -- square root}\linkedone{imaginary}{sqrt}
+   This function is obsolete (Ver 1.1.0).
+
+%
+% \begin{ex}
+% >>> A = vector.Vector([1,2,3])
+% >>> B = vector.Vector([2,1,0])
+% >>> vector.innerProduct(A,B)
+% 4
+% >>>
+% \end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

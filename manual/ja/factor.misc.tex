@@ -1,0 +1,132 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{factor.misc -- miscellaneous functions related factoring}\linkedzero{factor.misc}
+ \begin{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{factor.misc}{allDivisors}
+       \item \linkingone{factor.misc}{primeDivisors}
+       \item \linkingone{factor.misc}{primePowerTest}
+       \item \linkingone{factor.misc}{squarePart}
+     \end{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{factor.misc}{FactoredInteger}
+   \end{itemize}
+ \end{itemize}
+%
+  \subsection{allDivisors -- all divisors}\linkedone{factor.misc}{allDivisors}
+   \func{allDivisors}{\hiki{n}{integer}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return all factors divide \param{n} as a list.\\
+%
+  \subsection{primeDivisors -- prime divisors}\linkedone{factor.misc}{primeDivisors}
+   \func{primeDivisors}{\hiki{n}{integer}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return all prime factors divide \param{n} as a list.\\
+%
+  \subsection{primePowerTest -- prime power test}\linkedone{factor.misc}{primePowerTest}
+   \func{primePowerTest}{\hiki{n}{integer}}{(\out{integer},\ \out{integer})}\\
+   \spacing
+   \quad Judge whether \param{n} is of the form \(p^k\) with a prime \(p\) or not.
+   If it is true, then {\tt (p, k)} will be returned, otherwise {\tt (n, 0)}.\\
+   \spacing
+   \quad This function is based on Algo. 1.7.5 in \cite{Cohen1}.\\
+%
+  \subsection{squarePart -- square part}\linkedone{factor.misc}{squarePart}
+   \func{squarePart}{\hiki{n}{integer}}{\out{integer}}\\
+   \spacing
+   \quad Return the largest integer whose square divides \param{n}.
+%
+\begin{ex}
+>>> factor.misc.allDivisors(1001)
+[1, 7, 11, 13L, 77, 91L, 143L, 1001L]
+>>> factor.misc.primeDivisors(100)
+[2, 5]
+>>> factor.misc.primePowerTest(128)
+(2, 7)
+>>> factor.misc.squarePart(128)
+8L
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+  \subsection{FactoredInteger -- integer with its factorization}\linkedone{factor.misc}{FactoredInteger}
+  \initialize
+   \func{FactoredInteger}{\hiki{integer}{integer},\ \hikiopt{factors}{dict}{\{\}}}{\out{FactoredInteger}}\\
+   \spacing
+   \quad Integer with its factorization information.\\
+   \spacing
+   \quad If \param{factors} is given, it is a dict of type
+   {\tt {prime:exponent}} and the product of \(prime^{exponent}\)
+   is equal to the \param{integer}. Otherwise, factorization is
+   carried out in initialization.\\
+
+   \func{from\_partial\_factorization}{\param{cls},\ \hiki{integer}{integer},\ \hiki{partial}{dict}}{\out{FactoredInteger}}\\
+   \spacing
+   \quad A class method to create a new \linkingone{factor.misc}{FactoredInteger} object from partial factorization information \param{partial}.\\
+   \begin{op}
+     \verb+F * G+ & multiplication (other operand can be an int)\\
+     \verb+F ** n+ & powering\\
+     \verb+F == G+ & equal\\
+     \verb+F != G+ & not equal\\
+     \verb+F % G+ & remainder (the result is an int)\\
+     \verb+F // G+ & same as \linkingtwo{factor.misc}{FactoredInteger}{exact\_division} method\\
+     \verb+str(F)+ & string\\
+     \verb+int(F)+ & convert to Python integer (forgetting factorization)\\
+   \end{op}
+   \method
+   \subsubsection{is\_divisible\_by}\linkedtwo{factor.misc}{FactoredInteger}{is\_divisible\_by}
+   \func{is\_divisible\_by}{\param{self},\ \hiki{other}{integer/\linkingone{factor.misc}{FactoredInteger}}}{\out{bool}}\\
+   \spacing
+   \quad Return True if \param{other} divides \param{self}.\\
+
+   \subsubsection{exact\_division}\linkedtwo{factor.misc}{FactoredInteger}{exact\_division}
+   \func{exact\_division}{\param{self},\ \hiki{other}{integer/\linkingone{factor.misc}{FactoredInteger}}}{\out{\linkingone{factor.misc}{FactoredInteger}}}\\
+   \spacing
+   \quad Divide by \param{other}. The \param{other} must divide \param{self}.\\
+
+   \subsubsection{divisors}\linkedtwo{factor.misc}{FactoredInteger}{divisors}
+   \func{divisors}{\param{self}}{\out{list}}\\
+   \spacing
+   \quad Return all divisors as a list.\\
+
+   \subsubsection{proper\_divisors}\linkedtwo{factor.misc}{FactoredInteger}{proper\_divisors}
+   \func{proper\_divisors}{\param{self}}{\out{list}}\\
+   \spacing
+   \quad Return all proper divisors (i.e. divisors excluding \(1\) and
+   \param{self}) as a list.\\
+
+   \subsubsection{prime\_divisors}\linkedtwo{factor.misc}{FactoredInteger}{prime\_divisors}
+   \func{prime\_divisors}{\param{self}}{\out{list}}\\
+   \spacing
+   \quad Return all prime divisors as a list.\\
+
+   \subsubsection{square\_part}\linkedtwo{factor.misc}{FactoredInteger}{square\_part}
+   \func{square\_part}{\param{self},\ \hikiopt{asfactored}{bool}{False}}{\out{integer/\linkingone{factor.misc}{FactoredInteger object}}}\\
+   \spacing
+   \quad Return the largest integer whose square divides \param{self}.\\
+   \spacing
+   \quad If an optional argument \param{asfactored} is true,
+   then the result is also a \linkingone{factor.misc}{FactoredInteger object}. (default is False)\\
+
+   \subsubsection{squarefree\_part}\linkedtwo{factor.misc}{FactoredInteger}{squarefree\_part}
+   \func{squarefree\_part}{\param{self},\ \hikiopt{asfactored}{bool}{False}}{\out{integer/\linkingone{factor.misc}{FactoredInteger object}}}\\
+   \spacing
+   \quad Return the largest squarefree integer which divides \param{self}.\\
+   \spacing
+   \quad If an optional argument \param{asfactored} is true,
+   then the result is also a \linkingone{factor.misc}{FactoredInteger object} object. (default is False)\\
+
+   \subsubsection{copy}\linkedtwo{factor.misc}{FactoredInteger}{copy}
+   \func{copy}{\param{self}}{\out{\linkingone{factor.misc}{FactoredInteger object}}}\\
+   \spacing
+   \quad Return a copy of the object.\\
+
+%---------- end document ---------- %
+
+\input{footer}

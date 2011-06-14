@@ -1,0 +1,678 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{module -- module/ideal with HNF}\linkedzero{module}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{module}{Submodule}
+     \item \linkingone{module}{Module}
+     \item \linkingone{module}{Ideal}
+     \item \linkingone{module}{Ideal\_with\_generator}
+   \end{itemize}
+ \end{itemize}
+
+\C
+
+ \subsection{Submodule -- submodule as matrix representation}\linkedone{module}{Submodule}
+ \initialize
+  \func{Submodule}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0},\ \hikiopt{ishnf}{True/False}{None}}{\out{Submodule}}\\
+  \spacing
+  % document of basic document
+  \quad Create a submodule with matrix representation.\\
+  \spacing
+  % added document
+  \quad Submodule is subclass of \linkingone{matrix}{RingMatrix}.\\
+  We assume that \param{coeff\_ring} is a PID (principal ideal domain).
+  Then, we have the HNF(hermite normal form) corresponding to a matrices.\\
+  \spacing
+  %
+  % input, output document
+  If \param{ishnf} is True, we assume that the input matrix is a HNF.
+  \begin{at}
+   \item[ishnf] If the matrix is a HNF, then \param{ishnf} should be True, otherwise False.
+  \end{at}
+  \method
+  \subsubsection{getGenerators -- generator of module}\linkedtwo{module}{Submodule}{getGenerators}
+   \func{getGenerators}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return a (current) generator of the module \param{self}.\\
+   \spacing
+   % added document
+   %
+   % input, output document
+   \quad Return the list of vectors consisting of a generator.\\
+ \subsubsection{isSubmodule -- Check whether submodule of self}\linkedtwo{module}{Submodule}{isSubmodule}
+   \func{isSubmodule}{\param{self},\ \hiki{other}{Submodule}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the submodule instance is a submodule of the \param{other}, or False otherwise.\\
+   \spacing
+   % added document
+   %
+   %\spacing
+   % input, output document
+   %
+   \subsubsection{isEqual -- Check whether self and other are same module}\linkedtwo{module}{Submodule}{isEqual}
+   \func{isEqual}{\param{self},\ \hiki{other}{Submodule}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the submodule instance is \param{other} as module, or False otherwise.\\.\\
+   \spacing
+   % added document
+   \quad You should use the method for equality test of module, not matrix.
+   For equality test of matrix simply, use \param{self}$==$\param{other}.
+   \\
+   % input, output document
+   %
+   \subsubsection{isContain -- Check whether other is in self}\linkedtwo{module}{Submodule}{isContains}
+   \func{isContains}{\param{self},\ \hiki{other}{vector.Vector}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Determine whether \param{other} is in \param{self} or not.\\.\\
+   \spacing
+   % added document
+   \quad If you want to represent \param{other} as linear combination with the HNF generator of \param{self}, use \linkingtwo{module}{Submodule}{represent\_element}.
+   \\
+   % input, output document
+   %
+   \subsubsection{toHNF - change to HNF}\linkedtwo{matrix}{Submodule}{toHNF}
+   \func{toHNF}{\param{self}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Rewrite \param{self} to HNF (hermite normal form), and set True to its \param{ishnf}.\\
+   \spacing
+   % added document
+   \quad Note that HNF do not always give basis of \param{self}.(i.e. HNF may be redundant.)\\
+   \spacing
+   % input, output document
+   %\quad
+  \subsubsection{sumOfSubmodules - sum as submodule}\linkedtwo{matrix}{Submodule}{sumOfSubmodules}
+   \func{sumOfSubmodules}{\param{self},\ \hiki{other}{Submodule}}{\out{Submodule}}\\
+   \spacing
+   % document of basic document
+   \quad Return a module which is sum of two subspaces.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{intersectionOfSubmodules - intersection as submodule}\linkedtwo{matrix}{Submodule}{intersectionOfSubmodules}
+   \func{intersectionOfSubmodules}{\param{self},\ \hiki{other}{Submodule}}{\out{Submodule}}\\
+   \spacing
+   % document of basic document
+   \quad Return a module which is intersection of two subspaces.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+ \subsubsection{represent\_element -- represent element as linear combination}\linkedtwo{module}{Submodule}{represent\_element}
+   \func{represent\_element}{\param{self},\ \hiki{other}{vector.Vector}}{\out{vector.Vector/False}}\\
+   \spacing
+   % document of basic document
+   \quad Represent \param{other} as a linear combination with HNF generators.\\
+   \spacing
+   % added document
+   \quad If \param{other} not in \param{self}, return False.
+   Note that this method calls \linkingtwo{module}{Submodule}{toHNF}.\\
+   \spacing
+   % input, output document
+   \quad The method returns coefficients as an instance of \linkingone{vector}{Vector}.
+ \subsubsection{linear\_combination -- compute linear combination}\linkedtwo{module}{Submodule}{linear\_combination}
+   \func{linear\_combination}{\param{self},\ \hiki{coeff}{list}}{\out{vector.Vector}}\\
+   \spacing
+   % document of basic document
+   \quad For given $\mathbf{Z}$-coefficients \param{coeff}, 
+         return a vector corresponding to a linear combination of (current) basis.\\
+   \spacing
+   % added document
+   %
+   % input, output document
+   \quad \param{coeff} must be a list of instances in \linkingone{ring}{RingElement} whose size is the column of \param{self}.
+\begin{ex}
+>>> A = module.Submodule(4, 3, [1,2,3]+[4,5,6]+[7,8,9]+[10,11,12])
+>>> A.toHNF()
+>>> print A
+9 1
+6 1
+3 1
+0 1
+>>> A.getGenerator
+[Vector([9L, 6L, 3L, 0L]), Vector([1L, 1L, 1L, 1L])]
+>>> V = vector.Vector([10,7,4,1])
+>>> A.represent_element(V)
+Vector([1L, 1L])
+>>> V == A.linear_combination([1,1])
+True
+>>> B = module.Submodule(4, 1, [1,2,3,4])
+>>> C = module.Submodule(4, 2, [2,-4]+[4,-3]+[6,-2]+[8,-1])
+>>> print B.intersectionOfSubmodules(C)
+2
+4
+6
+8
+\end{ex}%Don't indent!
+\C
+  \subsection{fromMatrix(class function) - create submodule}\linkedtwo{module}{Submodule}{fromMatrix}
+  \func{fromMatrix}{\param{cls},\ \hiki{mat}{RingMatrix},\ \hikiopt{ishnf}{True/False}{None}}{\out{Submodule}}\\
+   \spacing
+   % document of basic document
+   \quad Create a Submodule instance from a matrix instance \param{mat}, whose class can be any of subclasses of Matrix.\\
+   \spacing
+   % added document
+   \quad Please use this method if you want a Submodule instance for sure.\\
+   \spacing
+   % input, output document
+   %
+\C
+
+\subsection{Module - module over a number field}\linkedone{module}{Module}
+ \initialize
+  \func{Module}{\hiki{pair\_mat\_repr}{list/matrix},\ \hiki{number\_field}{algfield.NumberField},\ \hikiopt{base}{list/matrix.SquareMatrix}{None},\ \hikiopt{ishnf}{bool}{False}}{\out{Module}}\\
+  \spacing
+  % document of basic document
+  \quad Create a new module object over a number field.\\
+  \spacing
+  % added document
+  \quad A module is a finitely generated sub $\mathbf{Z}$-module. 
+  Note that we do not assume rank of a module is deg(number\_field).\\
+  We represent a module as generators respect to base module over $\mathbf{Z}[\theta]$, where $\theta$ is a solution of \param{number\_field}.\linkingtwo{algfield}{BasicAlgNumber}{polynomial}.\\
+  \spacing
+  % input, output document
+  \quad \param{pair\_mat\_repr} should be one of the following form:
+  \begin{itemize}
+  \item $[M,\ d]$, 
+   where $M$ is a list of integral tuple/vectors whose size is the degree of \param{number\_field} and
+         $d$ is a denominator.
+  \item $[M,\ d]$,
+   where $M$ is an integral matrix whose the number of row is the degree of \param{number\_field} and
+         $d$ is a denominator.
+  \item a rational matrix whose the number of row is the degree of \param{number\_field}.
+  \end{itemize}
+  Also, \param{base} should be one of the following form:
+  \begin{itemize}
+  \item \linkedone{module}{base} a list of rational tuple/vectors whose size is the degree of \param{number\_field}
+  \item a square non-singular rational matrix whose size is the degree of \param{number\_field}
+  \end{itemize}
+  The module is internally represented as $\frac{1}{d}M$ with respect to \linkingtwo{module}{Module}{base},
+  where $d$ is \linkingtwo{module}{Module}{denominator} and $M$ is \linkingtwo{module}{Module}{mat\_repr}.
+  If \param{ishnf} is True, we assume that \param{mat\_repr} is a HNF.\\
+  \begin{at}
+  \item[mat\_repr]\linkedtwo{module}{Module}{mat\_repr}: an instance of \linkingone{module}{Submodule} $M$ whose size is the degree of \param{number\_field}
+  \item[denominator]\linkedtwo{module}{Module}{denominator}: an integer $d$
+  \item[base]\linkedtwo{module}{Module}{base}: a square non-singular rational matrix whose size is the degree of \param{number\_field}
+  \item[number\_field]\linkedtwo{module}{Module}{number\_field}: the number field over which the module is defined
+  \end{at}
+\begin{op}
+    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not as module.\\
+    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
+    \verb|M+N| & Return the sum of \param{M} and \param{N} as module.\\
+    \verb+M*N+ & Return the product of \param{M} and \param{N} as the ideal computation. \\
+               &  \param{N} must be module or scalar(i.e. an element of \linkingtwo{module}{Module}{number\_field}).\\
+               &  If you want to compute the intersection of $M$ and $N$, see \linkingtwo{module}{Module}{intersect}.\\
+    \verb+M**c+ & Return \param{M} to \param{c} based on the ideal multiplication.\\
+    \verb+repr(M)+ & Return the repr string of the module \param{M}.\\
+    \verb+str(M)+ & Return the str string of the module \param{M}.\\
+  \end{op}
+\begin{ex}
+>>> F = algfield.NumberField([2,0,1])
+>>> M_1 = module.Module([matrix.RingMatrix(2,2,[1,0]+[0,2]), 2], F)
+>>> M_2 = module.Module([matrix.RingMatrix(2,2,[2,0]+[0,5]), 3], F)
+>>> print M_1
+([1, 0]+[0, 2], 2)
+ over
+([1L, 0L]+[0L, 1L], NumberField([2, 0, 1]))
+>>> print M_1 + M_2
+([1L, 0L]+[0L, 2L], 6)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)], 
+NumberField([2, 0, 1]))
+>>> print M_1 * 2
+([1L, 0L]+[0L, 2L], 1L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)], 
+NumberField([2, 0, 1]))
+>>> print M_1 * M_2
+([2L, 0L]+[0L, 1L], 6L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)], 
+NumberField([2, 0, 1]))
+>>> print M_1 ** 2
+([1L, 0L]+[0L, 2L], 4L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)], 
+NumberField([2, 0, 1]))
+\end{ex}%Don't indent!
+\method
+  \subsubsection{toHNF - change to hermite normal form(HNF)}\linkedtwo{module}{Module}{toHNF}
+   \func{toHNF}{\param{self}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Change \param{self}.\linkingtwo{module}{Module}{mat\_repr} to the hermite normal form(HNF).\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{copy - create copy}\linkedtwo{module}{Module}{copy}
+   \func{copy}{\param{self}}{\out{Module}}\\
+   \spacing
+   % document of basic document
+   \quad Create copy of \param{self}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{intersect - intersection}\linkedtwo{module}{Module}{intersect}
+   \func{intersect}{\param{self},\ \hiki{other}{Module}}{\out{Module}}\\
+   \spacing
+   % document of basic document
+   \quad Return intersection of \param{self} and \param{other}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad 
+  \subsubsection{issubmodule - Check submodule}\linkedtwo{module}{Module}{issubmodule}
+   \func{submodule}{\param{self},\ \hiki{other}{Module}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check \param{self} is submodule of \param{other}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad 
+  \subsubsection{issupermodule - Check supermodule}\linkedtwo{module}{Module}{issupermodule}
+   \func{supermodule}{\param{self},\ \hiki{other}{Module}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check \param{self} is supermodule of \param{other}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{represent\_element - Represent as linear combination}\linkedtwo{module}{Module}{represent\_element}
+   \func{represent\_element}{\param{self},\ \hiki{other}{algfield.BasicAlgNumber}}{\out{list/False}}\\
+   \spacing
+   % document of basic document
+   \quad Represent \param{other} as a linear combination with generators of \param{self}.
+        If \param{other} is not in \param{self}, return False.\\
+   \spacing
+   % added document
+   \quad Note that we do not assume \param{self}.\linkingtwo{module}{Module}{mat\_repr} is HNF.
+   \spacing
+   % input, output document
+   \quad
+   The output is a list of integers if \param{other} is in \param{self}.\\
+   \spacing
+  \subsubsection{change\_base\_module - Change base}\linkedtwo{module}{Module}{change\_base\_module}
+   \func{change\_base\_module}{\param{self},\ \hiki{other\_base}{list/matrix.RingSquareMatrix}}{\out{Module}}\\
+   \spacing
+   % document of basic document
+   \quad Return the module which is equal to \param{self} respect to \param{other\_base}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   \quad
+   \param{other\_base} follows the form \linkingone{module}{base}.\\
+  \subsubsection{index - size of module}\linkedtwo{module}{Module}{index}
+   \func{index}{\param{self}}{\out{rational.Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return the order of a residue group over \param{self}.\linkingtwo{module}{Module}{base}.
+         That is, return $[M:N]$ if $N \subset M$ or ${[N:M]}^{-1}$ if $M subset N$,
+         where $M$ is the module \param{self} and $N$ is the module corresponding to \param{self}.\linkingtwo{module}{Module}{base}. \\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{smallest\_rational - a $\mathbf{Z}$-generator in the rational field}\linkedtwo{module}{Module}{smallest\_rational}
+   \func{smallest\_rational}{\param{self}}{\out{rational.Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return the $\mathbf{Z}$-generator of intersection of the module \param{self} and the rational field.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+ \begin{ex}
+>>> F = algfield.NumberField([1,0,2])
+>>> M_1=module.Module([matrix.RingMatrix(2,2,[1,0]+[0,2]), 2], F)
+>>> M_2=module.Module([matrix.RingMatrix(2,2,[2,0]+[0,5]), 3], F)
+>>> print M_1.intersect(M_2)
+([2L, 0L]+[0L, 5L], 1L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)],
+ NumberField([2, 0, 1]))
+>>> M_1.represent_element( F.createElement( [[2,4], 1] ) )
+[4L, 4L]
+>>> print M_1.change_base_module( matrix.FieldSquareMatrix(2, 2, [1,0]+[0,1]) / 2 )
+([1L, 0L]+[0L, 2L], 1L)
+ over
+([Rational(1, 2), Rational(0, 1)]+[Rational(0, 1), Rational(1, 2)],
+ NumberField([2, 0, 1]))
+>>> M_2.index()
+Rational(10, 9)
+>>> M_2.smallest_rational()
+Rational(2, 3)
+\end{ex}%Don't indent!
+\C
+
+\subsection{Ideal - ideal over a number field}\linkedone{module}{Ideal}
+ \initialize
+  \func{Ideal}{\hiki{pair\_mat\_repr}{list/matrix},\ \hiki{number\_field}{algfield.NumberField},\ \hikiopt{base}{list/matrix.SquareMatrix}{None},\ \hikiopt{ishnf}{bool}{False}}{\out{Ideal}}\\
+  \spacing
+  % document of basic document
+  \quad Create a new ideal object over a number field.\\
+  \spacing
+  % added document
+  \quad Ideal is subclass of \linkingone{module}{Module}.\\
+  \spacing
+  % input, output document
+  \quad Refer to initialization of \linkingone{module}{Module}.\\
+%\begin{ex}
+%\end{ex}%Don't indent!
+\C
+\method
+
+\subsubsection{inverse -- inverse}\linkedtwo{module}{Ideal}{inverse}
+   \func{inverse}{\param{self}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse ideal of \param{self}.\\
+   \spacing
+   % added document
+   \quad This method calls \param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+ \subsubsection{issubideal -- Check subideal}\linkedtwo{module}{Ideal}{issubideal}
+   \func{issubideal}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Check \param{self} is subideal of \param{other}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{issuperideal -- Check superideal}\linkedtwo{module}{Ideal}{issuoerideal}
+   \func{issuperideal}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Check \param{self} is superideal of \param{other}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{gcd -- greatest common divisor}\linkedtwo{module}{Ideal}{gcd}
+   \func{gcd}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Return the greatest common divisor(gcd) of \param{self} and \param{other} as ideal.\\
+   \spacing
+   % added document
+   \quad This method simply executes \param{self}$+$\param{other}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{lcm -- least common multiplier}\linkedtwo{module}{Ideal}{lcm}
+   \func{lcm}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Return the least common multiplier(lcm) of \param{self} and \param{other} as ideal.\\
+   \spacing
+   % added document
+   \quad This method simply calls the method \linkingtwo{module}{Module}{intersect}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+%  \subsubsection{twoElementRepresentation -- Represent as two element}\linkedtwo{module}{Ideal}{twoElementRepresentation}
+%   \func{twoElementRepresentation}{\param{self}}{\out{Ideal}}\\
+%   \spacing
+%   % document of basic document
+%   \quad Return the ideal which is \param{self} represented with only two elements.\\
+%   \spacing
+%   % added document
+%   %\quad \\
+%   %\spacing
+%   % input, output document
+%   %\quad \\
+  \subsubsection{norm -- norm}\linkedtwo{module}{Ideal}{norm}
+   \func{norm}{\param{self}}{\out{rational.Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return the norm of \param{self}.\\
+   \spacing
+   % added document
+   \quad This method calls \param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{isIntegral -- Check integral}\linkedtwo{module}{Ideal}{isIntegral}
+   \func{isIntegral}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Determine whether \param{self} is an integral ideal or not.\\
+   \spacing
+   % added document
+   %\quad \\
+   %\spacing
+   % input, output document
+   %\quad \\
+%  \subsubsection{isPrime -- Check primality}\linkedtwo{module}{Ideal}{isPrime}
+%   \func{isPrime}{\param{self}}{\out{True/False}}\\
+%   \spacing
+%   % document of basic document
+%   \quad Determine whether \param{self} is a prime ideal or not.\\
+%   \spacing
+%   % added document
+%   %\quad \\
+%   %\spacing
+%   % input, output document
+%   %\quad \\
+\begin{ex}
+>>> M = module.Ideal([matrix.RingMatrix(2, 2, [1,0]+[0,2]), 2], F)
+>>> print M.inverse()
+([-2L, 0L]+[0L, 2L], 1L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)],
+ NumberField([2, 0, 1]))
+>>> print M * M.inverse()
+([1L, 0L]+[0L, 1L], 1L)
+ over
+([Rational(1, 1), Rational(0, 1)]+[Rational(0, 1), Rational(1, 1)],
+ NumberField([2, 0, 1]))
+>>> M.norm()
+Rational(1, 2)
+>>> M.isIntegral()
+False
+\end{ex}%Don't indent!
+\C
+
+\subsection{Ideal\_with\_generator - ideal with generator}\linkedone{module}{Ideal\_with\_generator}
+ \initialize
+  \func{Ideal\_with\_generator}{\hiki{generator}{list}}{\out{Ideal\_with\_generator}}\\
+  \spacing
+  % document of basic document
+  \quad Create a new ideal given as a generator.\\
+  \spacing
+  % added document
+  %\quad 
+  %\spacing
+  % input, output document
+  \quad \param{generator} is a list of instances in \linkingone{algfield}{BasicAlgNumber}, which represent generators, over a same number field.
+  \begin{at}
+  \item[generator]\linkedtwo{module}{Ideal\_with\_generator}{generator}: generators of the ideal
+  \item[number\_field]\linkedtwo{module}{Ideal\_with\_generator}{number\_field}: the number field over which generators are defined
+  \end{at}
+\begin{op}
+    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not as module.\\
+    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
+    \verb|M+N| & Return the sum of \param{M} and \param{N} as ideal with generators.\\
+    \verb+M*N+ & Return the product of \param{M} and \param{N} as ideal with generators. \\
+    \verb+M**c+ & Return \param{M} to \param{c} based on the ideal multiplication.\\
+    \verb+repr(M)+ & Return the repr string of the ideal \param{M}.\\
+    \verb+str(M)+ & Return the str string of the ideal \param{M}.\\
+  \end{op}
+\begin{ex}
+>>> F = algfield.NumberField([2,0,1])
+>>> M_1 = module.Ideal_with_generator([
+ F.createElement([[1,0], 2]), F.createElement([[0,1], 1]) 
+])
+>>> M_2 = module.Ideal_with_generator([
+ F.createElement([[2,0], 3]), F.createElement([[0,5], 3]) 
+])
+>>> print M_1
+[BasicAlgNumber([[1, 0], 2], [2, 0, 1]), BasicAlgNumber([[0, 1], 1], [2, 0, 1])]
+>>> print M_1 + M_2
+[BasicAlgNumber([[1, 0], 2], [2, 0, 1]), BasicAlgNumber([[0, 1], 1], [2, 0, 1]),
+ BasicAlgNumber([[2, 0], 3], [2, 0, 1]), BasicAlgNumber([[0, 5], 3], [2, 0, 1])]
+>>> print M_1 * M_2
+[BasicAlgNumber([[1L, 0L], 3L], [2, 0, 1]), BasicAlgNumber([[0L, 5L], 6], [2, 0, 1]), 
+BasicAlgNumber([[0L, 2L], 3], [2, 0, 1]), BasicAlgNumber([[-10L, 0L], 3], [2, 0, 1])]
+>>> print M_1 ** 2
+[BasicAlgNumber([[1L, 0L], 4], [2, 0, 1]), BasicAlgNumber([[0L, 1L], 2], [2, 0, 1]), 
+BasicAlgNumber([[0L, 1L], 2], [2, 0, 1]), BasicAlgNumber([[-2L, 0L], 1], [2, 0, 1])]
+\end{ex}%Don't indent!
+\method
+  \subsubsection{copy - create copy}\linkedtwo{module}{Ideal\_with\_generator}{copy}
+   \func{copy}{\param{self}}{\out{Ideal\_with\_generator}}\\
+   \spacing
+   % document of basic document
+   \quad Create copy of \param{self}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{to\_HNFRepresentation - change to ideal with HNF}\linkedtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}
+   \func{to\_HNFRepresentation}{\param{self}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Transform \param{self} to the corresponding ideal as HNF(hermite normal form) representation.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{twoElementRepresentation - Represent with two element}\linkedtwo{module}{Ideal\_with\_generator}{twoElementRepresentation}
+   \func{twoElementRepresentation}{\param{self}}{\out{Ideal\_with\_generator}}\\
+   \spacing
+   % document of basic document
+   \quad Transform \param{self} to the corresponding ideal as HNF(hermite normal form) representation.\\
+   \spacing
+   % added document
+   \quad  If \param{self} is not a prime ideal, this method is not efficient.\\
+   \spacing 
+   % input, output document
+   %\quad
+  \subsubsection{smallest\_rational - a $\mathbf{Z}$-generator in the rational field}\linkedtwo{module}{Ideal\_with\_generator}{smallest\_rational}
+   \func{smallest\_rational}{\param{self}}{\out{rational.Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return the $\mathbf{Z}$-generator of intersection of the module \param{self} and the rational field.\\
+   \spacing
+   % added document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % input, output document
+   %\quad
+\subsubsection{inverse -- inverse}\linkedtwo{module}{Ideal\_with\_generator}{inverse}
+   \func{inverse}{\param{self}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse ideal of \param{self}.\\
+   \spacing
+   % added document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{norm -- norm}\linkedtwo{module}{Ideal\_with\_generator}{norm}
+   \func{norm}{\param{self}}{\out{rational.Rational}}\\
+   \spacing
+   % document of basic document
+   \quad Return the norm of \param{self}.\\
+   \spacing
+   % added document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{intersect - intersection}\linkedtwo{module}{Ideal\_with\_generator}{intersection}
+   \func{intersect}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Return intersection of \param{self} and \param{other}.\\
+   \spacing
+   % added document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % input, output document
+   %\quad
+ \subsubsection{issubideal -- Check subideal}\linkedtwo{module}{Ideal\_with\_generator}{issubideal}
+   \func{issubideal}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad Check \param{self} is subideal of \param{other}.\\
+   \spacing
+   % added document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{issuperideal -- Check superideal}\linkedtwo{module}{Ideal\_with\_generator}{issuoerideal}
+   \func{issuperideal}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
+   \spacing
+   % document of basic document
+   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \\
+\begin{ex}
+>>> M = module.Ideal_with_generator([
+F.createElement([[2,0], 3]), F.createElement([[0,2], 3]), F.createElement([[1,0], 3])
+])
+>>> print M.to_HNFRepresentation()
+([2L, 0L, 0L, -4L, 1L, 0L]+[0L, 2L, 2L, 0L, 0L, 1L], 3L)
+ over
+([1L, 0L]+[0L, 1L], NumberField([2, 0, 1]))
+>>> print M.twoElementRepresentation()
+[BasicAlgNumber([[1L, 0], 3], [2, 0, 1]), BasicAlgNumber([[3, 2], 3], [2, 0, 1])]
+>>> M.norm()
+Rational(1, 9)
+\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,131 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{lattice -- Lattice}\linkedzero{lattice}
+ \begin{itemize}
+ \item {\bf Classes}
+   \begin{itemize}
+   \item \linkingone{lattice}{Lattice}
+   \item \linkingone{lattice}{LatticeElement}
+   \end{itemize}
+ \item {\bf Functions}
+   \begin{itemize}
+   \item \linkingone{lattice}{LLL}
+   \end{itemize}
+ \end{itemize}
+%
+  \subsection{Lattice -- lattice}\linkedone{lattice}{Lattice}
+  \initialize
+  \func{Lattice}{
+    \hiki{basis}{\linkingone{matrix}{RingSquareMatrix}},\ \hiki{quadraticForm}{\linkingone{matrix}{RingSquareMatrix}}}{\out{Lattice}}\\
+  \spacing
+  % document of basic document
+  \quad Create Lattice object. \\
+  \spacing
+  % added document
+  \spacing
+  % input, output document
+  \begin{at}
+    \item[basis]\linkedtwo{lattice}{Lattice}{basis}: The basis of \param{self} lattice.
+    \item[quadraticForm]\linkedtwo{lattice}{Lattice}{quadraticForm}: The quadratic form corresponding the inner product.
+  \end{at}
+\C
+  \method
+  \subsubsection{createElement -- create element}\linkedtwo{lattice}{Lattice}{createElement}
+  \func{createElement}{\param{self}, \ \hiki{compo}{list}}{\out{\linkingone{lattice}{LatticeElement}}}\\
+  \spacing
+  % document of basic document
+  \quad Create the element which has coefficients with given \param{compo}. \\
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{bilinearForm -- bilinear form}\linkedtwo{lattice}{Lattice}{bilinearForm}
+  \func{bilinearForm}{\param{self}, \ \hiki{v\_1}{\linkingone{vector}{Vector}}, \, \hiki{v\_2}{\linkingone{vector}{Vector}} }{\out{integer}}\\
+  \spacing
+  % document of basic document
+  \quad Return the inner product of $v_1$ and $v_2$ with \linkingtwo{lattice}{Lattice}{quadraticForm}. \\
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+%
+  \subsubsection{isCyclic -- Check whether cyclic lattice or not}\linkedtwo{lattice}{Lattice}{isCyclic}
+  \func{isCyclic}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{self} lattice is a cyclic lattice or not.
+  \spacing
+  % add document
+  \quad 
+  %\spacing
+  % input, output document
+%
+  \subsubsection{isIdeal -- Check whether ideal lattice or not}\linkedtwo{lattice}{Lattice}{isIdeal}
+  \func{isIdeal}{\param{self}}{\out{bool}}\\
+  \spacing
+  % document of basic document
+  \quad Check whether \param{self} lattice is an ideal lattice or not.
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+\C
+  \subsection{LatticeElement -- element of lattice}\linkedone{lattice}{LatticeElement}
+  \initialize
+  \func{LatticeElement}{
+   \hiki{lattice}{\linkingone{lattice}{Lattice}},\
+   \hiki{compo}{list},\ 
+  }{
+   \out{LatticeElement}
+  }\\
+  \spacing
+  % document of basic document
+  \quad Create LatticeElement object. \\
+  \spacing
+  % added document
+  \quad Elements of lattices are represented as linear combinations of basis.
+  The class inherits \linkingone{matrix}{Matrix}. Then, intances are regarded as $n \times 1$ matrix whose coefficients consist of \param{compo}, where $n$ is the dimension of lattice.\\
+  \spacing
+  % input, output document
+  \quad \param{lattice} is an instance of Lattice object. \param{compo} is coeeficients list of basis.
+  %
+  \begin{at}
+    \item[lattice]\linkedtwo{lattice}{LatticeElement}{lattice}: the lattice which includes \param{self}
+  \end{at}
+\C
+  \method
+  \subsubsection{getLattice -- Find lattice belongs to}\linkedtwo{lattice}{LatticeElement}{getLattice}
+  \func{getLattice}{\param{self}}{\out{\linkingone{lattice}{Lattice}}}\\
+  \spacing
+  % document of basic document
+  \quad Obtain the Lattice object corresponding to \param{self}. \\
+  \spacing
+  % add document
+  %\spacing
+  % input, output document
+\C
+  \subsection{LLL(function) -- LLL reduction}\linkedone{lattice}{LLL}
+  \func{LLL}{\hiki{M}{\linkingone{matrix}{RingSquareMatrix}}}{\out{\hiki{L}{RingSquareMatrix}}, \ \out{\hiki{T}{RingSquareMatrix}}} \\
+  \spacing
+  % document of basic document
+  \quad Return LLL-reduced basis for the given basis \param{M}. \\
+  \spacing
+  % add document
+  % \spacing
+  % input, output document
+  \quad The output \param{L} is the LLL-reduced basis. \param{T} is the transportation matrix from the original basis to the LLL-reduced basis.
+%
+\begin{ex}
+>>> M=mat.Matrix(3,3,[1,0,12,0,1,26,0,0,13]);
+>>> lat.LLL(M);
+([1, 0, 0]+[0, 1, 0]+[0, 0, 13], [1L, 0L, -12L]+[0L, 1L, -26L]+[0L, 0L, 1L])
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

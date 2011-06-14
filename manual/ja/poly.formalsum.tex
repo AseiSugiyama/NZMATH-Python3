@@ -1,0 +1,185 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{poly.formalsum -- formal sum}\linkedzero{poly.formalsum}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \negok\linkingone{poly.formalsum}{FormalSumContainerInterface}
+     \item \linkingone{poly.formalsum}{DictFormalSum}
+     \item \negok \linkingone{poly.formalsum}{ListFormalSum}
+   \end{itemize}
+ \end{itemize}
+
+ The formal sum is mathematically a finite sum of terms,
+ A term consists of two parts: coefficient and base.
+ All coefficients in a formal sum are in a common ring,
+ while bases are arbitrary.
+
+ Two formal sums can be added in the following way.
+ If there are terms with common base, they are fused into a new
+ term with the same base and coefficients added.
+
+ A coefficient can be looked up from the base. If the specified base
+ does not appear in the formal sum, it is null.
+
+ We refer the following for convenience as {\tt terminit}:
+ \begin{description}
+   \item[terminit]\linkedone{poly.formalsum}{terminit}:\\
+     \param{terminit} means one of types to initialize
+     \linklibraryone{stdtypes\#dict}{dict}.  The dictionary
+     constructed from it will be considered as a mapping from bases to
+     coefficients.
+ \end{description}
+
+\paragraph{Note for beginner}
+You may need USE only \linkingone{poly.formalsum}{DictFormalSum},
+but may have to READ the description of
+\linkingone{poly.formalsum}{FormalSumContainerInterface} because
+interface (all method names and their semantics) is defined in it.
+
+
+\C
+%
+ \subsection{FormalSumContainerInterface -- interface class}\linkedone{poly.formalsum}{FormalSumContainerInterface}
+  \initialize
+  Since the interface is an abstract class, do not instantiate.\\
+  \spacing
+  % document of basic document
+  \quad The interface defines what ``formal sum'' is.
+  Derived classes must provide the following operations and methods.
+  \begin{op}
+    \verb/f + g/ & addition\\
+    \verb/f - g/ & subtraction\\
+    \verb/-f/ & negation\\
+    \verb/+f/ & new copy\\
+    \verb/f * a, a * f/ & multiplication by scalar {\tt a}\\
+    \verb/f == g/ & equality\\
+    \verb/f != g/ & inequality\\
+    \verb/f[b]/	& get coefficient corresponding to a base {\tt b}\\
+    \verb/b in f/ & return whether base {\tt b} is in {\tt f}\\
+    \verb/len(f)/ & number of terms\\
+    \verb/hash(f)/ & hash\\
+  \end{op}
+  \method
+  \subsubsection{construct\_with\_default -- copy-constructing}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{construct\_with\_default}
+   \func{construct\_with\_default}{\param{self},\ %
+   \hiki{maindata}{terminit}}{\out{FormalSumContainerInterface}}\\
+   \spacing
+   % document of basic document
+   \quad Create a new formal sum of the same class with \param{self},
+   with given only the \param{maindata} and use copy of \param{self}'s
+   data if necessary.
+   \spacing
+%
+  \subsubsection{iterterms -- iterator of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterterms}
+   \func{iterterms}{\param{self}}{\out{iterator}}\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator of the terms.
+   \spacing
+   % input, output document
+   \quad Each term yielded from iterators is a {\tt (base, coefficient)} pair.\\
+ \subsubsection{itercoefficients -- iterator of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{itercoefficients}
+   \func{itercoefficients}{\param{self}}{\out{iterator}}\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator of the coefficients.\\
+ \subsubsection{iterbases -- iterator of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterbases}
+   \func{iterbases}{\param{self}}{\out{iterator}}\\
+   \spacing
+   % document of basic document
+   \quad Return an iterator of the bases.\\
+  \subsubsection{terms -- list of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms}
+   \func{terms}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return a list of the terms.
+   \spacing
+   % input, output document
+   \quad Each term in returned lists is a {\tt (base, coefficient)} pair.\\
+ \subsubsection{coefficients -- list of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients}
+   \func{coefficients}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return a list of the coefficients.\\
+ \subsubsection{bases -- list of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases}
+   \func{bases}{\param{self}}{\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return a list of the bases.\\
+  \subsubsection{terms\_map -- list of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms\_map}
+   \func{terms\_map}{\param{self},\ %
+   \hiki{func}{function}}{\out{FormalSumContainerInterface}}\\
+   \spacing
+   % document of basic document
+   \quad Map on terms, i.e., create a new formal sum by applying \param{func}
+   to each term.
+   \spacing
+   % input, output document
+   \quad \param{func} has to accept two parameters {\tt base} and
+   {\tt coefficient}, then return a new term pair.
+ \subsubsection{coefficients\_map -- list of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients\_map}
+   \func{coefficients\_map}{\param{self}}{\out{FormalSumContainerInterface}}\\
+   \spacing
+   % document of basic document
+   \quad Map on coefficients, i.e., create a new formal sum by applying
+   \param{func} to each coefficient.\\
+   \spacing
+   % input, output document
+   \quad \param{func} has to accept one parameters {\tt coefficient},
+   then return a new coefficient.
+ \subsubsection{bases\_map -- list of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases\_map}
+   \func{bases\_map}{\param{self}}{\out{FormalSumContainerInterface}}\\
+   \spacing
+   % document of basic document
+   \quad Map on bases, i.e., create a new formal sum by applying
+   \param{func} to each base.\\
+   \spacing
+   % input, output document
+   \quad \param{func} has to accept one parameters {\tt base},
+   then return a new base.
+
+\C
+%
+ \subsection{DictFormalSum -- formal sum implemented with dictionary}\linkedone{poly.formalsum}{DictFormalSum}
+  % document of basic document
+  A formal sum implementation based on {\tt dict}.\\
+  \spacing
+  % added document
+  \quad This class inherits \linkingone{poly.formalsum}{FormalSumContainerInterface}.
+  All methods of the interface are implemented.
+ \initialize
+  \func{DictFormalSum}{\hiki{args}{terminit},\ %
+  \hikiopt{defaultvalue}{RingElement}{None}}{\out{DictFormalSum}}\\
+  \spacing
+  \quad See \linkingone{poly.formalsum}{terminit} for type of \param{args}.
+  It makes a mapping from bases to coefficients.\\
+  \quad The optional argument \param{defaultvalue} is the default value for
+  {\tt \_\_getitem\_\_}, i.e., if there is no term with the specified
+  base, a look up attempt returns the \param{defaultvalue}.  It is,
+  thus, an element of the ring to which other coefficients belong.
+
+ \subsection{ListFormalSum -- formal sum implemented with list}\linkedone{poly.formalsum}{ListFormalSum}
+  % document of basic document
+   A formal sum implementation based on list.\\
+  \spacing
+  % added document
+  \quad This class inherits \linkingone{poly.formalsum}{FormalSumContainerInterface}.
+  All methods of the interface are implemented.
+ \initialize
+  \func{ListFormalSum}{\hiki{args}{terminit},\ %
+  \hikiopt{defaultvalue}{RingElement}{None}}{\out{ListFormalSum}}\\
+  \spacing
+  \quad See \linkingone{poly.formalsum}{terminit} for type of \param{args}.
+  It makes a mapping from bases to coefficients.\\
+  \quad The optional argument \param{defaultvalue} is the default value for
+  {\tt \_\_getitem\_\_}, i.e., if there is no term with the specified
+  base, a look up attempt returns the \param{defaultvalue}.  It is,
+  thus, an element of the ring to which other coefficients belong.
+\C
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,46 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{factor.mpqs -- MPQS}\linkedzero{factor.mpqs}
+  \subsection{mpqsfind}\linkedone{factor.mpqs}{mpqsfind}
+   \func{mpqsfind}{%
+     \hiki{n}{integer},\ %
+     \hikiopt{s}{integer}{0},\ %
+     \hikiopt{f}{integer}{0},\ %
+     \hikiopt{m}{integer}{0},\ %
+     \hikiopt{verbose}{bool}{False}
+   }{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Find a factor of \param{n} by MPQS(multiple-polynomial
+   quadratic sieve) method. \\
+   \spacing
+   \quad  MPQS is suitable for factorizing a large number.\\
+   \spacing
+   \quad Optional arguments \param{s} is the range of sieve,
+   \param{f} is the number of factor base, and \param{m} is multiplier.
+   If these are not specified, the function guesses them from \param{n}.\\
+%
+  \subsection{mpqs}\linkedone{factor.mpqs}{mpqs}
+   \func{mpqs}{%
+     \hiki{n}{integer},\ %
+     \hikiopt{s}{integer}{0},\ %
+     \hikiopt{f}{integer}{0},\ %
+     \hikiopt{m}{integer}{0}
+   }{\out{\linkingone{factor.methods}{factorlist}}}\\
+   \spacing
+   \quad Factorize n by MPQS method.\\
+   \spacing
+   \quad Optional arguments are same as \linkingone{factor.mpqs}{mpqsfind}.
+%
+  \subsection{eratosthenes}\linkedone{factor.mpqs}{eratosthenes}
+   \func{eratosthenes}{\hiki{n}{integer}}{\out{list}}\\
+   \spacing
+   \quad Enumerate the primes up to \param{n}.\\
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,123 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{ecpp -- elliptic curve primality proving}\linkedzero{ecpp}
+ The module consists of various functions for ECPP (Elliptic Curve Primality Proving).
+
+ It is probable that the module will be refactored in the future so that each function be placed in other modules.\\
+\spacing
+The ecpp module requires mpmath.
+
+%
+  \subsection{ecpp -- elliptic curve primality proving}\linkedone{ecpp}{ecpp}
+   \func{ecpp}
+   {%
+     \hiki{n}{integer},\ %
+     \hikiopt{era}{list}{None}%
+   }{%
+     \out{bool}%
+   }\\
+   \spacing
+   % document of basic document
+   \quad Do elliptic curve primality proving.\\
+   If \param{n} is prime, return True. Otherwise, return False. \\
+   \spacing
+   % added document
+   The optional argument \param{era} is a list of primes (which stands for ERAtosthenes).\\
+   \spacing
+   % input, output document
+   \quad \param{n} must be a big integer.\\
+%
+  \subsection{hilbert -- Hilbert class polynomial}\linkedone{ecpp}{hilbert}
+   \func{hilbert}
+        {\hiki{D}{integer}}
+        {\out{(integer, list)}}\\
+   \spacing
+   % document of basic document
+   \quad Return the class number and Hilbert class polynomial for the imaginary quadratic field with fundamental discriminant \param{D}.\\
+   \spacing
+   % added document
+   \quad Note that this function returns Hilbert class polynomial as a list of coefficients.\\
+   \negok If the option \linkingone{config}{HAVE\_NET} is set, at first try to retrieve the data in \url{http://hilbert-class-polynomial.appspot.com/}.
+   If the data corresponding to \param{D} is not found, compute the Hilbert polynomial directly (for a long time).\\
+   \spacing
+   % input, output document
+   \quad \param{D} must be negative int or long. See \cite{Pomerance}.\\
+%
+  \subsection{dedekind -- Dedekind's eta function}\linkedone{ecpp}{dedekind}
+   \func{dedekind}
+        {\hiki{tau}{mpmath.mpc}, \ 
+         \hiki{floatpre}{integer}}
+        {\out{mpmath.mpc}}\\
+   \spacing
+   % document of basic document
+   \quad Return Dedekind's eta of a complex number \param{tau} in the upper half-plane. \\
+   \spacing
+   % added document
+   \quad Additional argument \param{floatpre} specifies the precision of calculation in decimal digits.\\
+   \spacing
+   % input, output document
+   \quad \param{floatpre} must be positive int. \\
+%
+  \subsection{cmm -- CM method}\linkedone{ecpp}{cmm}
+   \func{cmm}
+        {\hiki{p}{integer}}
+        {\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return curve parameters for CM curves.\\
+   \spacing
+   % added document
+   \quad If you also need its orders, use \linkingone{ecpp}{cmm\_order}.\\
+   \spacing
+   % input, output document
+   \quad A prime \param{p} has to be odd.\\
+   This function returns a list of (\param{a},\ \param{b}), where (\param{a},\ \param{b}) expresses Weierstrass' short form.
+%
+  \subsection{cmm\_order -- CM method with order}\linkedone{ecpp}{cmm\_order}
+   \func{cmm\_order}
+        {\hiki{p}{integer}}
+        {\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return curve parameters for CM curves and its orders.\\
+   \spacing
+   % added document
+   \quad If you need only curves, use \linkingone{ecpp}{cmm}.\\
+   \spacing
+   % input, output document
+   \quad A prime \param{p} has to be odd.\\
+   This function returns a list of (\param{a},\ \param{b},\ \param{order}), where (\param{a},\ \param{b}) expresses Weierstrass' short form and \param{order} is the order of the curve.
+%
+  \subsection{cornacchiamodify -- Modified cornacchia algorithm}\linkedone{ecpp}{cornacchiamodify}
+   \func{cornacchiamodify}
+        {\hiki{d}{integer},\ 
+        \hiki{p}{integer}}
+        {\out{list}}\\
+   \spacing
+   % document of basic document
+   \quad Return the solution $(u,\ v)$ of $u^2 - \param{d}v^2 = 4\param{p}$.\\
+   \spacing
+   % added document
+   \quad If there is no solution, raise ValueError.\\
+   \spacing
+   % input, output document
+   \quad  \param{p} must be a prime integer and \param{d} be an integer such that $\param{d} < 0$ and $\param{d} > -4\param{p}$ with $\param{d} \equiv 0, 1 \pmod{4}$.\\
+%
+\begin{ex}
+>>> ecpp.ecpp(300000000000000000053)
+True
+>>> ecpp.hilbert(-7)
+(1, [3375, 1])
+>>> ecpp.cmm(7)
+[(6L, 3L), (5L, 4L)]
+>>> ecpp.cornacchiamodify(-7, 29)
+(2, 4)
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

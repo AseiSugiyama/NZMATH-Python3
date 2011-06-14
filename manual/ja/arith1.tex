@@ -1,0 +1,160 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+\section{arith1 - miscellaneous arithmetic functions}\linkedzero{arith1}
+
+\subsection{floorsqrt -- floor of square root}\linkedone{arith1}{floorsqrt}
+\func{floorsqrt}{\hiki{a}{integer/\linkingone{rational}{Rational}}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the floor of square root of \param{a}.\\ 
+%\spacing
+% input, output document
+%\quad Input number \param{a} must be integer or \linkingone{rational}{Rational}.\\
+%
+\subsection{floorpowerroot -- floor of some power root}\linkedone{arith1}{floorpowerroot}
+\func{floorpowerroot}{\hiki{n}{integer},\ \hiki{k}{integer}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the floor of \param{k}-th power root of \param{n}.\\
+%\spacing
+% input, output document
+%\quad Input numbers \param{n}, \param{k} must be integer.\\
+%
+\subsection{legendre - Legendre(Jacobi) Symbol}\linkedone{arith1}{legendre}
+\func{legendre}{\hiki{a}{integer},\ \hiki{m}{integer}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the Legendre symbol or Jacobi symbol $\DS \Bigl(\frac{\param{a}}{\param{m}}\Bigr)$.\\
+%\spacing
+% input, output document
+%\quad Input numbers \param{a}, \param{m} must be integer.\\
+%
+\subsection{modsqrt -- square root of $a$ for modulo $p$}\linkedone{arith1}{modsqrt}
+\func{modsqrt}{\hiki{a}{integer}, \, \hiki{p}{integer}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return one of the square roots of \param{a} for modulo \param{p} if square roots are exist, raise ValueError otherwise.\\
+\spacing
+% add document
+%\spacing
+% input, output ducument
+\quad \param{p} must be a prime number.\\
+%
+\subsection{expand -- p-adic expansion}\linkedone{arith1}{expand}
+\func{expand}{\hiki{n}{integer}, \, \hiki{m}{integer}}{\out{list}}\\
+\spacing
+% document of basi document
+\quad Return the \param{m}-adic expansion of \param{n}.\\ 
+\spacing
+% input, output document
+\quad \param{n} must be nonnegative integer. \param{m} must be greater than or equal to $2$.  The output is a list of expansion coefficients in ascending order.\\
+%
+\subsection{inverse -- inverse}\linkedone{arith1}{inverse}
+\func{inverse}{\hiki{x}{integer}, \, \hiki{p}{integer}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the inverse of \param{x} for modulo \param{p}.\\
+\spacing
+% input, output document
+\quad \param{p} must be a prime number.\\
+%
+\subsection{CRT -- Chinese Reminder Theorem}\linkedone{arith1}{CRT}
+\func{CRT}{\hiki{nlist}{list}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the uniquely determined integer satisfying all modulus
+conditions given by \param{nlist}.\\
+\spacing
+% input, output document
+\quad Input list \param{nlist} must be the list of a list consisting of two elements.
+The first element is remainder and the second is divisor.
+They must be integer.\\
+%
+\subsection{AGM -- Arithmetic Geometric Mean}\linkedone{arith1}{AGM}
+\func{AGM}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{float}}\\
+\spacing
+% document of basi document
+\quad Return the Arithmetic-Geometric Mean of \param{a} and \param{b}.\\
+%\spacing
+% input, output document
+%\quad Input number \param{a}, \param{b} must be integer.\\ 
+%
+%\subsection{\_BhaskaraBrouncker}\linkedone{arith1}{\_BhaskaraBrouncker}
+%\func{\_BhaskaraBrouncker}{\hiki{n}{integer}}{\out{integer}}\\
+%\spacing
+% document of basi document
+%\quad Return the minimum tuple \param{p}, \param{q} such that, $\param{p}^2
+%- \param{n} \param{q}^2 = \pm 1$.\\
+%\spacing
+% input, output document
+%\quad Input number \param{n} must be positive integer.
+%
+\subsection{vp -- $p$-adic valuation}\linkedone{arith1}{vp}
+\func{vp}{\hiki{n}{integer},\ \hiki{p}{integer}, \hikiopt{k}{integer}{0}}{\out{tuple}}\\
+\spacing
+% document of basi document
+\quad Return the \param{p}-adic valuation and other part for \param{n}.\\
+\spacing
+% added document
+\quad \negok If $k$ is given, return the valuation and the other part for $\param{n}p^\param{k}$.\\
+% input, output document
+%\quad Input number \param{n}, \param{p} must be int, long or \linkingone{rational}{Integer}.
+%
+\subsection{issquare - Is it square?}\linkedone{arith1}{issquare}
+\func{issquare}{\hiki{n}{integer}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Check if \param{n} is a square number and return square root
+of \param{n} if \param{n} is a square.
+Otherwise, return \(0\).\\
+%\spacing
+% input, output document
+%\quad Input number \param{n} must be int, long or \linkingone{rational}{Integer}.
+%
+\subsection{log -- integer part of logarithm}\linkedone{arith1}{log}
+\func{log}{\hiki{n}{integer},\ \hikiopt{base}{integer}{2}}{\out{integer}}\\
+\spacing
+% document of basi document
+\quad Return the integer part of logarithm of \param{n} to the \param{base}.\\
+%\spacing
+% input, output document
+%\quad Input number \param{n}, \param{base} must be int, long or \linkingone{rational}{Integer}.
+%
+\subsection{product -- product of some numbers}\linkedone{arith1}{product}
+\func{product}{\hiki{iterable}{list},\ \hikiopt{init}{integer/\linkingone{rational}{Rational}}{None}}{\out{\hiki{prod}{integer/\linkingone{rational}{Rational}}}}\\
+\spacing
+% document of basic document
+\quad Return the products of all elements in \param{iterable}. \\
+\spacing
+% added document
+\quad If \param{init} is given, the multiplication starts with \param{init} instead of the first element in \param{iterable}.\\
+\spacing
+% input, output document
+\quad Input list \param{iterable} must be list of numbers including integers, \linkingone{rational}{Rational} etc.\\
+The output \param{prod} may be determined by the type of elements of \param{iterable} and \param{init}.\\
+%
+\begin{ex}
+>>> arith1.AGM(10, 15)
+12.373402181181522
+>>> arith1.CRT([[2, 5],[3,7]])
+17
+>>> arith1.CRT([[2, 5], [3, 7], [5, 11]])
+192
+>>> arith1.expand(194, 5)
+[4, 3, 2, 1]
+>>> arith1.vp(54, 3)
+(3, 2)
+>>> arith1.product([1.5, 2, 2.5])
+7.5
+>>> arith1.product([3, 4], 2)
+24
+>>> arith1.product([])
+1
+\end{ex}
+
+%---------- end document ---------- %
+
+\input{footer}

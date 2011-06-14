@@ -1,0 +1,155 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{vector -- vector object and arithmetic}\linkedzero{vector}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{vector}{Vector}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{vector}{innerProduct}
+     \end{itemize}
+ \end{itemize}
+
+This module provides an exception class.
+\begin{description}
+  \item[VectorSizeError]:\ Report vector size is invalid. (Mainly for operations with two vectors.)
+\end{description}
+
+\C
+
+ \subsection{Vector -- vector class}\linkedone{vector}{Vector}
+ Vector is a class for vector.
+  \initialize
+  \func{Vector}{\hiki{compo}{list}}{\out{Vector}}\\
+  \spacing
+  % document of basic document
+  \quad Create Vector object from \param{compo}.
+  % added document
+  %
+  % \spacing
+  % input, output document
+  \param{compo} must be a list of elements which are an integer or an instance of \linkingone{ring}{RingElement}.
+  \begin{at}
+    \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of vector.
+  \end{at}
+  \begin{op}
+    \verb|u+v| & Vector sum.\\
+    \verb|u-v| & Vector subtraction.\\
+    \verb|A*v| & Multiplication vector with matrix\\
+    \verb|a*v| & or scalar multiplication.\\
+    \verb|v//a| & Scalar division.\\
+    \verb|v%n| & Reduction each elements of \linkingtwo{vector}{Vector}{compo}\\
+    \verb|-v| & element negation.\\
+    \verb|u==v| & equality.\\
+    \verb|u!=v| & inequality.\\
+    \verb+v[i]+ & Return the coefficient of i-th element of Vector.\\
+    \verb+v[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
+    \verb|len(v)| & return length of \linkingtwo{vector}{Vector}{compo}.\\
+    \verb|repr(v)| & return representation string.\\
+    \verb|str(v)| & return string of \linkingtwo{vector}{Vector}{compo}.\\
+  \end{op}
+  Note that index is 1-origin, which is standard in mathematics field.
+\begin{ex}
+>>> A = vector.Vector([1, 2])
+>>> A
+Vector([1, 2])
+>>> A.compo
+[1, 2]
+>>> B = vector.Vector([2, 1])
+>>> A + B
+Vector([3, 3])
+>>> A % 2
+Vector([1, 0])
+>>> A[1]
+1
+>>> len(B)
+2
+\end{ex}%Don't indent!
+  \method
+  \subsubsection{copy -- copy itself}\linkedtwo{vector}{Vector}{copy}
+   \func{copy}{\param{self}}{\out{Vector}}\\
+   \spacing
+   % document of basic document
+   \quad Return copy of \param{self}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{set -- set other compo}\linkedtwo{vector}{Vector}{set}
+   \func{set}{\param{self},\ \hiki{compo}{list}}{(None)}\\
+   \spacing
+   % document of basic document
+   \quad Substitute \linkingtwo{vector}{Vector}{compo} with \param{compo}.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{indexOfNoneZero -- first non-zero coordinate}\linkedtwo{vector}{Vector}{indexOfNoneZero}
+   \func{indexOfNoneZero}{\param{self}}{integer}\\
+   \spacing
+   % document of basic document
+   \quad Return the first index of non-zero element of \param{self}.\linkingtwo{vector}{Vector}{compo}.\\
+   \spacing
+   % added document
+   \quad \negok Raise ValueError if all elements of \linkingtwo{vector}{Vector}{compo} are zero.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{toMatrix -- convert to Matrix object}\linkedtwo{vector}{Vector}{toMatrix}
+   \func{toMatrix}{\param{self},\ \hikiopt{as\_column}{bool}{False}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return \linkingone{matrix}{Matrix} object using \linkingone{matrix}{createMatrix} function.\\
+   \spacing
+   % added document
+   %\quad \negok Note that this function returns integer only.\\
+   %\spacing
+   % input, output document
+   \quad If \param{as\_column} is True, create the column matrix with \param{self}.
+   Otherwise, create the row matrix.\\
+\begin{ex}
+>>> A = vector.Vector([0, 4, 5])
+>>> A.indexOfNoneZero()
+2
+>>> print A.toMatrix()
+0 4 5
+>>> print A.toMatrix()
+0
+4
+5
+\end{ex}%Don't indent!
+\C
+  \subsection{innerProduct(function) -- inner product}\linkedone{vector}{innerProduct}
+  \func{innerProduct}{\hiki{bra}{Vector}, \ \hiki{ket}{Vector}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inner product of \param{bra} and \param{ket}.\\
+   \spacing
+   % added document
+   \quad The function supports Hermitian inner product for elements in the complex number field.\\
+   \spacing
+   % input, output document
+   \quad \negok Note that the returned value depends on type of elements.\\
+\begin{ex}
+>>> A = vector.Vector([1, 2, 3])
+>>> B = vector.Vector([2, 1, 0])
+>>> vector.innerProduct(A, B)
+4
+>>> C = vector.Vector([1+1j, 2+2j, 3+3j])
+>>> vector.innerProduct(C, C)
+(28+0j)
+\end{ex}%Don't indent!
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

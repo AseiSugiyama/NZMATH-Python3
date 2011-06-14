@@ -1,0 +1,94 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{factor.find -- find a factor}\linkedzero{factor.find}
+%
+\quad All methods in this module return one of a factor of given integer.
+If it failes to find a non-trivial factor, it returns \(1\).
+Note that \(1\) is a factor anyway.
+
+\param{verbose} boolean flag can be specified for verbose reports.
+To receive these messages, you have to prepare a logger (see \linklibrary{logging}).
+
+  \subsection{trialDivision -- trial division}\linkedone{factor.find}{trialDivision}
+   \func{trialDivision}
+   {%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a factor of \param{n} by trial divisions.\\
+   \spacing
+   % input, output document
+   \quad \param{options} can be either one of the following:
+   \begin{enumerate}
+   \item \param{start} and \param{stop} as range parameters.
+         In addition to these, \param{step} is also available.
+   \item \param{iterator} as an iterator of primes.
+   \end{enumerate}
+   If \param{options} is not given, the function divides \param{n} by primes from \(2\) to the floor of the square root of \param{n} until a non-trivial factor is found.\\
+   \quad \param{verbose} boolean flag can be specified for verbose reports.\\
+%
+  \subsection{pmom -- $p-1$ method}\linkedone{factor.find}{pmom}
+   \func{pmom}{%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a factor of \param{n} by the \(p-1\) method.\\
+   \spacing
+   % added document
+   \quad The function tries to find a non-trivial factor of \param{n}
+   using Algorithm 8.8.2 (\(p-1\) first stage) of \cite{Cohen1}.
+   In the case of \(n = 2^{i}\), the function will not terminate.
+   Due to the nature of the method, the method may return the
+   trivial factor only.\\
+   \spacing
+   % input, output document
+   \quad \param{verbose} Boolean flag can be specified for verbose reports,
+   though it is not so verbose indeed.\\
+%
+   \subsection{rhomethod -- $\rho$ method}\linkedone{factor.find}{rhomethod}
+   \func{rhomethod}{%
+     \hiki{n}{integer},\ %
+     **\param{options}
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a factor of \param{n} by Pollard's \(\rho\) method.\\
+   \spacing
+   % added document
+   The implementation refers the explanation in \cite{Pomerance}.
+   Due to the nature of the method, a factorization may return the
+   trivial factor only.\\
+   \spacing
+   % input, output document
+   \quad \param{verbose} Boolean flag can be specified for verbose reports.\\
+\begin{ex}
+>>> factor.find.trialDivision(1001)
+7
+>>> factor.find.trialDivision(1001, start=10, stop=32)
+11
+>>> factor.find.pmom(1001)
+91
+>>> import logging
+>>> logging.basicConfig()
+>>> factor.find.rhomethod(1001, verbose=True)
+INFO:nzmath.factor.find:887 748
+13
+\end{ex}%Don't indent!(indent causes an error.)
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

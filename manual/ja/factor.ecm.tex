@@ -1,0 +1,51 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{factor.ecm -- ECM factorization}\linkedzero{factor.ecm}
+
+ This module has curve type constants:
+ \begin{description}\linkedone{factor.ecm}{curvetype}
+   \item[S]\linkedone{factor.ecm}{S}: aka SUYAMA. Suyama's parameter selection strategy.
+   \item[B]\linkedone{factor.ecm}{B}: aka BERNSTEIN. Bernstein's parameter selection strategy.
+   \item[A1]\linkedone{factor.ecm}{A1}: aka ASUNCION1. Asuncion's parameter selection strategy variant 1.
+   \item[A2]\linkedone{factor.ecm}{A2}: aka ASUNCION2.  ditto 2.
+   \item[A3]\linkedone{factor.ecm}{A3}: aka ASUNCION3.  ditto 3.
+   \item[A4]\linkedone{factor.ecm}{A4}: aka ASUNCION4.  ditto 4.
+   \item[A5]\linkedone{factor.ecm}{A5}: aka ASUNCION5.  ditto 5.
+ \end{description}
+ See J.S.Asuncion's master thesis~\cite{Janice} for details of each family.
+
+%
+  \subsection{ecm -- elliptic curve method}\linkedone{factor.ecm}{ecm}
+   \func{ecm}
+   {%
+     \hiki{n}{integer},\ %
+     \hikiopt{curve\_type}{\linkingone{factor.ecm}{curvetype}}{A1},\ %
+     \hikiopt{incs}{integer}{3},\ %
+     \hikiopt{trials}{integer}{20},\ %
+     \hikiopt{verbose}{bool}{False}%
+   }{%
+     \out{integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Find a factor of \param{n} by elliptic curve method.\\
+   \spacing
+   % added document
+   If it cannot find non-trivial factor of $n$, then it returns $1$.\\ 
+   \spacing
+   % input, output document
+   \quad \param{curve\_type} should be chosen from \linkingone{factor.ecm}{curvetype} constants above.\\
+   \quad The second optional argument \param{incs} specifies a number
+   of changes of bounds. The function repeats factorization
+   trials several times changing curves with a fixed bounds.\\
+   \quad Optional argument \param{trials} can control how quickly move
+   on to the next higher bounds.\\
+   \quad \param{verbose} toggles verbosity.\\
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

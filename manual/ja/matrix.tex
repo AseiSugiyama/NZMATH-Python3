@@ -1,0 +1,1151 @@
+\documentclass{report}
+
+\input{header_class}
+
+%---------- start document ---------- %
+ \section{matrix -- matrices}\linkedzero{matrix}
+ \begin{itemize}
+   \item {\bf Classes}
+   \begin{itemize}
+     \item \linkingone{matrix}{Matrix}
+     \item \linkingone{matrix}{SquareMatrix}
+     \item \linkingone{matrix}{RingMatrix}
+     \item \linkingone{matrix}{RingSquareMatrix}
+     \item \linkingone{matrix}{FieldMatrix}
+     \item \linkingone{matrix}{FieldSquareMatrix}
+     \item \linkingone{matrix}{MatrixRing}
+     \item \linkingone{matrix}{Subspace}
+   \end{itemize}
+   \item {\bf Functions}
+     \begin{itemize}
+       \item \linkingone{matrix}{createMatrix}
+       \item \linkingone{matrix}{identityMatrix}
+       \item \linkingone{matrix}{unitMatrix}
+       \item \linkingone{matrix}{zeroMatrix}
+     \end{itemize}
+ \end{itemize}
+ 
+ The module matrix has also some exception classes.
+ \begin{description}
+   \item[MatrixSizeError]\linkedone{matrix}{MatrixSizeError}:
+     Report contradicting given input to the matrix size.
+   \item[VectorsNotIndependent]\linkedone{matrix}{VectorsNotIndependent}:
+     Report column vectors are not independent. 
+   \item[NoInverseImage]\linkedone{matrix}{NoInverseImage}:
+     Report any inverse image does not exist.
+   \item[NoInverse]\linkedone{matrix}{NoInverse}:
+     Report the matrix is not invertible.
+ \end{description}
+
+ This module using following type:
+ \begin{description}
+   \item[compo]\linkedone{matrix}{compo}:
+     \param{compo} must be one of these forms below.\\
+     \begin{itemize}
+       \item concatenated row lists, such as {\it [1,2]+[3,4]+[5,6]}.
+       \item list of row lists, such as {\it [[1,2], [3,4], [5,6]]}.
+       \item list of column tuples, such as {\it [(1, 3, 5), (2, 4, 6)]}.
+       \item list of vectors whose dimension equals column, such as {\it vector.Vector([1, 3, 5]), vector.Vector([2, 4, 6])}.
+     \end{itemize}
+     The examples above represent the same matrix form as follows:
+     \begin{equation*}
+     \begin{array}{cc}
+       1 & 2\\
+       3 & 4\\
+       5 & 6\\
+     \end{array}
+     \end{equation*}
+ \end{description}
+
+\C
+
+ \subsection{Matrix -- matrices}\linkedone{matrix}{Matrix}
+ \initialize
+  \func{Matrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{Matrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create new matrices object.\\
+  \spacing
+  % added document
+  \quad \negok This constructor automatically changes the class to one of the following class: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
+  \spacing
+  % input, output document
+  \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
+   \param{row} and \param{column} must be integer, and \param{coeff\_ring} must be an instance of \linkingone{ring}{Ring}.
+   Refer to \linkingone{matrix}{compo} for information about \param{compo}.
+   If you abbreviate \param{compo}, it will be deemed to all zero list.\\
+   The list of expected inputs and outputs is as following:
+   \begin{itemize}
+     \item Matrix(\param{row},\ \param{column},\ \param{compo},\ \param{coeff\_ring})\\
+       $\to$ the \param{row}$\times$\param{column} matrix whose elements are \param{compo} and coefficient ring is \param{coeff\_ring}
+     \item Matrix(\param{row},\ \param{column},\ \param{compo})\\
+       $\to$ the \param{row}$\times$\param{column} matrix whose elements are \param{compo} (The coefficient ring is automatically determined.)
+     \item Matrix(\param{row},\ \param{column},\ \param{coeff\_ring})\\
+       $\to$ the \param{row}$\times$\param{column} matrix whose coefficient ring is \param{coeff\_ring} (All elements are $0$ in \param{coeff\_ring}.)
+     \item Matrix(\param{row},\ \param{column})\\
+       $\to$ the \param{row}$\times$\param{column} matrix (The coefficient matrix is \linkingone{rational}{Integer}. All elements are $0$.)
+   \end{itemize}
+  \begin{at}
+    \item[row]\linkedtwo{matrix}{Matrix}{row}: The row size of the matrix.\\
+    \item[column]\linkedtwo{matrix}{Matrix}{column}: The column size of the matrix.\\
+    \item[coeff\_ring]\linkedtwo{matrix}{Matrix}{coeff\_ring}: The coefficient ring of the matrix.\\
+    \item[compo]\linkedtwo{matrix}{Matrix}{compo}: The elements of the matrix.\\
+  \end{at}
+  \begin{op}
+    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not.\\
+    \verb+M[i, j]+ & Return the coefficient of \param{i}-th row, \param{j}-th column term of matrix \param{M}.\\
+    \verb+M[i]+ & Return the vector of \param{i}-th column term of matrix \param{M}.\\
+    \verb+M[i, j]=c+ & Replace the coefficient of \param{i}-th row, \param{j}-th column term of matrix \param{M} by \param{c}.\\
+    \verb+M[j]=c+ & Replace the vector of \param{i}-th column term of matrix \param{M} by vector \param{c}.\\
+    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
+    \verb+repr(M)+ & Return the repr string of the matrix \param{M}.\\
+                   & string represents list concatenated row vector lists.\\
+    \verb+str(M)+ & Return the str string of the matrix \param{M}.\\
+  \end{op}
+\begin{ex}
+>>> A = matrix.Matrix(2, 3, [1,0,0]+[0,0,0])
+>>> A.__class__.__name__
+'RingMatrix'
+>>> B = matrix.Matrix(2, 3, [1,0,0,0,0,0])
+>>> A == B
+True
+>>> B[1, 1] = 0
+>>> A != B
+True
+>>> B == 0
+True
+>>> A[1, 1]
+1
+>>> print repr(A)
+[1, 0, 0]+[0, 0, 0]
+>>> print str(A)
+1 0 0
+0 0 0
+\end{ex}%Don't indent!
+  \method
+\subsubsection{map -- apply function to elements}\linkedtwo{matrix}{Matrix}{map}
+   \func{map}{\param{self},\ \hiki{function}{function}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the matrix whose elements is applied \param{function} to.\\
+   \spacing
+   % added document
+   \quad \negok The function map is an analogy of built-in function \href{http://docs.python.org/library/functions.html#map}{map}.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+ \subsubsection{reduce -- reduce elements iteratively}\linkedtwo{matrix}{Matrix}{reduce}
+   \func{reduce}{\param{self},\ \hiki{function}{function},\ \hikiopt{initializer}{RingElement}{None}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Apply \param{function} from upper-left to lower-right, so as to reduce the iterable to a single value.\\
+   \spacing
+   % added document
+   \quad \negok The function map is an analogy of built-in function \href{http://docs.python.org/library/functions.html#reduce}{reduce}.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+ \subsubsection{copy -- create a copy}\linkedtwo{matrix}{Matrix}{copy}
+   \func{copy}{\param{self}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad create a copy of \param{self}.\\
+   \spacing
+   % added document
+   \quad \negok The matrix generated by the function is same matrix to \param{self}, but not same as a instance.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{set -- set compo}\linkedtwo{matrix}{Matrix}{set}
+   \func{set}{\param{self},\ \hiki{compo}{compo}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Substitute the list \param{compo} for \linkingtwo{matrix}{Matrix}{compo}.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \quad \param{compo} must be the form of \linkingtwo{matrix}{Matrix}{compo}.\\
+  \subsubsection{setRow -- set m-th row vector}\linkedtwo{matrix}{Matrix}{setRow}
+   \func{setRow}{\param{self},\ \hiki{m}{integer},\ \hiki{arg}{list/Vector}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Substitute the list/Vector \param{arg} as \param{m}-th row.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \quad The length of \param{arg} must be same to \param{self}.\linkingtwo{matrix}{Matrix}{column}.\\
+  \subsubsection{setColumn -- set n-th column vector}\linkedtwo{matrix}{Matrix}{setColumn}
+   \func{setColumn}{\param{self},\ \hiki{n}{integer},\ \hiki{arg}{list/Vector}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Substitute the list/Vector \param{arg} as \param{n}-th column.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \quad The length of \param{arg} must be same to \param{self}.\linkingtwo{matrix}{Matrix}{row}.\\
+  \subsubsection{getRow -- get i-th row vector}\linkedtwo{matrix}{Matrix}{getRow}
+   \func{getRow}{\param{self},\ \hiki{i}{integer}}{\out{Vector}}\\
+   \spacing
+   % document of basic document
+   \quad Return \param{i}-th row in form of \param{self}.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \quad The function returns a row vector (an instance of \linkingone{vector}{Vector}).\\
+  \subsubsection{getColumn -- get j-th column vector}\linkedtwo{matrix}{Matrix}{getColumn}
+   \func{getColumn}{\param{self},\ \hiki{j}{integer}}{\out{Vector}}\\
+   \spacing
+   % document of basic document
+   \quad Return \param{j}-th column in form of \param{self}.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+  \subsubsection{swapRow -- swap two row vectors}\linkedtwo{matrix}{Matrix}{swapRow}
+   \func{swapRow}{\param{self},\ \hiki{m1}{integer},\ \hiki{m2}{integer}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Swap \param{self}'s \param{m1}-th row vector and \param{m2}-th row one.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+  \subsubsection{swapColumn -- swap two column vectors}\linkedtwo{matrix}{Matrix}{swapColumn}
+   \func{swapColumn}{\param{self},\ \hiki{n1}{integer},\ \hiki{n2}{integer}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Swap \param{self}'s \param{n1}-th column vector and \param{n2}-th column one.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+  \subsubsection{insertRow -- insert row vectors}\linkedtwo{matrix}{Matrix}{insertRow}
+   \func{insertRow}{\param{self},\ \hiki{i}{integer},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Insert row vectors \param{arg} to \param{i}-th \param{row}.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
+    The length (or \linkingtwo{matrix}{Matrix}{column}) of it should be same to the column of \param{self}. 
+  \subsubsection{insertColumn -- insert column vectors}\linkedtwo{matrix}{Matrix}{insertColumn}
+   \func{insertColumn}{\param{self},\ \hiki{j}{integer},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Insert column vectors \param{arg} to \param{j}-th \param{column}.\\
+   \spacing
+   % added document
+   %\quad\\
+   %\spacing
+   % input, output document
+   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
+    The length (or \linkingtwo{matrix}{Matrix}{row}) of it should be same to the row of \param{self}. 
+  \subsubsection{extendRow -- extend row vectors}\linkedtwo{matrix}{Matrix}{extendRow}
+   \func{extendRow}{\param{self},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Join \param{self} with row vectors \param{arg} (in vertical way).\\
+   \spacing
+   % added document
+   \quad The function combines \param{self} with the last row vector of \param{self}.
+   That is, extendRow(\param{arg}) is same to insertRow(\param{self}.\param{row}+1,\ \param{arg}).\\
+   \spacing
+   % input, output document
+   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
+    The length (or \linkingtwo{matrix}{Matrix}{column}) of it should be same to the column of \param{self}. 
+  \subsubsection{extendColumn -- extend column vectors}\linkedtwo{matrix}{Matrix}{extendColumn}
+   \func{extendColumn}{\param{self},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Join \param{self} with column vectors \param{arg} (in horizontal way).\\
+   \spacing
+   % added document
+   \quad The function combines \param{self} with the last column vector of \param{self}.
+   That is, extendColumn(\param{arg}) is same to insertColumn(\param{self}.\param{column}+1,\ \param{arg}).\\
+   \spacing
+   % input, output document
+   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
+    The length (or \linkingtwo{matrix}{Matrix}{row}) of it should be same to the row of \param{self}.
+  \subsubsection{deleteRow -- delete row vector}\linkedtwo{matrix}{Matrix}{deleteRow}
+   \func{deleteRow}{\param{self},\ \hiki{i}{integer}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Delete \param{i}-th row vector.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{deleteColumn -- delete column vector}\linkedtwo{matrix}{Matrix}{deleteColumn}
+   \func{deleteColumn}{\param{self},\ \hiki{j}{integer}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Delete \param{j}-th column vector.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{transpose -- transpose matrix}\linkedtwo{matrix}{Matrix}{transpose}
+   \func{transpose}{\param{self}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the transpose of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+  \subsubsection{getBlock -- block matrix}\linkedtwo{matrix}{Matrix}{getBlock}
+   \func{getBlock}{\param{self},\ \hiki{i}{integer},\ \hiki{j}{integer},\ \hiki{row}{integer},\ \hikiopt{column}{integer}{None}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the \param{row}$\times$\param{column} block matrix from the (\param{i},\ \param{j})-element. \\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   If \param{column} is omitted, \param{column} is considered as same value to \param{row}.
+  \subsubsection{subMatrix -- submatrix}\linkedtwo{matrix}{Matrix}{subMatrix}
+   \func{subMatrix}{\param{self},\ \hiki{I}{integer},\ \hiki{J}{integer}{None}}{\out{Matrix}}\\
+   \func{subMatrix}{\param{self},\ \hiki{I}{list},\ \hikiopt{J}{list}{None}}{\out{Matrix}}\\
+   \spacing
+   % document of basic document
+   \quad The function has a twofold significance.
+   \begin{itemize}
+     \item \param{I} and \param{J} are integer:\\
+       Return submatrix deleted \param{I}-th row and \param{J}-th column.
+     \item \param{I} and \param{J} are list:\\
+       Return the submatrix composed of elements from \param{self} assigned by rows I and columns J, respectively. 
+   \end{itemize}
+   \quad\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   \quad If \param{J} is omitted, \param{J} is considered as same value to \param{I}.
+\begin{ex}
+>>> A = matrix.Matrix(2, 3, [1,2,3]+[4,5,6])
+>>> A
+[1, 2, 3]+[4, 5, 6]
+>>> A.map(complex)
+[(1+0j), (2+0j), (3+0j)]+[(4+0j), (5+0j), (6+0j)]
+>>> A.reduce(max)
+6
+>>> A.swapRow(1, 2)
+>>> A
+[4, 5, 6]+[1, 2, 3]
+>>> A.extendColumn([-2, -1])
+>>> A
+[4, 5, 6, -2]+[1, 2, 3, -1]
+>>> B = matrix.Matrix(3, 3, [1,2,3]+[4,5,6]+[7,8,9])
+>>> B.subMatrix(2, 3)
+[1, 2]+[7, 8]
+>>> B.subMatrix([2, 3], [1, 2])
+[4, 5]+[7, 8]
+\end{ex}%Don't indent!
+\C
+
+\subsection{SquareMatrix -- square matrices}\linkedone{matrix}{SquareMatrix}
+ \initialize
+  \func{SquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{SquareMatrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create new square matrices object.\\
+  \spacing
+  % added document
+  \quad SquareMatrix is subclass of \linkingone{matrix}{Matrix}.
+  \negok This constructor automatically changes the class to one of the following class: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
+  \spacing
+  % input, output document
+  \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
+   \param{row} and \param{column} must be integer, and \param{coeff\_ring} must be an instance of \linkingone{ring}{Ring}.
+   Refer to \linkingone{matrix}{compo} for information about \param{compo}.
+   If you abbreviate \param{compo}, it will be deemed to all zero list.\\
+.\\
+   The list of expected inputs and outputs is as following:
+   \begin{itemize}
+     \item Matrix(\param{row},\ \param{compo},\ \param{coeff\_ring})\\
+       $\to$ the \param{row} square matrix whose elements are \param{compo} and coefficient ring is \param{coeff\_ring}
+     \item Matrix(\param{row},\ \param{compo})\\
+       $\to$ the \param{row} square matrix whose elements are \param{compo} (coefficient ring is automatically determined)
+     \item Matrix(\param{row},\ \param{coeff\_ring})\\
+       $\to$ the \param{row} square matrix whose coefficient ring is \param{coeff\_ring} (All elements are $0$ in \param{coeff\_ring}.)
+     \item Matrix(\param{row})\\
+       $\to$ the \param{row} square matrix (The coefficient ring is Integer. All elements are $0$.)
+   \end{itemize}
+   \negok We can initialize as  \linkingone{matrix}{Matrix}, but \param{column} must be same to \param{row} in the case.
+\method
+\subsubsection{isUpperTriangularMatrix -- check upper triangular}\linkedtwo{matrix}{SquareMatrix}{isUpperTriangularMatrix}
+   \func{isUpperTriangularMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is upper triangular matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+\subsubsection{isLowerTriangularMatrix -- check lower triangular}\linkedtwo{matrix}{SquareMatrix}{isLowerTriangularMatrix}
+   \func{isLowerTriangularMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is lower triangular matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+\subsubsection{isDiagonalMatrix -- check diagonal matrix}\linkedtwo{matrix}{SquareMatrix}{isDiagonalMatrix}
+   \func{isDiagonalMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is diagonal matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+\subsubsection{isScalarMatrix -- check scalar matrix}\linkedtwo{matrix}{SquareMatrix}{isScalarMatrix}
+   \func{isScalarMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is scalar matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+\subsubsection{isSymmetricMatrix -- check symmetric matrix}\linkedtwo{matrix}{SquareMatrix}{isSymmetricMatrix}
+   \func{isSymmetricMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is symmetric matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+\begin{ex}
+>>> A = matrix.SquareMatrix(3, [1,2,3]+[0,5,6]+[0,0,9])
+>>> A.isUpperTriangularMatrix()
+True
+>>> B = matrix.SquareMatrix(3, [1,0,0]+[0,-2,0]+[0,0,7])
+>>> B.isDiagonalMatrix()
+True
+\end{ex}%Don't indent!
+\C
+
+\subsection{RingMatrix -- matrix whose elements belong ring}\linkedone{matrix}{RingMatrix}
+  \func{RingMatrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create matrix whose coefficient ring belongs ring.\\
+  \spacing
+  % added document
+  \quad RingMatrix is subclass of \linkingone{matrix}{Matrix}.
+  See Matrix for getting information about the initialization.\\
+  \spacing
+  % input, output document
+  \begin{op}
+    \verb|M+N| & Return the sum of matrices \param{M} and \param{N}.\\
+    \verb+M-N+ & Return the difference of matrices \param{M} and \param{N}.\\
+    \verb+M*N+ & Return the product of \param{M} and \param{N}. \param{N} must be matrix, vector or scalar\\
+    \verb+M % d+ & Return \param{M} modulo \param{d}. \param{d} must be nonzero integer.\\
+    \verb+-M+ & Return the matrix whose coefficients have inverted signs of \param{M}.\\
+    \verb|+M| & Return the copy of \param{M}.\\
+  \end{op}
+\begin{ex}
+>>> A = matrix.Matrix(2, 3, [1,2,3]+[4,5,6])
+>>> B = matrix.Matrix(2, 3, [7,8,9]+[0,-1,-2])
+>>> A + B
+[8, 10, 12]+[4, 4, 4]
+>>> A - B
+[-6, -6, -6]+[4, 6, 8]
+>>> A * B.transpose()
+[50, -8]+[122, -17]
+>>> -B * vector.Vector([1, -1, 0])
+Vector([1, -1])
+>>> 2 * A
+[2, 4, 6]+[8, 10, 12]
+>>> B % 3
+[1, 2, 0]+[0, 2, 1]
+\end{ex}%Don't indent!
+\method
+\subsubsection{getCoefficientRing -- get coefficient ring}\linkedtwo{matrix}{RingMatrix}{getCoefficientRing}
+   \func{getCoefficientRing}{\param{self}}{\out{CommutativeRing}}\\
+   \spacing
+   % document of basic document
+   \quad Return the coefficient ring of \param{self}.\\
+   \spacing
+   % added document
+   \quad This method checks all elements of \param{self} and set \param{coeff\_ring} to the valid coefficient ring.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{toFieldMatrix -- set field as coefficient ring}\linkedtwo{matrix}{RingMatrix}{toFieldMatrix}
+   \func{toFieldMatrix}{\param{self}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Change the class of the matrix to \linkingone{matrix}{FieldMatrix} or \linkingone{matrix}{FieldSquareMatrix}, where the coefficient ring will be the quotient field of the current domain.\\
+   \spacing
+   % added document
+   % \quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{toSubspace -- regard as vector space}\linkedtwo{matrix}{RingMatrix}{toSubspace}
+   \func{toSubspace}{\param{self},\ \hikiopt{isbasis}{True/False}{None}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Change the class of the matrix to \param{Subspace}, where the coefficient ring will be the quotient field of the current domain.\\
+   \spacing
+   % added document
+   % \quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{hermiteNormalForm (HNF) -- Hermite Normal Form}\linkedtwo{matrix}{RingMatrix}{hermiteNormalForm}\linkedtwo{matrix}{RingMatrix}{HNF}
+   \func{hermiteNormalForm}{\param{self}}{\out{RingMatrix}}\\
+   \func{HNF}{\param{self}}{\out{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return upper triangular Hermite normal form (HNF).\\
+   \spacing
+   % added document
+   % \quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{exthermiteNormalForm (extHNF) -- extended Hermite Normal Form algorithm}\linkedtwo{matrix}{RingMatrix}{exthermiteNormalForm}
+   \func{exthermiteNormalForm}{\param{self}}{\out{(RingSquareMatrix,\ RingMatrix)}}\\
+   \func{extHNF}{\param{self}}{\out{(RingSquareMatrix,\ RingMatrix)}}\\
+   \spacing
+   % document of basic document
+   \quad Return Hermite normal form \param{M} and \param{U} satisfied $\param{self}\param{U}=\param{M}$.\\
+   \spacing
+   % added document
+   % \quad 
+   %\spacing
+   % input, output document
+   \quad  The function returns tuple (\param{U},\ \param{M}), where \param{U} is an instance of \linkingone{matrix}{RingSquareMatrix} and \param{M} is an instance of \linkingone{matrix}{RingMatrix}.\\
+  \subsubsection{kernelAsModule -- kernel as $\mathbb{Z}$-module}\linkedtwo{matrix}{RingMatrix}{kernelAsModule}
+   \func{kernelAsModule}{\param{self}}{\out{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return kernel as $\mathbb{Z}$-module.\\
+   \spacing
+   % added document
+   \quad The difference between the function and \linkingtwo{matrix}{FieldMatrix}{kernel} is that each elements of the returned value are integer.\\
+   \spacing
+   % input, output document
+   %\quad
+\begin{ex}
+>>> A = matrix.Matrix(3, 4, [1,2,3,4,5,6,7,8,9,-1,-2,-3])
+>>> print A.hermiteNormalForm()
+0 36 29 28
+0  0  1  0
+0  0  0  1
+>>> U, M = A.hermiteNormalForm()
+>>> A * U == M
+True
+>>> B = matrix.Matrix(1, 2, [2, 1])
+>>> print B.kernelAsModule()
+1
+-2
+\end{ex}
+\C
+
+\subsection{RingSquareMatrix -- square matrix whose elements belong ring}\linkedone{matrix}{RingSquareMatrix}
+  \func{RingSquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create square matrix whose coefficient ring belongs ring.\\
+  \spacing
+  % added document
+  \quad RingSquareMatrix is subclass of \linkingone{matrix}{RingMatrix} and \linkingone{matrix}{SquareMatrix}.
+  See SquareMatrix for getting information about the initialization.\\
+  \spacing
+  % input, output document
+  \begin{op}
+    \verb|M**c| & Return the \param{c}-th power of matrices \param{M}.\\
+  \end{op}
+\begin{ex}
+>>> A = matrix.RingSquareMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
+>>> A ** 2
+[30L, 36L, 42L]+[66L, 81L, 96L]+[102L, 126L, 150L]
+\end{ex}%Don't indent!
+\method
+  \subsubsection{getRing -- get matrix ring}\linkedtwo{matrix}{RingSquareMatrix}{getRing}
+   \func{getRing}{\param{self}}{\out{MatrixRing}}\\
+   \spacing
+   % document of basic document
+   \quad Return the \linkingone{matrix}{MatrixRing} belonged to by \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{isOrthogonalMatrix -- check orthogonal matrix}\linkedtwo{matrix}{RingSquareMatrix}{isOrthogonalMatrix}
+   \func{isOrthogonalMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is orthogonal matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{isAlternatingMatrix (isAntiSymmetricMatrix,\ isSkewSymmetricMatrix) -- check alternating matrix}\linkedtwo{matrix}{RingSquareMatrix}{isAlternatingMatrix}
+   \func{isAlternatingMatrix}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is alternating matrix or not.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{isSingular -- check singular matrix}\linkedtwo{matrix}{RingSquareMatrix}{isSingular}
+   \func{isSingular}{\param{self}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Check whether \param{self} is singular matrix or not.\\
+   \spacing
+   % added document
+   \quad The function determines whether determinant of \param{self} is $0$.
+   Note that the the non-singular matrix does not automatically mean invertible matrix; the nature that the matrix is invertible depends on its coefficient ring.\\
+   \spacing
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{trace -- trace}\linkedtwo{matrix}{RingSquareMatrix}{trace}
+   \func{trace}{\param{self}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the trace of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{determinant -- determinant}\linkedtwo{matrix}{RingSquareMatrix}{determinant}
+   \func{determinant}{\param{self}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the determinant of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{cofactor -- cofactor}\linkedtwo{matrix}{RingSquareMatrix}{cofactor}
+   \func{cofactor}{\param{self},\ \hiki{i}{integer},\ \hiki{j}{integer}}{\out{RingElement}}\\
+   \spacing
+   % document of basic document
+   \quad Return the (\param{i},\ \param{j})-cofactor.\\
+   \spacing
+   % added document
+   %\quad 
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{commutator -- commutator}\linkedtwo{matrix}{RingSquareMatrix}{commutator}
+   \func{commutator}{\param{self},\ \hiki{N}{RingSquareMatrix element}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the commutator for \param{self} and \param{N}.\\
+   \spacing
+   % added document
+   \quad The commutator for \param{M} and \param{N}, which is denoted as $[M,\ N]$, is defined as $[\param{M},\ \param{N}]=\param{M}\param{N}-\param{N}\param{M}$. 
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{characteristicMatrix -- characteristic matrix}\linkedtwo{matrix}{RingSquareMatrix}{characteristicMatrix}
+   \func{characteristicMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the characteristic matrix of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{adjugateMatrix -- adjugate matrix}\linkedtwo{matrix}{RingSquareMatrix}{adjugateMatrix}
+   \func{adjugateMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the adjugate matrix of \param{self}.\\
+   \spacing
+   % added document
+   \quad The adjugate matrix for \param{M} is the matrix \param{N} such that $\param{M}\param{N}=\param{N}\param{M}=(\det{\param{M}})E$, where $E$ is the identity matrix.\\
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{cofactorMatrix (cofactors) -- cofactor matrix}\linkedtwo{matrix}{RingSquareMatrix}{cofactorMatrix}\linkedtwo{matrix}{RingSquareMatrix}{cofactors}
+   \func{cofactorMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
+   \func{cofactors}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the cofactor matrix of \param{self}.\\
+   \spacing
+   % added document
+   \quad The cofactor matrix for \param{M} is the matrix whose ($i,\ j$) element is  ($i,\ j$)-cofactor of \param{M}.
+    The cofactor matrix is same to transpose of the adjugate matrix.\\
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{smithNormalForm (SNF,\ elementary\_divisor) -- Smith Normal Form (SNF)}\linkedtwo{matrix}{RingSquareMatrix}{smithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{SNF}\linkedtwo{matrix}{RingSquareMatrix}{elementary\_divisor}
+   \func{smithNormalForm}{\param{self}}{\out{RingSquareMatrix}}\\
+   \func{SNF}{\param{self}}{\out{RingSquareMatrix}}\\
+   \func{elementary\_divisor}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the list of diagonal elements of the Smith Normal Form (SNF) for \param{self}.\\
+   \spacing
+   % added document
+   \quad The function assumes that \param{self} is non-singular.\\
+   % input, output document
+   %\quad \param{a} must be int, long or rational.Integer.\\
+  \subsubsection{extsmithNormalForm (extSNF) -- Smith Normal Form (SNF)}\linkedtwo{matrix}{RingSquareMatrix}{extsmithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{extSNF}
+   \func{extsmithNormalForm}{\param{self}}{\out{(RingSquareMatrix,\ RingSquareMatrix,\ RingSquareMatrix)}}\\
+   \func{extSNF}{\param{self}}{\out{RingSquareMatrix,\ RingSquareMatrix,\ RingSquareMatrix)}}\\
+   \spacing
+   % document of basic document
+   \quad Return the Smith normal form \param{M} for \param{self} and \param{U},\param{V} satisfied $\param{U}\param{self}\param{V}=\param{M}$.\\
+   \spacing
+   % added document
+   % input, output document
+   %\quad
+\begin{ex}
+>>> A = matrix.RingSquareMatrix(3, [3,-5,8]+[-9,2,7]+[6,1,-4])
+>>> A.trace()
+1L
+>>> A.determinant()
+-243L
+>>> B = matrix.RingSquareMatrix(3, [87,38,80]+[13,6,12]+[65,28,60])
+>>> U, V, M = B.extsmithNormalForm()
+>>> U * B * V == M
+True
+>>> print M
+4 0 0
+0 2 0
+0 0 1
+>>> B.smithNormalForm()
+[4L, 2L, 1L]
+\end{ex}
+\C
+
+\subsection{FieldMatrix -- matrix whose elements belong field}\linkedone{matrix}{FieldMatrix}
+  \func{FieldMatrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create matrix whose coefficient ring belongs field.\\
+  \spacing
+  % added document
+  \quad FieldMatrix is subclass of \linkingone{matrix}{RingMatrix}.
+  See \linkingone{matrix}{Matrix} for getting information about the initialization.\\
+  \spacing
+  % input, output document
+  \begin{op}
+    \verb|M/d| & Return the division of \param{M} by \param{d}.\param{d} must be scalar.\\
+    \verb|M//d| & Return the division of \param{M} by \param{d}.\param{d} must be scalar.\\
+  \end{op}
+\begin{ex}
+>>> A = matrix.FieldMatrix(3, 3, [1,2,3,4,5,6,7,8,9])
+>>> A / 210
+1/210 1/105 1/70
+2/105  1/42 1/35
+1/30  4/105 3/70
+\end{ex}%Don't indent!
+\method
+  \subsubsection{kernel -- kernel}\linkedtwo{matrix}{FieldMatrix}{kernel}
+   \func{kernel}{\param{self}}{\out{FieldMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the kernel of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   \quad The output is the matrix whose column vectors form basis of the kernel.\\
+   The function returns None if the kernel do not exist.\\
+  \subsubsection{image -- image}\linkedtwo{matrix}{FieldMatrix}{image}
+   \func{image}{\param{self}}{\out{FieldMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the image of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   \quad The output is the matrix whose column vectors form basis of the image.\\
+   The function returns None if the kernel do not exist.\\
+  \subsubsection{rank -- rank}\linkedtwo{matrix}{FieldMatrix}{rank}
+   \func{rank}{\param{self}}{\out{integer}}\\
+   \spacing
+   % document of basic document
+   \quad Return the rank of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{inverseImage -- inverse image: base solution of linear system}\linkedtwo{matrix}{FieldMatrix}{inverseImage}
+   \func{inverseImage}{\param{self},\ \hiki{V}{Vector/RingMatrix}}{\out{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return an inverse image of \param{V} by \param{self}.\\
+   \spacing
+   % added document
+   \quad The function returns one solution of the linear equation $\param{self}X=\param{V}$.
+   \spacing
+   % input, output document
+   %\quad \\
+  \subsubsection{solve -- solve linear system}\linkedtwo{matrix}{FieldMatrix}{solve}
+   \func{solve}{\param{self},\ \hiki{B}{Vector/RingMatrix}}{\out{(RingMatrix,\ RingMatrix)}}\\
+   \spacing
+   % document of basic document
+   \quad Solve $\param{self}X = \param{B}$.\\
+   \spacing
+   % added document
+   \quad The function returns a particular solution \param{sol} and the kernel of \param{self} as a matrix.
+   If you only have to obtain the particular solution, use \linkingtwo{matrix}{FieldMatrix}{inverseImage}.
+   \spacing
+   % input, output document
+  \subsubsection{columnEchelonForm -- column echelon form}\linkedtwo{matrix}{FieldMatrix}{columnEchelonForm}
+   \func{columnEchelonForm}{\param{self}}{\out{RingMatrix}}\\
+   % document of basic document
+   \quad Return the column reduced echelon form.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+\begin{ex}
+>>> A = matrix.FieldMatrix(2, 3, [1,2,3]+[4,5,6])
+>>> print A.kernel
+ 1/1
+-2/1
+   1
+>>> print A.image()
+1 2
+4 5
+>>> C = matrix.FieldMatrix(4, 3, [1,2,3]+[4,5,6]+[7,8,9]+[-1,-2,-3])
+>>> D = matrix.FieldMatrix(4, 2, [1,0]+[7,6]+[13,12]+[-1,0])
+>>> print C.inverseImage(D)
+ 3/1  4/1
+-1/1 -2/1
+ 0/1  0/1
+>>> sol, ker = C.solve(D)
+>>> C * (sol + ker[0]) == D
+True
+>>> AA = matrix.FieldMatrix(3, 3, [1,2,3]+[4,5,6]+[7,8,9])
+>>> print AA.columnEchelonForm()
+0/1 2/1 -1/1
+0/1 1/1  0/1
+0/1 0/1  1/1
+\end{ex}
+\C
+
+\subsection{FieldSquareMatrix -- square matrix whose elements belong field}\linkedone{matrix}{FieldSquareMatrix}
+  \func{FieldSquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{FieldSquareMatrix}}\\
+  \spacing
+  % document of basic document
+  \quad Create square matrix whose coefficient ring belongs field.\\
+  \spacing
+  % added document
+  \quad FieldSquareMatrix is subclass of \linkingone{matrix}{FieldMatrix} and \linkingone{matrix}{SquareMatrix}.\\
+  \negok The function \linkingone{matrix}{RingSquareMatrix}{determinant} is overridden and use different algorithm from one used in \linkingone{matrix}{RingSquareMatrix}{determinant};the function calls \linkingone{matrix}{FieldSquareMatrix}{triangulate}.
+  See \linkingone{matrix}{SquareMatrix} for getting information about the initialization.\\
+  \spacing
+  % input, output document
+ \method
+  \subsubsection{triangulate - triangulate by elementary row operation}\linkedtwo{matrix}{FieldSquareMatrix}{triangulate}
+   \func{triangulate}{\param{self}}{\out{FieldSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return an upper triangulated matrix obtained by elementary row operations.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{inverse - inverse matrix}\linkedtwo{matrix}{FieldSquareMatrix}{inverse}
+   \func{inverse}{\param{self}\ \hikiopt{V}{Vector/RingMatrix}{None}}{\out{FieldSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the inverse of \param{self}.
+   If \param{V} is given, then return $\param{self}^(-1)V$.\\ 
+   \spacing
+   % added document
+   \quad \negok If the matrix is not invertible, then raise \linkingone{matrix}{NoInverse}.\\
+   \spacing
+   % input, output document
+   %\quad
+  \subsubsection{hessenbergForm - Hessenberg form}\linkedtwo{matrix}{FieldSquareMatrix}{hessenbergForm}
+   \func{hessenbergForm}{\param{self}}{\out{FieldSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the Hessenberg form of \param{self}.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{LUDecomposition - LU decomposition}\linkedtwo{matrix}{FieldSquareMatrix}{LUDecomposition}
+   \func{LUDecomposition}{\param{self}}{\out{(FieldSquareMatrix,\ FieldSquareMatrix)}}\\
+   \spacing
+   % document of basic document
+   \quad Return the lower triangular matrix \param{L} and the upper triangular matrix \param{U} such that $\param{self} == \param{L}\param{U}$.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+\C
+
+\subsection{\negok MatrixRing -- ring of matrices}\linkedone{matrix}{MatrixRing}
+  \func{MatrixRing}{\hiki{size}{integer},\ \hiki{scalars}{CommutativeRing}}{\out{MatrixRing}}\\
+  \spacing
+  % document of basic document
+  \quad Create a ring of matrices with given \param{size} and coefficient ring \param{scalars}.\\
+  \spacing
+  % added document
+  \quad MatrixRing is subclass of \linkingone{ring}{Ring}.\\
+  \spacing
+  % input, output document
+ \method
+  \subsubsection{unitMatrix - unit matrix}\linkedtwo{matrix}{MatrixRing}{unitMatrix}
+   \func{unitMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the unit matrix.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{zeroMatrix - zero matrix}\linkedtwo{matrix}{MatrixRing}{zeroMatrix}
+   \func{zeroMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return the zero matrix.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+\begin{ex}
+>>> M = matrix.MatrixRing(3, rational.theIntegerRing)
+>>> print M
+M_3(Z)
+>>> M.unitMatrix()
+[1L, 0L, 0L]+[0L, 1L, 0L]+[0L, 0L, 1L]
+>>> M.zero
+[0L, 0L, 0L]+[0L, 0L, 0L]+[0L, 0L, 0L]
+\end{ex}
+\C
+ \subsubsection{getInstance(class function) - get cached instance}\linkedtwo{matrix}{MatrixRing}{getInstance}
+   \func{getInstance}{\param{cls},\ \hiki{size}{integer},\ \hiki{scalars}{CommutativeRing}}{\out{RingSquareMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return an instance of MatrixRing of given \param{size} and ring of scalars. \\
+   \spacing
+   % added document
+   \quad The merit of using the method instead of the constructor is that the instances created by the method are cached and reused for efficiency.\\
+   \spacing
+   % input, output document
+   %\quad
+\begin{ex}
+>>> print MatrixRing.getInstance(3, rational.theIntegerRing)
+M_3(Z)
+\end{ex}
+\C
+
+\subsection{Subspace -- subspace of finite dimensional vector space}\linkedone{matrix}{Subspace}
+  \func{Subspace}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0},\ \hikiopt{isbasis}{True/False}{None}}{\out{Subspace}}\\
+  \spacing
+  % document of basic document
+  \quad Create subspace of some finite dimensional vector space over a field.\\
+  \spacing
+  % added document
+  \quad Subspace is subclass of \linkingone{matrix}{FieldMatrix}.\\
+  See \linkingone{matrix}{Matrix} for getting information about the initialization.
+  The subspace expresses the space generated by column vectors of \param{self}.\\
+  \spacing
+  % input, output document
+  If \param{isbasis} is True, we assume that column vectors are linearly independent.
+ \begin{at}
+   \item[isbasis] The attribute indicates the linear independence of column vectors, i.e., if they form a basis of the space then \param{isbasis} should be True, otherwise False.
+ \end{at}
+ \method
+  \subsubsection{issubspace - check subspace of self}\linkedtwo{matrix}{Subspace}{triangulate}
+   \func{Subspace}{\param{self},\ \hiki{other}{Subspace}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Return True if the subspace instance is a subspace of the \param{other}, or False otherwise.\\
+   \spacing
+   % added document
+   %\quad 
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{toBasis - select basis}\linkedtwo{matrix}{Subspace}{toBasis}
+   \func{toBasis}{\param{self}}{\out{(None)}}\\
+   \spacing
+   % document of basic document
+   \quad Rewrite \param{self} so that its column vectors form a basis, and set True to its \param{isbasis}.\\
+   \spacing
+   % added document
+   \quad The function does nothing if \param{isbasis} is already True.\\
+   \spacing
+   % input, output document
+   %\quad
+  \subsubsection{supplementBasis - to full rank}\linkedtwo{matrix}{Subspace}{supplementBasis}
+   \func{supplementBasis}{\param{self}}{\out{Subspace}}\\
+   \spacing
+   % document of basic document
+   \quad Return full rank matrix by supplementing bases for \param{self}.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{sumOfSubspaces - sum as subspace}\linkedtwo{matrix}{Subspace}{sumOfSubspaces}
+   \func{sumOfSubspaces}{\param{self},\ \hiki{other}{Subspace}}{\out{Subspace}}\\
+   \spacing
+   % document of basic document
+   \quad Return a matrix whose columns form a basis for sum of two subspaces.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+  \subsubsection{intersectionOfSubspaces - intersection as subspace}\linkedtwo{matrix}{Subspace}{intersectionOfSubspaces}
+   \func{intersectionOfSubspaces}{\param{self},\ \hiki{other}{Subspace}}{\out{Subspace}}\\
+   \spacing
+   % document of basic document
+   \quad Return a matrix whose columns form a basis for intersection of two subspaces.\\
+   \spacing
+   % added document
+   %\quad
+   %\spacing
+   % input, output document
+   %\quad
+\begin{ex}
+>>> A = matrix.Subspace(4, 3, [1,2,3]+[4,5,6]+[7,8,9]+[10,11,12])
+>>> A.toBasis()
+>>> print A
+ 1  2
+ 4  5
+ 7  8
+10 11
+>>> B = matrix.Subspace(3, 2, [1,2]+[3,4]+[5,7])
+>>> print B.supplementBasis()
+1 2 0
+3 4 0
+5 7 1
+>>> C = matrix.Subspace(4, 1, [1,2,3,4])
+>>> D = matrix.Subspace(4, 2, [2,-4]+[4,-3]+[6,-2]+[8,-1])
+>>> print C.intersectionOfSubspaces(D)
+-2/1
+-4/1
+-6/1
+-8/1
+\end{ex}
+\C
+
+ \subsubsection{fromMatrix(class function) - create subspace}\linkedtwo{matrix}{Subspace}{fromMatrix}
+   \func{fromMatrix}{\param{cls},\ \hiki{mat}{FieldMatrix},\ \hikiopt{isbasis}{True/False}{None}}{\out{Subspace}}\\
+   \spacing
+   % document of basic document
+   \quad Create a Subspace instance from a matrix instance \param{mat}, whose class can be any of subclasses of Matrix.\\
+   \spacing
+   % added document
+   \quad Please use this method if you want a Subspace instance for sure.\\
+   \spacing
+   % input, output document
+   %\quad
+\C
+
+ \subsection{createMatrix[function] -- create an instance}\linkedone{matrix}{createMatrix}
+  \func{createMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{None}}{\param{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Create an instance of \linkingone{matrix}{RingMatrix}, \linkingone{matrix}{RingSquareMatrix}, \linkingone{matrix}{FieldMatrix} or \linkingone{matrix}{FieldSquareMatrix}.\\
+   \spacing
+   % added document
+   \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
+   See \linkingone{matrix}{Matrix} or \linkingone{matrix}{SquareMatrix} for getting information about the initialization.\\
+   \spacing
+   % input, output document
+ \subsection{identityMatrix(unitMatrix)[function] -- unit matrix}\linkedone{matrix}{identityMatrix}\linkedone{matrix}{unitMatrix}
+  \func{identityMatrix}{\hiki{size}{integer},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
+    \func{unitMatrix}{\hiki{size}{integer},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return \param{size}-dimensional unit matrix.\\
+   \spacing
+   % added document
+   \quad \param{coeff} enables us to create matrix not only in integer but in coefficient ring which is determined by coeff. \\
+   \spacing
+   % input, output document
+    \param{coeff} must be an instance of \linkingone{ring}{Ring} or a multiplicative unit (one).
+ \subsection{zeroMatrix[function] -- zero matrix}\linkedone{matrix}{zeroMatrix}
+  \func{zeroMatrix}{\hiki{row}{integer},\ \hikiopt{column}{0},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
+   \spacing
+   % document of basic document
+   \quad Return $\param{row}\times\param{column}$ zero matrix.\\
+   \spacing
+   % added document
+   \quad \param{coeff} enables us to create matrix not only in integer but in coefficient ring which is determined by coeff. \\
+   \spacing
+   % input, output document
+    \param{coeff} must be an instance of \linkingone{ring}{Ring} or a additive unit (zero).
+    If \param{column} is abbreviated, \param{column} is set same to \param{row}.\begin{ex}
+>>> M = matrix.createMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
+>>> print M
+1 2 3
+4 5 6
+7 8 9
+>>> O = matrix.zeroMatrix(2, 3, imaginary.ComplexField())
+>>> print O
+0 + 0j 0 + 0j 0 + 0j
+0 + 0j 0 + 0j 0 + 0j
+\end{ex}
+\C
+
+%---------- end document ---------- %
+
+\input{footer}

@@ -1,0 +1,91 @@
+\documentclass{report}
+
+\input{header_function}
+
+%---------- start document ---------- %
+ \section{bigrandom -- random numbers}\linkedzero{bigrandom}
+%
+ \paragraph{Historical Note}\label{bigrandom_historical_note}
+
+ The module was written for replacement of the \python standard module
+ \linklibrary{random}, because in the era of \python 2.2 (prehistorical period of
+ \nzmath) the random module raises {\tt OverflowError} for long integer
+ arguments for the \linklibraryone{random\#random.randrange}{randrange} function, which is the only function
+ having a use case in \nzmath.
+
+ After the creation of \python 2.3, it was theoretically possible to
+ use {\tt random.randrange}, since it started to accept long integer
+ as its argument. Use of it was, however, not considered, since there
+ had been the {\tt bigrandom} module. It was lucky for us. In fall of
+ 2006, we found a bug in {\tt random.randrange} and reported it (see
+ issue tracker); the {\tt random.randrange} accepts long integers but
+ returns unreliable result for truly big integers. The bug was fixed
+ for \python 2.5.1. You can, therefore, use {\tt random.randrange}
+ instead of {\tt bigrandom.randrange} for \python 2.5.1 or higher.
+
+  \subsection{random -- random number generator}\linkedone{bigrandom}{random}
+   \func{random}
+   {}{{\em float}}\\
+   \spacing
+   % document of basic document
+   \quad Return a random floating point number in the interval \([0, 1)\).\\
+   \spacing
+   % added document
+   \quad This function is an alias to {\tt random.random} in the \python standard library.\\
+   % input, output document
+%
+  \subsection{randrange -- random integer generator}\linkedone{bigrandom}{randrange}
+   \func{randrange}
+   {%
+     \hiki{start}{integer},\ %
+     \hikiopt{stop}{integer}{None},\ %
+     \hikiopt{step}{integer}{1}
+   }{%
+     {\em integer}
+   }\\
+   \spacing
+   % document of basic document
+   \quad Return a random integer in the range.\\
+   \spacing
+   % input, output document
+   \quad The argument names do not correspond to their roles, but
+   users are familiar with the
+   \linklibraryone{functions\#range}{range} built-in function of
+   \python and understand the semantics.  Calling with one argument
+   \(n\), then the result is an integer in the range \([0, n)\) chosen
+   randomly.  With two arguments \(n\) and \(m\),
+   in \([n, m)\), and with third \(l\), in \([n, m) \cap (n + l\mathbb{Z})\).\\
+   \spacing \quad This function is almost the same as {\tt
+     random.randrange} in the \python standard library.  See the
+   historical note~\ref{bigrandom_historical_note}.
+%
+\begin{ex}
+>>> randrange(4, 10000, 3)
+9919L
+>>> randrange(4 * 10**60)
+31925916908162253969182327491823596145612834799876775114620151L
+\end{ex}%Don't indent!(indent causes an error.)
+
+   \subsection{map\_choice -- choice from image of mapping}\linkedone{bigrandom}{map\_choice}
+   \func{map\_choice}
+   {%
+     \hiki{mapping}{function},\ %
+     \hiki{upperbound}{integer}
+   }{%
+     {\em integer}
+   }\\
+   \spacing
+   \quad Return a choice from a set given as the image of the mapping
+   from natural numbers (more precisely {\tt range(upperbound)}).  In
+   other words, it is equivalent to:
+   {\tt random.\linklibraryone{random\#choice}{choice}([mapping(i) for i in range(upperbound)])},
+   if \param{upperbound} is small enough for the list size limit.\\
+   \spacing
+   \quad The \param{mapping} can be a partial function, i.e. it may return
+   {\tt None} for some input. However, if the resulting set is empty, it
+   will end up with an infinite loop.\\
+\C
+
+%---------- end document ---------- %
+
+\input{footer}
