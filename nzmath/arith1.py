@@ -124,19 +124,19 @@ def expand(n, m):
     k.append(n)
     return k
 
-def inverse(x, p):
+def inverse(x, n):
     """
-    This function returns inverse of x for modulo p.
+    This function returns inverse of x for modulo n.
     """
-    x = x % p
-    y = gcd.extgcd(p, x)
+    x = x % n
+    y = gcd.extgcd(n, x)
     if y[2] == 1:
         if y[1] < 0:
-            r = p + y[1]
+            r = n + y[1]
             return r
         else:
             return y[1]
-    raise ZeroDivisionError("There is no inverse for %d modulo %d." % (x, p))
+    raise ZeroDivisionError("There is no inverse for %d modulo %d." % (x, n))
 
 def CRT(nlist):
     """

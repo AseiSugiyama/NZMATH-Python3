@@ -43,7 +43,7 @@
 % input, output ducument
 \quad \param{p} must be a prime number.\\
 %
-\subsection{expand -- p-adic expansion}\linkedone{arith1}{expand}
+\subsection{expand -- $m$-adic expansion}\linkedone{arith1}{expand}
 \func{expand}{\hiki{n}{integer}, \, \hiki{m}{integer}}{\out{list}}\\
 \spacing
 % document of basi document
@@ -53,13 +53,13 @@
 \quad \param{n} must be nonnegative integer. \param{m} must be greater than or equal to $2$.  The output is a list of expansion coefficients in ascending order.\\
 %
 \subsection{inverse -- inverse}\linkedone{arith1}{inverse}
-\func{inverse}{\hiki{x}{integer}, \, \hiki{p}{integer}}{\out{integer}}\\
+\func{inverse}{\hiki{x}{integer}, \, \hiki{n}{integer}}{\out{integer}}\\
 \spacing
 % document of basi document
-\quad Return the inverse of \param{x} for modulo \param{p}.\\
+\quad Return the inverse of \param{x} for modulo \param{n}.\\
 \spacing
 % input, output document
-\quad \param{p} must be a prime number.\\
+\quad \param{n} must be coprime to \param{x}.\\
 %
 \subsection{CRT -- Chinese Reminder Theorem}\linkedone{arith1}{CRT}
 \func{CRT}{\hiki{nlist}{list}}{\out{integer}}\\
