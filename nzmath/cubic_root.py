@@ -12,7 +12,7 @@ def c_root_p(a, p):
     if p == 2 or p == 3 : 
         return [a % p]
     if (p % 3) == 2:
-        return [pow(a, (((2 * p) - 1) / 3), p)]
+        return [pow(a, (((2 * p) - 1) // 3), p)]
     p_div_3, p_mod_3 = divmod((p - 1), 3)
     # Compute e,q
     e = 0
@@ -22,8 +22,8 @@ def c_root_p(a, p):
     while tempmod == 0:
         e += 1
         temp, tempmod = divmod(temp, 3)
-    q = (p - 1) / (3 ** e)
-    search_range = (p - 1) / 2
+    q = (p - 1) // (3 ** e)
+    search_range = (p - 1) // 2
     h = 2
     while pow(h, p_div_3, p) == 1:
         h = random.randrange(2, search_range)
@@ -33,9 +33,9 @@ def c_root_p(a, p):
     y = g
     r = e
     if q % 3 == 2:
-        x = pow(a, (q - 2) / 3, p)
+        x = pow(a, (q - 2) // 3, p)
     else:
-        x = pow(a, (((2 * q) - 2) / 3), p)
+        x = pow(a, (((2 * q) - 2) // 3), p)
 
     b = (pow(a, 2, p) * pow(x, 3, p)) % p
     x = (a * x) % p

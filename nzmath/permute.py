@@ -99,6 +99,8 @@ class Permute:
     def __div__(self, other):
         return self * (other.inverse())
 
+    __truediv__ = __div__
+
     def __rdiv__(self, other):
         return other * (self.inverse())
 
@@ -375,6 +377,8 @@ class ExPermute:
 
     def __div__(self, other):
         return self * other.inverse()
+
+    __truediv__ = __div__
 
     def __rdiv__(self, other):
         return other * self.inverse()

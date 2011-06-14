@@ -96,21 +96,18 @@ def combination_index_generator(n, m):
     """
     Generate indices of m elment subsets of n element set.
 
-    For example:
-    >>> for idx in combinationIndexGenerator(5,3):
-    ...     print idx
-    ...
-    [0, 1, 2]
-    [0, 1, 3]
-    [0, 1, 4]
-    [0, 2, 3]
-    [0, 2, 4]
-    [0, 3, 4]
-    [1, 2, 3]
-    [1, 2, 4]
-    [1, 3, 4]
-    [2, 3, 4]
-    >>>
+    For example, 
+    combinationIndexGenerator(5,3) generates the following lists:
+        [0, 1, 2]
+        [0, 1, 3]
+        [0, 1, 4]
+        [0, 2, 3]
+        [0, 2, 4]
+        [0, 3, 4]
+        [1, 2, 3]
+        [1, 2, 4]
+        [1, 3, 4]
+        [2, 3, 4]
     """
     assert n >= m > 0
     idx = range(m)
@@ -610,17 +607,14 @@ def permutation_generator(n):
 
     The number of generated list is n!, so be careful to use big n.
 
-    For example:
-    >>> for perm in permutationGenerator(3):
-    ...     print perm
-    ...
-    [0, 1, 2]
-    [0, 2, 1]
-    [1, 0, 2]
-    [1, 2, 0]
-    [2, 0, 1]
-    [2, 1, 0]
-    >>>
+    For example,
+    permutationGenerator(3) generates the following lists:
+        [0, 1, 2]
+        [0, 2, 1]
+        [1, 0, 2]
+        [1, 2, 0]
+        [2, 0, 1]
+        [2, 1, 0]
     """
     # traverse tree by depth first, using a stack
     stack = [[0]]
