@@ -70,7 +70,7 @@ class PermTest(unittest.TestCase):
         assert(1 == a1.sgn())
 
     def testTypes(self):
-        assert('[3] type' == a1.types())
+        assert([3] == a1.types())
 
     def testToMatrix(self):
         from nzmath.matrix import SquareMatrix

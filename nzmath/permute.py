@@ -7,7 +7,7 @@ import nzmath.rational as rational
 class Permute:
 
     """
-    This is a class for 'normal' type element of permutation group.
+    This is a class for 'normal' type element in the permutation group.
     Example, [2,3,1,5,4]
     This means [1 2 3 4 5]
                [2 3 1 5 4]
@@ -27,13 +27,13 @@ class Permute:
         """
         if isinstance(value, dict):
             if key:
-                raise TypeError("key isn't need when dict type is used")
+                raise TypeError("cannot convert Permute. I think `key` should be None.")
             data = value.values()
             key = value.keys()
         elif isinstance(value, (list, tuple)):
             data = list(value)
         else:
-            raise TypeError("Not normal form")
+            raise TypeError("cannot convert Permute. `value` should be a list or a dict.")
         if key == 0:
             self.data = [i + 1 for i in data]
             self.key = range(len(data))
@@ -41,7 +41,7 @@ class Permute:
             if isinstance(key, (list, tuple)):
                 self.key = list(key)
                 if len(value) != len(key):
-                    raise TypeError("Length error")
+                    raise TypeError("cannot convert Permute. The length of `key` should be equal to that of `value`.")
             elif key == 1:
                 p_key = list(data)
                 p_key.sort()
@@ -52,7 +52,7 @@ class Permute:
                 p_key.reverse()
                 self.key = p_key
             else:
-                raise TypeError("Input sequence type")
+                raise TypeError("cannot convert Permute. `key` should be a list.")
             key = self.key
             if flag:
                 self.data = data
@@ -65,11 +65,11 @@ class Permute:
         p_data = range(len(data))
         for x in data:
             if not rational.isIntegerObject(x):
-                raise TypeError("This number should be integer list")
+                raise TypeError("cannot convert Permute. `flag` should be False.")
             elif x <= 0 or x > len(data):
-                raise TypeError("This isn't onto")
+                raise TypeError("cannot convert Permute. The map should be onto.")
             elif p_data[x-1] == -1:
-                raise ValueError("This isn't one-to-one")
+                raise ValueError("cannot convert Permute. The map should be one-to-one.")
             else:
                 p_data[x-1] = -1
 
@@ -77,19 +77,19 @@ class Permute:
         try:
             idx = self.key.index(other)
         except ValueError:
-            raise ValueError("Input key element")
+            raise ValueError("The indices must be elements of self.key.")
         return self.key[self.data[idx]  - 1]
 
     def __mul__(self, other):
         """
-        Multiplication is with composite mapping way.
-        Self is calculated after other
+        Compute the multiplication, that is, the composite of two maps self \circ other.
+        The map is the application of `self` to the result of `other`.
         """
         s_data = self.data
         o_data = other.data
         lth = len(s_data)
         if self.key != other.key or lth != len(o_data):
-            raise TypeError("This can't multiply")
+            raise TypeError("cannot multiply a Permute by a Permute which has a different type.")
         sol = [s_data[o_data[i] - 1] for i in range(lth)]
         return Permute(sol, self.key, flag=True)
 
@@ -105,7 +105,7 @@ class Permute:
     def __pow__(self, other):
         sol = self.__class__(self.data, self.key, flag=True)
         if not rational.isIntegerObject(other):
-            raise TypeError("This can't calculate")
+            raise TypeError("cannot pow operation with %s" % other)
         if other > 0:
             for i in range(other - 1):
                 sol = self * sol
@@ -121,14 +121,14 @@ class Permute:
     def setKey(self, key=None):
         """
         Set other key.
-        this is used when you want to permute different sequence by
-        same permutation.
+        The function may be used if you want to permute a different sequence with
+        the same permutation.
         """
         if key == 0:
             self.key = range(len(data))
         elif key:
             if len(key) != len(self.key):
-                raise TypeError, "Invalid length"
+                raise TypeError, "The length of `key` should be equal to that of self.key."
             else:
                 if key[0] in self.key: # key transformation
                     data = list(self.data)
@@ -146,7 +146,7 @@ class Permute:
 
     def getValue(self):
         """
-        Get value expressed by key
+        Return value of self.
         """
         return [self.key[self.data[i] - 1] for i in range(len(self.data))]
 
@@ -162,9 +162,11 @@ class Permute:
 
     def numbering(self):
         """
-        Return number of permutation element.
+        Return the number of self by the following numbering.
+
+        This is the inductive definition on the dimension.
         It is symmetrical arranging.
-        This is inductive definition for dimension.
+
         Example,
         2-dimension [1,2], [2,1]
         3-dimension [1,2,3], [2,1,3], [1,3,2], [2,3,1], [3,1,2], [3,2,1]
@@ -194,7 +196,8 @@ class Permute:
         """
         This method returns
          2-dimensional cyclic type element of permutation group.
-        It is recursive program.
+
+        The method uses recursion.
         """
         s_data = list(self.data)
         lth = len(s_data)
@@ -230,7 +233,11 @@ class Permute:
 
     def sgn(self):
         """
-        This method returns sign for permutation element.
+        This method returns sign.
+        
+        If self is even permutation, that is, self can be written as a composition
+        of an even number of transpositions, it returns 1. Otherwise,that is, for odd
+        permutation, it returns -1.
         """
         return self.ToCyclic().sgn()
 
@@ -241,11 +248,11 @@ class Permute:
         c_data = self.ToCyclic().data
         sol = [len(c_data[i]) for i in range(len(c_data))]
         sol.sort()
-        return repr(sol) + ' type'
+        return sol
 
     def ToMatrix(self):
         """
-        This method returns permutation matrix
+        This method returns the permutation matrix.
         """
         lth = len(self.data)
         A = matrix.SquareMatrix(lth)
@@ -255,11 +262,12 @@ class Permute:
 
     def permute(self, lists):
         """
-        permute list following with self permutation
-        Warning: this permutation is independent on key (except dict type)
+        permute list following with self permutation.
+
+        Warning: The method do not check the compatibility of `lists` and self.key (except dict type).
         """
         if len(lists) != len(self.data):
-            raise TypeError, "invalid data size"
+            raise TypeError, "The length of `lists` should be equal to that of self.key."
         if isinstance(lists, dict):
             sol = {}
             key = self.key
@@ -302,7 +310,7 @@ class ExPermute:
 
     def __init__(self, dim, value, key=None, flag=False):
         if not (rational.isIntegerObject(dim) and isinstance(value, list)):
-            raise TypeError("This isn't cyclic form")
+            raise TypeError("cannot convert ExPermute. `dim` should be an integer and `value` should be a list.")
         self.dim = dim
         data = value
         self.data = []
@@ -315,9 +323,9 @@ class ExPermute:
             if isinstance(key, (list, tuple)):
                 self.key = list(key)
                 if dim != len(key):
-                    raise TypeError("Length error")
+                    raise TypeError("cannot convert ExPermute. The length of `key` should be equal to dim.")
             else:
-                raise TypeError("Input sequence type")
+                raise TypeError("cannot convert ExPermute. `key` should be a list or a tuple.")
             key = self.key
             if flag:
                 self.data = data
@@ -331,13 +339,13 @@ class ExPermute:
         data = self.data
         for x in data:
             if not isinstance(x, tuple):
-                raise TypeError("This isn't cyclic form")
+                raise TypeError("cannot convert ExPermute. `flag` should be False.")
             box = range(dim)
             for y in x:
                 if (y > dim) or (y <= 0):
-                    raise TypeError("This is out of range")
+                    raise TypeError("cannot convert ExPermute. The map should be onto.")
                 elif box[y-1] == -1:
-                    raise ValueError("This isn't one-to-one")
+                    raise ValueError("cannot convert ExPermute. The map should be one-to-one.")
                 else:
                     box[y-1] = -1
 
@@ -345,7 +353,7 @@ class ExPermute:
         try:
             idx = self.key.index(other)
         except ValueError:
-            raise ValueError("Input key element")
+            raise ValueError("The indices must be elements of self.key.")
         val = idx + 1
         for i in range(len(self.data) - 1, -1, -1):
             data_i = list(self.data[i])
@@ -358,7 +366,7 @@ class ExPermute:
 
     def __mul__(self, other):
         if self.key != other.key or self.dim != other.dim:
-            raise TypeError("This can't multiply")
+            raise TypeError("cannot multiply an ExPermute by an ExPermute which has a different type.")
         sol = [x for x in self.data] + [x for x in other.data]
         return ExPermute(self.dim, sol, self.key, flag=True)
 
@@ -374,7 +382,7 @@ class ExPermute:
     def __pow__(self, other):
         sol = ExPermute(self.dim, self.data, self.key, flag=True)  # other instance
         if not rational.isIntegerObject(other):
-            raise TypeError("This can't calculate")
+            raise TypeError("cannot pow operation with %s" % other)
         if other > 0:
             for i in range(other - 1):
                 sol = self * sol
@@ -390,14 +398,14 @@ class ExPermute:
     def setKey(self, key=None):
         """
         Set other key.
-        this is used when you want to permute different sequence by
-        same permutation.
+        The function may be used if you want to permute a different sequence with 
+        the same permutation.
         """
         if key == 0:
             self.key = range(self.dim)
         elif key:
             if len(key) != self.dim:
-                raise TypeError, "Invalid length"
+                raise TypeError, "The lenght of `key` should be equal to that of self.key."
             else:
                 if key[0] in self.key: # key transformation
                     data = list(self.data)
@@ -418,7 +426,7 @@ class ExPermute:
 
     def getValue(self):
         """
-        Get data expressed by key
+        Return value of self.
         """
         out = []
         for x in self.data:
@@ -483,6 +491,10 @@ class ExPermute:
     def sgn(self):
         """
         This method returns sign for permutation element.
+
+        If self is even permutation, that is, self can be written as a composition
+        of an even number of transpositions, it returns 1. Otherwise,that is, for odd
+        permutation, it returns -1.
         """
         sol = 1
         for x in self.data:
@@ -493,10 +505,11 @@ class ExPermute:
     def permute(self, lists):
         """
         permute list following with self permutation
-        Warning: this permutation is independent on key (except dict type)
+        
+        Warning: The method do not check the compatibility of `lists` and self.key (except dict type).
         """
         if len(lists) != self.dim:
-            raise TypeError, "invalid data size"
+            raise TypeError, "The length of `lists` should be equal to self.dim."
         if isinstance(lists, dict):
             sol = dict(lists)
             key = self.key
@@ -553,7 +566,7 @@ class PermGroup:
         elif isinstance(key, dict):
             self.key = dict.keys()
         else:
-            raise TypeError, "input int or sequence"
+            raise TypeError, "cannot convert PermGroup. `key` should be an integer or a list/tuple/dict."
 
     def __repr__(self):
         return repr(self.key)
@@ -585,7 +598,7 @@ class PermGroup:
             if set(self.key) == set(dict.keys()):
                 return Permute(seed)
             else:
-                raise TypeError, "key type is contradict"
+                raise TypeError, "`seed`.key should be equal to self.key."
         elif isinstance(seed, tuple):
             return Permute(list(seed). self.key)
         elif isinstance(seed, list):
@@ -593,7 +606,7 @@ class PermGroup:
                 return Permute(seed, self.key)
             elif isinstance(seed[0], tuple):
                 return ExPermute(len(self.key), seed, self.key)
-        raise TypeError, "input Normal type or Cyclic type seed."
+        raise TypeError, "`seed` should be a dict/tuple/list."
 
     def identity(self):
         return Permute(self.key, self.key)
