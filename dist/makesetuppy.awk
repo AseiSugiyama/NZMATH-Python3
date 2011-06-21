@@ -13,7 +13,7 @@ BEGIN {
     print "";
     print "version = '" version "'";
     print "doc_prefix = 'doc/NZMATH-%s/' % version";
-    print "data_prefix = 'nzmath/'";
+    print "data_prefix = 'nzmath'";
     print "";
 
     print "setup(";
@@ -42,8 +42,10 @@ BEGIN {
 #    print "    ]";
      print "    data_files=["
      print "        (data_prefix, ['data/discriminant.csv']),";
-     print "        (doc_prefix + 'manual',";
-     print "            glob.glob('manual/*.pdf')),";
+     print "        (doc_prefix + 'manual/ja',";
+     print "            glob.glob('manual/ja/*.pdf')),";
+     print "        (doc_prefix + 'manual/en',";
+     print "            glob.glob('manual/en/*.pdf')),";
      print "    ]";
     print ")";
 }
