@@ -16,7 +16,7 @@ Steps
    The minor (micro) version is reset if major (resp. minor) version
    is incremented.  The major version changes with the base Python
    version that the NZMATH supports.  For example, all of NZMATH 0.x.x
-   run on Python 2.3 or higher.  The minor version changes with the
+   run on Python 2.5 or higher.  The minor version changes with the
    module structure; additions or deletions of modules or sub-package.
    The micro version reflects other changes like bug fixes.
 
@@ -75,6 +75,15 @@ Steps
    You can ignore following warning:
    "Warning: Can't read registry to find the necessary compiler setting"
 
+   Also, in a machine installed a Windows Python and a cygwin in,
+   run 'make win' in dist subdirectory in the cygwin shell:
+      % cd ~/tmp/nmath/dist
+      % make win
+
+   Moreover, run 'make unix' in dist subdirectory in a unix platform:
+      % cd ~/tmp/nmath/dist
+      % make unix
+
 6. Make a test distribution file.
 
    The tests also should be distributed.  There is no automation to
@@ -91,8 +100,11 @@ Steps
 
 8. Put the distribution file on the web.
 
-   The distribution files NZMATH-x.y.z.tar.gz and
-   NZMATH-test-x.y.z.tar.gz have to be made public.
+   The distribution files have to be made public.
+   It includes:
+   NZMATH-x.y.z.tar.gz, NZMATH-x.y.z.zip, NZMATH-x.y.z.win32Install.exe, 
+   NZMATH-x.y.z.win64Install.exe, NZMATH-x.y.z.noarch.rpm, and
+   NZMATH-test-x.y.z.tar.gz.
 
    Currently, we use http://tnt.math.se.tmu.ac.jp/nzmath as the main
    web site of the NZMATH project, so put the file onto it.  Then
@@ -108,8 +120,7 @@ Steps
    The secondary download site is sourceforge.net.  There is a help
    page on sourceforge.net, so the series of steps described here is
    just a rough guideline.
-   1) upload NZMATH-x.y.z.tar.gz and NZMATH-test-x.y.z.tar.gz by
-      anonymous ftp.
+   1) upload the distribution files by anonymous ftp.
    2) create new release names from the web interface.
    3) go on to pick up the files as new release files.
 
@@ -119,8 +130,12 @@ Steps
 9. Announce.
 
    Very few people will notice the update until you announce it.  The
-   places to announce are currently the nzmath-user ML and the
-   sourceforgef.net project news.  For the latter, you need right to
+   places to announce are currently the MLs and the
+   sourceforgef.net project news. 
+   The MLs include:
+   nzmath-user, jant, rsnt, tnt.
+   Also, consider posting to NMBRTHRY, or ANTML.
+   For the latter, you need right to
    submit a news on sourceforge.net nzmath project.  You can use the
    previous announcements as templates.
 

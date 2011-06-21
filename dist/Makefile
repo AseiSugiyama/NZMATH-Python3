@@ -6,7 +6,7 @@ OLD_VER = 1.0.1
 NEW_VER = 1.1.0
 
 all: html sdist zip wininst
-unix: rpm pkgtool
+unix: rpm
 win: build_win32 build_win64
 
 sdist: files setup.py
@@ -17,9 +17,6 @@ zip: files setup.py
 
 rpm: files setup.py
 	(cd $(TMPDIR); $(PYTHON) setup.py bdist_rpm; mv build build_rpm)
-
-pkgtool: files setup.py
-	(cd $(TMPDIR); $(PYTHON) setup.py bdist --formats=pkgtool; mv build build_rpm)
 
 wininst: files setup.py
 	(cd $(TMPDIR); $(PYTHON) setup.py bdist_wininst --user-access-control=auto; mv build build_wininst)
@@ -40,6 +37,7 @@ build_win64: files setup.py
 	for i in $(TMPDIR)/dist_wininst/*; do\
 		chmod 755 $$i; \
 		mv $$i `echo $$i | sed 's/.exe/Install.exe/'`; \
+		mv $$i `echo $$i | sed 's/win-amd64/win64/'`; \
 	done
 
 setup.py: files
