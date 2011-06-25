@@ -290,7 +290,7 @@ class MPQS(object):
         a = d**2
         h_0 = pow(self.number, (d-3)//4, d)
         h_1 = (h_0*self.number) % d
-        h_2 = ((arith1.inverse(2,d)*h_0*(self.number - h_1**2))/d) % d
+        h_2 = ((arith1.inverse(2,d)*h_0*(self.number - h_1**2))//d) % d
         b = (h_1 + h_2*d) % a
         if b%2 == 0:
             b = b - a
@@ -324,7 +324,7 @@ class MPQS(object):
         M = self.Srange
         a = self.a_list[-1]            #
         b = self.b_list[-1]            # These are coefficients of F(x)
-        c = (b**2-self.number)/(4*a)   #
+        c = (b**2-self.number)//(4*a)   #
         d = self.d_list[-1]            #
 
         self.poly_table = []  # This is F(x) value , x in [-M,M].
