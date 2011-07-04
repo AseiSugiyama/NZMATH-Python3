@@ -181,12 +181,12 @@ class PrepareIndeterminateTest(unittest.TestCase):
         multiutil.prepare_indeterminates("S T X Y", ctx)
         self.assertTrue("X" in ctx)
         for var in ctx:
-            exec "%s = ctx['%s']" % (var, var)
-        self.assertTrue(S)
-        self.assertTrue(T)
+            exec "self.%s = ctx['%s']" % (var, var)
+        self.assertTrue(self.S)
+        self.assertTrue(self.T)
         Z = rational.theIntegerRing
-        XY = multiutil.polynomial({(0, 0, 1, 1): 1}, Z)
-        self.assertEqual(XY, X * Y)
+        self.XY = multiutil.polynomial({(0, 0, 1, 1): 1}, Z)
+        self.assertEqual(self.XY, self.X * self.Y)
 
 
 def suite(suffix="Test"):
