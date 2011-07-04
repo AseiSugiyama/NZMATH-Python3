@@ -315,6 +315,9 @@ class NumberField (ring.Field):
             return True
         return False
 
+    def __hash__(self):
+        raise NotImplementedError
+
     # properties
     def _getOne(self):
         "getter for one"

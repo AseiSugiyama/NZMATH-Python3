@@ -89,6 +89,10 @@ class FormalSumContainerInterface (object):
                 return False
         return True
 
+    def __hash__(self):
+        val = sum([hash(self[base]) for base in set(self.iterbases())]) 
+        return val
+
     def __ne__(self, other):
         """
         self != other
@@ -315,6 +319,10 @@ class DictFormalSum (FormalSumContainerInterface):
             return True
         return False
 
+    def __hash__(self):
+        val = sum([hash(ele) for ele in self._data]) 
+        return val
+   
     def __getitem__(self, base):
         """
         self[base]
@@ -432,6 +440,10 @@ class ListFormalSum (FormalSumContainerInterface):
         if set(self._data) == set(other._data):
             return True
         return False
+
+    def __hash__(self):
+        val = sum([hash(ele) for ele in set(self._data)]) 
+        return val
 
     def __getitem__(self, base):
         """

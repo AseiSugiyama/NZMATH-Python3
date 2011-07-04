@@ -118,6 +118,9 @@ class Real(ring.FieldElement):
         else:
             return NotImplemented
 
+    def __hash__(self):
+        return hash(self.data)
+
     def getRing(self):
         """
         Return the real field instance.

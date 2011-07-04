@@ -149,6 +149,13 @@ class Matrix(object):
         else:
             return False
 
+    def __hash__(self):
+        val = 0
+        for i in range(self.row):
+            for j in range(self.column):
+                val += hash(self.compo[i][j])
+        return val
+
     def __ne__(self, other):
         """
         Check self != other.
@@ -1601,6 +1608,9 @@ class MatrixRing (ring.Ring):
         return (self.__class__ == other.__class__ and
                 self.size == other.size and
                 self.scalars == other.scalars)
+
+    def __hash__(self):
+        return self.scalars ** self.size
 
     def __repr__(self):
         return "MatrixRing(%d, %s)" % (self.size, self.scalars)

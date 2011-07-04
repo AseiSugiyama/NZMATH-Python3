@@ -540,6 +540,10 @@ class Zeta(object):
                 return False
         return True
 
+    def __hash__(self):
+        hash_val = sum([hash(z[i]) for i in range(1, self.size)])
+        return hash_val
+
     def weight(self):
         return len(filter(None,self.z))
 
@@ -611,6 +615,9 @@ class FactoredInteger(object):
 
     def __eq__(self, other):
         return self.integer == int(other)
+
+    def __hash__(self):
+        return hash(self.integer)
 
     def __ne__(self, other):
         return self.integer != int(other)

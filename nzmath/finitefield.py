@@ -238,6 +238,9 @@ class FinitePrimeField(FiniteField):
             return self.char == other.char
         return False
 
+    def __hash__(self):
+        return self.char
+
     def __ne__(self, other):
         return not (self == other)
 
@@ -492,6 +495,9 @@ class ExtendedFieldElement(FiniteFieldElement):
         except AttributeError:
             pass
         return False
+
+    def __hash__(self):
+        return hash(self.rep)
 
     def __ne__(self, other):
         return not (self == other)

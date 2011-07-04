@@ -51,6 +51,12 @@ class RationalFunction(ring.QuotientFieldElement):
         except AttributeError:
             return NotImplemented
 
+    def __hash__(self):
+        try:
+            return ring.QuotientFieldElement.__hash__(self)
+        except AttributteError:
+            return NotImplemented
+
     def __call__(self, *args):
         """
         evaluation

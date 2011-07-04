@@ -60,6 +60,11 @@ class ReducedQuadraticForm(object):
         else:
             return False
 
+    def __hash__(self):
+        val = sum([hash(ele) for ele in self.element]) 
+        val += sum([hash(ele) for ele in self.unit])
+        return val 
+
     def __ne__(self, other):
         return not self.__eq__(other)
 

@@ -105,6 +105,9 @@ class FactoredInteger(object):
     def __eq__(self, other):
         return self.integer == int(other)
 
+    def __hash__(self):
+        return hash(self.integer)
+
     def __ne__(self, other):
         return self.integer != int(other)
 

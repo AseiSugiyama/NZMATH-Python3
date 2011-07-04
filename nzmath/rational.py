@@ -738,6 +738,9 @@ class Integer(long, ring.CommutativeRingElement):
     def __eq__(self, other):
         return long(self) == long(other)
 
+    def __hash__(self):
+        return hash(long(self))
+
     def getRing(self):
         return theIntegerRing
 

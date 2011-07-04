@@ -75,6 +75,9 @@ class Ring (object):
         """
         raise NotImplementedError("derived class should override")
 
+    def __hash__(self):
+        raise NotImplementedError("derived class should override")
+
     def __ne__(self, other):
         """
         Inequality test.
@@ -275,6 +278,9 @@ class RingElement (object):
         """
         raise NotImplementedError
 
+    def __hash__(self):
+        raise NotImplementedError
+
     def __ne__(self, other):
         """
         Inequality test.
@@ -448,6 +454,8 @@ class QuotientFieldElement (FieldElement):
         except TypeError:
             return NotImplemented
 
+    def __hash__(self):
+        return hash(self.numerator * self.denominator)
 
 class Ideal (object):
     """
@@ -507,6 +515,9 @@ class Ideal (object):
         if self.ring is not other.ring:
             return False
         return self.issubset(other) and self.issuperset(other)
+
+    def __hash__(self):
+        raise NotImplementedError
 
     def __ne__(self, other):
         """
@@ -574,6 +585,9 @@ class ResidueClassRing (CommutativeRing):
             return self.ideal == other.ideal
         return False
 
+    def __hash__(self):
+        return hash(self.ideal)
+
     # properties
     def _getOne(self):
         "getter for one"
@@ -627,6 +641,9 @@ class ResidueClass (CommutativeRingElement):
             if self.ideal == other.ideal:
                 return (self.x - other.x) in self.ideal
         return False
+
+    def __hash__(self):
+        raise NotImplementedError 
 
     def getRing(self):
         """

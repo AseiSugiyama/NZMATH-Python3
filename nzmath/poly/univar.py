@@ -39,6 +39,10 @@ class PolynomialInterface(formalsum.FormalSumContainerInterface):
         oterms.sort()
         return sterms == oterms
 
+    def __hash__(self):
+       val = sum([hash(t) for t in self.iterterms() if t[1]])
+       return val 
+
     def __pow__(self, index):
         """
         self ** index
@@ -345,6 +349,9 @@ class BasicPolynomial(PolynomialInterface):
         if self is other:
             return True
         return PolynomialInterface.__eq__(self, other)
+
+    def __hash__(self):
+        return PolynomialInterface.__hash__(self)
 
     def __repr__(self): # for debug
         return "%s(%s)" % (self.__class__.__name__, repr(self._coefficients))
@@ -799,6 +806,10 @@ class SortedPolynomial (PolynomialInterface):
         if [t for t in self if t[1]] == [t for t in other if t[1]]:
             return True
         return False
+
+    def __hash__(self):
+        val = sum([hash(t) for t in self if t[1]]) 
+        return val
 
     def __call__(self, val):
         """

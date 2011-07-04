@@ -22,6 +22,10 @@ class Vector (object):
     def __eq__(self, other):
         return self.compo == other.compo
 
+    def __hash__(self):
+        val = sum([hash(ele) for ele in self.compo]) 
+        return val
+
     def __ne__(self, other):
         return self.compo != other.compo
 

@@ -131,6 +131,9 @@ class Complex (ring.FieldElement):
             else:
                 return NotImplemented
 
+    def __hash__(self):
+        return hash(self.real**2 + self.imag**2)
+
     def __ne__(self, other):
         try:
             return self.real != other.real or self.imag != other.imag
