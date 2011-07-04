@@ -3,6 +3,7 @@ Term Order for polynomials.
 """
 
 import re
+import nzmath.compatibility
 import nzmath.ring as ring
 
 

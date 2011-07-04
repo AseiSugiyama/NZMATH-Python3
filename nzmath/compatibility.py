@@ -12,6 +12,14 @@ except NameError:
     __builtins__["frozenset"] = sets.ImmutableSet
     del sets
 
+# __builtins__.cmp is only in <3.0.
+# Be careful that the compatibility is not perfect.
+try:
+    cmp
+except NameError:
+    cmp = lambda x,y: (x>y) - (x<y)
+    __builtins__["cmp"] = cmp
+    del cmp
 
 # builtin len() raises OverflowError when the result > sys.maxint.
 # I'm not sure this restriction will go away in the future.
