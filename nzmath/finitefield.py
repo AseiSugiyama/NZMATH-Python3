@@ -503,7 +503,7 @@ class ExtendedFieldElement(FiniteFieldElement):
         return not (self == other)
 
     def __nonzero__(self):
-        return self.rep.__nonzero__()
+        return bool(self.rep)
 
     def __repr__(self):
         return "%s(%s, %s)" % (self.__class__.__name__, repr(self.rep), repr(self.field))
