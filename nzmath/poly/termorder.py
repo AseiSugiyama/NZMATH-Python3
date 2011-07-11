@@ -101,8 +101,9 @@ class UnivarTermOrder (TermOrderInterface):
         - 'reverse' can be either True or False. If it's True, terms
           appear in reverse (descending) order.
         """
-        degrees = [base for base in polynom.iterbases()]
-        degrees.sort(cmp=self.comparator)
+        degrees = _sort_with_cmp(
+            [base for base in polynom.iterbases()],
+            self.comparator)
         if reverse:
             degrees.reverse()
         str_terms = [("%s * %s ** %d" % (polynom[d], varname, d)) for d in degrees if polynom[d]]
@@ -216,8 +217,7 @@ class MultivarTermOrder (TermOrderInterface):
         if varnames is None:
             raise TypeError("keyword argument 'varnames' is required")
 
-        bases = polynom.bases()
-        bases.sort(cmp=self.comparator)
+        bases = _sort_with_cmp(polynom.bases(), self.comparator)
         if reverse:
             bases.reverse()
 
@@ -347,3 +347,29 @@ def _total_degree_reverse_lexicographic(left, right):
 lexicographic_order = MultivarTermOrder(cmp)
 total_degree_lexicographic_order = MultivarTermOrder(_total_degree_lexicographic)
 total_degree_reverse_lexicographic_order = MultivarTermOrder(_total_degree_reverse_lexicographic)
+
+
+### for compatibility function
+def _sort_with_cmp(seq, mycmp):
+    """
+    Return the sorted seq by using the comparator function mycmp.
+    """
+    
+    try:
+        return sorted(seq, cmp=mycmp)
+    except TypeError: # cmp is no longer available
+        class internal_cmp:
+            def __init__(self, obj):
+                self.obj = obj
+            def __gt__(self, other):
+                return mycmp(self.obj, other.obj) > 0
+            def __ge__(self, other):
+                return mycmp(self.obj, other.obj) >= 0
+            def __lt__(self, other):
+                return mycmp(self.obj, other.obj) < 0
+            def __le__(self, other):
+                return mycmp(self.obj, other.obj) <= 0
+            def __cmp__(self, other):
+                return mycmp(self.obj, other.obj)
+        return sorted(seq, key=internal_cmp)
+
