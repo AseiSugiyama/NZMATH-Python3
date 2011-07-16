@@ -120,13 +120,14 @@ def trialDivision(n, **options):
     else:
         trials = prime.generator()
 
+    limit = arith1.floorsqrt(n)
     for p in trials:
-        if not (n % p):
+        if limit < p:
+            break
+        if 0 == n % p:
             if not verbose:
                 _verbose()
             return p
-        if p ** 2 > n:
-            break
     if not verbose:
         _verbose()
     return 1
