@@ -241,7 +241,8 @@ def generator_eratosthenes(n):
         sieve = sieve[:sieve_len_max]
 
     # sieve
-    while k*k <= n:
+    limit = arith1.floorsqrt(n)
+    while k <= limit:
         if sieve[i]:
             yield k
             j = i + k
@@ -252,10 +253,10 @@ def generator_eratosthenes(n):
         i += 1
 
     # output result
-    while k <= n:
+    limit = (n - 1) // 2
+    while i <= limit:
         if sieve[i]:
-            yield k
-        k += 2
+            yield 2 * i + 1
         i += 1
 
 
