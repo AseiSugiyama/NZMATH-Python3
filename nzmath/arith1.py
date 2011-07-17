@@ -16,11 +16,13 @@ def floorsqrt(a):
     if a < 2 ** 59:
         return int(math.sqrt(a))
     else:
-        b_old = a
-        b = pow(10, log(a, 10)//2 + 1)
-        while b_old > b:
-            b_old, b = b, (b+a//b)//2
-        return b_old
+        # Newton method
+        x = pow(10, log(a, 10)//2 + 1)
+        while True:
+            x_new = (x + a//x) // 2
+            if x <= x_new:
+                return x
+            x = x_new
 
 def floorpowerroot(n, k):
     """
@@ -140,7 +142,7 @@ def inverse(x, n):
 
 def CRT(nlist):
     """
-    This function is Chinese Remainder Theorem using Algorithm 2.1.7 
+    This function is Chinese Remainder Theorem using Algorithm 2.1.7
     of C.Pomerance and R.Crandall's book.
 
     For example:
