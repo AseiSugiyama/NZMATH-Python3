@@ -214,13 +214,14 @@ def generator_eratosthenes(n):
     """
     if n < 2:
         raise StopIteration
+
     yield 2
 
-    sieve_len_max = (n+1)//2
+    sieve_len_max = (n+1) // 2
     if n < 400:
         # simple init is faster below 400, on my machine :-)
         sieve = [1] * sieve_len_max
-        k = 3
+        k = 3   # always k == i * 2 + 1
         i = 1
     else:
         yield 3
@@ -235,9 +236,11 @@ def generator_eratosthenes(n):
                 sieve_len *= k
                 for j in range(i, sieve_len, k):
                     sieve[j] = 0
-            k, i = k+2, i+1
+            k += 2
+            i += 1
         sieve = sieve[:sieve_len_max]
 
+    # sieve
     while k*k <= n:
         if sieve[i]:
             yield k
@@ -245,11 +248,15 @@ def generator_eratosthenes(n):
             while j < sieve_len_max:
                 sieve[j] = 0
                 j += k
-        k, i = k+2, i+1
+        k += 2
+        i += 1
+
+    # output result
     while k <= n:
         if sieve[i]:
             yield k
-        k, i = k+2, i+1
+        k += 2
+        i += 1
 
 
 def nextPrime(n):
