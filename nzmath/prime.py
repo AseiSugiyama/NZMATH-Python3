@@ -216,38 +216,42 @@ def generator_eratosthenes(n):
         raise StopIteration
 
     yield 2
+    if n <= 2:
+        return
 
+    yield 3
+
+    # make list for sieve
     sieve_len_max = (n+1) // 2
-    if n < 400:
-        # simple init is faster below 400, on my machine :-)
-        sieve = [1] * sieve_len_max
-        k = 3   # always k == i * 2 + 1
-        i = 1
-    else:
-        yield 3
-        sieve = [1, 0, 1]
-        k = 5
-        i = 2
-        sieve_len = 3
-        while sieve_len < sieve_len_max:
-            if sieve[i]:
-                yield k
+    sieve = [True, False, True]
+    sieve_len = 3
+    k = 5
+    i = 2
+    while sieve_len < sieve_len_max:
+        if sieve[i]:
+            yield k
+            sieve_len *= k
+            if sieve_len_max < sieve_len:
+                sieve_len //= k
+                # adjust sieve list length
+                sieve *= sieve_len_max // sieve_len
+                sieve += sieve[:(sieve_len_max - len(sieve))]
+                sieve_len = sieve_len_max
+            else:
                 sieve = sieve * k
-                sieve_len *= k
-                for j in range(i, sieve_len, k):
-                    sieve[j] = 0
-            k += 2
-            i += 1
-        sieve = sieve[:sieve_len_max]
+            for j in range(i, sieve_len, k):
+                sieve[j] = False
+        k += 2
+        i += 1
 
     # sieve
     limit = arith1.floorsqrt(n)
     while k <= limit:
         if sieve[i]:
             yield k
-            j = i + k
+            j = (k ** 2 - 1) // 2
             while j < sieve_len_max:
-                sieve[j] = 0
+                sieve[j] = False
                 j += k
         k += 2
         i += 1
