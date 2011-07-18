@@ -17,23 +17,37 @@ def floorsqrt(a):
         return int(math.sqrt(a))
     else:
         # Newton method
-        x = pow(10, log(a, 10)//2 + 1)
+        x = pow(10, log(a, 10)//2 + 1) # compute initial value
         while True:
             x_new = (x + a//x) // 2
             if x <= x_new:
                 return x
             x = x_new
 
-def floorpowerroot(n, k):
+def floorpowerroot(n, k, return_power = False):
     """
     Return the floor of k-th power root of the given integer n.
+    Use Newton method.
     """
     if k == 1:
-        return n
+        if return_power:
+            return n, n
+        else:
+            return n
     elif k == 2:
-        return floorsqrt(n)
-    if n < 0:
-        if not (k & 1):
+        rslt = floorsqrt(n)
+        if return_power:
+            return rslt, rslt ** 2
+        else:
+            return rslt
+
+    if n <= 0:
+        if 0 == n:
+            if return_power:
+                return 0, 0
+            else:
+                return 0
+        elif 0 == k & 1:
             raise ValueError("%d has no real %d-th root." % (n, k))
         else:
             sign = -1
@@ -41,23 +55,28 @@ def floorpowerroot(n, k):
     else:
         sign = 1
 
-    a = floorsqrt(n)
-    b = 0
-    while a > b:
-        c = (a + b) // 2
-        if c**k > n:
-            a = c
-        else:
-            if b == c:
-                a = b
-                break
-            b = c
-    while (a+1)**k <= n: # needed when floorsqrt(n) is already small.
-        a += 1
+    # compute initial values
+    exp, rem = divmod(log(n) + 1, k)
+    if 0 != rem: # not ceiling
+        exp += 1
+    q = n >> (exp * (k - 1))
+    x = 1 << exp
+
+    # iteration by tangent approximation
+    while True:
+        x += (q - x) // k
+        z = x ** (k - 1)
+        q = n // z
+        if x <= q:
+            break
 
     if sign < 0:
-        a = -a
-    return a
+        x = -x
+
+    if return_power:
+        return x, x * z
+    else:
+        return x
 
 def legendre(a, m):
     """
