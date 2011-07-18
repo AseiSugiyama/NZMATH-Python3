@@ -47,6 +47,11 @@ class Arith1Test (unittest.TestCase):
         self.assertEqual(1, arith1.floorpowerroot(2, 7))
         self.assertEqual(2, arith1.floorpowerroot(8, 3))
         self.assertEqual(2, arith1.floorpowerroot(128, 7))
+        self.assertEqual((5, 5), arith1.floorpowerroot(5, 1, True))
+        self.assertEqual((5, 25), arith1.floorpowerroot(27, 2, True))
+        self.assertEqual((0, 0), arith1.floorpowerroot(0, 7, True))
+        self.assertEqual((3, 243), arith1.floorpowerroot(245, 5, True))
+        self.assertEqual((-3, -243), arith1.floorpowerroot(-245, 5, True))
         for j in range(3,100,10):
             k = 5**j
             self.assertEqual(4, arith1.floorpowerroot(k - 1, j))
