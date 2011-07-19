@@ -34,6 +34,7 @@ import testRational
 import testReal
 import testRing
 import testRound2
+import testSequence
 import testSquarefree
 import testVector
 #import testZassenhaus deprecated

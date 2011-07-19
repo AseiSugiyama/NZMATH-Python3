@@ -91,6 +91,18 @@ class Arith1Test (unittest.TestCase):
         self.assertEqual(1, arith1.product([]))
         self.assertEqual(120, arith1.product(xrange(1, 6)))
         self.assertEqual(14400, arith1.product(i**2 for i in range(1, 6)))
+    
+    def testPowerDetection(self):
+        self.assertEqual((1, 1), arith1.powerDetection(1))
+        self.assertEqual((2, 1), arith1.powerDetection(2))
+        self.assertEqual((3, 1), arith1.powerDetection(3))
+        self.assertEqual((2, 2), arith1.powerDetection(4))
+        self.assertEqual((3, 2), arith1.powerDetection(9))
+        self.assertEqual((4, 2), arith1.powerDetection(16))
+        self.assertEqual((2, 4), arith1.powerDetection(16, True))
+        self.assertEqual((97, 1), arith1.powerDetection(97))
+        self.assertEqual((16, 2), arith1.powerDetection(256))
+        self.assertEqual((2, 8), arith1.powerDetection(256, True))
 
 
 def suite(suffix="Test"):
