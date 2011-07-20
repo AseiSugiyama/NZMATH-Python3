@@ -1,4 +1,4 @@
-def generator_fibonacci(n = None):
+def generator_fibonacci(n=None):
     """
     Generate Fibonacci number up to n-th term if n is assigned
     else infinity
@@ -34,12 +34,10 @@ def fibonacci(n):
     Fibonacci Sequence
     param non-negative integer n
     return the n-th term of the Fibonacci
-    effect FIBONACCI[n] = FIBONACCI(n)
+    effect FIBONACCI[n] = fibonacci(n)
     """
-    global FIBONACCI
-
     if n < 0:
-        raise ValueError, "fibonacci(n)  0 <= n  ?"
+        raise ValueError("fibonacci(n)  0 <= n  ?")
 
     if n in FIBONACCI:
         return FIBONACCI[n]
@@ -49,7 +47,7 @@ def fibonacci(n):
         f1 = fibonacci(m - 1)
         f2 = fibonacci(m)
         FIBONACCI[n] = (f1 + f1 + f2) * f2
-    else : # odd  n
+    else:
         f1 = fibonacci(m)
         f2 = fibonacci(m + 1)
         FIBONACCI[n] = f1 ** 2 + f2 ** 2
