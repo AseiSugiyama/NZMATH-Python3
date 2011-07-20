@@ -1,6 +1,7 @@
 def generator_fibonacci(n = None):
     """
-    Generate Fibonacci number up to n-th term
+    Generate Fibonacci number up to n-th term if n is assigned
+    else infinity
     """
     a = 0
     b = 1
