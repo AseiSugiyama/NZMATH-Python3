@@ -1,7 +1,7 @@
 def generator_fibonacci(n=None):
     """
     Generate Fibonacci number up to n-th term if n is assigned
-    else infinity
+    else infinity.
     """
     a = 0
     b = 1
@@ -31,7 +31,6 @@ def generator_fibonacci(n=None):
 FIBONACCI = {0:0, 1:1}
 def fibonacci(n):
     """
-    Fibonacci Sequence
     param non-negative integer n
     return the n-th term of the Fibonacci
     effect FIBONACCI[n] = fibonacci(n)
