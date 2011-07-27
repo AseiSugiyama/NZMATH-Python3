@@ -1,5 +1,5 @@
 """
-prime ideal decomposion over an (absolute) number field
+prime ideal decomposition over an (absolute) number field
 """
 
 import nzmath.arith1 as arith1
