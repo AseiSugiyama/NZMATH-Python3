@@ -55,8 +55,8 @@ def pmom(n, **options):
         _silence()
 
     # initialize
-    x , B = 2 , 10000001
-    y = x
+    x = y = 2
+    B = 10000001
     primes = []
 
     for q in prime.generator():
@@ -69,7 +69,7 @@ def pmom(n, **options):
             x = y
             break
         q1 = q
-        l = B//q
+        l = B // q
         while q1 <= l:
             q1 *= q
         x = pow(x, q1, n)
