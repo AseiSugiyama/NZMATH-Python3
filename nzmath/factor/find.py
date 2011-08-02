@@ -30,6 +30,7 @@ def rhomethod(n, **options):
 
     g = n
     while g == n:
+        # x^2 + a is iterated. Starting value x = u.
         a = bigrandom.randrange(1, n-2)
         u = v = bigrandom.randrange(0, n-1)
         _log.info("%d %d" % (a, u))
