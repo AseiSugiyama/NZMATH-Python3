@@ -3,128 +3,122 @@
 \input{../header_function}
 
 %---------- start document ---------- %
- \section{prime -- primality test , prime generation}\linkedzero{prime}
+ \section{prime --  ‘f””»’è, ‘f”¶¬}\linkedzero{prime}
 %
-  \subsection{trialDivision -- trial division test}\linkedone{prime}{trialDivision}
+  \subsection{trialDivision -- ŽŽ‚µŠ„‚èŽZ}\linkedone{prime}{trialDivision}
    \func{trialDivision}
    {\hiki{n}{integer},\ \hikiopt{bound}{integer/float}{0}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Trial division primality test for an odd natural number.\\
+   \quad Šï”‚É‘Î‚·‚éŽŽ‚µŠ„‚èŽZ.\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{bound} is a search bound of primes. 
-   If it returns \(1\) under the condition that \param{bound} is given and 
-   less than the square root of \param{n}, 
-   it only means there is no prime factor less than \param{bound}.
+   \quad \param{bound}‚Í‘f”‚Ì’Tõ”ÍˆÍ. 
+   ‚à‚µ\param{bound}‚ª—^‚¦‚ç‚ê,\param{n}‚Ì•½•ûª‚æ‚è‚à¬‚³‚¢‚Æ‚¢‚¤ðŒ‚Ì‚à‚Æ \(1\) ‚ð•Ô‚¹‚Î,‚»‚ê‚Í\param{bound}ˆÈ‰º‚É‘fˆö”‚ª‚È‚¢‚±‚Æ‚ðˆÓ–¡‚·‚é.
 %
-  \subsection{spsp -- strong pseudo-prime test}\linkedone{prime}{spsp}
+  \subsection{spsp -- ‹­‹[‘f”ƒeƒXƒg}\linkedone{prime}{spsp}
    \func{spsp}{\hiki{n}{integer},\ \hiki{base}{integer},\ \hikiopt{s}{integer}{None},\ \hikiopt{t}{integer}{None}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Strong Pseudo-Prime test on base \param{base}.\\
+   \quad \param{base}‚ðŠî‚É‚µ‚½‹­‹[‘f”ƒeƒXƒg.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-   \quad \param{s} and \param{t} are the numbers such that $n-1 = 2^\param{s}\param{t}$ and \param{t} is odd.
+   \quad \param{s}‚Æ\param{t}‚Í $n-1 = 2^\param{s}\param{t}$ ‚©‚Â\param{t} ‚ÍŠï”,‚Æ‚È‚é‚æ‚¤‚È”.
 %
- \subsection{smallSpsp -- strong pseudo-prime test for small number}\linkedone{prime}{smallSpsp}
+ \subsection{smallSpsp -- ¬‚³‚¢”‚É‘Î‚·‚é‹­‹[‘f”ƒeƒXƒg}\linkedone{prime}{smallSpsp}
    \func{smallSpsp}{\hiki{n}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Strong Pseudo-Prime test for integer \param{n} less than $10^{12}$.\\
+   \quad $10^{12}$‚æ‚è¬‚³‚¢®”\param{n}‚É‘Î‚·‚é‹­‹[‘f”ƒeƒXƒg.\\
    \spacing
    % added document
-   \quad $4$ spsp tests are sufficient to determine whether an integer less than $10^{12}$ is prime or not.
+   \quad $4$ ‰ñ‚Ì‹­‹[‘f”ƒeƒXƒg‚É‚æ‚Á‚Ä$10^{12}$‚æ‚è¬‚³‚¢®”‚ª‘f”‚©‚Ç‚¤‚©Œˆ’è‚·‚é‚É‚Í\•ª‚È‚à‚Ì‚Å‚ ‚é.
    \spacing
    % input, output document
    %\quad 
 %
-  \subsection{miller -- Miller's primality test}\linkedone{prime}{miller}
+  \subsection{miller -- Miller‚Ì‘f””»’è}\linkedone{prime}{miller}
    \func{miller}
    {\hiki{n}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Miller's primality test.\\
+   \quad Miller‚Ì‘f””»’è.\\
    \spacing
    % added document
-   \quad This test is valid under GRH. See \linkingzero{config}.
+   \quad ‚±‚ÌƒeƒXƒg‚ÍGRH‚Ì‚à‚Æ—LŒø‚Å‚·.\linkingzero{config}‚ðŒ©‚Ä‚­‚¾‚³‚¢.
    \spacing
    % input, output document
    %\quad 
 %
-  \subsection{millerRabin -- Miller-Rabin primality test}\linkedone{prime}{millerRabin}
+  \subsection{millerRabin -- Miller-Rabin‚Ì‘f””»’è}\linkedone{prime}{millerRabin}
    \func{millerRabin}
    {\hiki{n}{integer},\ \hikiopt{times}{integer}{20}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Miller's primality test.\\
+   \quad Miller‚Ì‘f””»’è.\\
    \spacing
    % added document
-   \quad The difference from \linkingone{prime}{miller} is that 
-   the Miller-Rabin method uses fast but probabilistic algorithm.
-   On the other hand, \linkingone{prime}{miller} employs deterministic
-   algorithm valid under GRH.
+   \quad \linkingone{prime}{miller}‚Æ‚Ìˆá‚¢‚Í,Miller-Rabinƒƒ\ƒbƒh‚Í‘‚¢‚ªŠm—¦“I‚ÈƒAƒ‹ƒSƒŠƒYƒ€‚Å‚ ‚è,
+   ˆê•û‚Å, \linkingone{prime}{miller}‚ÍGRH‚Ì‚à‚ÆŒˆ’è«ƒAƒ‹ƒSƒŠƒYƒ€‚Æ‚È‚é.
    \spacing
    % input, output document
-   \quad \param{times} (default to $20$) is the number of repetition.
-   The error probability is at most $4^{-\param{times}}$.
+   \quad \param{times} (‰ŠúÝ’è‚Í $20$) ‚ÍŒJ‚è•Ô‚µ‚Ì”‚Å‚·.
+   ƒGƒ‰[‚ÌŠm—¦‚Í‘½‚­‚Ä‚à $4^{-\param{times}}$‚Å‚·.
 %
- \subsection{lpsp -- Lucas test}\linkedone{prime}{lpsp}
+ \subsection{lpsp -- LucasƒeƒXƒg}\linkedone{prime}{lpsp}
    \func{lpsp}
    {\hiki{n}{integer},\ \hiki{a}{integer},\ \hiki{b}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Lucas Pseudo-Prime test.\\
+   \quad Lucas‹[‘f”ƒeƒXƒg.\\
    \spacing
    % added document
-   \quad Return True if \param{n} is a Lucas pseudo-prime of parameters \param{a}, \param{b},
-    i.e. with respect to $x^2-\param{a}x+\param{b}$.
+   \quad ‚à‚µ\param{n}‚ªƒpƒ‰ƒ[ƒ^\param{a}‚Æ\param{b}‚ÌLucas‹[‘f”‚È‚çTrue‚ð•Ô‚·,‚·‚È‚í‚¿,$x^2-\param{a}x+\param{b}$‚É‚Â‚¢‚Ä‚Ì.
    \spacing
    % input, output document
    %\quad 
 %
- \subsection{fpsp -- Frobenius test}\linkedone{prime}{fpsp}
+ \subsection{fpsp -- FrobeniusƒeƒXƒg}\linkedone{prime}{fpsp}
    \func{fpsp}
    {\hiki{n}{integer},\ \hiki{a}{integer},\ \hiki{b}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Frobenius Pseudo-Prime test.\\
+   \quad Frobenius‹[‘f”ƒeƒXƒg.\\
    \spacing
    % added document
-   \quad Return True if \param{n} is a Frobenius pseudo-prime of parameters \param{a}, \param{b},
-    i.e. with respect to $x^2-\param{a}x+\param{b}$.
+   \quad ‚à‚µ\param{n}‚ªƒpƒ‰ƒ[ƒ^\param{a}‚Æ\param{b}‚ÌFrobenius‹[‘f”‚È‚çTrue‚ð•Ô‚·,‚·‚È‚í‚¿,$x^2-\param{a}x+\param{b}$‚É‚Â‚¢‚Ä‚Ì.
    \spacing
    % input, output document
    %\quad 
 %
- \subsection{apr -- Jacobi sum test}\linkedone{prime}{apr}
+ \subsection{apr -- Jacobi˜aƒeƒXƒg}\linkedone{prime}{apr}
    \func{apr}
    {\hiki{n}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad APR (Adleman-Pomerance-Rumery) primality test or the Jacobi sum test.\\
+   \quad APR (Adleman-Pomerance-Rumery) ‘f””»’è‚Ü‚½‚ÍJacobi˜aƒeƒXƒg.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-   \quad Assuming \param{n} has no prime factors less than $32$.
-    Assuming \param{n} is spsp (strong pseudo-prime) for several bases.
+   \quad \param{n}‚Í$32$‚æ‚è¬‚³‚¢‘fˆö”‚ª‚È‚¢‚Æ‰¼’è‚·‚é.
+    ‚Ü‚½\param{n}‚ª‚¢‚­‚Â‚©‚Ì’ê‚É‘Î‚·‚éspsp (‹­‹[‘f”ƒeƒXƒg)‚ð’Ê‰ß‚µ‚½‚Æ‰¼’è‚·‚é.
 %
- \subsection{primeq -- primality test automatically}\linkedone{prime}{primeq}
+ \subsection{primeq -- Ž©“®“I‚È‘f””»’è}\linkedone{prime}{primeq}
    \func{primeq}
    {\hiki{n}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad A convenient function for primality test.\\
+   \quad ‘f””»’è‚É‘Î‚·‚é•Ö—˜‚ÈŠÖ”.\\
    \spacing
    % added document
-   \quad It uses one of \linkingone{prime}{trialDivision}, \linkingone{prime}{smallSpsp} or \linkingone{prime}{apr} depending on the size of \param{n}.
+   \quad \param{n}‚ÌƒTƒCƒY‚ÉˆË‘¶‚µ‚Ä\linkingone{prime}{trialDivision}, \linkingone{prime}{smallSpsp} ‚Ü‚½‚Í \linkingone{prime}{apr}‚ðŽg‚¤.
    \spacing
    % input, output document
    %\quad 
@@ -142,12 +136,12 @@
    % input, output document
    %\quad 
 %
- \subsection{prime -- $n$-th prime number}\linkedone{prime}{prime}
+ \subsection{prime -- $n$”Ô–Ú‚Ì‘f”}\linkedone{prime}{prime}
    \func{prime}
    {\hiki{n}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the \param{n}-th prime number.\\
+   \quad \param{n}”Ô–Ú‚Ì‘f”‚ð•Ô‚·.\\
    \spacing
    % added document
    %\quad 
@@ -155,12 +149,12 @@
    % input, output document
    %\quad 
 %
- \subsection{nextPrime -- generate next prime}\linkedone{prime}{nextPrime}
+ \subsection{nextPrime -- ŽŸ‚Ì‘f”‚ð¶¬}\linkedone{prime}{nextPrime}
    \func{nextPrime}
    {\hiki{n}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the smallest prime bigger than the given integer \param{n}.
+   \quad —^‚¦‚ç‚ê‚½®”\param{n}‚æ‚è‘å‚«‚¢”‚Ì’†‚Å,Å‚à¬‚³‚¢‘f”‚ð•Ô‚·.
    \spacing
    % added document
    %\quad 
@@ -168,12 +162,12 @@
    % input, output document
    %\quad 
 %
- \subsection{randPrime -- generate random prime}\linkedone{prime}{randPrime}
+ \subsection{randPrime -- ƒ‰ƒ“ƒ_ƒ€‚É‘f”‚ð¶¬}\linkedone{prime}{randPrime}
    \func{randPrime}
    {\hiki{n}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return a random \param{n}-digits prime.\\
+   \quad 10i\param{n}Œ…‚Ì‘f”‚ðƒ‰ƒ“ƒ_ƒ€‚É•Ô‚·.\\
    \spacing
    % added document
    %\quad 
@@ -181,12 +175,12 @@
    % input, output document
    %\quad 
 %
- \subsection{generator -- generate primes}\linkedone{prime}{generator}
+ \subsection{generator -- ‘f”¶¬}\linkedone{prime}{generator}
    \func{generator}
    {(None)}{\out{generator}}\\
    \spacing
    % document of basic document
-   \quad Generate primes from $2$ to $\infty$ (as generator).\\
+   \quad $2$‚©‚ç$\infty$‚Ü‚Å‚Ì‘f”‚ð¶¬‚·‚é (ƒWƒFƒlƒŒ[ƒ^‚Æ‚µ‚Ä).\\
    \spacing
    % added document
    %\quad 
@@ -194,12 +188,12 @@
    % input, output document
    %\quad 
 %
- \subsection{generator\_eratosthenes -- generate primes using Eratosthenes sieve}\linkedone{prime}{generator\_eratosthenes}
+ \subsection{generator\_eratosthenes -- Eratosthenes‚Ìâ¿‚ðŽg‚Á‚Ä‚¢‚é‘f”¶¬}\linkedone{prime}{generator\_eratosthenes}
    \func{generator\_eratosthenes}
    {\hiki{n}{integer}}{\out{generator}}\\
    \spacing
    % document of basic document
-   \quad Generate primes up to \param{n} using Eratosthenes sieve.\\
+   \quad Eratosthenes‚Ìâ¿‚ðŽg‚Á‚Ä\param{n}‚Ü‚Å‚Ì‘f”‚ð‡‚É¶¬‚·‚é.\\
    \spacing
    % added document
    %\quad 
@@ -207,12 +201,12 @@
    % input, output document
    %\quad 
 %
- \subsection{primonial -- product of primes}\linkedone{prime}{primonial}
+ \subsection{primonial -- ‘f”‚ÌÏ}\linkedone{prime}{primonial}
    \func{primonial}
    {\hiki{p}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the product
+   \quad ˆÈ‰º‚ÌÏ‚ð•Ô‚·
    \begin{equation*}
    \prod_{q \in \mathbb{P}_{\le \param{p}}} q=2\cdot 3\cdot 5\cdots \param{p}\ .
    \end{equation*}
@@ -223,52 +217,51 @@
    % input, output document
    %\quad 
 %
- \subsection{properDivisors -- proper divisors}\linkedone{prime}{properDivisors}
+ \subsection{properDivisors -- ^‚Ì–ñ”}\linkedone{prime}{properDivisors}
    \func{properDivisors}
    {\hiki{n}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return proper divisors of \param{n} (all divisors of \param{n} excluding $1$ and \param{n}).\\
+   \quad \param{n}‚Ì^‚Ì–ñ”‚ð•Ô‚· ($1$ ‚Æ \param{n}‚ðœ‚¢‚½\param{n}‚Ì‘S‚Ä‚Ì–ñ”).\\
    \spacing
    % added document
-   \quad  It is only useful for a product of small primes.
-   Use \linkingtwo{factor.misc}{FactoredInteger}{proper\_divisors} in a more
-   general case.
+   \quad  ¬‚³‚È‘f”‚ÌÏ‚É‘Î‚µ‚Ä‚Ì‚Ý–ð‚É—§‚Â.
+   ‚æ‚èˆê”Ê“I‚Èê‡‚É‚Í\linkingtwo{factor.misc}{FactoredInteger}{proper\_divisors}‚ðŽg—p.
    \spacing
    % input, output document
-   \quad The output is the list of all proper divisors.\\
+   \quad o—Í‚Í‘S‚Ä‚Ì^‚Ì–ñ”‚ÌƒŠƒXƒg.\\
 %
- \subsection{primitive\_root -- primitive root}\linkedone{prime}{primitive\_root}
+ \subsection{primitive\_root -- •½•ûª}\linkedone{prime}{primitive\_root}
    \func{primitive\_root}
    {\hiki{p}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return a primitive root of \param{p}.\\
+   \quad \param{p}‚Ì•½•ûª‚ð•Ô‚·.\\
    \spacing
    % added document
    %\quad  
    %\spacing
    % input, output document
-   \quad \param{p} must be an odd prime.
+   \quad \param{p}‚ÍŠï‘f”‚Å‚È‚¯‚ê‚Î‚È‚ç‚È‚¢.
 %
- \subsection{Lucas\_chain -- Lucas sequence}\linkedone{prime}{Lucas\_chain}
+ \subsection{Lucas\_chain -- Lucas”—ñ}\linkedone{prime}{Lucas\_chain}
    \func{Lucas\_chain}
    {\hiki{n}{integer},\ \hiki{f}{function},\ \hiki{g}{function},\ \hiki{x\_0}{integer},\ \hiki{x\_1}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return the value of ($x_n$,\ $x_{n+1}$) for the sequnce $\{ x_i \}$ defined as:\\
+   \quad ˆÈ‰º‚Ì‚æ‚¤‚É’è‹`‚³‚ê‚é”—ñ$\{ x_i \}$‚É‘Î‚·‚é’l($x_n$,\ $x_{n+1}$)‚ð•Ô‚·:\\
    \begin{eqnarray*}
       x_{2i} = \param{f}(x_i)\\
       x_{2i+1} = \param{g}(x_i, x_{i+1})\ ,
    \end{eqnarray*}
-   where the initial values \param{x\_0},\ \param{x\_1}.\\
+   ‰€‚Í\param{x\_0},\ \param{x\_1}.\\
    \spacing
    % added document
    %\quad  
    %\spacing
    % input, output document
-   \quad \param{f} is the function which can be input as $1$-ary integer.
-   \param{g} is the function which can be input as $2$-ary integer.\\
+   \quad \param{f}‚Í$1$•Ï”‚Ì®”ŠÖ”.
+   \param{g}‚Í$2$•Ï”‚Ì®”ŠÖ”.\\
 %
 \begin{ex}
 >>> prime.primeq(131)

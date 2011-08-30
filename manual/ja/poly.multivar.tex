@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.multivar -- multivariate polynomial}\linkedzero{poly.multivar}
+ \section{poly.multivar -- 多変数多項式}\linkedzero{poly.multivar}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -15,50 +15,48 @@
 
 \C
 
- \subsection{PolynomialInterface -- base class for all multivariate polynomials}\linkedone{poly.multivar}{PolynomialInterface}
-  Since the interface is an abstract class, do not instantiate.\\
+ \subsection{PolynomialInterface -- 全ての多変数多項式の基底クラス}\linkedone{poly.multivar}{PolynomialInterface}
+  インターフェースが抽象クラスなのでインスタンスは作らない.\\
 
   % No Documentation Yet
 %
- \subsection{BasicPolynomial -- basic implementation of polynomial}\linkedone{poly.multivar}{BasicPolynomial}
-  Basic polynomial data type.
+ \subsection{BasicPolynomial -- 多項式の基本的な実装}\linkedone{poly.multivar}{BasicPolynomial}
+  基本的な多項式のデータ型.
 
   % No Documentation Yet
 %
- \subsection{TermIndices -- Indices of terms of multivariate polynomials}\linkedone{poly.multivar}{TermIndices}
-  It is a tuple-like object.
+ \subsection{TermIndices -- 多変数多項式の項のインデックス}\linkedone{poly.multivar}{TermIndices}
+  タプルのようなオブジェクト.
   \initialize
   \func{TermIndices}{\hiki{indices}{tuple}}{\out{TermIndices}}\\
   \spacing
-  \quad The constructor does not check the validity of indices, such
-  as integerness, nonnegativity, etc.
+  \quad コンストラクタは整数性や非負性などのインデックスの正しさを調べない.
   \begin{op}
-    \verb/t == u/ & equality\\
-    \verb/t != u/ & inequality\\
-    \verb/t + u/ & (componentwise) addition\\
-    \verb/t - u/ & (componentwise) subtraction\\
-    \verb/t * a/ & (componentwise) multiplication by scalar {\tt a}\\
-    \verb/t <= u, t < u, t >= u, t > u/ & ordering\\
-    \verb/t[k]/ & {\tt k}-th index\\
-    \verb/len(t)/ & length\\
-    \verb/iter(t)/ & iterator\\
-    \verb/hash(t)/ & hash\\
+    \verb/t == u/ & 等しいかどうか\\
+    \verb/t != u/ & 等しくないかどうか\\
+    \verb/t + u/ & (componentwise) 和\\
+    \verb/t - u/ & (componentwise) 差\\
+    \verb/t * a/ & (componentwise) スカラーによる積 {\tt a}\\
+    \verb/t <= u, t < u, t >= u, t > u/ & 位数\\
+    \verb/t[k]/ & {\tt k}番目のインデックス\\
+    \verb/len(t)/ & 長さ\\
+    \verb/iter(t)/ & イテレータ\\
+    \verb/hash(t)/ & ハッシュ\\
   \end{op}
   \method
   \subsubsection{pop}\linkedtwo{poly.multivar}{TermIndices}{pop}
    \func{pop}{\param{self},\ \hiki{pos}{integer}}{(\out{integer}, \out{TermIndices})}\\
    \spacing
    % document of basic document
-   \quad Return the index at pos and a new TermIndices object as the
-   omitting-the-pos indices.
+   \quad posにおけるインデックスとposのインデックスを除いた新しいTermIndicesオブジェクトを返す.
 
   \subsubsection{gcd}\linkedtwo{poly.multivar}{TermIndices}{gcd}
   \func{gcd}{\param{self},\ \hiki{other}{TermIndices}}{\out{TermIndices}}\\
-  \quad Return the ``gcd'' of two indices.
+  \quad 二つのインデックスの``gcd''を返す.
 
   \subsubsection{lcm}\linkedtwo{poly.multivar}{TermIndices}{lcm}
   \func{lcm}{\param{self},\ \hiki{other}{TermIndices}}{\out{TermIndices}}\\
-  \quad Return the ``lcm'' of two indices.
+  \quad 二つのインデックスの``lcm''を返す.
 
 \C
 

@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.ratfunc -- rational function}\linkedzero{poly.ratfunc}
+ \section{poly.ratfunc -- 有理関数}\linkedzero{poly.ratfunc}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -11,46 +11,42 @@
    \end{itemize}
  \end{itemize}
 
- A rational function is a ratio of two polynomials.
+ 有理関数は二つの多項式の,分数として書けるもの.
 
- Please don't expect this module is useful.
- It just provides an acceptable container for polynomial division.
+ このモジュールが役に立つと期待しないこと.
+ ただ多項式の除算のための無難なコンテナを提供するもの.
 \C
 
- \subsection{RationalFunction -- rational function class}\linkedone{poly.ratfunc}{RationalFunction}
+ \subsection{RationalFunction -- 有理関数クラス}\linkedone{poly.ratfunc}{RationalFunction}
  \initialize
   \func{RationalFunction}{\hiki{numerator}{polynomial},\ \hikiopt{denominator}{polynomial}{1}}{\out{RationalFunction}}\\
   \spacing
   % document of basic document
-  \quad Make a rational function with the given \param{numerator} and
-  \param{denominator}.
+  \quad 与えられた\param{numerator}と\param{denominator}を持つ有理関数を作る.
   % added document
   %
   % \spacing
   % input, output document
-  If the \param{numerator} is a {\tt RationalFunction} instance and
-  \param{denominator} is not given, then make a copy.
-  If the \param{numerator} is a kind of polynomial, then make a rational
-  function whose numerator is the given polynomial.
-  Additionally, if \param{denominator} is also given,
-  the denominator is set to its values, otherwise the denominator is 1.
+  もし\param{numerator}が{\tt RationalFunction}のインスタンスで,\param{denominator}が与えられなければコピーを作る.
+  もし\param{numerator}が多項式なら,numeratorが与えられた有理関数を作る.
+  さらに,もし\param{denominator}がすでに与えられていたら,分母はその値で設定され,さもなくば分母は1.
   \begin{at}
     \item[numerator]\linkedtwo{poly.ratfunc}{RationalFunction}{numerator}:\\
-      polynomial.
+      多項式.
     \item[denominator]\linkedtwo{poly.ratfunc}{RationalFunction}{denominator}:\\
-      polynomial.
+      多項式.
   \end{at}
   \begin{op}
-    \verb+A==B+ & Return whether {\tt A} and {\tt B} are equal or not.\\
-    \verb+str(A)+ & Return readable string.\\
-    \verb+repr(A)+ & Return string representing {\tt A}'s structure.\\
+    \verb+A==B+ & {\tt A}と{\tt B}が等しいかどう返す.\\
+    \verb+str(A)+ & 読みやすい文字列を返す.\\
+    \verb+repr(A)+ & {\tt A}の構造表現文字列を返す.\\
   \end{op}
   \method
-  \subsubsection{getRing -- get rational function field}\linkedtwo{poly.ratfunc}{RationalFunction}{getRing}
+  \subsubsection{getRing -- 有理関数体を得る}\linkedtwo{poly.ratfunc}{RationalFunction}{getRing}
    \func{getRing}{\param{self}}{\linkingone{poly.ring}{RationalFunctionField}}\\
    \spacing
    % document of basic document
-   \quad Return the rational function field to which the rational function belongs.
+   \quad 有理関数が所属する有理関数体を返す.
 \C
 
 %---------- end document ---------- %

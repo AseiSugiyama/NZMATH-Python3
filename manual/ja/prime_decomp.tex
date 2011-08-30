@@ -3,23 +3,23 @@
 \input{../header_function}
 
 %---------- start document ---------- %
- \section{prime\_decomp -- prime decomposition}\linkedzero{prime\_decomp}
+ \section{prime\_decomp -- 素イデアル分解}\linkedzero{prime\_decomp}
 %
-  \subsection{prime\_decomp -- prime decomposition}\linkedone{prime\_decomp}{prime\_decomp}
+  \subsection{prime\_decomp -- 素イデアル分解}\linkedone{prime\_decomp}{prime\_decomp}
    \func{prime\_decomp}{\hiki{p}{Integer},\ \hiki{polynomial}{list}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return prime decomposition of the ideal $(\param{p})$ over the number field $\mathbf{Q}[x]/(\param{polynomial})$.\\
+   \quad 数体$\mathbf{Q}[x]/(\param{polynomial})$上のイデアル$(\param{p})$の素イデアル分解を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{p} should be a (rational) prime. 
-   \param{polynomial} should be a list of integers which defines a monic irreducible polynomial.\\
-   This method returns a list of $(P_k,\ e_k,\ f_k)$,\\ 
-    where $P_k$ is an instance of \linkingone{module}{Ideal\_with\_generator} expresses a prime ideal which divides $(\param{p})$, 
-          $e_k$ is the ramification index of $P_k$, 
-          $f_k$ is the residue degree of $P_k$.
+   \quad \param{p}は(有理)素数であるべきである. 
+   \param{polynomial}はモニック既約多項式を定義する整数のリストであるべきである.\\
+   このメソッドは$(P_k,\ e_k,\ f_k)$のリストを返す.\\ 
+    $P_k$は$(\param{p})$を割る素イデアルを表す\linkingone{module}{Ideal\_with\_generator}のインスタンスで, 
+          $e_k$ は $P_k$ の分岐指数で, 
+          $f_k$ は $P_k$ の剰余次数.
 %
 \begin{ex}
 >>> for fact in prime_decomp.prime_decomp(3,[1,9,0,1]):

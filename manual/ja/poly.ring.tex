@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.ring -- polynomial rings}\linkedzero{poly.ring}
+ \section{poly.ring -- 多項式環}\linkedzero{poly.ring}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -15,30 +15,29 @@
 
 \C
 
- \subsection{PolynomialRing -- ring of polynomials}\linkedone{poly.ring}{PolynomialRing}
- A class for uni-/multivariate polynomial rings.
- A subclass of \linkingone{ring}{CommutativeRing}.
+ \subsection{PolynomialRing -- 多項式環}\linkedone{poly.ring}{PolynomialRing}
+ uni-/multivariate polynomial ringsのためのクラス.
+ \linkingone{ring}{CommutativeRing}のためのサブクラス.
 
  \initialize
  \func{PolynomialRing}{%
    \hiki{coeffring}{CommutativeRing},\ %
    \hikiopt{number\_of\_variables}{integer}{1}}{\out{PolynomialRing}}\\
  \spacing
- \quad \param{coeffring} is the ring of coefficients.
- \param{number\_of\_variables} is the number of variables.
- If its value is greater than \(1\), the ring is for multivariate polynomials.
+ \quad \param{coeffring}は係数環.
+ \param{number\_of\_variables}は変数の数.
+ もしその値が \(1\) より大きければ,その環は多変数多項式に対するもの.
   \begin{at}
-    \item[zero]\linkedtwo{poly.ring}{PolynomialRing}{zero}:\\ zero of the ring.
-    \item[one]\linkedtwo{poly.ring}{PolynomialRing}{one}:\\ one of the ring.
+    \item[zero]\linkedtwo{poly.ring}{PolynomialRing}{zero}:\\ 環上の\(0\).
+    \item[one]\linkedtwo{poly.ring}{PolynomialRing}{one}:\\ 環上の\(1\).
   \end{at}
  \method
- \subsubsection{getInstance -- classmethod}\linkedtwo{poly.ring}{PolynomialRing}{getInstance}
+ \subsubsection{getInstance -- クラスメソッド}\linkedtwo{poly.ring}{PolynomialRing}{getInstance}
  \func{getInstance}{%
    \hiki{coeffring}{CommutativeRing},\ %
    \hiki{number\_of\_variables}{integer}}{\out{PolynomialRing}}\\
  \spacing
- \quad return the instance of polynomial ring with coefficient ring
- \param{coeffring} and number of variables \param{number\_of\_variables}.
+ \quad 係数環\param{coeffring}と変数の数\param{number\_of\_variables}を持つ多項式環のインスタンスを返す.
 
  \subsubsection{getCoefficientRing}\linkedtwo{poly.ring}{PolynomialRing}{getCoefficientRing}
  \func{getCoefficientRing}{}{CommutativeRing}
@@ -57,15 +56,14 @@
 
  \subsubsection{createElement}\linkedtwo{poly.ring}{PolynomialRing}{createElement}
  \func{createElement}{seed}{\out{polynomial}}\\
- \quad Return a polynomial. \param{seed} can be a polynomial,
- an element of coefficient ring, or any other data suited for the first
- argument of uni-/multi-variate polynomials.
+ \quad 多項式を返す. \param{seed}は多項式,
+ 係数環の元,または一変数/多変数多項式の最初の引数に適した他のデータであり得る.
 
  \subsubsection{gcd}\linkedtwo{poly.ring}{PolynomialRing}{gcd}
  \func{gcd}{a, b}{\out{polynomial}}\\
- \quad Return the greatest common divisor of given polynomials (if possible).
- The polynomials must be in the polynomial ring.
- If the coefficient ring is a field, the result is monic.
+ \quad (可能ならば)与えられた多項式の最大公約数を返す.
+ 多項式は多項式環に入っていなければならない.
+ もし係数環が体ならば,その結果はモニック多項式.
 
  \subsubsection{isdomain}\linkedtwo{poly.ring}{PolynomialRing}{isdomain}
  \subsubsection{iseuclidean}\linkedtwo{poly.ring}{PolynomialRing}{iseuclidean}
@@ -73,35 +71,33 @@
  \subsubsection{ispid}\linkedtwo{poly.ring}{PolynomialRing}{ispid}
  \subsubsection{isufd}\linkedtwo{poly.ring}{PolynomialRing}{isufd}
 
- Inherited from \linkingone{ring}{CommutativeRing}.
+ \linkingone{ring}{CommutativeRing}から継承された.
 
- \subsection{RationalFunctionField -- field of rational functions}\linkedone{poly.ring}{RationalFunctionField}
+ \subsection{RationalFunctionField -- 有理関数体}\linkedone{poly.ring}{RationalFunctionField}
   \initialize
   \func{RationalFunctionField}{%
     \hiki{field}{Field},\ 
     \hiki{number\_of\_variables}{integer}}{%
     \out{RationalFunctionField}}\\
   \spacing
-  \quad A class for fields of rational functions. 
-  It is a subclass of \linkingone{ring}{QuotientField}.\\
+  \quad 有理関数体に関するクラス. 
+  \linkingone{ring}{QuotientField}のサブクラス.\\
   \spacing
-  \quad \param{field} is the field of coefficients, which should be a
-  \linkingone{ring}{Field} object.
-  \param{number\_of\_variables} is the number of variables.\\
+  \quad \param{field}は\linkingone{ring}{Field}のオブジェクトであるべきである係数体.
+  \param{number\_of\_variables}は変数の数.\\
   \spacing
   \begin{at}
-    \item[zero]\linkedtwo{poly.ring}{RationalFunctionField}{zero}:\\ zero of the field.
-    \item[one]\linkedtwo{poly.ring}{RationalFunctionField}{one}:\\ one of the field.
+    \item[zero]\linkedtwo{poly.ring}{RationalFunctionField}{zero}:\\ 体上の\(0\).
+    \item[one]\linkedtwo{poly.ring}{RationalFunctionField}{one}:\\ 体上の\(1\).
   \end{at}
 %
   \method
-  \subsubsection{getInstance -- classmethod}\linkedtwo{poly.ring}{RationalFunctionField}{getInstance}
+  \subsubsection{getInstance -- クラスメソッド}\linkedtwo{poly.ring}{RationalFunctionField}{getInstance}
   \func{getInstance}{%
     \hiki{coefffield}{Field},\ %
     \hiki{number\_of\_variables}{integer}}{\out{RationalFunctionField}}\\
   \spacing
-  \quad return the instance of {\tt RationalFunctionField} with coefficient
-  field \param{coefffield} and number of variables \param{number\_of\_variables}.
+  \quad 係数体\param{coefffield}と変数の数\param{number\_of\_variables}を持つ{\tt RationalFunctionField}のインスタンスを返す.
 
   \subsubsection{createElement}\linkedtwo{poly.ring}{RationalFunctionField}{createElement}
   \func{createElement}{*\hiki{seedarg}{list}, **\hiki{seedkwd}{dict}}{\out{RationalFunction}}\\
@@ -118,10 +114,8 @@
   \subsubsection{unnest}\linkedtwo{poly.ring}{RationalFunctionField}{unnest}
   \func{unnest}{}{\out{RationalFunctionField}}\\
   \spacing
-  \quad If self is a nested {\tt RationalFunctionField} i.e. its
-  coefficient field is also a {\tt RationalFunctionField}, then the
-  method returns one level unnested {\tt RationalFunctionField}.\\
-  \quad For example:
+  \quad もしselfが{\tt RationalFunctionField}にネストされていたら,すなわちその係数体もまた{\tt RationalFunctionField}なら,メソッドは一段階アンネストされた{\tt RationalFunctionField}を返す.\\
+  \quad 例えば:
 \begin{ex}
 >>> RationalFunctionField(RationalFunctionField(Q, 1), 1).unnest()
 RationalFunctionField(Q, 2)
@@ -131,7 +125,7 @@ RationalFunctionField(Q, 2)
   \func{gcd}{\hiki{a}{RationalFunction},\ \hiki{b}{RationalFunction}}{%
   \out{RationalFunction}}\\
   \spacing
-  \quad Inherited from \linkingone{ring}{Field}.
+  \quad  \linkingone{ring}{Field}から継承される.
 
  \subsubsection{isdomain}\linkedtwo{poly.ring}{RationalFunctionField}{isdomain}
  \subsubsection{iseuclidean}\linkedtwo{poly.ring}{RationalFunctionField}{iseuclidean}
@@ -139,31 +133,30 @@ RationalFunctionField(Q, 2)
  \subsubsection{ispid}\linkedtwo{poly.ring}{RationalFunctionField}{ispid}
  \subsubsection{isufd}\linkedtwo{poly.ring}{RationalFunctionField}{isufd}
 
- Inherited from \linkingone{ring}{CommutativeRing}.
+ \linkingone{ring}{CommutativeRing}から継承される.
 
-  \subsection{PolynomialIdeal -- ideal of polynomial ring}\linkedone{poly.ring}{PolynomialIdeal}
+  \subsection{PolynomialIdeal -- 多項式環のイデアル}\linkedone{poly.ring}{PolynomialIdeal}
 
-  A subclass of \linkingone{ring}{Ideal} represents ideals of polynomial rings.
+  多項式環のイデアルを表す\linkingone{ring}{Ideal}のサブクラス.
   
   \initialize
   \func{PolynomialIdeal}{%
     \hiki{generators}{list},\ %
     \hiki{polyring}{PolynomialRing}}{\out{PolynomialIdeal}}\\
   \spacing
-  \quad Create an object represents an ideal in a polynomial ring
-  \param{polyring} generated by \param{generators}.
+  \quad \param{generators}によって生成される多項式環\param{polyring}のイデアルを表す新しいオブジェクトを作成.
   \begin{op}
-    \verb/in/ & membership test\\
-    \verb/==/ & same ideal?\\
-    \verb/!=/ & different ideal?\\
-    \verb/+/ & addition\\
-    \verb/*/ & multiplication\\
+    \verb/in/ & 含まれているかのテスト\\
+    \verb/==/ & 同じイデアルか?\\
+    \verb/!=/ & 異なるイデアルか?\\
+    \verb/+/ & 和\\
+    \verb/*/ & 積\\
   \end{op}
   \method
   \subsubsection{reduce}\linkedtwo{poly.ring}{PolynomialIdeal}{reduce}
   \func{reduce}{\hiki{element}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Modulo \param{element} by the ideal.
+  \quad イデアルを法とする\param{element}の剰余.
 
   \subsubsection{issubset}\linkedtwo{poly.ring}{PolynomialIdeal}{issubset}
   \func{issubset}{\hiki{other}{set}}{\out{bool}}\\

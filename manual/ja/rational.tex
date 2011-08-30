@@ -3,8 +3,8 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{rational -- integer and rational number}\linkedzero{rational}
-rational module provides integer and rational numbers, as class Rational, Integer, RationalField, and IntegerRing.
+ \section{rational -- 整数と有理数}\linkedzero{rational}
+rationalモジュールはクラスRational, クラスInteger, クラスRationalField, そして クラスIntegerRingとして整数と有理数を提供.
 
  \begin{itemize}
    \item {\bf Classes}
@@ -16,139 +16,139 @@ rational module provides integer and rational numbers, as class Rational, Intege
    \end{itemize}
  \end{itemize}
 
-This module also provides following constants:
+このモジュールはまた以下のコンテンツを提供する:
 \begin{description}
    \item[theIntegerRing]\linkedone{rational}{theIntegerRing}:\\
-     \param{theIntegerRing} is represents the ring of rational integers.
-     An instance of \linkingone{rational}{IntegerRing}.
+     \param{theIntegerRing}は有理整数環を表す.
+     \linkingone{rational}{IntegerRing}のインスタンス.
    \item[theRationalField]\linkedone{rational}{theRationalField}:\\
-     \param{theRationalField} is represents the field of rational numbers.
-     An instance of \linkingone{rational}{RationalField}.
+     \param{theRationalField}は有理数体を表す.
+     \linkingone{rational}{RationalField}のインスタンス.
  \end{description}
 
 \C
 
- \subsection{Integer -- integer}\linkedone{rational}{Integer}
- Integer is a class of integer. Since 'int' and 'long' do not return rational for division, it is needed to create a new class.
+ \subsection{Integer -- 整数}\linkedone{rational}{Integer}
+ Integerは整数のクラス. 'int' と 'long' は除算において有理数を返さないので, 新しいクラスを作成する必要があった.
 
- This class is a subclass of \linkingone{ring}{CommutativeRingElement} and long.
+ このクラスは\linkingone{ring}{CommutativeRingElement} と longのサブクラス.
 
   \initialize
   \func{Integer}{\hiki{integer}{integer}}{\out{Integer}}\\
   \spacing
   % document of basic document
-  \quad Construct a Integer object.
+  \quad Integerオブジェクトを構成.
   % added document
-  If argument is omitted, the value becomes 0.
+  もし引数が省略されたら, 値は 0 となる.
   \method
-  \subsubsection{getRing -- get ring object}\linkedtwo{rational}{Integer}{getRing}
+  \subsubsection{getRing -- ringオブジェクトを得る}\linkedtwo{rational}{Integer}{getRing}
    \func{getRing}{\param{self}}{\out{IntegerRing}}\\
    \spacing
    % document of basic document
-   \quad Return an IntegerRing object.
+   \quad IntegerRingオブジェクトを返す.
 %
-  \subsubsection{actAdditive -- addition of binary addition chain}\linkedtwo{rational}{Integer}{actAdditive}
+  \subsubsection{actAdditive -- 2進の加法鎖の加法}\linkedtwo{rational}{Integer}{actAdditive}
    \func{actAdditive}{\param{self},\ \hiki{other}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Act on other additively, i.e. n is expanded to n time additions of \param{other}. Naively, it is:
+   \quad otherに加法的に作用,すなわち, n は\param{other}のn回の加算に拡大される. 結果としては以下と同じ:
 
    \verb|return sum([+other for _ in range(self)])|
 
-   but, here we use a binary addition chain.\\
+   しかし, ここでは2進の加法鎖を使う.\\
    \spacing
 %
-  \subsubsection{actMultiplicative -- multiplication of binary addition chain}\linkedtwo{rational}{Integer}{actMultiplicative}
+  \subsubsection{actMultiplicative -- 2進の加法鎖の乗法}\linkedtwo{rational}{Integer}{actMultiplicative}
    \func{actMultiplicative}{\param{self},\ \hiki{other}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Act on other multiplicatively, i.e. n is expanded to n time multiplications of \param{other}. Naively, it is:
+   \quad otherに乗法的に作用する,すなわち, n は\param{other}のn回の乗算に拡大される. 結果としては以下と同じ:
 
 \verb|return reduce(lambda x,y: x*y, [+other for _ in range(self)])|
 
-   but, here we use a binary addition chain.
+   しかし, ここでは2進の加法鎖を使う.
    \spacing
 \C
- \subsection{IntegerRing -- integer ring}\linkedone{rational}{IntegerRing}
- The class is for the ring of rational integers.
+ \subsection{IntegerRing -- 整数環}\linkedone{rational}{IntegerRing}
+ 有理整数環に対するクラス.
 
- This class is a subclass of \linkingone{ring}{CommutativeRing}.
+ このクラスは\linkingone{ring}{CommutativeRing}のサブクラス.
 
 
   \initialize
   \func{IntegerRing}{}{\out{IntegerRing}}\\
   \spacing
   % document of basic document
-  \quad Create an instance of IntegerRing. 
+  \quad IntegerRingのインスタンスを作成. 
   % added document
-  You may not want to create an instance, since there is already theIntegerRing.\\
+  すでにtheIntegerRingがあるので,インスタンスを作成する必要がないかもしれない.\\
   \begin{at}
-    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ It expresses the additive unit 0. (read only)
-    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ It expresses the multiplicative unit 1. (read only)
+    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ 加法の単位元 0 を表す. (読み込み専用)
+    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ 乗法の単位元 1 を表す. (読みこみ専用)
   \end{at}
   \begin{op}
-    \verb|x in Z| & return whether an element is in or not.\\
-    \verb|repr(Z)| & return representation string.\\
-    \verb|str(Z)| & return string.\\
+    \verb|x in Z| & 元が含まれているどうか返す.\\
+    \verb|repr(Z)| & repr文字列を返す.\\
+    \verb|str(Z)| & str文字列を返す.\\
   \end{op}
   \method
-  \subsubsection{createElement -- create Integer object}\linkedtwo{rational}{IntegerRing}{createElement}
+  \subsubsection{createElement -- Integerオブジェクトを作成}\linkedtwo{rational}{IntegerRing}{createElement}
    \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Return an Integer object with \param{seed}. 
+   \quad \param{seed}に対するIntegerオブジェクトを作成. 
    \spacing
    % input, output document
-   \quad \param{seed} must be int, long or rational.Integer.\\
+   \quad \param{seed}はint型, long型 または rational.Integerでなければならない.\\
 %
-  \subsubsection{gcd -- greatest common divisor}\linkedtwo{rational}{IntegerRing}{gcd}
+  \subsubsection{gcd -- 最大公約数}\linkedtwo{rational}{IntegerRing}{gcd}
    \func{gcd}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor of given 2 integers.\\
+   \quad 与えられた二つの整数の最大公約数を返す.\\
 %
-  \subsubsection{extgcd -- extended GCD}\linkedtwo{rational}{IntegerRing}{extgcd}
+  \subsubsection{extgcd -- 拡張GCD}\linkedtwo{rational}{IntegerRing}{extgcd}
    \func{extgcd}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Return a tuple ($u$, $v$, $d$); they are the greatest common divisor $d$ of two given integers \param{n} and \param{m} and $u$, $v$ such that $d = \mathtt{n}u + \mathtt{m}v$.\\
+   \quad タプル($u$, $v$, $d$)を返す; これらは与えられた二つの整数\param{n} と \param{m}の最大公約数 $d$ と, $d = \mathtt{n}u + \mathtt{m}v$となる$u$, $v$.\\
    \spacing
 %
-  \subsubsection{lcm -- lowest common multiplier}\linkedtwo{rational}{IntegerRing}{lcm}
+  \subsubsection{lcm -- 最小公倍数}\linkedtwo{rational}{IntegerRing}{lcm}
    \func{lcm}{\param{self},\ \hiki{n}{integer},\ \hiki{m}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Return the lowest common multiple of given 2 integers. 
+   \quad 与えられた二つの整数の最小公倍数を返す. 
    % added document
-   \quad If both are zero, it raises an exception.\\
+   \quad もし両方とも 0 なら, エラーが起こる.\\
 %
-  \subsubsection{getQuotientField -- get rational field object}\linkedtwo{rational}{IntegerRing}{getQuotientField}
+  \subsubsection{getQuotientField -- 有理数体オブジェクトを得る}\linkedtwo{rational}{IntegerRing}{getQuotientField}
    \func{getQuotientField}{\param{self}}{\out{RationalField}}\\
    \spacing
    % document of basic document
-   \quad Return the rational field (\linkingone{rational}{RationalField}).\\
+   \quad 有理数体(\linkingone{rational}{RationalField})を返す.\\
 %
-  \subsubsection{issubring -- subring test}\linkedtwo{rational}{IntegerRing}{issubring}
+  \subsubsection{issubring -- 部分環かどうか判定}\linkedtwo{rational}{IntegerRing}{issubring}
    \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether another ring contains the integer ring as subring.
+   \quad もう一方の環が部分環として整数環を含んでいるか報告.
 
-   If other is also the integer ring, the output is True. In other cases it depends on the implementation of another ring's issuperring method.\\
+   もしotherも整数環なら,出力はTrue. その他の場合もう一方の整数環のissuperringメソッドのおける実装に依存.\\
    \spacing
 %
-  \subsubsection{issuperring -- superring test}\linkedtwo{rational}{IntegerRing}{issuperring}
+  \subsubsection{issuperring -- 含んでいるかどうか判定}\linkedtwo{rational}{IntegerRing}{issuperring}
    \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether the integer ring contains another ring as subring.
+   \quad 整数環がもう一方の環を部分間として含んでいるか報告.
 
-If other is also the integer ring, the output is True. In other cases it depends on the implementation of another ring's issubring method.\\
+もしotherも整数環なら,出力はTrue. その他の場合もう一方の整数環のissubringメソッドのおける実装に依存.\\
    \spacing
 
 \C
- \subsection{Rational -- rational number}\linkedone{rational}{Rational}
- The class of rational numbers.
+ \subsection{Rational -- 有理数}\linkedone{rational}{Rational}
+ 有理数のクラス.
 
   \initialize
   \func{Rational}
@@ -157,30 +157,30 @@ If other is also the integer ring, the output is True. In other cases it depends
        {\out{Integer}}\\
   \spacing
   % document of basic document
-  \quad Construct a rational number from:
+  \quad 有理数は以下から構成:
   \begin{itemize}
-  \item integers,
-  \item float, or
+  \item 整数,
+  \item float
   \item Rational.
   \end{itemize}
   % added document
-  Other objects can be converted if they have toRational methods. Otherwise raise TypeError.
+  もしtoRationalメソッドがあれば,他のオブジェクトを変換することができる. さもなくば TypeErrorが起こる.
 
   \method
-  \subsubsection{getRing -- get ring object}\linkedtwo{rational}{Rational}{getRing}
+  \subsubsection{getRing -- ringオブジェクトを得る}\linkedtwo{rational}{Rational}{getRing}
    \func{getRing}{\param{self}}{\out{RationalField}}\\
    \spacing
    % document of basic document
-   \quad Return a RationalField object.
-%
-  \subsubsection{decimalString -- represent decimal}\linkedtwo{rational}{Rational}{decimalString}
+   \quad RationalFieldオブジェクトを返す.
+
+  \subsubsection{decimalString -- 小数を表す}\linkedtwo{rational}{Rational}{decimalString}
    \func{decimalString}{\param{self},\ \hiki{N}{integer}}{\out{string}}\\
    \spacing
    % document of basic document
-   \quad Return a string of the number to \param{N} decimal places.
+   \quad 小数第\param{N}桁とした文字列を返す.
    \spacing
-%
-  \subsubsection{expand -- continued-fraction representation}\linkedtwo{rational}{Rational}{expand}
+
+  \subsubsection{expand -- 連分数による表現}\linkedtwo{rational}{Rational}{expand}
    \func{expand}
         {\param{self},\ 
           \hiki{base}{integer},\ 
@@ -188,37 +188,36 @@ If other is also the integer ring, the output is True. In other cases it depends
         {\out{string}}\\
    \spacing
    % document of basic document
-   \quad Return the nearest rational number whose denominator is a power of \param{base} and at most \param{limit} if \param{base} is positive integer.
+   \quad もし\param{base}が自然数なら,分母が\param{base}の高々\param{limit}乗である最も近い有理数を返す.
 
-   Otherwise, i.e. \param{base}=0, returns the nearest rational number whose denominator is at most \param{limit}.
+   さもなくば(すなわち, \param{base}=0),分母が高々\param{limit}である最も近い有理数を返す.
    \spacing
    % input, output document
-   \quad \param{base} must be non-negative integer.\\
-%
+   \quad \param{base}は負の整数であってはならない.\\
+
 \C
- \subsection{RationalField -- the rational field}\linkedone{rational}{RationalField}
-RationalField is a class of field of rationals. The class has the single instance \linkingone{rational}{theRationalField}.
+ \subsection{RationalField -- 有理数体}\linkedone{rational}{RationalField}
+RationalFieldは有理数体のクラス. このクラスは\linkingone{rational}{theRationalField}という唯一のインスタンスを持つ.
 
- This class is a subclass of \linkingone{ring}{QuotientField}.
-
-
+ このクラスは\linkingone{ring}{QuotientField}のサブクラス.
+%  
   \initialize
   \func{RationalField}{}{\out{RationalField}}\\
   \spacing
   % document of basic document
-  \quad Create an instance of RationalField. 
+  \quad RationalFieldのインスタンスを作成. 
   % added document
-  You may not want to create an instance, since there is already theRationalField.
+  すでにtheRationalFieldがあるので,インスタンスを作成する必要はないかもしれない.
   \begin{at}
-    \item[zero]\linkedtwo{integer}{RationalField}{zero}:\\ It expresses the additive unit 0, namely Rational(0, 1). (read only)
-    \item[one]\linkedtwo{integer}{RationalField}{one}:\\ It expresses the multiplicative unit 1, namely Rational(1, 1). (read only)
+    \item[zero]\linkedtwo{integer}{RationalField}{zero}:\\ 加法の単位元 0 を表す, すなわち Rational(0, 1). (読み込み専用)
+    \item[one]\linkedtwo{integer}{RationalField}{one}:\\ 乗法の単位元 1 を表す, すなわち Rational(1, 1). (読み込み専用)
   \end{at}
   \begin{op}
-    \verb|x in Q| & return whether an element is in or not.\\
-    \verb|str(Q)| & return string.\\
+    \verb|x in Q| & 元が含まれているかどうか返す.\\
+    \verb|str(Q)| & str文字列を返す.\\
   \end{op}
   \method
-  \subsubsection{createElement -- create Rational object}\linkedtwo{rational}{RationalField}{createElement}
+  \subsubsection{createElement -- Rationalオブジェクトを返す}\linkedtwo{rational}{RationalField}{createElement}
    \func{createElement}
         {\param{self},\ 
           \hiki{numerator}{integer or \linkingone{rational}{Rational}},\ 
@@ -226,39 +225,39 @@ RationalField is a class of field of rationals. The class has the single instanc
         }{\out{Rational}}\\
    \spacing
    % document of basic document
-   \quad Create a Rational object.
-%
-  \subsubsection{classNumber -- get class number}\linkedtwo{rational}{RationalField}{classNumber}
+   \quad Rationalオブジェクトを作成.
+
+  \subsubsection{classNumber -- 類数を得る}\linkedtwo{rational}{RationalField}{classNumber}
    \func{classNumber}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return 1, since the class number of the rational field is one.
-%
-  \subsubsection{getQuotientField -- get rational field object}\linkedtwo{rational}{RationalField}{getQuotientField}
+   \quad 有理数体の類数は 1 なので, 1 を返す.
+
+  \subsubsection{getQuotientField -- 有理数体オブジェクトを返す}\linkedtwo{rational}{RationalField}{getQuotientField}
    \func{getQuotientField}{\param{self}}{\out{RationalField}}\\
    \spacing
    % document of basic document
-   \quad Return the rational field itself.
-%
-  \subsubsection{issubring -- subring test}\linkedtwo{rational}{RationalField}{issubring}
+   \quad 有理数体インスタンスを返す.
+
+  \subsubsection{issubring -- 部分環かどうか判定}\linkedtwo{rational}{RationalField}{issubring}
    \func{issubring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether another ring contains the rational field as subring.
+   \quad もう一方の環が部分環として有理数体を含んでいるか報告.
 
-   If other is also the rational field, the output is True. In other cases it depends on the implementation of another ring's issuperring method.
+   もしotherもまた有理数体なら, 出力はTrue. 他の場合もう一方のissuperringメソッドにおける実装に依存.
    \spacing
-%
-  \subsubsection{issuperring -- superring test}\linkedtwo{rational}{RationalField}{issuperring}
+
+  \subsubsection{issuperring -- 含んでいるかどうか判定}\linkedtwo{rational}{RationalField}{issuperring}
    \func{issuperring}{\param{self},\ \hiki{other}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether the rational field contains another ring as subring.
+   \quad 有理数体がもう一方の環を部分環としてを含んでいるか報告.
 
-If other is also the rational field, the output is True. In other cases it depends on the implementation of another ring's issubring method.
+もしotherもまた有理数体なら, 出力はTrue. 他の場合もう一方のissubringメソッドにおける実装に依存.
    \spacing
 \C
 
-%---------- end document ---------- %
+% ---------- end document ---------- %
 
 \input{../footer}

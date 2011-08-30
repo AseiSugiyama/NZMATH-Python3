@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.uniutil -- univariate utilities}\linkedzero{poly.uniutil}
+ \section{poly.uniutil -- 一変数多項式のためのユーティリティ}\linkedzero{poly.uniutil}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -30,7 +30,7 @@
 
 \C
 
- \subsection{RingPolynomial -- polynomial over commutative ring}\linkedone{poly.uniutil}{RingPolynomial}
+ \subsection{RingPolynomial -- 可換環上の多項式}\linkedone{poly.uniutil}{RingPolynomial}
 
  \initialize
   \func{RingPolynomial}{%
@@ -39,52 +39,48 @@
     **\hiki{keywords}{dict}}{\out{RingPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \quad 多項式を与えられた係数環\param{coeffring}で初期化.\\
   \spacing
   % added document
-  \quad This class inherits from \linkingone{poly.univar}{SortedPolynomial},
-  \linkingone{poly.uniutil}{OrderProvider} and \linkingone{poly.uniutil}{RingElementProvider}.\\
+  \quad このクラスは\linkingone{poly.univar}{SortedPolynomial},
+  \linkingone{poly.uniutil}{OrderProvider}そして\linkingone{poly.uniutil}{RingElementProvider}から継承.\\
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing}.\\
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は\linkingone{ring}{CommutativeRing}のサブクラスのインスタンス.\\
   \method
   \subsubsection{getRing}\linkedtwo{poly.uniutil}{RingPolynomial}{getRing}
   \func{getRing}{\param{self}}{\out{Ring}}\\
   \spacing
-  \quad Return an object of a subclass of {\tt Ring},
-  to which the polynomial belongs.\\
-  (This method overrides the definition in RingElementProvider)
+  \quad 多項式の所属する{\tt Ring}のサブクラスのオブジェクトを返す.\\
+  (このメソッドはRingElementProvider内の定義をオーバーライドする)
 
   \subsubsection{getCoefficientRing}\linkedtwo{poly.uniutil}{RingPolynomial}{getCoefficientRing}
   \func{getCoefficientRing}{\param{self}}{\out{Ring}}\\
   \spacing
-  \quad Return an object of a subclass of {\tt Ring},
-  to which the all coefficients belong.\\
-  (This method overrides the definition in RingElementProvider)
+  \quad 全ての係数が所属する{\tt Ring}サブクラスのオブジェクトを返す.\\
+  (このメソッドはRingElementProvider内の定義をオーバーライドする)
 
   \subsubsection{shift\_degree\_to}\linkedtwo{poly.uniutil}{RingPolynomial}{shift\_degree\_to}
   \func{shift\_degree\_to}{\param{self}, \hiki{degree}{integer}}{\out{polynomial}}\\
   \spacing
-  \quad Return polynomial whose degree is the given \param{degree}.
-  More precisely, let \(f(X) = a_0 + ... + a_n X^n\), then
-  {\tt f.shift\_degree\_to(m)} returns:
+  \quad 次数が与えられた\param{degree}である多項式を返す.
+  より正確に, \(f(X) = a_0 + ... + a_n X^n\) とすると,
+  {\tt f.shift\_degree\_to(m)} は以下を返す:
   \begin{itemize}
-  \item zero polynomial, if f is zero polynomial
-  \item \(a_{n-m} + ... + a_n X^m\), if \(0 \leq m < n\)
-  \item \(a_0 X^{m-n} + ... + a_n X^m\), if \(m \geq n\)
+  \item もしfが零多項式なら,零多項式を返す
+  \item \(a_{n-m} + ... + a_n X^m\),  (\(0 \leq m < n\))
+  \item \(a_0 X^{m-n} + ... + a_n X^m\),  (\(m \geq n\))
   \end{itemize}
-  (This method is inherited from OrderProvider)
+  (このメソッドはOrderProviderから継承される)
 
   \subsubsection{split\_at}\linkedtwo{poly.uniutil}{RingPolynomial}{split\_at}
   \func{split\_at}{\param{self},\ \hiki{degree}{integer}}{\out{polynomial}}\\
   \spacing
-  \quad Return tuple of two polynomials, which are split at the
-  given degree. The term of the given degree, if exists, belongs to
-  the lower degree polynomial.\\
-  (This method is inherited from OrderProvider)  
+  \quad 与えられた次数で分割された二つの多項式のタプルを返す.与えられた次数の項は,もし存在するなら, 下の次数の多項式の側に属する.\\
+  (このメソッドはOrderProviderから継承される)  
 
- \subsection{DomainPolynomial -- polynomial over domain}\linkedone{poly.uniutil}{DomainPolynomial}
+ \subsection{DomainPolynomial -- 整域上の多項式}\linkedone{poly.uniutil}{DomainPolynomial}
  \initialize
   \func{DomainPolynomial}{%
     \hiki{coefficients}{terminit},\ %
@@ -92,71 +88,65 @@
     **\hiki{keywords}{dict}}{\out{DomainPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given domain \param{coeffring}.\\
+  \quad 与えられた整域\param{coeffring}に対し多項式を初期化.\\
   \spacing
   % added document
-  \quad In addition to the basic polynomial operations,
-  it has pseudo division methods.\\
+  \quad 基本的な多項式の演算に加え,それは擬除算を持つ.\\
   \spacing
-  \quad This class inherits \linkingone{poly.uniutil}{RingPolynomial} and
-  \linkingone{poly.uniutil}{PseudoDivisionProvider}.
+  \quad このクラスは\linkingone{poly.uniutil}{RingPolynomial}と\linkingone{poly.uniutil}{PseudoDivisionProvider}を継承.
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing} which satisfies {\tt coeffring.isdomain()}.\\
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は{\tt coeffring.isdomain()}を満たす\linkingone{ring}{CommutativeRing}のサブクラスのインスタンス.\\
   \spacing
   \method
   \subsubsection{pseudo\_divmod}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_divmod}
   \func{pseudo\_divmod}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
   \spacing
-  \quad Return a tuple {\tt (Q, R)},
-  where \(Q\), \(R\) are polynomials such that:
+  \quad 以下のような多項式 \(Q\), \(R\) のタプル{\tt (Q, R)}を返す:
   \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
-  where \(d\) is the leading coefficient of \param{other}.\\
-  (This method is inherited from PseudoDivisionProvider)
+  \(d\) は \param{other}の主係数.\\
+  (このメソッドはPseudoDivisionProviderから継承される)
 
   \subsubsection{pseudo\_floordiv}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_floordiv}
   \func{pseudo\_floordiv}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return a polynomial \(Q\) such that:
+  \quad 以下のような多項式 \(Q\) を返す:
   \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
-  where \(d\) is the leading coefficient of \param{other}.\\
-  (This method is inherited from PseudoDivisionProvider)
+  \(d\) は \param{other}の主係数.\\
+  (このメソッドはPseudoDivisionProviderから継承される)
 
   \subsubsection{pseudo\_mod}\linkedtwo{poly.uniutil}{DomainPolynomial}{pseudo\_mod}
   \func{pseudo\_mod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return a polynomial \(R\) such that:
+  \quad 以下のような多項式 \(R\) を返す:
   \[ d^{deg(f) - deg(other) + 1} f = other \times Q + R,\]
-  where \(d\) is the leading coefficient of \param{other}.\\
-  (This method is inherited from PseudoDivisionProvider)
+  \(d\) は \param{other}の主係数.\\
+  (このメソッドはPseudoDivisionProviderから継承される)
 
   \subsubsection{exact\_division}\linkedtwo{poly.uniutil}{DomainPolynomial}{exact\_division}
   \func{exact\_division}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return quotient of exact division.\\
-  (This method is inherited from PseudoDivisionProvider)
+  \quad (割り切れるとき)除算の商を返す.\\
+  (このメソッドはPseudoDivisionProviderから継承される)
 
   \subsubsection{scalar\_exact\_division}\linkedtwo{poly.uniutil}{DomainPolynomial}{scalar\_exact\_division}
   \func{scalar\_exact\_division}{\param{self},\ \hiki{scale}{CommutativeRingElement}}{\out{polynomial}}\\
   \spacing
-  \quad Return quotient by \param{scale} which can divide each
-  coefficient exactly.\\
-  (This method is inherited from PseudoDivisionProvider)
+  \quad 各係数を割り切る\param{scale}による商を返す.\\
+  (このメソッドはPseudoDivisionProviderから継承される)
 
   \subsubsection{discriminant}\linkedtwo{poly.uniutil}{DomainPolynomial}{discriminant}
   \func{discriminant}{\param{self}}{\out{CommutativeRingElement}}\\
   \spacing
-  \quad Return discriminant of the polynomial.
+  \quad 多項式の判別式を返す.
 
   \subsubsection{to\_field\_polynomial}\linkedtwo{poly.uniutil}{DomainPolynomial}{to\_field\_polynomial}
   \func{to\_field\_polynomial}{\param{self}}{\out{FieldPolynomial}}\\
   \spacing
-  \quad Return a {\tt FieldPolynomial} object obtained by embedding
-  the polynomial ring over the domain \(D\) to over the quotient
-  field of \(D\).
+  \quad 整域 \(D\) 上の多項式環を \(D\) の商体へ埋め込むことにより得られる{\tt FieldPolynomial}オブジェクトを返す.
 
- \subsection{UniqueFactorizationDomainPolynomial -- polynomial over UFD}\linkedone{poly.uniutil}{UniqueFactorizationDomainPolynomial}
+ \subsection{UniqueFactorizationDomainPolynomial -- UFD上の多項式}\linkedone{poly.uniutil}{UniqueFactorizationDomainPolynomial}
  \initialize
   \func{UniqueFactorizationDomainPolynomial}{%
     \hiki{coefficients}{terminit},\ %
@@ -164,51 +154,51 @@
     **\hiki{keywords}{dict}}{\out{UniqueFactorizationDomainPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given UFD \param{coeffring}.\\
+  \quad 与えられたUFD \param{coeffring}において多項式を初期化.\\
   \spacing
   % added document
-  \quad This class inherits from \linkingone{poly.uniutil}{DomainPolynomial},
-  \linkingone{poly.uniutil}{SubresultantGcdProvider} and \linkingone{poly.uniutil}{ContentProvider}.\\
+  \quad このクラスは\linkingone{poly.uniutil}{DomainPolynomial},
+  \linkingone{poly.uniutil}{SubresultantGcdProvider}そして\linkingone{poly.uniutil}{ContentProvider}から継承する.\\
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of descendant of \linkingone{ring}{CommutativeRing} which satisfies {\tt coeffring.isufd()}.
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は{\tt coeffring.isufd()}を満たす\linkingone{ring}{CommutativeRing}のサブクラスのインスタンス.
 
   \subsubsection{content}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{content}
   \func{content}{\param{self}}{\out{CommutativeRingElement}}\\
   \spacing
-  \quad Return content of the polynomial.\\
-  (This method is inherited from ContentProvider)
+  \quad 多項式の内容を返す.\\
+  (このメソッドはContentProviderから継承される)
 
   \subsubsection{primitive\_part}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{primitive\_part}
   \func{primitive\_part}{\param{self}}{\out{UniqueFactorizationDomainPolynomial}}\\
   \spacing
-  \quad Return the primitive part of the polynomial.\\
-  (This method is inherited from ContentProvider)
+  \quad 多項式の原始的部分を返す.\\
+  (このメソッドはContentProviderから継承される)
 
   \subsubsection{subresultant\_gcd}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{subresultant\_gcd}
   \func{subresultant\_gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{UniqueFactorizationDomainPolynomial}}\\
   \spacing
-  \quad Return the greatest common divisor of given polynomials.
-  They must be in the polynomial ring and its coefficient ring must be a UFD.\\
-  (This method is inherited from SubresultantGcdProvider)\\
+  \quad 与えられた多項式の最大公約数を返す.
+  これらは多項式環に入っていなければならず,その係数環はUFDでなければならない.\\
+  (このメソッドはSubresultantGcdProviderから継承される)\\
   Reference: \cite{Cohen1}{Algorithm 3.3.1}
 
   \subsubsection{subresultant\_extgcd}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{subresultant\_extgcd}
   \func{subresultant\_extgcd}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
   \spacing
-  \quad Return {\tt (A, B, P)} s.t. \(A\times self + B \times other=P\),
-  where \(P\) is the greatest common divisor of given polynomials.
-  They must be in the polynomial ring and its coefficient ring must be a UFD.\\
-  Reference: \cite{Kida}{p.18}\\
-  (This method is inherited from SubresultantGcdProvider)
+  \quad \(A\times self + B \times other=P\) である {\tt (A, B, P)} を返す.
+  \(P\) は与えられた多項式の最大公約数.
+  これは多項式環に入っていなければならず,その係数環はUFDでなければならない.\\
+  参考: \cite{Kida}{p.18}\\
+  (このメソッドはSubresultantGcdProviderから継承される)
 
   \subsubsection{resultant}\linkedtwo{poly.uniutil}{UniqueFactorizationDomainPolynomial}{resultant}
   \func{resultant}{\param{self}, \hiki{other}{polynomial}}{\out{polynomial}}\\
-  \quad Return the resultant of \param{self} and \param{other}.\\
-  (This method is inherited from SubresultantGcdProvider)
+  \quad \param{self}と\param{other}の終結式を返す.\\
+  (このメソッドはSubresultantGcdProviderから継承される)
 
- \subsection{IntegerPolynomial -- polynomial over ring of rational integers}\linkedone{poly.uniutil}{IntegerPolynomial}
+ \subsection{IntegerPolynomial -- 有理整数環上の多項式}\linkedone{poly.uniutil}{IntegerPolynomial}
  \initialize
   \func{IntegerPolynomial}{%
     \hiki{coefficients}{terminit},\ %
@@ -216,20 +206,19 @@
     **\hiki{keywords}{dict}}{\out{IntegerPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \quad 与えられた可換環\param{coeffring}において多項式を初期化.\\
   \spacing
   % added document
-  \quad This class is required because special initialization must be
-  done for built-in int/long.\\
+  \quad 組み込みのint/longへ特別な初期化がされなければならないので,このクラスは必要とされる.\\
   \spacing
-  \quad This class inherits from \linkingone{poly.uniutil}{UniqueFactorizationDomainPolynomial}.\\
+  \quad このクラスは\linkingone{poly.uniutil}{UniqueFactorizationDomainPolynomial}から継承.\\
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of \linkingone{rational}{IntegerRing}.
-  You have to give the rational integer ring, though it seems redundant.
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は\linkingone{rational}{IntegerRing}のインスタンス.
+  冗長なように思えるが,有理整数環を与える必要がある.
 
- \subsection{FieldPolynomial -- polynomial over field}\linkedone{poly.uniutil}{FieldPolynomial}
+ \subsection{FieldPolynomial -- 体上の多項式}\linkedone{poly.uniutil}{FieldPolynomial}
  \initialize
   \func{FieldPolynomial}{%
     \hiki{coefficients}{terminit},\ %
@@ -237,72 +226,70 @@
     **\hiki{keywords}{dict}}{\out{FieldPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given field \param{coeffring}.\\
+  \quad 与えられた体\param{coeffring}において多項式を初期化.\\
   \spacing
   % added document
-  \quad Since the polynomial ring over field is a Euclidean domain,
-  it provides divisions.\\
+  \quad 体上の多項式環はユークリッド整域なので,
+  除算が提供される.\\
   \spacing
-  \quad This class inherits from \linkingone{poly.uniutil}{RingPolynomial},
-  \linkingone{poly.uniutil}{DivisionProvider} and \linkingone{poly.uniutil}{ContentProvider}.\\
+  \quad このクラスは\linkingone{poly.uniutil}{RingPolynomial},
+  \linkingone{poly.uniutil}{DivisionProvider}そして\linkingone{poly.uniutil}{ContentProvider}から継承.\\
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of descendant of \linkingone{ring}{Field}.\\
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は\linkingone{ring}{Field}のサブクラスのインスタンス.\\
 %
   \begin{op}
-    \verb+f // g+ & quotient of floor division\\
-    \verb+f % g+ & remainder\\
-    \verb+divmod(f, g)+ & quotient and remainder\\
-    \verb+f / g+ & division in rational function field\\
+    \verb+f // g+ & 切り捨て除算の商\\
+    \verb+f % g+ & 余り\\
+    \verb+divmod(f, g)+ & 商と余り\\
+    \verb+f / g+ & 有利関数体上での除算\\
   \end{op}
   \method
 
   \subsubsection{content}\linkedtwo{poly.uniutil}{FieldPolynomial}{content}
   \func{content}{\param{self}}{\out{FieldElement}}\\
   \spacing
-  \quad Return content of the polynomial.\\
-  (This method is inherited from ContentProvider)
+  \quad 多項式の内容を返す.\\
+  (このメソッドはContentProviderから継承される)
 
   \subsubsection{primitive\_part}\linkedtwo{poly.uniutil}{FieldPolynomial}{primitive\_part}
   \func{primitive\_part}{\param{self}}{\out{polynomial}}\\
   \spacing
-  \quad Return the primitive part of the polynomial.\\
-  (This method is inherited from ContentProvider)
+  \quad 多項式の原始的部分を返す.\\
+  (このメソッドはContentProviderから継承される)
 
   \subsubsection{mod}\linkedtwo{poly.uniutil}{FieldPolynomial}{mod}
   \func{mod}{\param{self},\ \hiki{dividend}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return \(dividend \bmod self\).\\
-  (This method is inherited from DivisionProvider)
+  \quad \(dividend \bmod self\)を返す.\\
+  (このメソッドはDivisionProviderから継承される)
 
   \subsubsection{scalar\_exact\_division}\linkedtwo{poly.uniutil}{FieldPolynomial}{scalar\_exact\_division}
   \func{scalar\_exact\_division}{\param{self},\ \hiki{scale}{FieldElement}}{\out{polynomial}}\\
   \spacing
-  \quad Return quotient by \param{scale} which can divide each
-  coefficient exactly.\\
-  (This method is inherited from DivisionProvider)
+  \quad 各係数を割り切る\param{scale}による商を返す.\\
+  (このメソッドはDivisionProviderから継承される)
 
   \subsubsection{gcd}\linkedtwo{poly.uniutil}{FieldPolynomial}{gcd}
   \func{gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return a greatest common divisor of self and other.\\
+  \quad selfとotherの最大公約数を返す.\\
   \spacing
-  \quad Returned polynomial is always monic.\\
-  (This method is inherited from DivisionProvider)
+  \quad 返される多項式はすでにモニック多項式です.\\
+  (このメソッドはDivisionProviderから継承される)
 
   \subsubsection{extgcd}\linkedtwo{poly.uniutil}{FieldPolynomial}{extgcd}
   \func{extgcd}{\param{self},\ \hiki{other}{polynomial}}{\out{tuple}}\\
   \spacing
-  \quad Return a tuple {\tt (u, v, d)}; they are the greatest common
-  divisor \(d\) of two polynomials \param{self} and \param{other} and
-  \(u\), \(v\) such that
+  \quad タプル{\tt (u, v, d)}を返す; 二つの多項式\param{self}と\param{other}の最大公約数\(d\)と
+  以下となる\(u\), \(v\) である
   \[ d = self \times u + other \times v\]
   \spacing
-  See \linkingone{gcd}{extgcd}.\\
-  (This method is inherited from DivisionProvider)
+  \linkingone{gcd}{extgcd}を参照.\\
+  (このメソッドはDivisionProviderから継承される)
 
- \subsection{FinitePrimeFieldPolynomial -- polynomial over finite prime field}\linkedone{poly.uniutil}{FinitePrimeFieldPolynomial}
+ \subsection{FinitePrimeFieldPolynomial -- 有限素体上の多項式}\linkedone{poly.uniutil}{FinitePrimeFieldPolynomial}
  \initialize
   \func{FinitePrimeFieldPolynomial}{%
     \hiki{coefficients}{terminit},\ %
@@ -310,96 +297,87 @@
     **\hiki{keywords}{dict}}{\out{FinitePrimeFieldPolynomial object}}\\
   \spacing
   % document of basic document
-  \quad Initialize a polynomial over the given commutative ring \param{coeffring}.\\
+  \quad 与えられた可換環\param{coeffring}において多項式を初期化.\\
   \spacing
   % added document
-  \quad This class inherits from \linkingone{poly.uniutil}{FieldPolynomial} and
-  \linkingone{poly.uniutil}{PrimeCharacteristicFunctionsProvider}.\\
+  \quad このクラスは\linkingone{poly.uniutil}{FieldPolynomial}と
+  \linkingone{poly.uniutil}{PrimeCharacteristicFunctionsProvider}から継承する.\\
   \spacing
   % input, output document
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  \param{coeffring} is an instance of descendant of \linkingone{finitefield}{FinitePrimeField}.
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  \param{coeffring}は\linkingone{finitefield}{FinitePrimeField}のサブクラスのインスタンス.
   \method
-  \subsubsection{mod\_pow -- powering with modulus}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{mod\_pow}
+  \subsubsection{mod\_pow -- モジュロとべき乗}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{mod\_pow}
   \func{mod\_pow}{\param{self},\ \hiki{polynom}{polynomial}, \hiki{index}{integer}}{\out{polynomial}}\\
   \spacing
-  \quad Return \(polynom ^ {index} \bmod self\).\\
+  \quad \(polynom ^ {index} \bmod self\) を返す.\\
   \spacing
-  \quad Note that \param{self} is the modulus.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad \param{self}を法としていることに注意.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{pthroot}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{pthroot}
   \func{pthroot}{\param{self}}{\out{polynomial}}\\
   \spacing
-  \quad Return a polynomial obtained by sending \(X^p\) to \(X\),
-  where \(p\) is the characteristic. If the polynomial does not consist
-  of \(p\)-th powered terms only, result is nonsense.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad \(X^p\) を \(X\) に渡すことにより得られる多項式を返す.
+  \(p\) は標数.もし多項式が \(p\) 乗された項のみ成さなければ,結果は無意味.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{squarefree\_decomposition}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{squarefree\_decomposition}
   \func{squarefree\_decomposition}{\param{self}}{\out{dict}}\\
   \spacing
-  \quad Return the square free decomposition of the polynomial.\\
+  \quad 平方因子を含まない多項式分解を返す.\\
   \spacing
-  \quad The return value is a dict whose keys are integers and values are
-  corresponding powered factors.  For example, If
+  \quad 返される値は,keysが整数でvaluesが対応したべき乗因子の辞書.例えば,もし
 \begin{ex}
 >>> A = A1 * A2**2
 >>> A.squarefree_decomposition()
 {1: A1, 2: A2}.
 \end{ex}%Don't indent!
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{distinct\_degree\_decomposition}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{distinct\_degree\_decomposition}
   \func{distinct\_degree\_decomposition}{\param{self}}{\out{dict}}\\
   \spacing
-  \quad Return the distinct degree factorization of the polynomial.\\
+  \quad 多項式を相異なる次数で因数分解したものを返す.\\
   \spacing
-  \quad The return value is a dict whose keys are integers and values are
-  corresponding product of factors of the degree. For example, if
-  \(A = A1 \times A2\), and all irreducible factors of \(A1\) having
-  degree \(1\) and all irreducible factors of \(A2\) having degree \(2\),
-  then the result is: {\tt \{1: A1, 2: A2\}}.\\
+  \quad 返される値はkeysが整数でvaluesが対応した次数の因数の積である辞書.例えば,もし
+  \(A = A1 \times A2\), で,そして \(A1\) の全ての既約因子が次数 \(1\) を持ち, \(A2\) の既約因子は次数 \(2\) を持つ,
+  そして結果は: {\tt \{1: A1, 2: A2\}}.\\
 
-  \quad The given polynomial must be square free, and its coefficient
-  ring must be a finite field.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad 与えられた多項式は平方因子をもなたいものでなければならず,その係数環は有限体でなければならない.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{split\_same\_degrees}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{split\_same\_degrees}
   \func{split\_same\_degrees}{\param{self}, \hiki{degree}}{\out{list}}\\
   \spacing
-  \quad Return the irreducible factors of the polynomial.\\
+  \quad 多項式の既約因子を返す.\\
   \spacing
-  \quad The polynomial must be a product of irreducible factors of
-  the given degree.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad 多項式は与えられた次数の既約因子の積でなければならない.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{factor}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{factor}
   \func{factor}{\param{self}}{\out{list}}\\
   \spacing
-  \quad Factor the polynomial.\\
+  \quad 多項式を因数分解する.\\
   \spacing
-  \quad The returned value is a list of tuples whose first component
-  is a factor and second component is its multiplicity.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad 返される値は,最初の成分は因数で次の成分はその重複度であるタプルのリストです.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
   \subsubsection{isirreducible}\linkedtwo{poly.uniutil}{FinitePrimeFieldPolynomial}{isirreducible}
   \func{isirreducible}{\param{self}}{\out{bool}}\\
-  \quad If the polynomial is irreducible return {\tt True},
-  otherwise {\tt False}.\\
-  (This method is inherited from PrimeCharacteristicFunctionsProvider)
+  \quad もし多項式が既約なら{\tt True}を返し,
+  さもなくば{\tt False}を返す.\\
+  (このメソッドはPrimeCharacteristicFunctionsProviderから継承される)
 
 
-  \subsection{polynomial -- factory function for various polynomials}\linkedone{poly.uniutil}{polynomial}
+  \subsection{polynomial -- さまざまな多項式に対するファクトリ関数}\linkedone{poly.uniutil}{polynomial}
   \func{polynomial}{\hiki{coefficients}{terminit},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   \quad Return a polynomial.\\
+   \quad 多項式を返す.\\
    \spacing
-   \quad \negok One can override the way to choose a polynomial type
-   from a coefficient ring, by setting:\\
-   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\
-   before the function call.
+   \quad \negok 関数を呼ぶ前に以下を設定することにより,係数環から多項式の型を選ぶ方法をオーバーライドすることができる:\\
+   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\.
 \C
 
 %---------- end document ---------- %

@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{permute -- permutation (symmetric) group}\linkedzero{permute}
+ \section{permute -- 置換(対称)群}\linkedzero{permute}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -15,42 +15,42 @@
 
 \C
 
- \subsection{Permute -- element of permutation group}\linkedone{permute}{Permute}
+ \subsection{Permute -- 置換群の元}\linkedone{permute}{Permute}
  \initialize
   \func{Permute}{\hiki{value}{list/tuple},\ \hiki{key}{list/tuple}}{Permute}\\
   \func{Permute}{\hiki{val\_key}{dict}}{Permute}\\
   \func{Permute}{\hiki{value}{list/tuple}, \hikiopt{key}{int}{None}}{Permute}\\
   \spacing
   % document of basic document
-  \quad Create an element of a permutation group.\\
+  \quad 置換群の元を新しく作成.\\
   \spacing
   % added document
-  \quad An instance will be generated with ``normal'' way.
-  That is, we input a \param{key}, which is a list of (indexed) all elements from some set, and a \param{value}, which is a list of all permuted elements.\\
+  \quad インスタンスは``普通の''方法で作成される.
+  すなわち,ある集合の(インデックス付けられた)全ての元のリストである\param{key}と,全ての置換された元のリストである\param{value}を入力.\\
   \spacing
   % input, output document
-  \quad Normally, you input two lists (or tuples) \param{value} and \param{key} with same length.
-  Or you can input \param{val\_key} as a dict whose {\tt values()} is a list ``value'' and {\tt keys()} is a list ``key'' in the sense of above. 
-  Also, there are some short-cut for inputting \param{key}:
+  \quad 普通は,同じ長さのリスト(またはタプル)である\param{value}と\param{key}を入力.
+  または上記の意味での``value''のリストである{\tt values()}, ``key''のリストである{\tt keys()}を持つ辞書\param{val\_key}として入力することができる. 
+  また,\param{key}の入力には簡単な方法がある:
   \begin{itemize}
-    \item If key is $[1,\ 2, \ldots, N]$, you do not have to input \param{key}.
-    \item If key is $[0,\ 1, \ldots, N-1]$, input $0$ as \param{key}.
-    \item If key equals the list arranged through \param{value} in ascending order, input $1$.
-    \item If key equals the list arranged through \param{value} in descending order, input $-1$.
+    \item もしkeyが$[1,\ 2, \ldots, N]$なら,\param{key}を入力する必要がない.
+    \item もしkeyが$[0,\ 1, \ldots, N-1]$なら,\param{key}として$0$を入力.
+    \item もしkeyが\param{value}を昇順として整列したリストと等しければ,$1$を入力.
+    \item もしkeyが\param{value}を降順として整列したリストと等しければ,$-1$を入力.
   \end{itemize}
   \begin{at}
-    \item[key]:\linkedtwo{permute}{Permute}{key}\\ It expresses \param{key}.
-    \item[data]:\linkedtwo{permute}{Permute}{data}\\ \negok It expresses indexed form of \param{value}.
+    \item[key]:\linkedtwo{permute}{Permute}{key}\\ \param{key}を表す.
+    \item[data]:\linkedtwo{permute}{Permute}{data}\\ \negok \param{value}のインデックス付きの形式を表す.
   \end{at}
   \C
   \begin{op}
-    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
-    \verb+A*B+ & right multiplication (that is, $A \circ B$ with normal mapping way)\\
-    \verb+A/B+ & division (that is, $A \circ B^{-1}$)\\
-    \verb+A**B+ & powering\\
-    \verb+A.inverse()+ & inverse\\
-    \verb+A[c]+ & the element of \param{value} corresponding to \param{c} in \param{key}\\
-    \verb+A(lst)+ & permute \param{lst} with A\\
+    \verb+A==B+ & AのvalueとBのvalue,そしてAのkeyとBのkeyが等しいかどうか返す.\\
+    \verb+A*B+ & 右乗算(すなわち,通常の写像の演算$A \circ B$)\\
+    \verb+A/B+ & 除算(すなわち,$A \circ B^{-1}$)\\
+    \verb+A**B+ & べき乗\\
+    \verb+A.inverse()+ & 逆元\\
+    \verb+A[c]+ & \param{key}の\param{c}に対応した\param{value}の元\\
+    \verb+A(lst)+ & Aで\param{lst}を置換\\
   \end{op}
 \begin{ex}
 >>> p1 = permute.Permute(['b','c','d','a','e'], ['a','b','c','d','e'])
@@ -74,110 +74,110 @@
 [2, 3, 0, 1, 4]
 \end{ex}%Don't indent!
   \method
-  \subsubsection{setKey -- change key}\linkedtwo{permute}{Permute}{setKey}
+  \subsubsection{setKey -- keyを変換}\linkedtwo{permute}{Permute}{setKey}
    \func{setKey}{\param{self},\ \hiki{key}{list/tuple}}{\out{Permute}}\\
    \spacing
    % document of basic document
-   \quad Set other key.\\
+   \quad 他のkeyを設定.\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{key} must be list or tuple with same length to \linkingtwo{permute}{Permute}{key}.\\
- \subsubsection{getValue -- get ``value''}\linkedtwo{permute}{Permute}{getValue}
+   \quad \param{key}は\linkingtwo{permute}{Permute}{key}と同じ長さのリストまたはタプルでなければならない.\\
+ \subsubsection{getValue -- ``value''を得る}\linkedtwo{permute}{Permute}{getValue}
    \func{getValue}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return (not \param{data}) \param{value} of \param{self}.\\
+   \quad \param{self}の(\param{data}でなく)\param{value}を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{getGroup -- get PermGroup}\linkedtwo{permute}{Permute}{getGroup}
+ \subsubsection{getGroup -- PermGroupを得る}\linkedtwo{permute}{Permute}{getGroup}
    \func{getGroup}{\param{self}}{\out{PermGroup}}\\
    \spacing
    % document of basic document
-   \quad Return \linkingone{permute}{PermGroup} to which \param{self} belongs.\\
+   \quad \param{self}の所属する\linkingone{permute}{PermGroup}を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{numbering -- give the index}\linkedtwo{permute}{Permute}{numbering}
+ \subsubsection{numbering -- インデックスを与える}\linkedtwo{permute}{Permute}{numbering}
    \func{numbering}{\param{self}}{\out{int}}\\
    \spacing
    % document of basic document
-   \quad Number \param{self} in the permutation group. (Slow method)\\
+   \quad 置換群の\param{self}に数を定める. (遅いメソッド)\\
    \spacing
    % added document
-   \quad The numbering is made to fit the following inductive definition for dimension of the permutation group.\\
-   If numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ \sigma_{n-1}]$ on $(n-1)$-dimension is $k$,
-   numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\sigma_{n-1},n]$ on $n$-dimension is $k$ and
-   numbering of $[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ n,\ \sigma_{n-1}]$ on $n$-dimension is $k+(n-1)!$, and so on.
-   (See \href{http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm}{Room of Points And Lines, part 2, section 15, paragraph 2 (Japanese)})\\
+   \quad 次に示す置換群の次元による帰納的な定義に従って定められる.\\
+   $(n-1)$次元上の$[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ \sigma_{n-1}]$の番号付けを$k$とすると,
+   $n$次元上の$[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\sigma_{n-1},n]$の番号付けは$k$,また
+   $n$次元上の$[\sigma_1,\ \sigma_2,...,\sigma_{n-2},\ n,\ \sigma_{n-1}]$の番号付けは$k+(n-1)!$,などとなる.
+   (\href{http://www32.ocn.ne.jp/~graph_puzzle/2no15.htm}{Room of Points And Lines, part 2, section 15, paragraph 2 (Japanese)})\\
    %\spacing
    % input, output document
- \subsubsection{order -- order of the element}\linkedtwo{permute}{Permute}{order}
+ \subsubsection{order -- 元の位数}\linkedtwo{permute}{Permute}{order}
    \func{order}{\param{self}}{\out{int/long}}\\
    \spacing
    % document of basic document
-   \quad Return order as the element of group.\\
+   \quad 群の元としての位数を返す.\\
    \spacing
    % added document
-   \quad This method is faster than general group method.
+   \quad このメソッドは一般の群のそれよりも早い.
    \spacing
    % input, output document
- \subsubsection{ToTranspose -- represent as transpositions}\linkedtwo{permute}{Permute}{ToTranspose}
+ \subsubsection{ToTranspose -- 互換の積として表す}\linkedtwo{permute}{Permute}{ToTranspose}
    \func{ToTranspose}{\param{self}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Represent \param{self} as a composition of transpositions.\\
+   \quad \param{self}を互換の積で表す.\\
    \spacing
    % added document
-   \quad Return the element of \linkingone{permute}{ExPermute} with transpose (2-dimensional cyclic) type.
-   It is recursive program, and it would take more time than the method \linkingtwo{permute}{Permute}{ToCyclic}.\\
+   \quad 互換(すなわち二次元巡回)の積とした\linkingone{permute}{ExPermute}の元を返す.
+   これは再帰プログラムであり,\linkingtwo{permute}{Permute}{ToCyclic}よりも多くの時間がかかるだろう.\\
    \spacing
    % input, output document
- \subsubsection{ToCyclic -- corresponding ExPermute element}\linkedtwo{permute}{Permute}{ToCyclic}
+ \subsubsection{ToCyclic -- ExPermuteの元に対応する}\linkedtwo{permute}{Permute}{ToCyclic}
    \func{ToCyclic}{\param{self}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Represent \param{self} as a composition of cyclic representations.\\
+   \quad 巡回表現の積として\param{self}を表す.\\
    \spacing
    % added document
-   \quad Return the element of \linkingone{permute}{ExPermute}.
-   \negok This method decomposes \param{self} into coprime cyclic permutations, so each cyclic is commutative.
+   \quad \linkingone{permute}{ExPermute}の元を返す.
+   \negok このメソッドは\param{self}を互いに素な巡回置換に分解する.よってそれぞれの巡回は可換.
    \spacing
    % input, output document
- \subsubsection{sgn -- sign of the permutation}\linkedtwo{permute}{Permute}{sgn}
+ \subsubsection{sgn -- 置換記号}\linkedtwo{permute}{Permute}{sgn}
    \func{sgn}{\param{self}}{\out{int}}\\
    \spacing
    % document of basic document
-   \quad Return the sign of permutation group element.\\
+   \quad 置換群の元の置換符号を返す.\\
    \spacing
    % added document
-   \quad If \param{self} is even permutation, that is, \param{self} can be written as a composition of an even number of transpositions, it returns $1$.
-   Otherwise,that is, for odd permutation, it returns $-1$.
+   \quad もし\param{self}が偶置換,すなわち,\param{self}を偶数個の互換の積として書くことができる場合,$1$を返す.
+   さもなければ,すなわち奇置換の場合,$-1$を返す.
    \spacing
    % input, output document
- \subsubsection{types -- type of cyclic representation}\linkedtwo{permute}{Permute}{types}
+ \subsubsection{types -- 巡回置換の形式}\linkedtwo{permute}{Permute}{types}
    \func{types}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return cyclic type defined by each cyclic permutation element length.\\
+   \quad それぞれの巡回置換の元の長さによって定義された巡回置換の形式を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{ToMatrix -- permutation matrix}\linkedtwo{permute}{Permute}{ToMatrix}
+ \subsubsection{ToMatrix -- 置換行列}\linkedtwo{permute}{Permute}{ToMatrix}
    \func{ToMatrix}{\param{self}}{\out{\linkingone{matrix}{Matrix}}}\\
    \spacing
    % document of basic document
-   \quad Return permutation matrix.\\
+   \quad 置換行列を返す.\\
    \spacing
    % added document
-   \quad The row and column correspond to \param{key}.
-   If \param{self} $G$ satisfies $G[a]=b$, then $(a,\ b)$-element of the matrix is $1$.
-   Otherwise, the element is $0$.
+   \quad 行と列は\param{key}に対応する.
+   もし\param{self} $G$ が $G[a]=b$ を満たせば,行列の$(a,\ b)$成分は$1$.
+   さもなくば,その元は$0$.
    %\spacing
    % input, output document
 \begin{ex}
@@ -203,39 +203,39 @@
 \end{ex}%Don't indent!
 \C
 
- \subsection{ExPermute -- element of permutation group as cyclic representation}\linkedone{permute}{ExPermute}
+ \subsection{ExPermute -- 巡回表現としての置換群の元}\linkedone{permute}{ExPermute}
  \initialize
   \func{ExPermute}{\hiki{dim}{int},\ \hiki{value}{list},\ \hikiopt{key}{list}{None}}{ExPermute}\\
   \spacing
   % document of basic document
-  \quad Create an element of a permutation group.\\
+  \quad 新しい置換群の元を作成.\\
   \spacing
   % added document
-  \quad An instance will be generated with ``cyclic'' way.
-  That is, we input a \param{value}, which is a list of tuples and each tuple expresses a cyclic permutation.
-  For example, $(\sigma_1,\ \sigma_2,\ \sigma_3,\ldots,\sigma_k)$ is one-to-one mapping, $\sigma_1 \mapsto \sigma_2,\ \sigma_2 \mapsto \sigma_3,\ldots,\sigma_k \mapsto \sigma_1$.\\
+  \quad インスタンスは``巡回の'' 方法で作成される.
+  すなわち,各タプルが巡回表現を表すタプルのリストである\param{value}を入力.
+  例えば, $(\sigma_1,\ \sigma_2,\ \sigma_3,\ldots,\sigma_k)$は1対1写像, $\sigma_1 \mapsto \sigma_2,\ \sigma_2 \mapsto \sigma_3,\ldots,\sigma_k \mapsto \sigma_1$.\\
   \spacing
   % input, output document
-  \quad \param{dim} must be positive integer, that is, an instance of int, long or \linkingone{rational}{Integer}. 
-  \param{key} should be a list whose length equals \param{dim}.
-  Input a list of tuples whose elements are in \param{key} as \param{value}.
-  Note that you can abbreviate \param{key} if \param{key} has the form $[1,\ 2,\ldots,N]$.
-  Also, you can input $0$ as \param{key} if  \param{key} has the form $[0,\ 1,\ldots,N-1]$.
+  \quad \param{dim}は自然数でなければならない,すなわち,int,longまたは\linkingone{rational}{Integer}のインスタンス. 
+  \param{key}は\param{dim}と同じ長さのリストであるべきである.
+  元が\param{value}としての\param{key}に入っているタプルのリストを入力.
+  \param{key}が$[1,\ 2,\ldots,N]$という形式なら\param{key}を省略することができることに注意.
+  また,\param{key}が$[0,\ 1,\ldots,N-1]$という形式なら\param{key}として$0$を入力することができる.
   \begin{at}
-    \item[dim]:\linkedtwo{permute}{ExPermute}{dim}\\ It expresses \param{dim}.
-    \item[key]:\linkedtwo{permute}{ExPermute}{key}\\ It expresses \param{key}.
-    \item[data]:\linkedtwo{permute}{ExPermute}{data}\\ \negok It expresses indexed form of \param{value}.
+    \item[dim]:\linkedtwo{permute}{ExPermute}{dim}\\ \param{dim}を表す.
+    \item[key]:\linkedtwo{permute}{ExPermute}{key}\\ \param{key}を表す.
+    \item[data]:\linkedtwo{permute}{ExPermute}{data}\\ \negok インデックスの付いた\param{value}の形式を表す.
   \end{at}
   \begin{op}
-    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
-    \verb+A*B+ & right multiplication (that is, $A \circ B$ with normal mapping way)\\
-    \verb+A/B+ & division (that is, $A \circ B^{-1}$)\\
-    \verb+A**B+ & powering\\
-    \verb+A.inverse()+ & inverse\\
-    \verb+A[c]+ & the element of \param{value} corresponding to \param{c} in \param{key}\\
-    \verb+A(lst)+ & permute \param{lst} with A\\
-    \verb+str(A)+ & simple representation. use \linkingtwo{permute}{ExPermute}{simplify}.\\
-    \verb+repr(A)+ & representation \\
+    \verb+A==B+ & AのvalueとBのvalue,そしてAのkeyとBのkeyが等しいかどうか返す.\\
+    \verb+A*B+ & 右乗算(すなわち,普通の写像$A \circ B$)\\
+    \verb+A/B+ & 除算(すなわち,$A \circ B^{-1}$)\\
+    \verb+A**B+ & べき乗\\
+    \verb+A.inverse()+ & 逆元\\
+    \verb+A[c]+ & \param{key}の\param{c}に対応する\param{value}の元\\
+    \verb+A(lst)+ & \param{lst}をAに置換する\\
+    \verb+str(A)+ & 単純な表記.\linkingtwo{permute}{ExPermute}{simplify}を用いる.\\
+    \verb+repr(A)+ & 表記\\
   \end{op}
 \begin{ex}
 >>> p1 = permute.ExPermute(5, [('a', 'b')], ['a','b','c','d','e'])
@@ -255,72 +255,72 @@
 [2, 4, 0, 1, 3]
 \end{ex}%Don't indent!
   \method
-  \subsubsection{setKey -- change key}\linkedtwo{permute}{ExPermute}{setKey}
+  \subsubsection{setKey -- keyを変換}\linkedtwo{permute}{ExPermute}{setKey}
    \func{setKey}{\param{self},\ \hiki{key}{list}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Set other key.\\
+   \quad 他のkeyを設定.\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{key} must be a list whose length equals \linkingtwo{permute}{ExPermute}{dim}.\\
- \subsubsection{getValue -- get ``value''}\linkedtwo{permute}{ExPermute}{getValue}
+   \quad \param{key}は\linkingtwo{permute}{ExPermute}{dim}と同じ長さのリストでなければならない.\\
+ \subsubsection{getValue -- ``value''を得る}\linkedtwo{permute}{ExPermute}{getValue}
    \func{getValue}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return (not \param{data}) \param{value} of \param{self}.\\
+   \quad \param{self}の(\param{data}でなく)\param{value}を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{getGroup -- get PermGroup}\linkedtwo{permute}{ExPermute}{getGroup}
+ \subsubsection{getGroup -- PermGroupを得る}\linkedtwo{permute}{ExPermute}{getGroup}
    \func{getGroup}{\param{self}}{\out{PermGroup}}\\
    \spacing
    % document of basic document
-   \quad Return \linkingone{permute}{PermGroup} to which \param{self} belongs.\\
+   \quad \param{self}が所属する\linkingone{permute}{PermGroup}を返す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{order -- order of the element}\linkedtwo{permute}{ExPermute}{order}
+ \subsubsection{order -- 元の位数}\linkedtwo{permute}{ExPermute}{order}
    \func{order}{\param{self}}{\out{int/long}}\\
    \spacing
    % document of basic document
-   \quad Return order as the element of group.\\
+   \quad 群の元としての位数を返す.\\
    \spacing
    % added document
-   \quad This method is faster than general group method.\\
+   \quad このメソッドは一般の群のそれよりも早い.\\
    \spacing
    % input, output document
- \subsubsection{ToNormal -- represent as normal style}\linkedtwo{permute}{ExPermute}{ToNormal}
+ \subsubsection{ToNormal -- 普通の表現}\linkedtwo{permute}{ExPermute}{ToNormal}
    \func{ToNormal}{\param{self}}{\out{Permute}}\\
    \spacing
    % document of basic document
-   \quad Represent \param{self} as an instance of \linkingone{permute}{Permute}.\\
+   \quad \param{self}を\linkingone{permute}{Permute}のインスタンスとして表す.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{simplify -- use simple value}\linkedtwo{permute}{ExPermute}{simplify}
+ \subsubsection{simplify -- 単純な値を使用}\linkedtwo{permute}{ExPermute}{simplify}
    \func{simplify}{\param{self}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Return the more simple cyclic element.\\
+   \quad より単純な巡回表現を返す.\\
    \spacing
    % added document
-   \quad \negok This method uses \linkingtwo{permute}{ExPermute}{ToNormal} and \linkingtwo{permute}{Permute}{ToCyclic}.
+   \quad \negok このメソッドは\linkingtwo{permute}{ExPermute}{ToNormal}と\linkingtwo{permute}{Permute}{ToCyclic}を使用.
    \spacing
    % input, output document
- \subsubsection{sgn -- sign of the permutation}\linkedtwo{permute}{ExPermute}{sgn}
+ \subsubsection{sgn -- 置換符号}\linkedtwo{permute}{ExPermute}{sgn}
    \func{sgn}{\param{self}}{\out{int}}\\
    \spacing
    % document of basic document
-   \quad Return the sign of permutation group element.\\
+   \quad 置換群の元の置換符号を返す.\\
    \spacing
    % added document
-   \quad If \param{self} is even permutation, that is, \param{self} can be written as a composition of an even number of transpositions, it returns $1$.
-   Otherwise,that is, for odd permutation, it returns $-1$.\\
+   \quad もし\param{self}が偶置換なら,すなわち,\param{self}が偶数個の互換の積として書くことができる場合,$1$を返す.
+   さもなくば,すなわち奇置換なら,$-1$を返す.\\
    \spacing
    % input, output document
 \begin{ex}
@@ -336,27 +336,27 @@
 \end{ex}%Don't indent!
 \C
 
- \subsection{PermGroup -- permutation group}\linkedone{permute}{PermGroup}
+ \subsection{PermGroup -- 置換群}\linkedone{permute}{PermGroup}
  \initialize
   \func{PermGroup}{\hiki{key}{int/long}}{PermGroup}\\
   \func{PermGroup}{\hiki{key}{list/tuple}}{PermGroup}\\
   \spacing
   % document of basic document
-  \quad Create a permutation group.\\
+  \quad 新しい置換群を作成.\\
   \spacing
   % added document
   % \spacing
   % input, output document
-  \quad Normally, input list as \param{key}.
-  If you input some integer $N$, \param{key} is set as $[1,\ 2,\ldots,N]$. 
+  \quad 普通は,\param{key}としてリストを入力.
+  もしある整数$N$を入力したら,\param{key}は$[1,\ 2,\ldots,N]$として設定される. 
   \begin{at}
-    \item[key]:\linkedtwo{permute}{PermGroup}{key}\\ It expresses \param{key}.
+    \item[key]:\linkedtwo{permute}{PermGroup}{key}\\ \param{key}を表す.
   \end{at}
   \begin{op}
-    \verb+A==B+ & Check equality for A's value and B's one and A's key and B's one.\\
-    \verb+card(A)+ & same as \linkingtwo{permute}{PermGroup}{grouporder}\\ 
-    \verb+str(A)+ & simple representation\\
-    \verb+repr(A)+ & representation \\
+    \verb+A==B+ & AのvalueとBのvalue,そしてAのkeyとBのkeyが等しいかどうか返す.\\
+    \verb+card(A)+ & \linkingtwo{permute}{PermGroup}{grouporder}と同じ\\ 
+    \verb+str(A)+ & 単純な表記\\
+    \verb+repr(A)+ & 表記\\
   \end{op}
 \begin{ex}
 >>> p1 = permute.PermGroup(['a','b','c','d','e'])
@@ -366,51 +366,51 @@
 120L
 \end{ex}%Don't indent!
   \method
-  \subsubsection{createElement -- create an element from seed}\linkedtwo{permute}{PermGroup}{createElement}
+  \subsubsection{createElement -- シードから元を作成}\linkedtwo{permute}{PermGroup}{createElement}
    \func{createElement}{\param{self},\ \hiki{seed}{list/tuple/dict}}{\out{Permute}}\\
    \func{createElement}{\param{self},\ \hiki{seed}{list}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Create new element in \param{self}.\\
+   \quad \param{self}の新しい元を作成.\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{seed} must be the form of ``value'' on \linkingone{permute}{Permute} or \linkingone{permute}{ExPermute}
- \subsubsection{identity -- group identity}\linkedtwo{permute}{PermGroup}{identity}
+   \quad \param{seed}は\linkingone{permute}{Permute}または\linkingone{permute}{ExPermute}の``value''の形式でなければならない
+ \subsubsection{identity -- 単位元}\linkedtwo{permute}{PermGroup}{identity}
    \func{identity}{\param{self}}{\out{Permute}}\\
    \spacing
    % document of basic document
-   \quad Return the identity of \param{self} as normal type.\\
+   \quad 普通の表現で\param{self}の単位元を返す.\\
    \spacing
    % added document
-   \quad For cyclic type, use \linkingtwo{permute}{PermGroup}{identity\_c}.
+   \quad 巡回表現の場合,\linkingtwo{permute}{PermGroup}{identity\_c}を使用.
    \spacing
    % input, output document
- \subsubsection{identity\_c -- group identity as cyclic type}\linkedtwo{permute}{PermGroup}{identity\_c}
+ \subsubsection{identity\_c -- 巡回表現の単位元}\linkedtwo{permute}{PermGroup}{identity\_c}
    \func{identity\_c}{\param{self}}{\out{ExPermute}}\\
    \spacing
    % document of basic document
-   \quad Return permutation group identity as cyclic type.\\
+   \quad 巡回表現として置換群の単位元を返す.\\
    \spacing
    % added document
-   \quad For normal type, use \linkingtwo{permute}{PermGroup}{identity}.
+   \quad 普通の表現の場合,\linkingtwo{permute}{PermGroup}{identity}を使用.
    \spacing
    % input, output document
- \subsubsection{grouporder -- order as group}\linkedtwo{permute}{PermGroup}{grouporder}
+ \subsubsection{grouporder -- 群の位数}\linkedtwo{permute}{PermGroup}{grouporder}
    \func{grouporder}{\param{self}}{\out{int/long}}\\
    \spacing
    % document of basic document
-   \quad Compute the order of \param{self} as group.\\
+   \quad 群としての\param{self}の位数を計算.\\
    \spacing
    % added document
    %\spacing
    % input, output document
- \subsubsection{randElement -- random permute element}\linkedtwo{permute}{PermGroup}{randElement}
+ \subsubsection{randElement -- 無作為に元を選ぶ}\linkedtwo{permute}{PermGroup}{randElement}
    \func{randElement}{\param{self}}{\out{Permute}}\\
    \spacing
    % document of basic document
-   \quad Create random new element as normal type in \param{self}.\\
+   \quad 普通の表現として無作為に新しい\param{self}の元を作成.\\
    \spacing
    % added document
    %\spacing

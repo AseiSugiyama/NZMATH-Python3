@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.univar -- univariate polynomial}\linkedzero{poly.univar}
+ \section{poly.univar -- 一変数多項式}\linkedzero{poly.univar}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -13,132 +13,122 @@
    \end{itemize}
  \end{itemize}
 
- This poly.univar using following type:
+ この poly.univar は以下の型を使っている:
  \begin{description}
    \item[polynomial]\linkedone{poly.univar}{polynomial}:\\
-     \param{polynomial} is an instance of some descendant class of
-     \linkingone{poly.univar}{PolynomialInterface}
-     in this context.
+     \param{polynomial} はこの文脈では \linkingone{poly.univar}{PolynomialInterface}のサブクラスのインスタンス.
  \end{description}
 
 \C
 
- \subsection{PolynomialInterface -- base class for all univariate polynomials}\linkedone{poly.univar}{PolynomialInterface}
+ \subsection{PolynomialInterface -- 全ての一変数多項式に対する基底クラス}\linkedone{poly.univar}{PolynomialInterface}
  \initialize
-  Since the interface is an abstract class, do not instantiate.\\
-  The class is derived from \linkingone{poly.formalsum}{FormalSumContainerInterface}.
+  抽象クラスなのでインスタンスは作らない.\\
+  このクラスは\linkingone{poly.formalsum}{FormalSumContainerInterface}から派生される.
   \spacing
 %Some of attributes may be treated as a public one.
 %  \begin{at}
 %  \end{at}
   \begin{op}
-    \verb+f * g+ & multiplication\footnote{in FormalSumContainerInterface, there is only scalar multiplication}\\
-    \verb+f ** i+ & powering\\
+    \verb+f * g+ & 乗法\footnote{in FormalSumContainerInterface, there is only scalar multiplication}\\
+    \verb+f ** i+ & べき乗\\
   \end{op} 
   \method
-  \subsubsection{differentiate -- formal differentiation}\linkedtwo{poly.univar}{PolynomialInterface}{differentiate}
+  \subsubsection{differentiate -- 形式微分}\linkedtwo{poly.univar}{PolynomialInterface}{differentiate}
    \func{differentiate}{\param{self}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   \quad Return the formal differentiation of this polynomial.
- \subsubsection{downshift\_degree -- decreased degree polynomial}\linkedtwo{poly.univar}{PolynomialInterface}{downshift\_degree}
+   \quad 多項式の形式微分を返す.
+ \subsubsection{downshift\_degree -- 多項式の次数を下げる}\linkedtwo{poly.univar}{PolynomialInterface}{downshift\_degree}
    \func{downshift\_degree}{\param{self},\ \hiki{slide}{integer}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   \quad Return the polynomial obtained by shifting downward all terms
-   with degrees of \param{slide.}
+   \quad 次数\param{slide}を持つ全ての項を下にシフトして得られた多項式を返す.
 
-   Be careful that if the least degree term has the degree less than
-   \param{slide} then the result is not mathematically a
-   polynomial. Even in such a case, the method does not raise an
-   exception.\\
+   最も次数が小さい項が\param{slide}より小さいとき,結果は数学的には多項式でないことに注意. このような場合でも,このメソッドは例外は起こさない.\\
    \spacing
    % added document
-   \quad \negok {\tt f.downshift\_degree(slide)} is equivalent to
-   {\tt f.\linkingtwo{poly.univar}{PolynomialInterface}{upshift\_degree}(-slide)}.
+   \quad \negok {\tt f.downshift\_degree(slide)}は{\tt f.\linkingtwo{poly.univar}{PolynomialInterface}{upshift\_degree}(-slide)}と同等のものです.
 
- \subsubsection{upshift\_degree -- increased degree polynomial}\linkedtwo{poly.univar}{PolynomialInterface}{upshift\_degree}
+ \subsubsection{upshift\_degree -- 多項式の次数を上げる}\linkedtwo{poly.univar}{PolynomialInterface}{upshift\_degree}
    \func{upshift\_degree}{\param{self},\ \hiki{slide}{integer}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   \quad Return the polynomial obtained by shifting upward all terms
-   with degrees of \param{slide}.
+   \quad 次数\param{slide}を持つ全ての項を上にシフトして得られた多項式を返す.
    \spacing
    % added document
-   \quad \negok {\tt f.upshift\_degree(slide)} is equivalent to
-   {\tt f.term\_mul((slide, 1))}.
+   \quad \negok {\tt f.upshift\_degree(slide)}は{\tt f.term\_mul((slide, 1))}と同等のものである.
 
-   \subsubsection{ring\_mul -- multiplication in the ring}\linkedtwo{poly.univar}{PolynomialInterface}{ring\_mul}
+   \subsubsection{ring\_mul -- 環上の乗法}\linkedtwo{poly.univar}{PolynomialInterface}{ring\_mul}
    \func{ring\_mul}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   Return the result of multiplication with the \param{other} polynomial.
+   多項式\param{other}との乗法の結果を返す.
 
-   \subsubsection{scalar\_mul -- multiplication with a scalar}\linkedtwo{poly.univar}{PolynomialInterface}{scalar\_mul}
+   \subsubsection{scalar\_mul -- スカラーの乗法}\linkedtwo{poly.univar}{PolynomialInterface}{scalar\_mul}
    \func{scalar\_mul}{\param{self},\ \hiki{scale}{scalar}}{\out{polynomial}}\\
    \spacing
-   Return the result of multiplication by scalar \param{scale}.
+   スカラー\param{scale}による乗法の結果を返す.
 
-   \subsubsection{term\_mul -- multiplication with a term}\linkedtwo{poly.univar}{PolynomialInterface}{term\_mul}
+   \subsubsection{term\_mul -- 項の乗法}\linkedtwo{poly.univar}{PolynomialInterface}{term\_mul}
    \func{term\_mul}{\param{self},\ \hiki{term}{term}}{\out{polynomial}}\\
    \spacing
-   Return the result of multiplication with the given \param{term}.
-   The \param{term} can be given as a tuple {\tt (degree, coeff)} or as a {\tt polynomial}.
+   与えられた\param{term}の乗法の結果を返す.
+   \param{term}はタプル{\tt (degree, coeff)}として与えられるか,{\tt polynomial}として与えられる.
 
-   \subsubsection{square -- multiplication with itself}\linkedtwo{poly.univar}{PolynomialInterface}{square}
+   \subsubsection{square -- 自身との乗法}\linkedtwo{poly.univar}{PolynomialInterface}{square}
    \func{square}{\param{self}}{\out{polynomial}}\\
-   Return the square of this polynomial.
+   この多項式の平方を返す.
 
 %
- \subsection{BasicPolynomial -- basic implementation of polynomial}\linkedone{poly.univar}{BasicPolynomial}
- Basic polynomial data type.
- There are no concept such as variable name and ring.
+ \subsection{BasicPolynomial -- 多項式の基本的実装}\linkedone{poly.univar}{BasicPolynomial}
+ 基本的な多項式の型.
+ 変数名や環のような概念はない.
 
   \initialize
   \func{BasicPolynomial}{\hiki{coefficients}{terminit},\ %
     **\hiki{keywords}{dict}}{\out{BasicPolynomial}}\\
   \spacing
-  \quad This class inherits and implements \linkingone{poly.univar}{PolynomialInterface}.
+  \quad このクラスは\linkingone{poly.univar}{PolynomialInterface}を継承し実装.
   \spacing
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
 
- \subsection{SortedPolynomial -- polynomial keeping terms sorted}\linkedone{poly.univar}{SortedPolynomial}
+ \subsection{SortedPolynomial -- 項がソートされたままの状態に維持する多項式}\linkedone{poly.univar}{SortedPolynomial}
  \initialize
   \func{SortedPolynomial}{\hiki{coefficients}{terminit},\ %
     \hikiopt{\_sorted}{bool}{False},\ %
     **\hiki{keywords}{dict}}{\out{SortedPolynomial}}\\
-  The class is derived from \linkingone{poly.univar}{PolynomialInterface}.
+  このクラスは\linkingone{poly.univar}{PolynomialInterface}から派生される.
   \spacing
-  \quad The type of the \param{coefficients} is \linkingone{poly.formalsum}{terminit}.
-  Optionally \param{\_sorted} can be {\tt True} if the coefficients is an
-  already sorted list of terms.
+  \quad \param{coefficients}の型は\linkingone{poly.formalsum}{terminit}.
+  任意的に もし係数がすでにソートされた項のリストなら,\param{\_sorted} は {\tt True} になり得る.
 
   \method
-  \subsubsection{degree -- degree}\linkedtwo{poly.univar}{SortedPolynomial}{degree}
+  \subsubsection{degree -- 次数}\linkedtwo{poly.univar}{SortedPolynomial}{degree}
    \func{degree}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   Return the degree of this polynomial.
-   If the polynomial is the zero polynomial, the degree is \(-1\).
+   この多項式の次数を返す.
+   もし零多項式なら, 次数は \(-1\) となる.
 
-  \subsubsection{leading\_coefficient -- the leading coefficient}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_coefficient}
+  \subsubsection{leading\_coefficient -- 主係数}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_coefficient}
   \func{leading\_coefficient}{\param{self}}{\out{object}}\\
 
-  Return the coefficient of highest degree term.
+  最も次数が高い項の係数を返す.
 
-  \subsubsection{leading\_term -- the leading term}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_term}
+  \subsubsection{leading\_term -- 主項}\linkedtwo{poly.univar}{SortedPolynomial}{leading\_term}
   \func{leading\_term}{\param{self}}{\out{tuple}}\\
 
-  Return the leading term as a tuple {\tt (degree, coefficient)}.
+  タプル{\tt (degree, coefficient)}として主項を返す.
 
-  \subsubsection{\negok ring\_mul\_karatsuba -- the leading term}\linkedtwo{poly.univar}{SortedPolynomial}{ring\_mul\_karatsuba}
+  \subsubsection{\negok ring\_mul\_karatsuba -- Karatsuba法による乗算}\linkedtwo{poly.univar}{SortedPolynomial}{ring\_mul\_karatsuba}
   \func{ring\_mul\_karatsuba}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
 
-  Multiplication of two polynomials in the same ring.
-  Computation is carried out by Karatsuba method.
+  同じ環上での二つの多項式の乗法.
+  計算はKaratsuba法によって実行される.
 
-  This may run faster when degree is higher than 100 or so.
-  It is off by default, if you need to use this, do by yourself.
+  これはだいたい次数が100以上のとき早く動くだろう.
+  初期設定ではこの方法を用いていないので,これを使う必要があるなら自身で用いる.
 \C
 
 %---------- end document ---------- %

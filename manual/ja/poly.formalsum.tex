@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.formalsum -- formal sum}\linkedzero{poly.formalsum}
+ \section{poly.formalsum -- 形式和}\linkedzero{poly.formalsum}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -13,172 +13,153 @@
    \end{itemize}
  \end{itemize}
 
- The formal sum is mathematically a finite sum of terms,
- A term consists of two parts: coefficient and base.
- All coefficients in a formal sum are in a common ring,
- while bases are arbitrary.
+ 形式和とは数学的な項の有限和で,
+ 項は二つの部分から成る:係数と基数.
+ 形式和での全ての係数は共通の環に属し,
+ 一方で基数は任意.
 
- Two formal sums can be added in the following way.
- If there are terms with common base, they are fused into a new
- term with the same base and coefficients added.
+ 二つの形式和は次に示す方法で足される.
+ もし基数が共通である項があれば,それらは同じ基数と加えられた係数を持つ新しい項にまとめられる.
 
- A coefficient can be looked up from the base. If the specified base
- does not appear in the formal sum, it is null.
+ 係数は基数より参照することができる.もし特定の基数が形式和に現れない場合,それはnullを返す.
 
- We refer the following for convenience as {\tt terminit}:
+ 便宜上,{\tt terminit}として次を参照:
  \begin{description}
    \item[terminit]\linkedone{poly.formalsum}{terminit}:\\
-     \param{terminit} means one of types to initialize
-     \linklibraryone{stdtypes\#dict}{dict}.  The dictionary
-     constructed from it will be considered as a mapping from bases to
-     coefficients.
+     \param{terminit}は\linklibraryone{stdtypes\#dict}{dict}の初期化の型の一つを意味する.それにより構成された辞書は基数から係数への写像として考えられる.
  \end{description}
 
 \paragraph{Note for beginner}
-You may need USE only \linkingone{poly.formalsum}{DictFormalSum},
-but may have to READ the description of
-\linkingone{poly.formalsum}{FormalSumContainerInterface} because
-interface (all method names and their semantics) is defined in it.
+\linkingone{poly.formalsum}{DictFormalSum}のみ使うことが必要となるかもしれないが,
+インターフェース(全てのメソッドの名前と意味付け)はその内で定義されているので\linkingone{poly.formalsum}{FormalSumContainerInterface}の説明を読まなければならないかもしれない.
 
 
 \C
 %
- \subsection{FormalSumContainerInterface -- interface class}\linkedone{poly.formalsum}{FormalSumContainerInterface}
+ \subsection{FormalSumContainerInterface -- インターフェースクラス}\linkedone{poly.formalsum}{FormalSumContainerInterface}
   \initialize
-  Since the interface is an abstract class, do not instantiate.\\
+  インターフェースは抽象的なクラスなので,インスタンスは作らない.\\
   \spacing
   % document of basic document
-  \quad The interface defines what ``formal sum'' is.
-  Derived classes must provide the following operations and methods.
+  \quad インターフェースは``形式和''は何かということを定義している.
+  派生クラスには以下に示す演算とメソッドを定義しなければならない.
   \begin{op}
-    \verb/f + g/ & addition\\
-    \verb/f - g/ & subtraction\\
-    \verb/-f/ & negation\\
-    \verb/+f/ & new copy\\
-    \verb/f * a, a * f/ & multiplication by scalar {\tt a}\\
-    \verb/f == g/ & equality\\
-    \verb/f != g/ & inequality\\
-    \verb/f[b]/	& get coefficient corresponding to a base {\tt b}\\
-    \verb/b in f/ & return whether base {\tt b} is in {\tt f}\\
-    \verb/len(f)/ & number of terms\\
-    \verb/hash(f)/ & hash\\
+    \verb/f + g/ & 和\\
+    \verb/f - g/ & 差\\
+    \verb/-f/ & 符号の変更\\
+    \verb/+f/ & 新しいコピー\\
+    \verb/f * a, a * f/ & スカラー{\tt a}倍\\
+    \verb/f == g/ & 等しいかどうか返す\\
+    \verb/f != g/ & 等しくないかどうか返す\\
+    \verb/f[b]/	& 基数{\tt b}に対応した係数を返す\\
+    \verb/b in f/ & 基数{\tt b}が{\tt f}に含まれているかどうか返す\\
+    \verb/len(f)/ & 項の数\\
+    \verb/hash(f)/ & ハッシュ\\
   \end{op}
   \method
-  \subsubsection{construct\_with\_default -- copy-constructing}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{construct\_with\_default}
+  \subsubsection{construct\_with\_default -- コピーを構成}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{construct\_with\_default}
    \func{construct\_with\_default}{\param{self},\ %
    \hiki{maindata}{terminit}}{\out{FormalSumContainerInterface}}\\
    \spacing
    % document of basic document
-   \quad Create a new formal sum of the same class with \param{self},
-   with given only the \param{maindata} and use copy of \param{self}'s
-   data if necessary.
+   \quad \param{maindata}のみ与えられた(必要なら\param{self}が持つ情報を使用),\param{self}と同じクラスの新しい形式和を作成.
    \spacing
 %
-  \subsubsection{iterterms -- iterator of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterterms}
+  \subsubsection{iterterms -- 項のイテレータ}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterterms}
    \func{iterterms}{\param{self}}{\out{iterator}}\\
    \spacing
    % document of basic document
-   \quad Return an iterator of the terms.
+   \quad 項のイテレータを返す.
    \spacing
    % input, output document
-   \quad Each term yielded from iterators is a {\tt (base, coefficient)} pair.\\
- \subsubsection{itercoefficients -- iterator of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{itercoefficients}
+   \quad イテレータより生成されたそれぞれの項は{\tt (base, coefficient)}という組.\\
+ \subsubsection{itercoefficients -- 係数のイテレータ}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{itercoefficients}
    \func{itercoefficients}{\param{self}}{\out{iterator}}\\
    \spacing
    % document of basic document
-   \quad Return an iterator of the coefficients.\\
- \subsubsection{iterbases -- iterator of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterbases}
+   \quad 係数のイテレータを返す.\\
+ \subsubsection{iterbases -- 基数のイテレータ}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{iterbases}
    \func{iterbases}{\param{self}}{\out{iterator}}\\
    \spacing
    % document of basic document
-   \quad Return an iterator of the bases.\\
-  \subsubsection{terms -- list of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms}
+   \quad 基数のイテレータを返す.\\
+  \subsubsection{terms -- 項のリスト}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms}
    \func{terms}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return a list of the terms.
+   \quad 項のリストを返す.
    \spacing
    % input, output document
-   \quad Each term in returned lists is a {\tt (base, coefficient)} pair.\\
- \subsubsection{coefficients -- list of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients}
+   \quad 返されるリストのそれぞれの項は{\tt (base, coefficient)}という組.\\
+ \subsubsection{coefficients -- 係数のリスト}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients}
    \func{coefficients}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return a list of the coefficients.\\
- \subsubsection{bases -- list of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases}
+   \quad 係数のリストを返す.\\
+ \subsubsection{bases -- 基数のリスト}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases}
    \func{bases}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return a list of the bases.\\
-  \subsubsection{terms\_map -- list of terms}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms\_map}
+   \quad 基数のリストを返す.\\
+  \subsubsection{terms\_map -- 項に写像を施す}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{terms\_map}
    \func{terms\_map}{\param{self},\ %
    \hiki{func}{function}}{\out{FormalSumContainerInterface}}\\
    \spacing
    % document of basic document
-   \quad Map on terms, i.e., create a new formal sum by applying \param{func}
-   to each term.
+   \quad 項に写像を施す,すなわち,それぞれの項に\param{func}を適用することにより新しい形式和を作成.
    \spacing
    % input, output document
-   \quad \param{func} has to accept two parameters {\tt base} and
-   {\tt coefficient}, then return a new term pair.
- \subsubsection{coefficients\_map -- list of coefficients}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients\_map}
-   \func{coefficients\_map}{\param{self}}{\out{FormalSumContainerInterface}}\\
+   \quad \param{func}{\tt base}と{\tt coefficient}という二つのパラメータをとらなければならず,その後新しい項の組を返す.
+ \subsubsection{coefficients\_map -- 係数に写像を施す}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{coefficients\_map}
+   \func{coefficients\_map}{\param{self},\ %
+   \hiki{func}{function}}{\out{FormalSumContainerInterface}}\\
    \spacing
    % document of basic document
-   \quad Map on coefficients, i.e., create a new formal sum by applying
-   \param{func} to each coefficient.\\
+   \quad 係数に写像を施す, すなわち,各係数に\param{func}を適用することにより新しい形式和を作成.\\
    \spacing
    % input, output document
-   \quad \param{func} has to accept one parameters {\tt coefficient},
-   then return a new coefficient.
- \subsubsection{bases\_map -- list of bases}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases\_map}
-   \func{bases\_map}{\param{self}}{\out{FormalSumContainerInterface}}\\
+   \quad \param{func}は{\tt coefficient}という一つのパラメータをとり,その後新しい係数を返す.
+ \subsubsection{bases\_map -- 基数に写像を施す}\linkedtwo{poly.formalsum}{FormalSumContainerInterface}{bases\_map}
+   \func{bases\_map}{\param{self},\ %
+   \hiki{func}{function}}{\out{FormalSumContainerInterface}}\\
    \spacing
    % document of basic document
-   \quad Map on bases, i.e., create a new formal sum by applying
-   \param{func} to each base.\\
+   \quad 基数に写像を施す, すなわち,各基数に\param{func}を適用することにより新しい形式和を作成.\\
    \spacing
    % input, output document
-   \quad \param{func} has to accept one parameters {\tt base},
-   then return a new base.
+   \quad \param{func}は{\tt base}という一つのパラメータをとり,その後新しい基数を返す.
 
 \C
 %
- \subsection{DictFormalSum -- formal sum implemented with dictionary}\linkedone{poly.formalsum}{DictFormalSum}
+ \subsection{DictFormalSum -- 辞書で実装された形式和}\linkedone{poly.formalsum}{DictFormalSum}
   % document of basic document
-  A formal sum implementation based on {\tt dict}.\\
+  {\tt dict}を基に実装された形式和.\\
   \spacing
   % added document
-  \quad This class inherits \linkingone{poly.formalsum}{FormalSumContainerInterface}.
-  All methods of the interface are implemented.
+  \quad このクラスは\linkingone{poly.formalsum}{FormalSumContainerInterface}を継承.
+  インターフェースの全てのメソッドは実装される.
  \initialize
   \func{DictFormalSum}{\hiki{args}{terminit},\ %
   \hikiopt{defaultvalue}{RingElement}{None}}{\out{DictFormalSum}}\\
   \spacing
-  \quad See \linkingone{poly.formalsum}{terminit} for type of \param{args}.
-  It makes a mapping from bases to coefficients.\\
-  \quad The optional argument \param{defaultvalue} is the default value for
-  {\tt \_\_getitem\_\_}, i.e., if there is no term with the specified
-  base, a look up attempt returns the \param{defaultvalue}.  It is,
-  thus, an element of the ring to which other coefficients belong.
+  \quad \param{args}の型については\linkingone{poly.formalsum}{terminit}を参照.
+  基数から係数への写像を作る.\\
+  \quad 任意引数\param{defaultvalue}は{\tt \_\_getitem\_\_}への初期設定値,すなわち,もし指定の基数に関する項がなかったら検索を試み\param{defaultvalue}を返す.従ってそれは他の係数が所属している環の元である.
 
- \subsection{ListFormalSum -- formal sum implemented with list}\linkedone{poly.formalsum}{ListFormalSum}
+ \subsection{ListFormalSum -- リストで実装された形式和}\linkedone{poly.formalsum}{ListFormalSum}
   % document of basic document
-   A formal sum implementation based on list.\\
+   リストを基に実装された形式和.\\
   \spacing
   % added document
-  \quad This class inherits \linkingone{poly.formalsum}{FormalSumContainerInterface}.
-  All methods of the interface are implemented.
+  \quad \linkingone{poly.formalsum}{FormalSumContainerInterface}を継承.
+  インターフェースの全てのメソッドは実装される.
  \initialize
   \func{ListFormalSum}{\hiki{args}{terminit},\ %
   \hikiopt{defaultvalue}{RingElement}{None}}{\out{ListFormalSum}}\\
   \spacing
-  \quad See \linkingone{poly.formalsum}{terminit} for type of \param{args}.
-  It makes a mapping from bases to coefficients.\\
-  \quad The optional argument \param{defaultvalue} is the default value for
-  {\tt \_\_getitem\_\_}, i.e., if there is no term with the specified
-  base, a look up attempt returns the \param{defaultvalue}.  It is,
-  thus, an element of the ring to which other coefficients belong.
+  \quad \param{args}の型については\linkingone{poly.formalsum}{terminit}を参照.
+  基数から係数への写像を作る.\\
+  \quad 任意引数\param{defaultvalue}は{\tt \_\_getitem\_\_}への初期設定値,すなわち,もし指定の基数に関する項がなかったら,検索を試み\param{defaultvalue}を返す.従ってそれは他の係数が所属している環の元である.
 \C
 %---------- end document ---------- %
 

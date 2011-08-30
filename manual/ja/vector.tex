@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{vector -- vector object and arithmetic}\linkedzero{vector}
+ \section{vector -- ベクトルオブジェクトとその計算}\linkedzero{vector}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -15,45 +15,45 @@
      \end{itemize}
  \end{itemize}
 
-This module provides an exception class.
+このモジュールはある例外クラスを提供する.
 \begin{description}
-  \item[VectorSizeError]:\ Report vector size is invalid. (Mainly for operations with two vectors.)
+  \item[VectorSizeError]:\ ベクトルのサイズが正しくないことを報告. (主に二つのベクトルの演算において.)
 \end{description}
 
 \C
 
- \subsection{Vector -- vector class}\linkedone{vector}{Vector}
- Vector is a class for vector.
+ \subsection{Vector -- ベクトルクラス}\linkedone{vector}{Vector}
+ Vectorはベクトルに対するクラス.
   \initialize
   \func{Vector}{\hiki{compo}{list}}{\out{Vector}}\\
   \spacing
   % document of basic document
-  \quad Create Vector object from \param{compo}.
+  \quad \param{compo}から新しいベクトルオブジェクトを作成.
   % added document
   %
   % \spacing
   % input, output document
-  \param{compo} must be a list of elements which are an integer or an instance of \linkingone{ring}{RingElement}.
+  \param{compo}は整数または\linkingone{ring}{RingElement}のインスタンスである要素のリストでなければならない.
   \begin{at}
-    \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of vector.
+    \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ ベクトルの成分を表す.
   \end{at}
   \begin{op}
-    \verb|u+v| & Vector sum.\\
-    \verb|u-v| & Vector subtraction.\\
-    \verb|A*v| & Multiplication vector with matrix\\
-    \verb|a*v| & or scalar multiplication.\\
-    \verb|v//a| & Scalar division.\\
-    \verb|v%n| & Reduction each elements of \linkingtwo{vector}{Vector}{compo}\\
-    \verb|-v| & element negation.\\
-    \verb|u==v| & equality.\\
-    \verb|u!=v| & inequality.\\
-    \verb+v[i]+ & Return the coefficient of i-th element of Vector.\\
-    \verb+v[i] = c+ & Replace the coefficient of i-th element of Vector by c.\\
-    \verb|len(v)| & return length of \linkingtwo{vector}{Vector}{compo}.\\
-    \verb|repr(v)| & return representation string.\\
-    \verb|str(v)| & return string of \linkingtwo{vector}{Vector}{compo}.\\
+    \verb|u+v| & ベクトルの和.\\
+    \verb|u-v| & ベクトルの差.\\
+    \verb|A*v| & 行列とベクトルの積.\\
+    \verb|a*v| & ベクトルのスカラー倍.\\
+    \verb|v//a| & スカラー除算.\\
+    \verb|v%n| & \linkingtwo{vector}{Vector}{compo}の各要素の\param{n}での剰余.\\
+    \verb|-v| & 各要素の符号を変える.\\
+    \verb|u==v| & 等しいかどうか.\\
+    \verb|u!=v| & 等しくないかどうか.\\
+    \verb+v[i]+ & ベクトルのi番目の成分を返す.\\
+    \verb+v[i] = c+ & ベクトルのi番目の成分をcに置き換える.\\
+    \verb|len(v)| & \linkingtwo{vector}{Vector}{compo}の長さを返す.\\
+    \verb|repr(v)| & \linkingtwo{vector}{Vector}{compo}のrepr文字列を返す.\\
+    \verb|str(v)| & \linkingtwo{vector}{Vector}{compo}のstring文字列を返す.\\
   \end{op}
-  Note that index is 1-origin, which is standard in mathematics field.
+  数学の世界での標準の通り,インデックスは 1 が最初だということに注意.
 \begin{ex}
 >>> A = vector.Vector([1, 2])
 >>> A
@@ -71,51 +71,51 @@ Vector([1, 0])
 2
 \end{ex}%Don't indent!
   \method
-  \subsubsection{copy -- copy itself}\linkedtwo{vector}{Vector}{copy}
+  \subsubsection{copy -- 自身のコピー}\linkedtwo{vector}{Vector}{copy}
    \func{copy}{\param{self}}{\out{Vector}}\\
    \spacing
    % document of basic document
-   \quad Return copy of \param{self}.\\
+   \quad \param{self}のコピーを返す.\\
    \spacing
    % added document
    %\quad \negok Note that this function returns integer only.\\
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{set -- set other compo}\linkedtwo{vector}{Vector}{set}
+  \subsubsection{set -- 他のcompoを設定}\linkedtwo{vector}{Vector}{set}
    \func{set}{\param{self},\ \hiki{compo}{list}}{(None)}\\
    \spacing
    % document of basic document
-   \quad Substitute \linkingtwo{vector}{Vector}{compo} with \param{compo}.\\
+   \quad selfの\linkingtwo{vector}{Vector}{compo}を新しい\param{compo}で置き換える.\\
    \spacing
    % added document
    %\quad \negok Note that this function returns integer only.\\
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{indexOfNoneZero -- first non-zero coordinate}\linkedtwo{vector}{Vector}{indexOfNoneZero}
+  \subsubsection{indexOfNoneZero -- 0でない最初の位置}\linkedtwo{vector}{Vector}{indexOfNoneZero}
    \func{indexOfNoneZero}{\param{self}}{integer}\\
    \spacing
    % document of basic document
-   \quad Return the first index of non-zero element of \param{self}.\linkingtwo{vector}{Vector}{compo}.\\
+   \quad \param{self}.\linkingtwo{vector}{Vector}{compo}の0でない成分の最初のインデックスを返す.\\
    \spacing
    % added document
-   \quad \negok Raise ValueError if all elements of \linkingtwo{vector}{Vector}{compo} are zero.\\
+   \quad \negok \linkingtwo{vector}{Vector}{compo}の全ての成分が0の場合,ValueErrorが起こる.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{toMatrix -- convert to Matrix object}\linkedtwo{vector}{Vector}{toMatrix}
+  \subsubsection{toMatrix -- Matrixオブジェクトに変換}\linkedtwo{vector}{Vector}{toMatrix}
    \func{toMatrix}{\param{self},\ \hikiopt{as\_column}{bool}{False}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad Return \linkingone{matrix}{Matrix} object using \linkingone{matrix}{createMatrix} function.\\
+   \quad \linkingone{matrix}{createMatrix}関数を使い\linkingone{matrix}{Matrix}オブジェクトを返す.\\
    \spacing
    % added document
    %\quad \negok Note that this function returns integer only.\\
    %\spacing
    % input, output document
-   \quad If \param{as\_column} is True, create the column matrix with \param{self}.
-   Otherwise, create the row matrix.\\
+   \quad もし\param{as\_column}がTrueなら,\param{self}を縦ベクトルとみなした行列を返す.
+   さもなくば,\param{self}を横ベクトルとみなした行列を返す.\\
 \begin{ex}
 >>> A = vector.Vector([0, 4, 5])
 >>> A.indexOfNoneZero()
@@ -128,17 +128,17 @@ Vector([1, 0])
 5
 \end{ex}%Don't indent!
 \C
-  \subsection{innerProduct(function) -- inner product}\linkedone{vector}{innerProduct}
+  \subsection{innerProduct(function) -- 内積}\linkedone{vector}{innerProduct}
   \func{innerProduct}{\hiki{bra}{Vector}, \ \hiki{ket}{Vector}}{\out{RingElement}}\\
    \spacing
    % document of basic document
-   \quad Return the inner product of \param{bra} and \param{ket}.\\
+   \quad \param{bra}と\param{ket}の内積を返す.\\
    \spacing
    % added document
-   \quad The function supports Hermitian inner product for elements in the complex number field.\\
+   \quad この関数は複素数体上の元に対するエルミート内積もサポートする.\\
    \spacing
    % input, output document
-   \quad \negok Note that the returned value depends on type of elements.\\
+   \quad \negok 返される値は成分の型に依存することに注意.\\
 \begin{ex}
 >>> A = vector.Vector([1, 2, 3])
 >>> B = vector.Vector([2, 1, 0])

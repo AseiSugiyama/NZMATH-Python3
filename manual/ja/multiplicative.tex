@@ -3,12 +3,11 @@
 \input{../header_function}
 
 %---------- start document ---------- %
- \section{multiplicative -- multiplicative number theoretic functions}\linkedzero{multiplicative}
+ \section{multiplicative -- 乗法的数論関数}\linkedzero{multiplicative}
 %
-All functions of this module accept only positive integers,
-unless otherwise noted.
+このメソッドの全ての関数は,特に断りのない限り自然数のみ受け付ける.
 %
-  \subsection{euler -- the Euler totient function}\linkedone{multiplicative}{euler}
+  \subsection{euler -- オイラーのファイ関数}\linkedone{multiplicative}{euler}
    \func{euler}
    {%
      \hiki{n}{integer}
@@ -17,11 +16,9 @@ unless otherwise noted.
    }\\
    \spacing
    % document of basic document
-   \quad Return the number of numbers relatively prime to \param{n}
-   and smaller than \param{n}.  In the literature, the function is
-   referred often as \(\varphi\).
+   \quad \param{n}と互いに素かつ\param{n}よりも小さい数の総数を返す.この関数はよく\(\varphi\) として言及される.
 
-  \subsection{moebius -- the M\"obius function}\linkedone{multiplicative}{moebius}
+  \subsection{moebius -- メビウス関数}\linkedone{multiplicative}{moebius}
    \func{moebius}
    {%
      \hiki{n}{integer}
@@ -30,15 +27,15 @@ unless otherwise noted.
    }\\
    \spacing
    % document of basic document
-   \quad Return:
+   \quad この関数は以下のいずれかの値を返す:
    \begin{description}
-   \item[-1] if n has odd distinct prime factors,
-   \item[1] if n has even distinct prime factors, or
-   \item[0] if n has a squared prime factor.
+   \item[-1] (\param{n}が素因数に奇数をもっているとき,)
+   \item[1] (\param{n}が素因数に偶数をもっているとき,)
+   \item[0] (\param{n}が素因数が平方数を持っているとき.)
    \end{description}
-   In the literature, the function is referred often as \(\mu\).
+   この関数はよく\(\mu\) として言及される.
 
-  \subsection{sigma -- sum of divisor powers)}\linkedone{multiplicative}{sigma}
+  \subsection{sigma -- 約数の冪の合計}\linkedone{multiplicative}{sigma}
    \func{sigma}
    {%
      \hiki{m}{integer},\ %
@@ -48,9 +45,9 @@ unless otherwise noted.
    }\\
    \spacing
    % document of basic document
-   Return the sum of \param{m}-th powers of the factors of \param{n}.
-   The argument \param{m} can be zero, then return the number of factors.
-   In the literature, the function is referred often as \(\sigma\).
+   \param{n}の因数の\param{m}乗を返す.
+   引数\param{m}は零でもよく,因数の数を返す.
+   この関数はよく\(\sigma\) として言及される.
 %
 \begin{ex}
 >>> multiplicative.euler(1)

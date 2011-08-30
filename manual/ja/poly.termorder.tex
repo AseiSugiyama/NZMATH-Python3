@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.termorder -- term orders}\linkedzero{poly.termorder}
+ \section{poly.termorder -- 項順序}\linkedzero{poly.termorder}
  \begin{itemize}
    \item {\bf Classes}
      \begin{itemize}
@@ -19,101 +19,84 @@
 
 \C
 
- \subsection{TermOrderInterface -- interface of term order}\linkedone{poly.termorder}{TermOrderInterface}
+ \subsection{TermOrderInterface -- 項順序のインターフェース}\linkedone{poly.termorder}{TermOrderInterface}
  \initialize
   \func{TermOrderInterface}{\hiki{comparator}{function}}{\out{TermOrderInterface}}\\
   \spacing
-  \quad A term order is primarily a function, which determines
-  precedence between two terms (or monomials). By the precedence, all
-  terms are ordered.\\
-  \quad More precisely in terms of \python, a term order accepts two
-  tuples of integers, each of which represents power indices of the
-  term, and returns 0, 1 or -1 just like \linklibraryone{stdfuncs\#cmp}{cmp}
-  built-in function.\\
-  \quad A {\tt TermOrder} object provides not only the precedence function,
-  but also a method to format a string for a polynomial, to tell
-  degree, leading coefficients, etc.\\
+  \quad 項順序は主に二つの項(または単項式)の優先順位を決定する関数.優先順位により,全ての項は順序付けられる.\\
+  \quad より正確に言うと,\python の形式では,項順序は整数での二つのタプルをとり,そのそれぞれのタプルは項のべき指数を表す.そして組み込み関数の\linklibraryone{stdfuncs\#cmp}{cmp}のようにただ 0, 1 または -1 を返す.\\
+  \quad A {\tt TermOrder}オブジェクトは優先順位関数だけでなく,次数や主係数などが記された,多項式のフォーマットされた文字列を返すメソッドも提供.\\
   \spacing
-  \quad \param{comparator} accepts two tuple-like objects of integers,
-  each of which represents power indices of the term, and returns 0, 1
-  or -1 just like {\tt cmp} built-in function.\\
+  \quad \param{comparator}は整数での二つのタプルのようなオブジェクトをとり,それぞれのタプルは項のべき指数を表す.そして組み込み関数{\tt cmp}のようにただ 0, 1 または -1 を返す.\\
   \spacing
-  This class is abstract and should not be instantiated.
-  The methods below have to be overridden.
+  このクラスは抽象クラスでインスタンスが作られるべきではない.
+  kのメソッドは下にオーバーライドされなければならない.
   \method
   \subsubsection{cmp}\linkedtwo{poly.termorder}{TermOrderInterface}{cmp}
   \func{cmp}{\param{self},\ \hiki{left}{tuple},\ \hiki{right}{tuple}}{\out{integer}}\\
   \spacing
-  \quad Compare two index tuples \param{left} and \param{right} and
-  determine precedence.
+  \quad 二つのインデックスタプル\param{left}と\param{right}を比較し優先順位を決定.
 
   \subsubsection{format}\linkedtwo{poly.termorder}{TermOrderInterface}{format}
   \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ **\hiki{keywords}{dict}}{\out{string}}\\
   \spacing
-  \quad Return the formatted string of the polynomial \param{polynom}.
+  \quad 多項式\param{polynom}のフォーマットされた文字列を返す.
 
   \subsubsection{leading\_coefficient}\linkedtwo{poly.termorder}{TermOrderInterface}{leading\_coefficient}
   \func{leading\_coefficient}{\param{self},\ \hiki{polynom}{polynomial}}{\out{CommutativeRingElement}}\\
   \spacing
-  \quad Return the leading coefficient of polynomial \param{polynom}
-  with respect to the term order.
+  \quad 多項式\param{polynom}の項順序についての主係数を返す.
 
   \subsubsection{leading\_term}\linkedtwo{poly.termorder}{TermOrderInterface}{leading\_term}
   \func{leading\_term}{\param{self},\ \hiki{polynom}{polynomial}}{\out{tuple}}\\
   \spacing
-  \quad Return the leading term of polynomial \param{polynom} as tuple
-  of {\tt (degree index, coefficient)} with respect to the term order.
+  \quad 多項式\param{polynom}の主項を項順序についてのタプル{\tt (degree index, coefficient)}として返す.
 
-  \subsection{UnivarTermOrder -- term order for univariate polynomials}\linkedone{poly.termorder}{UnivarTermOrder}
+  \subsection{UnivarTermOrder -- 一変数多項式に対する項順序}\linkedone{poly.termorder}{UnivarTermOrder}
   \initialize
   \func{UnivarTermOrder}{\hiki{comparator}{function}}{\out{UnivarTermOrder}}\\
   \spacing
-  \quad There is one unique term order for univariate polynomials.
-  It's known as degree.\\
-  \quad One thing special to univariate case is that powers are not tuples
-  but bare integers.
-  According to the fact, method signatures also need be translated from
-  the definitions in TermOrderInterface, but its easy, and we omit
-  some explanations.\\
+  \quad 一変数多項式に対しては一意的な項順序がある.
+  次数として知られている.\\
+  \quad 一変数の場合への特別なことは,べき数はタプルではなく,単なる整数であるということである.
+  このことから,メソッドsignaturesもまたTermOrderInterface内の定義から変換する必要があるが,それは容易なため説明は省略.\\
   \spacing
-  \quad \param{comparator} can be any callable that accepts two integers
-  and returns 0, 1 or -1 just like {\tt cmp}, i.e. if they are equal
-  it returns 0, first one is greater 1, and otherwise -1.
-  Theoretically acceptable comparator is only the {\tt cmp} function.\\
+  \quad \param{comparator}は二つの整数をとり,{\tt cmp}のようにただ 0, 1 または -1 を返すために呼ばれ得る,すなわち,もしそれらが 0 を返す, 最初は 1 より大きい,そしてさもなくば -1.
+  理論上は期待できる比較関数は{\tt cmp}関数のみ.\\
   \spacing
-  \quad This class inherits \linkingone{poly.termorder}{TermOrderInterface}.
+  \quad このクラスは\linkingone{poly.termorder}{TermOrderInterface}を継承する.
   \method
   \subsubsection{format}\linkedtwo{poly.termorder}{UnivarTermOrder}{format}
   \func{format}{\param{self},\ \hiki{polynom}{polynomial},\ %
     \hikiopt{varname}{string}{'X'}, \hikiopt{reverse}{bool}{False}}{%
     \out{string}}\\
   \spacing
-  \quad Return the formatted string of the polynomial \param{polynom}.\\
+  \quad 多項式\param{polynom}のフォーマットされた文字列を返す.\\
   \spacing
   \begin{itemize}
-  \item \param{polynom} must be a univariate polynomial.
-  \item \param{varname} can be set to the name of the variable.
-  \item \param{reverse} can be either {\tt True} or {\tt False}.
-    If it's {\tt True}, terms appear in reverse (descending) order.
+  \item \param{polynom}は一変数多項式でなければならない
+  \item \param{varname}は変数名の設定ができる.
+  \item \param{reverse}は{\tt True}と{\tt False}のどちらかになり得る.
+    もしそれが{\tt True}なら,項は逆(降)順で現れる.
   \end{itemize}
 
   \subsubsection{degree}\linkedtwo{poly.termorder}{UnivarTermOrder}{degree}
   \func{degree}{\param{self},\ \hiki{polynom}{polynomial}}{\out{integer}}\\
   \spacing
-  \quad Return the degree of the polynomial \param{polynom}.
+  \quad 多項式\param{polynom}の次数を返す.
 
   \subsubsection{tail\_degree}\linkedtwo{poly.termorder}{UnivarTermOrder}{tail\_degree}
   \func{tail\_degree}{\param{self},\ \hiki{polynom}{polynomial}}{\out{integer}}\\
   \spacing
-  \quad Return the least degree among all terms of the \param{polynom}.\\
+  \quad \param{polynom}の全ての項の中での最小次数を返す.\\
   \spacing
-  \quad This method is {\em experimental}.
+  \quad このメソッドは{\em experimental}です.
 
-  \subsection{MultivarTermOrder -- term order for multivariate polynomials}\linkedone{poly.termorder}{MultivarTermOrder}
+  \subsection{MultivarTermOrder -- 多変数多項式に対する項順序}\linkedone{poly.termorder}{MultivarTermOrder}
   \initialize
   \func{MultivarTermOrder}{\hiki{comparator}{function}}{\out{MultivarTermOrder}}\\
   \spacing
-  \quad This class inherits \linkingone{poly.termorder}{TermOrderInterface}.
+  \quad このクラスは\linkingone{poly.termorder}{TermOrderInterface}を継承する.
 
   \method
   \subsubsection{format}\linkedtwo{poly.termorder}{MultivarTermOrder}{format}
@@ -122,33 +105,29 @@
     **\hiki{kwds}{dict}}{%
     \out{string}}\\
   \spacing
-  \quad Return the formatted string of the polynomial \param{polynom}.\\
+  \quad 多項式\param{polynom}のフォーマットされた文字列を返す.\\
   \spacing
-  \quad  An additional argument \param{varnames} is required to name
-  variables.\\
+  \quad  追加の引数である\param{varnames}は変数名が必要とされる.\\
 
   \begin{itemize}
-  \item \param{polynom} is a multivariate polynomial.
-  \item \param{varnames} is the sequence of the variable names.
-  \item \param{reverse} can be either {\tt True} or {\tt False}.
-    If it's {\tt True}, terms appear in reverse (descending) order.
+  \item \param{polynom}は多変数多項式です.
+  \item \param{varnames}は変数名の列.
+  \item \param{reverse}は{\tt True}と{\tt False}のどちらかになり得る.
+    もしそれが{\tt True},項は逆(降)順で現れる.
   \end{itemize}
 
-  \subsection{weight\_order -- weight order}\linkedone{poly.termorder}{weight\_order}
+  \subsection{weight\_order -- 重み付き順序付け}\linkedone{poly.termorder}{weight\_order}
   \func{weight\_order}{\hiki{weight}{sequence},\ \hikiopt{tie\_breaker}{function}{None}}{\out{function}}\\
   \spacing
    % document of basic document
-   \quad Return a comparator of weight ordering by \param{weight}.\\
+   \quad \param{weight}による重み付き順序の比較関数を返す.\\
    \spacing
-   \quad Let \(w\) denote the \param{weight}.
-   The weight ordering is defined for arguments \(x\) and \(y\) that
-   \(x < y\) if \(w\cdot x < w\cdot y\) or \(w\cdot x == w\cdot y\) and 
-   tie breaker tells \(x < y\).\\
+   \quad \(w\) を \param{weight}をします.
+   重み付き順序付けは引数 \(x\) と \(y\) によって定義され,それらは以下を満たす.
+   もし\(w\cdot x < w\cdot y\) なら \(x < y\) であり,また \(w\cdot x == w\cdot y\) かつ tie_breaker が\(x < y\) と出したら \(x < y\)\\.
    \spacing
-   \quad The option \param{tie\_breaker} is another comparator that will
-   be used if dot products with the weight vector leaves arguments tie.
-   If the option is {\tt None} (default) and a tie breaker is indeed necessary
-   to order given arguments, a {\tt TypeError} is raised.
+   \quad オプション\param{tie\_breaker}は,もし重み付きベクトルのドット積が引数tieと等しいままなら使われるもう一つの比較関数.
+   もしそのオプションが{\tt None} (初期設定)で,与えられた引数を順序付けするためtie_breakerが本当に必要なら, {\tt TypeError}が起こる.
 
 \begin{ex}
 >>> w = termorder.MultivarTermOrder(

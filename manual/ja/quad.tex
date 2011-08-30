@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{quad -- Imaginary Quadratic Field}\linkedzero{quad}
+ \section{quad -- 虚二次体}\linkedzero{quad}
  \begin{itemize}
  \item {\bf Classes}
    \begin{itemize}
@@ -25,103 +25,103 @@
    \end{itemize}
  \end{itemize}
 %
-  \subsection{ReducedQuadraticForm -- Reduced Quadratic Form Class}\linkedone{quad}{ReducedQuadraticForm}
+  \subsection{ReducedQuadraticForm -- 簡約二次形式クラス}\linkedone{quad}{ReducedQuadraticForm}
   \initialize
   \func{ReducedQuadraticForm}{\hiki{f}{list}, \, \hiki{unit}{list}}{\out{ReducedQuadraticForm}}\\
   \spacing
   % document of basic document
-  \quad Create ReducedQuadraticForm object.
+  \quad ReducedQuadraticFormオブジェクトを作成.
   \spacing
   % added document
   \spacing
   % input, output document
-  \quad \param{f}, \param{unit} must be list of \(3\) integers {\tt [a, b, c]},
-  representing a quadratic form \(ax^2+bxy+cy^2\).
-  \param{unit} represents the unit form.
+  \quad \param{f}, \param{unit} は \(3\) 整数 {\tt [a, b, c]}のリストでなければならず,
+  二次形式を\(ax^2+bxy+cy^2\) と表記.
+  \param{unit}は単元形式を表す.
   \begin{op}
-    \verb|M * N| & Return the composition form of \param{M} and \param{N}. \\
-    \verb|M ** a| & Return the $a$-th powering of \param{M}. \\
-    \verb|M / N| & Division of form. \\
-    \verb|M == N| & Return whether \param{M} and \param{N} are equal or not. \\
-    \verb|M != N| & Return whether \param{M} and \param{N} are unequal or not. \\    
+    \verb|M * N| & \param{M} と \param{N}の合成を返す. \\
+    \verb|M ** a| & \param{M}の$a$乗を返す. \\
+    \verb|M / N| & 二次形式の除算. \\
+    \verb|M == N| & \param{M} と \param{N} が等しいかどうか返す. \\
+    \verb|M != N| & \param{M} と \param{N} が等しくないかどうか返す. \\    
   \end{op}
   \method
   \subsubsection{inverse}\linkedtwo{quad}{ReducedQuadraticForm}{inverse}
   \func{inverse}{\param{self}}{\out{ReducedQuadraticForm}}\\
   \spacing
   % document of basic document
-  \quad Return the inverse of \param{self}. \\
+  \quad \param{self}の逆元を返す. \\
 %
   \subsubsection{disc}\linkedtwo{quad}{ReducedQuadraticForm}{disc}
   \func{disc}{\param{self}}{\out{ReducedQuadraticForm}}\\
   \spacing
   % document of basic document
-  \quad Return the discriminant of \param{self}. \\
+  \quad \param{self}の判別式を返す. \\
 %
-  \subsection{ClassGroup -- Class Group Class}\linkedone{quad}{ClassGroup}
+  \subsection{ClassGroup -- 類群クラス}\linkedone{quad}{ClassGroup}
   \initialize
   \func{ClassGroup}{\hiki{disc}{integer}, \, \hiki{cl}{integer}, \, \hikiopt{element}{integer}{None}}{\out{ClassGroup}}\\
   \spacing
   % document of basic document
-  \quad Create ClassGroup object.
+  \quad ClassGroupオブジェクトを作成.
   \method
    
   \subsection{class\_formula}\linkedone{quad}{class\_formula}
    \func{class\_formula}{\hiki{d}{integer}, \, \hiki{uprbd}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the approximation of class number $h$ with discriminant \param{d} using class formula. \\
+   \quad 類数公式を使い,判別式\param{d}を持つ類数$h$の近似値を返す. \\
    \spacing
    % added document
-   \quad class formula $\DS h = \frac{\sqrt{|\param{d}|}}{\pi}\prod_{p}\left(1 - \left(\frac{\param{d}}{p}\right) \frac{1}{p}\right)^{-1}$. \\
+   \quad 類数公式 $\DS h = \frac{\sqrt{|\param{d}|}}{\pi}\prod_{p}\left(1 - \left(\frac{\param{d}}{p}\right) \frac{1}{p}\right)^{-1}$. \\
    \spacing
    % input, output document
-   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}.  
+   \quad 入力する数\param{d}はint型, long型 または \linkingone{rational}{Integer}でなければならない.  
 %
   \subsection{class\_number}\linkedone{quad}{class\_number}
    \func{class\_number}{\hiki{d}{integer}, \, \hikiopt{limit\_of\_d}{integer}{1000000000}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the class number with the discriminant \param{d} by counting reduced forms. \\
+   \quad 簡約形式の数を数えることにより判別式\param{d}を持つ類数を返す. \\
    \spacing
    % added document
-   \quad \param{d} is not only fundamental discriminant. \\
+   \quad \param{d}は基本判別式とは限らない. \\
    \spacing
    % input, output document
-   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+   \quad 入力する数\param{d}はint型, long型 または \linkingone{rational}{Integer}でなければならない. 
 %
   \subsection{class\_group}\linkedone{quad}{class\_group}
    \func{class\_group}{\hiki{d}{integer}, \, \hikiopt{limit\_of\_d}{integer}{1000000000}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the class number and the class group with the discriminant \param{d} by counting reduced forms. \\
+   \quad 簡約形式の数を数えることにより判別式\param{d}を持つ類数と類群を返す. \\
    \spacing
    % added document
-   \quad \param{d} is not only fundamental discriminant. \\
+   \quad \param{d}は基本判別式とは限らない. \\
    \spacing
    % input, output document
-   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+   \quad 入力する数\param{d}はint型, long型 または \linkingone{rational}{Integer}でなければならない. 
 %
   \subsection{class\_number\_bsgs}\linkedone{quad}{class\_number\_bsgs}
    \func{class\_number\_bsgs}{\hiki{d}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the class number with the discriminant \param{d} using Baby-step Giant-step algorithm. \\
+   \quad Baby-step Giant-step アルゴリズムを使い,判別式\param{d}を持つ類数を返す. \\
    \spacing
    % added document
-   \quad \param{d} is not only fundamental discriminant. \\
+   \quad \param{d}は基本判別式とは限らない. \\
    \spacing
    % input, output document
-   \quad Input number \param{d} must be int, long or \linkingone{rational}{Integer}. 
+   \quad 入力する数\param{d}はint型, long型 または \linkingone{rational}{Integer}でなければならない. 
 %
   \subsection{class\_group\_bsgs}\linkedone{quad}{class\_group\_bsgs}
    \func{class\_group\_bsgs}{\hiki{d}{integer}, \, \hiki{cl}{integer}, \, \hiki{qin}{list}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the construction of the class group of order $p^{exp}$ with the discriminant \param{disc}, where $\param{qin} = [p, exp]$. \\
+   \quad 判別式\param{disc}を持つ位数$p^{exp}$の類群の構造を返す.$\param{qin} = [p, exp]$である. \\
    \spacing
    % input, output document
-   \quad Input number \param{d}, \param{cl} must be int, long or \linkingone{rational}{Integer}. 
+   \quad 入力する数\param{d}, \param{cl}はint型, long型 または \linkingone{rational}{Integer}でなければならない. 
 %
   %\subsection{disc}\linkedone{quad}{disc}
    %\func{disc}{\hiki{f}{list}}{\out{integer}}\\

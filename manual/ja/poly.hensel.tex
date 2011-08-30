@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.hensel -- Hensel lift}\linkedzero{poly.hensel}
+ \section{poly.hensel -- ヘンゼルリフト}\linkedzero{poly.hensel}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -17,10 +17,10 @@
      \end{itemize}
  \end{itemize}
 
- In this module document, {\em polynomial} means integer polynomial.
+ このモジュールドキュメント内では,{\em polynomial}は整数係数多項式を意味.
 \C
 
- \subsection{HenselLiftPair -- Hensel lift for a pair}\linkedone{poly.hensel}{HenselLiftPair}
+ \subsection{HenselLiftPair -- ヘンゼルリフトの組}\linkedone{poly.hensel}{HenselLiftPair}
  \initialize
   \func{HenselLiftPair}{%
     \hiki{f}{polynomial},
@@ -32,17 +32,17 @@
     \hikiopt{q}{integer}{p}}{\out{HenselLiftPair}}\\
   \spacing
   % document of basic document
-  \quad This object keeps integer polynomial pair which will be lifted by Hensel's lemma.
+  \quad このオブジェクトはヘンゼルの補題によって引き上げられていく整数係数多項式を保存.
   % added document
   %
   \spacing
   % input, output document
-  \quad The argument should satisfy the following preconditions:
+  \quad 引数は以下の前提条件を満たさなければならない:
   \begin{itemize}
-  \item \param{f}, \param{a1} and \param{a2} are monic
+  \item \param{f}, \param{a1}そして\param{a2}はモニック多項式
   \item {\tt \param{f} == \param{a1}*\param{a2} (mod \param{q})}
   \item {\tt \param{a1}*\param{u1} + \param{a2}*\param{u2} == 1 (mod \param{p})}
-  \item \param{p} divides \param{q} and both are positive
+  \item \param{p}は\param{q}を割り切り,どちらとも自然数
   \end{itemize}
   \func{from\_factors}{%
     \hiki{f}{polynomial},
@@ -50,61 +50,61 @@
     \hiki{a2}{polynomial},
     \hiki{p}{integer}}{\out{HenselLiftPair}}\\
   \spacing
-  \quad This is a class method to create and return an instance of {\tt HenselLiftPair}.
-  You do not have to precompute {\tt u1} and {\tt u2} for the default constructor; they will be prepared for you from other arguments.\\
+  \quad これは{\tt HenselLiftPair}のインスタンスを作成し返すクラスメソッド.
+  初期構成のために{\tt u1}と{\tt u2}を計算し直す必要はない;これらは他の引数から用意される.\\
   \spacing
   % input, output document
-  \quad The argument should satisfy the following preconditions:
+  \quad 引数は以下の前提条件を満たすべきである:
   \begin{itemize}
-  \item \param{f}, \param{a1} and \param{a2} are monic
+  \item \param{f}, \param{a1}と\param{a2}はモニック多項式
   \item {\tt \param{f} == \param{a1}*\param{a2} (mod \param{p})}
-  \item \param{p} is prime
+  \item \param{p}は素数
   \end{itemize}
   \begin{at}
     \item[point]\linkedtwo{poly.hensel}{HenselLiftPair}{factors}:\\
-      factors {\tt a1} and {\tt a2} as a list.
+      リストとしての因数{\tt a1},{\tt a2}.
   \end{at}
   \method
-  \subsubsection{lift -- lift one step}\linkedtwo{poly.hensel}{HenselLiftPair}{lift}
+  \subsubsection{lift -- 一段階引き上げる}\linkedtwo{poly.hensel}{HenselLiftPair}{lift}
   \func{lift}{\param{self}}{}\\
   \spacing
-  \quad Lift polynomials by so-called the quadratic method.
-  \subsubsection{lift\_factors -- lift {\tt a1} and {\tt a2}}\linkedtwo{poly.hensel}{HenselLiftPair}{lift\_factors}
+  \quad いわゆる二次方程式法により多項式を引き上げる.
+  \subsubsection{lift\_factors -- {\tt a1}と{\tt a2}を引き上げる}\linkedtwo{poly.hensel}{HenselLiftPair}{lift\_factors}
    \func{lift\_factors}{\param{self}}{}\\
    \spacing
    % document of basic document
-   \quad Update factors by lifted integer coefficient polynomials {\tt Ai}'s:
+   \quad 整数係数多項式{\tt Ai}たちを引き上げることにより因数を更新:
    \begin{itemize}
    \item {\tt f == A1 * A2 (mod p * q)}
    \item {\tt Ai == ai (mod q)} \((i = 1, 2)\)
    \end{itemize}
-   Moreover, {\tt q} is updated to {\tt p * q}.
+   さらに,{\tt q}は{\tt p * q}に更新される.
    \spacing
    % added document
-   \quad \negok The preconditions which should be automatically satisfied:
+   \quad \negok 次の前提条件は自動的に満たされる:
    \begin{itemize}
    \item {\tt f == a1*a2 (mod q)}
    \item {\tt a1*u1 + a2*u2 == 1 (mod p)}
-   \item {\tt p} divides {\tt q}
+   \item {\tt p}は{\tt q}を割り切る
    \end{itemize}
-   \subsubsection{lift\_ladder -- lift {\tt u1} and {\tt u2}}\linkedtwo{poly.hensel}{HenselLiftPair}{lift\_ladder}
+   \subsubsection{lift\_ladder -- {\tt u1}と{\tt u2}を引き上げる}\linkedtwo{poly.hensel}{HenselLiftPair}{lift\_ladder}
    \func{lift\_ladder}{\param{self}}{}\\
    \spacing
    % document of basic document
-   \quad Update {\tt u1} and {\tt u2} with {\tt U1} and {\tt U2}:
+   \quad {\tt u1}と{\tt u2}を{\tt U1}と{\tt U2}に更新:
    \begin{itemize}
    \item {\tt a1*U1 + a2*U2 == 1 (mod p**2)}
    \item {\tt Ui == ui (mod p)} \((i = 1, 2)\)
    \end{itemize}
-   Then, update {\tt p} to {\tt p**2}.
+   そして, {\tt p}を{\tt p**2}に更新.
    \spacing
    % added document
-   \quad \negok The preconditions which should be automatically satisfied:
+   \quad \negok 次の前提条件は自動的に満たされる:
    \begin{itemize}
    \item {\tt a1*u1 + a2*u2 == 1 (mod p)}
    \end{itemize}
 
-\subsection{HenselLiftMulti -- Hensel lift for multiple polynomials}\linkedone{poly.hensel}{HenselLiftMulti}
+\subsection{HenselLiftMulti -- 複数多項式に対するヘンゼルリフト}\linkedone{poly.hensel}{HenselLiftMulti}
  \initialize
   \func{HenselLiftMulti}{%
     \hiki{f}{polynomial},
@@ -114,26 +114,24 @@
     \hikiopt{q}{integer}{p}}{\out{HenselLiftMulti}}\\
   \spacing
   % document of basic document
-  \quad This object keeps integer polynomial factors which will be lifted by Hensel's lemma.
-  If the number of factors is just two, then you should use \linkingone{poly.hensel}{HenselLiftPair}.
+  \quad このオブジェクトはヘンゼルの補題によって引き上げらていく整数係数多項式の因数を保存.
+  もし因数の数が二つなら,\linkingone{poly.hensel}{HenselLiftPair}を使うべきである.
   % added document
   %
   \spacing
   % input, output document
-  \quad \param{factors} is a list of polynomials;
-  we refer those polynomials as {\tt a1}, {\tt a2}, \(\ldots\)
-  \param{ladder} is a tuple of two lists {\tt sis} and {\tt tis},
-  both lists consist polynomials.
-  We refer polynomials in {\tt sis} as {\tt s1}, {\tt s2}, \(\ldots\),
-  and those in {\tt tis} as {\tt t1}, {\tt t2}, \(\ldots\)
-  Moreover, we define {\tt bi} as the product of {\tt aj}'s for
-  \(i < j\).
-  \quad The argument should satisfy the following preconditions:
+  \quad \param{factors}は多項式のリスト;
+  これらの多項式は二つのリスト{\tt sis}と{\tt tis}のタプルである{\tt a1}, {\tt a2}, \(\ldots\)
+  \param{ladder}として表し,
+  両リストは多項式から成る.
+  {\tt s1}, {\tt s2}, \(\ldots\) として {\tt sis}の多項式を表し,
+  {\tt t1}, {\tt t2}, \(\ldots\) として {\tt tis}の多項式を表す.さらに,{\tt bi}を\(i < j\) である {\tt aj}たちの積として定義.
+  \quad 引数は以下の前提条件を満たす:
   \begin{itemize}
-  \item \param{f} and all of \param{factors} are monic
+  \item \param{f}と全ての\param{factors}はモニック多項式
   \item {\tt \param{f} == \param{a1}*...*\param{ar} (mod \param{q})}
   \item {\tt ai*si + bi*ti == 1 (mod \param{p})} \((i = 1,2,\ldots,r)\)
-  \item \param{p} divides \param{q} and both are positive
+  \item \param{p}は\param{q}を割り切り,どちらも自然数
   \end{itemize}
 %
   \func{from\_factors}{%
@@ -141,57 +139,57 @@
     \hiki{factors}{list},
     \hiki{p}{integer}}{\out{HenselLiftMulti}}\\
   \spacing
-  \quad This is a class method to create and return an instance of {\tt HenselLiftMulti}.
-  You do not have to precompute {\tt ladder} for the default constructor; they will be prepared for you from other arguments.\\
+  \quad これは{\tt HenselLiftMulti}のインスタンスを作成し返すためのクラスメソッド.
+  初期構成のために{\tt ladder}を計算し直す必要はない;これらは他の引数によって用意される.\\
   \spacing
   % input, output document
-  \quad The argument should satisfy the following preconditions:
+  \quad 引数は前提条件を満たすべきである:
   \begin{itemize}
-  \item \param{f} and all of \param{factors} are monic
+  \item \param{f}と全ての\param{factors}はモニック多項式
   \item {\tt \param{f} == \param{a1}*...*\param{ar} (mod \param{q})}
-  \item \param{p} is prime
+  \item \param{p}は素数
   \end{itemize}
   \begin{at}
     \item[point]\linkedtwo{poly.hensel}{HenselLiftMulti}{factors}:\\
-      factors {\tt ai}s as a list.
+      リストとしての因数{\tt ai}たち.
   \end{at}
   \method
-  \subsubsection{lift -- lift one step}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift}
+  \subsubsection{lift -- 一段階引き上げる}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift}
   \func{lift}{\param{self}}{}\\
   \spacing
-  \quad Lift polynomials by so-called the quadratic method.
-  \subsubsection{lift\_factors -- lift factors}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift\_factors}
+  \quad いわゆる二次方程式法により多項式を引き上げる.
+  \subsubsection{lift\_factors -- 因数を引き上げる}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift\_factors}
   \func{lift\_factors}{\param{self}}{}\\
   \spacing
   % document of basic document
-  \quad Update factors by lifted integer coefficient polynomials {\tt Ai}s:
+  \quad 整数係数多項式{\tt Ai}たちを引き上げることにより因数を更新:
   \begin{itemize}
   \item {\tt f == A1*...*Ar (mod p * q)}
   \item {\tt Ai == ai (mod q)} \((i = 1, \ldots, r)\)
   \end{itemize}
-  Moreover, {\tt q} is updated to {\tt p * q}.
+  さらに,{\tt q}は{\tt p * q}に更新.
   \spacing
   % added document
-  \quad \negok The preconditions which should be automatically satisfied:
+  \quad \negok 次の前提条件は自動的に満たされる:
   \begin{itemize}
   \item {\tt f == a1*...*ar (mod q)}
   \item {\tt ai*si + bi*ti == 1 (mod p)} \((i = 1,\ldots, r)\)
-  \item {\tt p} divides {\tt q}
+  \item {\tt p}は{\tt q}を割り切る
   \end{itemize}
-  \subsubsection{lift\_ladder -- lift {\tt u1} and {\tt u2}}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift\_ladder}
+  \subsubsection{lift\_ladder -- {\tt u1}と{\tt u2}を引き上げる}\linkedtwo{poly.hensel}{HenselLiftMulti}{lift\_ladder}
   \func{lift\_ladder}{\param{self}}{}\\
   \spacing
   % document of basic document
-  \quad Update {\tt si}s and {\tt ti}s with {\tt Si}s and {\tt Ti}s:
+  \quad {\tt si}たちと{\tt ti}たちを{\tt Si}たちと{\tt Ti}たちに更新:
   \begin{itemize}
   \item {\tt a1*Si + bi*Ti == 1 (mod p**2)}
   \item {\tt Si == si (mod p)} \((i = 1, \ldots, r)\)
   \item {\tt Ti == ti (mod p)} \((i = 1, \ldots, r)\)
   \end{itemize}
-  Then, update {\tt p} to {\tt p**2}.
+  そして,{\tt p}を{\tt p**2}に更新.
   \spacing
   % added document
-  \quad \negok The preconditions which should be automatically satisfied:
+  \quad \negok 次の前提条件は自動的に満たされる:
   \begin{itemize}
   \item {\tt ai*si + bi*ti == 1 (mod p)} \((i = 1,\ldots, r)\)
   \end{itemize}
@@ -199,17 +197,17 @@
 
 \subsection{HenselLiftSimultaneously}\linkedone{poly.hensel}{HenselLiftSimultaneously}
 
-  The method explained in~\cite{ColEnc}.\\
-  \quad \negok Keep these invariants:
+  このメソッドは~\cite{ColEnc}で説明されている.\\
+  \quad \negok 以下の不変式を保存:
   \begin{itemize}
-  \item     {\tt ai}s, {\tt pi} and {\tt gi}s are monic
+  \item     {\tt ai}たち, {\tt pi}と{\tt gi}たちはすべてモニック多項式
   \item     {\tt f == g1*...*gr (mod p)}
   \item     {\tt f == d0 + d1*p + d2*p**2 +...+ dk*p**k}
   \item     {\tt hi == g(i+1)*...*gr}
   \item     {\tt 1 == gi*si + hi*ti (mod p)} \((i = 1 ,\ldots, r)\)
   \item     \(\deg\)({\tt si}) \(<\) \(\deg\)({\tt hi}),
     \(\deg\)({\tt ti}) \(<\) \(\deg\)({\tt gi}) \((i = 1 ,\ldots, r)\)
-  \item     {\tt p} divides {\tt q}
+  \item     {\tt p}は{\tt q}を割り切る
   \item     {\tt f == l1*...*lr (mod q/p)}
   \item     {\tt f == a1*...*ar (mod q)}
   \item     {\tt ui == ai*yi + bi*zi (mod p)} \((i = 1, \ldots, r)\)
@@ -224,7 +222,7 @@
     \hiki{p}{integer}}{\out{HenselLiftSimultaneously}}\\
   \spacing
   % document of basic document
-  \quad This object keeps integer polynomial factors which will be lifted by Hensel's lemma.\\
+  \quad このオブジェクトはヘンゼルの補題によって引き上げられていく整数係数多項式の因数を保存.\\
   \spacing
   \quad {\tt f = \param{target}}, {\tt gi} in \param{factors},
   {\tt hi}s in \param{cofactors} and {\tt si}s and {\tt ti}s are in \param{bases}.
@@ -237,50 +235,48 @@
     \out{HenselLiftSimultaneously}}
   \spacing
   % document of basic document
-  \quad This is a class method to create and return an instance of {\tt HenselLiftSimultaneously}, whose factors are lifted by \linkingone{poly.hensel}{HenselLiftMulti} upto \param{ubound} if it is smaller than {\tt sys.maxint}, or upto {\tt sys.maxint} otherwise.
-  You do not have to precompute auxiliary polynomials for the default
-  constructor; they will be prepared for you from other arguments.\\
+  \quad これは,因数が\linkingone{poly.hensel}{HenselLiftMulti}によって引き上げられた,{\tt HenselLiftSimultaneously}のインスタンスを作成し返すためのクラスメソッドで,\linkingone{poly.hensel}{HenselLiftMulti}はもし{\tt sys.maxint}より小さければ\param{ubound}と一致し,さもなくば{\tt sys.maxint}と一致する.
+  初期構成を補助する多項式を計算し直す必要はない;これらは他の引数によって用意される.\\
   \spacing
   \quad {\tt f = \param{target}}, {\tt gi}s in \param{factors}.
 %
   \method
-  \subsubsection{lift -- lift one step}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{lift}
+  \subsubsection{lift -- 一段階引き上げる}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{lift}
   \func{lift}{\param{self}}{}\\
   \spacing
-  The lift. You should call this method only.
-  \subsubsection{first\_lift -- the first step}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{first\_lift}
+  引き上げメソッド.このメソッドのみ呼び出すべき.
+  \subsubsection{first\_lift -- 最初のステップ}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{first\_lift}
   \func{first\_lift}{\param{self}}{}\\
   \spacing
-  \quad Start lifting.\\
+  \quad 引き上げを開始.\\
   {\tt f == l1*l2*...*lr (mod p**2)}\\
-  Initialize {\tt di}s, {\tt ui}s, {\tt yi}s and {\tt zi}s.
-  Update {\tt ai}s, {\tt bi}s.
-  Then, update {\tt q} with {\tt p**2}.
-  \subsubsection{general\_lift -- next step}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{general\_lift}
+  {\tt di}たち,{\tt ui}たち,{\tt yi}たちそして{\tt zi}たちの初期化.
+  {\tt ai}たちと,{\tt bi}たちを更新.
+  そして,{\tt q}を{\tt p**2}に更新.
+  \subsubsection{general\_lift -- 次のステップ}\linkedtwo{poly.hensel}{HenselLiftSimultaneously}{general\_lift}
   \func{general\_lift}{\param{self}}{}\\
   \spacing
-  \quad Continue lifting.\\
+  \quad 引き上げを続ける.\\
   {\tt f == a1*a2*...*ar (mod p*q)}\\
-  Initialize {\tt ai}s, {\tt ubi}s, {\tt yi}s and {\tt zi}s.
-  Then, update {\tt q} with {\tt p*q.}
+  {\tt ai}たち,{\tt ubi}たち,{\tt yi}たちそして{\tt zi}たちを初期化.
+  そして,{\tt q}を{\tt p*q.}に更新
 
-  \subsection{lift\_upto -- main function}\linkedone{poly.hensel}{lift\_upto}
+  \subsection{lift\_upto -- main関数}\linkedone{poly.hensel}{lift\_upto}
   \func{lift\_upto}{\param{self},\ %
   \hiki{target}{polynomial},\  %
   \hiki{factors}{list},\ %
   \hiki{p}{integer},\ %
   \hiki{bound}{integer}}{\out{tuple}}\\
 \spacing
-\quad Hensel lift \param{factors} mod \param{p} of \param{target} upto \param{bound}
-and return {\tt factors} mod {\tt q} and the {\tt q} itself.\\
-\quad These preconditions should be satisfied:
+\quad \param{bound}まで\param{target}の\param{factors} mod \param{p}をヘンゼルリフト氏,{\tt factors} mod {\tt q} と the {\tt q}それ自身を返す.\\
+\quad 以下の前提条件は満たされるべきである:
 \begin{itemize}
-\item \param{target} is monic.
+\item \param{target}はモニック多項式.
 \item {\tt \param{target} == product(\param{factors}) mod \param{p}}
 \end{itemize}
-\quad The result {\tt (factors, q)} satisfies the following postconditions:
+\quad 結果{\tt (factors, q)}は以下の前提条件を満たす:
 \begin{itemize}
-\item there exist \(k\) s.t. {\tt q == \param{p}**k >= \param{bound}} and
+\item \(k\) s.t. {\tt q == \param{p}**k >= \param{bound}}なる \(k\) が存在
 \item {\tt \param{target} == product(factors) mod q}
 \end{itemize}
 

@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{matrix -- matrices}\linkedzero{matrix}
+ \section{matrix -- 行列}\linkedzero{matrix}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -25,29 +25,29 @@
      \end{itemize}
  \end{itemize}
  
- The module matrix has also some exception classes.
+ matrixモジュールにもいくつかの例外クラスがある.
  \begin{description}
    \item[MatrixSizeError]\linkedone{matrix}{MatrixSizeError}:
-     Report contradicting given input to the matrix size.
+     入力された行列のサイズが矛盾していると報告.
    \item[VectorsNotIndependent]\linkedone{matrix}{VectorsNotIndependent}:
-     Report column vectors are not independent. 
+     列ベクトルが一次独立でないと報告. 
    \item[NoInverseImage]\linkedone{matrix}{NoInverseImage}:
-     Report any inverse image does not exist.
+     逆像が存在しないことを報告.
    \item[NoInverse]\linkedone{matrix}{NoInverse}:
-     Report the matrix is not invertible.
+     その行列が可逆でないことを報告.
  \end{description}
 
- This module using following type:
+ このモジュールは以下のタイプを使うことができる:
  \begin{description}
    \item[compo]\linkedone{matrix}{compo}:
-     \param{compo} must be one of these forms below.\\
+     \param{compo} は以下のどれかの形式でなければならない.\\
      \begin{itemize}
-       \item concatenated row lists, such as {\it [1,2]+[3,4]+[5,6]}.
-       \item list of row lists, such as {\it [[1,2], [3,4], [5,6]]}.
-       \item list of column tuples, such as {\it [(1, 3, 5), (2, 4, 6)]}.
-       \item list of vectors whose dimension equals column, such as {\it vector.Vector([1, 3, 5]), vector.Vector([2, 4, 6])}.
+       \item {\it [1,2]+[3,4]+[5,6]}のような連結された行のリスト.
+       \item {\it [[1,2], [3,4], [5,6]]}のような行のリストのリスト.
+       \item {\it [(1, 3, 5), (2, 4, 6)]}のような列のタプルのリスト.
+       \item {\it [vector.Vector([1, 3, 5]) , vector.Vector([2, 4, 6])]}のような長さの等しい列ベクトルのリスト.
      \end{itemize}
-     The examples above represent the same matrix form as follows:
+     これらの例はすべて以下の行列を表している:
      \begin{equation*}
      \begin{array}{cc}
        1 & 2\\
@@ -59,48 +59,48 @@
 
 \C
 
- \subsection{Matrix -- matrices}\linkedone{matrix}{Matrix}
+ \subsection{Matrix -- 行列}\linkedone{matrix}{Matrix}
  \initialize
   \func{Matrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{Matrix}}\\
   \spacing
   % document of basic document
-  \quad Create new matrices object.\\
+  \quad 新しい行列オブジェクトを作成.\\
   \spacing
   % added document
-  \quad \negok This constructor automatically changes the class to one of the following class: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
+  \quad \negok この作成されたオブジェクトは自動的に自身のクラスを次に述べるクラスのうちの一つに変える: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
   \spacing
   % input, output document
-  \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
-   \param{row} and \param{column} must be integer, and \param{coeff\_ring} must be an instance of \linkingone{ring}{Ring}.
-   Refer to \linkingone{matrix}{compo} for information about \param{compo}.
-   If you abbreviate \param{compo}, it will be deemed to all zero list.\\
-   The list of expected inputs and outputs is as following:
+  \quad 入力すると行列のサイズと係数環を調べ自動的に自身のクラスを決定.
+   \param{row} と \param{column}は整数,\param{coeff\_ring}は\linkingone{ring}{Ring}のインスタンスでなければならない.
+   \param{compo}についての情報は\linkingone{matrix}{compo}を参照.
+   \param{compo}を省略すると,全て0のリストであるとみなされる.\\
+   予想される入力と出力のリストは以下の通り:
    \begin{itemize}
      \item Matrix(\param{row},\ \param{column},\ \param{compo},\ \param{coeff\_ring})\\
-       $\to$ the \param{row}$\times$\param{column} matrix whose elements are \param{compo} and coefficient ring is \param{coeff\_ring}
+       $\to$ 成分は\param{compo},係数環は\param{coeff\_ring}である\param{row}$\times$\param{column}の行列.
      \item Matrix(\param{row},\ \param{column},\ \param{compo})\\
-       $\to$ the \param{row}$\times$\param{column} matrix whose elements are \param{compo} (The coefficient ring is automatically determined.)
+       $\to$ 成分が\param{compo}である\param{row}$\times$\param{column}の行列(係数環は自動的に決定).
      \item Matrix(\param{row},\ \param{column},\ \param{coeff\_ring})\\
-       $\to$ the \param{row}$\times$\param{column} matrix whose coefficient ring is \param{coeff\_ring} (All elements are $0$ in \param{coeff\_ring}.)
+       $\to$ 係数環が\param{coeff\_ring}である\param{row}$\times$\param{column}の行列(すべての成分は\param{coeff\_ring}上で$0$).
      \item Matrix(\param{row},\ \param{column})\\
-       $\to$ the \param{row}$\times$\param{column} matrix (The coefficient matrix is \linkingone{rational}{Integer}. All elements are $0$.)
+       $\to$ 係数環は\linkingone{rational}{Integer},すべての成分は$0$である\param{row}$\times$\param{column}の行列.
    \end{itemize}
   \begin{at}
-    \item[row]\linkedtwo{matrix}{Matrix}{row}: The row size of the matrix.\\
-    \item[column]\linkedtwo{matrix}{Matrix}{column}: The column size of the matrix.\\
-    \item[coeff\_ring]\linkedtwo{matrix}{Matrix}{coeff\_ring}: The coefficient ring of the matrix.\\
-    \item[compo]\linkedtwo{matrix}{Matrix}{compo}: The elements of the matrix.\\
+    \item[row]\linkedtwo{matrix}{Matrix}{row}: 行列の行数.\\
+    \item[column]\linkedtwo{matrix}{Matrix}{column}: 行列の列数.\\
+    \item[coeff\_ring]\linkedtwo{matrix}{Matrix}{coeff\_ring}: 行列の係数環.\\
+    \item[compo]\linkedtwo{matrix}{Matrix}{compo}: 行列の成分.\\
   \end{at}
   \begin{op}
-    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not.\\
-    \verb+M[i, j]+ & Return the coefficient of \param{i}-th row, \param{j}-th column term of matrix \param{M}.\\
-    \verb+M[i]+ & Return the vector of \param{i}-th column term of matrix \param{M}.\\
-    \verb+M[i, j]=c+ & Replace the coefficient of \param{i}-th row, \param{j}-th column term of matrix \param{M} by \param{c}.\\
-    \verb+M[j]=c+ & Replace the vector of \param{i}-th column term of matrix \param{M} by vector \param{c}.\\
-    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
-    \verb+repr(M)+ & Return the repr string of the matrix \param{M}.\\
-                   & string represents list concatenated row vector lists.\\
-    \verb+str(M)+ & Return the str string of the matrix \param{M}.\\
+    \verb+M==N+ & \param{M}と\param{N}が等しいかそうでないか返す.\\
+    \verb+M[i, j]+ & 行列\param{M}の\param{i}行目\param{j}列目の成分を返す.\\
+    \verb+M[i]+ & 行列\param{M}の\param{i}列目の列ベクトルを返す.\\
+    \verb+M[i, j]=c+ & 行列\param{M}の\param{i}行目\param{j}列目の成分を\param{c}に置き換える.\\
+    \verb+M[j]=c+ & 行列\param{M}の\param{i}列目の列ベクトルを\param{c}に置き換える.\\
+    \verb+c in M+ & 成分\param{c}が行列\param{M}に入っているかどうか返す.\\
+    \verb+repr(M)+ & 行列\param{M}のrepr文字列を返す.\\
+                   & 文字列は行ベクトルのリストの連結リストを表している.\\
+    \verb+str(M)+ & 行列\param{M}のstring文字列を返す.\\
   \end{op}
 \begin{ex}
 >>> A = matrix.Matrix(2, 3, [1,0,0]+[0,0,0])
@@ -123,215 +123,216 @@ True
 0 0 0
 \end{ex}%Don't indent!
   \method
-\subsubsection{map -- apply function to elements}\linkedtwo{matrix}{Matrix}{map}
+\subsubsection{map -- 各成分に関数を適用}\linkedtwo{matrix}{Matrix}{map}
    \func{map}{\param{self},\ \hiki{function}{function}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad Return the matrix whose elements is applied \param{function} to.\\
+   \quad 各成分に\param{function}を適用した行列を返す.\\
    \spacing
    % added document
-   \quad \negok The function map is an analogy of built-in function \href{http://docs.python.org/library/functions.html#map}{map}.\\
+   \quad \negok map関数は組み込み関数である\href{http://docs.python.org/library/functions.html#map}{map}の類似である.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
- \subsubsection{reduce -- reduce elements iteratively}\linkedtwo{matrix}{Matrix}{reduce}
+ \subsubsection{reduce -- 繰り返し関数を適用}\linkedtwo{matrix}{Matrix}{reduce}
    \func{reduce}{\param{self},\ \hiki{function}{function},\ \hikiopt{initializer}{RingElement}{None}}{\out{RingElement}}\\
    \spacing
    % document of basic document
-   \quad Apply \param{function} from upper-left to lower-right, so as to reduce the iterable to a single value.\\
+   \quad 左上から右下に\param{function}を繰り返し適用する.それにより得られる単一の値を返す\\
    \spacing
    % added document
-   \quad \negok The function map is an analogy of built-in function \href{http://docs.python.org/library/functions.html#reduce}{reduce}.\\
+   \quad \negok reduce関数は組み込み関数である\href{http://docs.python.org/library/functions.html#reduce}{reduce}の類似である.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
- \subsubsection{copy -- create a copy}\linkedtwo{matrix}{Matrix}{copy}
+ \subsubsection{copy -- コピー作成}\linkedtwo{matrix}{Matrix}{copy}
    \func{copy}{\param{self}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad create a copy of \param{self}.\\
+   \quad \param{self}のコピーを作成する.\\
    \spacing
    % added document
-   \quad \negok The matrix generated by the function is same matrix to \param{self}, but not same as a instance.\\
+   \quad \negok この関数によって作成された行列は\param{self}と等しい行列だが,インスタンスとしては等しいわけではない.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{set -- set compo}\linkedtwo{matrix}{Matrix}{set}
+  \subsubsection{set -- 成分を設定}\linkedtwo{matrix}{Matrix}{set}
    \func{set}{\param{self},\ \hiki{compo}{compo}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Substitute the list \param{compo} for \linkingtwo{matrix}{Matrix}{compo}.\\
+   \quad \linkingtwo{matrix}{Matrix}{compo}として\param{compo}のリストを設定.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \quad \param{compo} must be the form of \linkingtwo{matrix}{Matrix}{compo}.\\
-  \subsubsection{setRow -- set m-th row vector}\linkedtwo{matrix}{Matrix}{setRow}
+   \quad \param{compo}は\linkingtwo{matrix}{Matrix}{compo}の形式でなければならない.\\
+  \subsubsection{setRow -- m行目に行ベクトルを設定}\linkedtwo{matrix}{Matrix}{setRow}
    \func{setRow}{\param{self},\ \hiki{m}{integer},\ \hiki{arg}{list/Vector}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Substitute the list/Vector \param{arg} as \param{m}-th row.\\
+   \quad リストまたはVectorである\param{arg}を\param{m}行目として設定.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \quad The length of \param{arg} must be same to \param{self}.\linkingtwo{matrix}{Matrix}{column}.\\
-  \subsubsection{setColumn -- set n-th column vector}\linkedtwo{matrix}{Matrix}{setColumn}
+   \quad \param{arg}の長さは\param{self}.\linkingtwo{matrix}{Matrix}{column}と等しくなければならない.\\
+  \subsubsection{setColumn -- n列目に列ベクトルを設定}\linkedtwo{matrix}{Matrix}{setColumn}
    \func{setColumn}{\param{self},\ \hiki{n}{integer},\ \hiki{arg}{list/Vector}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Substitute the list/Vector \param{arg} as \param{n}-th column.\\
+   \quad リストまたはVectorである\param{arg}を\param{n}列目として設定.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \quad The length of \param{arg} must be same to \param{self}.\linkingtwo{matrix}{Matrix}{row}.\\
-  \subsubsection{getRow -- get i-th row vector}\linkedtwo{matrix}{Matrix}{getRow}
+   \quad \param{arg}の長さは\param{self}.\linkingtwo{matrix}{Matrix}{row}と等しくなければならない.\\
+  \subsubsection{getRow -- i行目の行ベクトルを返す}\linkedtwo{matrix}{Matrix}{getRow}
    \func{getRow}{\param{self},\ \hiki{i}{integer}}{\out{Vector}}\\
    \spacing
    % document of basic document
-   \quad Return \param{i}-th row in form of \param{self}.\\
+   \quad \param{self}の形式で\param{i}行目を返す.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \quad The function returns a row vector (an instance of \linkingone{vector}{Vector}).\\
-  \subsubsection{getColumn -- get j-th column vector}\linkedtwo{matrix}{Matrix}{getColumn}
+   \quad この関数は(\linkingone{vector}{Vector}のインスタンスである)行ベクトルを返す.\\
+  \subsubsection{getColumn -- j列目の列ベクトルを返す}\linkedtwo{matrix}{Matrix}{getColumn}
    \func{getColumn}{\param{self},\ \hiki{j}{integer}}{\out{Vector}}\\
    \spacing
    % document of basic document
-   \quad Return \param{j}-th column in form of \param{self}.\\
+   \quad \param{self}の形式で\param{j}列目を返す.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-  \subsubsection{swapRow -- swap two row vectors}\linkedtwo{matrix}{Matrix}{swapRow}
+   \quad この関数は(\linkingone{vector}{Vector}のインスタンスである)列ベクトルを返す.\\
+  \subsubsection{swapRow -- 二つの行ベクトルを交換}\linkedtwo{matrix}{Matrix}{swapRow}
    \func{swapRow}{\param{self},\ \hiki{m1}{integer},\ \hiki{m2}{integer}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Swap \param{self}'s \param{m1}-th row vector and \param{m2}-th row one.\\
+   \quad \param{self}の\param{m1}行目の行ベクトルと\param{m2}行目の行ベクトルを交換.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-  \subsubsection{swapColumn -- swap two column vectors}\linkedtwo{matrix}{Matrix}{swapColumn}
+  \subsubsection{swapColumn -- 二つの列ベクトルを交換}\linkedtwo{matrix}{Matrix}{swapColumn}
    \func{swapColumn}{\param{self},\ \hiki{n1}{integer},\ \hiki{n2}{integer}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Swap \param{self}'s \param{n1}-th column vector and \param{n2}-th column one.\\
+   \quad \param{self}の\param{n1}列目の列ベクトルと\param{n2}列目の列ベクトルを交換.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-  \subsubsection{insertRow -- insert row vectors}\linkedtwo{matrix}{Matrix}{insertRow}
+  \subsubsection{insertRow -- 行ベクトルを挿入}\linkedtwo{matrix}{Matrix}{insertRow}
    \func{insertRow}{\param{self},\ \hiki{i}{integer},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Insert row vectors \param{arg} to \param{i}-th \param{row}.\\
+   \quad 行ベクトル\param{arg}を\param{i}行目\param{row}に挿入.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
-    The length (or \linkingtwo{matrix}{Matrix}{column}) of it should be same to the column of \param{self}. 
-  \subsubsection{insertColumn -- insert column vectors}\linkedtwo{matrix}{Matrix}{insertColumn}
+   \param{arg}はリスト,\linkingone{vector}{Vector}または\linkingone{matrix}{Matrix}でなければならない.
+    その長さ(または\linkingtwo{matrix}{Matrix}{column})は\param{self}の列の長さと等しくするべきである. 
+  \subsubsection{insertColumn -- 列ベクトル挿入}\linkedtwo{matrix}{Matrix}{insertColumn}
    \func{insertColumn}{\param{self},\ \hiki{j}{integer},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Insert column vectors \param{arg} to \param{j}-th \param{column}.\\
+   \quad 列ベクトル\param{arg}を\param{j}列目\param{column}に挿入.\\
    \spacing
    % added document
    %\quad\\
    %\spacing
    % input, output document
-   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
-    The length (or \linkingtwo{matrix}{Matrix}{row}) of it should be same to the row of \param{self}. 
-  \subsubsection{extendRow -- extend row vectors}\linkedtwo{matrix}{Matrix}{extendRow}
+   \param{arg}は,\linkingone{vector}{Vector}または\linkingone{matrix}{Matrix}のリストでなければならない.
+    その長さ(または\linkingtwo{matrix}{Matrix}{row})は\param{self}の行の長さと等しくするべきである. 
+  \subsubsection{extendRow -- 行ベクトルを伸張}\linkedtwo{matrix}{Matrix}{extendRow}
    \func{extendRow}{\param{self},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Join \param{self} with row vectors \param{arg} (in vertical way).\\
+   \quad \param{self}に行ベクトル\param{arg}を結合(垂直方向に).\\
    \spacing
    % added document
-   \quad The function combines \param{self} with the last row vector of \param{self}.
-   That is, extendRow(\param{arg}) is same to insertRow(\param{self}.\param{row}+1,\ \param{arg}).\\
+   \quad この関数は\param{self}の最後の行ベクトルの次に\param{arg}を結合.
+   つまりextendRow(\param{arg})はinsertRow(\param{self}.\param{row}+1,\ \param{arg})と同じ.\\
    \spacing
    % input, output document
-   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
-    The length (or \linkingtwo{matrix}{Matrix}{column}) of it should be same to the column of \param{self}. 
-  \subsubsection{extendColumn -- extend column vectors}\linkedtwo{matrix}{Matrix}{extendColumn}
+   \param{arg}は,\linkingone{vector}{Vector}または\linkingone{matrix}{Matrix}のリストでなければならない.
+    その長さ(または\linkingtwo{matrix}{Matrix}{column})\param{self}の列と等しくするべきである. 
+  \subsubsection{extendColumn -- 列ベクトルを伸張}\linkedtwo{matrix}{Matrix}{extendColumn}
    \func{extendColumn}{\param{self},\ \hiki{arg}{list/Vector/Matrix}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Join \param{self} with column vectors \param{arg} (in horizontal way).\\
+   \quad \param{self}に列ベクトル\param{arg}を結合(水平方向に).\\
    \spacing
    % added document
-   \quad The function combines \param{self} with the last column vector of \param{self}.
-   That is, extendColumn(\param{arg}) is same to insertColumn(\param{self}.\param{column}+1,\ \param{arg}).\\
+   \quad この関数は\param{self}の最後の列ベクトルの次に\param{arg}を結合.
+   つまりextendColumn(\param{arg})は(\param{self}.\param{column}+1,\ \param{arg})と同じ.\\
    \spacing
    % input, output document
-   \param{arg} must be list, \linkingone{vector}{Vector} or \linkingone{matrix}{Matrix}.
-    The length (or \linkingtwo{matrix}{Matrix}{row}) of it should be same to the row of \param{self}.
-  \subsubsection{deleteRow -- delete row vector}\linkedtwo{matrix}{Matrix}{deleteRow}
+   \param{arg}は\linkingone{vector}{Vector}または\linkingone{matrix}{Matrix}のリストでなければならない.
+    その長さ(または\linkingtwo{matrix}{Matrix}{row})は\param{self}の行と等しくするべきである.
+  \subsubsection{deleteRow -- 行ベクトルを削除}\linkedtwo{matrix}{Matrix}{deleteRow}
    \func{deleteRow}{\param{self},\ \hiki{i}{integer}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Delete \param{i}-th row vector.\\
+   \quad \param{i}行目の行ベクトルを削除.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-  \subsubsection{deleteColumn -- delete column vector}\linkedtwo{matrix}{Matrix}{deleteColumn}
+  \subsubsection{deleteColumn -- 列ベクトルを削除}\linkedtwo{matrix}{Matrix}{deleteColumn}
    \func{deleteColumn}{\param{self},\ \hiki{j}{integer}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Delete \param{j}-th column vector.\\
+   \quad \param{j}列目の列ベクトルを削除.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-  \subsubsection{transpose -- transpose matrix}\linkedtwo{matrix}{Matrix}{transpose}
+  \subsubsection{transpose -- 転置行列}\linkedtwo{matrix}{Matrix}{transpose}
    \func{transpose}{\param{self}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad Return the transpose of \param{self}.\\
+   \quad \param{self}の転置行列を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-  \subsubsection{getBlock -- block matrix}\linkedtwo{matrix}{Matrix}{getBlock}
+  \subsubsection{getBlock -- ブロック行列}\linkedtwo{matrix}{Matrix}{getBlock}
    \func{getBlock}{\param{self},\ \hiki{i}{integer},\ \hiki{j}{integer},\ \hiki{row}{integer},\ \hikiopt{column}{integer}{None}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad Return the \param{row}$\times$\param{column} block matrix from the (\param{i},\ \param{j})-element. \\
+   \quad (\param{i},\ \param{j})成分からの\param{row}$\times$\param{column}行列を返す. \\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-   If \param{column} is omitted, \param{column} is considered as same value to \param{row}.
-  \subsubsection{subMatrix -- submatrix}\linkedtwo{matrix}{Matrix}{subMatrix}
+   もし\param{column}が省略されたら,\param{column}は\param{row}と同じ値とみなす.
+  \subsubsection{subMatrix -- 部分行列}\linkedtwo{matrix}{Matrix}{subMatrix}
    \func{subMatrix}{\param{self},\ \hiki{I}{integer},\ \hiki{J}{integer}{None}}{\out{Matrix}}\\
    \func{subMatrix}{\param{self},\ \hiki{I}{list},\ \hikiopt{J}{list}{None}}{\out{Matrix}}\\
    \spacing
    % document of basic document
-   \quad The function has a twofold significance.
+   \quad この関数は二つの意味がある.
    \begin{itemize}
-     \item \param{I} and \param{J} are integer:\\
-       Return submatrix deleted \param{I}-th row and \param{J}-th column.
-     \item \param{I} and \param{J} are list:\\
-       Return the submatrix composed of elements from \param{self} assigned by rows I and columns J, respectively. 
+     \item \param{I}と\param{J}は整数:\\
+       \param{I}列目と\param{J}行目を削除した部分行列を返す.
+     \item \param{I}と\param{J}はリスト:\\
+       列Iと行Jで指定された\param{self}の成分から構成された部分行列を返す. 
    \end{itemize}
    \quad\\
    \spacing
@@ -339,7 +340,7 @@ True
    %\quad 
    %\spacing
    % input, output document
-   \quad If \param{J} is omitted, \param{J} is considered as same value to \param{I}.
+   \quad もし\param{J}を省略すると,\param{J}は\param{I}と同じ値とみなす.
 \begin{ex}
 >>> A = matrix.Matrix(2, 3, [1,2,3]+[4,5,6])
 >>> A
@@ -362,85 +363,85 @@ True
 \end{ex}%Don't indent!
 \C
 
-\subsection{SquareMatrix -- square matrices}\linkedone{matrix}{SquareMatrix}
+\subsection{SquareMatrix -- 正方行列}\linkedone{matrix}{SquareMatrix}
  \initialize
   \func{SquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{SquareMatrix}}\\
   \spacing
   % document of basic document
-  \quad Create new square matrices object.\\
+  \quad 新しい正方行列オブジェクトを作成.\\
   \spacing
   % added document
-  \quad SquareMatrix is subclass of \linkingone{matrix}{Matrix}.
-  \negok This constructor automatically changes the class to one of the following class: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
+  \quad SquareMatrixは\linkingone{matrix}{Matrix}のサブクラス.
+  \negok この作成されたオブジェクトは自動的に自身のクラスを次に述べるクラスの内のひとつに変える: \linkingone{matrix}{RingMatrix},\ \linkingone{matrix}{RingSquareMatrix},\ \linkingone{matrix}{FieldMatrix},\ \linkingone{matrix}{FieldSquareMatrix}.\\
   \spacing
   % input, output document
-  \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
-   \param{row} and \param{column} must be integer, and \param{coeff\_ring} must be an instance of \linkingone{ring}{Ring}.
-   Refer to \linkingone{matrix}{compo} for information about \param{compo}.
-   If you abbreviate \param{compo}, it will be deemed to all zero list.\\
+  \quad 入力すると行列のサイズと係数環を調べることにより自動的にそのクラスを決定.
+   \param{row}と\param{column}は整数,\param{coeff\_ring}は\linkingone{ring}{Ring}のインスタンスでなければならない.
+   \param{compo}に関する情報は\linkingone{matrix}{compo}を参照.
+   \param{compo}を省略すると,全て0のリストであるとみなされる.\\
 .\\
-   The list of expected inputs and outputs is as following:
+   予想される入力と出力のリストは以下の通り:
    \begin{itemize}
      \item Matrix(\param{row},\ \param{compo},\ \param{coeff\_ring})\\
-       $\to$ the \param{row} square matrix whose elements are \param{compo} and coefficient ring is \param{coeff\_ring}
+       $\to$ 成分は\param{compo},係数環は\param{coeff\_ring}の\param{row}次正方行列 
      \item Matrix(\param{row},\ \param{compo})\\
-       $\to$ the \param{row} square matrix whose elements are \param{compo} (coefficient ring is automatically determined)
+       $\to$ 成分は\param{compo}の(係数環は自動的に決定)\param{row}次正方行列
      \item Matrix(\param{row},\ \param{coeff\_ring})\\
-       $\to$ the \param{row} square matrix whose coefficient ring is \param{coeff\_ring} (All elements are $0$ in \param{coeff\_ring}.)
+       $\to$ 係数環は\param{coeff\_ring}の(すべての成分は\param{coeff\_ring}上の$0$.)\param{row}次正方行列
      \item Matrix(\param{row})\\
-       $\to$ the \param{row} square matrix (The coefficient ring is Integer. All elements are $0$.)
+       $\to$ (係数環は整数.すべての成分は$0$.)\param{row}次正方行列
    \end{itemize}
-   \negok We can initialize as  \linkingone{matrix}{Matrix}, but \param{column} must be same to \param{row} in the case.
+   \negok \linkingone{matrix}{Matrix}として初期化できるが,その場合\param{column}は\param{row}と同じでなければならない.
 \method
-\subsubsection{isUpperTriangularMatrix -- check upper triangular}\linkedtwo{matrix}{SquareMatrix}{isUpperTriangularMatrix}
+\subsubsection{isUpperTriangularMatrix -- 上三角行列かどうか}\linkedtwo{matrix}{SquareMatrix}{isUpperTriangularMatrix}
    \func{isUpperTriangularMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is upper triangular matrix or not.\\
+   \quad \param{self}が上三角行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-\subsubsection{isLowerTriangularMatrix -- check lower triangular}\linkedtwo{matrix}{SquareMatrix}{isLowerTriangularMatrix}
+\subsubsection{isLowerTriangularMatrix -- 下三角行列かどうか}\linkedtwo{matrix}{SquareMatrix}{isLowerTriangularMatrix}
    \func{isLowerTriangularMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is lower triangular matrix or not.\\
+   \quad \param{self}が下三角行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-\subsubsection{isDiagonalMatrix -- check diagonal matrix}\linkedtwo{matrix}{SquareMatrix}{isDiagonalMatrix}
+\subsubsection{isDiagonalMatrix -- 対角行列かどうか}\linkedtwo{matrix}{SquareMatrix}{isDiagonalMatrix}
    \func{isDiagonalMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is diagonal matrix or not.\\
+   \quad \param{self}が対角行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-\subsubsection{isScalarMatrix -- check scalar matrix}\linkedtwo{matrix}{SquareMatrix}{isScalarMatrix}
+\subsubsection{isScalarMatrix -- スカラー行列かどうか}\linkedtwo{matrix}{SquareMatrix}{isScalarMatrix}
    \func{isScalarMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is scalar matrix or not.\\
+   \quad \param{self}がスカラー行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-\subsubsection{isSymmetricMatrix -- check symmetric matrix}\linkedtwo{matrix}{SquareMatrix}{isSymmetricMatrix}
+\subsubsection{isSymmetricMatrix -- 対称行列かどうか}\linkedtwo{matrix}{SquareMatrix}{isSymmetricMatrix}
    \func{isSymmetricMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is symmetric matrix or not.\\
+   \quad \param{self}が対称行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
@@ -457,24 +458,24 @@ True
 \end{ex}%Don't indent!
 \C
 
-\subsection{RingMatrix -- matrix whose elements belong ring}\linkedone{matrix}{RingMatrix}
+\subsection{RingMatrix -- 成分が環に属する行列}\linkedone{matrix}{RingMatrix}
   \func{RingMatrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
   \spacing
   % document of basic document
-  \quad Create matrix whose coefficient ring belongs ring.\\
+  \quad 新しい係数が環に属する行列を作成.\\
   \spacing
   % added document
-  \quad RingMatrix is subclass of \linkingone{matrix}{Matrix}.
-  See Matrix for getting information about the initialization.\\
+  \quad RingMatrixは\linkingone{matrix}{Matrix}のサブクラス.
+  初期化に関する情報はMatrixを参照.\\
   \spacing
   % input, output document
   \begin{op}
-    \verb|M+N| & Return the sum of matrices \param{M} and \param{N}.\\
-    \verb+M-N+ & Return the difference of matrices \param{M} and \param{N}.\\
-    \verb+M*N+ & Return the product of \param{M} and \param{N}. \param{N} must be matrix, vector or scalar\\
-    \verb+M % d+ & Return \param{M} modulo \param{d}. \param{d} must be nonzero integer.\\
-    \verb+-M+ & Return the matrix whose coefficients have inverted signs of \param{M}.\\
-    \verb|+M| & Return the copy of \param{M}.\\
+    \verb|M+N| & \param{M}と\param{N}の行列の和を返す.\\
+    \verb+M-N+ & \param{M}と\param{N}の行列の差を返す.\\
+    \verb+M*N+ & \param{M}と\param{N}の行列の積を返す.\param{N}は行列,ベクトルまたはスカラーでなければならない\\
+    \verb+M % d+ & \param{M}を\param{d}で割った余りを返す. \param{d}は0でない整数でなければならい.\\
+    \verb+-M+ & 各成分が\param{M}の符号を変えた成分である行列を返す.\\
+    \verb|+M| & \param{M}のコピーを返す.\\
   \end{op}
 \begin{ex}
 >>> A = matrix.Matrix(2, 3, [1,2,3]+[4,5,6])
@@ -493,71 +494,71 @@ Vector([1, -1])
 [1, 2, 0]+[0, 2, 1]
 \end{ex}%Don't indent!
 \method
-\subsubsection{getCoefficientRing -- get coefficient ring}\linkedtwo{matrix}{RingMatrix}{getCoefficientRing}
+\subsubsection{getCoefficientRing -- 係数環を返す}\linkedtwo{matrix}{RingMatrix}{getCoefficientRing}
    \func{getCoefficientRing}{\param{self}}{\out{CommutativeRing}}\\
    \spacing
    % document of basic document
-   \quad Return the coefficient ring of \param{self}.\\
+   \quad \param{self}の係数環を返す.\\
    \spacing
    % added document
-   \quad This method checks all elements of \param{self} and set \param{coeff\_ring} to the valid coefficient ring.\\
+   \quad このメソッドは\param{self}の全ての成分を調べ,\param{coeff\_ring}を正しい係数環に設定.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{toFieldMatrix -- set field as coefficient ring}\linkedtwo{matrix}{RingMatrix}{toFieldMatrix}
+  \subsubsection{toFieldMatrix -- 係数環として体を設定}\linkedtwo{matrix}{RingMatrix}{toFieldMatrix}
    \func{toFieldMatrix}{\param{self}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Change the class of the matrix to \linkingone{matrix}{FieldMatrix} or \linkingone{matrix}{FieldSquareMatrix}, where the coefficient ring will be the quotient field of the current domain.\\
+   \quad 行列のクラスを係数環が現在の整域の商体になるように\linkingone{matrix}{FieldMatrix}または\linkingone{matrix}{FieldSquareMatrix}に変える.\\
    \spacing
    % added document
    % \quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{toSubspace -- regard as vector space}\linkedtwo{matrix}{RingMatrix}{toSubspace}
+  \subsubsection{toSubspace -- ベクトル空間としてみなす}\linkedtwo{matrix}{RingMatrix}{toSubspace}
    \func{toSubspace}{\param{self},\ \hikiopt{isbasis}{True/False}{None}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Change the class of the matrix to \param{Subspace}, where the coefficient ring will be the quotient field of the current domain.\\
+   \quad 行列のクラスを係数環が現在の整域の商体になるように\param{Subspace}に変える.\\
    \spacing
    % added document
    % \quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{hermiteNormalForm (HNF) -- Hermite Normal Form}\linkedtwo{matrix}{RingMatrix}{hermiteNormalForm}\linkedtwo{matrix}{RingMatrix}{HNF}
+  \subsubsection{hermiteNormalForm (HNF) -- Hermite正規形}\linkedtwo{matrix}{RingMatrix}{hermiteNormalForm}\linkedtwo{matrix}{RingMatrix}{HNF}
    \func{hermiteNormalForm}{\param{self}}{\out{RingMatrix}}\\
    \func{HNF}{\param{self}}{\out{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return upper triangular Hermite normal form (HNF).\\
+   \quad 上三角行列であるHermite正規形(HNF)を返す.\\
    \spacing
    % added document
    % \quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{exthermiteNormalForm (extHNF) -- extended Hermite Normal Form algorithm}\linkedtwo{matrix}{RingMatrix}{exthermiteNormalForm}
+  \subsubsection{exthermiteNormalForm (extHNF) -- 拡張Hermite正規形アルゴリズム}\linkedtwo{matrix}{RingMatrix}{exthermiteNormalForm}
    \func{exthermiteNormalForm}{\param{self}}{\out{(RingSquareMatrix,\ RingMatrix)}}\\
    \func{extHNF}{\param{self}}{\out{(RingSquareMatrix,\ RingMatrix)}}\\
    \spacing
    % document of basic document
-   \quad Return Hermite normal form \param{M} and \param{U} satisfied $\param{self}\param{U}=\param{M}$.\\
+   \quad Hermite正規形\param{M}と$\param{self}\cdot \param{U}=\param{M}$を満たす\param{U}を返す.\\
    \spacing
    % added document
    % \quad 
    %\spacing
    % input, output document
-   \quad  The function returns tuple (\param{U},\ \param{M}), where \param{U} is an instance of \linkingone{matrix}{RingSquareMatrix} and \param{M} is an instance of \linkingone{matrix}{RingMatrix}.\\
-  \subsubsection{kernelAsModule -- kernel as $\mathbb{Z}$-module}\linkedtwo{matrix}{RingMatrix}{kernelAsModule}
+   \quad  この関数は\linkingone{matrix}{RingSquareMatrix}のインスタンスである\param{U}と\linkingone{matrix}{RingMatrix}のインスタンスである\param{M}のタプルである(\param{U},\ \param{M})を返す,.\\
+  \subsubsection{kernelAsModule -- $\mathbb{Z}$加群としての核}\linkedtwo{matrix}{RingMatrix}{kernelAsModule}
    \func{kernelAsModule}{\param{self}}{\out{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return kernel as $\mathbb{Z}$-module.\\
+   \quad $\mathbb{Z}$加群としての核を返す.\\
    \spacing
    % added document
-   \quad The difference between the function and \linkingtwo{matrix}{FieldMatrix}{kernel} is that each elements of the returned value are integer.\\
+   \quad この関数と\linkingtwo{matrix}{FieldMatrix}{kernel}の違いは値として返されたそれぞれの値は整数であるということ.\\
    \spacing
    % input, output document
    %\quad
@@ -577,19 +578,19 @@ True
 \end{ex}
 \C
 
-\subsection{RingSquareMatrix -- square matrix whose elements belong ring}\linkedone{matrix}{RingSquareMatrix}
+\subsection{RingSquareMatrix -- 各成分が環に属する正方行列}\linkedone{matrix}{RingSquareMatrix}
   \func{RingSquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
   \spacing
   % document of basic document
-  \quad Create square matrix whose coefficient ring belongs ring.\\
+  \quad 係数環が環に属する新しい正方行列を作成.\\
   \spacing
   % added document
-  \quad RingSquareMatrix is subclass of \linkingone{matrix}{RingMatrix} and \linkingone{matrix}{SquareMatrix}.
-  See SquareMatrix for getting information about the initialization.\\
+  \quad RingSquareMatrix\linkingone{matrix}{RingMatrix}と\linkingone{matrix}{SquareMatrix}のサブクラス.
+  初期化に関する情報はSquareMatrixを参照.\\
   \spacing
   % input, output document
   \begin{op}
-    \verb|M**c| & Return the \param{c}-th power of matrices \param{M}.\\
+    \verb|M**c| & 行列\param{M}の\param{c}乗を返す.\\
   \end{op}
 \begin{ex}
 >>> A = matrix.RingSquareMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
@@ -597,141 +598,141 @@ True
 [30L, 36L, 42L]+[66L, 81L, 96L]+[102L, 126L, 150L]
 \end{ex}%Don't indent!
 \method
-  \subsubsection{getRing -- get matrix ring}\linkedtwo{matrix}{RingSquareMatrix}{getRing}
+  \subsubsection{getRing -- 行列の環を返す}\linkedtwo{matrix}{RingSquareMatrix}{getRing}
    \func{getRing}{\param{self}}{\out{MatrixRing}}\\
    \spacing
    % document of basic document
-   \quad Return the \linkingone{matrix}{MatrixRing} belonged to by \param{self}.\\
+   \quad \param{self}の所属する\linkingone{matrix}{MatrixRing}を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{isOrthogonalMatrix -- check orthogonal matrix}\linkedtwo{matrix}{RingSquareMatrix}{isOrthogonalMatrix}
+  \subsubsection{isOrthogonalMatrix -- 直交行列かどうか}\linkedtwo{matrix}{RingSquareMatrix}{isOrthogonalMatrix}
    \func{isOrthogonalMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is orthogonal matrix or not.\\
+   \quad \param{self}が直交行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{isAlternatingMatrix (isAntiSymmetricMatrix,\ isSkewSymmetricMatrix) -- check alternating matrix}\linkedtwo{matrix}{RingSquareMatrix}{isAlternatingMatrix}
+  \subsubsection{isAlternatingMatrix (isAntiSymmetricMatrix,\ isSkewSymmetricMatrix) -- 交代行列かどうか}\linkedtwo{matrix}{RingSquareMatrix}{isAlternatingMatrix}
    \func{isAlternatingMatrix}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is alternating matrix or not.\\
+   \quad \param{self}が交代行列かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{isSingular -- check singular matrix}\linkedtwo{matrix}{RingSquareMatrix}{isSingular}
+  \subsubsection{isSingular -- 特異行列かどうか}\linkedtwo{matrix}{RingSquareMatrix}{isSingular}
    \func{isSingular}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check whether \param{self} is singular matrix or not.\\
+   \quad \param{self}が特異行列かどうか返す.\\
    \spacing
    % added document
-   \quad The function determines whether determinant of \param{self} is $0$.
-   Note that the the non-singular matrix does not automatically mean invertible matrix; the nature that the matrix is invertible depends on its coefficient ring.\\
+   \quad この関数は\param{self}が$0$かどうか明らかにする.
+   正則行列が自動的に逆行列を持つわけではないということに注意; 逆行列が存在するかどうかの性質は係数環に依存する.\\
    \spacing
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{trace -- trace}\linkedtwo{matrix}{RingSquareMatrix}{trace}
+  \subsubsection{trace -- トレース}\linkedtwo{matrix}{RingSquareMatrix}{trace}
    \func{trace}{\param{self}}{\out{RingElement}}\\
    \spacing
    % document of basic document
-   \quad Return the trace of \param{self}.\\
+   \quad \param{self}のトレースを返す.\\
    \spacing
    % added document
    %\quad 
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{determinant -- determinant}\linkedtwo{matrix}{RingSquareMatrix}{determinant}
+  \subsubsection{determinant -- 行列式}\linkedtwo{matrix}{RingSquareMatrix}{determinant}
    \func{determinant}{\param{self}}{\out{RingElement}}\\
    \spacing
    % document of basic document
-   \quad Return the determinant of \param{self}.\\
+   \quad \param{self}の行列式を返す.\\
    \spacing
    % added document
    %\quad 
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{cofactor -- cofactor}\linkedtwo{matrix}{RingSquareMatrix}{cofactor}
+  \subsubsection{cofactor -- 余因子}\linkedtwo{matrix}{RingSquareMatrix}{cofactor}
    \func{cofactor}{\param{self},\ \hiki{i}{integer},\ \hiki{j}{integer}}{\out{RingElement}}\\
    \spacing
    % document of basic document
-   \quad Return the (\param{i},\ \param{j})-cofactor.\\
+   \quad (\param{i},\ \param{j})の余因子を返す.\\
    \spacing
    % added document
    %\quad 
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{commutator -- commutator}\linkedtwo{matrix}{RingSquareMatrix}{commutator}
+  \subsubsection{commutator -- 交換子}\linkedtwo{matrix}{RingSquareMatrix}{commutator}
    \func{commutator}{\param{self},\ \hiki{N}{RingSquareMatrix element}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the commutator for \param{self} and \param{N}.\\
+   \quad \param{self}と\param{N}の交換子を返す.\\
    \spacing
    % added document
-   \quad The commutator for \param{M} and \param{N}, which is denoted as $[M,\ N]$, is defined as $[\param{M},\ \param{N}]=\param{M}\param{N}-\param{N}\param{M}$. 
+   \quad $[M,\ N]$と表記される\param{M}と\param{N}の交換子は$[\param{M},\ \param{N}]=\param{M}\param{N}-\param{N}\param{M}$と定義される. 
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{characteristicMatrix -- characteristic matrix}\linkedtwo{matrix}{RingSquareMatrix}{characteristicMatrix}
+  \subsubsection{characteristicMatrix -- 特性行列}\linkedtwo{matrix}{RingSquareMatrix}{characteristicMatrix}
    \func{characteristicMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the characteristic matrix of \param{self}.\\
+   \quad \param{self}の特性行列を返す.\\
    \spacing
    % added document
    %\quad 
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{adjugateMatrix -- adjugate matrix}\linkedtwo{matrix}{RingSquareMatrix}{adjugateMatrix}
+  \subsubsection{adjugateMatrix -- 随伴行列}\linkedtwo{matrix}{RingSquareMatrix}{adjugateMatrix}
    \func{adjugateMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the adjugate matrix of \param{self}.\\
+   \quad \param{self}の随伴行列を返す.\\
    \spacing
    % added document
-   \quad The adjugate matrix for \param{M} is the matrix \param{N} such that $\param{M}\param{N}=\param{N}\param{M}=(\det{\param{M}})E$, where $E$ is the identity matrix.\\
+   \quad \param{M}に対する随伴行列は単位行列$E$に対し$\param{M}\param{N}=\param{N}\param{M}=(\det{\param{M}})E$となる行列\param{N}.\\
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{cofactorMatrix (cofactors) -- cofactor matrix}\linkedtwo{matrix}{RingSquareMatrix}{cofactorMatrix}\linkedtwo{matrix}{RingSquareMatrix}{cofactors}
+  \subsubsection{cofactorMatrix (cofactors) -- 余因子行列}\linkedtwo{matrix}{RingSquareMatrix}{cofactorMatrix}\linkedtwo{matrix}{RingSquareMatrix}{cofactors}
    \func{cofactorMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
    \func{cofactors}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the cofactor matrix of \param{self}.\\
+   \quad \param{self}の余因子行列を返す.\\
    \spacing
    % added document
-   \quad The cofactor matrix for \param{M} is the matrix whose ($i,\ j$) element is  ($i,\ j$)-cofactor of \param{M}.
-    The cofactor matrix is same to transpose of the adjugate matrix.\\
+   \quad \param{M}に対する余因子行列は\param{M}の($i,\ j$)成分が($i,\ j$)余因子である行列.
+    余因子行列は随伴行列の転置と同じ.\\
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{smithNormalForm (SNF,\ elementary\_divisor) -- Smith Normal Form (SNF)}\linkedtwo{matrix}{RingSquareMatrix}{smithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{SNF}\linkedtwo{matrix}{RingSquareMatrix}{elementary\_divisor}
+  \subsubsection{smithNormalForm (SNF,\ elementary\_divisor) -- Smith正規形(SNF)}\linkedtwo{matrix}{RingSquareMatrix}{smithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{SNF}\linkedtwo{matrix}{RingSquareMatrix}{elementary\_divisor}
    \func{smithNormalForm}{\param{self}}{\out{RingSquareMatrix}}\\
    \func{SNF}{\param{self}}{\out{RingSquareMatrix}}\\
    \func{elementary\_divisor}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the list of diagonal elements of the Smith Normal Form (SNF) for \param{self}.\\
+   \quad \param{self}に対するSmith正規形(SNF)の対角成分のリストを返す.\\
    \spacing
    % added document
-   \quad The function assumes that \param{self} is non-singular.\\
+   \quad この関数は\param{self}が非特異行列であることを仮定している.\\
    % input, output document
    %\quad \param{a} must be int, long or rational.Integer.\\
-  \subsubsection{extsmithNormalForm (extSNF) -- Smith Normal Form (SNF)}\linkedtwo{matrix}{RingSquareMatrix}{extsmithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{extSNF}
+  \subsubsection{extsmithNormalForm (extSNF) -- Smith正規形(SNF)}\linkedtwo{matrix}{RingSquareMatrix}{extsmithNormalForm}\linkedtwo{matrix}{RingSquareMatrix}{extSNF}
    \func{extsmithNormalForm}{\param{self}}{\out{(RingSquareMatrix,\ RingSquareMatrix,\ RingSquareMatrix)}}\\
    \func{extSNF}{\param{self}}{\out{RingSquareMatrix,\ RingSquareMatrix,\ RingSquareMatrix)}}\\
    \spacing
    % document of basic document
-   \quad Return the Smith normal form \param{M} for \param{self} and \param{U},\param{V} satisfied $\param{U}\param{self}\param{V}=\param{M}$.\\
+   \quad \param{self}に対するSmith正規形である\param{M}と $\param{U}\cdot\param{self}\cdot\param{V}=\param{M}$を満たす\param{U},\param{V}を返す,.\\
    \spacing
    % added document
    % input, output document
@@ -755,20 +756,20 @@ True
 \end{ex}
 \C
 
-\subsection{FieldMatrix -- matrix whose elements belong field}\linkedone{matrix}{FieldMatrix}
+\subsection{FieldMatrix -- 各成分が体に属する行列}\linkedone{matrix}{FieldMatrix}
   \func{FieldMatrix}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{RingMatrix}}\\
   \spacing
   % document of basic document
-  \quad Create matrix whose coefficient ring belongs field.\\
+  \quad 係数環が体に属する新しい行列を作成.\\
   \spacing
   % added document
-  \quad FieldMatrix is subclass of \linkingone{matrix}{RingMatrix}.
-  See \linkingone{matrix}{Matrix} for getting information about the initialization.\\
+  \quad FieldMatrixは\linkingone{matrix}{RingMatrix}のサブクラス.
+  初期化に関する情報は\linkingone{matrix}{Matrix}を参照.\\
   \spacing
   % input, output document
   \begin{op}
-    \verb|M/d| & Return the division of \param{M} by \param{d}.\param{d} must be scalar.\\
-    \verb|M//d| & Return the division of \param{M} by \param{d}.\param{d} must be scalar.\\
+    \verb|M/d| & \param{M}を\param{d}で割った商を返す.\param{d}はスカラー.\\
+    \verb|M//d| & \param{M}を\param{d}で割った商を返す.\param{d}はスカラー.\\
   \end{op}
 \begin{ex}
 >>> A = matrix.FieldMatrix(3, 3, [1,2,3,4,5,6,7,8,9])
@@ -778,67 +779,68 @@ True
 1/30  4/105 3/70
 \end{ex}%Don't indent!
 \method
-  \subsubsection{kernel -- kernel}\linkedtwo{matrix}{FieldMatrix}{kernel}
+  \subsubsection{kernel -- 核}\linkedtwo{matrix}{FieldMatrix}{kernel}
    \func{kernel}{\param{self}}{\out{FieldMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the kernel of \param{self}.\\
+   \quad \param{self}の核を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-   \quad The output is the matrix whose column vectors form basis of the kernel.\\
-   The function returns None if the kernel do not exist.\\
-  \subsubsection{image -- image}\linkedtwo{matrix}{FieldMatrix}{image}
+   \quad 出力は列ベクトルが核の基底となっている行列.\\
+   この関数は核が存在しなければNoneを返す.\\
+  \subsubsection{image -- 像}\linkedtwo{matrix}{FieldMatrix}{image}
    \func{image}{\param{self}}{\out{FieldMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the image of \param{self}.\\
+   \quad \param{self}の像を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
-   \quad The output is the matrix whose column vectors form basis of the image.\\
-   The function returns None if the kernel do not exist.\\
-  \subsubsection{rank -- rank}\linkedtwo{matrix}{FieldMatrix}{rank}
+   \quad 出力は列ベクトルが像の基底となっている行列.\\
+   この関数は核が存在しなければNoneを返す.\\
+  \subsubsection{rank -- 階数}\linkedtwo{matrix}{FieldMatrix}{rank}
    \func{rank}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the rank of \param{self}.\\
+   \quad \param{self}の階数を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \\
-  \subsubsection{inverseImage -- inverse image: base solution of linear system}\linkedtwo{matrix}{FieldMatrix}{inverseImage}
+  \subsubsection{inverseImage -- 逆像:一次方程式の基底解}\linkedtwo{matrix}{FieldMatrix}{inverseImage}
    \func{inverseImage}{\param{self},\ \hiki{V}{Vector/RingMatrix}}{\out{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return an inverse image of \param{V} by \param{self}.\\
+   \quad \param{self}による\param{V}の逆像を返す.\\
    \spacing
    % added document
-   \quad The function returns one solution of the linear equation $\param{self}X=\param{V}$.
+   \quad この関数は$\param{self}\cdot X=\param{V}$と等しい一次式の一つの解を返す.
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{solve -- solve linear system}\linkedtwo{matrix}{FieldMatrix}{solve}
+  \subsubsection{solve -- 一次方程式の解}\linkedtwo{matrix}{FieldMatrix}{solve}
    \func{solve}{\param{self},\ \hiki{B}{Vector/RingMatrix}}{\out{(RingMatrix,\ RingMatrix)}}\\
    \spacing
    % document of basic document
-   \quad Solve $\param{self}X = \param{B}$.\\
+   \quad $\param{self}\cdot X = \param{B}$を解く.\\
    \spacing
    % added document
-   \quad The function returns a particular solution \param{sol} and the kernel of \param{self} as a matrix.
-   If you only have to obtain the particular solution, use \linkingtwo{matrix}{FieldMatrix}{inverseImage}.
+   \quad この関数は特殊解\param{sol}と\param{self}の核を行列として返す.
+   もし特殊解のみ得たいときは\linkingtwo{matrix}{FieldMatrix}{inverseImage}
+   を使用.\\
    \spacing
    % input, output document
-  \subsubsection{columnEchelonForm -- column echelon form}\linkedtwo{matrix}{FieldMatrix}{columnEchelonForm}
+  \subsubsection{columnEchelonForm -- 列階段行列}\linkedtwo{matrix}{FieldMatrix}{columnEchelonForm}
    \func{columnEchelonForm}{\param{self}}{\out{RingMatrix}}\\
    % document of basic document
-   \quad Return the column reduced echelon form.\\
+   \quad 列被約階段行列を返す.\\
    \spacing
    % added document
    %\quad 
@@ -871,58 +873,58 @@ True
 \end{ex}
 \C
 
-\subsection{FieldSquareMatrix -- square matrix whose elements belong field}\linkedone{matrix}{FieldSquareMatrix}
+\subsection{FieldSquareMatrix -- 各成分が体に属する正方行列}\linkedone{matrix}{FieldSquareMatrix}
   \func{FieldSquareMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0}}{\out{FieldSquareMatrix}}\\
   \spacing
   % document of basic document
-  \quad Create square matrix whose coefficient ring belongs field.\\
+  \quad 係数環が体に属する新しい正方行列を返す.\\
   \spacing
   % added document
-  \quad FieldSquareMatrix is subclass of \linkingone{matrix}{FieldMatrix} and \linkingone{matrix}{SquareMatrix}.\\
-  \negok The function \linkingone{matrix}{RingSquareMatrix}{determinant} is overridden and use different algorithm from one used in \linkingone{matrix}{RingSquareMatrix}{determinant};the function calls \linkingone{matrix}{FieldSquareMatrix}{triangulate}.
-  See \linkingone{matrix}{SquareMatrix} for getting information about the initialization.\\
+  \quad FieldSquareMatrixは\linkingone{matrix}{FieldMatrix}と\linkingone{matrix}{SquareMatrix}のサブクラスです.\\
+  \negok \linkingtwo{matrix}{RingSquareMatrix}{determinant}関数はオーバーライドされていて,\linkingtwo{matrix}{RingSquareMatrix}{determinant}とは異なるアルゴリズムを用いている;この関数は\linkingtwo{matrix}{FieldSquareMatrix}{triangulate}から呼ばれる.
+  初期化に関する情報は\linkingone{matrix}{SquareMatrix}を参照.\\
   \spacing
   % input, output document
  \method
-  \subsubsection{triangulate - triangulate by elementary row operation}\linkedtwo{matrix}{FieldSquareMatrix}{triangulate}
+  \subsubsection{triangulate - 行基本変形による三角化}\linkedtwo{matrix}{FieldSquareMatrix}{triangulate}
    \func{triangulate}{\param{self}}{\out{FieldSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return an upper triangulated matrix obtained by elementary row operations.\\
+   \quad 行基本変形によって得られる上三角行列を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{inverse - inverse matrix}\linkedtwo{matrix}{FieldSquareMatrix}{inverse}
+  \subsubsection{inverse - 逆行列}\linkedtwo{matrix}{FieldSquareMatrix}{inverse}
    \func{inverse}{\param{self}\ \hikiopt{V}{Vector/RingMatrix}{None}}{\out{FieldSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the inverse of \param{self}.
-   If \param{V} is given, then return $\param{self}^(-1)V$.\\ 
+   \quad \param{self}の逆行列を返す.
+   \param{V}が与えられたら$\param{self}^{-1}V$を返す.\\ 
    \spacing
    % added document
-   \quad \negok If the matrix is not invertible, then raise \linkingone{matrix}{NoInverse}.\\
+   \quad \negok もし逆行列が存在しなければ\linkingone{matrix}{NoInverse}を返す.\\
    \spacing
    % input, output document
    %\quad
-  \subsubsection{hessenbergForm - Hessenberg form}\linkedtwo{matrix}{FieldSquareMatrix}{hessenbergForm}
+  \subsubsection{hessenbergForm - Hessenberg行列}\linkedtwo{matrix}{FieldSquareMatrix}{hessenbergForm}
    \func{hessenbergForm}{\param{self}}{\out{FieldSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the Hessenberg form of \param{self}.\\
+   \quad \param{self}のHessenberg行列を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{LUDecomposition - LU decomposition}\linkedtwo{matrix}{FieldSquareMatrix}{LUDecomposition}
+  \subsubsection{LUDecomposition - LU分解}\linkedtwo{matrix}{FieldSquareMatrix}{LUDecomposition}
    \func{LUDecomposition}{\param{self}}{\out{(FieldSquareMatrix,\ FieldSquareMatrix)}}\\
    \spacing
    % document of basic document
-   \quad Return the lower triangular matrix \param{L} and the upper triangular matrix \param{U} such that $\param{self} == \param{L}\param{U}$.\\
+   \quad $\param{self} == \param{L}\param{U}$を満たす下三角行列\param{L}と上三角行列\param{U}を返す.\\
    \spacing
    % added document
    %\quad 
@@ -931,33 +933,33 @@ True
    %\quad
 \C
 
-\subsection{\negok MatrixRing -- ring of matrices}\linkedone{matrix}{MatrixRing}
+\subsection{\negok MatrixRing -- 行列の環}\linkedone{matrix}{MatrixRing}
   \func{MatrixRing}{\hiki{size}{integer},\ \hiki{scalars}{CommutativeRing}}{\out{MatrixRing}}\\
   \spacing
   % document of basic document
-  \quad Create a ring of matrices with given \param{size} and coefficient ring \param{scalars}.\\
+  \quad \param{size}と係数環\param{scalars}を与えられた新しい行列の環を作成.\\
   \spacing
   % added document
-  \quad MatrixRing is subclass of \linkingone{ring}{Ring}.\\
+  \quad MatrixRingは\linkingone{ring}{Ring}のサブクラス.\\
   \spacing
   % input, output document
  \method
-  \subsubsection{unitMatrix - unit matrix}\linkedtwo{matrix}{MatrixRing}{unitMatrix}
+  \subsubsection{unitMatrix - 単位行列}\linkedtwo{matrix}{MatrixRing}{unitMatrix}
    \func{unitMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the unit matrix.\\
+   \quad 単位行列を返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{zeroMatrix - zero matrix}\linkedtwo{matrix}{MatrixRing}{zeroMatrix}
+  \subsubsection{zeroMatrix - 零行列}\linkedtwo{matrix}{MatrixRing}{zeroMatrix}
    \func{zeroMatrix}{\param{self}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return the zero matrix.\\
+   \quad 零行列を返す.\\
    \spacing
    % added document
    %\quad 
@@ -974,14 +976,14 @@ M_3(Z)
 [0L, 0L, 0L]+[0L, 0L, 0L]+[0L, 0L, 0L]
 \end{ex}
 \C
- \subsubsection{getInstance(class function) - get cached instance}\linkedtwo{matrix}{MatrixRing}{getInstance}
+ \subsubsection{getInstance(class function) - キャッシュされたインスタンスを返す}\linkedtwo{matrix}{MatrixRing}{getInstance}
    \func{getInstance}{\param{cls},\ \hiki{size}{integer},\ \hiki{scalars}{CommutativeRing}}{\out{RingSquareMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return an instance of MatrixRing of given \param{size} and ring of scalars. \\
+   \quad 与えられた\param{size}とスカラーの環に対するMatrixRingのインスタンスを返す. \\
    \spacing
    % added document
-   \quad The merit of using the method instead of the constructor is that the instances created by the method are cached and reused for efficiency.\\
+   \quad 初期化の代わりにこのメソッドを使うメリットは,効率のためメソッドによって作成されたインスタンスがキャッシュされ再利用されることにある.\\
    \spacing
    % input, output document
    %\quad
@@ -991,72 +993,72 @@ M_3(Z)
 \end{ex}
 \C
 
-\subsection{Subspace -- subspace of finite dimensional vector space}\linkedone{matrix}{Subspace}
+\subsection{Subspace -- 有限次元ベクトル空間の部分空間}\linkedone{matrix}{Subspace}
   \func{Subspace}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0},\ \hikiopt{isbasis}{True/False}{None}}{\out{Subspace}}\\
   \spacing
   % document of basic document
-  \quad Create subspace of some finite dimensional vector space over a field.\\
+  \quad いくつかの有限次元ベクトル空間の新しい部分空間を作成.\\
   \spacing
   % added document
-  \quad Subspace is subclass of \linkingone{matrix}{FieldMatrix}.\\
-  See \linkingone{matrix}{Matrix} for getting information about the initialization.
-  The subspace expresses the space generated by column vectors of \param{self}.\\
+  \quad Subspaceは\linkingone{matrix}{FieldMatrix}のサブクラス.\\
+  初期化に関する情報は\linkingone{matrix}{Matrix}を参照.
+  部分空間は\param{self}の列ベクトルに張られる空間を示す.\\
   \spacing
   % input, output document
-  If \param{isbasis} is True, we assume that column vectors are linearly independent.
+  \param{isbasis}がTrueなら,列ベクトルは一次独立と仮定.
  \begin{at}
-   \item[isbasis] The attribute indicates the linear independence of column vectors, i.e., if they form a basis of the space then \param{isbasis} should be True, otherwise False.
+   \item[isbasis] 列ベクトルが一次独立の性質を表す.もし各ベクトルが空間の基底を成せば\param{isbasis}はTrue,そうでなければFalse.
  \end{at}
  \method
-  \subsubsection{issubspace - check subspace of self}\linkedtwo{matrix}{Subspace}{triangulate}
+  \subsubsection{issubspace - 部分空間かどうか}\linkedtwo{matrix}{Subspace}{triangulate}
    \func{Subspace}{\param{self},\ \hiki{other}{Subspace}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Return True if the subspace instance is a subspace of the \param{other}, or False otherwise.\\
+   \quad もし\param{other}の部分空間であればTrue, そうでなければFalseを返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{toBasis - select basis}\linkedtwo{matrix}{Subspace}{toBasis}
+  \subsubsection{toBasis - 基底を選択}\linkedtwo{matrix}{Subspace}{toBasis}
    \func{toBasis}{\param{self}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Rewrite \param{self} so that its column vectors form a basis, and set True to its \param{isbasis}.\\
+   \quad 列ベクトルが基底を成すように\param{self}を書き直し,その\param{isbasis}をTrueにする.\\
    \spacing
    % added document
-   \quad The function does nothing if \param{isbasis} is already True.\\
+   \quad この関数は\param{isbasis}がすでにTrueならばなにもしない.\\
    \spacing
    % input, output document
    %\quad
-  \subsubsection{supplementBasis - to full rank}\linkedtwo{matrix}{Subspace}{supplementBasis}
+  \subsubsection{supplementBasis - 最大階数にする}\linkedtwo{matrix}{Subspace}{supplementBasis}
    \func{supplementBasis}{\param{self}}{\out{Subspace}}\\
    \spacing
    % document of basic document
-   \quad Return full rank matrix by supplementing bases for \param{self}.\\
+   \quad \param{self}に基底を補完したことによる最大階数行列を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{sumOfSubspaces - sum as subspace}\linkedtwo{matrix}{Subspace}{sumOfSubspaces}
+  \subsubsection{sumOfSubspaces - 部分空間の和}\linkedtwo{matrix}{Subspace}{sumOfSubspaces}
    \func{sumOfSubspaces}{\param{self},\ \hiki{other}{Subspace}}{\out{Subspace}}\\
    \spacing
    % document of basic document
-   \quad Return a matrix whose columns form a basis for sum of two subspaces.\\
+   \quad 二つの部分空間の和集合の基底を成す列の行列を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{intersectionOfSubspaces - intersection as subspace}\linkedtwo{matrix}{Subspace}{intersectionOfSubspaces}
+  \subsubsection{intersectionOfSubspaces - 部分空間の共通部分}\linkedtwo{matrix}{Subspace}{intersectionOfSubspaces}
    \func{intersectionOfSubspaces}{\param{self},\ \hiki{other}{Subspace}}{\out{Subspace}}\\
    \spacing
    % document of basic document
-   \quad Return a matrix whose columns form a basis for intersection of two subspaces.\\
+   \quad 二つの部分空間の共通部分の基底を成す列の行列を返す.\\
    \spacing
    % added document
    %\quad
@@ -1086,54 +1088,54 @@ M_3(Z)
 \end{ex}
 \C
 
- \subsubsection{fromMatrix(class function) - create subspace}\linkedtwo{matrix}{Subspace}{fromMatrix}
+ \subsubsection{fromMatrix(class function) - 部分空間を作成}\linkedtwo{matrix}{Subspace}{fromMatrix}
    \func{fromMatrix}{\param{cls},\ \hiki{mat}{FieldMatrix},\ \hikiopt{isbasis}{True/False}{None}}{\out{Subspace}}\\
    \spacing
    % document of basic document
-   \quad Create a Subspace instance from a matrix instance \param{mat}, whose class can be any of subclasses of Matrix.\\
+   \quad クラスがMatrixのサブクラスとなり得る行列のインスタンス\param{mat}からSubspaceのインスタンスを作成.\\
    \spacing
    % added document
-   \quad Please use this method if you want a Subspace instance for sure.\\
+   \quad Subspaceのインスタンスがほしい場合はこのメソッドを使用.\\
    \spacing
    % input, output document
    %\quad
 \C
 
- \subsection{createMatrix[function] -- create an instance}\linkedone{matrix}{createMatrix}
+ \subsection{createMatrix[function] -- インスタンスを作成}\linkedone{matrix}{createMatrix}
   \func{createMatrix}{\hiki{row}{integer},\ \hikiopt{column}{integer}{0},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{None}}{\param{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Create an instance of \linkingone{matrix}{RingMatrix}, \linkingone{matrix}{RingSquareMatrix}, \linkingone{matrix}{FieldMatrix} or \linkingone{matrix}{FieldSquareMatrix}.\\
+   \quad \linkingone{matrix}{RingMatrix}, \linkingone{matrix}{RingSquareMatrix}, \linkingone{matrix}{FieldMatrix}または\linkingone{matrix}{FieldSquareMatrix}のインスタンスを作成.\\
    \spacing
    % added document
-   \quad Your input determines the class automatically by examining the matrix size and the coefficient ring.
-   See \linkingone{matrix}{Matrix} or \linkingone{matrix}{SquareMatrix} for getting information about the initialization.\\
+   \quad 入力すると行列のサイズと係数環を調べることにより自動的に自身のクラスを決定.
+   初期化に関する情報は\linkingone{matrix}{Matrix}または\linkingone{matrix}{SquareMatrix}を参照.\\
    \spacing
    % input, output document
- \subsection{identityMatrix(unitMatrix)[function] -- unit matrix}\linkedone{matrix}{identityMatrix}\linkedone{matrix}{unitMatrix}
+ \subsection{identityMatrix(unitMatrix)[function] -- 単位行列}\linkedone{matrix}{identityMatrix}\linkedone{matrix}{unitMatrix}
   \func{identityMatrix}{\hiki{size}{integer},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
     \func{unitMatrix}{\hiki{size}{integer},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return \param{size}-dimensional unit matrix.\\
+   \quad \param{size}次元の単位行列を返す.\\
    \spacing
    % added document
-   \quad \param{coeff} enables us to create matrix not only in integer but in coefficient ring which is determined by coeff. \\
+   \quad coeffにより,整数上だけでなく\param{coeff}により決定された係数環上でも行列を作成することができる. \\
    \spacing
    % input, output document
-    \param{coeff} must be an instance of \linkingone{ring}{Ring} or a multiplicative unit (one).
- \subsection{zeroMatrix[function] -- zero matrix}\linkedone{matrix}{zeroMatrix}
+    \param{coeff}は\linkingone{ring}{Ring}のインスタンス,または積に関する単位元でなければならない.
+ \subsection{zeroMatrix[function] -- 零行列}\linkedone{matrix}{zeroMatrix}
   \func{zeroMatrix}{\hiki{row}{integer},\ \hikiopt{column}{0},\ \hikiopt{coeff}{CommutativeRing/CommutativeRingElement}{None}}{\param{RingMatrix}}\\
    \spacing
    % document of basic document
-   \quad Return $\param{row}\times\param{column}$ zero matrix.\\
+   \quad $\param{row}\times\param{column}$零行列を返す.\\
    \spacing
    % added document
-   \quad \param{coeff} enables us to create matrix not only in integer but in coefficient ring which is determined by coeff. \\
+   \quad coeffにより,整数上だけでなく\param{coeff}により決定された係数環上でも行列を作成することができる. \\
    \spacing
    % input, output document
-    \param{coeff} must be an instance of \linkingone{ring}{Ring} or a additive unit (zero).
-    If \param{column} is abbreviated, \param{column} is set same to \param{row}.\begin{ex}
+    \param{coeff}は\linkingone{ring}{Ring}のインスタンス,または和に関する単位元でなければならない.
+    \param{column}を省略したら,\param{column}は\param{row}と同じで設定される.\begin{ex}
 >>> M = matrix.createMatrix(3, [1,2,3]+[4,5,6]+[7,8,9])
 >>> print M
 1 2 3

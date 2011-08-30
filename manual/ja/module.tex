@@ -3,7 +3,7 @@
 \input{../header_function}
 
 %---------- start document ---------- %
- \section{module -- module/ideal with HNF}\linkedzero{module}
+ \section{module -- HNFによる加群/イデアル}\linkedzero{module}
  \begin{itemize}
    \item {\bf Classes}
    \begin{itemize}
@@ -16,125 +16,124 @@
 
 \C
 
- \subsection{Submodule -- submodule as matrix representation}\linkedone{module}{Submodule}
+ \subsection{Submodule -- 行列表現としての部分加群}\linkedone{module}{Submodule}
  \initialize
   \func{Submodule}{\hiki{row}{integer},\ \hiki{column}{integer},\ \hikiopt{compo}{compo}{0},\ \hikiopt{coeff\_ring}{CommutativeRing}{0},\ \hikiopt{ishnf}{True/False}{None}}{\out{Submodule}}\\
   \spacing
   % document of basic document
-  \quad Create a submodule with matrix representation.\\
+  \quad 行列表現で新しい部分加群を作成.\\
   \spacing
   % added document
-  \quad Submodule is subclass of \linkingone{matrix}{RingMatrix}.\\
-  We assume that \param{coeff\_ring} is a PID (principal ideal domain).
-  Then, we have the HNF(hermite normal form) corresponding to a matrices.\\
+  \quad Submoduleは\linkingone{matrix}{RingMatrix}のサブクラス.\\
+  \param{coeff\_ring}はPID(単項イデアル整域)と仮定.
+  その後行列に対応するHNF(Hermite正規形)を得る.\\
   \spacing
   %
   % input, output document
-  If \param{ishnf} is True, we assume that the input matrix is a HNF.
+  \param{ishnf}がTrueなら入力する行列はHNFと仮定.
   \begin{at}
-   \item[ishnf] If the matrix is a HNF, then \param{ishnf} should be True, otherwise False.
+   \item[ishnf] もし行列がHNFなら\param{ishnf}はTrue,そうでなければFalse.
   \end{at}
   \method
-  \subsubsection{getGenerators -- generator of module}\linkedtwo{module}{Submodule}{getGenerators}
+  \subsubsection{getGenerators -- 加群の生成元}\linkedtwo{module}{Submodule}{getGenerators}
    \func{getGenerators}{\param{self}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return a (current) generator of the module \param{self}.\\
+   \quad 加群\param{self}の(現在の)生成元を返す.\\
    \spacing
    % added document
    %
    % input, output document
-   \quad Return the list of vectors consisting of a generator.\\
- \subsubsection{isSubmodule -- Check whether submodule of self}\linkedtwo{module}{Submodule}{isSubmodule}
+   \quad 生成元から成るベクトルのリストを返す.\\
+ \subsubsection{isSubmodule -- 部分加群かどうか}\linkedtwo{module}{Submodule}{isSubmodule}
    \func{isSubmodule}{\param{self},\ \hiki{other}{Submodule}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Return True if the submodule instance is a submodule of the \param{other}, or False otherwise.\\
+   \quad 部分加群インスタンスが\param{other}の部分加群ならTrue,そうでなければFalseを返す.\\
    \spacing
    % added document
    %
    %\spacing
    % input, output document
    %
-   \subsubsection{isEqual -- Check whether self and other are same module}\linkedtwo{module}{Submodule}{isEqual}
+   \subsubsection{isEqual -- selfとotherが同じ加群かどうか}\linkedtwo{module}{Submodule}{isEqual}
    \func{isEqual}{\param{self},\ \hiki{other}{Submodule}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Return True if the submodule instance is \param{other} as module, or False otherwise.\\.\\
+   \quad 部分加群インスタンスが加群として\param{other}と等しいならTrue,そうでなければFalseを返す.\\.\\
    \spacing
    % added document
-   \quad You should use the method for equality test of module, not matrix.
-   For equality test of matrix simply, use \param{self}$==$\param{other}.
+   \quad このメソッドは行列でない加群の等式テストにも使用したほうがよい.
+   行列の等式テストには単純に\param{self}$==$\param{other}を使用.
    \\
    % input, output document
    %
-   \subsubsection{isContain -- Check whether other is in self}\linkedtwo{module}{Submodule}{isContains}
+   \subsubsection{isContain -- otherがselfに含まれているかどうか}\linkedtwo{module}{Submodule}{isContains}
    \func{isContains}{\param{self},\ \hiki{other}{vector.Vector}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Determine whether \param{other} is in \param{self} or not.\\.\\
+   \quad \param{other}が\param{self}に含まれているかどうか返す.\\.\\
    \spacing
    % added document
-   \quad If you want to represent \param{other} as linear combination with the HNF generator of \param{self}, use \linkingtwo{module}{Submodule}{represent\_element}.
+   \quad もし\param{other}を\param{self}のHNF生成元の一次結合として表したい場合,\linkingtwo{module}{Submodule}{represent\_element}を使用.
    \\
    % input, output document
    %
-   \subsubsection{toHNF - change to HNF}\linkedtwo{matrix}{Submodule}{toHNF}
+   \subsubsection{toHNF - HNFに変換}\linkedtwo{matrix}{Submodule}{toHNF}
    \func{toHNF}{\param{self}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Rewrite \param{self} to HNF (hermite normal form), and set True to its \param{ishnf}.\\
+   \quad \param{self}をHNF(Hermite正規形)に変換し,\param{ishnf}にTrueを設定.\\
    \spacing
    % added document
-   \quad Note that HNF do not always give basis of \param{self}.(i.e. HNF may be redundant.)\\
+   \quad HNFは常に\param{self}の基底を与えるわけではないことに注意.(HNFは冗長なことがある.)\\
    \spacing
    % input, output document
    %\quad
-  \subsubsection{sumOfSubmodules - sum as submodule}\linkedtwo{matrix}{Submodule}{sumOfSubmodules}
+  \subsubsection{sumOfSubmodules - 部分加群の和}\linkedtwo{matrix}{Submodule}{sumOfSubmodules}
    \func{sumOfSubmodules}{\param{self},\ \hiki{other}{Submodule}}{\out{Submodule}}\\
    \spacing
    % document of basic document
-   \quad Return a module which is sum of two subspaces.\\
+   \quad 二つの部分空間の和である加群を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{intersectionOfSubmodules - intersection as submodule}\linkedtwo{matrix}{Submodule}{intersectionOfSubmodules}
+  \subsubsection{intersectionOfSubmodules - 部分加群の共通部分}\linkedtwo{matrix}{Submodule}{intersectionOfSubmodules}
    \func{intersectionOfSubmodules}{\param{self},\ \hiki{other}{Submodule}}{\out{Submodule}}\\
    \spacing
    % document of basic document
-   \quad Return a module which is intersection of two subspaces.\\
+   \quad 二つの部分空間の共通部分である加群を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
- \subsubsection{represent\_element -- represent element as linear combination}\linkedtwo{module}{Submodule}{represent\_element}
+ \subsubsection{represent\_element -- 一次結合として成分を表す}\linkedtwo{module}{Submodule}{represent\_element}
    \func{represent\_element}{\param{self},\ \hiki{other}{vector.Vector}}{\out{vector.Vector/False}}\\
    \spacing
    % document of basic document
-   \quad Represent \param{other} as a linear combination with HNF generators.\\
+   \quad \param{other}をHNF生成元の一次結合として表す.\\
    \spacing
    % added document
-   \quad If \param{other} not in \param{self}, return False.
-   Note that this method calls \linkingtwo{module}{Submodule}{toHNF}.\\
+   \quad \param{other}が\param{self}に含まれていなければ,Falseを返す.
+   このメソッドは\linkingtwo{module}{Submodule}{toHNF}を呼ぶことに注意.\\
    \spacing
    % input, output document
-   \quad The method returns coefficients as an instance of \linkingone{vector}{Vector}.
- \subsubsection{linear\_combination -- compute linear combination}\linkedtwo{module}{Submodule}{linear\_combination}
+   \quad このメソッドは\linkingone{vector}{Vector}のインスタンスとしての係数を返す.
+ \subsubsection{linear\_combination -- 一次結合を計算}\linkedtwo{module}{Submodule}{linear\_combination}
    \func{linear\_combination}{\param{self},\ \hiki{coeff}{list}}{\out{vector.Vector}}\\
    \spacing
    % document of basic document
-   \quad For given $\mathbf{Z}$-coefficients \param{coeff}, 
-         return a vector corresponding to a linear combination of (current) basis.\\
+   \quad $\mathbf{Z}$係数\param{coeff}が与えられ,(現在)の基底の一次結合に対応するベクトルを返す.\\
    \spacing
    % added document
    %
    % input, output document
-   \quad \param{coeff} must be a list of instances in \linkingone{ring}{RingElement} whose size is the column of \param{self}.
+   \quad \param{coeff}はサイズが\param{self}の列と等しい\linkingone{ring}{RingElement}上のインスタンスのリスト.
 \begin{ex}
 >>> A = module.Submodule(4, 3, [1,2,3]+[4,5,6]+[7,8,9]+[10,11,12])
 >>> A.toHNF()
@@ -159,66 +158,62 @@ True
 8
 \end{ex}%Don't indent!
 \C
-  \subsection{fromMatrix(class function) - create submodule}\linkedtwo{module}{Submodule}{fromMatrix}
+  \subsection{fromMatrix(class function) - 部分加群を作成}\linkedtwo{module}{Submodule}{fromMatrix}
   \func{fromMatrix}{\param{cls},\ \hiki{mat}{RingMatrix},\ \hikiopt{ishnf}{True/False}{None}}{\out{Submodule}}\\
    \spacing
    % document of basic document
-   \quad Create a Submodule instance from a matrix instance \param{mat}, whose class can be any of subclasses of Matrix.\\
+   \quad クラスがMatrixのサブクラスになり得る行列のインスタンス\param{mat}からSubmoduleのインスタンスを作成.\\
    \spacing
    % added document
-   \quad Please use this method if you want a Submodule instance for sure.\\
+   \quad Submoduleのインスタンスがほしい場合このメソッドを使用.\\
    \spacing
    % input, output document
    %
 \C
 
-\subsection{Module - module over a number field}\linkedone{module}{Module}
+\subsection{Module - 数体上の加群}\linkedone{module}{Module}
  \initialize
   \func{Module}{\hiki{pair\_mat\_repr}{list/matrix},\ \hiki{number\_field}{algfield.NumberField},\ \hikiopt{base}{list/matrix.SquareMatrix}{None},\ \hikiopt{ishnf}{bool}{False}}{\out{Module}}\\
   \spacing
   % document of basic document
-  \quad Create a new module object over a number field.\\
+  \quad 数体上の新しい加群オブジェクトを作成.\\
   \spacing
   % added document
-  \quad A module is a finitely generated sub $\mathbf{Z}$-module. 
-  Note that we do not assume rank of a module is deg(number\_field).\\
-  We represent a module as generators respect to base module over $\mathbf{Z}[\theta]$, where $\theta$ is a solution of \param{number\_field}.\linkingtwo{algfield}{BasicAlgNumber}{polynomial}.\\
+  \quad 加群は有限生成された部分$\mathbf{Z}$加群. 
+  加群の階数をdeg(number\_field) と仮定しないことを注意.\\
+  加群を,$\theta$が\param{number\_field}.\linkingtwo{algfield}{BasicAlgNumber}{polynomial}の解となる$\mathbf{Z}[\theta]$上の基本的な加群についての生成元として表す.\\
   \spacing
   % input, output document
-  \quad \param{pair\_mat\_repr} should be one of the following form:
+  \quad \param{pair\_mat\_repr}は次に示す形式のどれかであるべきである:
   \begin{itemize}
-  \item $[M,\ d]$, 
-   where $M$ is a list of integral tuple/vectors whose size is the degree of \param{number\_field} and
-         $d$ is a denominator.
-  \item $[M,\ d]$,
-   where $M$ is an integral matrix whose the number of row is the degree of \param{number\_field} and
-         $d$ is a denominator.
-  \item a rational matrix whose the number of row is the degree of \param{number\_field}.
+  \item $[M,\ d]$, $M$のサイズは\param{number\_field}の次数である整数のタプルまたはベクトルのリストであり,$d$は分母.
+  \item $[M,\ d]$, $M$のサイズは\param{number\_field}の次数である整数行列,であり$d$は分母.
+  \item 行の数は\param{number\_field}の次数である有理数行列.
   \end{itemize}
-  Also, \param{base} should be one of the following form:
+  また,\param{base}は次に示す形式のうちのどれかであるべきである:
   \begin{itemize}
-  \item \linkedone{module}{base} a list of rational tuple/vectors whose size is the degree of \param{number\_field}
-  \item a square non-singular rational matrix whose size is the degree of \param{number\_field}
+  \item \linkedone{module}{base}サイズは\param{number\_field}の次数である有理数のタプルまたはベクトルのリスト
+  \item サイズは\param{number\_field}である非特異かつ有理数係数の正方行列
   \end{itemize}
-  The module is internally represented as $\frac{1}{d}M$ with respect to \linkingtwo{module}{Module}{base},
-  where $d$ is \linkingtwo{module}{Module}{denominator} and $M$ is \linkingtwo{module}{Module}{mat\_repr}.
-  If \param{ishnf} is True, we assume that \param{mat\_repr} is a HNF.\\
+  加群は\linkingtwo{module}{Module}{base}について内部で$\frac{1}{d}M$と表され,
+  $d$は\linkingtwo{module}{Module}{denominator}で$M$は\linkingtwo{module}{Module}{mat\_repr}.
+  \param{ishnf}がTrueなら,\param{mat\_repr}はHNFであると仮定.\\
   \begin{at}
-  \item[mat\_repr]\linkedtwo{module}{Module}{mat\_repr}: an instance of \linkingone{module}{Submodule} $M$ whose size is the degree of \param{number\_field}
-  \item[denominator]\linkedtwo{module}{Module}{denominator}: an integer $d$
-  \item[base]\linkedtwo{module}{Module}{base}: a square non-singular rational matrix whose size is the degree of \param{number\_field}
-  \item[number\_field]\linkedtwo{module}{Module}{number\_field}: the number field over which the module is defined
+  \item[mat\_repr]\linkedtwo{module}{Module}{mat\_repr}:サイズが\param{number\_field}の次数である\linkingone{module}{Submodule} $M$のインスタンス 
+  \item[denominator]\linkedtwo{module}{Module}{denominator}:整数 $d$
+  \item[base]\linkedtwo{module}{Module}{base}:サイズは\param{number\_field}である正方かつ非特異有理数行列 
+  \item[number\_field]\linkedtwo{module}{Module}{number\_field}:加群が定義された数体
   \end{at}
 \begin{op}
-    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not as module.\\
-    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
-    \verb|M+N| & Return the sum of \param{M} and \param{N} as module.\\
-    \verb+M*N+ & Return the product of \param{M} and \param{N} as the ideal computation. \\
-               &  \param{N} must be module or scalar(i.e. an element of \linkingtwo{module}{Module}{number\_field}).\\
-               &  If you want to compute the intersection of $M$ and $N$, see \linkingtwo{module}{Module}{intersect}.\\
-    \verb+M**c+ & Return \param{M} to \param{c} based on the ideal multiplication.\\
-    \verb+repr(M)+ & Return the repr string of the module \param{M}.\\
-    \verb+str(M)+ & Return the str string of the module \param{M}.\\
+    \verb+M==N+ & \param{M}と\param{N}が加群として等しいかどうか返す.\\
+    \verb+c in M+ & \param{M}の要素のどれかが\param{c}と等しいかどうか返す.\\
+    \verb|M+N| & \param{M}と\param{N}の加群としての部分集合を返す.\\
+    \verb+M*N+ & \param{M}と\param{N}のイデアル計算としての積を返す. \\
+               &  \param{N}は加群またはスカラーでなければならない(\linkingtwo{module}{Module}{number\_field}の要素).\\
+               &  $M$と$N$の共通部分の計算したいときは\linkingtwo{module}{Module}{intersect}を参照.\\
+    \verb+M**c+ & イデアルの乗算を基にした\param{M}の\param{c}乗を返す.\\
+    \verb+repr(M)+ & 加群\param{M}のrepr文字列を返す.\\
+    \verb+str(M)+ & 加群\param{M}のstring文字列を返す.\\
   \end{op}
 \begin{ex}
 >>> F = algfield.NumberField([2,0,1])
@@ -250,105 +245,105 @@ NumberField([2, 0, 1]))
 NumberField([2, 0, 1]))
 \end{ex}%Don't indent!
 \method
-  \subsubsection{toHNF - change to hermite normal form(HNF)}\linkedtwo{module}{Module}{toHNF}
+  \subsubsection{toHNF - Hermite正規形(HNF)に変換}\linkedtwo{module}{Module}{toHNF}
    \func{toHNF}{\param{self}}{\out{(None)}}\\
    \spacing
    % document of basic document
-   \quad Change \param{self}.\linkingtwo{module}{Module}{mat\_repr} to the hermite normal form(HNF).\\
+   \quad \param{self}.\linkingtwo{module}{Module}{mat\_repr}をHermite正規形(HNF)に変換.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{copy - create copy}\linkedtwo{module}{Module}{copy}
+  \subsubsection{copy - コピーを作成}\linkedtwo{module}{Module}{copy}
    \func{copy}{\param{self}}{\out{Module}}\\
    \spacing
    % document of basic document
-   \quad Create copy of \param{self}.\\
+   \quad \param{self}のコピーを作成.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{intersect - intersection}\linkedtwo{module}{Module}{intersect}
+  \subsubsection{intersect - 共通部分を返す}\linkedtwo{module}{Module}{intersect}
    \func{intersect}{\param{self},\ \hiki{other}{Module}}{\out{Module}}\\
    \spacing
    % document of basic document
-   \quad Return intersection of \param{self} and \param{other}.\\
+   \quad \param{self}と\param{other}の共通部分を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad 
-  \subsubsection{issubmodule - Check submodule}\linkedtwo{module}{Module}{issubmodule}
+  \subsubsection{issubmodule - 部分加群かどうか}\linkedtwo{module}{Module}{issubmodule}
    \func{submodule}{\param{self},\ \hiki{other}{Module}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check \param{self} is submodule of \param{other}.\\
+   \quad \param{self}が\param{other}の部分加群かどうか返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad 
-  \subsubsection{issupermodule - Check supermodule}\linkedtwo{module}{Module}{issupermodule}
+  \subsubsection{issupermodule - 部分加群かどうか}\linkedtwo{module}{Module}{issupermodule}
    \func{supermodule}{\param{self},\ \hiki{other}{Module}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Check \param{self} is supermodule of \param{other}.\\
+   \quad \param{other}が\param{self}の部分加群かどうか返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{represent\_element - Represent as linear combination}\linkedtwo{module}{Module}{represent\_element}
+  \subsubsection{represent\_element - 一次結合として表す}\linkedtwo{module}{Module}{represent\_element}
    \func{represent\_element}{\param{self},\ \hiki{other}{algfield.BasicAlgNumber}}{\out{list/False}}\\
    \spacing
    % document of basic document
-   \quad Represent \param{other} as a linear combination with generators of \param{self}.
-        If \param{other} is not in \param{self}, return False.\\
+   \quad \param{other}を\param{self}で生成される一次結合として表す.
+        もし\param{other}が\param{self}に含まれていなかったら,Falseを返す.\\
    \spacing
    % added document
-   \quad Note that we do not assume \param{self}.\linkingtwo{module}{Module}{mat\_repr} is HNF.
+   \quad \param{self}.\linkingtwo{module}{Module}{mat\_repr}はHNFであると仮定しているわけではないということに注意.
    \spacing
    % input, output document
    \quad
-   The output is a list of integers if \param{other} is in \param{self}.\\
+   \param{other}が\param{self}に含まれていたら出力は整数のリスト.\\
    \spacing
-  \subsubsection{change\_base\_module - Change base}\linkedtwo{module}{Module}{change\_base\_module}
+  \subsubsection{change\_base\_module - 基底変換}\linkedtwo{module}{Module}{change\_base\_module}
    \func{change\_base\_module}{\param{self},\ \hiki{other\_base}{list/matrix.RingSquareMatrix}}{\out{Module}}\\
    \spacing
    % document of basic document
-   \quad Return the module which is equal to \param{self} respect to \param{other\_base}.\\
+   \quad \param{other\_base}に関連した\param{self}と等しい加群を返す.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    \quad
-   \param{other\_base} follows the form \linkingone{module}{base}.\\
-  \subsubsection{index - size of module}\linkedtwo{module}{Module}{index}
+   \param{other\_base}は\linkingone{module}{base}の形式に従う.\\
+  \subsubsection{index - 加群のサイズ}\linkedtwo{module}{Module}{index}
    \func{index}{\param{self}}{\out{rational.Rational}}\\
    \spacing
    % document of basic document
-   \quad Return the order of a residue group over \param{self}.\linkingtwo{module}{Module}{base}.
-         That is, return $[M:N]$ if $N \subset M$ or ${[N:M]}^{-1}$ if $M subset N$,
-         where $M$ is the module \param{self} and $N$ is the module corresponding to \param{self}.\linkingtwo{module}{Module}{base}. \\
+   \quad \param{self}.\linkingtwo{module}{Module}{base}に関する剰余類の位数を返す.
+         $N \subset M$なら$[M:N]$を返し,$M \subset N$のとき${[N:M]}^{-1}$を返す.
+         $M$は加群\param{self}で$N$は\param{self}.\linkingtwo{module}{Module}{base}に対応する加群. \\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{smallest\_rational - a $\mathbf{Z}$-generator in the rational field}\linkedtwo{module}{Module}{smallest\_rational}
+  \subsubsection{smallest\_rational - 有理数体上の$\mathbf{Z}$生成元}\linkedtwo{module}{Module}{smallest\_rational}
    \func{smallest\_rational}{\param{self}}{\out{rational.Rational}}\\
    \spacing
    % document of basic document
-   \quad Return the $\mathbf{Z}$-generator of intersection of the module \param{self} and the rational field.\\
+   \quad 加群\param{self}と有理数体の共通部分の$\mathbf{Z}$生成元を返す.\\
    \spacing
    % added document
    %\quad
@@ -378,75 +373,75 @@ Rational(2, 3)
 \end{ex}%Don't indent!
 \C
 
-\subsection{Ideal - ideal over a number field}\linkedone{module}{Ideal}
+\subsection{Ideal - 数体上のイデアル}\linkedone{module}{Ideal}
  \initialize
   \func{Ideal}{\hiki{pair\_mat\_repr}{list/matrix},\ \hiki{number\_field}{algfield.NumberField},\ \hikiopt{base}{list/matrix.SquareMatrix}{None},\ \hikiopt{ishnf}{bool}{False}}{\out{Ideal}}\\
   \spacing
   % document of basic document
-  \quad Create a new ideal object over a number field.\\
+  \quad 数体上の新しいイデアルオブジェクトを作成.\\
   \spacing
   % added document
-  \quad Ideal is subclass of \linkingone{module}{Module}.\\
+  \quad イデアルは\linkingone{module}{Module}のサブクラスです.\\
   \spacing
   % input, output document
-  \quad Refer to initialization of \linkingone{module}{Module}.\\
+  \quad \linkingone{module}{Module}も初期化を引用.\\
 %\begin{ex}
 %\end{ex}%Don't indent!
 \C
 \method
 
-\subsubsection{inverse -- inverse}\linkedtwo{module}{Ideal}{inverse}
+\subsubsection{inverse -- 逆元}\linkedtwo{module}{Ideal}{inverse}
    \func{inverse}{\param{self}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Return the inverse ideal of \param{self}.\\
+   \quad \param{self}の逆イデアルを返す.\\
    \spacing
    % added document
-   \quad This method calls \param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}.\\
+   \quad このメソッドは\param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
- \subsubsection{issubideal -- Check subideal}\linkedtwo{module}{Ideal}{issubideal}
+ \subsubsection{issubideal -- 部分イデアルかどうか}\linkedtwo{module}{Ideal}{issubideal}
    \func{issubideal}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Check \param{self} is subideal of \param{other}.\\
+   \quad \param{self}が\param{other}の部分イデアルかどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \\
-  \subsubsection{issuperideal -- Check superideal}\linkedtwo{module}{Ideal}{issuoerideal}
+  \subsubsection{issuperideal -- 部分加群かどうか}\linkedtwo{module}{Ideal}{issuoerideal}
    \func{issuperideal}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Check \param{self} is superideal of \param{other}.\\
+   \quad \param{other}が\param{self}の部分加群かどうか返す.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    %\quad \\
-  \subsubsection{gcd -- greatest common divisor}\linkedtwo{module}{Ideal}{gcd}
+  \subsubsection{gcd -- 最大公約数}\linkedtwo{module}{Ideal}{gcd}
    \func{gcd}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor(gcd) of \param{self} and \param{other} as ideal.\\
+   \quad \param{self}と\param{other}のイデアルとしての最大公約数(gcd)を返す.\\
    \spacing
    % added document
-   \quad This method simply executes \param{self}$+$\param{other}.\\
+   \quad このメソッドは単純に\param{self}$+$\param{other}を実行する.\\
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{lcm -- least common multiplier}\linkedtwo{module}{Ideal}{lcm}
+  \subsubsection{lcm -- 最小公倍数}\linkedtwo{module}{Ideal}{lcm}
    \func{lcm}{\param{self},\ \hiki{other}{Ideal}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Return the least common multiplier(lcm) of \param{self} and \param{other} as ideal.\\
+   \quad イデアルとしての\param{self}と\param{other}の最小公倍数(lcm)を返す.\\
    \spacing
    % added document
-   \quad This method simply calls the method \linkingtwo{module}{Module}{intersect}.\\
+   \quad このメソッドは単純に\linkingtwo{module}{Module}{intersect}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
@@ -461,22 +456,22 @@ Rational(2, 3)
 %   %\spacing
 %   % input, output document
 %   %\quad \\
-  \subsubsection{norm -- norm}\linkedtwo{module}{Ideal}{norm}
+  \subsubsection{norm -- ノルム}\linkedtwo{module}{Ideal}{norm}
    \func{norm}{\param{self}}{\out{rational.Rational}}\\
    \spacing
    % document of basic document
-   \quad Return the norm of \param{self}.\\
+   \quad \param{self}のノルムを返す.\\
    \spacing
    % added document
-   \quad This method calls \param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}.\\
+   \quad このメソッドは\param{self}.\linkingtwo{module}{Module}{number\_field}.\linkingtwo{algfield}{NumberField}{integer\_ring}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{isIntegral -- Check integral}\linkedtwo{module}{Ideal}{isIntegral}
+  \subsubsection{isIntegral -- 整イデアルかどうか}\linkedtwo{module}{Ideal}{isIntegral}
    \func{isIntegral}{\param{self}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad Determine whether \param{self} is an integral ideal or not.\\
+   \quad \param{self}が整イデアルかどうか判定.\\
    \spacing
    % added document
    %\quad \\
@@ -513,30 +508,30 @@ False
 \end{ex}%Don't indent!
 \C
 
-\subsection{Ideal\_with\_generator - ideal with generator}\linkedone{module}{Ideal\_with\_generator}
+\subsection{Ideal\_with\_generator - 生成元によるイデアル}\linkedone{module}{Ideal\_with\_generator}
  \initialize
   \func{Ideal\_with\_generator}{\hiki{generator}{list}}{\out{Ideal\_with\_generator}}\\
   \spacing
   % document of basic document
-  \quad Create a new ideal given as a generator.\\
+  \quad 生成元により与えられた新しいイデアルを作成.\\
   \spacing
   % added document
   %\quad 
   %\spacing
   % input, output document
-  \quad \param{generator} is a list of instances in \linkingone{algfield}{BasicAlgNumber}, which represent generators, over a same number field.
+  \quad \param{generator}は同じ数体上の生成元を表す\linkingone{algfield}{BasicAlgNumber}のインスタンスのリスト.
   \begin{at}
-  \item[generator]\linkedtwo{module}{Ideal\_with\_generator}{generator}: generators of the ideal
-  \item[number\_field]\linkedtwo{module}{Ideal\_with\_generator}{number\_field}: the number field over which generators are defined
+  \item[generator]\linkedtwo{module}{Ideal\_with\_generator}{generator}: イデアルの生成元
+  \item[number\_field]\linkedtwo{module}{Ideal\_with\_generator}{number\_field}: 生成元が定義された数体
   \end{at}
 \begin{op}
-    \verb+M==N+ & Return whether \param{M} and \param{N} are equal or not as module.\\
-    \verb+c in M+ & Check whether some element of \param{M} equals \param{c}.\\
-    \verb|M+N| & Return the sum of \param{M} and \param{N} as ideal with generators.\\
-    \verb+M*N+ & Return the product of \param{M} and \param{N} as ideal with generators. \\
-    \verb+M**c+ & Return \param{M} to \param{c} based on the ideal multiplication.\\
-    \verb+repr(M)+ & Return the repr string of the ideal \param{M}.\\
-    \verb+str(M)+ & Return the str string of the ideal \param{M}.\\
+    \verb+M==N+ & \param{M}と\param{N}が加群として等しいかどうか返す.\\
+    \verb+c in M+ & \param{M}のどれかの要素が\param{c}と等しいかどうか返す.\\
+    \verb|M+N| & \param{M}と\param{N}のイデアル生成元としての和を返す.\\
+    \verb+M*N+ & \param{M}と\param{N}のイデアル生成元としての積を返す. \\
+    \verb+M**c+ & イデアルの積を基にした\param{M}の\param{c}乗を返す.\\
+    \verb+repr(M)+ & イデアル\param{M}のrepr文字列を返す.\\
+    \verb+str(M)+ & イデアル\param{M}のstr文字列を返す.\\
   \end{op}
 \begin{ex}
 >>> F = algfield.NumberField([2,0,1])
@@ -559,99 +554,99 @@ BasicAlgNumber([[0L, 2L], 3], [2, 0, 1]), BasicAlgNumber([[-10L, 0L], 3], [2, 0,
 BasicAlgNumber([[0L, 1L], 2], [2, 0, 1]), BasicAlgNumber([[-2L, 0L], 1], [2, 0, 1])]
 \end{ex}%Don't indent!
 \method
-  \subsubsection{copy - create copy}\linkedtwo{module}{Ideal\_with\_generator}{copy}
+  \subsubsection{copy - コピーを作成}\linkedtwo{module}{Ideal\_with\_generator}{copy}
    \func{copy}{\param{self}}{\out{Ideal\_with\_generator}}\\
    \spacing
    % document of basic document
-   \quad Create copy of \param{self}.\\
+   \quad \param{self}のコピーを作成.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{to\_HNFRepresentation - change to ideal with HNF}\linkedtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}
+  \subsubsection{to\_HNFRepresentation - HNFイデアルに変換}\linkedtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}
    \func{to\_HNFRepresentation}{\param{self}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Transform \param{self} to the corresponding ideal as HNF(hermite normal form) representation.\\
+   \quad \param{self}をイデアルに対応したHNF(Hermite正規形)表現に変換.\\
    \spacing
    % added document
    %\quad
    %\spacing
    % input, output document
    %\quad
-  \subsubsection{twoElementRepresentation - Represent with two element}\linkedtwo{module}{Ideal\_with\_generator}{twoElementRepresentation}
+  \subsubsection{twoElementRepresentation - 二つの要素で表す}\linkedtwo{module}{Ideal\_with\_generator}{twoElementRepresentation}
    \func{twoElementRepresentation}{\param{self}}{\out{Ideal\_with\_generator}}\\
    \spacing
    % document of basic document
-   \quad Transform \param{self} to the corresponding ideal as HNF(hermite normal form) representation.\\
+   \quad \param{self}をイデアルに対応したHNF(Hermite正規形)表現に変換.\\
    \spacing
    % added document
-   \quad  If \param{self} is not a prime ideal, this method is not efficient.\\
+   \quad  \param{self}が素イデアルでなければ,このメソッドは効果がない.\\
    \spacing 
    % input, output document
    %\quad
-  \subsubsection{smallest\_rational - a $\mathbf{Z}$-generator in the rational field}\linkedtwo{module}{Ideal\_with\_generator}{smallest\_rational}
+  \subsubsection{smallest\_rational - 有理数体上の$\mathbf{Z}$生成元}\linkedtwo{module}{Ideal\_with\_generator}{smallest\_rational}
    \func{smallest\_rational}{\param{self}}{\out{rational.Rational}}\\
    \spacing
    % document of basic document
-   \quad Return the $\mathbf{Z}$-generator of intersection of the module \param{self} and the rational field.\\
+   \quad 加群\param{self}と有理数体の共通部分の$\mathbf{Z}$生成元を返す.\\
    \spacing
    % added document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % input, output document
    %\quad
-\subsubsection{inverse -- inverse}\linkedtwo{module}{Ideal\_with\_generator}{inverse}
+\subsubsection{inverse -- 逆元}\linkedtwo{module}{Ideal\_with\_generator}{inverse}
    \func{inverse}{\param{self}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Return the inverse ideal of \param{self}.\\
+   \quad \param{self}の逆イデアルを返す.\\
    \spacing
    % added document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{norm -- norm}\linkedtwo{module}{Ideal\_with\_generator}{norm}
+  \subsubsection{norm -- ノルム}\linkedtwo{module}{Ideal\_with\_generator}{norm}
    \func{norm}{\param{self}}{\out{rational.Rational}}\\
    \spacing
    % document of basic document
-   \quad Return the norm of \param{self}.\\
+   \quad \param{self}のノルムを返す.\\
    \spacing
    % added document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{intersect - intersection}\linkedtwo{module}{Ideal\_with\_generator}{intersection}
+  \subsubsection{intersect - 共通部分}\linkedtwo{module}{Ideal\_with\_generator}{intersection}
    \func{intersect}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Return intersection of \param{self} and \param{other}.\\
+   \quad \param{self}と\param{other}の共通部分を返す.\\
    \spacing
    % added document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % input, output document
    %\quad
- \subsubsection{issubideal -- Check subideal}\linkedtwo{module}{Ideal\_with\_generator}{issubideal}
+ \subsubsection{issubideal -- 部分イデアルかどうか}\linkedtwo{module}{Ideal\_with\_generator}{issubideal}
    \func{issubideal}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad Check \param{self} is subideal of \param{other}.\\
+   \quad \param{self}が\param{other}の部分イデアルかどうか返す.\\
    \spacing
    % added document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % input, output document
    %\quad \\
-  \subsubsection{issuperideal -- Check superideal}\linkedtwo{module}{Ideal\_with\_generator}{issuoerideal}
+  \subsubsection{issuperideal -- 部分イデアルかどうか}\linkedtwo{module}{Ideal\_with\_generator}{issuoerideal}
    \func{issuperideal}{\param{self},\ \hiki{other}{Ideal\_with\_generator}}{\out{Ideal}}\\
    \spacing
    % document of basic document
-   \quad This method calls \linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}.\\
+   \quad このメソッドは\linkingtwo{module}{Ideal\_with\_generator}{to\_HNFRepresentation}を呼び出す.\\
    \spacing
    % added document
    %\quad 

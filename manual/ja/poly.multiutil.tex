@@ -3,7 +3,7 @@
 \input{../header_class}
 
 %---------- start document ---------- %
- \section{poly.multiutil -- utilities for multivariate polynomials}\linkedzero{poly.multiutil}
+ \section{poly.multiutil -- 多変数多項式に対するユーティリティ}\linkedzero{poly.multiutil}
  \begin{itemize}
    \item {\bf Classes}
      \begin{itemize}
@@ -25,7 +25,7 @@
 \C
 
  \subsection{RingPolynomial}\linkedone{poly.multiutil}{RingPolynomial}
- General polynomial with commutative ring coefficients.
+ 可換環係数を持つ一般の多項式.
 
  \initialize
    \func{RingPolynomial}{%
@@ -33,173 +33,151 @@
     **\hiki{keywords}{dict}}{\out{RingPolynomial}}\\
   \spacing
   % document of basic document
-  \quad The \param{keywords} must include:
+  \quad \param{keywords}は以下を含まなければならない:
   \begin{description}
-  \item[coeffring] a commutative ring ({\it CommutativeRing})
-  \item[number\_of\_variables] the number of variables({\it integer})
-  \item[order] term order ({\it TermOrder})
+  \item[coeffring] 可換環({\it CommutativeRing})
+  \item[number\_of\_variables] 変数の数({\it integer})
+  \item[order] 項順序({\it TermOrder})
   \end{description}
-  \quad This class inherits \linkingone{poly.multivar}{BasicPolynomial},
+  \quad このクラスは\linkingone{poly.multivar}{BasicPolynomial},
   \linkingone{poly.multiutil}{OrderProvider},
   \linkingone{poly.multiutil}{NestProvider} and
-  \linkingone{poly.multiutil}{RingElementProvider}.
+  \linkingone{poly.multiutil}{RingElementProvider}を継承する.
 %
   \begin{at}
     \item[order]\linkedtwo{poly.multiutil}{RingPolynomial}{order}:\\
-      term order.
+      項順序.
   \end{at}
 %
   \method
   \subsubsection{getRing}\linkedtwo{poly.multiutil}{RingPolynomial}{getRing}
   \func{getRing}{\param{self}}{\out{Ring}}\\
   \spacing
-  \quad Return an object of a subclass of {\tt Ring},
-  to which the polynomial belongs.\\
-  (This method overrides the definition in RingElementProvider)
+  \quad 多項式が所属する{\tt Ring}のサブクラスのオブジェクトを返す.\\
+  (このメソッドはRingElementProvider内の定義をオーバーライドする)
 
   \subsubsection{getCoefficientRing}\linkedtwo{poly.multiutil}{RingPolynomial}{getCoefficientRing}
   \func{getCoefficientRing}{\param{self}}{\out{Ring}}\\
   \spacing
-  \quad Return an object of a subclass of {\tt Ring},
-  to which the all coefficients belong.\\
-  (This method overrides the definition in RingElementProvider)
+  \quad すべての係数が所属する{\tt Ring}のサブクラスのオブジェクトを返す.\\
+  (このメソッドはRingElementProvider内の定義をオーバーライドする)
 
   \subsubsection{leading\_variable}\linkedtwo{poly.multiutil}{RingPolynomial}{leading\_variable}
   \func{leading\_variable}{\param{self}}{\out{integer}}\\
   \spacing
-  \quad Return the position of the leading variable
-  (the leading term among all total degree one terms).\\
-  The leading term varies with term orders, so does the result. The
-  term order can be specified via the attribute {\tt order}.\\
-  (This method is inherited from NestProvider)
+  \quad 主変数(全ての全次数が1の項の中での主項)の位置を返す.\\
+  主項は結果として項順序に変化する.項順序は属性{\tt order}によって指定される.\\
+  (このメソッドはNestProviderから継承される)
 
   \subsubsection{nest}\linkedtwo{poly.multiutil}{RingPolynomial}{nest}
   \func{nest}{\param{self},\ \hiki{outer}{integer},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
   \spacing
-  \quad Nest the polynomial by extracting \param{outer} variable
-  at the given position.\\
-  (This method is inherited from NestProvider)
+  \quad 与えられた位置の変数\param{outer}を引き出すことにより多項式をネスト.\\
+  (このメソッドはNestProviderから継承される)
 
   \subsubsection{unnest}\linkedtwo{poly.multiutil}{RingPolynomial}{unnest}
   \func{nest}{\param{self},\ \hiki{q}{polynomial},\ \hiki{outer}{integer},\ \hiki{coeffring}{CommutativeRing}}{\out{polynomial}}\\
   \spacing
-  \quad Unnest the nested polynomial \param{q} by inserting \param{outer}
-  variable at the given position.\\
-  (This method is inherited from NestProvider)
+  \quad 与えられた位置の変数\param{outer}を挿入することによりネストされた多項式\param{q}をアンネストします.\\
+  (このメソッドはNestProviderから継承されます)
 
  \subsection{DomainPolynomial}\linkedone{poly.multiutil}{DomainPolynomial}
- Polynomial with domain coefficients.
+ 整域の係数を持つ多項式.
  \initialize
    \func{DomainPolynomial}{%
     \hiki{coefficients}{terminit},\ %
     **\hiki{keywords}{dict}}{\out{DomainPolynomial}}\\
   \spacing
   % document of basic document
-  \quad The \param{keywords} must include:
+  \quad \param{keywords}は以下を含まなければならない:
   \begin{description}
-  \item[coeffring] a commutative ring ({\it CommutativeRing})
-  \item[number\_of\_variables] the number of variables({\it integer})
-  \item[order] term order ({\it TermOrder})
+  \item[coeffring] 可換環({\it CommutativeRing})
+  \item[number\_of\_variables] 変数の数({\it integer})
+  \item[order] 項順序({\it TermOrder})
   \end{description}
-  \quad This class inherits \linkingone{poly.multiutil}{RingPolynomial} and
-  \linkingone{poly.multiutil}{PseudoDivisionProvider}.
+  \quad このクラスは\linkingone{poly.multiutil}{RingPolynomial}と\linkingone{poly.multiutil}{PseudoDivisionProvider}を継承する.
 %
   \begin{op}
-    \verb+f / g+ & division (result is a rational function)\\
+    \verb+f / g+ & 除算(結果は有理関数)\\
   \end{op}
   \method
 
   \subsubsection{pseudo\_divmod}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_divmod}
   \func{pseudo\_divmod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return \(Q\), \(R\) polynomials such that:
+  \quad 以下となる多項式\(Q\), \(R\) を返す:
   \[d^{deg(self) - deg(other) + 1} self = other \times Q + R\]
-  w.r.t. a fixed variable, where \(d\) is the leading coefficient of 
-  \param{other}.\\
-  \quad The leading coefficient varies with term orders,
-  so does the result. The term order can be specified via
-  the attribute {\tt order}.\\
-  (This method is inherited from PseudoDivisionProvider.)
+  固定値として\param{other}の主係数である\(d\).\\
+  \quad 結果として主係数は項の係数に変わる. 項順序は属性{\tt order}によって指定される.\\
+  (このメソッドはPseudoDivisionProviderから継承される.)
 
   \subsubsection{pseudo\_floordiv}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_floordiv}
   \func{pseudo\_floordiv}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return a polynomial \(Q\) such that
+  \quad 以下となる多項式\(Q\) を返す:
   \[d^{deg(self) - deg(other) + 1} self = other \times Q + R\]
-  w.r.t. a fixed variable, where \(d\) is the leading coefficient of 
-  \param{other} and \(R\) is a polynomial.\\
+  固定値として\param{other}の主係数\(d\) と 多項式\(R\).\\
 
-  The leading coefficient varies with term orders, so does the result.
-  The term order can be specified via the attribute {\tt order}.\\
-  (This method is inherited from PseudoDivisionProvider.)
+  結果として主係数は項順序に変わる.
+  項順序は属性{\tt order}によって指定される.\\
+  (このメソッドはPseudoDivisionProviderから継承される.)
 
   \subsubsection{pseudo\_mod}\linkedtwo{poly.multiutil}{DomainPolynomial}{pseudo\_mod}
   \func{pseudo\_mod}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
-  \quad Return a polynomial \(R\) such that
+  \quad 以下となる多項式\(R\) を返す:
   \[ d^{deg(self) - deg(other) + 1} \times self = other \times Q + R\]
-  where \(d\) is the leading coefficient of \param{other} and \(Q\)
-  a polynomial.\\
-  \quad The leading coefficient varies with term orders,
-  so does the result. The term order can be specified via
-  the attribute {\tt order}.\\
-  (This method is inherited from PseudoDivisionProvider.)
+  \(d\) は \param{other}の主係数で\(Q\) は多項式.\\
+  \quad 結果として主係数は項の位数に変わる.項順序は属性{\tt order}によって指定される.\\
+  (このメソッドはPseudoDivisionProviderから継承される.)
 
   \subsubsection{exact\_division}\linkedtwo{poly.multiutil}{DomainPolynomial}{exact\_division}
   \func{exact\_division}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
   \spacing
-  \quad Return quotient of exact division.\\
-  (This method is inherited from PseudoDivisionProvider.)
+  \quad (割り切れるときのみ)除算で商を返す.\\
+  (このメソッドはPseudoDivisionProviderから継承される.)
 
  \subsection{UniqueFactorizationDomainPolynomial}\linkedone{poly.multiutil}{UniqueFactorizationDomainPolynomial}
- Polynomial with unique factorization domain (UFD) coefficients.
+ 一意分解聖域(UFD)係数を持つ多項式.
  \initialize
    \func{UniqueFactorizationDomainPolynomial}{%
     \hiki{coefficients}{terminit},\ %
     **\hiki{keywords}{dict}}{\out{UniqueFactorizationDomainPolynomial}}\\
   \spacing
   % document of basic document
-  \quad The \param{keywords} must include:
+  \quad \param{keywords}は以下を含まなければならない:
   \begin{description}
-  \item[coeffring] a commutative ring ({\it CommutativeRing})
-  \item[number\_of\_variables] the number of variables({\it integer})
-  \item[order] term order ({\it TermOrder})
+  \item[coeffring] 可換環({\it CommutativeRing})
+  \item[number\_of\_variables] 変数の数({\it integer})
+  \item[order] 項順序({\it TermOrder})
   \end{description}
-  \quad This class inherits \linkingone{poly.multiutil}{DomainPolynomial} and
-  \linkingone{poly.multiutil}{GcdProvider}.
+  \quad このクラスは\linkingone{poly.multiutil}{DomainPolynomial}と\linkingone{poly.multiutil}{GcdProvider}を継承する.
   \method
   \subsubsection{gcd}\linkedtwo{poly.multiutil}{UniqueFactorizationDomainPolynomial}{gcd}
   \func{gcd}{\param{self},\ \hiki{other}{polynomial}}{\out{polynomial}}\\
-  \quad Return gcd. The nested polynomials' gcd is used.\\
-  (This method is inherited from GcdProvider.)
+  \quad gcdを返す.ネストされた多項式のgcdが使われる.\\
+  (このメソッドはGcdProviderから継承される.)
 
   \subsubsection{resultant}\linkedtwo{poly.multiutil}{UniqueFactorizationDomainPolynomial}{resultant}
   \func{resultant}{\param{self},\ \hiki{other}{polynomial},\ \hiki{var}{integer}}{\out{polynomial}}\\
-  \quad Return resultant of two polynomials of the same ring,
-  with respect to the variable specified by its position \param{var}.
+  \quad その位置\param{var}によって指定された変数についての,同じ環上の二つの多項式の終結式を返す.
 
 % Functions
- \subsection{polynomial -- factory function for various polynomials}\linkedone{poly.multiutil}{polynomial}
+ \subsection{polynomial -- さまざまな多項式に対するファクトリ関数}\linkedone{poly.multiutil}{polynomial}
   \func{polynomial}{\hiki{coefficients}{terminit},\ \hiki{coeffring}{CommutativeRing}, \hikiopt{number\_of\_variables}{integer}{None}}{\out{polynomial}}\\
    \spacing
    % document of basic document
-   \quad Return a polynomial.\\
+   \quad 多項式を返す.\\
    \spacing
-   \quad \negok One can override the way to choose a polynomial type
-   from a coefficient ring, by setting:\\
-   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\
-   before the function call.
+   \quad \negok 関数が呼ばれる前に次の設定をすることにより,係数環から多項式の型を選ぶ方法をオーバーライドできる:\\
+   {\tt special\_ring\_table[coeffring\_type] = polynomial\_type}\\.
 
- \subsection{prepare\_indeterminates -- simultaneous declarations of indeterminates}\linkedone{poly.multiutil}{prepare\_indeterminates}
+ \subsection{prepare\_indeterminates -- 不定元連立宣言}\linkedone{poly.multiutil}{prepare\_indeterminates}
  \func{prepare\_indeterminates}{\hiki{names}{string},\ \hiki{ctx}{dict},\ %
    \hikiopt{coeffring}{CoefficientRing}{None}}{\out{None}}\\
  \spacing
- \quad From space separated \param{names} of indeterminates, prepare variables
- representing the indeterminates.  The result will be stored in \param{ctx}
- dictionary.\\
- \quad The variables should be prepared at once, otherwise wrong aliases of
- variables may confuse you in later calculation.\\
- \quad If an optional \param{coeffring} is not given, indeterminates will be
- initialized as integer coefficient polynomials.\\
+ \quad 不定元な\param{names}によって分けられた空間から,不定元を表す変数を用意する.  結果は辞書\param{ctx}に格納される.\\
+ \quad 変数はすぐに用意されるべきである,さもなくば間違った変数のエイリアスが計算を遅くし混乱させるだろう.\\
+ \quad もし任意引数の\param{coeffring}が与えられなければ,不定元は整数係数多項式として初期化される.\\
 
 \begin{ex}
 >>> prepare_indeterminates("X Y Z", globals())
