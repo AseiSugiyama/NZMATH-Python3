@@ -25,8 +25,7 @@ def primePowerTest(n):
                 d = gcd.gcd(pow(a,q,q) - a, q)
                 if d == 1 or d == q:
                     return (n, 0)
-                else:
-                    q = d
+                q = d
             else:
                 p = q
                 break
