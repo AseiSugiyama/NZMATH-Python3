@@ -15,7 +15,7 @@ def primePowerTest(n):
     If it is True, then (p,k) will be returned,
     otherwise (n,0).
     """
-    if n % 2 == 1:
+    if n & 1:
         q = n
         while True:
             if not prime.primeq(q):
