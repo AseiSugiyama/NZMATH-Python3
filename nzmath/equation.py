@@ -54,7 +54,7 @@ def e2(x):
     0 = x[0] + x[1]*t + x[2]*t**2
     """
     c, b, a = x
-    d = b**2 - 4*a*c 
+    d = b**2 - 4*a*c
     if d >= 0:
         sqrtd = math.sqrt(d)
     else:
@@ -261,7 +261,7 @@ def root_Fp(g, p, flag=True):
     deg_g = g.degree()
     if g[0] == 0:
         deg_g = deg_g - 1
-        g = g.shift_degree_to(deg_g) 
+        g = g.shift_degree_to(deg_g)
     while True:
         if deg_g == 0:
             return None
@@ -272,7 +272,7 @@ def root_Fp(g, p, flag=True):
             e = arith1.modsqrt(d.toInteger(), p)
             return ((-g[1]-e)/(2*g[2])).toInteger()
         deg_h = 0
-        x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+        x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)>>1:1}, Fp)
         if flag:
             a = 0
             while deg_h == 0 or deg_h == deg_g:
@@ -325,7 +325,7 @@ def roots_loop(g, deg_g, p, Fp):
         g2 = 2*g[2]
         return [((g1 - e) / g2).toInteger(), ((g1 + e) / g2).toInteger()]
     deg_h = 0
-    x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)//2:1}, Fp)
+    x = uniutil.FinitePrimeFieldPolynomial({0:-1, (p-1)>>1:1}, Fp)
     a = 0
     while deg_h == 0 or deg_h == deg_g:
         b = uniutil.FinitePrimeFieldPolynomial({0:-a, 1:1}, Fp)

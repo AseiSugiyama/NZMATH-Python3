@@ -221,7 +221,7 @@ class MPQS(object):
             for i in [3,5,7,11,13]:
                 s = arith1.legendre(self.number, i)
                 self.sqrt_state.append(s)
-            index8 = (self.number & 7) // 2
+            index8 = (self.number & 7) >> 1
             j = 0
             while self.sqrt_state != prime_8[index8][j][1]:
                 j += 1
@@ -288,7 +288,7 @@ class MPQS(object):
               arith1.legendre(self.number,d) != 1 or d in self.FB:
             d += 4
         a = d**2
-        h_0 = pow(self.number, (d-3)//4, d)
+        h_0 = pow(self.number, (d-3) >> 2, d)
         h_1 = (h_0*self.number) % d
         h_2 = ((arith1.inverse(2,d)*h_0*(self.number - h_1**2))//d) % d
         b = (h_1 + h_2*d) % a
@@ -667,7 +667,7 @@ def eratosthenes(n):
         raise ValueError("Input value must be bigger than 1")
     else:
         primes = [2]
-        sieves = [1]*(((n+1)//2)-1)
+        sieves = [1] * (((n+1) >> 1) - 1)
         k = 3
         i = 0
         sieves_len = len(sieves)
@@ -717,7 +717,7 @@ def sqrt_modn(n, modulo):
     factorOfN = methods.trialDivision(n)
     prod = 1
     for p, e in factorOfN:
-        prod = (prod * pow(p, e//2, modulo)) % modulo
+        prod = (prod * pow(p, e >> 1, modulo)) % modulo
     return prod
 
 def sqroot_power(a, p, n):

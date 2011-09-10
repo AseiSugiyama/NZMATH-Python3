@@ -212,7 +212,7 @@ def class_number(disc, limit_of_disc=100000000):
     c_b = int(math.sqrt(-disc / 3))
 
     while b <= c_b:
-        q = (b**2 - disc) // 4
+        q = (b**2 - disc) >> 2
         a = b
         if a <= 1:
             a = 2
@@ -246,15 +246,15 @@ def class_group(disc, limit_of_disc=100000000):
     f_a = 1
     if disc & 3 == 0:
         f_b = 0
-        f_c = -(disc // 4)
+        f_c = -(disc >> 2)
     else:
         f_b = 1
-        f_c = -((disc - 1) // 4)
+        f_c = -((disc - 1) >> 2)
     unit = (f_a, f_b, f_c)
     ret_list.append(ReducedQuadraticForm(unit, unit))
 
     while b <= c_b:
-        q = (b**2 - disc) // 4
+        q = (b**2 - disc) >> 2
         a = b
         if a <= 1:
             a = 2
@@ -299,7 +299,7 @@ def class_number_bsgs(disc):
 
     lx = max(arith1.floorpowerroot(abs(disc), 5), 500 * (math.log(abs(disc)))**2)
     uprbd = int(class_formula(disc, int(lx)) * 3 / 2)
-    lwrbd = uprbd // 2 + 1
+    lwrbd = (uprbd >> 1) + 1
     bounds = [lwrbd, uprbd]
 
     # get the unit
@@ -356,7 +356,7 @@ def class_group_bsgs(disc, classnum, qin):
     # compute bounds
     qpt = qin[0] ** qin[1]
     uprbd = qpt + 1
-    lwrbd = uprbd // 2 + 1
+    lwrbd = (uprbd >> 1) + 1
     if lwrbd > uprbd:
         raise TypeError("lower bound needs to be less than upper bound")
     if lwrbd <= (uprbd / 2):
@@ -494,9 +494,9 @@ def reducePDF(f):
         q = f_2 // (2*f_1)
         r = f_2 - q*(2*f_1)
         if r > f_1:
-            r = r - 2*f_1
-            q = q + 1
-        f_3 = f_3 - ((f_2 + r)//2)*q
+            r -= 2*f_1
+            q += 1
+        f_3 -= ((f_2 + r)>>1)*q
         f_2 = r
         if f_1 > f_3:
             f_2 = -f_2
@@ -528,7 +528,7 @@ def sqrPDF(f):
 
     if z == 0:
         g = (lb * v_3 + f[2]) // d
-        a_2 = d**2
+        a_2 = d ** 2
         c_2 = v_3 ** 2
         b_2 = f[1] + (d + v_3)**2 - a_2 - c_2
         c_2 = c_2 + g * d_1
@@ -574,7 +574,7 @@ def powPDF(f, exp, ut=None):
     while True:
         if (lexp & 1) == 1:
             sy = compositePDF(sz, sy)
-        lexp = lexp // 2
+        lexp >>= 1
         if lexp == 0:
             return sy
         else:
@@ -595,7 +595,7 @@ def compositePDF(f_1, f_2):
     if f_1[0] > f_2[0]:
         f_1, f_2 = f_2, f_1
 
-    s = (f_1[1] + f_2[1]) // 2
+    s = (f_1[1] + f_2[1]) >> 1
     n = f_2[1] - s
 
     if f_2[0] % f_1[0] == 0:
@@ -794,7 +794,7 @@ def isfundamental(disc):
         spt //= 2
         if spt != 1:
             return False
-        discof = (disc // 4) & 3
+        discof = (disc >> 2) & 3
         return discof == 2 or discof == 3
     return False
 

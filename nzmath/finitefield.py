@@ -96,7 +96,7 @@ class FiniteField(ring.Field):
         # generic method:successive squaring
         # generalized Legendre symbol definition:
         #    (self/_ring) := self ** ((card(_ring)-1)/2)
-        x = element ** ((card(self)-1) // 2)
+        x = element ** ((card(self)-1) >> 1)
         if x == self.one:
             return 1
         elif x == -self.one:
@@ -122,7 +122,7 @@ class FiniteField(ring.Field):
             n = self.random_element(2, card(self)) # field maybe large
         y = z = n ** q
         r = e
-        x = a ** ((q-1) // 2)
+        x = a ** ((q-1) >> 1)
         b = a * (x ** 2)
         x = a * x
         while True:
@@ -150,7 +150,7 @@ class FiniteField(ring.Field):
 
         # element of characteristic 2 always exist square root
         if  self.char == 2:
-            return element ** ((card(self)) // 2)
+            return element ** ((card(self)) >> 1)
 
         # otherwise,
         return self.TonelliShanks(element)
