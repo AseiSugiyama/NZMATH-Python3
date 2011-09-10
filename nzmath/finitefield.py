@@ -646,7 +646,7 @@ class ExtendedField(FiniteField):
         cardinality = char ** degree
         basefield = FinitePrimeField.getInstance(char)
         const = basefield.primitive_element()
-        if degree % 2:
+        if degree & 1:
             const = -const
         cand = uniutil.polynomial({0:const, degree:basefield.one}, basefield)
         maxorder = factor_misc.FactoredInteger((cardinality - 1) // (char - 1))

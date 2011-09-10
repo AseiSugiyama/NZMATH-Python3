@@ -218,7 +218,7 @@ class FactoredInteger(object):
         """
         result = FactoredInteger(1, {})
         for d, e in self.factors.iteritems():
-            if e % 2:
+            if e & 1:
                 result *= FactoredInteger(d, {d:1})
         if asfactored:
             return result

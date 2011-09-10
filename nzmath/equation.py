@@ -71,9 +71,9 @@ def e2_Fp(x, p):
         return [e1_ZnZ([c, b], p)]
     if p == 2:
         solutions = []
-        if x[0] % 2 == 0:
+        if x[0] & 1 == 0:
             solutions.append(0)
-        if (x[0] + x[1] + x[2]) % 2 == 0:
+        if (x[0] + x[1] + x[2]) & 1 == 0:
             solutions.append(1)
         if len(solutions) == 1:
             return solutions * 2

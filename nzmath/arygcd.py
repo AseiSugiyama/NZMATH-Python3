@@ -108,7 +108,7 @@ def _FormAdj_i(a, b):
     """
     transform gaussInteger a+b*i ->  form 1+2(1+i)*(x+y*i)
     """
-    if a % 2 == 0:
+    if a & 1 == 0:
         a, b = -b, a
     if (b - a + 1) % 4 == 0:
         return a, b

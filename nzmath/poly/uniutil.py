@@ -193,7 +193,7 @@ class DivisionProvider(object):
         if index:
             power_of_2 = polynom
             while index:
-                if index % 2 == 1:
+                if index & 1:
                     power_product = self.mod(power_product * power_of_2)
                 power_of_2 = self.mod(power_of_2.square())
                 index //= 2
@@ -699,7 +699,7 @@ class SubresultantGcdProvider(object):
 
     def subresultant_extgcd(self, other):
         """
-        Return (A, B, P) s.t. A*self+B*other=P, 
+        Return (A, B, P) s.t. A*self+B*other=P,
         where P is the greatest common divisor of given polynomials.
         They must be in the polynomial ring and its coefficient ring must
         be a UFD.
@@ -785,7 +785,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         if index:
             power_of_2 = powered
             while index:
-                if index % 2 == 1:
+                if index & 1:
                     power_product *= power_of_2
                 power_of_2 = power_of_2.square()
                 index //= 2
@@ -827,7 +827,7 @@ class PrimeCharacteristicFunctionsProvider(object):
         if index > 0:
             power_of_2 = polynom
             while index:
-                if index % 2 == 1:
+                if index & 1:
                     power_product = self.mod(power_product * power_of_2)
                     if index == 1:
                         break
@@ -1374,7 +1374,7 @@ class IntegerPolynomial(UniqueFactorizationDomainPolynomial):
     def normalize(self):
         """
         returns the unique normalized polynomial g
-        which is associate to self (so g=u*self for some unit in coeffring). 
+        which is associate to self (so g=u*self for some unit in coeffring).
         For IntegerPolynomial, g is positive.
         """
         if self.leading_coefficient() < 0:

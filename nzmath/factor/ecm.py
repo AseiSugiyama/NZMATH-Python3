@@ -202,7 +202,7 @@ def ecm(n, curve_type=A1, incs=3, trials=20, **options):
         return n
     if _gcd.gcd(n, 6) != 1: 
         _log.info("%d is not coprime to 6!" % n)
-        if n % 2 == 0:
+        if n & 1 == 0:
             return 2
         if n % 3 == 0:
             return 3

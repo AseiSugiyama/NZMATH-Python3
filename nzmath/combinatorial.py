@@ -185,7 +185,7 @@ def stirling1(n, m):
     elif m == 0:
         return 0
     elif m == 1:
-        if n % 2:
+        if n & 1:
             sign = 1
         else:
             sign = -1
@@ -490,7 +490,7 @@ class OddPartitionDriver(PartitionDriver):
         """
         if self.partition and self.rest >= self.partition[-1]:
             part = self.partition[-1]
-        elif self.rest % 2:
+        elif self.rest & 1:
             part = self.rest
         else:
             part = self.rest - 1
@@ -519,7 +519,7 @@ class OddMaximumPartitionDriver(LimitedMaximumPartitionDriver, OddPartitionDrive
           integer: the number to be partitioned
           limit: the maximum of parts
         """
-        if not (limit % 2):
+        if not (limit & 1):
             limit -= 1
         LimitedMaximumPartitionDriver.set_parameters(self, integer, limit)
 
@@ -531,7 +531,7 @@ class OddMaximumPartitionDriver(LimitedMaximumPartitionDriver, OddPartitionDrive
             part = self.partition[-1]
         elif self.rest >= self.limit:
             part = self.limit
-        elif self.rest % 2:
+        elif self.rest & 1:
             part = self.rest
         else:
             part = self.rest - 1

@@ -76,7 +76,7 @@ def _prepare_squarefactors(disc):
             else:
                 fund_disc *= p
     if fund_disc % 4 == 1:
-        if v2 % 2:
+        if v2 & 1:
             squareness, oddity = divmod(v2, 2)
             squarefactors.append((2, squareness))
             if oddity:

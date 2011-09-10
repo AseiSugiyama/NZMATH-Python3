@@ -133,7 +133,7 @@ class NumberField (ring.Field):
             g = 1
             h = 1
             pos_at_inf = A.leading_coefficient() > 0
-            pos_at_neg = pos_at_inf == (degree % 2)
+            pos_at_neg = pos_at_inf == (degree & 1)
             r_1 = 1
     
             #Step 2.
@@ -142,7 +142,7 @@ class NumberField (ring.Field):
                 residue = A.pseudo_mod(B)
                 if not residue:
                     raise ValueError("not squarefree")
-                if B.leading_coefficient() > 0 or deg % 2:
+                if B.leading_coefficient() > 0 or deg & 1:
                     residue = - residue
                 #Step 3.
                 degree_res = residue.degree()
@@ -152,7 +152,7 @@ class NumberField (ring.Field):
                     pos_at_inf = not pos_at_inf
                     r_1 -= 1
     
-                if pos_at_inf_of_res != (pos_at_neg == (degree_res % 2 == 0)):
+                if pos_at_inf_of_res != (pos_at_neg == (degree_res & 1 == 0)):
                     pos_at_neg = not pos_at_neg
                     r_1 += 1
     

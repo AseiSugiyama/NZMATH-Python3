@@ -61,9 +61,9 @@ class ReducedQuadraticForm(object):
             return False
 
     def __hash__(self):
-        val = sum([hash(ele) for ele in self.element]) 
+        val = sum([hash(ele) for ele in self.element])
         val += sum([hash(ele) for ele in self.unit])
-        return val 
+        return val
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -208,7 +208,7 @@ def class_number(disc, limit_of_disc=100000000):
         warnings.warn("the discriminant seems to have too big absolute value")
 
     h = 1
-    b = disc % 2
+    b = disc & 1
     c_b = int(math.sqrt(-disc / 3))
 
     while b <= c_b:
@@ -239,7 +239,7 @@ def class_group(disc, limit_of_disc=100000000):
         warnings.warn("the discriminant seems to have too big absolute value")
 
     h = 1
-    b = disc % 2
+    b = disc & 1
     c_b = int(math.sqrt(-disc / 3))
 
     ret_list = []
@@ -572,7 +572,7 @@ def powPDF(f, exp, ut=None):
     # Right-Left Binary algorithm
     sy = ut
     while True:
-        if (lexp % 2) == 1:
+        if (lexp & 1) == 1:
             sy = compositePDF(sz, sy)
         lexp = lexp // 2
         if lexp == 0:
@@ -650,11 +650,11 @@ def kronecker(a, b):
             return 0
         if abs(a) == 1:
             return 1
-    if a % 2 == 0 and b % 2 == 0:
+    if a & 1 == 0 and b & 1 == 0:
         return 0
 
     v, b = arith1.vp(b, 2)
-    if v % 2 == 0:
+    if v & 1 == 0:
         k = 1
     else:
         k = tab2[a & 7]
@@ -664,7 +664,7 @@ def kronecker(a, b):
             k = -k
     while a:
         v, a = arith1.vp(a, 2)
-        if v % 2 == 1:
+        if v & 1:
             k *= tab2[b & 7]
         if a & b & 2:
             # both a and b are 3 mod 4
@@ -848,7 +848,7 @@ def parteucl(a, b, sogsp):
             v_3 = t_3
             z = z + 1
         else:
-            if z % 2 != 0:
+            if z & 1:
                 v_2 = -v_2
                 v_3 = -v_3
             return (v_2, v_3, z, d, v)
@@ -871,7 +871,7 @@ def isfinished_bsgscv(n, sossp, sogsp, nt, lpt, qpt, disc, classnum, indofg):
         return False, sossp, sogsp
     else:
         tpsq = misc.primePowerTest(n)
-        if (tpsq[1] != 0) and ((tpsq[1] % 2) == 0):
+        if (tpsq[1] != 0) and ((tpsq[1] & 1) == 0):
             q = arith1.floorsqrt(n)
         else:
             q = arith1.floorsqrt(n) + 1
@@ -972,7 +972,7 @@ def babyspcv(bounds, sossp, sogsp, utwi, nt, disc, classnum):
     else:
         tppm = misc.primePowerTest(mstp1)
         q = arith1.floorsqrt(mstp1)
-        if (tppm[1] == 0) or (tppm[1] % 2):
+        if (tppm[1] == 0) or (tppm[1] & 1):
             q += 1
 
     n_should_be_set = True

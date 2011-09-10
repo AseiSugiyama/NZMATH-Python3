@@ -105,7 +105,7 @@ class QS(object):
             j += 1
         self.start_location = start_location
 
-        if self.poly_table[0] % 2 == 0:
+        if self.poly_table[0] & 1 == 0:
             i = 0
             while i <= 2*M:
                 j = 1
@@ -160,7 +160,7 @@ class QS(object):
                         r = 0
                         while poly_val % (p**(r+1)) == 0:
                             r += 1
-                        v = r % 2
+                        v = r & 1
                         index_vector.append(v)
                 smooth.append([index_vector, (poly_val, t+self.sqrt_n-M)])
         _log.info(" Sieve time is %f sec" % (time.time()-T))
@@ -273,7 +273,7 @@ class MPQS(object):
         T = time.time()
         if self.d_list == []:
             d = int(math.sqrt((math.sqrt(self.number)/(math.sqrt(2)*self.Srange))))
-            if d%2 == 0:
+            if d& 1 == 0:
                 if (d+1)%4 == 1: #case d=0 mod4
                     d += 3
                 else:
@@ -292,7 +292,7 @@ class MPQS(object):
         h_1 = (h_0*self.number) % d
         h_2 = ((arith1.inverse(2,d)*h_0*(self.number - h_1**2))//d) % d
         b = (h_1 + h_2*d) % a
-        if b%2 == 0:
+        if b& 1 == 0:
             b = b - a
 
         self.d_list.append(d)
@@ -362,7 +362,7 @@ class MPQS(object):
             j += 1
         self.start_location = start_location
 
-        i = self.poly_table[0] % 2
+        i = self.poly_table[0] & 1
         while i <= 2*M:
             j = 1
             while self.poly_table[i] % (2**(j+1)) == 0:
@@ -400,7 +400,7 @@ class MPQS(object):
                         r = 0
                         while poly_val % (p**(r+1)) == 0:
                             r += 1
-                        v = r % 2
+                        v = r & 1
                         index_vector.append(v)
                 smooth.append([index_vector, (poly_val, H)])
         self.sievingtime += time.time() - T

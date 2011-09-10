@@ -378,7 +378,7 @@ def _factor(n, bound=0):
     result is not proved to be a prime factorization.
     """
     factors = []
-    if not (n % 2):
+    if not (n & 1):
         v2, n = arith1.vp(n, 2)
         factors.append((2, v2))
     m = _calc_bound(n, bound)
@@ -502,7 +502,7 @@ class Zeta(object):
     def __pos__(self):
         m = self.size
         z_p = Zeta(m)
-        if m % 2 == 0:
+        if m & 1 == 0:
             mp = m//2
             for i in range(mp):
                 if self.z[i] > self.z[i+mp]:

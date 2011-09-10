@@ -502,7 +502,7 @@ class ExPermute:
         """
         sol = 1
         for x in self.data:
-            if len(x) % 2 == 0:
+            if len(x) & 1 == 0:
                 sol = -sol
         return sol
 

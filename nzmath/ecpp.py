@@ -301,7 +301,7 @@ def cornacchiamodify(d, p):
     if arith1.legendre(d, p) == -1:
         raise ValueError("no solution")
     x0 = arith1.modsqrt(d, p)
-    if (x0 - d) % 2 != 0:
+    if (x0 - d) & 1:
         x0 = p - x0
     a = 2 * p
     b = x0
@@ -505,7 +505,7 @@ def next_disc(d, absbound):
     for negdisc in bigrange.range(-d + 1, absbound):
         if negdisc % 16 not in negdisc_mod16:
             continue
-        if negdisc % 2 == 1 and not squarefree.trial_division(negdisc):
+        if negdisc & 1 and not squarefree.trial_division(negdisc):
             continue
         if arith1.issquare(negdisc):
             continue

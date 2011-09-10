@@ -108,7 +108,7 @@ def legendre(a, m):
     a = a % m
     symbol = 1
     while a != 0:
-        while a % 2 == 0:
+        while a & 1 == 0:
             a = a//2
             if m % 8 == 3 or m % 8 == 5:
                 symbol = -symbol
