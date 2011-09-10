@@ -869,7 +869,7 @@ class Status:
                 s = pow(sx_z[x], c//m, n) * s
             step = 8 - step
             x += step
-        r = r % 8
+        r = r & 7
         if r == 5 or r == 7:
             s = J.get(2, q).promote(m) * s
         s = +(s % n)

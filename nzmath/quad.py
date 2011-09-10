@@ -739,11 +739,11 @@ def sqroot(disc, p):
     'disc' is a quadratic residue mod 'p'.
     """
     if p == 2: # if 8 | disc => (disc / 8) = 0, 8 not | disc but 4 | disc => 2
-        if (disc % 8) == 0:
+        if (disc & 7) == 0:
             bp = disc
         elif (disc & 3) == 0: # 4 - 4 * odd % 8 => 0
             bp = 2
-        elif (disc % 8) == 1: # disc is odd and disc % 8 is 1
+        elif (disc & 7) == 1: # disc is odd and disc % 8 is 1
             bp = disc
         else: # disc is odd and disc & 3 is 1 => impossible (-5 / 2) = -1
             raise ValueError("disc is odd and disc & 3 is 1 => impossible (-5 / 2) = -1")

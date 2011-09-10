@@ -110,7 +110,7 @@ def legendre(a, m):
     while a != 0:
         while a & 1 == 0:
             a = a//2
-            if m % 8 == 3 or m % 8 == 5:
+            if m & 7 == 3 or m & 7 == 5:
                 symbol = -symbol
         a, m = m, a
         if a & 3 == 3 and m & 3 == 3:
@@ -127,17 +127,17 @@ def modsqrt(a, p):
     """
     symbol = legendre(a, p)
     if symbol == 1:
-        pmod8 = p % 8
+        pmod8 = p & 7
         if pmod8 != 1:
             a = a % p
             if pmod8 == 3 or pmod8 == 7:
                 x = pow(a, (p+1)//4, p)
-            else: # p%8==5
+            else: # p & 7==5
                 x = pow(a, (p+3)//8, p)
                 c = pow(x, 2, p)
                 if c != a:
                     x = (x * pow(2, (p-1)//4, p)) % p
-        else: #p%8==1
+        else: #p & 7==1
             d = 2
             while legendre(d, p) != -1:
                 d = random.randrange(3, p)
@@ -283,7 +283,7 @@ class _Issquare:
         the number is a square number, the function returns its square
         root.  Otherwise zero is returned.
         """
-        t = c % 64
+        t = c & 63
         if not self.q64[t]:
             return 0
         r = c % 45045  # 45045 = 63 * 65 * 11

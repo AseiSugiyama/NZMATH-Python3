@@ -221,7 +221,7 @@ class MPQS(object):
             for i in [3,5,7,11,13]:
                 s = arith1.legendre(self.number, i)
                 self.sqrt_state.append(s)
-            index8 = (self.number % 8) // 2
+            index8 = (self.number & 7) // 2
             j = 0
             while self.sqrt_state != prime_8[index8][j][1]:
                 j += 1
@@ -699,9 +699,9 @@ def prime_mod8(n):
     for p in primes:
         if p not in sp:
             leg = [arith1.legendre(p, q) for q in sp[1:]]
-            if leg not in PrimeList[p % 8]:
-                LegendreList[p % 8].append(leg)
-                PrimeList[p % 8].append([p, leg])
+            if leg not in PrimeList[p & 7]:
+                LegendreList[p & 7].append(leg)
+                PrimeList[p & 7].append([p, leg])
     return [PrimeList[1], PrimeList[3], PrimeList[5], PrimeList[7]]
 
 def eratosthenes_log(n):

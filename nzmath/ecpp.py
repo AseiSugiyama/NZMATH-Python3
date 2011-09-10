@@ -503,7 +503,7 @@ def next_disc(d, absbound):
     # -disc % 16
     negdisc_mod16 = (3, 4, 7, 8, 11, 15)
     for negdisc in bigrange.range(-d + 1, absbound):
-        if negdisc % 16 not in negdisc_mod16:
+        if negdisc & 15 not in negdisc_mod16:
             continue
         if negdisc & 1 and not squarefree.trial_division(negdisc):
             continue
