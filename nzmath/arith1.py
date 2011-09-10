@@ -13,13 +13,13 @@ def floorsqrt(a):
     """
     Return the floor of square root of the given integer.
     """
-    if a < 2 ** 59:
+    if a < (1 << 59):
         return int(math.sqrt(a))
     else:
         # Newton method
-        x = pow(10, log(a, 10)//2 + 1) # compute initial value
+        x = pow(10, (log(a, 10) >> 1) + 1) # compute initial value
         while True:
-            x_new = (x + a//x) // 2
+            x_new = (x + a//x) >> 1
             if x <= x_new:
                 return x
             x = x_new
@@ -109,7 +109,7 @@ def legendre(a, m):
     symbol = 1
     while a != 0:
         while a & 1 == 0:
-            a = a//2
+            a >>= 1
             if m & 7 == 3 or m & 7 == 5:
                 symbol = -symbol
         a, m = m, a
@@ -129,14 +129,14 @@ def modsqrt(a, p):
     if symbol == 1:
         pmod8 = p & 7
         if pmod8 != 1:
-            a = a % p
+            a %= p
             if pmod8 == 3 or pmod8 == 7:
-                x = pow(a, (p+1)//4, p)
+                x = pow(a, (p+1) >> 2, p)
             else: # p & 7==5
-                x = pow(a, (p+3)//8, p)
+                x = pow(a, (p+3) >> 3, p)
                 c = pow(x, 2, p)
                 if c != a:
-                    x = (x * pow(2, (p-1)//4, p)) % p
+                    x = (x * pow(2, (p-1) >> 2, p)) % p
         else: #p & 7==1
             d = 2
             while legendre(d, p) != -1:
@@ -146,9 +146,9 @@ def modsqrt(a, p):
             D = pow(d, t, p)
             m = 0
             for i in range(1, s):
-                if pow(A*(D**m), 2**(s-1-i), p) == (p-1):
-                    m += 2**i
-            x = (pow(a, (t+1)//2, p) * pow(D, m//2, p)) % p
+                if pow(A*(D**m), 1 << (s-1-i), p) == (p-1):
+                    m += 1 << i
+            x = (pow(a, (t+1) >> 1, p) * pow(D, m >> 1, p)) % p
         return x
     elif symbol == 0:
         return 0
