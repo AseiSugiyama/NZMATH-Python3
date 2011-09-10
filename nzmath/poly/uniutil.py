@@ -950,7 +950,7 @@ class PrimeCharacteristicFunctionsProvider(object):
                     randpoly = self.mod(randpoly.square())
             else:
                 one = self.construct_with_default([(0, Fq.one)])
-                G = pow(randpoly, (q**degree - 1)//2, self) - one
+                G = pow(randpoly, (q**degree - 1) >> 1, self) - one
             subresult = []
             while result:
                 h = result.pop()
@@ -1051,7 +1051,7 @@ class KaratsubaProvider(object):
         least_degree = min(black_least_degree, red_least_degree)
         most_degree = max(black_most_degree, red_most_degree)
         assert least_degree < most_degree
-        half_degree = (least_degree + most_degree) // 2
+        half_degree = (least_degree + most_degree) >> 1
 
         if black_least_degree > half_degree:
             return self.downshift_degree(black_least_degree).ring_mul_karatsuba(other).upshift_degree(black_least_degree)
@@ -1098,7 +1098,7 @@ class KaratsubaProvider(object):
             chopped = self.downshift_degree(least_degree)
         else:
             chopped = self
-        half_degree = self.order.degree(self) // 2
+        half_degree = self.order.degree(self) >> 1
         fst, snd = chopped.split_at(half_degree)
         fst_squared = fst.square()
         snd_squared = snd.square()

@@ -391,7 +391,7 @@ class SortedPolynomial (PolynomialInterface):
         """
         lo, hi = 0, len(self.sorted)
         while lo < hi:
-            mid = (lo + hi) // 2
+            mid = (lo + hi) >> 1
             if term[0] < self.sorted[mid][0]:
                 hi = mid
             else:
@@ -408,7 +408,7 @@ class SortedPolynomial (PolynomialInterface):
         """
         lo, hi = 0, len(self.sorted)
         while lo < hi:
-            mid = (lo + hi) // 2
+            mid = (lo + hi) >> 1
             if degree < self.sorted[mid][0]:
                 hi = mid
             else:
@@ -596,7 +596,7 @@ class SortedPolynomial (PolynomialInterface):
         right_degree = max(black_right_degree, red_right_degree)
         # we assert here that order is of ascending. (is it correct?)
         assert left_degree < right_degree
-        half_degree = (left_degree + right_degree) // 2
+        half_degree = (left_degree + right_degree) >> 1
         black_half_index = self._bisect(half_degree)
         red_half_index = other._bisect(half_degree)
         if not black_half_index:
@@ -662,7 +662,7 @@ class SortedPolynomial (PolynomialInterface):
         # general (Karatsuba)
         right_degree = self.sorted[-1][0]
         left_degree = self.sorted[0][0]
-        half_degree = (right_degree + left_degree) // 2
+        half_degree = (right_degree + left_degree) >> 1
         half_index = self._bisect(half_degree)
         fst = polynomial([(d - left_degree, c) for (d, c) in self.sorted[:half_index]])
         snd = polynomial([(d - half_degree, c) for (d, c) in self.sorted[half_index:]])

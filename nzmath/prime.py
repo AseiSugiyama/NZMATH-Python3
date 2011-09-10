@@ -119,7 +119,7 @@ def Lucas_chain(n, f, g, x_0, x_1):
 def _lucas_test_sequence(n, a, b):
     """
     Return x_0, x_1, x_m, x_{m+1} of Lucas sequence of parameter a, b,
-    where m = (n - (a**2 - 4*b / n)) // 2.
+    where m = (n - (a**2 - 4*b / n)) >> 1.
     """
     d = a**2 - 4*b
     if (d >= 0 and arith1.floorsqrt(d) ** 2 == d) \
