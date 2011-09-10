@@ -240,8 +240,8 @@ class NumberField (ring.Field):
         if squarefree.trial_division(abs(D)):
             return True
         else:
-            if D % 4 == 0:
-                if squarefree.trial_division(abs(D)//4) and (D//4) % 4 != 1:
+            if D & 3 == 0:
+                if squarefree.trial_division(abs(D)//4) and (D//4) & 3 != 1:
                     return True
         # compare with real integer ring
         return abs(self.integer_ring().determinant()) == 1

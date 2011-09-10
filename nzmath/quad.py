@@ -200,7 +200,7 @@ def class_number(disc, limit_of_disc=100000000):
     Return class number with the given discriminant by counting reduced forms.
     Not only fundamental discriminant.
     """
-    if disc % 4 not in (0, 1):
+    if disc & 3 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
@@ -231,7 +231,7 @@ def class_group(disc, limit_of_disc=100000000):
     Return the class number and the class group with the given discriminant
     by counting reduced forms. Not only fundamental discriminant.
     """
-    if disc % 4 not in (0, 1):
+    if disc & 3 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
@@ -244,7 +244,7 @@ def class_group(disc, limit_of_disc=100000000):
 
     ret_list = []
     f_a = 1
-    if disc % 4 == 0:
+    if disc & 3 == 0:
         f_b = 0
         f_c = -(disc // 4)
     else:
@@ -291,7 +291,7 @@ def class_number_bsgs(disc):
     """
     Return the class number with the given discriminant.
     """
-    if disc % 4 not in (0, 1):
+    if disc & 3 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
 
     if disc >= 0:
@@ -344,7 +344,7 @@ def class_group_bsgs(disc, classnum, qin):
     """
     Return the construction of the class group with the given discriminant.
     """
-    if disc % 4 not in (0, 1):
+    if disc & 3 not in (0, 1):
         raise ValueError("a discriminant must be 0 or 1 mod 4")
     if disc >= 0:
         raise ValueError("a discriminant must be negative")
@@ -628,11 +628,11 @@ def unit_form(disc):
     """
     Return generated quadratic form with the given discriminant.
     """
-    if disc % 4 == 0:
+    if disc & 3 == 0:
         a = 1
         b = 0
         c = disc // -4
-    elif disc % 4 == 1:
+    elif disc & 3 == 1:
         a = 1
         b = 1
         c = (disc - 1) // -4
@@ -741,12 +741,12 @@ def sqroot(disc, p):
     if p == 2: # if 8 | disc => (disc / 8) = 0, 8 not | disc but 4 | disc => 2
         if (disc % 8) == 0:
             bp = disc
-        elif (disc % 4) == 0: # 4 - 4 * odd % 8 => 0
+        elif (disc & 3) == 0: # 4 - 4 * odd % 8 => 0
             bp = 2
         elif (disc % 8) == 1: # disc is odd and disc % 8 is 1
             bp = disc
-        else: # disc is odd and disc % 4 is 1 => impossible (-5 / 2) = -1
-            raise ValueError("disc is odd and disc % 4 is 1 => impossible (-5 / 2) = -1")
+        else: # disc is odd and disc & 3 is 1 => impossible (-5 / 2) = -1
+            raise ValueError("disc is odd and disc & 3 is 1 => impossible (-5 / 2) = -1")
     else:
         bpf1 = arith1.modsqrt(disc, p)
         bpf2 = disc
@@ -788,13 +788,13 @@ def isfundamental(disc):
     if disc == 1:
         return False
     spt = misc.squarePart(abs(disc))
-    if (disc % 4) == 1:
+    if (disc & 3) == 1:
         return spt == 1
-    elif (disc % 4) == 0:
+    elif (disc & 3) == 0:
         spt //= 2
         if spt != 1:
             return False
-        discof = (disc // 4) % 4
+        discof = (disc // 4) & 3
         return discof == 2 or discof == 3
     return False
 

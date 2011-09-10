@@ -90,7 +90,7 @@ def trivial_test(n):
         return False
     if n & 1:
         return lenstra(n)
-    elif not (n % 4):
+    elif not (n & 3):
         return False
     raise Undetermined("trivial test can't determine squarefreeness")
 
@@ -151,7 +151,7 @@ def trivial_test_ternary(n):
         return False
     if n & 1:
         return lenstra_ternary(n)
-    elif not (n % 4):
+    elif not (n & 3):
         return False
     return None
 

@@ -110,7 +110,7 @@ def _FormAdj_i(a, b):
     """
     if a & 1 == 0:
         a, b = -b, a
-    if (b - a + 1) % 4 == 0:
+    if (b - a + 1) & 3 == 0:
         return a, b
     else:
         return -a, -b

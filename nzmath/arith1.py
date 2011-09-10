@@ -113,7 +113,7 @@ def legendre(a, m):
             if m % 8 == 3 or m % 8 == 5:
                 symbol = -symbol
         a, m = m, a
-        if a % 4 == 3 and m % 4 == 3:
+        if a & 3 == 3 and m & 3 == 3:
             symbol = -symbol
         a = a % m
     if m == 1:

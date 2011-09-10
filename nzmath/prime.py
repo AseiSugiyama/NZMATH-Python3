@@ -888,7 +888,7 @@ class Status:
         j2 = J.get(1, 2, q)**2
         s = q*j2 % n
         s = pow(s, n//4, n)
-        if n%4 == 3:
+        if n& 3 == 3:
             s = s*j2 % n
         s = +(s % n)
         if s.weight() == 1 and s.mass() == 1:
@@ -901,7 +901,7 @@ class Status:
     def sub2(self, q, n):
         s = pow(n-q, (n-1)//2, n)
         if s == n-1:
-            if n % 4 == 1:
+            if n & 3 == 1:
                 self.done(2)
         elif s != 1:
             return False
@@ -919,7 +919,7 @@ class Status:
                     return False
                 k = arith1.vp(q-1, 2)[0]
                 if k == 1:
-                    if n % 4 == 1 and not self.sub2(q, n):
+                    if n & 3 == 1 and not self.sub2(q, n):
                         return False
                 elif k == 2:
                     if not self.sub4(q, n, J):

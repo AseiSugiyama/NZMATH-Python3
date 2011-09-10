@@ -227,7 +227,7 @@ class MPQS(object):
                 j += 1
             k = prime_8[index8][j][0]
         else:
-            if n % 4 == 1:
+            if n & 3 == 1:
                 k = 1
             else:
                 if multiplier == 1:
@@ -274,11 +274,11 @@ class MPQS(object):
         if self.d_list == []:
             d = int(math.sqrt((math.sqrt(self.number)/(math.sqrt(2)*self.Srange))))
             if d& 1 == 0:
-                if (d+1)%4 == 1: #case d=0 mod4
+                if (d+1)& 3 == 1: #case d=0 mod4
                     d += 3
                 else:
                     d += 1       #case d=2 mod4
-            elif d%4 == 1:       #case d=1 mod4
+            elif d& 3 == 1:       #case d=1 mod4
                 d += 2
                                  #case d=3 mod4
         else:

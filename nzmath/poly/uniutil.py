@@ -1301,7 +1301,7 @@ class DomainPolynomial(PseudoDivisionProvider,
         """
         df = self.differentiate()
         lc = self.leading_coefficient()
-        if self.degree() % 4 in (2, 3):
+        if self.degree() & 3 in (2, 3):
             sign = -1
         else:
             sign = 1
@@ -1469,7 +1469,7 @@ class FieldPolynomial(DivisionProvider,
         """
         df = self.differentiate()
         lc = self.leading_coefficient()
-        if self.degree() % 4 in (2, 3):
+        if self.degree() & 3 in (2, 3):
             sign = -1
         else:
             sign = 1
