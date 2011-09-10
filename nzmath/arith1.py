@@ -258,9 +258,13 @@ def vp(n, p, k=0):
 
     The optional argument k will be added to the valuation.
     """
-    while not (n % p):
+    while True:
+        q, r = divmod(n, p)
+        if r: break
+
         k += 1
-        n //= p
+        n = q
+
     return (k, n)
 
 class _Issquare:
