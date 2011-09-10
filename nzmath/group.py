@@ -338,7 +338,7 @@ class AbelianGenerate(GenerateGroup):
                     for (g_g, v) in giant_s:
                         for (g_b, w) in baby_s:
                             if g_g.ope(giant_e) == g_b:
-                                b[j] = v + w + (e * (e + 1) // 2) * e_vec[j - 1]
+                                b[j] = v + w + (e * (e + 1) >> 1) * e_vec[j - 1]
                                 flag = True
                                 break
                         if flag:

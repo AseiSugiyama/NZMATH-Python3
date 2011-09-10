@@ -56,7 +56,7 @@ def factorial(n):
     # loop.
     l = range(1, n + 1)
     while len(l) > 1:
-        for i in xrange(len(l) // 2):
+        for i in xrange(len(l) >> 1):
             l[i] *= l.pop()
     return Integer(l.pop())
 
@@ -96,7 +96,7 @@ def combination_index_generator(n, m):
     """
     Generate indices of m elment subsets of n element set.
 
-    For example, 
+    For example,
     combinationIndexGenerator(5,3) generates the following lists:
         [0, 1, 2]
         [0, 1, 3]
@@ -228,7 +228,7 @@ def stirling2(n, m):
     elif m == 2:
         return 2**(n - 1) - 1
     elif m == n - 1:
-        return n * m // 2
+        return n * m >> 1
     else:
         r = 0
         b = m
@@ -555,7 +555,7 @@ def partition_numbers_upto(n):
     """
     penta = list(itertools.izip(
         itertools.takewhile(lambda k: k <= n, _pentagonal()),
-        itertools.cycle((1, 1, -1, -1))))                 
+        itertools.cycle((1, 1, -1, -1))))
     p = [1]
     for i in range(1, n + 1):
         s = 0
@@ -573,8 +573,8 @@ def _pentagonal():
     """
     j = 1
     while True:
-        yield j*(3*j - 1)//2
-        yield j*(3*j + 1)//2
+        yield j*(3*j - 1) >> 1
+        yield j*(3*j + 1) >> 1
         j += 1
 
 def partition_number(n):

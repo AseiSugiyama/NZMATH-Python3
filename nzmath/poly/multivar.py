@@ -139,7 +139,7 @@ class TermIndices(object):
     def lcm(self, other):
         """
         Return the least common multiple.
-        
+
         lcm((i1, ..., in), (j1, ..., jn)) = (max(i1, j1), ..., max(in, jn))
         """
         if len(self) != len(other):
@@ -319,7 +319,7 @@ class BasicPolynomial(PolynomialInterface):
             result = polynomial({i1 * 2: c1**2, i1 + i2: c1*c2*2, i2 * 2: c2**2})
         # general (recursive)
         else:
-            half = data_length // 2
+            half = data_length >> 1
             coefficients = [(i, c) for (i, c) in self]
             left, right = polynomial(coefficients[:half], **self._init_kwds), polynomial(coefficients[half:])
             result = left.square() + left * right * 2 + right.square()

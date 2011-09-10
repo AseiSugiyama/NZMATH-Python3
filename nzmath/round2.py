@@ -82,12 +82,12 @@ def _prepare_squarefactors(disc):
             if oddity:
                 fund_disc *= 2
         else:
-            squarefactors.append((2, v2 // 2))
+            squarefactors.append((2, v2 >> 1))
     else: # fund_disc & 3 == 3
         assert v2 >= 2
         fund_disc *= 4
         if v2 > 2:
-            squarefactors.append((2, (v2 - 2) // 2))
+            squarefactors.append((2, (v2 - 2) >> 1))
     return squarefactors
 
 def _p_maximal(p, e, minpoly_coeff):
@@ -239,7 +239,7 @@ def _null_linear_combination(zeta, alpha, j, p, theminpoly):
     which is congruent to 0 modulo theminpoly and pIp.
 
     alpha is a module.
-    
+
     zeta_{j+1} = {z in zeta_j | z * alpha[j] (mod theminpoly) = 0 (mod pIp)}
     """
     n = theminpoly.degree()
@@ -351,7 +351,7 @@ def _pull_back(elem, p):
             result = finitefield.FinitePrimeFieldElement(elem, p).n
     else:
         result = elem.n
-    if result > p // 2: # minimum absolute
+    if result > (p >> 1): # minimum absolute
         result -= p
     return result
 

@@ -41,7 +41,7 @@ def fibonacci(n):
     if n in FIBONACCI:
         return FIBONACCI[n]
 
-    m = n // 2
+    m = n >> 1
     if n & 1 == 0:
         f1 = fibonacci(m - 1)
         f2 = fibonacci(m)

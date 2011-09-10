@@ -30,13 +30,13 @@ class Curve (object):
     """
 
     _CURVE_TYPES = (S, B, A1, A2, A3, A4, A5)
-    
+
     def __init__(self, c):
         """
         Initialize a Curve object with Montgomery's parameter c.
         """
         self.c = c
-        self.c2 = (c + 2)//4
+        self.c2 = (c + 2) >> 2
 
     @classmethod
     def get_random_curve_with_point(cls, curve_type, n, bounds):
@@ -200,7 +200,7 @@ def ecm(n, curve_type=A1, incs=3, trials=20, **options):
     if _prime.primeq(n):
         _log.info("%d is prime!" % n)
         return n
-    if _gcd.gcd(n, 6) != 1: 
+    if _gcd.gcd(n, 6) != 1:
         _log.info("%d is not coprime to 6!" % n)
         if n & 1 == 0:
             return 2
@@ -257,7 +257,7 @@ def stage2(n, bounds, C, Q):
     for i in range(1, bounds.second//d1):
         if _gcd.gcd(i, d2) != 1:
             continue
-        for j in range(1, d1//2):
+        for j in range(1, d1 >> 1):
             if _gcd.gcd(j, d1) == 1:
                 Q = mul(Q, i*d1 + j*d2, C, n)
                 if i*d1 - j*d2 > bounds.first:

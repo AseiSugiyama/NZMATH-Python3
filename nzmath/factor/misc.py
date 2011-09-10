@@ -203,7 +203,7 @@ class FactoredInteger(object):
         result = FactoredInteger(1, {})
         for d, e in self.factors.iteritems():
             if e >= 2:
-                result *= FactoredInteger(d ** (e//2), {d:e//2})
+                result *= FactoredInteger(d ** (e >> 1), {d:e>>1})
         if asfactored:
             return result
         else:

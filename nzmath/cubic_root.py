@@ -9,7 +9,7 @@ def c_root_p(a, p):
     """
     if (a % p) == 0:
         return [0]
-    if p == 2 or p == 3 : 
+    if p == 2 or p == 3 :
         return [a % p]
     if (p % 3) == 2:
         return [pow(a, (((2 * p) - 1) // 3), p)]
@@ -23,7 +23,7 @@ def c_root_p(a, p):
         e += 1
         temp, tempmod = divmod(temp, 3)
     q = (p - 1) // (3 ** e)
-    search_range = (p - 1) // 2
+    search_range = (p - 1) >> 1
     h = 2
     while pow(h, p_div_3, p) == 1:
         h = random.randrange(2, search_range)
@@ -82,7 +82,7 @@ def c_residue(a, p):
 def c_symbol(a1, a2, b1, b2):
     """
     Return the (Jacobi) cubic residue symbol of 2 Eisenstein Integers ((a1+a2*w)/(b1+b2*w)).
-    assume that b1+b2*w is not divisable 1-w. 
+    assume that b1+b2*w is not divisable 1-w.
     """
     r1, r2, j1 = _divides(a1, a2)
     r1, r2, i1 = _FormAdj_w(r1, r2)
@@ -91,7 +91,7 @@ def c_symbol(a1, a2, b1, b2):
     n = d2 / 3
     t = ((m * j1) + (-(m + n) * i1)) % 3
     a1, a2 = r1, r2
-    b1, b2 = d1, d2    
+    b1, b2 = d1, d2
     nrm_a, nrm_b = arygcd._ap_norm_w(a1, a2, b1, b2)
     if nrm_a < nrm_b:
         tmpre, tmpim = a1, a2

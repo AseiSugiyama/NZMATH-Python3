@@ -173,7 +173,7 @@ def minimum_absolute_injection(f):
         p = coefficientRing.getCharacteristic()
     else:
         raise TypeError("unknown ring (%s)" % repr(coefficientRing))
-    half = p // 2
+    half = p >> 1
     g = {}
     for i, c in f.iterterms():
         if c.n > half:
@@ -197,7 +197,7 @@ def upper_bound_of_coefficient(f):
     weight = arith1.floorsqrt(weight) + 1
     degree = f.degree()
     lc = f[degree]
-    m = degree // 2 + 1
+    m = (degree >> 1) + 1
     bound = 1
     for i in range(1, m):
         b = combinatorial.binomial(m - 1, i) * weight + \

@@ -72,7 +72,7 @@ class NumberField (ring.Field):
         A = [algfield.MatAlgNumber(obasis[0][i]) for i in range(degree)]
         return disc(A) <--- real disc of self field.
         """
-   
+
         if not hasattr(self, "poldisc"):
             degree = self.degree
             traces = []
@@ -108,7 +108,7 @@ class NumberField (ring.Field):
 
     def basis(self, j):
         """
-        Return the j-th basis of self. 
+        Return the j-th basis of self.
         """
         base = [0] * self.degree
         base[j] = 1
@@ -125,7 +125,7 @@ class NumberField (ring.Field):
             if degree == 0:
                 return (0, 0)
             # no check for degree 1?
-    
+
             minpoly = zpoly(self.polynomial)
             d_minpoly = minpoly.differentiate()
             A = minpoly.primitive_part()
@@ -135,7 +135,7 @@ class NumberField (ring.Field):
             pos_at_inf = A.leading_coefficient() > 0
             pos_at_neg = pos_at_inf == (degree & 1)
             r_1 = 1
-    
+
             #Step 2.
             while True:
                 deg = A.degree() - B.degree()
@@ -147,19 +147,19 @@ class NumberField (ring.Field):
                 #Step 3.
                 degree_res = residue.degree()
                 pos_at_inf_of_res = residue.leading_coefficient() > 0
-    
+
                 if pos_at_inf_of_res != pos_at_inf:
                     pos_at_inf = not pos_at_inf
                     r_1 -= 1
-    
+
                 if pos_at_inf_of_res != (pos_at_neg == (degree_res & 1 == 0)):
                     pos_at_neg = not pos_at_neg
                     r_1 += 1
-    
+
                 #Step 4.
                 if degree_res == 0:
-                    return (r_1, (degree - r_1)//2)
-    
+                    return (r_1, (degree - r_1) >> 1)
+
                 A, B = B, residue.scalar_exact_division(g*(h**deg))
                 g = abs(A.leading_coefficient())
                 if deg == 1:
@@ -183,7 +183,7 @@ class NumberField (ring.Field):
         for i in range(n):
             AlgInt = MatAlgNumber(Basis[i].compo, self.polynomial)
             BaseList.append(AlgInt)
-        
+
         #Step 2.
         traces = []
         if self.signature()[1] == 0:
@@ -207,7 +207,7 @@ class NumberField (ring.Field):
         M = matrix.createMatrix(n, n, traces)
         S = matrix.unitMatrix(n)
         L = lattice.LLL(S, M)[0]
-        
+
 
         #Step 4.
         Ch_Basis = []
@@ -222,7 +222,7 @@ class NumberField (ring.Field):
         for i in range(n):
             coeff = Ch_Basis[i].ch_basic().getCharPoly()
             C.append(zpoly(coeff))
-            
+
         #Step 5.
         P = []
         for i in range(n):
@@ -241,7 +241,7 @@ class NumberField (ring.Field):
             return True
         else:
             if D & 3 == 0:
-                if squarefree.trial_division(abs(D)//4) and (D//4) & 3 != 1:
+                if squarefree.trial_division(abs(D) >> 2) and (D >> 2) & 3 != 1:
                     return True
         # compare with real integer ring
         return abs(self.integer_ring().determinant()) == 1
@@ -257,7 +257,7 @@ class NumberField (ring.Field):
 
     def isFieldElement(self, A):
         """
-        Determine whether A is field element of self field or not.  
+        Determine whether A is field element of self field or not.
         """
         poly = A.polynomial
         if poly == self.polynomial:
@@ -352,7 +352,7 @@ class BasicAlgNumber(object):
         self.polynomial = polynomial
         self.field = NumberField(self.polynomial)
         Gcd = gcd.gcd_of_list(self.coeff)
-        GCD = gcd.gcd(Gcd[0], self.denom) 
+        GCD = gcd.gcd(Gcd[0], self.denom)
         if GCD != 1:
             self.coeff = [i//GCD for i in self.coeff]
             self.denom = self.denom//GCD
@@ -360,11 +360,11 @@ class BasicAlgNumber(object):
             self.getConj()
             self.getApprox()
             self.getCharPoly()
-    
+
     def __repr__(self):
         return_str = '%s(%s, %s)' % (self.__class__.__name__, [self.coeff, self.denom], self.polynomial)
         return return_str
-    
+
     def __neg__(self):
         coeff = []
         for i in range(len(self.coeff)):
@@ -415,7 +415,7 @@ class BasicAlgNumber(object):
             jcoeff = [j[i] for i in range(self.degree)]
             return BasicAlgNumber([jcoeff, d], self.polynomial)
         elif isinstance(other, (int, long)):
-            Coeff = [i*other for i in self.coeff] 
+            Coeff = [i*other for i in self.coeff]
             return BasicAlgNumber([Coeff, self.denom], self.polynomial)
         elif isinstance(other, rational.Rational):
             GCD = gcd.gcd(other.numerator, self.denom)
@@ -501,14 +501,14 @@ class BasicAlgNumber(object):
 
     def getCharPoly(self):
         """
-        Return the characteristic polynomial of self 
+        Return the characteristic polynomial of self
         by compute products of (x-self^{(i)}).
         """
         if not hasattr(self, "charpoly"):
             Conj = self.getApprox()
             P = uniutil.polynomial({0:-Conj[0], 1:1}, ring.getRing(Conj[0]))
             for i in range(1, self.degree):
-                P *= uniutil.polynomial({0:-Conj[i], 1:1}, 
+                P *= uniutil.polynomial({0:-Conj[i], 1:1},
                     ring.getRing(Conj[i]))
             charcoeff = []
             for i in range(self.degree + 1):
@@ -524,14 +524,14 @@ class BasicAlgNumber(object):
         Return the algebraic number field contained self.
         """
         return NumberField(self.polynomial)
-    
+
     def trace(self):
         """
         Compute the trace of self in K.
         """
         denom = self.denom
         n = len(self.polynomial) - 1
-        
+
         tlist = [n]
         for k in range(1, n):
             s = 0
@@ -572,7 +572,7 @@ class BasicAlgNumber(object):
 
     def isAlgInteger(self):
         """
-        Determine whether self is an algebraic integer or not. 
+        Determine whether self is an algebraic integer or not.
         """
         Norm = self.norm()
         if isinstance(Norm, int):
@@ -632,7 +632,7 @@ class MatAlgNumber(object):
                     t += basis3[m][l]
                 Matrix.append(t)
             flag += 1
-        
+
         self.matrix = matrix.createMatrix(self.degree, self.degree, Matrix)
         self.polynomial = polynomial
         self.field = NumberField(self.polynomial)
@@ -710,7 +710,7 @@ class MatAlgNumber(object):
         for i in range(mat.row):
             coeff.append(mat[i+1][1])
         return MatAlgNumber(coeff, self.polynomial)
-        
+
     def inverse(self):
         (self.matrix).toFieldMatrix()
         inv = (self.matrix).inverse()
@@ -718,7 +718,7 @@ class MatAlgNumber(object):
         for i in range(inv.row):
             coeff.append(inv[i+1][1])
         return MatAlgNumber(coeff, self.polynomial)
-    
+
     def norm(self):
         return (self.matrix).determinant()
 

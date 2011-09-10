@@ -42,12 +42,12 @@ _log = logging.getLogger('nzmath.ecpp')
 # mapping from disc to list of order functions.
 default_orders = [lambda n, u, v: n + 1 + u,
                   lambda n, u, v: n + 1 - u]
-orders = {-3: default_orders + [lambda n, u, v: n + 1 - (u + 3*v)//2,
-                                lambda n, u, v: n + 1 + (u + 3*v)//2,
-                                lambda n, u, v: n + 1 - (u - 3*v)//2,
-                                lambda n, u, v: n + 1 + (u - 3*v)//2],
-          -4: default_orders + [lambda n, u, v: n + 1 + 2*v,
-                                lambda n, u, v: n + 1 - 2*v]}
+orders = {-3: default_orders + [lambda n, u, v: n + 1 - ((u + 3*v) >> 1),
+                                lambda n, u, v: n + 1 + ((u + 3*v) >> 1),
+                                lambda n, u, v: n + 1 - ((u - 3*v) >> 1),
+                                lambda n, u, v: n + 1 + ((u - 3*v) >> 1)],
+          -4: default_orders + [lambda n, u, v: n + 1 + (v << 1),
+                                lambda n, u, v: n + 1 - (v << 1)]}
 # default absolute value bound of discriminant
 DEFAULT_ABS_BOUND = 200000
 

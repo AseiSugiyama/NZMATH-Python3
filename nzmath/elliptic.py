@@ -477,13 +477,13 @@ class ECGeneric:
         i = 5
         while i < loopbound:
             if i & 1:
-                j = (i - 1)//2
+                j = (i - 1) >> 1
                 if j & 1:
                     f[i] = f[j+2]*f[j]**3 - e**2*f[j-1]*f[j+1]**3
                 else:
                     f[i] = e**2*f[j+2]*f[j]**3 - f[j-1]*f[j+1]**3
             else:
-                j = i//2
+                j = i >> 1
                 f[i] = (f[j+2]*f[j-1]**2 - f[j-2]*f[j+1]**2) * f[j]
             i += 1
 
@@ -753,7 +753,7 @@ class ECoverGF(ECGeneric):
 
         trace = arith1.CRT(traces)
         modulus = arith1.product(prime_moduli)
-        if trace > modulus//2:
+        if trace > (modulus >> 1):
             trace -= modulus
         assert abs(trace) <= 2*arith1.floorsqrt(card(self.basefield)), str(self)
         return trace
@@ -812,7 +812,7 @@ class ECoverGF(ECGeneric):
                 return (0, l)
 
             # there exist non trivial common divisors
-            g0 = _PolyPow(E, (bfsize - 1) // 2, lth_div) #y^(q-1)
+            g0 = _PolyPow(E, (bfsize - 1) >> 1, lth_div) #y^(q-1)
             P = self._sub2(w, g0, f[3], lth_div)
 
             if _PolyGCD(lth_div, P).degree() > 0:
@@ -824,7 +824,7 @@ class ECoverGF(ECGeneric):
 
         else: # coprime (GCD(P, lth_div).degree() == 0)
             Y = x - x_frobfrob
-            g0 = _PolyPow(E, (bfsize - 1) // 2, lth_div) #y^(q-1)
+            g0 = _PolyPow(E, (bfsize - 1) >> 1, lth_div) #y^(q-1)
             g1 = _PolyPow(g0, bfsize + 1, lth_div) #y^(q^2-1)
             f = -self._sub2(k, g1, f3, lth_div)
             h1 = _PolyMulRed([f, f], lth_div)
@@ -842,7 +842,7 @@ class ECoverGF(ECGeneric):
 
             # loop of t
             e_q = _PolyPow(self.cubic, bfsize, lth_div)
-            for t in range(1, (l - 1)//2 + 1):
+            for t in range(1, ((l - 1) >> 1) + 1):
                 Z_d_x, Z_n_x = self._Z_x(t, D, e_q, bfsize, lth_div)
                 # X_n * Z_d_x == X_d * Z_n_x (mod lth_div)?
                 if not _PolyMod(X_n * Z_d_x - X_d * Z_n_x, lth_div):

@@ -207,7 +207,7 @@ class IntegerResidueClass(ring.CommutativeRingElement):
         residue class.
         """
         result = self.n % self.m
-        if result > self.m // 2:
+        if result > (self.m >> 1):
             result -= self.m
         return rational.Integer(result)
 

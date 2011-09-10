@@ -171,7 +171,7 @@ def _bisect(a, x, order, lo=0, hi=None):
     if hi is None:
         hi = len(a)
     while lo < hi:
-        mid = (lo + hi) // 2
+        mid = (lo + hi) >> 1
         if order.cmp(x, a[mid]) < 0:
             hi = mid
         else: lo = mid + 1

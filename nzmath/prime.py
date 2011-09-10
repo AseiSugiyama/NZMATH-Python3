@@ -143,7 +143,7 @@ def _lucas_test_sequence(n, a, b):
         """
         return (u*v - x_1) % n
 
-    m = (n - arith1.legendre(d, n)) // 2
+    m = (n - arith1.legendre(d, n)) >> 1
     x_m, x_mplus1 = Lucas_chain(m, even_step, odd_step, x_0, x_1)
 
     return x_0, x_1, x_m, x_mplus1
@@ -169,7 +169,7 @@ def fpsp(n, a, b):
     x_0, x_1, x_m, x_mplus1 = _lucas_test_sequence(n, a, b)
 
     if (x_1 * x_m - x_0 * x_mplus1) % n == 0:
-        euler_pow = pow(b, (n-1)//2, n)
+        euler_pow = pow(b, (n-1) >> 1, n)
         return (euler_pow * x_m) % n == 2
     else:
         return False
@@ -222,7 +222,7 @@ def generator_eratosthenes(n):
     yield 3
 
     # make list for sieve
-    sieve_len_max = (n+1) // 2
+    sieve_len_max = (n+1) >> 1
     sieve = [True, False, True]
     sieve_len = 3
     k = 5
@@ -249,7 +249,7 @@ def generator_eratosthenes(n):
     while k <= limit:
         if sieve[i]:
             yield k
-            j = (k ** 2 - 1) // 2
+            j = (k ** 2 - 1) >> 1
             while j < sieve_len_max:
                 sieve[j] = False
                 j += k
@@ -257,7 +257,7 @@ def generator_eratosthenes(n):
         i += 1
 
     # output result
-    limit = (n - 1) // 2
+    limit = (n - 1) >> 1
     while i <= limit:
         if sieve[i]:
             yield 2 * i + 1
@@ -503,7 +503,7 @@ class Zeta(object):
         m = self.size
         z_p = Zeta(m)
         if m & 1 == 0:
-            mp = m//2
+            mp = m >> 1
             for i in range(mp):
                 if self.z[i] > self.z[i+mp]:
                     z_p.z[i] = self.z[i] - self.z[i+mp]
@@ -875,11 +875,11 @@ class Status:
         s = +(s % n)
 
         if s.weight() == 1 and s.mass() == 1:
-            if gcd.gcd(m, s.z.index(1)) == 1 and pow(q, (n-1)//2, n) == n-1:
+            if gcd.gcd(m, s.z.index(1)) == 1 and pow(q, (n-1) >> 1, n) == n-1:
                 self.done(2)
             return True
         elif s.weight() == 1 and s.mass() == n-1:
-            if gcd.gcd(m, s.z.index(n-1)) == 1 and pow(q, (n-1)//2, n) == n-1:
+            if gcd.gcd(m, s.z.index(n-1)) == 1 and pow(q, (n-1) >> 1, n) == n-1:
                 self.done(2)
             return True
         return False
@@ -887,19 +887,19 @@ class Status:
     def sub4(self, q, n, J):
         j2 = J.get(1, 2, q)**2
         s = q*j2 % n
-        s = pow(s, n//4, n)
+        s = pow(s, n >> 2, n)
         if n& 3 == 3:
             s = s*j2 % n
         s = +(s % n)
         if s.weight() == 1 and s.mass() == 1:
             i = s.z.index(1)
-            if (i == 1 or i == 3) and pow(q, (n-1)//2, n) == n-1:
+            if (i == 1 or i == 3) and pow(q, (n-1) >> 1, n) == n-1:
                 self.done(2)
             return True
         return False
 
     def sub2(self, q, n):
-        s = pow(n-q, (n-1)//2, n)
+        s = pow(n-q, (n-1) >> 1, n)
         if s == n-1:
             if n & 3 == 1:
                 self.done(2)
@@ -1008,7 +1008,7 @@ class JacobiSum:
         """
         g = primitive_root(q)
         qpred = q - 1
-        qd2 = qpred//2
+        qd2 = qpred >> 1
         g_mf = [0, g]
         for _ in range(2, qpred):
             g_mf.append((g_mf[-1]*g) % q)
