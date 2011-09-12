@@ -57,8 +57,11 @@ def pmom(n, **options):
 
     # initialize
     x = y = 2
-    B = 10000001
     primes = []
+    if 'B' in options:
+        B = options['B']
+    else:
+        B = 10000
 
     for q in prime.generator():
         primes.append(q)
