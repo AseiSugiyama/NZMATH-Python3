@@ -12,6 +12,7 @@ import testBigrange
 import testCombinatorial
 import testCompatibility
 import testCubic_root
+import testEcpp
 import testElliptic
 import testEquation
 import testFiniteField
