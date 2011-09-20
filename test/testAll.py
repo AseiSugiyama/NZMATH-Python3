@@ -27,6 +27,7 @@ import testModule
 import testMultiplicative
 import testPermute
 #import testPolynomial deprecated
+import testPlugins
 import testPrime
 import testPrime_decomp
 import testQuad
