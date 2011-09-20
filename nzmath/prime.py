@@ -68,7 +68,6 @@ def miller(n):
         if not spsp(n, b, s, t):
             return False
     return True
-693147180559945
 
 def millerRabin(n, times=20):
     """
