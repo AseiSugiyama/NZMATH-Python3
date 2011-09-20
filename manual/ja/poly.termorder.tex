@@ -124,10 +124,10 @@
    \spacing
    \quad \(w\) を \param{weight}をします.
    重み付き順序付けは引数 \(x\) と \(y\) によって定義され,それらは以下を満たす.
-   もし\(w\cdot x < w\cdot y\) なら \(x < y\) であり,また \(w\cdot x == w\cdot y\) かつ tie_breaker が\(x < y\) と出したら \(x < y\)\\.
+   もし\(w\cdot x < w\cdot y\) なら \(x < y\) であり,また \(w\cdot x == w\cdot y\) かつ tie breaker が\(x < y\) と出したら \(x < y\)\\.
    \spacing
    \quad オプション\param{tie\_breaker}は,もし重み付きベクトルのドット積が引数tieと等しいままなら使われるもう一つの比較関数.
-   もしそのオプションが{\tt None} (初期設定)で,与えられた引数を順序付けするためtie_breakerが本当に必要なら, {\tt TypeError}が起こる.
+   もしそのオプションが{\tt None} (初期設定)で,与えられた引数を順序付けするためtie breakerが本当に必要なら, {\tt TypeError}が起こる.
 
 \begin{ex}
 >>> w = termorder.MultivarTermOrder(
