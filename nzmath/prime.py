@@ -60,15 +60,15 @@ def miller(n):
     """
     s, t = arith1.vp(n - 1, 2)
     # The O-constant 2 by E.Bach
-    ## 2 log(n) = 2 log_2(n)/log_2(e) = 2 log(2) log_2(n)
-    ## 2 log(2) <= 1.3862943611198906
-    bound = min(n - 2, 13862943611198906 * arith1.log(n) // 10 ** 16) + 1
+    ## ln(n) = log_2(n)/log_2(e) = ln(2) * log_2(n)
+    ## 2 * ln(2) ** 2 <= 0.960906027836404
+    bound = min(n - 1, 960906027836404 * (arith1.log(n) + 1) ** 2 // 10 ** 15 + 1)
     _log.info("bound: %d" % bound)
     for b in range(2, bound):
         if not spsp(n, b, s, t):
             return False
     return True
-
+693147180559945
 
 def millerRabin(n, times=20):
     """
