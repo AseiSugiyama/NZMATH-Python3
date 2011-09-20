@@ -9,7 +9,7 @@
    \func{bit\_num}{\hiki{a}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the number of bits for \param{a}\\
+   \quad \param{a}のビット数の値を返す。\\
    %\spacing
    % added document
    %\spacing
@@ -20,7 +20,7 @@
    \func{binarygcd}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor (gcd) of two integers \param{a},\ \param{b} by the binary gcd algorithm.\\
+   \quad　binary gcd algorithmを使って\param{a},\ \param{b}の最大公約数の値を返す。\\
    %\spacing
    % added document
    %\spacing
@@ -31,7 +31,7 @@
    \func{arygcd\_i}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor (gcd) of two gauss-integers \param{a1}+\param{a2}$i$,\ \param{b1}+\param{b2}$i$, where ``$i$'' denotes the imaginary unit. \\
+   \quad 二つのgauss数体\param{a1}+\param{a2}$i$,\ \param{b1}+\param{b2}$i$ の最大公約数の値を返す。 ``$i$''は虚数。 \\
    \spacing
    % added document
    If the output of arygcd\_i(\param{a1}, \param{a2}, \param{b1}, \param{b2}) is (\param{c1}, \param{c2}), then
@@ -45,8 +45,8 @@
    \func{arygcd\_w}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor (gcd) of two Eisenstein-integers \param{a1}+\param{a2}$\omega$,\ \param{b1}+\param{b2}$\omega$, 
-   where ``$\omega$'' denotes a primitive cubic root of unity.\\
+   \quad Eisenstein数体\param{a1}+\param{a2}$\omega$,\ \param{b1}+\param{b2}$\omega$の最大公約数の値を返す。
+   ``$\omega$''は1 の虚立方根。\\
    \spacing
    % added document
    If the output of arygcd\_w(\param{a1}, \param{a2}, \param{b1}, \param{b2}) is (\param{c1}, \param{c2}), then

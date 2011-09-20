@@ -9,84 +9,84 @@
    \func{gcd}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor of two integers \param{a} and \param{b}.\\
+   \quad 二つの整数\param{a}と\param{b}の最大公約数の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{a},\ \param{b} must be int, long or \linkingone{rational}{Integer}.
-   Even if one of the arguments is negative, the result is non-negative.\\
+   \quad \param{a},\ \param{b}はintまたはlong型か\linkingone{rational}{Integer}。
+   Even if one of the arguments is negative, 結果は整数。\\
 %
   \subsection{binarygcd -- binary gcd algorithm}\linkedone{gcd}{binarygcd}
    \func{binarygcd}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor of two integers \param{a} and \param{b} by binary gcd algorithm.\\
+   \quad  バイナリーGCDアルゴリズムを使って二つの整数\param{a}と\param{b}の最大公約数の値を返す。\\
    \spacing
    % added document
-   \quad \negok This function is an alias of \linkingone{arygcd}{binarygcd}\\
+   \quad \negok この関数は \linkingone{arygcd}{binarygcd}のエイリアスである。\\
    \spacing
    % input, output document
-   \quad \param{a},\ \param{b} must be int, long, or \linkingone{rational}{Integer}.\\
+   \quad \param{a},\ \param{b}はintまたはlong型。または、 \linkingone{rational}{Integer}。\\
 %
   \subsection{extgcd -- extended gcd algorithm}\linkedone{gcd}{extgcd}
    \func{extgcd}{\hiki{a}{integer},\ \hiki{b}{integer}}{(\out{integer},\ \out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return the greatest common divisor $d$ of two integers \param{a} and \param{b} and $u,\ v$ such that $d = \param{a}u + \param{b}v$.\\
+   \quad $d = \param{a}u + \param{b}v$の関係式を満たす\param{a}と\param{b}の最大公約数$d$の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{a},\ \param{b} must be int, long, or \linkingone{rational}{Integer}.\\
-   The returned value is a tuple (\param{u},\ \param{v},\ \param{d}).\\
+   \quad \param{a},\ \param{b}はintまたはlong型 \linkingone{rational}{Integer}.\\
+   結果は(\param{u},\ \param{v},\ \param{d})の形で返ってくる。\\
 %
   \subsection{lcm -- the least common multiple}\linkedone{gcd}{lcm}
    \func{lcm}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the least common multiple of two integers \param{a} and \param{b}.\\
+   \quad 二つの整数\param{a}と\param{b}の最小公倍数の値を返す。\\
    \spacing
    % added document
-   \negok If both \param{a} and \param{b} are zero, then it raises an exception.
+   \negok もし\param{a}と\param{b}どちらも０ならば、enceptionを返す。\\
    \spacing
    % input, output document
-   \quad \param{a},\ \param{b} must be int, long, or \linkingone{rational}{Integer}.\\
+   \quad \param{a},\ \param{b}はintまたはlong型、または\linkingone{rational}{Integer}.\\
 %
   \subsection{gcd\_of\_list -- gcd of many integers}\linkedone{gcd}{gcd\_of\_list}
    \func{gcd\_of\_list}{\hiki{integers}{list}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return gcd of multiple integers.\\
+   \quad 倍数の最大公約数の値を返す。\\
    \spacing
    % added document
-   \quad For given \param{integers} $[x_1,\ldots,x_n]$, return a list $[d,\ [c_1,\ldots,c_n]]$ such that $d=c_1 x_1+\cdots+c_n x_n$, where $d$ is the greatest common divisor of $x_1,\ldots, x_n$.\\
+   \quad 与えれた\param{integers} $[x_1,\ldots,x_n]$に対して、リスト$[d,\ [c_1,\ldots,c_n]]$を返す。すなわち$d=c_1 x_1+\cdots+c_n x_n$が成り立ち$d$は$x_1,\ldots, x_n$の最大公約数である。\\
    \spacing
    % input, output document
-   \quad \param{integers} is a list which elements are int or long\\
-   This function returns $[d,\ [c_1,\ldots,c_n]]$, where $d,\ c_i$ are an integer.\\
+   \quad \param{integers}はintまたはlong型のリストである。\\
+   この関数は$[d,\ [c_1,\ldots,c_n]]$を返す。$dと\ c_i$は整数。\\
 %
   \subsection{coprime -- coprime check}\linkedone{gcd}{coprime}
    \func{coprime}{\hiki{a}{integer},\ \hiki{b}{integer}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Return True if \param{a} and \param{b} are coprime, False otherwise.\\
+   \quad \param{a}と\param{b}が互いに素であればTureを返し、さもなければFalseを返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{a},\ \param{b} are int, long, or \linkingone{rational}{Integer}.\\
+   \quad \param{a}と\ \param{b}はintまたはlong型、または \linkingone{rational}{Integer}。\\
 %
   \subsection{pairwise\_coprime -- coprime check of many integers}\linkedone{gcd}{pairwise\_coprime}
    \func{pairwise\_coprime}{\hiki{integers}{list}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Return True if all integers in \param{integers} are pairwise coprime, False otherwise.\\
+   \quad \param{integers}が互いに素ならばTureを、さもなければFalseを返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{integers} is a list which elements are int, long, or \linkingone{rational}{Integer}.\\
+   \quad \param{integers}はintまたはlong型、または \linkingone{rational}{Integer}のリスト。\\
 %
 \begin{ex}
 >>> gcd.gcd(12, 18)

@@ -4,11 +4,11 @@
 
 %---------- start document ---------- %
  \section{ecpp -- elliptic curve primality proving}\linkedzero{ecpp}
- The module consists of various functions for ECPP (Elliptic Curve Primality Proving).
+ このモジュールはECPP (Elliptic Curve Primality Proving)の様々な関数から作られている。
 
  It is probable that the module will be refactored in the future so that each function be placed in other modules.\\
 \spacing
-The ecpp module requires mpmath.
+ecppモジュールはmpmathのダウンロードが必要。
 
 %
   \subsection{ecpp -- elliptic curve primality proving}\linkedone{ecpp}{ecpp}
@@ -21,14 +21,14 @@ The ecpp module requires mpmath.
    }\\
    \spacing
    % document of basic document
-   \quad Do elliptic curve primality proving.\\
-   If \param{n} is prime, return True. Otherwise, return False. \\
+   \quad 楕円曲線素数証明を行う。\\
+   もし\param{n}が素数ならTrueを返す。さもなければFalseを返す。\\
    \spacing
    % added document
-   The optional argument \param{era} is a list of primes (which stands for ERAtosthenes).\\
+   また、\param{era}とは素数ののリストである。 (これはERAtosthenesに基づいている。)\\
    \spacing
    % input, output document
-   \quad \param{n} must be a big integer.\\
+   \quad \param{n}は巨大な整数。\\
 %
   \subsection{hilbert -- Hilbert class polynomial}\linkedone{ecpp}{hilbert}
    \func{hilbert}
@@ -36,15 +36,15 @@ The ecpp module requires mpmath.
         {\out{(integer, list)}}\\
    \spacing
    % document of basic document
-   \quad Return the class number and Hilbert class polynomial for the imaginary quadratic field with fundamental discriminant \param{D}.\\
+   \quad 類数とHilbert類方程式 for 虚2次体with fundamental判別式\param{D}の値を返す。\\
    \spacing
    % added document
-   \quad Note that this function returns Hilbert class polynomial as a list of coefficients.\\
-   \negok If the option \linkingone{config}{HAVE\_NET} is set, at first try to retrieve the data in \url{http://hilbert-class-polynomial.appspot.com/}.
-   If the data corresponding to \param{D} is not found, compute the Hilbert polynomial directly (for a long time).\\
+   \quad この関数はHilbert類方程式の係数のリストを返す。\\
+   \negok もし\linkingone{config}{HAVE\_NET}を設定してしているなら 、まず検索しtp://hilbert-class-polynomial.appspot.com/}.
+   もしram{D}に一致する情報が見つからなければHilbert類方程式を直接計算してください。
    \spacing
    % input, output document
-   \quad \param{D} must be negative int or long. See \cite{Pomerance}.\\
+   \quad \param{D}はintまたはlong.\cite{Pomerance}参照\。\\
 %
   \subsection{dedekind -- Dedekind's eta function}\linkedone{ecpp}{dedekind}
    \func{dedekind}
@@ -53,7 +53,7 @@ The ecpp module requires mpmath.
         {\out{mpmath.mpc}}\\
    \spacing
    % document of basic document
-   \quad Return Dedekind's eta of a complex number \param{tau} in the upper half-plane. \\
+   \quad Return Dedekindのイータof a complex number \param{tau} in the upper half-plane. \\
    \spacing
    % added document
    \quad Additional argument \param{floatpre} specifies the precision of calculation in decimal digits.\\
@@ -67,14 +67,14 @@ The ecpp module requires mpmath.
         {\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return curve parameters for CM curves.\\
+   \quad CM曲線のカーブパラメータの値を返す。\\
    \spacing
    % added document
-   \quad If you also need its orders, use \linkingone{ecpp}{cmm\_order}.\\
+   \quad もし一つだけ楕円曲線でよいのならば\linkingone{ecpp}{cmm\_order}を使うとよい。\\
    \spacing
    % input, output document
-   \quad A prime \param{p} has to be odd.\\
-   This function returns a list of (\param{a},\ \param{b}), where (\param{a},\ \param{b}) expresses Weierstrass' short form.
+   \quad \param{p}は奇素数でなければならない。\\
+   この関数は(\param{a},\ \param{b})のリストを返す。(\param{a},\ \param{b})はWeierstrass' short formを表している。
 %
   \subsection{cmm\_order -- CM method with order}\linkedone{ecpp}{cmm\_order}
    \func{cmm\_order}
@@ -82,14 +82,14 @@ The ecpp module requires mpmath.
         {\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return curve parameters for CM curves and its orders.\\
+   \quad CM曲線のカーブパラメータの値と位数を返す。\\
    \spacing
    % added document
-   \quad If you need only curves, use \linkingone{ecpp}{cmm}.\\
+   \quad もし一つだけ楕円曲線でよいのならば\linkingone{ecpp}{cmm\_order}を使うとよい。\\
    \spacing
    % input, output document
-   \quad A prime \param{p} has to be odd.\\
-   This function returns a list of (\param{a},\ \param{b},\ \param{order}), where (\param{a},\ \param{b}) expresses Weierstrass' short form and \param{order} is the order of the curve.
+   \quad \param{p}は奇素数でなければならない。\\
+ 　この関数は(\param{a},\ \param{b},\ \param{order})のリストを返す。(\param{a},\ \param{b})はWeierstrass' short formを表し、 \param{order}は楕円曲線での位数を表す。
 %
   \subsection{cornacchiamodify -- Modified cornacchia algorithm}\linkedone{ecpp}{cornacchiamodify}
    \func{cornacchiamodify}
@@ -98,13 +98,13 @@ The ecpp module requires mpmath.
         {\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the solution $(u,\ v)$ of $u^2 - \param{d}v^2 = 4\param{p}$.\\
+   \quad $(u,\ v)$ of $u^2 - \param{d}v^2 = 4\param{p}$の解を返す。\\
    \spacing
    % added document
-   \quad If there is no solution, raise ValueError.\\
+   \quad もし解がなければValueErrorを返す。\\
    \spacing
    % input, output document
-   \quad  \param{p} must be a prime integer and \param{d} be an integer such that $\param{d} < 0$ and $\param{d} > -4\param{p}$ with $\param{d} \equiv 0, 1 \pmod{4}$.\\
+   \quad  \param{p}は素数。\param{d}は$\param{d} < 0$ and $\param{d} > -4\param{p}$ with $\param{d} \equiv 0, 1 \pmod{4}$を充たす整数。\\
 %
 \begin{ex}
 >>> ecpp.ecpp(300000000000000000053)

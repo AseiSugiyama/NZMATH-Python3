@@ -4,7 +4,7 @@
 
 %---------- start document ---------- %
  \section{imaginary -- complex numbers and its functions}\linkedzero{imaginary}
-The module {\tt imaginary} provides complex numbers. The functions provided are mainly corresponding to the \linklibrary{cmath} standard module.
+このモジュール{\tt imaginary}では複素数に扱う。この関数は主に\linklibrary{cmath}標準モジュールと対応している。.
 
  \begin{itemize}
    \item {\bf Classes}
@@ -32,7 +32,7 @@ The module {\tt imaginary} provides complex numbers. The functions provided are 
      \end{itemize}
  \end{itemize}
 
-This module also provides following constants:
+このモジュールは以下の内容も扱う。:
 \begin{description}
    \item[e]\linkedone{imaginary}{e}:\\
      This constant is obsolete (Ver 1.1.0).
@@ -46,17 +46,17 @@ This module also provides following constants:
 
 \C
  \subsection{ComplexField -- field of complex numbers}\linkedone{imaginary}{ComplexField}
- The class is for the field of complex numbers. The class has the single instance \linkingone{imaginary}{theComplexField}.
+ クラスは複素数上の体である。 このクラスは一つのインスタンス\linkingone{imaginary}{theComplexField}を持つ。
 
- This class is a subclass of \linkingone{ring}{Field}.
+　このクラスは\linkingone{ring}{Field}のサブクラスである。
 
   \initialize
   \func{ComplexField}{}{\out{ComplexField}}\\
   \spacing
   % document of basic document
-  \quad Create an instance of ComplexField. 
+  \quad 複素数体のインスタンスを作る。 
   % added document
-  You may not want to create an instance, since there is already \linkingone{imaginary}{theComplexField}.
+  もしインスタンスを作りたくない場合は、\linkingone{imaginary}{theComplexField}.
   % \spacing
   % input, output document
   %See \linkingone{module}{point} for \param{point}.
@@ -92,50 +92,50 @@ This module also provides following constants:
     \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
     \spacing
     % document of basic document
-    \quad Return a Complex object with \param{seed}. 
+    \quad \param{seed}の複素数オブジェクトを返す。. 
     \spacing
     % added document
-    %\quad \negok Note that this function returns integer only.\\
+    %\quad \negok この関数は整数の値しか返さないことに注意。\\
     \spacing
     % input, output document
-    \quad \param{seed} must be complex or numbers having embedding to complex.\\
+    \quad \param{seed}は複素数か複素数を埋め込んだ数でなければない。\\
 %
 %
   \subsubsection{getCharacteristic -- get characteristic}\linkedtwo{imaginary}{ComplexField}{getCharacteristic}
    \func{getCharacteristic}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the characteristic, zero.
+   \quad 標数か０を返す。.
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{issubring -- subring test}\linkedtwo{imaginary}{ComplexField}{issubring}
    \func{issubring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether another ring contains the complex field as subring.
+   \quad 他の環が複素数体上に部分環として含まれているか教えてくれる。
    \spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad if \param{as\_column} is True, try to create column matrix.\\
+   %\quad \param{as\_column}が正しいときはカラムマトリックスを作ろうとする。\\
 %
   \subsubsection{issuperring -- superring test}\linkedtwo{imaginary}{ComplexField}{issuperring}
    \func{issuperring}{\param{self},\ \hiki{aRing}{\linkingone{ring}{Ring}}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Report whether the complex field contains another ring as subring.
+   \quad 複素数体が他の環を部分環として含んでいるか教えてくれる。
    \spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad if \param{as\_column} is True, try to create column matrix.\\
+   %\quad もし\param{as\_column}が正しいときはカラムマトリックスを作ろうとする。\\
 %\begin{ex}
 %>>> A = module.HogeClass((1,2))
 %>>> A.hogemethod1(2)
@@ -145,9 +145,9 @@ This module also provides following constants:
 
 \C
  \subsection{Complex -- a complex number}\linkedone{imaginary}{Complex}
- Complex is a class of complex number. Each instance has a coupled numbers; real and imaginary part of the number.
+ Complexとは複素数のクラスである。どのインスタスも二つの数を持つ。すまわちある数の実部と虚部である。
 
- This class is a subclass of \linkingone{ring}{FieldElement}.
+　このクラスは\linkingone{ring}{FieldElement}のサブクラスである。
 
  All implemented operators in this class are delegated to complex type. 
   \initialize
@@ -158,14 +158,14 @@ This module also provides following constants:
        {\out{Imaginary}}\\
   \spacing
   % document of basic document
-  \quad Create a complex number.
+  \quad 複素数を作る。
   % added document
   \spacing
   % input, output document
-  \param{re} can be either real or complex number. If \param{re} is real and \param{im} is not given, then its imaginary part is zero. 
+  \param{re}は実数でも虚数でも構わない。もし\param{re}が実数で\param{im}が与えられていないと、虚数は０ということである。
   \begin{at}
-    \item[real]\linkedtwo{imaginary}{Complex}{real}:\\ It expresses the real part of complex number.
-    \item[imag]\linkedtwo{imaginary}{Complex}{imag}:\\ It expresses the imaginary part of complex number.
+    \item[real]\linkedtwo{imaginary}{Complex}{real}:\\ 複素数の実数部分を表す。
+    \item[imag]\linkedtwo{imaginary}{Complex}{imag}:\\ 複素数の虚数部分を表す。
   \end{at}
   %\begin{op}
   %  \verb|+| & Vector sum.\\
@@ -194,13 +194,13 @@ This module also provides following constants:
    \func{getRing}{\param{self}}{\out{ComplexField}}\\
    \spacing
    % document of basic document
-   \quad Return the complex field instance.
+   \quad 複素数体のインスタンスを返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型または有理数か整数。\\
 %
   \subsubsection{arg -- argument of complex}\linkedtwo{imaginary}{Complex}{arg}
    \func{arg}{\param{self}}{\out{radian}}\\
@@ -209,46 +209,46 @@ This module also provides following constants:
    \quad Return the angle between the x-axis and the number in the Gaussian plane.
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   \quad \out{radian} must be Float.\\
+   \quad \out{radian}はFloat型。\
 %
   \subsubsection{conjugate -- complex conjugate}\linkedtwo{imaginary}{Complex}{conjugate}
    \func{conjugate}{\param{self}}{\out{Complex}}\\
    \spacing
    % document of basic document
-   \quad Return the complex conjugate of the number.
+   \quad ある数の複素共役の値を返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \out{radian} must be Float.\\
+   %\quad \out{radian}はFloat型。\\
 %
   \subsubsection{copy -- copied number}\linkedtwo{imaginary}{Complex}{copy}
    \func{copy}{\param{self}}{\out{Complex}}\\
    \spacing
    % document of basic document
-   \quad Return the copy of the number itself.
+   \quad ある数自身の値を返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \out{radian} must be Float.\\
+   %\quad \out{radian}はFloat型。\\
 %
   \subsubsection{inverse -- complex inverse}\linkedtwo{imaginary}{Complex}{inverse}
    \func{inverse}{\param{self}}{\out{Complex}}\\
    \spacing
    % document of basic document
-   \quad Return the inverse of the number.
+   \quad ある数の逆数の値を返す。
    \spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数の値しか返さないことに注意。\\
    %\spacing
    % input, output document
-   \quad If the number is zero, ZeroDivisionError is raised.
+   \quad　入力されて数が０のとき、ZeroDivisionErrorを返す。
 %
 %\begin{ex}
 %>>> A = module.HogeClass((1,2))

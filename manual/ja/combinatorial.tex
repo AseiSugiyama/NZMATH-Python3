@@ -15,15 +15,14 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the binomial coefficient for \param{n} and \param{m}.
-   In other words, $\displaystyle{\frac{\param{n} !}{(\param{n} - \param{m}) ! \param{m} !}}$.\\
+   \quad \param{n}と\param{m}の二項係数の値を返す。
+   すなはち、 $\displaystyle{\frac{\param{n} !}{(\param{n} - \param{m}) ! \param{m} !}}$.\\
    \spacing
    % added document
-   \negok For convenience, {\tt binomial(n, n+i)} returns \(0\) for positive \(i\), and {\tt binomial(0,0)} returns \(1\).\\
+   \negok 便宜上、{\tt binomial(n, n+i)}は\(0\)整数\(i\)に対して\(0\)を返し、 {\tt binomial(0,0)}は\(1\)を返す。\\
    \spacing
    % input, output document
-   \quad \param{n} must be a positive integer and \param{m} must be
-   a non-negative integer. \\
+   \quad \param{n}は自然数。 \param{m}は整数。 \\
 
   \subsection{combinationIndexGenerator -- iterator for combinations}\linkedone{combinatorial}{combinationIndexGenerator}
 
@@ -49,7 +48,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return \(\param{n}!\) for non-negative integer \param{n}.\\
+   \quad \(\param{n}!\) の値を返す。\param{n}は整数。\\
 
   \subsection{permutationGenerator -- iterator for permutation}\linkedone{combinatorial}{permutationGenerator}
   \func{permutationGenerator}{%
@@ -77,7 +76,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the falling factorial; \param{n} to the \param{m} falling,
+   \quad 下降階乗の値を返す。; \param{n}から\param{m}へ。
    i.e. \(n(n-1)\cdots(n-m+1)\).\\
 
   \subsection{risingfactorial -- the rising factorial}\linkedone{combinatorial}{risingfactorial}
@@ -89,7 +88,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the rising factorial; \param{n} to the \param{m} rising,
+   \quad　上昇階乗の値を返す。; \param{n}から\param{m}へ。
    i.e.\, \(n(n+1)\cdots(n+m-1)\).\\
 
   \subsection{multinomial -- the multinomial coefficient}\linkedone{combinatorial}{multinomial}
@@ -101,10 +100,10 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the multinomial coefficient.\\
+   \quad 多項係数の値を返す。\\
    \spacing
    % input, output document
-   \quad \param{parts} must be a sequence of natural numbers and the sum of elements in \param{parts} should be equal to \param{n}.\\
+   \quad \param{parts}は自然数数列。\param{parts}の要素をすべてあわせると\param{n}と等しくなる。\\
 
   \subsection{bernoulli -- the Bernoulli number}\linkedone{combinatorial}{bernoulli}
    \func{bernoulli}{%
@@ -114,7 +113,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the \param{n}-th Bernoulli number.\\
+   \quad　\param{n}次Bernoulli数の値を返す。\\
 
   \subsection{catalan -- the Catalan number}\linkedone{combinatorial}{catalan}
    \func{catalan}{%
@@ -124,7 +123,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the \param{n}-th Catalan number.\\
+   \quad \param{n}次Catalan数の値を返す。\\
 
   \subsection{euler -- the Euler number}\linkedone{combinatorial}{euler}
    \func{euler}{%
@@ -134,7 +133,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the \param{n}-th Euler number.\\
+   \quad \param{n}次Euler数の値を返す。\\
 
   \subsection{bell -- the Bell number}\linkedone{combinatorial}{bell}
    \func{bell}{%
@@ -144,12 +143,12 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the \param{n}-th Bell number.\\
+   \quad \param{n}次ベル数の値を返す。.\\
    \spacing
    % added document
-   \quad The Bell number \(b\) is defined by:
+   \quad ベル数 \(b\)の定義:
    \[b(n) = \sum_{i=0}^{n} S(n, i),\ \]
-   where \(S\) denotes Stirling number of the second kind (\linkingone{combinatorial}{stirling2}).\\
+   \(S\)は第２種スターリング数。(\linkingone{combinatorial}{stirling2}).\\
 
   \subsection{stirling1 -- Stirling number of the first kind}\linkedone{combinatorial}{stirling1}
    \func{stirling1}{%
@@ -160,10 +159,10 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return Stirling number of the first kind.\\
+   \quad 第１種スターリング数の値を返す。\\
    \spacing
    % added document
-   \quad Let \(s\) denote the Stirling number and \((x)_n\) the falling factorial, then
+   \quad　\(s\)はスターリング数。\((x)_n\)は下降階乗。
    \[(x)_n = \sum_{i=0}^{n} s(n,\ i) x^i. \]\\
    \(s\) satisfies the recurrence relation:
    \[s(n,\ m) = s(n-1,\ m-1) - (n-1)s(n-1,\ m)\ .\]\\
@@ -180,9 +179,9 @@
    \quad Return Stirling number of the second kind.\\
    \spacing
    % added document
-   \quad Let \(S\) denote the Stirling number, \((x)_i\) falling factorial, then:
+   \quad \(S\)はスターリング数。 \((x)_i\)は下降階乗。:
    \[x^n = \sum_{i=0}^{n} S(n,\ i) (x)_i\]
-   \(S\) satisfies:
+   \(S\)は以下の関係を充たす。
    \[S(n,\ m) = S(n-1,\ m-1) + m S(n-1,\ m)\]\\
 
   \subsection{partition\_number -- the number of partitions}\linkedone{combinatorial}{partition\_number}
@@ -193,7 +192,7 @@
    }\\
    \spacing
    % document of basic document
-   \quad Return the number of partitions of \param{n}.\\
+   \quad \param{n}の分割数の値を返す。\\
 
   \subsection{partitionGenerator -- iterator for partition}\linkedone{combinatorial}{partitionGenerator}
    \func{partitionGenerator}{%

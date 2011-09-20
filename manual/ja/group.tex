@@ -60,12 +60,12 @@ Z/6Z
    \func{setOperation}{\param{self},\ \hiki{operation}{int}}{(None)}\\
    \spacing
    % document of basic document
-   \quad Change group type to additive ($0$) or multiplicative ($1$).\\
+   \quad 群のタイプを加法($0$)または乗法($1$)に変える。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{operation} must be 0 or 1.\\
+   \quad \param{operation}は0または1。\\
  \subsubsection{\negok createElement -- generate a GroupElement instance}\linkedtwo{group}{Group}{createElement}
    \func{createElement}{\param{self},\ \param{*value}}{\out{GroupElement}}\\
    \spacing
@@ -73,7 +73,7 @@ Z/6Z
    \quad Return \linkingone{group}{GroupElement} object whose group is \param{self}, initialized with \param{value}.\\
    \spacing
    % added document
-   \quad \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.createElement.\\
+   \quad \negok この方法は\param{self}と呼ぶ。linkingtwo{group}{Group}{entity}.createElement.\\
    \spacing
    % input, output document
    \quad \param{value} must fit the form of argument for \param{self}.\linkingtwo{group}{Group}{entity}.createElement.\\
@@ -81,23 +81,23 @@ Z/6Z
    \func{identity}{\param{self}}{\param{GroupElement}}\\
    \spacing
    % document of basic document
-   \quad Return identity element (unit) of group.\\
+   \quad 群の単位元の値を返す。\\　
    \spacing
    % added document
-   \quad Return zero (additive) or one (multiplicative) corresponding to \linkingtwo{group}{Group}{operation}.
-   \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.identity or \linkingtwo{group}{Group}{entity} does not have the attribute then returns one or zero.
+   \quad　\linkingtwo{group}{Group}{operation}によって０(加法)または１(乗法) を返す。
+   \negok この方法はparam{self}.\linkingtwo{group}{Group}{entity}と呼ばれている。identityまたは\linkingtwo{group}{Group}{entity}が属性をもたないときは０か１を返す。
    \spacing
    % input, output document
   \subsubsection{grouporder -- order of the group}\linkedtwo{group}{Group}{grouporder}
    \func{grouporder}{\param{self}}{\param{long}}\\
    \spacing
    % document of basic document
-   \quad Return group order (cardinality) of \param{self}.\\
+   \quad param{self}の要素の個数の値を返す。.\\
    \spacing
    % added document
-   \quad \negok This method calls \param{self}.\linkingtwo{group}{Group}{entity}.grouporder, card or \_\_len\_\_.\\
-   We assume that the group is finite, so returned value is expected as some long integer.
-   If the group is infinite, we do not define the type of output by the method.
+   \quad \negok この方法は\param{self}と呼ばれている。\linkingtwo{group}{Group}{entity}.grouporder, card or \_\_len\_\_.\\
+   ここではこの群は有限と考え、 返す値はlong型の整数である。
+   もしこの群が無限の場合、この方法では出力は定義できない。
    \spacing
    % input, output document
 \begin{ex}
@@ -159,12 +159,12 @@ IntegerResidueClass(3, 6)
    \func{setOperation}{\param{self},\ \hiki{operation}{int}}{(None)}\\
    \spacing
    % document of basic document
-   \quad Change group type to additive ($0$) or multiplicative ($1$).\\
+   \quad 群のタイプを加法($0$)または乗法($1$)に変える。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{operation} must be $0$ or $1$.\\
+   \quad \param{operation}は$0$か$1$。\\
  \subsubsection{\negok getGroup -- generate a Group instance}\linkedtwo{group}{GroupElement}{getGroup}
    \func{getGroup}{\param{self}}{\out{Group}}\\
    \spacing
@@ -180,29 +180,29 @@ IntegerResidueClass(3, 6)
    \func{order}{\param{self}}{\param{long}}\\
    \spacing
    % document of basic document
-   \quad Return the order of \param{self}.\\
+   \quad \param{self}の位数の値を返す。\\
    \spacing
    % added document
-   \quad \negok This method uses the factorization of order of group.\\
-   \negok We assume that the group is finite, so returned value is expected as some long integer.
-   \negok If the group is infinite, the method would raise an error or return an invalid value.\\
+   \quad \negok この方法は群の位数の因数分解を使う。\\
+   \negok ここではこの群は有限と考え、 返す値はlong型の整数である。
+   \negok もしここの群が無限ならば、この方法はエラーを返すか有効でない値を返す。\\
    \spacing
    % input, output document
   \subsubsection{t\_order -- order by baby-step giant-step}\linkedtwo{group}{GroupElement}{t\_order}
    \func{t\_order}{\param{self},\ \hikiopt{v}{int}{2}}{\param{long}}\\
    \spacing
    % document of basic document
-   \quad Return the order of \param{self}.\\
+   \quad \param{self}の位数の値を返す。\\
    \spacing
    % added document
-   \quad \negok This method uses Terr's baby-step giant-step algorithm.\\
-   This method does not use the order of group.
-   You can put number of baby-step to \param{v}.
-   \negok We assume that the group is finite, so returned value is expected as some long integer.
-   \negok If the group is infinite, the method would raise an error or return an invalid value.\\
+   \quad \negok この方法はTerry's baby-step giant-step algorithmを使う。\\
+   この方法は群の位数を使わない。
+   \param{v}にbaby-stepの数を入れる。
+   \negok ここではこの群は有限と考え、 返す値はlong型の整数である。
+   \negok もしここの群が無限ならば、この方法はエラーを返すか有効でない値を返す。\\
    \spacing
    % input, output document
-   \quad \param{v} must be some int integer.\\
+   \quad \param{v}はint型の整数。\\
 \begin{ex}
 >>> G1=group.GroupElement(finitefield.FinitePrimeFieldElement(18, 37), 1)
 >>> G1.order()
@@ -243,32 +243,32 @@ intresidue.IntegerResidueClass(0, 20)
 
  \subsection{AbelianGenerate -- abelian group structure with generator}\linkedone{group}{AbelianGenerate}
  \initialize
-  \quad The class inherits the class \linkingone{group}{GenerateGroup}.\\
+  \quad \linkingone{group}{GenerateGroup}のクラスを継承する。\\
   
   \subsubsection{relationLattice -- relation between generators}\linkedtwo{group}{AbelianGenerate}{relationLattice}
    \func{relationLattice}{\param{self}}{\out{\linkingone{matrix}{Matrix}}}\\
    \spacing
    % document of basic document
-   \quad Return a list of relation lattice basis as a square matrix each of whose column vector is a relation basis.\\
+   \quad 格子原理関係にある数のリストを返す。as a square matrix each of whose column vector is a relation basis.\\
    \spacing
    % added document
-   \quad The relation basis, $V$ satisfies that $\prod_{i} \mbox{generator}_i V_i=1$.
+   \quad 関係の原理$V$は $\prod_{i} \mbox{generator}_i V_i=1$を充たす。
    \spacing
    % input, output document
   \subsubsection{computeStructure -- abelian group structure}\linkedtwo{group}{AbelianGenerate}{computeStructure}
    \func{computeStructure}{\param{self}}{\param{tuple}}\\
    \spacing
    % document of basic document
-   \quad Compute finite abelian group structure.\\
+   \quad 有限アーベル群構造を計算する。\\
    \spacing
    % added document
-   \quad If \param{self} $G \simeq \oplus_i <h_i>$, return [($h_1$, ord($h_1$)),..($h_n$, ord($h_n$))] and $^\# G$,
-   where $<h_i>$ is a cyclic group with the generator $h_i$.\\
+   \quad　もし\param{self} $G \simeq \oplus_i <h_i>$で、 [($h_1$, ord($h_1$)),..($h_n$, ord($h_n$))]と $^\# G$を返す。
+   $<h_i>$は変数$h_i$の巡回群。\\
    \spacing
    % input, output document
-   \quad The output is a tuple which has two elements;
-   the first element is a list which elements are a list of $h_i$ and its order,
-   on the other hand, the second element is the order of the group.
+   \quad 出力は二つずつ要素を持つ三つの組である。;
+   最初の要素は$h_i$とのそ位数のリストである。,
+   また、二番目の要素は群の位数である。
 \begin{ex}
 >>> G=AbelianGenerate([intresidue.IntegerResidueClass(2, 20),
 ... intresidue.IntegerResidueClass(6, 20)])

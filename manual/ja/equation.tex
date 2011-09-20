@@ -25,76 +25,74 @@
    \func{e1}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{\linkingone{equation}{complex}}}\\
    \spacing
    % document of basic document
-   \quad Return the solution of linear equation $ax + b = 0$.\\
+   \quad $ax + b = 0$の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [b, a]} of \linkingone{equation}{complex}.\\
+   \quad \param{f}は\linkingone{equation}{complex}のlinkingone{equation}{poly\_list} {\tt [b, a]}でなければならない。\\
 %
   \subsection{e1\_ZnZ -- solve congruent equation modulo n with degree 1}\linkedone{equation}{e1\_ZnZ}
    \func{e1\_ZnZ}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{n}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the solution of $ax + b  \equiv 0 \pmod{\param{n}}$.\\
+   \quad $ax + b  \equiv 0 \pmod{\param{n}}$.の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [b, a]} of \linkingone{equation}{integer}.\\
+   \quad \param{f}は\linkingone{equation}{integer}の\linkingone{equation}{poly\_list} {\tt [b, a]}でなければならない。\\
 %
   \subsection{e2 -- solve equation with degree 2}\linkedone{equation}{e2}
    \func{e2}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{tuple}}\\
    \spacing
    % document of basic document
-   \quad Return the solution of quadratic equation $ax^2 + bx + c = 0$.\\
+   \quad $ax^2 + bx + c = 0$の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [c, b, a]} of \linkingone{equation}{complex}. \\
-   The result tuple will contain exactly 2 roots, even in the case of
-   double root.\\
+   \quad \param{f}は\linkingone{equation}{complex}の\linkingone{equation}{poly\_list} {\tt [c, b, a]}でなければならない。\\
+   結果のタップルは副根も含め二つの根である。\\
 %
   \subsection{e2\_Fp -- solve congruent equation modulo p with degree 2}\linkedone{equation}{e2\_Fp}
    \func{e2\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the solution of $ax^2 + bx + c  \equiv 0 \pmod{\param{p}}$.\\
+   \quad $ax^2 + bx + c  \equiv 0 \pmod{\param{p}}$の値を返す。\\
    \spacing
    % added document
-   \quad If the same values are returned, then the values are multiple roots. \\
+   \quad 同じ値が返ってきたならば、その値は多重根である。 \\
    \spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of 
-   \linkingone{equation}{integer}s {\tt [c, b, a]}.
-   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+   \quad \param{f}は \linkingone{equation}{integer}s {\tt [c, b, a]}の\linkingone{equation}{poly\_list}
+　　でなければならない。
+   さらに、\param{p}は素数整数。\linkingone{equation}{integer}. \\
 %
   \subsection{e3 -- solve equation with degree 3}\linkedone{equation}{e3}
    \func{e3}{\hiki{f}{\linkingone{equation}{poly\_list}}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the solution of cubic equation $ax^3 + bx^2 + cx + d = 0$.\\
+   \quad　$ax^3 + bx^2 + cx + d = 0$の値を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} {\tt [d, c, b, a]} of \linkingone{equation}{complex}. \\
-   The result tuple will contain exactly 3 roots, even in the case of including
-   double roots.\\
+   \quad \param{f}は\linkingone{equation}{complex}の\linkingone{equation}{poly\_list} {\tt [d, c, b, a]}でなければならない。\\
+   この結果のタップルには重根を含めて三つの根がある。\\
 %
   \subsection{e3\_Fp -- solve congruent equation modulo p with degree 3}\linkedone{equation}{e3\_Fp}
    \func{e3\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the solutions of $ax^3 + bx^2 + cx + d  \equiv 0 \pmod{\param{p}}$.\\
+   \quad $ax^3 + bx^2 + cx + d  \equiv 0 \pmod{\param{p}}$の値を返す。\\
    \spacing
    % added document
-   \quad If the same values are returned, then the values are multiple roots. \\
+   \quad 同じ値が返ってきたならば、その値は多重根である。 \\
    \spacing
    % input, output document
-   \quad \param{f} ought be a \linkingone{equation}{poly\_list} {\tt [d, c, b, a]} of \linkingone{equation}{integer}.
-   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
+   \quad \param{f}は\linkingone{equation}{integer}の\linkingone{equation}{poly\_list} {\tt [d, c, b, a]}でなければならない。
+   In addition, \param{p}は素数整数である。\linkingone{equation}{integer}. \\
   \subsection{Newton -- solve equation using Newton's method}\linkedone{equation}{Newton}
    \func{Newton}{%
      \hiki{f}{\linkingone{equation}{poly\_list}},\ %
@@ -102,17 +100,17 @@
      \hikiopt{repeat}{integer}{250}}{\out{complex}}\\
    \spacing
    % document of basic document
-   \quad Return one of the approximated roots of $a_nx^n + \cdots + a_1x + a_0=0$.\\
+   \quad $a_nx^n + \cdots + a_1x + a_0=0$の値を返す。\\
    \spacing
    % added document
-   \quad If you want to obtain all roots, then use \linkingone{equation}{SimMethod} instead.\\
-   \negok If \param{initial} is a real number but there is no real roots, then this function returns meaningless values. \\
+   \quad　もしすべての根を得たいのなら\linkingone{equation}{SimMethod}を使うことをお勧めする。\\
+   \negok もし\param{initial}が実数根を持たない実数ならばこの関数は役に立たない。\\
    \spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
-   \linkingone{equation}{complex}.
+   \quad \param{f}は\linkingone{equation}{complex}の\linkingone{equation}{poly\_list}でなければならない。
+   
    \param{initial} is an initial approximation \linkingone{equation}{complex} number.
-   \param{repeat} is the number of steps to approximate a root.\\
+   \param{repeat}は根を近似する数である。\\
 %
   \subsection{SimMethod -- find all roots simultaneously}\linkedone{equation}{SimMethod}
    \func{SimMethod}{%
@@ -121,45 +119,43 @@
      \hikiopt{repeat}{integer}{250}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the approximated roots of $a_nx^n + \cdots + a_1x + a_0$.\\
+   \quad　$a_nx^n + \cdots + a_1x + a_0$の根の一つを返す。\\
    \spacing
    % added document
-   \quad \negok If the equation has multiple root, maybe raise some error. \\
+   \quad \negok もしこの方程式が多重根を持っていたら、エラーが返ってくるかもしれない。 \\
    \spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
-   \linkingone{equation}{complex}.\\
-   \param{NewtonInitial} and \param{repeat} will be passed to 
-   \linkingone{equation}{Newton} to obtain the first approximations.\\
+   \quad \param{f}は\linkingone{equation}{complex}の\linkingone{equation}{poly\_list}でなければならない。
+   \\
+   \param{NewtonInitial}と\param{repeat}は近似値を得るため 
+   \linkingone{equation}{Newton}を通過するだろう。\\
 %
   \subsection{root\_Fp --  solve congruent equation modulo p}\linkedone{equation}{root\_Fp}
    \func{root\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return one of the roots of $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$. \\
+   \quad $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$の根の人るを返す。 \\
    \spacing
    % added document
-   \quad If you want to obtain all roots, then use \linkingone{equation}{allroots\_Fp}.\\
+   \quad すべての根を得たいのなら\linkingone{equation}{allroots\_Fp}を使ってください。\\
    \spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
-   \linkingone{equation}{integer}.
-   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
-   \quad If there is no root at all, then nothing will be returned.\\
+   \quad \param{f}は\linkingone{equation}{integer}の\linkingone{equation}{poly\_list}でなければならない。
+   さらに\param{p}は素数。 \\
+   \quad　根が一つもなければこの関数は何も返さない。\\
 %
   \subsection{allroots\_Fp -- solve congruent equation modulo p}\linkedone{equation}{allroots\_Fp}
    \func{allroots\_Fp}{\hiki{f}{\linkingone{equation}{poly\_list}},\ \hiki{p}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return all roots of $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$. \\
+   \quad $a_nx^n + \cdots + a_1x + a_0 \equiv 0 \pmod{\param{p}}$.のすべての根を返す。\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{f} ought to be a \linkingone{equation}{poly\_list} of
-   \linkingone{equation}{integer}.
-   In addition, \param{p} must be a prime \linkingone{equation}{integer}. \\
-   \quad If there is no root at all, then an empty list will be returned.\\
+   \quad \param{f}は\linkingone{equation}{integer}の\linkingone{equation}{poly\_list}でなければならない。
+   さらに\param{p}は素数。 \\
+   \quad 根が一つもないときはこの関数はからのリストを返す。\\
 %
 \begin{ex}
 >>> equation.e1([1, 2])

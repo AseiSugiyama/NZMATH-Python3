@@ -22,7 +22,7 @@ intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
 
  \subsection{IntegerResidueClass -- integer residue class}\linkedone{intresidue}{IntegerResidueClass}
  
- This class is a subclass of \linkingone{ring}{CommutativeRingElement}.
+ このクラスは\linkingone{ring}{CommutativeRingElement}のサブクラスである。
 
   \initialize
   \func{IntegerResidueClass}
@@ -35,7 +35,7 @@ intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
   % added document
   \spacing
   % input, output document
-  \param{modulus} must be positive integer.
+  \param{modulus}は正の整数。
   %\begin{at}
   %  \item[compo]\linkedtwo{vector}{Vector}{compo}:\\ It expresses component of Vector.
   %\end{at}
@@ -65,73 +65,73 @@ intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
    \func{getRing}{\param{self}}{\out{IntegerResidueClassRing}}\\
    \spacing
    % document of basic document
-   \quad Return a ring to which it belongs.
+   \quad 環を返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{getResidue -- get residue}\linkedtwo{intresidue}{IntegerResidueClassRing}{getResidue}
    \func{getResidue}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the value of residue.
+   \quad 余りの値を返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{getModulus -- get modulus}\linkedtwo{intresidue}{IntegerResidueClassRing}{getModulus}
    \func{getModulus}{\param{self}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the value of modulus.
+   \quad 係数の値を返す。.
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{inverse -- inverse element}\linkedtwo{intresidue}{IntegerResidueClassRing}{inverse}
    \func{inverse}{\param{self}}{\out{IntegerResidueClass}}\\
    \spacing
    % document of basic document
-   \quad Return the inverse element if it is invertible. Otherwise raise ValueError.
+   \quad 逆元を持つときは逆元の値を返し、さもなければValueErrorを返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{minimumAbsolute -- minimum absolute representative}\linkedtwo{intresidue}{IntegerResidueClassRing}{minimumAbsolute}
    \func{minimumAbsolute}{\param{self}}{\out{\linkingone{rational}{Integer}}}\\
    \spacing
    % document of basic document
-   \quad  Return the minimum absolute representative integer of the residue class.
+   \quad  クラスの代表的な最小な絶対値を返す。
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{minimumNonNegative -- smallest non-negative representative}\linkedtwo{intresidue}{IntegerResidueClassRing}{minimumNonNegative}
    \func{minimumNonNegative}{\param{self}}{\out{\linkingone{rational}{Integer}}}\\
    \spacing
    % document of basic document
-   \quad Return the smallest non-negative representative element of the residue class.
+   \quad residueクラスの代表的な最小の整数の要素を返す。
    %\spacing
    % added document
-   \quad \negok this method has an alias, named toInteger.\\
+   \quad \negok この方法はエイリアスを持ち、整数より名前がつけられた。\\
    %\spacing
    % input, output document
-   %\quad \param{a} must be int, long or rational.Integer.\\
+   %\quad \param{a}はintまたはlong型。または有理数か整数。\\
 %
 %\begin{ex}
 %>>> A = module.HogeClass((1,2))
@@ -141,24 +141,24 @@ intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
 %\end{ex}%Don't indent!
 \C
  \subsection{IntegerResidueClassRing -- ring of integer residue}\linkedone{intresidue}{IntegerResidueClassRing}
- The class is for rings of integer residue classes.
+ このクラスはinteger residue classesの環である。
 
- This class is a subclass of \linkingone{ring}{CommutativeRing}.
+ このクラスは\linkingone{ring}{CommutativeRing}のサブクラスである。
 
 
   \initialize
   \func{IntegerResidueClassRing}{\hiki{modulus}{integer}}{\out{IntegerResidueClassRing}}\\
   \spacing
   % document of basic document
-  \quad Create an instance of IntegerResidueClassRing. 
+  \quad IntegerResidueClassRingのインスタンスを作る。 
   % added document
   The argument \param{modulus} = $m$ specifies an ideal $m\mathbb{Z}$.
   % \spacing
   % input, output document
   %See \linkingone{module}{point} for \param{point}.
   \begin{at}
-    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ It expresses The additive unit 0. (read only)
-    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ It expresses The multiplicative unit 1. (read only)
+    \item[zero]\linkedtwo{integer}{IntegerRing}{zero}:\\ 加法のおける０を表す。 （読み込むときのみ）
+    \item[one]\linkedtwo{integer}{IntegerRing}{one}:\\ 乗法における１を表す。（読み込むときのみ）
   \end{at}
   \begin{op}
   %  \verb|+| & Vector sum.\\
@@ -188,30 +188,30 @@ intresidue module provides integer residue classes or $\mathbf{Z}/m\mathbf{Z}$.
    \func{createElement}{\param{self},\ \hiki{seed}{integer}}{\out{Integer}}\\
    \spacing
    % document of basic document
-   \quad Return an IntegerResidueClass instance with \param{seed}. 
+   \quad IntegerResidueClass の\param{seed}いおけるインスタンスを返す。. 
    %\spacing
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok　この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad \\
+   %\quad  \param{a}はintまたはlong型。または有理数か整数。\\
 %
   \subsubsection{isfield -- field test}\linkedtwo{intresidue}{IntegerResidueClassRing}{isfield}
    \func{isfield}{\param{self}}{\out{bool}}\\
    \spacing
    % document of basic document
-   \quad Return True if the modulus is prime, False if not. Since a finite domain is a field, other ring property tests are merely aliases of isfield; they are isdomain, iseuclidean, isnoetherian, ispid, isufd.
+   \quad もし係数が素数ならばTureをさもなければFalseを返す。 Since a finite domain is a field, other ring property tests are merely aliases of isfield; they are isdomain, iseuclidean, isnoetherian, ispid, isufd.
    % added document
-   %\quad \negok Note that this function returns integer only.\\
+   %\quad \negok この関数は整数しか返さないことに注意。\\
    %\spacing
    % input, output document
-   %\quad if \param{as\_column} is True, try to create column matrix.\\
+   %\quad もし\param{as\_column}がただしければ、カラムマトリックスを作ろうとする。\\
 %
   \subsubsection{getInstance -- get instance of IntegerResidueClassRing}\linkedtwo{intresidue}{IntegerResidueClassRing}{getInstance}
    \func{getInstance}{\param{cls},\ \hiki{modulus}{integer}}{\out{IntegerResidueClass}}\\
    \spacing
    % document of basic document
-   \quad Return an instance of the class of specified modulus. Since this is a class method, use it as:
+   \quad ある特定の係数のクラスのインスタンスを返す。これはクラスの方法である。:
 
 \verb|IntegerResidueClassRing.getInstance(3)|
 

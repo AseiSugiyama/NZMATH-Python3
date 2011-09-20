@@ -31,14 +31,14 @@
    }\\
    \spacing
    % document of basic document
-   \quad Find a factor of \param{n} by elliptic curve method.\\
+   \quad 楕円曲線法を使って\param{n}の要素を探す。\\
    \spacing
    % added document
-   If it cannot find non-trivial factor of $n$, then it returns $1$.\\ 
+   $n$の非自明な要素が見つからなければ$1$を返す。\\ 
    \spacing
    % input, output document
-   \quad \param{curve\_type} should be chosen from \linkingone{factor.ecm}{curvetype} constants above.\\
-   \quad The second optional argument \param{incs} specifies a number
+   \quad \param{curve\_type}は\linkingone{factor.ecm}{curvetype}の中から選ぶ。\\
+   \quad \param{incs} specifies a number
    of changes of bounds. The function repeats factorization
    trials several times changing curves with a fixed bounds.\\
    \quad Optional argument \param{trials} can control how quickly move

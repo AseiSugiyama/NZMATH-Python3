@@ -14,14 +14,13 @@
    }{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Find a factor of \param{n} by MPQS(multiple-polynomial
-   quadratic sieve) method. \\
+   \quad \param{n}の要素を複数多項式二次ふるい法によって探す。 \\
    \spacing
-   \quad  MPQS is suitable for factorizing a large number.\\
+   \quad  複数多項式二次ふるい法は巨大な数を因数分解する際に有効である。\\
    \spacing
-   \quad Optional arguments \param{s} is the range of sieve,
-   \param{f} is the number of factor base, and \param{m} is multiplier.
-   If these are not specified, the function guesses them from \param{n}.\\
+   \quad \param{s}はふるいの範囲である。
+   \param{f}は因子の数で、\param{m}は乗数。
+   これらが明らかでない時、この関数は\param{n}から推測する。\\
 %
   \subsection{mpqs}\linkedone{factor.mpqs}{mpqs}
    \func{mpqs}{%
@@ -31,14 +30,14 @@
      \hikiopt{m}{integer}{0}
    }{\out{\linkingone{factor.methods}{factorlist}}}\\
    \spacing
-   \quad Factorize n by MPQS method.\\
+   \quad 複数多項式二次ふるい法により\param{n}を素因数分解する。\\
    \spacing
-   \quad Optional arguments are same as \linkingone{factor.mpqs}{mpqsfind}.
+   \quad \linkingone{factor.mpqs}{mpqsfind}と同様である。
 %
   \subsection{eratosthenes}\linkedone{factor.mpqs}{eratosthenes}
    \func{eratosthenes}{\hiki{n}{integer}}{\out{list}}\\
    \spacing
-   \quad Enumerate the primes up to \param{n}.\\
+   \quad \param{n}までの素数を列挙する。\\
 \C
 
 %---------- end document ---------- %

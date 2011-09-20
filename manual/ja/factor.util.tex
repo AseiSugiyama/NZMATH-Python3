@@ -69,27 +69,28 @@
    \func{getResult}{\param{self}}{\out{\linkingone{factor.util}{factors}}}\\
    \spacing
    % document of basic document
-   \quad Return the currently known factorization of the \linkingtwo{factor.util}{FactoringInteger}{number}.\\
+   \quad \linkingtwo{factor.util}{FactoringInteger}{number}の因数分解をする。\\
 %
  \subsubsection{register -- register a new factor}\linkedtwo{factor.util}{FactoringInteger}{register}
    \func{register}{\param{self},\ \hiki{divisor}{integer},\ \hikiopt{isprime}{bool}{{\tt None}}}{}\\
    \spacing
-   Register a \param{divisor} of the \linkingtwo{factor.util}{FactoringInteger}{number} if the \param{divisor} is a true divisor of the number.\\
+    \param{divisor}が本当にある数を割るとき、
+   \linkingtwo{factor.util}{FactoringInteger}{number}の\param{divisor}を記憶する。\\
    \spacing
    %added document
-   \quad The number is divided by the \param{divisor} as many times as possible.\\
+   \quad その数は\param{divisor}により可能な限り割られる。\\
    \spacing
    % input/output document
-   The optional argument \param{isprime} tells the primality of the
+   \param{isprime} tells the primality of the
    \param{divisor} (default to undetermined).\\
 %
  \subsubsection{sortFactors -- sort factors}\linkedtwo{factor.util}{FactoringInteger}{sortFactors}
    \func{sortFactors}{\param{self}}{}
    \spacing
-   \quad Sort factors list.\\
+   \quad 要素のリストを並べる。\\
    \spacing
     % added document
-    \quad This affects the result of \linkingtwo{factor.util}{FactoringInteger}{getResult}.\\
+    \quad この関数は\linkingtwo{factor.util}{FactoringInteger}{getResult}に関係している。\\
 %
 \begin{ex}
 >>> A = factor.util.FactoringInteger(100)
@@ -118,9 +119,9 @@
   \quad Base class of factoring methods.\\
   \spacing
   % added document
-  \quad All methods defined in \linkingzero{factor.methods} are
-  implemented as derived classes of this class. The method which users may call is  \linkingtwo{factor.util}{FactoringMethod}{factor} only. 
-  Other methods are explained for future implementers of a new factoring method.\\
+  \quad すべての方法は\linkingzero{factor.methods}で定義されている。
+  implemented as derived classes of this class. この方法は\linkingtwo{factor.util}{FactoringMethod}{factor}と呼ぶこともある。 
+ 　他の方法は\\
   \method
   \subsubsection{factor -- do factorization}\linkedtwo{factor.util}{FactoringMethod}{factor}
    \func{factor}{\param{self},\ %
@@ -130,10 +131,8 @@
    }{\out{\linkingone{factor.util}{factorlist}}}\\
    \spacing
    % document of basic document
-   \quad Return the factorization of the given positive integer \param{number}.
-   \spacing
-   % input, output document
-   \quad The default returned type is a \linkingone{factor.util}{factorlist}.\\
+   \quad 与えられた正の整数\param{number}の因数分解を行う。\\
+   \quad 不履行の場合は\linkingone{factor.util}{factorlist}を返す。\\
    \quad A keyword option \param{return\_type} can be as the following:
    \begin{enumerate}
    \item {\tt 'list'} for default type (\linkingone{factor.util}{factorlist}).
@@ -165,9 +164,9 @@
     **\param{options}
   }{\out{integer}}\\
   \spacing
-  \quad Find a factor from the \param{target} number.\\
+  \quad \param{target}から要素を探す。\\
   \spacing
-  \quad This method has to be overridden, or \linkingtwo{factor.util}{FactoringMethod}{factor} method should be overridden not to call this method.\\
+  \quad この方法は優先されるべきである。または\linkingtwo{factor.util}{FactoringMethod}{factor}法も\\
 %
   \subsubsection{\negok generate -- generate prime factors}\linkedtwo{factor.util}{FactoringMethod}{generate}
   \func{generate}{\param{self},\ %
@@ -179,7 +178,7 @@
   \quad Generate prime factors of the \param{target} number with their valuations.\\
  \spacing
  % added document
-  \quad The method may terminate with yielding {\tt (1, 1)}
+  \quad この関数が{\tt (1, 1)}を返したら因数分解は不完全であることを示す。
   to indicate the factorization is incomplete.\\
   This method has to be overridden, or \linkingtwo{factor.util}{FactoringMethod}{factor} method should be overridden not to call this method.\\
 \C

@@ -9,69 +9,69 @@
    \func{c\_root\_p}{\hiki{a}{integer},\ \hiki{p}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return the cubic root of \param{a} modulo prime \param{p}. (i.e. solutions of the equation $x^3 = \param{a} \pmod{\param{p}}$).\\
+   \quad \param{a}法\param{p}の\param{a}の3乗根の値を返す。 (すなわち、 $x^3 = \param{a} \pmod{\param{p}}$).\\
    \spacing
    % added document
    %\spacing
    % input, output document
-   \quad \param{p} must be a prime integer.\\
-   This function returns the list of all cubic roots of \param{a}.\\
+   \quad \param{p}は素数。\\
+   \この関数はparam{a}の3乗根のすべての値をリストで返す。\\
 %
   \subsection{c\_residue -- cubic residue mod p}\linkedone{cubic\_root}{c\_residue}
    \func{c\_residue}{\hiki{a}{integer},\ \hiki{p}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Check whether the rational integer \param{a} is cubic residue modulo prime \param{p}.\\
+   \quad 法\param{p}で有理数\param{a}が３乗になっているか調べる。\\
    \spacing
    % added document
-   \quad If $\param{p}\ |\ \param{a}$, then this function returns $0$,
-   elif \param{a} is cubic residue modulo \param{p}, then it returns $1$,
-   otherwise (i.e. cubic non-residue), it returns $-1$.\\
+   \quad もし$\param{p}\ |\ \param{a}$なら$0$を返す。
+   また、法\param{p}で\param{a}が３乗になっているならば$1$を返す。
+   そうでなければ(3乗になっていいないとき)$-1$を返す。\\
    \spacing
    % input, output document
-   \quad \param{p} must be a prime integer.\\
+   \quad \param{p}は素数。\\
 %
   \subsection{c\_symbol -- cubic residue symbol for Eisenstein-integers}\linkedone{cubic\_root}{c\_symbol}
    \func{c\_symbol}{\hiki{a1}{integer},\ \hiki{a2}{integer},\ \hiki{b1}{integer},\ \hiki{b2}{integer}}{\out{integer}}\\
    \spacing
    % document of basic document
-   \quad Return the (Jacobi) cubic residue symbol of two Eisenstein-integers $\left(\frac{\param{a1}+\param{a2}\omega}{\param{b1}+\param{b2}\omega}\right)_3$,
-where $\omega$ is a primitive cubic root of unity.\\
+   \quad 二つのEisenstein整数である(Jacobi)立方剰余記号の値を返す。$\left(\frac{\param{a1}+\param{a2}\omega}{\param{b1}+\param{b2}\omega}\right)_3$,
+$\omega$は１の３乗根の値である。\\
    \spacing
    % added document
-   If $\param{b1}+\param{b2}\omega$ is a prime in $\mathbb{Z}[\omega]$, it shows $\param{a1}+\param{a2}\omega$ is cubic residue or not.\\
+   もし$\param{b1}+\param{b2}\omega$が$\mathbb{Z}[\omega]$に含まれる素数であるならば、$\param{a1}+\param{a2}\omega$は立方剰余かわかる。\\
    \spacing
    % input, output document
-   \quad We assume that $\param{b1}+\param{b2}\omega$ is not divisible $1-\omega$.\\
+   \quad $\param{b1}+\param{b2}\omega$は$1-\omega$に分けられないと仮定する。.\\
 %
   \subsection{decomposite\_p -- decomposition to Eisenstein-integers}\linkedone{cubic\_root}{decomposite\_p}
    \func{decomposite\_p}{\hiki{p}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return one of prime factors of \param{p} in $\mathbb{Z}[\omega]$.\\
+   \quad $\mathbb{Z}[\omega]$に含まれる素数の一つ\param{p}の値を返す。\\
    \spacing
    % added document
-   \quad If the output is (\param{a},\ \param{b}), then $\frac{\param{p}}{\param{a}+\param{b}\omega}$ is a prime in $\mathbb{Z}[\omega]$.
-   In other words, \param{p} decomposes into two prime factors $\param{a}+\param{b}\omega$ and $\param{p}/(\param{a}+\param{b}\omega)$ in $\mathbb{Z}[\omega]$.\\
+   \quad もし出力が(\param{a},\ \param{b})なら、$\frac{\param{p}}{\param{a}+\param{b}\omega}$は $\mathbb{Z}[\omega]$.に含まれる素数である。
+   すなわち\param{p}が$\mathbb{Z}[\omega]$.に含まれる$\param{a}+\param{b}\omega$ and $\param{p}/(\param{a}+\param{b}\omega)$の二つの素因数に分解することができる。\\
    \spacing
    % input, output document
-   \quad \param{p} must be a prime rational integer.
-   We assume that $\param{p}\equiv 1 \pmod 3$.\\
+   \quad \param{p}は有理数かつ素数。
+   $\param{p}\equiv 1 \pmod 3$と仮定する。\\
 %
   \subsection{cornacchia -- solve $x^2+dy^2=p$}\linkedone{cubic\_root}{cornacchia}
    \func{cornacchia}{\hiki{d}{integer},\ \hiki{p}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
    % document of basic document
-   \quad Return the solution of $x^2 + \param{d}y^2 = \param{p}$.\\
+   \quad　$x^2 + \param{d}y^2 = \param{p}$の値を返す。\\
    \spacing
    % added document
-   \quad This function uses Cornacchia's algorithm. See \cite{Cohen1}.\\
+   \quad この関数はCornacchiaのアルゴリズムを使用。 \cite{Cohen1}参照。\\
    \spacing
    % input, output document
-   \quad \param{p} must be prime rational integer.
-   \param{d} must be satisfied with the condition $0<\param{d}<\param{p}$.
-   This function returns (\param{x},\ \param{y}) as one of solutions of the equation $x^2 + \param{d} y^2 = \param{p}$.\\
-%
+   \quad \param{p}は有理数かつ素数。
+   \param{d}は$0<\param{d}<\param{p}$の関係を充たす。.
+   この関数は$x^2 + \param{d} y^2 = \param{p}$の値として(\param{x},\ \param{y})を返す。\\
+
 \begin{ex}
 >>> cubic_root.c_root_p(1, 13)
 [1, 3, 9]

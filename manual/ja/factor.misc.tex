@@ -22,26 +22,26 @@
    \func{allDivisors}{\hiki{n}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return all factors divide \param{n} as a list.\\
+   \quad  \param{n}で割ったすべての要素の値をリストとして返す。\\
 %
   \subsection{primeDivisors -- prime divisors}\linkedone{factor.misc}{primeDivisors}
    \func{primeDivisors}{\hiki{n}{integer}}{\out{list}}\\
    \spacing
    % document of basic document
-   \quad Return all prime factors divide \param{n} as a list.\\
+   \quad \param{n}で割ったすべての素数である要素の値をリストとして返す。\\
 %
   \subsection{primePowerTest -- prime power test}\linkedone{factor.misc}{primePowerTest}
    \func{primePowerTest}{\hiki{n}{integer}}{(\out{integer},\ \out{integer})}\\
    \spacing
-   \quad Judge whether \param{n} is of the form \(p^k\) with a prime \(p\) or not.
-   If it is true, then {\tt (p, k)} will be returned, otherwise {\tt (n, 0)}.\\
+   \quad Judge whether \param{n} is of the form \(p^k\) with a prime \(p\)
+   もし正しいのなら{\tt (p, k)}を返し、 さもなければ {\tt (n, 0)}を返す。\\
    \spacing
-   \quad This function is based on Algo. 1.7.5 in \cite{Cohen1}.\\
+   \quad この関数はAlgo. 1.7.5 in \cite{Cohen1}に基づいている。\\
 %
   \subsection{squarePart -- square part}\linkedone{factor.misc}{squarePart}
    \func{squarePart}{\hiki{n}{integer}}{\out{integer}}\\
    \spacing
-   \quad Return the largest integer whose square divides \param{n}.
+   \quad \param{n}を割り切る最大の整数の二乗の値を返す。
 %
 \begin{ex}
 >>> factor.misc.allDivisors(1001)
@@ -83,33 +83,32 @@
    \subsubsection{is\_divisible\_by}\linkedtwo{factor.misc}{FactoredInteger}{is\_divisible\_by}
    \func{is\_divisible\_by}{\param{self},\ \hiki{other}{integer/\linkingone{factor.misc}{FactoredInteger}}}{\out{bool}}\\
    \spacing
-   \quad Return True if \param{other} divides \param{self}.\\
+   \quad \param{other}が\param{self}割り切ったのならTrueと返す。\\
 
    \subsubsection{exact\_division}\linkedtwo{factor.misc}{FactoredInteger}{exact\_division}
    \func{exact\_division}{\param{self},\ \hiki{other}{integer/\linkingone{factor.misc}{FactoredInteger}}}{\out{\linkingone{factor.misc}{FactoredInteger}}}\\
    \spacing
-   \quad Divide by \param{other}. The \param{other} must divide \param{self}.\\
+   \quad \param{other}で割るとき、\param{other}は\param{self}で必ず割り切る。\\
 
    \subsubsection{divisors}\linkedtwo{factor.misc}{FactoredInteger}{divisors}
    \func{divisors}{\param{self}}{\out{list}}\\
    \spacing
-   \quad Return all divisors as a list.\\
+   \quad すべての除数をリストとして返す。\\
 
    \subsubsection{proper\_divisors}\linkedtwo{factor.misc}{FactoredInteger}{proper\_divisors}
    \func{proper\_divisors}{\param{self}}{\out{list}}\\
    \spacing
-   \quad Return all proper divisors (i.e. divisors excluding \(1\) and
-   \param{self}) as a list.\\
+   \quad \(1\)と\param{self}\\を含まないすすべての除数をリストとして返す。\\
 
    \subsubsection{prime\_divisors}\linkedtwo{factor.misc}{FactoredInteger}{prime\_divisors}
    \func{prime\_divisors}{\param{self}}{\out{list}}\\
    \spacing
-   \quad Return all prime divisors as a list.\\
+   \quad すべての素数の除数をリストとして返す。\\
 
    \subsubsection{square\_part}\linkedtwo{factor.misc}{FactoredInteger}{square\_part}
    \func{square\_part}{\param{self},\ \hikiopt{asfactored}{bool}{False}}{\out{integer/\linkingone{factor.misc}{FactoredInteger object}}}\\
    \spacing
-   \quad Return the largest integer whose square divides \param{self}.\\
+   \quad \param{self}を割る最大の整数の値を返す。\\
    \spacing
    \quad If an optional argument \param{asfactored} is true,
    then the result is also a \linkingone{factor.misc}{FactoredInteger object}. (default is False)\\
@@ -117,7 +116,7 @@
    \subsubsection{squarefree\_part}\linkedtwo{factor.misc}{FactoredInteger}{squarefree\_part}
    \func{squarefree\_part}{\param{self},\ \hikiopt{asfactored}{bool}{False}}{\out{integer/\linkingone{factor.misc}{FactoredInteger object}}}\\
    \spacing
-   \quad Return the largest squarefree integer which divides \param{self}.\\
+   \quad \param{self}を割り、二乗にならない最大の整数の値を返す。\\
    \spacing
    \quad If an optional argument \param{asfactored} is true,
    then the result is also a \linkingone{factor.misc}{FactoredInteger object} object. (default is False)\\
@@ -125,7 +124,7 @@
    \subsubsection{copy}\linkedtwo{factor.misc}{FactoredInteger}{copy}
    \func{copy}{\param{self}}{\out{\linkingone{factor.misc}{FactoredInteger object}}}\\
    \spacing
-   \quad Return a copy of the object.\\
+   \quad 自分自身をコピーした値を返す。\\
 
 %---------- end document ---------- %
 

@@ -5,12 +5,12 @@
 %---------- start document ---------- %
  \section{factor.find -- find a factor}\linkedzero{factor.find}
 %
-\quad All methods in this module return one of a factor of given integer.
-If it failes to find a non-trivial factor, it returns \(1\).
-Note that \(1\) is a factor anyway.
+\quad このモジュールの方法は与えられた整数に対して一つの要素を返す。
+非自明な要素ｗさがすことができない場合は\(1\)を返す。
+しかし\(1\)も要素であることお忘れなく。
 
 \param{verbose} boolean flag can be specified for verbose reports.
-To receive these messages, you have to prepare a logger (see \linklibrary{logging}).
+このメッセージを受け取るため、loggerを準備してください。 (\linklibrary{logging}参照。)
 
   \subsection{trialDivision -- trial division}\linkedone{factor.find}{trialDivision}
    \func{trialDivision}
@@ -22,16 +22,16 @@ To receive these messages, you have to prepare a logger (see \linklibrary{loggin
    }\\
    \spacing
    % document of basic document
-   \quad Return a factor of \param{n} by trial divisions.\\
+   \quad 試割り算によって得る\param{n}の要素を返す。\\
    \spacing
    % input, output document
-   \quad \param{options} can be either one of the following:
+   \quad \param{options}は以下のどちらか:
    \begin{enumerate}
-   \item \param{start} and \param{stop} as range parameters.
-         In addition to these, \param{step} is also available.
-   \item \param{iterator} as an iterator of primes.
+   \item \param{start}と\param{stop}は範囲パラメータ。
+        　さらには \param{step}も利用可。
+   \item \param{iterator}は素数のイテレータ。
    \end{enumerate}
-   If \param{options} is not given, the function divides \param{n} by primes from \(2\) to the floor of the square root of \param{n} until a non-trivial factor is found.\\
+   \param{options}が与えられない場合、この関数は非自明な要素がみつかるまで\param{n}を素数\(2\)\\から\param{n}の二乗までの数で割っていく。
    \quad \param{verbose} boolean flag can be specified for verbose reports.\\
 %
   \subsection{pmom -- $p-1$ method}\linkedone{factor.find}{pmom}
@@ -43,14 +43,14 @@ To receive these messages, you have to prepare a logger (see \linklibrary{loggin
    }\\
    \spacing
    % document of basic document
-   \quad Return a factor of \param{n} by the \(p-1\) method.\\
+   \quad \(p-1\)法を使い \param{n}の要素を返す。\\
    \spacing
    % added document
-   \quad The function tries to find a non-trivial factor of \param{n}
-   using Algorithm 8.8.2 (\(p-1\) first stage) of \cite{Cohen1}.
-   In the case of \(n = 2^{i}\), the function will not terminate.
-   Due to the nature of the method, the method may return the
-   trivial factor only.\\
+   \quad この関数は\cite{Cohen1}のアルゴリズム8.8.2 (\(p-1\) first stage)を使って
+　\param{n}の非自明な要素を探すよう試みる。
+   
+   \(n = 2^{i}\)の場合、 この関数はループにおちいる。
+   自然法によってこの方法は自明な要素しか返さないかもしれない。\\
    \spacing
    % input, output document
    \quad \param{verbose} Boolean flag can be specified for verbose reports,
@@ -65,12 +65,11 @@ To receive these messages, you have to prepare a logger (see \linklibrary{loggin
    }\\
    \spacing
    % document of basic document
-   \quad Return a factor of \param{n} by Pollard's \(\rho\) method.\\
+   \quad　Pollardの\(\rho\)法より\param{n}の要素を返す。\\
    \spacing
    % added document
-   The implementation refers the explanation in \cite{Pomerance}.
-   Due to the nature of the method, a factorization may return the
-   trivial factor only.\\
+   この実装は\cite{Pomerance}の説明に言及する。.
+   自然法によって因数分解は自明な要素しか返さないかもしれない。\\
    \spacing
    % input, output document
    \quad \param{verbose} Boolean flag can be specified for verbose reports.\\
