@@ -131,12 +131,12 @@ def modsqrt(a, p):
         if pmod8 != 1:
             a %= p
             if pmod8 == 3 or pmod8 == 7:
-                x = pow(a, (p+1) >> 2, p)
+                x = pow(a, (p >> 2) + 1, p)
             else: # p & 7==5
-                x = pow(a, (p+3) >> 3, p)
+                x = pow(a, (p >> 3) + 1, p)
                 c = pow(x, 2, p)
                 if c != a:
-                    x = (x * pow(2, (p-1) >> 2, p)) % p
+                    x = (x * pow(2, p >> 2, p)) % p
         else: #p & 7==1
             d = 2
             while legendre(d, p) != -1:

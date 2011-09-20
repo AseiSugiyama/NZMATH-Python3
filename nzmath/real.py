@@ -19,7 +19,7 @@ from nzmath.plugins import MATHMODULE as math, FLOATTYPE as Float, \
 
 class Real(ring.FieldElement):
     """
-    Real is a class of real. 
+    Real is a class of real.
     This class is only for consistency for other Ring object.
     """
 
