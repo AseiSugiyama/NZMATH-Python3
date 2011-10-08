@@ -418,7 +418,7 @@ class Zeta(object):
     """
     def __init__(self, size, pos=None, val=1):
         self.size = size
-        self.z = [0]*self.size
+        self.z = [0] * self.size
         if pos is not None:
             self.z[pos % self.size] = val
 
@@ -450,7 +450,7 @@ class Zeta(object):
                     zr_m = zr_m + (self<<k)*other.z[k]
             return zr_m
         else:
-            m = gcd.lcm(self.size,other.size)
+            m = gcd.lcm(self.size, other.size)
             return self.promote(m)*other.promote(m)
 
     __rmul__ = __mul__
@@ -512,19 +512,24 @@ class Zeta(object):
             p = 3
             while m % p:
                 p += 2
-            mp = m//p
+            mp = m // p
             for i in range(mp):
-                min = self.z[i]
+                mini = self.z[i]
                 for j in range(mp + i, m, mp):
-                    if min > self.z[j]:
-                        min = self.z[j]
+                    if mini > self.z[j]:
+                        mini = self.z[j]
                 for j in range(i, m, mp):
-                    z_p.z[j] = self.z[j] - min
+                    z_p.z[j] = self.z[j] - mini
         return z_p
 
     def __mod__(self, mod):
         new = Zeta(self.size)
-        new.z = [x%mod for x in self.z]
+        new.z = [x % mod for x in self.z]
+        # make all entries minimum absolute
+        half = mod >> 1
+        for i in range(self.size):
+            if new.z[i] > half:
+                new.z[i] -= mod
         return new
 
     def __setitem__(self, position, value):
@@ -552,13 +557,18 @@ class Zeta(object):
         return True
 
     def __hash__(self):
-        hash_val = sum([hash(z[i]) for i in range(1, self.size)])
-        return hash_val
+        return sum([hash(self.z[i]) for i in range(1, self.size)])
 
     def weight(self):
-        return len(filter(None,self.z))
+        """
+        Return the number of nonzero entries.
+        """
+        return len(filter(None, self.z))
 
     def mass(self):
+        """
+        Return the sum of all entries.
+        """
         return sum(self.z)
 
 
@@ -619,7 +629,7 @@ class FactoredInteger(object):
         return self.__class__(new_integer, new_factors)
 
     def __pos__(self):
-        return self.copy(self)
+        return self.copy()
 
     def __str__(self):
         return str(self.integer)
@@ -887,7 +897,7 @@ class Status:
         j2 = J.get(1, 2, q)**2
         s = q*j2 % n
         s = pow(s, n >> 2, n)
-        if n& 3 == 3:
+        if n & 3 == 3:
             s = s*j2 % n
         s = +(s % n)
         if s.weight() == 1 and s.mass() == 1:
@@ -998,7 +1008,8 @@ class JacobiSum:
             self.shelve[1, p, q] = +Jpq
         del fx
 
-    def makefx(self, q):
+    @staticmethod
+    def makefx(q):
         """
         Return a dict called 'fx'.
         The dict stores the information that fx[i] == j iff

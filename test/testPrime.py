@@ -30,6 +30,11 @@ class PrimeTest(unittest.TestCase):
         self.assertTrue(prime.miller(1111111111111111111))
         self.assertFalse(prime.miller(11111111111111111111111111111))
 
+    def testAPR(self):
+        # User Request item #3418110
+        self.assertTrue(prime.apr(37))
+        self.assertTrue(prime.apr(619))
+
     def testGenerator(self):
         g = prime.generator()
         self.assertEqual(2, g.next())
