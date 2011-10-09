@@ -41,3 +41,5 @@ __all__ = [
     "squarefree",
     "vector"
     ]
+
+__all__.append("all")
