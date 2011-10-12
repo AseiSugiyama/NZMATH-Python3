@@ -8,15 +8,18 @@ def import_all(directory):
     """
     Execute 'from (directory) import (all files except "all.py")'.
     """
-    exec('import ' + directory)
     try:
+        exec('import ' + directory)
+
         import_files = eval(directory + ".__all__")
         for import_file in import_files:
             if import_file != "all":
                 exec('import ' + directory + '.' + import_file)
     except AttributeError: # __all__ does not exist
         pass
-    except ImportError: # import_file is not file name
+    except ImportError: 
+        # 1. __init__.py does not exist
+        # 2. import_file is not file name
         pass
 
 def search_subdir(directory):
