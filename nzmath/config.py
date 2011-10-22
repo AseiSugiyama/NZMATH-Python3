@@ -304,6 +304,10 @@ if CHECK_PLUGIN_MATH:
 #
 def default_datadir():
     candidates = []
+    
+    # developing environment
+    candidates.append(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'dist', 'data'))
+
     if DATADIR is not None:
         candidates.append(DATADIR)
     if sys.platform in WINDOWS_PLATFORMS:
