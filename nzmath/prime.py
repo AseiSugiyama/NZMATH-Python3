@@ -523,13 +523,14 @@ class Zeta(object):
         return z_p
 
     def __mod__(self, mod):
+        """
+        Return a new Zeta instance modulo 'mod'.
+
+        All entries are reduced to the least absolute residues.
+        """
         new = Zeta(self.size)
-        new.z = [x % mod for x in self.z]
-        # make all entries minimum absolute
-        half = mod >> 1
-        for i in range(self.size):
-            if new.z[i] > half:
-                new.z[i] -= mod
+        half = (mod - 1) >> 1 # -1 to make 1 (mod 2) be 1, not -1.
+        new.z = [(x + half) % mod - half for x in self.z]
         return new
 
     def __setitem__(self, position, value):

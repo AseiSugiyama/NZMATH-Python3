@@ -12,7 +12,7 @@ class Arith1Test (unittest.TestCase):
 
     def testModsqrt(self):
         self.assertTrue(arith1.modsqrt(2, 17) in (6, 11))
-        self.assertTrue(arith1.modsqrt(124413, 2**17-1) in (3988, 127073))
+        self.assertTrue(arith1.modsqrt(124413, 2**17-1) in (3998, 127073))
         self.assertEqual(1, arith1.modsqrt(1, 2**13-1))
 
     def testExpand(self):
