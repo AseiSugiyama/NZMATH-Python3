@@ -724,22 +724,14 @@ def sqroot_power(a, p, n):
     """
     return squareroot of a mod p^k for k = 2,3,...,n
     """
-    r = arith1.modsqrt(a, p)
-    x = (r, p-r)
-    i = 2
-    answer = [x]
+    x = arith1.modsqrt(a, p)
+    answer = [[x, p - x]]
     ppower = p
-    while i <= n:
-        b_1 = (x[0]**2-a) // ppower
-        b_2 = (x[1]**2-a) // ppower
-        x_1 = -b_1 * arith1.inverse(2*x[0], p)
-        x_2 = -b_2 * arith1.inverse(2*x[1], p)
-        X_1 = x[0] + x_1*ppower % (p*ppower)
-        X_2 = x[1] + x_2*ppower % (p*ppower)
-        x = [X_1, X_2]
-        answer.append(x)
-        i += 1
+    inverse = arith1.inverse(x << 1, p)
+    for i in range(n - 1):
+        x += (a - x ** 2) // ppower * inverse % p * ppower
         ppower *= p
+        answer.append([x, ppower - x])
     return answer
 
 #################
