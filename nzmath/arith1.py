@@ -120,35 +120,47 @@ def legendre(a, m):
         return symbol
     return 0
 
-def modsqrt(a, p):
+def modsqrt(n, p, e=1):
     """
-    This function returns one of the square roots of 'a' for mod 'p'.
-    'p' must be an odd prime.
+    This function returns one of the square roots of n for mod p**e.
+    p must be an odd prime.
+    e must be a positive integer.
+    If 1 < e then n must be relatively prime with p.
     """
-    symbol = legendre(a, p)
+    if 1 < e:
+        x = modsqrt(n, p)
+        if 0 == x: raise ValueError, "if 1 < e then n must be relatively prime with p"
+        ppower = p
+        z = inverse(x << 1, p)
+        for i in range(e - 1):
+            x += (n - x ** 2) // ppower * z % p * ppower
+            ppower *= p
+        return x
+    
+    symbol = legendre(n, p)
     if symbol == 1:
         pmod8 = p & 7
         if pmod8 != 1:
-            a %= p
+            n %= p
             if pmod8 == 3 or pmod8 == 7:
-                x = pow(a, (p >> 2) + 1, p)
+                x = pow(n, (p >> 2) + 1, p)
             else: # p & 7==5
-                x = pow(a, (p >> 3) + 1, p)
+                x = pow(n, (p >> 3) + 1, p)
                 c = pow(x, 2, p)
-                if c != a:
+                if c != n:
                     x = (x * pow(2, p >> 2, p)) % p
         else: #p & 7==1
             d = 2
             while legendre(d, p) != -1:
                 d = random.randrange(3, p)
             s, t = vp(p-1, 2)
-            A = pow(a, t, p)
+            A = pow(n, t, p)
             D = pow(d, t, p)
             m = 0
             for i in range(1, s):
                 if pow(A*(D**m), 1 << (s-1-i), p) == (p-1):
                     m += 1 << i
-            x = (pow(a, (t+1) >> 1, p) * pow(D, m >> 1, p)) % p
+            x = (pow(n, (t+1) >> 1, p) * pow(D, m >> 1, p)) % p
         return x
     elif symbol == 0:
         return 0
