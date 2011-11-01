@@ -31,6 +31,9 @@ def compile(dir)
 	savedir = Dir.pwd
 	Dir.chdir(dir)
 
+	# 中間ファイル削除
+	clean
+
 	# 個別ファイルコンパイル
 	Dir::glob("*.pdf").each do |file|
 		next if "nzmath_doc" == file[0...-4]
