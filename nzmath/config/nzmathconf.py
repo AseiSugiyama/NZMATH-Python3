@@ -43,24 +43,6 @@ HAVE_SQLITE3 = None
 CHECK_SQLITE3 = True
 
 #
-# net availability
-# ----------------
-#
-# Some functions will connect to the Net.
-# Desktop machines are usually connected to the Net, but notebooks
-# may have connectivity only occasionally.
-#
-# If you have net connectivity now, set as the following:
-#HAVE_NET = True
-#CHECK_NET = False
-# Or, if your machine is not connected, set as the following:
-#HAVE_NET = False
-#CHECK_NET = False
-# The default values mean "I don't know; check it later":
-HAVE_NET = None
-CHECK_NET = True
-
-#
 # psyco
 # -----
 #
