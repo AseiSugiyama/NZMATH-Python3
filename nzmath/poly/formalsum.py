@@ -39,7 +39,7 @@ import nzmath.compatibility
 class FormalSumContainerInterface (object):
     """
     Interface of formal sum container.
-    Do not instanciate.
+    Do not instantiate.
     """
     def __iter__(self):
         """

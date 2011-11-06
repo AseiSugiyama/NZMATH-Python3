@@ -26,7 +26,7 @@ class FiniteFieldElement(ring.FieldElement):
     The base class for all finite field element.
     """
     def __init__(self):
-        # This class is abstract and can not be instanciated.
+        # This class is abstract and can not be instantiated.
         if type(self) is FiniteFieldElement:
             raise NotImplementedError("the class FiniteFieldElement is abstract")
         ring.FieldElement.__init__(self)
@@ -37,7 +37,7 @@ class FiniteField(ring.Field):
     The base class for all finite fields.
     """
     def __init__(self, characteristic):
-        # This class is abstract and can not be instanciated.
+        # This class is abstract and can not be instantiated.
         if type(self) is FiniteField:
             raise NotImplementedError("the class FiniteField is abstract")
         ring.Field.__init__(self)

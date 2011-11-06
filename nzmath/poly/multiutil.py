@@ -21,7 +21,7 @@ class OrderProvider (object):
     """
     def __init__(self, order):
         """
-        Do not instanciate OrderProvider.
+        Do not instantiate OrderProvider.
         This initializer should be called from descendant:
           OrderProvider.__init__(self, order)
         """
@@ -98,7 +98,7 @@ class RingElementProvider (ring.CommutativeRingElement):
     """
     def __init__(self):
         """
-        Do not instanciate RingElementProvider.
+        Do not instantiate RingElementProvider.
         This initializer should be called from descendant:
           RingElementProvider.__init__(self)
         """

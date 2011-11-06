@@ -21,7 +21,7 @@ class Ring (object):
         Initialize _one and _zero for later use for properties 'one'
         and 'zero'.
         """
-        # This class is abstract and cannot be instanciated.
+        # This class is abstract and cannot be instantiated.
         if type(self) is Ring:
             raise NotImplementedError("class Ring is abstract")
         self._one = None
@@ -96,7 +96,7 @@ class CommutativeRing (Ring):
         Initialize 'properties' attribute by an object of
         CommutativeRingProperties.
         """
-        # This class is abstract and cannot be instanciated.
+        # This class is abstract and cannot be instantiated.
         if type(self) is CommutativeRing:
             raise NotImplementedError("class CommutativeRing is abstract")
         Ring.__init__(self)
@@ -197,7 +197,7 @@ class Field (CommutativeRing):
         """
         Set field flag True of 'properties' attribute.
         """
-        # This class is abstract and cannot be instanciated.
+        # This class is abstract and cannot be instantiated.
         if type(self) is Field:
             raise NotImplementedError
         CommutativeRing.__init__(self)
@@ -241,7 +241,7 @@ class QuotientField (Field):
         Create quotient field from given domain.
         Initialize 'basedomain' attribute by the given 'domain'.
         """
-        # This class is abstract and cannot be instanciated.
+        # This class is abstract and cannot be instantiated.
         if type(self) is QuotientField:
             raise NotImplementedError("QuotientField is an abstract class")
         Field.__init__(self)
@@ -260,7 +260,7 @@ class RingElement (object):
 
     def __init__(self, *args, **kwd):
         """
-        This class is abstract and cannot be instanciated.
+        This class is abstract and cannot be instantiated.
         """
         if type(self) is RingElement:
             raise NotImplementedError("RingElement is an abstract class.")
@@ -296,7 +296,7 @@ class CommutativeRingElement (RingElement):
 
     def __init__(self):
         """
-        This class is abstract and cannot be instanciated.
+        This class is abstract and cannot be instantiated.
         """
         if type(self) is CommutativeRingElement:
             raise NotImplementedError("CommutativeRingElement is an abstract class.")
@@ -346,7 +346,7 @@ class FieldElement (CommutativeRingElement):
     """
     def __init__(self):
         """
-        This class is abstract and cannot be instanciated.
+        This class is abstract and cannot be instantiated.
         """
         if type(self) is FieldElement:
             raise NotImplementedError("FieldElement is an abstract class.")

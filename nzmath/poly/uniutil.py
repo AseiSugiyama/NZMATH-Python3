@@ -31,7 +31,7 @@ class OrderProvider(object):
     """
     def __init__(self, order=termorder.ascending_order):
         """
-        Do not instanciate OrderProvider.
+        Do not instantiate OrderProvider.
         This initializer should be called from descendant:
           OrderProvider.__init__(self, order)
         where order is default to termorder.ascending_order.
@@ -87,7 +87,7 @@ class DivisionProvider(object):
     """
     def __init__(self):
         """
-        Do not instanciate DivisionProvider.
+        Do not instantiate DivisionProvider.
         This initializer should be called from descendant.
         """
         if type(self) is DivisionProvider:
@@ -741,7 +741,7 @@ class PrimeCharacteristicFunctionsProvider(object):
     """
     def __init__(self, ch):
         """
-        Do not instanciate PrimeCharacteristicFunctionsProvider.
+        Do not instantiate PrimeCharacteristicFunctionsProvider.
         This initializer should be called from descendant.
         """
         if type(self) is PrimeCharacteristicFunctionsProvider:
@@ -1119,7 +1119,7 @@ class VariableProvider(object):
     """
     def __init__(self, varname):
         """
-        Do not instanciate VariableProvider.
+        Do not instantiate VariableProvider.
         This initializer should be called from descendant.
         """
         if type(self) is VariableProvider:
@@ -1145,7 +1145,7 @@ class RingElementProvider(ring.CommutativeRingElement):
     """
     def __init__(self):
         """
-        Do not instanciate RingElementProvider.
+        Do not instantiate RingElementProvider.
         This initializer should be called from descendant:
           RingElementProvider.__init__(self)
         """
