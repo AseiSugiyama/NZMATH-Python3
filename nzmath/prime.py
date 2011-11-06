@@ -314,7 +314,7 @@ def smallSpsp(n):
 
 def primeq(n):
     """
-    A convinient function for primatilty test. It uses one of
+    A convenient function for primatilty test. It uses one of
     trialDivision, smallSpsp or apr depending on the size of n.
     """
     if int(n) != n:
