@@ -193,19 +193,19 @@ class FormalSumContainerInterface (object):
         """
         Return a list of terms as (base, coefficient) pairs.
         """
-        return [t for t in self.iterterms()]
+        return list(self.iterterms())
 
     def coefficients(self):
         """
         Return a list of all coefficients.
         """
-        return [c for c in self.itercoefficients()]
+        return list(self.itercoefficients())
 
     def bases(self):
         """
         Return a list of all bases.
         """
-        return [b for b in self.iterbases()]
+        return list(self.iterbases())
 
     def terms_map(self, func):
         """
