@@ -78,7 +78,7 @@ def floorpowerroot(n, k, return_power = False):
     else:
         return x
 
-def powerDetection(n, largest_exp = False):
+def powerDetection(n, largest_exp=False):
     """
     param positive integer n
     param boolean largest_exp
@@ -129,7 +129,8 @@ def modsqrt(n, p, e=1):
     """
     if 1 < e:
         x = modsqrt(n, p)
-        if 0 == x: raise ValueError, "if 1 < e then n must be relatively prime with p"
+        if 0 == x:
+            raise ValueError("if 1 < e then n must be relatively prime with p")
         ppower = p
         z = inverse(x << 1, p)
         for i in range(e - 1):
@@ -270,14 +271,12 @@ def vp(n, p, k=0):
 
     The optional argument k will be added to the valuation.
     """
-    while True:
-        q, r = divmod(n, p)
-        if r: break
-
+    q = p
+    while not (n % q):
         k += 1
-        n = q
+        q *= p
 
-    return (k, n)
+    return (k, n // (q // p))
 
 class _Issquare:
     """
@@ -285,9 +284,15 @@ class _Issquare:
     The function issquare is an instance of the class, indeed.
     """
     q11 = [1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0]
-    q63 = [1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-    q64 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
-    q65 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1]
+    q63 = [1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1,
+           0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+           1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+    q64 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+           0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,
+           0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+    q65 = [1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0,
+           0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0,
+           0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1]
 
     def __call__(self, c):
         """
