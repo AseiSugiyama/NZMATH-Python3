@@ -35,6 +35,24 @@ class PrimeTest(unittest.TestCase):
         self.assertTrue(prime.apr(37))
         self.assertTrue(prime.apr(619))
 
+    def testByPrimitiveRoot(self):
+        self.assertTrue(prime.by_primitive_root(2, []))
+        self.assertTrue(prime.by_primitive_root(3, [2]))
+        self.assertTrue(prime.by_primitive_root(7, [2, 3]))
+        self.assertTrue(prime.by_primitive_root(31, [2, 3, 5]))
+        self.assertFalse(prime.by_primitive_root(91, [2, 3, 5]))
+        self.assertFalse(prime.by_primitive_root(341, [2, 5, 17]))
+        self.assertFalse(prime.by_primitive_root(561, [2, 5, 7]))
+
+    def testFullEuler(self):
+        self.assertTrue(prime.full_euler(2, []))
+        self.assertTrue(prime.full_euler(3, [2]))
+        self.assertTrue(prime.full_euler(7, [2, 3]))
+        self.assertTrue(prime.full_euler(31, [2, 3, 5]))
+        self.assertFalse(prime.full_euler(91, [2, 3, 5]))
+        self.assertFalse(prime.full_euler(341, [2, 5, 17]))
+        self.assertFalse(prime.full_euler(561, [2, 5, 7]))
+
     def testGenerator(self):
         g = prime.generator()
         self.assertEqual(2, g.next())

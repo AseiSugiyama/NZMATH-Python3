@@ -174,6 +174,61 @@ def fpsp(n, a, b):
         return False
 
 
+def by_primitive_root(n, divisors):
+    """
+    Return True iff n is prime.
+
+    The method proves the primality of n by existence of a primitive
+    root.  It requires a sequence of all prime divisors of n - 1.
+
+    Lehmer,D.H., Tests for primality by the converse of Fermat's
+    theorem, Bull.Amer.Math.Soc, Vol.33, pp.327-340, 1927.
+    """
+    m_order = n - 1
+    primes = tuple(p for p in divisors if p > 2)
+    for g in bigrange.range(2, n):
+        jacobi = arith1.legendre(g, n)
+        if jacobi == 0:
+            return False
+        elif jacobi == 1:
+            continue
+        if pow(g, m_order, n) != 1:
+            return False
+        if all(pow(g, m_order // p, n) != 1 for p in primes):
+            return True
+    return True # only when n=2, flow reaches this line
+
+
+def full_euler(n, divisors):
+    """
+    Return True iff n is prime.
+
+    The method proves the primality of n by the equality
+    phi(n) = n - 1, where phi denotes the Euler totient.
+    It requires a sequence of all prime divisors of n - 1.
+
+    Brillhart,J. & Selfridge,J.L., Some Factorizations of $2^n\pm 1$
+    and Related Results, Math.Comp., Vol.21, 87-96, 1967
+    """
+    m_order = n - 1
+    primes = set(divisors)
+    for g in bigrange.range(2, n):
+        if pow(g, m_order, n) != 1:
+            return False
+        if 2 in primes:
+            jacobi = arith1.legendre(g, n)
+            if jacobi == 0:
+                return False
+            elif jacobi == -1:
+                primes.remove(2)
+        satisfied = [p for p in primes if p > 2 and pow(g, m_order // p, n) != 1]
+        if satisfied:
+            primes.difference_update(satisfied)
+        if not primes:
+            return True
+    return True # only when n=2, flow reaches this line
+
+
 def prime(s):
     """
     prime(n) returns the n-th prime number.
