@@ -824,6 +824,7 @@ class FactoredInteger(object):
 
 class TestPrime(object):
     primes = PRIMES_LE_31
+    primecache = set(primes)
 
     def __init__(self, t=12):
         if isinstance(t, (int, long)):
@@ -836,11 +837,12 @@ class TestPrime(object):
         for d in self.t.divisors():
             # d is an instance of FactoredInteger
             p = d.integer + 1
-            if p & 1 and _isprime(p, d.factors):
+            if p & 1 and (p in self.primecache or _isprime(p, d.factors)):
                 self.et = self.et * FactoredInteger(p, {p:1})
                 if p in self.t.factors:
                     e = self.t.factors[p]
                     self.et = self.et * FactoredInteger(p**e, {p:e})
+                self.primecache.add(p)
 
     def next(self):
         eu = []
