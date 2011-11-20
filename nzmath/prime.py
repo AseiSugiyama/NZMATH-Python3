@@ -675,39 +675,63 @@ class FactoredInteger(object):
         return str(self.integer)
 
     def __eq__(self, other):
-        return self.integer == int(other)
+        try:
+            return self.integer == other.integer
+        except AttributeError:
+            return self.integer == int(other)
 
     def __hash__(self):
         return hash(self.integer)
 
     def __ne__(self, other):
-        return self.integer != int(other)
+        return not self.__eq__(other)
 
     def __le__(self, other):
-        return self.integer <= int(other)
+        try:
+            return self.integer <= other.integer
+        except AttributeError:
+            return self.integer <= int(other)
 
     def __lt__(self, other):
-        return self.integer < int(other)
+        try:
+            return self.integer < other.integer
+        except AttributeError:
+            return self.integer < int(other)
 
     def __gt__(self, other):
-        return self.integer > int(other)
+        try:
+            return self.integer > other.integer
+        except AttributeError:
+            return self.integer > int(other)
 
     def __ge__(self, other):
-        return self.integer >= int(other)
+        try:
+            return self.integer >= other.integer
+        except AttributeError:
+            return self.integer >= int(other)
 
     def __long__(self):
         return int(self.integer)
 
     __int__ = __long__
 
-    def copy(self):
-        return self.__class__(self.integer, self.factors.copy())
-
     def __mod__(self, other):
         # maybe you want self.is_divisible_by(other)
-        if int(other) in self.factors:
-            return 0
-        return self.integer % int(other)
+        try:
+            if other.integer in self.factors:
+                return 0
+            return self.integer % other.integer
+        except AttributeError:
+            if int(other) in self.factors:
+                return 0
+            return self.integer % int(other)
+
+    def __rfloordiv__(self, other):
+        # assume other is an integer.
+        return other // self.integer
+
+    def copy(self):
+        return self.__class__(self.integer, self.factors.copy())
 
     def is_divisible_by(self, other):
         """
