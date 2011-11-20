@@ -37,7 +37,7 @@ def spsp(n, base, s=None, t=None):
     Strong Pseudo-Prime test.  Optional third and fourth argument
     s and t are the numbers such that n-1 = 2**s * t and t is odd.
     """
-    if not s or not t:
+    if s is None or t is None:
         s, t = arith1.vp(n-1, 2)
     z = pow(base, t, n)
     if z != 1 and z != n-1:
@@ -356,13 +356,16 @@ def randPrime(n):
     return p
 
 
-def smallSpsp(n):
+def smallSpsp(n, s=None, t=None):
     """
     4 spsp tests are sufficient to determine whether an integer less
-    than 10**12 is prime or not.
+    than 10**12 is prime or not.  Optional third and fourth argument
+    s and t are the numbers such that n - 1 = 2**s * t and t is odd.
     """
-    for p in [2, 13, 23, 1662803]:
-        if not spsp(n, p):
+    if s is None or t is None:
+        s, t = arith1.vp(n - 1, 2)
+    for p in (2, 13, 23, 1662803):
+        if not spsp(n, p, s, t):
             return False
     return True
 

@@ -95,6 +95,54 @@ class PrimeTest(unittest.TestCase):
         self.assertTrue(prime.randPrime(1) in (2, 3, 5, 7))
 
 
+class SpspTest(unittest.TestCase):
+    def testSpsp2args(self):
+        self.assertTrue(prime.spsp(41, 2))
+        self.assertTrue(prime.spsp(4999, 2))
+        # composites
+        self.assertFalse(prime.spsp(323, 2))
+        self.assertFalse(prime.spsp(341, 2))
+        # this number is a strong pseudoprime for base 2,3,5,...,31
+        spsp31 = 1195068768795265792518361315725116351898245581
+        self.assertTrue(all(prime.spsp(spsp31, p) for p in
+                            (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)))
+        self.assertFalse(prime.spsp(spsp31, 37))
+
+    def testSpsp4args(self):
+        self.assertTrue(prime.spsp(41, 2, 3, 5))
+        self.assertTrue(prime.spsp(4999, 2, 1, 2499))
+        # composites
+        self.assertFalse(prime.spsp(323, 2, 1, 161))
+        self.assertFalse(prime.spsp(341, 2, 2, 85))
+        # this number is a strong pseudoprime for base 2,3,5,...,31
+        spsp31 = 1195068768795265792518361315725116351898245581
+        oddfactor = 298767192198816448129590328931279087974561395
+        self.assertTrue(all(prime.spsp(spsp31, p, 2, oddfactor) for p in
+                            (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)))
+        self.assertFalse(prime.spsp(spsp31, 37, 2, oddfactor))
+
+    def testSmallSpsp1arg(self):
+        self.assertTrue(prime.smallSpsp(41))
+        self.assertTrue(prime.smallSpsp(4999))
+        # composites
+        self.assertFalse(prime.smallSpsp(323))
+        self.assertFalse(prime.smallSpsp(341))
+        # this number is a strong pseudoprime for base 2,3,5,...,31
+        spsp31 = 1195068768795265792518361315725116351898245581
+        self.assertFalse(prime.smallSpsp(spsp31))
+
+    def testSmallSpsp3args(self):
+        self.assertTrue(prime.smallSpsp(41, 3, 5))
+        self.assertTrue(prime.smallSpsp(4999, 1, 2499))
+        # composites
+        self.assertFalse(prime.smallSpsp(323, 1, 161))
+        self.assertFalse(prime.smallSpsp(341, 2, 85))
+        # this number is a strong pseudoprime for base 2,3,5,...,31
+        spsp31 = 1195068768795265792518361315725116351898245581
+        oddfactor = 298767192198816448129590328931279087974561395
+        self.assertFalse(prime.smallSpsp(spsp31, 2, oddfactor))
+
+
 class LpspTest (unittest.TestCase):
     def testLucasTestForPrime(self):
         self.assertTrue(prime.lpsp(101, 2, 3))
