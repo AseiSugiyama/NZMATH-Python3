@@ -405,25 +405,6 @@ def _isprime(n):
         return (n in (2, 3, 5, 7, 11, 13, 17))
     return smallSpsp(n)
 
-def properDivisors(n):
-    """
-    Return proper divisors of n (divisors of n excluding 1 and n).
-
-    It is only useful for a product of small primes.
-    One can use FactoredInteger.proper_divisors() as well.
-    """
-    if n in (2, 3, 5, 7, 11, 13, 17, 19, 23):
-        return []
-    else:
-        l = [1]
-        for p, e in _factor(n):
-            for j in range(1, e + 1):
-                l += [k*pow(p, j) for k in l if k % p != 0]
-        l.remove(1)
-        l.remove(n)
-        l.sort()
-        return l
-
 def _factor(n, bound=0):
     """
     Trial division factorization for a natural number.
