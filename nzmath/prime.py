@@ -13,6 +13,10 @@ _log = logging.getLogger('nzmath.prime')
 _log.setLevel(logging.DEBUG)
 
 
+PRIMES_LE_31 = (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31)
+PRIMONIAL_31 = arith1.product(PRIMES_LE_31)
+
+
 def trialDivision(n, bound=0):
     """
     Trial division primality test for an odd natural number.
@@ -92,8 +96,8 @@ def bigprimeq(z):
         raise ValueError("non-integer for primeq()")
     elif z <= 1:
         return False
-    elif gcd.gcd(z, 510510) > 1:
-        return (z in (2, 3, 5, 7, 11, 13, 17))
+    elif gcd.gcd(z, PRIMONIAL_31) > 1:
+        return (z in PRIMES_LE_31)
     return millerRabin(z)
 
 
@@ -380,8 +384,8 @@ def primeq(n):
     if n <= 1:
         return False
 
-    if gcd.gcd(n, 510510) > 1:
-        return (n in (2, 3, 5, 7, 11, 13, 17))
+    if gcd.gcd(n, PRIMONIAL_31) > 1:
+        return (n in PRIMES_LE_31)
     if n < 2000000:
         return trialDivision(n)
     if not smallSpsp(n):
@@ -403,10 +407,23 @@ def primonial(p):
 
 # defs for APR algorithm
 
-def _isprime(n):
-    if gcd.gcd(n, 510510) > 1:
-        return (n in (2, 3, 5, 7, 11, 13, 17))
-    return smallSpsp(n)
+def _isprime(n, pdivisors=None):
+    """
+    Return True iff n is prime.
+
+    The check is done without APR.
+    Assume that n is very small (less than 10**12) or
+    prime factorization of n - 1 is known (prime divisors are passed to
+    the optional argument pdivisors as a sequence).
+    """
+    if gcd.gcd(n, PRIMONIAL_31) > 1:
+        return (n in PRIMES_LE_31)
+    elif n < 10 ** 12:
+        # 1369 == 37**2
+        # 1662803 is the only prime base in smallSpsp which has not checked
+        return n < 1369 or n == 1662803 or smallSpsp(n)
+    else:
+        return full_euler(n, pdivisors)
 
 def _factor(n, bound=0):
     """
@@ -783,12 +800,14 @@ class FactoredInteger(object):
         """
         Return all divisors.
         """
-        l = [1]
+        divs = [FactoredInteger(1)]
         for p, e in self.factors.iteritems():
+            q = FactoredInteger(1)
+            pcoprimes = list(divs)
             for j in range(1, e + 1):
-                l += [k*pow(p, j) for k in l if k % p]
-        l.sort()
-        return l
+                q *= FactoredInteger(p, {p:1})
+                divs += [k * q for k in pcoprimes]
+        return divs
 
     def proper_divisors(self):
         """
@@ -804,7 +823,7 @@ class FactoredInteger(object):
 
 
 class TestPrime(object):
-    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31]
+    primes = PRIMES_LE_31
 
     def __init__(self, t=12):
         if isinstance(t, (int, long)):
@@ -815,8 +834,9 @@ class TestPrime(object):
         powerof2 = self.t.factors[2] + 2
         self.et = FactoredInteger(2 ** powerof2, {2:powerof2})
         for d in self.t.divisors():
-            p = d + 1
-            if p & 1 and _isprime(p):
+            # d is an instance of FactoredInteger
+            p = d.integer + 1
+            if p & 1 and _isprime(p, d.factors):
                 self.et = self.et * FactoredInteger(p, {p:1})
                 if p in self.t.factors:
                     e = self.t.factors[p]
@@ -826,10 +846,12 @@ class TestPrime(object):
         eu = []
         for p in self.primes:
             if p in self.t.factors:
-                eu.append((p - 1) * (p**(self.t.factors[p] - 1)))
+                eu.append((p - 1) * p**(self.t.factors[p] - 1))
             else:
                 eu.append(p - 1)
-        return self.__class__(self.t * self.primes[eu.index(min(eu))])
+                break
+        p = self.primes[eu.index(min(eu))]
+        return self.__class__(self.t * FactoredInteger(p, {p:1}))
 
 
 class Status:
