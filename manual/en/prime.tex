@@ -33,7 +33,7 @@
    \quad \param{s} and \param{t} are the numbers such that $n-1 = 2^\param{s}\param{t}$ and \param{t} is odd.
 %
  \subsection{smallSpsp -- strong pseudo-prime test for small number}\linkedone{prime}{smallSpsp}
-   \func{smallSpsp}{\hiki{n}{integer}}{\out{True/False}}\\
+   \func{smallSpsp}{\hiki{n}{integer},\ \hikiopt{s}{integer}{None},\ \hikiopt{t}{integer}{None}}{\out{True/False}}\\
    \spacing
    % document of basic document
    \quad Strong Pseudo-Prime test for integer \param{n} less than $10^{12}$.\\
@@ -42,7 +42,7 @@
    \quad $4$ spsp tests are sufficient to determine whether an integer less than $10^{12}$ is prime or not.
    \spacing
    % input, output document
-   %\quad 
+   \quad \param{s} and \param{t} are the numbers such that $n-1 = 2^\param{s}\param{t}$ and \param{t} is odd.
 %
   \subsection{miller -- Miller's primality test}\linkedone{prime}{miller}
    \func{miller}
@@ -101,6 +101,43 @@
    \spacing
    % input, output document
    %\quad 
+%
+ \subsection{by\_primitive\_root -- Lehmer's test}\linkedone{prime}{by\_primitive\_root}
+   \func{by\_primitive\_root}
+   {\hiki{n}{integer},\ \hiki{divisors}{sequence}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Lehmer's primality test~\cite{Lehmer1927}.\\
+   \spacing
+   % added document
+   \quad Return True iff \param{n} is prime.\\
+    The method proves the primality of \param{n} by existence of a primitive
+    root.
+   \spacing
+   % input, output document
+   \quad \param{divisors} is a sequence (list, tuple, etc.) of prime divisors
+   of $n - 1$.
+   %\quad 
+%
+ \subsection{full\_euler -- Brillhart \& Selfridge's test}\linkedone{prime}{full\_euler}
+   \func{full\_euler}
+   {\hiki{n}{integer},\ \hiki{divisors}{sequence}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Brillhart \& Selfridge's primality test~\cite{BS1967}.\\
+   \spacing
+   % added document
+   \quad Return True iff \param{n} is prime.\\
+    The method proves the primality of \param{n} by the equality
+    $\varphi(n) = n - 1$, where $\varphi$ denotes the Euler totient
+    (see \linkingone{multiplicative}{euler}).
+    It requires a sequence of all prime divisors of $n - 1$.
+   \spacing
+   % input, output document
+   \quad \param{divisors} is a sequence (list, tuple, etc.) of prime divisors
+   of $n - 1$.
+   %\quad 
+   \quad
 %
  \subsection{apr -- Jacobi sum test}\linkedone{prime}{apr}
    \func{apr}

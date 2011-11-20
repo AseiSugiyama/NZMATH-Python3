@@ -67,8 +67,8 @@
    一方で, \linkingone{prime}{miller}はGRHのもと決定性アルゴリズムとなる.
    \spacing
    % input, output document
-   \quad \param{times} (初期設定は $20$) は繰り返しの数です.
-   エラーの確率は多くても $4^{-\param{times}}$です.
+   \quad \param{times} (初期設定は $20$) は繰り返しの数.
+   エラーの確率は多くても $4^{-\param{times}}$ となる.
 %
  \subsection{lpsp -- Lucasテスト}\linkedone{prime}{lpsp}
    \func{lpsp}
@@ -78,7 +78,8 @@
    \quad Lucas擬素数テスト.\\
    \spacing
    % added document
-   \quad もし\param{n}がパラメータ\param{a}と\param{b}のLucas擬素数ならTrueを返す,すなわち,$x^2-\param{a}x+\param{b}$についての.
+   \quad もし\param{n}がパラメータ\param{a}と\param{b}の,
+   すなわち,$x^2-\param{a}x+\param{b}$についての, Lucas擬素数ならTrueを返す.
    \spacing
    % input, output document
    %\quad 
@@ -91,24 +92,61 @@
    \quad Frobenius擬素数テスト.\\
    \spacing
    % added document
-   \quad もし\param{n}がパラメータ\param{a}と\param{b}のFrobenius擬素数ならTrueを返す,すなわち,$x^2-\param{a}x+\param{b}$についての.
+   \quad もし\param{n}がパラメータ\param{a}と\param{b}の,
+   すなわち,$x^2-\param{a}x+\param{b}$についての,
+   Frobenius擬素数ならTrueを返す.
    \spacing
    % input, output document
    %\quad 
+%
+ \subsection{by\_primitive\_root -- Lehmer's test}\linkedone{prime}{by\_primitive\_root}
+   \func{by\_primitive\_root}
+   {\hiki{n}{integer},\ \hiki{divisors}{sequence}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Lehmerの素数判定法~\cite{Lehmer1927}.\\
+   \spacing
+   % added document
+   \quad \param{n} が素数のときかつそのときに限り True を返す.\\
+    このメソッドは原始根の存在に基づいて \param{n} が素数であることを示す.
+    このために $n - 1$ の素因数を知っていることが必要である.
+   \spacing
+   % input, output document
+   \quad \param{divisors} は $n - 1$ の素因数のシーケンス (list, tuple, etc).
+   %\quad 
+%
+ \subsection{full\_euler -- Brillhart \& Selfridge's test}\linkedone{prime}{full\_euler}
+   \func{full\_euler}
+   {\hiki{n}{integer},\ \hiki{divisors}{sequence}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad Brillhart \& Selfridge の素数判定法~\cite{BS1967}.\\
+   \spacing
+   % added document
+   \quad 
+    このメソッドは $\varphi(n) = n - 1$ の成立により \param{n} 
+    が素数であることを示す, ただし $\varphi$ はオイラーのファイ関数
+    (\linkingone{multiplicative}{euler} を参照).
+    このために $n - 1$ の素因数を知っていることが必要である.
+   \spacing
+   % input, output document
+   \quad \param{divisors} は $n - 1$ の素因数のシーケンス (list, tuple, etc).
+   %\quad 
+   \quad
 %
  \subsection{apr -- Jacobi和テスト}\linkedone{prime}{apr}
    \func{apr}
    {\hiki{n}{integer}}{\out{True/False}}\\
    \spacing
    % document of basic document
-   \quad APR (Adleman-Pomerance-Rumery) 素数判定またはJacobi和テスト.\\
+   \quad APR (Adleman-Pomerance-Rumery) 素数判定またはJacobi和テストと呼ばれる判定法.\\
    \spacing
    % added document
    %\quad 
    %\spacing
    % input, output document
    \quad \param{n}は$32$より小さい素因数がないと仮定する.
-    また\param{n}がいくつかの底に対するspsp (強擬素数テスト)を通過したと仮定する.
+   また\param{n}がいくつかの底に対するspsp (強擬素数テスト)を通過したと仮定する.
 %
  \subsection{primeq -- 自動的な素数判定}\linkedone{prime}{primeq}
    \func{primeq}
