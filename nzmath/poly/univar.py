@@ -386,17 +386,8 @@ class SortedPolynomial (PolynomialInterface):
 
         - This method is destructive.
         - This method is not in a part of the API.
-        - The code is just adapting bisect.insort_right to the
-          context.
         """
-        lo, hi = 0, len(self.sorted)
-        while lo < hi:
-            mid = (lo + hi) >> 1
-            if term[0] < self.sorted[mid][0]:
-                hi = mid
-            else:
-                lo = mid + 1
-        self.sorted.insert(lo, term)
+        self.sorted.insert(self._bisect(term[0]), term)
 
     def _bisect(self, degree):
         """

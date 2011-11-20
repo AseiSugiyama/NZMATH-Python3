@@ -43,13 +43,63 @@ class TermOrderInterface (object):
         Compare two indices left and right and determine precedence by
         self.comparator.
         """
-        raise NotImplementedError(_INTERFACE_MSG % self.__class__.__name__)
+        return self.comparator(left, right)
+
+    def bisect(self, array, elem, lo=0, hi=None):
+        """
+        Return the index where to insert item `elem' in a list `array',
+        assuming array is sorted with the order.  (In the following,
+        a refers `array' and x refers `elem')
+
+        The return value i is such that all e in a[:i] have e <= x, and
+        all e in a[i:] have e > x.  So if x already appears in the list,
+        a.insert(x) will insert just after the rightmost x already there.
+
+        Optional args lo (default 0) and hi (default len(a)) bound the
+        slice of a to be searched.
+
+        This function is based on the bisect.bisect_right of the Python
+        standard library.
+        """
+        if hi is None:
+            hi = len(array)
+        while lo < hi:
+            mid = (lo + hi) >> 1
+            if self.cmp(elem, array[mid]) < 0:
+                hi = mid
+            else: lo = mid + 1
+        return lo
 
     def format(self, polynom, **kwds):
         """
         Return the formatted string of the polynomial.
         """
-        raise NotImplementedError(_INTERFACE_MSG % self.__class__.__name__)
+        return self.comparator(left, right)
+
+    def bisect(self, array, elem, lo=0, hi=None):
+        """
+        Return the index where to insert item `elem' in a list `array',
+        assuming array is sorted with the order.  (In the following,
+        a refers `array' and x refers `elem')
+
+        The return value i is such that all e in a[:i] have e <= x, and
+        all e in a[i:] have e > x.  So if x already appears in the list,
+        a.insert(x) will insert just after the rightmost x already there.
+
+        Optional args lo (default 0) and hi (default len(a)) bound the
+        slice of a to be searched.
+
+        This function is based on the bisect.bisect_right of the Python
+        standard library.
+        """
+        if hi is None:
+            hi = len(array)
+        while lo < hi:
+            mid = (lo + hi) >> 1
+            if self.cmp(elem, array[mid]) < 0:
+                hi = mid
+            else: lo = mid + 1
+        return lo
 
     def leading_coefficient(self, polynom):
         """
@@ -83,13 +133,6 @@ class UnivarTermOrder (TermOrderInterface):
         Theoretically acceptable comparator is only the cmp function.
         """
         TermOrderInterface.__init__(self, comparator)
-
-    def cmp(self, left, right):
-        """
-        Compare two indices left and right and determine precedence by
-        self.comparator.
-        """
-        return self.comparator(left, right)
 
     def format(self, polynom, varname="X", reverse=False):
         """
@@ -199,13 +242,6 @@ class MultivarTermOrder (TermOrderInterface):
         just like cmp built-in function.
         """
         self.comparator = comparator
-
-    def cmp(self, left, right):
-        """
-        Compare two indices left and right and determine precedence by
-        self.comparator.
-        """
-        return self.comparator(left, right)
 
     def format(self, polynom, varnames=None, reverse=False, **kwds):
         """

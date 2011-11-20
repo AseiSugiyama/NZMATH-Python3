@@ -118,7 +118,7 @@ def normal_strategy(generating, order):
                 treat.add((j, i))
             else:
                 # keep lcms sorted, and so pairs in paralell
-                k = _bisect(lcms, lcm_f_g, order)
+                k = order.bisect(lcms, lcm_f_g)
                 pairs.insert(k, (i, j))
                 lcms.insert(k, lcm_f_g)
 
@@ -144,35 +144,10 @@ def normal_strategy(generating, order):
                     if lcm_f_h == lb_f + lb_h: # disjoint
                         treat.add((i, hindex))
                     else:
-                        k = _bisect(lcms, lcm_f_h, order)
+                        k = order.bisect(lcms, lcm_f_h)
                         pairs.insert(k, (i, hindex))
                         lcms.insert(k, lcm_f_h)
                 groebner.append(h)
 
     # finish
     return groebner
-
-def _bisect(a, x, order, lo=0, hi=None):
-    """
-    Return the index where to insert item x in list a, assuming a is
-    sorted with the order.
-
-    The return value i is such that all e in a[:i] have e <= x, and
-    all e in a[i:] have e > x.  So if x already appears in the list,
-    a.insert(x) will insert just after the rightmost x already there.
-
-    Optional args lo (default 0) and hi (default len(a)) bound the
-    slice of a to be searched.
-
-    This function is based on the bisect.bisect_right of the Python
-    standard library.
-    """
-
-    if hi is None:
-        hi = len(a)
-    while lo < hi:
-        mid = (lo + hi) >> 1
-        if order.cmp(x, a[mid]) < 0:
-            hi = mid
-        else: lo = mid + 1
-    return lo
