@@ -12,7 +12,7 @@ import nzmath.prime as prime
 import nzmath.quad as quad
 import nzmath.squarefree as squarefree
 import nzmath.compatibility
-from nzmath.config import DATADIR, HAVE_MPMATH
+from nzmath.config import DATADIR, HAVE_MPMATH, HAVE_NET
 
 if HAVE_MPMATH:
     import mpmath
@@ -134,17 +134,18 @@ def hilbert(D):
     """
     wrapper to split mpmath part and others.
     """
-    try:
-        import urllib2
-        url = 'http://hilbert-class-polynomial.appspot.com/%d/' % D
-        result = urllib2.urlopen(url).read()
-        if result == 'null':
+    if HAVE_NET:
+        try:
+            import urllib2
+            url = 'http://hilbert-class-polynomial.appspot.com/%d/' % D
+            result = urllib2.urlopen(url).read()
+            if result == 'null':
+                pass
+            else:
+                hcp = eval(result)
+                return len(hcp) - 1, hcp
+        except Exception:
             pass
-        else:
-            hcp = eval(result)
-            return len(hcp) - 1, hcp
-    except Exception:
-        pass
 
     if HAVE_MPMATH:
         return hilbert_mpmath(D)

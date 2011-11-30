@@ -43,6 +43,24 @@ HAVE_SQLITE3 = None
 CHECK_SQLITE3 = True
 
 #
+# net availability
+# ----------------
+#
+# Some functions will connect to the Net.
+# Desktop machines are usually connected to the Net, but notebooks
+# may have connectivity only occasionally.
+#
+# If sometimes you have net connectivity, set as the following:
+HAVE_NET = True
+CHECK_NET = False
+# Or, if your machine is not connected, set as the following:
+#HAVE_NET = False
+#CHECK_NET = False
+# Or you can let NZMATH check connectivity every time, set as the following:
+#HAVE_NET = None
+#CHECK_NET = True
+
+#
 # psyco
 # -----
 #

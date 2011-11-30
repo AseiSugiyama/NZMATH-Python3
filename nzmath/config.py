@@ -55,6 +55,25 @@ CHECK_MPMATH = True
 HAVE_SQLITE3 = None
 CHECK_SQLITE3 = True
 
+
+#
+# net availability
+# ----------------
+#
+# Some functions will connect to the Net.
+# Desktop machines are usually connected to the Net, but notebooks
+# may have connectivity only occasionally.
+#
+# If sometimes you have net connectivity, set as the following:
+HAVE_NET = True
+CHECK_NET = False
+# Or, if your machine is not connected, set as the following:
+#HAVE_NET = False
+#CHECK_NET = False
+# Or you can let NZMATH check connectivity every time, set as the following:
+#HAVE_NET = None
+#CHECK_NET = True
+
 #
 # psyco
 # -----
@@ -219,6 +238,32 @@ def check_sqlite3():
 
 if CHECK_SQLITE3:
     HAVE_SQLITE3 = check_sqlite3()
+    
+
+#
+# net availability
+# ----------------
+#
+def check_net():
+    """
+    Check the net connection by http call.
+    """
+    import urllib2
+    try:
+        urllib2.urlopen('http://sourceforge.net/projects/nzmath/')
+        return True
+    except urllib2.HTTPError:
+        # the problem is on server side, thus connected anyway
+        return True
+    except urllib2.URLError:
+        # no dns, thus no connection
+        return False
+    except Exception:
+        # I don't know the reason, but something wrong
+        return False
+
+if CHECK_NET:
+    HAVE_NET = check_net()
 
 #
 # psyco availability
@@ -285,5 +330,5 @@ if CHECK_DATADIR:
 
 # Declare exported variables.
 
-__all__ = ['HAVE_MPMATH', 'HAVE_SQLITE3', 'HAVE_PSYCO',
+__all__ = ['HAVE_MPMATH', 'HAVE_SQLITE3', 'HAVE_NET', 'HAVE_PSYCO',
            'PLUGIN_MATH', 'GRH', 'DATADIR']

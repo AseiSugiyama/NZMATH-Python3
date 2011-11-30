@@ -26,6 +26,12 @@
   {\tt sqlite3} is the default database module for \python,
   but it need to be enabled at the build time.
 
+  \paragraph{HAVE\_NET}\linkedone{config}{HAVE_NET}
+
+  いくつかの関数はネットワークに接続することがあります。
+  ネットワークに接続していない環境では、この設定を false にしておくと
+  まれに処理が高速になることがあります。
+
   \subsubsection{Plug-ins}\linkedone{config}{Plug-ins}
 
   \paragraph{PLUGIN\_MATH}\linkedone{config}{PLUGIN\_MATH}
@@ -80,6 +86,12 @@
   {\tt pysqlite2} may be a substitution.
 
   constant: {\tt CHECK\_SQLITE3}
+
+  \paragraph{check\_net()}\linkedone{config}{check\_net}
+
+  Check the net connection by HTTP call.
+
+  constant: {\tt CHECK\_NET}
 
   \paragraph{check\_plugin\_math()}\linkedone{config}{check\_plugin\_math}
 
