@@ -11,11 +11,13 @@ def tex_compile(file)
 	print File.basename(Dir.pwd) + '/' + file
 	`platex #{file}.tex`
 	print "."
-	`#{$bibtex} #{file}.aux`
+	`#{$bibtex} #{file}`
 	print "."
 	`platex #{file}.tex`
 	print "."
 	`platex #{file}.tex`
+	print "."
+	`platex #{file}.tex` # some system needs three times compiles.
 	print "."
 	nul = is_win ? 'nul' : '/dev/null'
 	`dvipdfmx #{file}.dvi > #{nul} 2>&1`
@@ -24,7 +26,11 @@ end
 
 def clean
 	# ’†ŠÔƒtƒ@ƒCƒ‹íœ
-	`del *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
+    if is_win then
+		`del *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
+	else
+		`rm *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
+	end
 end
 
 def compile(dir)
