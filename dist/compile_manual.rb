@@ -9,15 +9,15 @@ $bibtex = is_win ? 'pbibtex' : 'jbibtex'
 
 def tex_compile(file)
 	print File.basename(Dir.pwd) + '/' + file
-	`platex #{file}.tex`
+	`platex -kanji="sjis" #{file}.tex`
 	print "."
 	`#{$bibtex} #{file}`
 	print "."
-	`platex #{file}.tex`
+	`platex -kanji="sjis" #{file}.tex`
 	print "."
-	`platex #{file}.tex`
+	`platex -kanji="sjis" #{file}.tex`
 	print "."
-	`platex #{file}.tex` # some system needs three times compiles.
+	`platex -kanji="sjis" #{file}.tex` # some system needs three times compiles.
 	print "."
 	nul = is_win ? 'nul' : '/dev/null'
 	`dvipdfmx #{file}.dvi > #{nul} 2>&1`
