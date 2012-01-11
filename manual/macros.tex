@@ -12,7 +12,7 @@
  pdfkeywords={TeX; dvipdfmx; hyperref; color;},%
  colorlinks=true]{hyperref}
 \usepackage{fancybox}
-\usepackage[T1]{fontenc}
+\usepackage[T1]{fontenc} % for avoiding errors on underscores not in mathmode
 %
 \newcommand{\DS}{\displaystyle}
 \newcommand{\C}{\clearpage}
@@ -41,11 +41,10 @@
 \newcommand{\nzmathsf}{\href{http://sourceforge.net/projects/nzmath/}{\nzmath Project Page}}
 \newcommand{\nzmathtnt}{\href{http://tnt.math.se.tmu.ac.jp/nzmath/}{\nzmath Project Official Page}}
 % parameter name
-\renewcommand{\tt}{\texttt} % for compatibility
-\newcommand{\param}[1]{{\tt #1}}
+\newcommand{\param}[1]{{\texttt #1}}
 % function macros
-\newcommand{\hiki}[2]{{\tt #1}:\ {\em #2}}
-\newcommand{\hikiopt}[3]{{\tt #1}:\ {\em #2}=#3}
+\newcommand{\hiki}[2]{{\texttt #1}:\ {\em #2}}
+\newcommand{\hikiopt}[3]{{\texttt #1}:\ {\em #2}=#3}
 
 \newdimen\hoge
 \newdimen\truetextwidth
