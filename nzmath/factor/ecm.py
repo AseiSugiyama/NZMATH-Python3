@@ -22,21 +22,21 @@ A2 = ASUNCION2 = 6
 A3 = ASUNCION3 = 8
 A4 = ASUNCION4 = 9
 A5 = ASUNCION5 = 10
-
+N3 = NAKAMURA3 = 13
 
 class Curve (object):
     """
     Elliptic curves for factorization.
     """
 
-    _CURVE_TYPES = (S, B, A1, A2, A3, A4, A5)
-
+    _CURVE_TYPES = (S, B, A1, A2, A3, A4, A5, N3)
+    
     def __init__(self, c):
         """
         Initialize a Curve object with Montgomery's parameter c.
         """
         self.c = c
-        self.c2 = (c + 2) >> 2
+        self.c2 = (c + 2)//4
 
     @classmethod
     def get_random_curve_with_point(cls, curve_type, n, bounds):
@@ -54,8 +54,8 @@ class Curve (object):
           A3: Asuncion's [3:1], [9,48,1,2]
           A4: Asuncion's [3:1], [9,39,1,1]
           A5: Asuncion's [4:1], [16,84,1,1]
-
-        This is a class method.
+          N3: Nakamura's [2:1], [28,22,7,3]
+          This is a class method.
         """
         bound = bounds.first
         if curve_type not in cls._CURVE_TYPES:
@@ -93,6 +93,10 @@ class Curve (object):
             d = random.randrange(1, bound + 1)
             start_point = Point(4, 1)
             curve = cls((d + 1) % n)
+        elif curve_type == NAKAMURA3:
+            d = random.randrange(1, bound + 1)
+            start_point = Point(2, 1)
+            curve = cls((7*d + 3) % n)
         return curve, start_point
 
 
@@ -200,9 +204,9 @@ def ecm(n, curve_type=A1, incs=3, trials=20, **options):
     if _prime.primeq(n):
         _log.info("%d is prime!" % n)
         return n
-    if _gcd.gcd(n, 6) != 1:
+    if _gcd.gcd(n, 6) != 1: 
         _log.info("%d is not coprime to 6!" % n)
-        if n & 1 == 0:
+        if n % 2 == 0:
             return 2
         if n % 3 == 0:
             return 3
@@ -257,7 +261,7 @@ def stage2(n, bounds, C, Q):
     for i in range(1, bounds.second//d1):
         if _gcd.gcd(i, d2) != 1:
             continue
-        for j in range(1, d1 >> 1):
+        for j in range(1, d1//2):
             if _gcd.gcd(j, d1) == 1:
                 Q = mul(Q, i*d1 + j*d2, C, n)
                 if i*d1 - j*d2 > bounds.first:
