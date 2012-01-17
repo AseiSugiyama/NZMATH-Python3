@@ -221,11 +221,15 @@ class MPQS(object):
             for i in [3,5,7,11,13]:
                 s = arith1.legendre(self.number, i)
                 self.sqrt_state.append(s)
-            index8 = (self.number & 7) >> 1
-            j = 0
-            while self.sqrt_state != prime_8[index8][j][1]:
-                j += 1
-            k = prime_8[index8][j][0]
+
+            if self.sqrt_state == [1,1,1,1,1]:
+                k=1
+            else:
+                index8 = (self.number & 7) >> 1
+                j = 0
+                while self.sqrt_state != prime_8[index8][j][1]:
+                    j += 1
+                k = prime_8[index8][j][0]
         else:
             if n & 3 == 1:
                 k = 1
