@@ -222,7 +222,7 @@ class MPQS(object):
                 s = arith1.legendre(self.number, i)
                 self.sqrt_state.append(s)
 
-            if self.sqrt_state == [1,1,1,1,1]:
+            if self.number % 8 == 1 and self.sqrt_state == [1,1,1,1,1]:
                 k=1
             else:
                 index8 = (self.number & 7) >> 1
