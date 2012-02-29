@@ -67,7 +67,7 @@
 conditions given by \param{nlist}.\\
 \spacing
 % input, output document
-\quad Input list \param{nlist} must be the list of a list consisting of two elements.
+\quad Input list \param{nlist} must be the list of lists each consisting of two elements.
 The first element is remainder and the second is divisor.
 They must be integer.\\
 %
@@ -122,7 +122,7 @@ Otherwise, return \(0\).\\
 %\quad Input number \param{n}, \param{base} must be int, long or \linkingone{rational}{Integer}.
 %
 \subsection{product -- product of some numbers}\linkedone{arith1}{product}
-\func{product}{\hiki{iterable}{list},\ \hikiopt{init}{integer/\linkingone{rational}{Rational}}{None}}{\out{\hiki{prod}{integer/\linkingone{rational}{Rational}}}}\\
+\func{product}{\hiki{iterable}{list},\ \hikiopt{init}{object}{None}}{\out{\hiki{prod}{object}}}\\
 \spacing
 % document of basic document
 \quad Return the products of all elements in \param{iterable}. \\
@@ -131,13 +131,14 @@ Otherwise, return \(0\).\\
 \quad If \param{init} is given, the multiplication starts with \param{init} instead of the first element in \param{iterable}.\\
 \spacing
 % input, output document
-\quad Input list \param{iterable} must be list of numbers including integers, \linkingone{rational}{Rational} etc.\\
-The output \param{prod} may be determined by the type of elements of \param{iterable} and \param{init}.\\
+\quad Input list \param{iterable} must be list of mathematical objects which support multiplication.\\
+The type of output \param{prod} is determined by the types of elements of \param{iterable} and \param{init}.\\
+If the \param{iterable} is empty, then \param{init} (if given) or \(1\) (otherwise) will be returned.\\
 %
 \begin{ex}
 >>> arith1.AGM(10, 15)
 12.373402181181522
->>> arith1.CRT([[2, 5],[3,7]])
+>>> arith1.CRT([[2, 5], [3, 7]])
 17
 >>> arith1.CRT([[2, 5], [3, 7], [5, 11]])
 192
