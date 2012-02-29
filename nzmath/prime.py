@@ -3,6 +3,7 @@ A module for generating primes and testing primality.
 """
 
 import logging
+import warnings
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
@@ -424,6 +425,29 @@ def _isprime(n, pdivisors=None):
         return n < 1369 or n == 1662803 or smallSpsp(n)
     else:
         return full_euler(n, pdivisors)
+
+def properDivisors(n):
+    """
+    Return proper divisors of n (divisors of n excluding 1 and n).
+
+    It is only useful for a product of small primes.
+    One can use FactoredInteger.proper_divisors() as well.
+
+    DEPRECATION: this function will be removed in version 1.3.
+    """
+    warnings.warn(DeprecationWarning("properDivisor is deprecated"))
+
+    if n in (1, 2, 3, 5, 7, 11, 13, 17, 19, 23):
+        return []
+    else:
+        l = [1]
+        for p, e in _factor(n):
+            for j in range(1, e + 1):
+                l += [k*pow(p, j) for k in l if k % p != 0]
+        l.remove(1)
+        l.remove(n)
+        l.sort()
+        return l
 
 def _factor(n, bound=0):
     """
