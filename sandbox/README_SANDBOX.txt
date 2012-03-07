@@ -145,6 +145,11 @@ padic
 p-adic numbers and their rings / fields.
 (mft)
 
+powdetect
+---------
+perfect power detection fuction
+(mft)
+
 powering
 --------
 For sample powering(or scalar multiplication in additive group) method.
