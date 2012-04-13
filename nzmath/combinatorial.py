@@ -601,6 +601,7 @@ def partition_conjugate(partition):
     conj.reverse()
     return tuple(conj)
 
+
 def permutation_generator(n):
     """
     Generate all permutations of n elements as lists.
@@ -616,33 +617,34 @@ def permutation_generator(n):
         [2, 0, 1]
         [2, 1, 0]
     """
-    # traverse tree by depth first, using a stack
-    stack = [[0]]
-    unused = set(range(1, n))
+    # traverse tree by depth first
+    perm = range(n)
+    unused = []
     while True:
         if unused:
-            # yet on inner node
-            part = stack[-1] + [min(unused)]
-            stack.append(part)
-            unused.discard(min(unused))
-            continue
+            perm[last:] = sorted(unused)
+            unused = []
+
         # leaf is reached, thus yield the value.
-        perm = stack.pop()
-        yield perm
+        yield list(perm)
+
         # track back until node with subtree yet to be traversed
-        unused.add(perm[-1])
-        while stack and stack[-1][-1] > max(unused):
-            part = stack.pop()
-            unused.add(part[-1])
-        else:
-            if not stack:
-                # end of stack means traversal is done
-                break
-            prev = stack[-1][-1]
-            replacer = min(d for d in unused if d > prev)
-            stack[-1][-1] = replacer
-            unused.discard(replacer)
-            unused.add(prev)
+        last = n - 1
+        unused.append(perm[-1])
+        max_unused = unused[-1]
+        while last and perm[last - 1] > max_unused:
+            last -= 1
+            unused.append(perm[last])
+            max_unused = perm[last]
+
+        # exhausted
+        if not last:
+            break
+
+        prev = perm[last - 1]
+        replacer = min(d for d in unused if d > prev)
+        perm[last - 1] = replacer
+        unused[unused.index(replacer)] = prev
 
 
 # aliases
