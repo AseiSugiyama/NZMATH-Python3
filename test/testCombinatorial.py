@@ -179,6 +179,10 @@ class PermutationGeneratorTest(unittest.TestCase):
                           [2, 0, 1],
                           [2, 1, 0]], list(permutationGenerator(3)))
 
+    def testNumber(self):
+        for i in (4, 5, 6):
+            self.assertEqual(factorial(i), len(list(permutationGenerator(i))))
+
 
 class DyckWordGeneratorTest(unittest.TestCase):
     def testZero(self):
@@ -192,10 +196,8 @@ class DyckWordGeneratorTest(unittest.TestCase):
                          list(dyck_word_generator(2)))
 
     def testNumber(self):
-        self.assertEqual(catalan(3), len(list(dyck_word_generator(3))))
-        self.assertEqual(catalan(4), len(list(dyck_word_generator(4))))
-        self.assertEqual(catalan(5), len(list(dyck_word_generator(5))))
-        self.assertEqual(catalan(6), len(list(dyck_word_generator(6))))
+        for i in range(3, 8):
+            self.assertEqual(catalan(i), len(list(dyck_word_generator(i))))
 
 
 class PartitionTest (unittest.TestCase):

@@ -2,6 +2,7 @@
 Combinatorial functions
 """
 
+import bisect
 import itertools
 from nzmath.rational import Integer, Rational
 
@@ -313,30 +314,27 @@ def permutation_generator(n):
     perm = range(n)
     unused = []
     while True:
-        if unused:
-            perm[last:] = sorted(unused)
-            unused = []
-
         # leaf is reached, thus yield the value.
         yield list(perm)
 
         # track back until node with subtree yet to be traversed
         last = n - 1
         unused.append(perm[-1])
-        max_unused = unused[-1]
-        while last and perm[last - 1] > max_unused:
+        while last and perm[last - 1] > unused[-1]:
             last -= 1
             unused.append(perm[last])
-            max_unused = perm[last]
 
         # exhausted
         if not last:
             break
 
-        prev = perm[last - 1]
-        replacer = min(d for d in unused if d > prev)
-        perm[last - 1] = replacer
-        unused[unused.index(replacer)] = prev
+        # assert unused == sorted(unused)
+        # replace with just bigger than perm[last - 1]
+        index = bisect.bisect(unused, perm[last - 1])
+        unused[index], perm[last - 1] = perm[last - 1], unused[index]
+        # replace remaining part
+        perm[last:] = unused
+        del unused[:]
 
 
 def dyck_word_generator(n, alphabet=(0, 1)):
