@@ -68,6 +68,11 @@ Nishimoto Keiichiro, [2005-2010]:
 Contributed to implementation of algfield. Also, involved in the
 development of equation, factor, lattice.
 
+Nakamura Naoko, [2011-2012]:
+Involved in the development of the NZMATH manual localization, factor/ecm.
+
+Kawahara Misuzu, [2011-2012]:
+Involved in the development of factor/mpqs.
 
 Other Contributors
 ------------------
