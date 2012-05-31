@@ -169,15 +169,33 @@ class PermutationGeneratorTest(unittest.TestCase):
         self.assertEqual([[0]], list(permutationGenerator(1)))
 
     def testTwo(self):
-        self.assertEqual([[0, 1]], list(combinationIndexGenerator(2)))
+        self.assertEqual([[0, 1], [1, 0]], list(permutationGenerator(2)))
 
-    def testTwo(self):
+    def testThree(self):
         self.assertEqual([[0, 1, 2],
                           [0, 2, 1],
                           [1, 0, 2],
                           [1, 2, 0],
                           [2, 0, 1],
                           [2, 1, 0]], list(permutationGenerator(3)))
+
+
+class DyckWordGeneratorTest(unittest.TestCase):
+    def testZero(self):
+        self.assertEqual([()], list(dyck_word_generator(0)))
+
+    def testOne(self):
+        self.assertEqual([(0, 1)], list(dyck_word_generator(1)))
+
+    def testTwo(self):
+        self.assertEqual([(0, 1, 0, 1), (0, 0, 1, 1)],
+                         list(dyck_word_generator(2)))
+
+    def testNumber(self):
+        self.assertEqual(catalan(3), len(list(dyck_word_generator(3))))
+        self.assertEqual(catalan(4), len(list(dyck_word_generator(4))))
+        self.assertEqual(catalan(5), len(list(dyck_word_generator(5))))
+        self.assertEqual(catalan(6), len(list(dyck_word_generator(6))))
 
 
 class PartitionTest (unittest.TestCase):

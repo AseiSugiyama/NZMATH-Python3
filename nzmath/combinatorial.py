@@ -92,36 +92,6 @@ def euler(n):
         E[i] = sum([-binomial(i, j) * E[j] for j in range(0, i, 2)])
     return E[n]
 
-def combination_index_generator(n, m):
-    """
-    Generate indices of m elment subsets of n element set.
-
-    For example,
-    combinationIndexGenerator(5,3) generates the following lists:
-        [0, 1, 2]
-        [0, 1, 3]
-        [0, 1, 4]
-        [0, 2, 3]
-        [0, 2, 4]
-        [0, 3, 4]
-        [1, 2, 3]
-        [1, 2, 4]
-        [1, 3, 4]
-        [2, 3, 4]
-    """
-    assert n >= m > 0
-    idx = range(m)
-    while True:
-        yield list(idx)
-        for i in range(1, m+1):
-            if idx[-i] != n-i:
-                idx[-i] += 1
-                for j in range(i-1, 0, -1):
-                    idx[-j] = idx[-j-1] + 1
-                break
-        else:
-            raise StopIteration
-
 def fallingfactorial(n, m):
     """
     Return the falling factorial; n to the m falling, i.e. n(n-1)..(n-m+1).
@@ -289,6 +259,137 @@ def bell(n):
     """
     return sum([stirling2(n, i) for i in range(n + 1)])
 
+
+# generators
+def combination_index_generator(n, m):
+    """
+    Generate indices of m elment subsets of n element set.
+
+    The number of generated indices is binomial(n, m).
+
+    For example,
+    combinationIndexGenerator(5,3) generates the following lists:
+        [0, 1, 2]
+        [0, 1, 3]
+        [0, 1, 4]
+        [0, 2, 3]
+        [0, 2, 4]
+        [0, 3, 4]
+        [1, 2, 3]
+        [1, 2, 4]
+        [1, 3, 4]
+        [2, 3, 4]
+    """
+    assert n >= m > 0
+    idx = range(m)
+    while True:
+        yield list(idx)
+        for i in range(1, m+1):
+            if idx[-i] != n-i:
+                idx[-i] += 1
+                for j in range(i-1, 0, -1):
+                    idx[-j] = idx[-j-1] + 1
+                break
+        else:
+            raise StopIteration
+
+
+def permutation_generator(n):
+    """
+    Generate all permutations of n elements as lists.
+
+    The number of generated lists is n!, so be careful to use big n.
+
+    For example,
+    permutationGenerator(3) generates the following lists:
+        [0, 1, 2]
+        [0, 2, 1]
+        [1, 0, 2]
+        [1, 2, 0]
+        [2, 0, 1]
+        [2, 1, 0]
+    """
+    # traverse tree by depth first
+    perm = range(n)
+    unused = []
+    while True:
+        if unused:
+            perm[last:] = sorted(unused)
+            unused = []
+
+        # leaf is reached, thus yield the value.
+        yield list(perm)
+
+        # track back until node with subtree yet to be traversed
+        last = n - 1
+        unused.append(perm[-1])
+        max_unused = unused[-1]
+        while last and perm[last - 1] > max_unused:
+            last -= 1
+            unused.append(perm[last])
+            max_unused = perm[last]
+
+        # exhausted
+        if not last:
+            break
+
+        prev = perm[last - 1]
+        replacer = min(d for d in unused if d > prev)
+        perm[last - 1] = replacer
+        unused[unused.index(replacer)] = prev
+
+
+def dyck_word_generator(n, alphabet=(0, 1)):
+    """
+    Generate all Dyck words of length 2*n as tuples.
+
+    The Dyck words are words on a two character alphabet.
+    The number of each character in a word is equal, 
+    and the number of the second character never exceeds the first
+    in any initial parts of the word.
+
+    The number of generated words is the n-th Catalan number.
+
+    The alphabet is {0, 1} by default, but you can pass it into the
+    optional argument 'alphabet'.
+
+    For example,
+    >>> for word in dyck_word_generator(3, alphabet=("(", ")")):
+    ...     print "".join(word)
+    ... 
+    ()()()
+    ()(())
+    (())()
+    (()())
+    ((()))
+    >>> 
+    """
+    if n == 0:
+        yield ()
+        raise StopIteration()
+    else:
+        # memo[i] is a list of Dyck words of length 2*i
+        memo = [[()]]
+        alpha, beta = (alphabet[0],), (alphabet[1],)
+
+    # prepare up to n-1
+    for i in range(1, n):
+        memo.append([])
+        for j in range(i):
+            for p in memo[j]:
+                prefix = alpha + p + beta
+                for q in memo[i - j - 1]:
+                    memo[i].append(prefix + q)
+        
+    # output
+    for j in range(n):
+        for p in memo[j]:
+            prefix = alpha + p + beta
+            for q in memo[n - j - 1]:
+                yield prefix + q
+
+
+# partition related functions and classes
 def partition_generator(n, maxi=None):
     """
     Generate partitions of n.
@@ -602,52 +703,8 @@ def partition_conjugate(partition):
     return tuple(conj)
 
 
-def permutation_generator(n):
-    """
-    Generate all permutations of n elements as lists.
-
-    The number of generated list is n!, so be careful to use big n.
-
-    For example,
-    permutationGenerator(3) generates the following lists:
-        [0, 1, 2]
-        [0, 2, 1]
-        [1, 0, 2]
-        [1, 2, 0]
-        [2, 0, 1]
-        [2, 1, 0]
-    """
-    # traverse tree by depth first
-    perm = range(n)
-    unused = []
-    while True:
-        if unused:
-            perm[last:] = sorted(unused)
-            unused = []
-
-        # leaf is reached, thus yield the value.
-        yield list(perm)
-
-        # track back until node with subtree yet to be traversed
-        last = n - 1
-        unused.append(perm[-1])
-        max_unused = unused[-1]
-        while last and perm[last - 1] > max_unused:
-            last -= 1
-            unused.append(perm[last])
-            max_unused = perm[last]
-
-        # exhausted
-        if not last:
-            break
-
-        prev = perm[last - 1]
-        replacer = min(d for d in unused if d > prev)
-        perm[last - 1] = replacer
-        unused[unused.index(replacer)] = prev
-
-
 # aliases
 combinationIndexGenerator = combination_index_generator
 partitionGenerator = partition_generator
 permutationGenerator = permutation_generator
+DyckWordGenerator = dyck_word_generator

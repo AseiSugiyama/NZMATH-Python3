@@ -35,6 +35,8 @@
    % document of basic document
    \quad Return an iterator which generates indices of \param{m}
    element subsets of \param{n} element set.\\
+   \spacing
+   \quad The number of generated indices is \linkingone{combinatorial}{binomial}(\param{n}, \param{m}).
    \spacing 
    \quad {\tt combination\_index\_generator}\linkedone{combinatorial}{combination\_index\_generator}
    is an alias of {\tt combinationIndexGenerator}.\\
@@ -123,6 +125,28 @@
    \spacing
    % document of basic document
    \quad Return the \param{n}-th Catalan number.\\
+
+  \subsection{dyck\_word\_generator -- generator for Dyck words}\linkedone{combinatorial}{dyck\_word\_generator}
+   \func{dyck\_word\_generator}{%
+     \hiki{n}{integer}
+     \hikiopt{alphabet}{sequence}{(0, 1)}
+   }{%
+     \out{iterator}
+   }\\
+   \spacing
+   % document of basic document
+   \quad  Generate all Dyck words of length \(2\times\)\param{n} as tuples.\\
+   \spacing
+   \quad The Dyck words are words on a two character alphabet.
+   The number of each character in a word is equal, 
+   and the number of the second character never exceeds the first
+   in any initial parts of the word.\\
+   \spacing
+   \quad The number of generated words is the \param{n}-th Catalan number.
+   (see \linkingone{combinatorial}{catalan})\\
+   \spacing
+   \quad The alphabet is \(\{0, 1\}\) by default, but you can pass it into the
+   optional argument \param{alphabet}.\\
 
   \subsection{euler -- the Euler number}\linkedone{combinatorial}{euler}
    \func{euler}{%
@@ -247,6 +271,14 @@ True
 [1, 2, 4]
 [1, 3, 4]
 [2, 3, 4]
+>>> for word in combinatorial.dyck_word_generator(3, alphabet=("(", ")")):
+...     print "".join(word)
+... 
+()()()
+()(())
+(())()
+(()())
+((()))
 >>> for part in combinatorial.partitionGenerator(5):
 ...     print part
 ...
