@@ -139,14 +139,6 @@ class array_poly():
         other_dict_coefficients = other.coefficients_to_dict()
         return self_dict_coefficients == other_dict_coefficients
     
-    def __ne__( self , other ):
-        """
-        self != other
-        """
-        self_dict_coefficients = self.coefficients_to_dict()
-        other_dict_coefficients = other.coefficients_to_dict()
-        return self_dict_coefficients == other_dict_coefficients
-
     def __mul__( self , other ):
         """
         self * other

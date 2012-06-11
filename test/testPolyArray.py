@@ -31,7 +31,7 @@ class ArrayPolyArithmeticTest(unittest.TestCase):
         self.assertEqual( t , self.g + self.f )
 
     def testSub( self ):
-        t = array_poly( [ 1 , 1 , 0 , -2 , 3 ] )
+        t = array_poly( [ 1 , 3 , 0 , -2 , 3 ] )
         self.assertEqual( t , self.f - self.g )
 
     def testScalarMul( self ):
@@ -54,11 +54,11 @@ class ArrayPolyArithmeticTest(unittest.TestCase):
 
     def testEq( self ):
         t = array_poly( [ 1 , 2 , 0 , 0 , 3 ] )
-        self.assertEqual( t , self.f )
+        self.assertTrue( t == self.f )
 
     def testNe( self ):
         t = array_poly( [ 1 , 2 , 0 , 0 , 3 ] )
-        self.assertEqual( t , self.g )
+        self.assertTrue( t != self.g )
 
     def testMul( self ):
         t = array_poly( [ 0 , -1 , -2 , 2 , 4 , -3 , 0 , 6 ] )
@@ -110,7 +110,7 @@ class ArrayPolyModArithmeticTest(unittest.TestCase):
         self.assertEqual( [ 1 , 2 , 0 , 0 , 3 ] , self.f.coefficients )
         self.assertEqual( 4 , self.f.degree )
         self.assertEqual( [ 1 , 2 , 3  ] , self.h.coefficients )
-        self.assertEqual( 3 , self.h.degree )
+        self.assertEqual( 2 , self.h.degree )
 
     def testMul( self ):
         t = array_poly_mod( [ 0 , -1 , -2 , 2 , 4 , -3 , 0 , 6 ] , 11 )
