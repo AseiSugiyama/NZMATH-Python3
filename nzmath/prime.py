@@ -9,9 +9,8 @@ import nzmath.gcd as gcd
 import nzmath.bigrandom as bigrandom
 import nzmath.bigrange as bigrange
 from nzmath.config import GRH
-from nzmath.poly.array import *
-#import nzmath.poly.array as array_poly
-#@
+import math
+import nzmath.poly.array as array_poly
 
 _log = logging.getLogger('nzmath.prime')
 _log.setLevel(logging.DEBUG)
@@ -1235,7 +1234,7 @@ def aks( n ):
             aks_mod = aks_mod[ r : ]
         for i in range(len(aks_mod)):
             total[i] += aks_mod[i]
-        return array_poly_mod( total , polynomial.mod )
+        return array_poly.array_poly_mod( total , polynomial.mod )
 
     lg = math.log( n , 2 )
     k = int( lg * lg )
@@ -1268,8 +1267,8 @@ def aks( n ):
     e = math.sqrt( e )
     e = int( e * lg )
     for b in range( 1 , e+1 ):
-        f = array_poly_mod( [ b , 1 ] , n )
-        total = array_poly_mod( [ 1 ] , n )
+        f = array_poly.array_poly_mod( [ b , 1 ] , n )
+        total = array_poly.array_poly_mod( [ 1 ] , n )
         count = n
         while count > 0:
             if count & 1:
