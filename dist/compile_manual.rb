@@ -8,50 +8,33 @@ end
 
 # 環境設定
 $bibtex = is_win ? 'pbibtex' : 'jbibtex'
+$rm = is_win ? 'del' : 'rm'
+$dev_null = is_win ? 'nul' : '/dev/null'
 
+# convert TeX into PDF
 def tex_compile(file)
 	print File.basename(Dir.pwd) + '/' + file
 	`platex -kanji="sjis" #{file}.tex`
 	print "."
 	`#{$bibtex} #{file}`
 	print "."
-	`platex -kanji="sjis" #{file}.tex`
-	print "."
-	`platex -kanji="sjis" #{file}.tex`
-	print "."
-	`platex -kanji="sjis" #{file}.tex` # some system needs three times compiles.
-	print "."
-	nul = is_win ? 'nul' : '/dev/null'
-	`dvipdfmx #{file}.dvi > #{nul} 2>&1`
+
+	# some system needs three times compiles.
+	3.times do
+		`platex -kanji="sjis" #{file}.tex`
+		print "."
+	end
+
+	`dvipdfmx #{file}.dvi > #{$dev_null} 2>&1`
 	puts "."
 end
 
+# 中間ファイル削除
 def clean
-	# 中間ファイル削除
-    if is_win then
-		`del *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
-	else
-		`rm *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
-	end
+	`#{$rm} *.aux *.bbl *.blg *.dvi *.log *.out *.toc`
 end
 
-def head_foot_del(file)
-    # 1行目と最終行 (header, footer) の削除
-    data = ""
-    open(file, 'r') do |f|
-        data = f.readlines
-        lastline = data.pop
-        firstline = data.shift
-    end
-    file_bak = file + ".bak"
-    File.rename file, file_bak
-    open(file, "w") do |f|
-        f.write data
-    end
-
-    File.delete(file_bak)
-end
-
+# compile all TeX files in dir
 def compile(dir)
 	savedir = Dir.pwd
 	Dir.chdir(dir)
@@ -62,7 +45,6 @@ def compile(dir)
 	# 個別ファイルコンパイル
 	Dir::glob("*.pdf").each do |file|
 		next if "nzmath_doc" == file[0...-4]
-        p file
 		tex_compile(file[0...-4])
 	end
 
@@ -96,41 +78,60 @@ ensure
 	Dir.chdir(savedir)
 end
 
+# 1行目と最終行 (header, footer) の削除
+def head_foot_del(file)
+	data = ""
+	open(file, 'r') do |f|
+		data = f.readlines
+	end
+
+	file_bak = file + ".bak"
+	File.rename file, file_bak
+
+	data.shift
+	data.pop
+	open(file, "w") do |f|
+		f.write data
+	end
+
+	File.delete(file_bak)
+end
+
 def source_compress(dir, olddirrm=false)
 	savedir = Dir.pwd
 	Dir.chdir(dir)
 
-    srcdir = '../manual_source/'
-    if olddirrm then
-        # 旧ディレクトリの削除       
-        if File.exists?(srcdir) then
-            FileUtils.rm_r(srcdir)
-        end
-    end
+	srcdir = '../manual_source/'
+	if olddirrm then
+		# 旧ディレクトリの削除
+		if File.exists?(srcdir) then
+			FileUtils.rm_r(srcdir)
+		end
+	end
 
-    # 新しいディレクトリの作成
-    if not File.exists?(srcdir) then
-        Dir.mkdir(srcdir)
-    end
-    srctargetdir = srcdir + File.basename(dir) + '/'
-    if not File.exists?(srctargetdir) then
-        Dir.mkdir(srctargetdir)
-    end
-    
-    # ソースの移動
-    Dir::glob("*.tex").each do |file|
-        FileUtils.cp(file, srctargetdir)
-    end
-    FileUtils.cp("../macros.tex", srcdir)
-    Dir.chdir(srctargetdir)
+	# 新しいディレクトリの作成
+	if not File.exists?(srcdir) then
+		Dir.mkdir(srcdir)
+	end
+	srctargetdir = srcdir + File.basename(dir) + '/'
+	if not File.exists?(srctargetdir) then
+		Dir.mkdir(srctargetdir)
+	end
 
-    # header, footer の処理
-    Dir::glob("*.tex").each do |file|
-        next if "nzmath_doc" == file[0...-4]
-        head_foot_del(file)
-    end
+	# ソースの移動
+	Dir::glob("*.tex").each do |file|
+		FileUtils.cp(file, srctargetdir)
+	end
+	FileUtils.cp("../macros.tex", srcdir)
+	Dir.chdir(srctargetdir)
 
-    Dir.chdir(savedir)
+	# header, footer の処理
+	Dir::glob("*.tex").each do |file|
+		next if "nzmath_doc" == file[0...-4]
+		head_foot_del(file)
+	end
+
+	Dir.chdir(savedir)
 end
 
 compile("../manual/en/")
