@@ -175,10 +175,11 @@ class FpspTest (unittest.TestCase):
         # Lucas pseudoprime but not Frobenius pseudoprime
         self.assertFalse(prime.fpsp(323, 1, -1))
 
+
 class AKSTest(unittest.TestCase):
-    def testAks( self ):
-        self.assertEqual( True , prime.aks( 521 ))
-        self.assertEqual( False , prime.aks( 525 ))
+    def testAks(self):
+        self.assertTrue(prime.aks(521))
+        self.assertFalse(prime.aks(525))
 
 
 def suite(suffix="Test"):
