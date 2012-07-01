@@ -22,7 +22,7 @@ def arrange_coefficients(coefficients):
         coefficients = coefficients[:-1]
     return coefficients
 
-class array_poly():
+class ArrayPoly():
     """
     Polynomial with integer number coefficients.
     Coefficients has to be a initializer for list.
@@ -50,7 +50,7 @@ class array_poly():
 
     def __repr__(self):
         poly_repr = self.coefficients_to_dict()
-        return "array_poly : %s" % poly_repr
+        return "ArrayPoly : %s" % poly_repr
 
     def __str__(self):
         poly_str = self.coefficients_to_dict()
@@ -74,7 +74,7 @@ class array_poly():
         for i in range(deg):
             add.append(long_coefficients[i] + short_coefficients[i])
         add += long_coefficients[deg:]
-        return array_poly(add)
+        return ArrayPoly(add)
 
     def __sub__(self, other):
         """
@@ -94,14 +94,14 @@ class array_poly():
         for i in range(deg):
             sub.append(long_coefficients[i] - short_coefficients[i])
         sub += long_coefficients[deg:]
-        return array_poly(sub)
+        return ArrayPoly(sub)
 
     def scalar_mul(self, scalar):
         """
         Return the result of scalar multiplicaton.
         """
         scalar_mul = [i * scalar for i in self.coefficients]
-        return array_poly(scalar_mul)
+        return ArrayPoly(scalar_mul)
 
     def upshift_degree(self, slide):
         """
@@ -109,9 +109,9 @@ class array_poly():
         with degrees of 'slide'.
         """
         if slide == 0:
-            return array_poly(self.coefficients[:])
+            return ArrayPoly(self.coefficients[:])
         up_degree = [0] * slide
-        return array_poly(up_degree + self.coefficients[:])
+        return ArrayPoly(up_degree + self.coefficients[:])
 
     def downshift_degree(self, slide):
         """
@@ -119,11 +119,11 @@ class array_poly():
         with degrees of 'slide'.
         """
         if slide == 0:
-            return array_poly(self.coefficients[:])
+            return ArrayPoly(self.coefficients[:])
         elif slide > self.degree:
-            return array_poly()
+            return ArrayPoly()
         down_degree= self.coefficients[slide:]
-        return array_poly(down_degree)
+        return ArrayPoly(down_degree)
 
     def __eq__(self, other):
         """
@@ -147,7 +147,7 @@ class array_poly():
         for i in range(self.degree + 1):
             for j in range(other.degree + 1):
                 total[i + j] += self.coefficients[i] * other.coefficients[j]
-        return array_poly(total)
+        return ArrayPoly(total)
 
     def power(self):
         """
@@ -158,7 +158,7 @@ class array_poly():
             total[i + i] += self.coefficients[i] * self.coefficients[i]
             for j in range(i + 1, self.degree + 1):
                 total[i + j] += ((self.coefficients[i] * self.coefficients[j]) << 1)
-        return array_poly(total)
+        return ArrayPoly(total)
 
     def split_at(self, split_point):
         """
@@ -168,14 +168,14 @@ class array_poly():
         """
         split = self.coefficients[:]
         if split_point == 0:
-            return (array_poly(), array_poly(split))
+            return (ArrayPoly(), ArrayPoly(split))
         elif split_point >= self.degree:
-            return (array_poly(split), array_poly())
+            return (ArrayPoly(split), ArrayPoly())
         split1 = split[:split_point + 1]
         split2 = split[:]
         for i in range(split_point + 1):
             split2[i] = 0
-        return (array_poly(split1), array_poly(split2))
+        return (ArrayPoly(split1), ArrayPoly(split2))
 
     def FFT_mul(self, other):
         """
@@ -192,8 +192,8 @@ class array_poly():
             bound = self.degree + other.degree + 1
             bound = ceillog(bound, 2)
             bound = 1 << bound
-        fft1 = array_poly(self.coefficients[:])
-        fft2 = array_poly(other.coefficients[:])
+        fft1 = ArrayPoly(self.coefficients[:])
+        fft2 = ArrayPoly(other.coefficients[:])
         fft_mul1 = FFT(fft1, bound)
         fft_mul2 = FFT(fft2, bound)
         fft_mul = []
@@ -202,10 +202,10 @@ class array_poly():
         #print fft_mul
         total = reverse_FFT(fft_mul, bound)
         #print total
-        return array_poly(total)
+        return ArrayPoly(total)
 
 
-class array_poly_mod(array_poly):
+class ArrayPolyMod(ArrayPoly):
     """
     Polynomial with modulo n coefficients, n is a nutural number.
     Coefficients has to be a initializer for list.
@@ -220,7 +220,7 @@ class array_poly_mod(array_poly):
         if mod <= 0:
             raise ValueError("Please input a positive integer in 'mod'.")
         mod_coefficients = [i % mod for i in coefficients]
-        array_poly.__init__(self, mod_coefficients)
+        ArrayPoly.__init__(self, mod_coefficients)
         self.mod = mod
 
     def __repr__(self):
@@ -237,8 +237,8 @@ class array_poly_mod(array_poly):
         """
         if self.mod != other.mod:
             raise ValueError("mod mismatch")
-        add = array_poly.__add__(self, other)
-        return array_poly_mod(add.coefficients, self.mod)
+        add = ArrayPoly.__add__(self, other)
+        return ArrayPolyMod(add.coefficients, self.mod)
 
     def __sub__(self, other):
         """
@@ -246,31 +246,31 @@ class array_poly_mod(array_poly):
         """
         if self.mod != other.mod:
             raise ValueError("mod mismatch")
-        sub = array_poly.__sub__(self, other)
-        return array_poly_mod(sub.coefficients, self.mod)
+        sub = ArrayPoly.__sub__(self, other)
+        return ArrayPolyMod(sub.coefficients, self.mod)
 
     def scalar_mul(self, scalar):
         """
         Return the result of scalar multiplicaton.
         """
-        scalar_mul = array_poly.scalar_mul(self, scalar)
-        return array_poly_mod(scalar_mul.coefficients, self.mod)
+        scalar_mul = ArrayPoly.scalar_mul(self, scalar)
+        return ArrayPolyMod(scalar_mul.coefficients, self.mod)
 
     def upshift_degree(self, slide):
         """
         Return the polynomial obtained by shifting upward all terms
         with degrees of 'slide'.
         """
-        up_degree = array_poly.upshift_degree(self, slide)
-        return array_poly_mod(up_degree.coefficients, self.mod)
+        up_degree = ArrayPoly.upshift_degree(self, slide)
+        return ArrayPolyMod(up_degree.coefficients, self.mod)
 
     def downshift_degree(self, slide):
         """
         Return the polynomial obtained by shifting downward all terms
         with degrees of 'slide'.
         """
-        down_degree = array_poly.downshift_degree(self, slide)
-        return array_poly_mod(down_degree.coefficients, self.mod)
+        down_degree = ArrayPoly.downshift_degree(self, slide)
+        return ArrayPolyMod(down_degree.coefficients, self.mod)
 
     def __eq__(self, other):
         """
@@ -278,7 +278,7 @@ class array_poly_mod(array_poly):
         """
         if self.mod != other.mod:
             raise ValueError("mod mismatch")
-        eq = array_poly.__eq__(self, other)
+        eq = ArrayPoly.__eq__(self, other)
         return eq
 
     def __ne__(self, other):
@@ -287,7 +287,7 @@ class array_poly_mod(array_poly):
         """
         if self.mod != other.mod:
             raise ValueError("mod mismatch")
-        ne = array_poly.__ne__(self, other)
+        ne = ArrayPoly.__ne__(self, other)
         return ne
 
     def __mul__(self, other):
@@ -300,7 +300,7 @@ class array_poly_mod(array_poly):
         for i in range(self.degree + 1):
             for j in range(other.degree + 1):
                 total[i + j] = (total[i + j] + self.coefficients[i] * other.coefficients[j]) % self.mod
-        return array_poly_mod(total, self.mod)
+        return ArrayPolyMod(total, self.mod)
 
     def power(self):
         """
@@ -311,7 +311,7 @@ class array_poly_mod(array_poly):
             total[i + i] = (total[i + i] + self.coefficients[i] * self.coefficients[i]) % self.mod
             for j in range(i + 1, self.degree + 1):
                 total[i + j] = (total[i + j] + ((self.coefficients[i] * self.coefficients[j]) << 1)) % self.mod
-        return array_poly_mod(total, self.mod)
+        return ArrayPolyMod(total, self.mod)
 
     def split_at(self, split_point):
         """
@@ -320,13 +320,13 @@ class array_poly_mod(array_poly):
         belongs to the lower degree polynomial.
         """
         if split_point == 0:
-            return (array_poly_mod([0], self.mod), array_poly_mod(self.coefficients, self.mod))
+            return (ArrayPolyMod([0], self.mod), ArrayPolyMod(self.coefficients, self.mod))
         elif split_point >= self.degree:
-            return (array_poly_mod(self.coefficients, self.mod), array_poly_mod([0], self.mod))
-        split = array_poly.split_at(self, split_point)
+            return (ArrayPolyMod(self.coefficients, self.mod), ArrayPolyMod([0], self.mod))
+        split = ArrayPoly.split_at(self, split_point)
         split1 = split[0].coefficients
         split2 = split[1].coefficients
-        return (array_poly_mod(split1, self.mod), array_poly_mod(split2, self.mod))
+        return (ArrayPolyMod(split1, self.mod), ArrayPolyMod(split2, self.mod))
 
     def FFT_mul(self, other):
         """
@@ -343,15 +343,15 @@ class array_poly_mod(array_poly):
             bound = self.degree + other.degree + 1
             bound = ceillog(bound, 2)
             bound = 1 << bound
-        fft1 = array_poly_mod(self.coefficients[:], self.mod)
-        fft2 = array_poly_mod(other.coefficients[:], other.mod)
+        fft1 = ArrayPolyMod(self.coefficients[:], self.mod)
+        fft2 = ArrayPolyMod(other.coefficients[:], other.mod)
         fft_mul1 = FFT(fft1, bound)
         fft_mul2 = FFT(fft2, bound)
         fft_mul = []
         for i in range(bound):
             fft_mul.append(fft_mul1[i] * fft_mul2[i])
         total = reverse_FFT(fft_mul, bound)
-        return array_poly_mod(total, self.mod)
+        return ArrayPolyMod(total, self.mod)
 
 #
 #Some functions for FFT(Fast Fourier Transform).
@@ -415,7 +415,7 @@ def FFT(f, bound):
     """
     count = 1 << (bound >> 1)
     mod = count + 1
-    if isinstance(f, array_poly):
+    if isinstance(f, ArrayPoly):
         coefficients = f.coefficients[:]
     else:
         coefficients = f[:]

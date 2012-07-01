@@ -4,9 +4,9 @@ from nzmath.poly.array import *
 
 class ArrayPolyArithmeticTest(unittest.TestCase):
     def setUp(self):
-        self.f = array_poly([1, 2, 0, 0, 3])
-        self.g = array_poly([0, -1, 0, 2])
-        self.h = array_poly([1, 2, 3, 4, 0])
+        self.f = ArrayPoly([1, 2, 0, 0, 3])
+        self.g = ArrayPoly([0, -1, 0, 2])
+        self.h = ArrayPoly([1, 2, 3, 4, 0])
 
     def testCheckZeroPoly(self):
         self.assertTrue(check_zero_poly([0, 0, 0]))
@@ -24,61 +24,61 @@ class ArrayPolyArithmeticTest(unittest.TestCase):
 
     def testCoefficientsToDict(self):
         self.assertEqual({1 : -1, 3 : 2}, self.g.coefficients_to_dict())
-        self.assertEqual({0 : 0}, array_poly([0]).coefficients_to_dict())
+        self.assertEqual({0 : 0}, ArrayPoly([0]).coefficients_to_dict())
 
     def testAdd(self):
-        t = array_poly([1, 1, 0, 2, 3])
+        t = ArrayPoly([1, 1, 0, 2, 3])
         self.assertEqual(t, self.f + self.g)
         self.assertEqual(t, self.g + self.f)
 
     def testSub(self):
-        t = array_poly([1, 3, 0, -2, 3])
+        t = ArrayPoly([1, 3, 0, -2, 3])
         self.assertEqual(t, self.f - self.g)
 
     def testScalarMul(self):
-        t = array_poly([3, 6, 0, 0, 9])
+        t = ArrayPoly([3, 6, 0, 0, 9])
         self.assertEqual(t, self.f.scalar_mul(3))
 
     def testUpshiftDegree(self):
-        t1 = array_poly([1, 2, 0, 0, 3])
-        t2 = array_poly([0, 0, 0, 1, 2, 0, 0, 3])
+        t1 = ArrayPoly([1, 2, 0, 0, 3])
+        t2 = ArrayPoly([0, 0, 0, 1, 2, 0, 0, 3])
         self.assertEqual(t1, self.f.upshift_degree(0))
         self.assertEqual(t2, self.f.upshift_degree(3))
 
     def testDownshiftDegree(self):
-        t1 = array_poly([1, 2, 0, 0, 3])
-        t2 = array_poly([0])
-        t3 = array_poly([0, 3])
+        t1 = ArrayPoly([1, 2, 0, 0, 3])
+        t2 = ArrayPoly([0])
+        t3 = ArrayPoly([0, 3])
         self.assertEqual(t1, self.f.downshift_degree(0))
         self.assertEqual(t2, self.f.downshift_degree(10))
         self.assertEqual(t3, self.f.downshift_degree(3))
 
     def testEq(self):
-        t = array_poly([1, 2, 0, 0, 3])
+        t = ArrayPoly([1, 2, 0, 0, 3])
         self.assertTrue(t == self.f)
 
     def testNe(self):
-        t = array_poly([1, 2, 0, 0, 3])
+        t = ArrayPoly([1, 2, 0, 0, 3])
         self.assertTrue(t != self.g)
 
     def testMul(self):
-        t = array_poly([0, -1, -2, 2, 4, -3, 0, 6])
+        t = ArrayPoly([0, -1, -2, 2, 4, -3, 0, 6])
         self.assertEqual(t, self.f * self.g)
         self.assertEqual(t, self.g * self.f)
 
     def testPower(self):
-        t = array_poly([1, 4, 4, 0, 6, 12, 0, 0, 9])
+        t = ArrayPoly([1, 4, 4, 0, 6, 12, 0, 0, 9])
         self.assertEqual(t, self.f.power())
 
     def testSplitAt(self):
-        t1 = array_poly([0, -1])
-        t2 = array_poly([0, 0, 0, 2])
-        self.assertEqual((array_poly([0]), self.g), self.g.split_at(0))
-        self.assertEqual((self.g, array_poly([0])), self.g.split_at(10))
+        t1 = ArrayPoly([0, -1])
+        t2 = ArrayPoly([0, 0, 0, 2])
+        self.assertEqual((ArrayPoly([0]), self.g), self.g.split_at(0))
+        self.assertEqual((self.g, ArrayPoly([0])), self.g.split_at(10))
         self.assertEqual((t1, t2), self.g.split_at(2))
 
     def testFFTMul(self):
-        t = array_poly([0, -1, -2, 2, 4, -3, 0, 6])
+        t = ArrayPoly([0, -1, -2, 2, 4, -3, 0, 6])
         self.assertEqual(t, self.f.FFT_mul(self.g))
         self.assertEqual(t, self.g.FFT_mul(self.f))
 
@@ -103,9 +103,9 @@ class ArrayPolyArithmeticTest(unittest.TestCase):
 
 class ArrayPolyModArithmeticTest(unittest.TestCase):
     def setUp(self):
-        self.f = array_poly_mod([1, 2, 0, 0, 3], 11)
-        self.g = array_poly_mod([0, -1, 0, 2], 11)
-        self.h = array_poly_mod([12, 13, 14], 11)
+        self.f = ArrayPolyMod([1, 2, 0, 0, 3], 11)
+        self.g = ArrayPolyMod([0, -1, 0, 2], 11)
+        self.h = ArrayPolyMod([12, 13, 14], 11)
 
     def testInit(self):
         self.assertEqual([1, 2, 0, 0, 3], self.f.coefficients)
@@ -114,23 +114,23 @@ class ArrayPolyModArithmeticTest(unittest.TestCase):
         self.assertEqual(2, self.h.degree)
 
     def testMul(self):
-        t = array_poly_mod([0, -1, -2, 2, 4, -3, 0, 6], 11)
+        t = ArrayPolyMod([0, -1, -2, 2, 4, -3, 0, 6], 11)
         self.assertEqual(t, self.f * self.g)
         self.assertEqual(t, self.g * self.f)
 
     def testPower(self):
-        t = array_poly_mod([1, 4, 4, 0, 6, 1, 0, 0, 9], 11)
+        t = ArrayPolyMod([1, 4, 4, 0, 6, 1, 0, 0, 9], 11)
         self.assertEqual(t, self.f.power())
 
     def testSplitAt(self):
-        t1 = array_poly_mod([0, -1], 11)
-        t2 = array_poly_mod([0, 0, 0, 2], 11)
-        self.assertEqual((array_poly_mod([0], 11), self.g), self.g.split_at(0))
-        self.assertEqual((self.g, array_poly_mod([0], 11)), self.g.split_at(10))
+        t1 = ArrayPolyMod([0, -1], 11)
+        t2 = ArrayPolyMod([0, 0, 0, 2], 11)
+        self.assertEqual((ArrayPolyMod([0], 11), self.g), self.g.split_at(0))
+        self.assertEqual((self.g, ArrayPolyMod([0], 11)), self.g.split_at(10))
         self.assertEqual((t1, t2), self.g.split_at(2))
 
     def testFFTMul(self):
-        t = array_poly_mod([0, -1, -2, 2, 4, -3, 0, 6], 11)
+        t = ArrayPolyMod([0, -1, -2, 2, 4, -3, 0, 6], 11)
         self.assertEqual(t, self.f.FFT_mul(self.g))
         self.assertEqual(t, self.g.FFT_mul(self.f))
 

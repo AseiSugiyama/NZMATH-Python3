@@ -1253,8 +1253,8 @@ def aks(n):
     e = math.sqrt(e)
     e = int(e * lg)
     for b in range(1, e + 1):
-        f = array_poly.array_poly_mod([b, 1], n)
-        total = array_poly.array_poly_mod([1], n)
+        f = array_poly.ArrayPolyMod([b, 1], n)
+        total = array_poly.ArrayPolyMod([1], n)
         count = n
         while count > 0:
             if count & 1:
@@ -1281,4 +1281,4 @@ def _aks_mod(polynomial, r):
         aks_mod = aks_mod[r:]
     for i in range(len(aks_mod)):
         total[i] += aks_mod[i]
-    return array_poly.array_poly_mod(total, polynomial.mod)
+    return array_poly.ArrayPolyMod(total, polynomial.mod)
