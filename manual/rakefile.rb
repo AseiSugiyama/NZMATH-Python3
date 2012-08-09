@@ -1,7 +1,5 @@
 require 'rake/clean'
 
-Dir.chdir(File.dirname(__FILE__) + '/../manual')
-
 
 WINDOWS = (RUBY_PLATFORM =~ /mswin(?!ce)|mingw|bccwin/i)
 BIBTEX = WINDOWS ? 'pbibtex' : 'jbibtex'
