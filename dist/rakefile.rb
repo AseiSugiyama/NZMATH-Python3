@@ -1,14 +1,10 @@
-# coding: UTF-8
-
 require 'rake/clean'
 
 Dir.chdir(File.dirname(__FILE__) + '/../manual')
 
 
 WINDOWS = (RUBY_PLATFORM =~ /mswin(?!ce)|mingw|bccwin/i)
-
 BIBTEX = WINDOWS ? 'pbibtex' : 'jbibtex'
-REMOVE = WINDOWS ? 'del' : 'rm'
 DEV_NULL = WINDOWS ? 'nul' : '/dev/null'
 
 TEXS_EN = FileList["en/*.tex"]
