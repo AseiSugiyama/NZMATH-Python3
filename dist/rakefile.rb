@@ -36,7 +36,7 @@ end
 
 def compile(target)
 	print target + ' '
-	name = File.basename(target, '.tex')
+	name = File.basename(target, '.pdf')
 	Dir.chdir(File.dirname(target)) do
 		remove_intermediate(name)
 		print '.'
@@ -49,7 +49,7 @@ def compile(target)
 			`platex -kanji="sjis" #{name}.tex`
 			print '.'
 		end
-#		`dvipdfmx #{name}.dvi > #{DEV_NULL} 2>&1`
+		`dvipdfmx #{name}.dvi > #{DEV_NULL} 2>&1`
 		print '.'
 
 		remove_intermediate(name)
@@ -59,8 +59,6 @@ end
 
 %w[en ja].each do |lang|
 	file "#{lang}/nzmath_doc.pdf" => Module.const_get('TEXS_' + lang.upcase) do |t|
-p t.name
-next
 		header_footer = %w[header_overview.tex header_basic_util.tex
 			header_class.tex header_function.tex footer.tex]
 
@@ -74,7 +72,7 @@ next
 		end
 
 		begin
-			compile(t.source)
+			compile(t.name)
 		ensure
 			# restore
 			header_footer.each do |file|
@@ -85,5 +83,5 @@ next
 end
 
 rule '.pdf' => '.tex' do |t|
-	compile(t.source)
+	compile(t.name)
 end
