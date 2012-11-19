@@ -1,8 +1,9 @@
 version 1.1.0 to 1.2.0
 ------------------------
 * add a new module sequence for mathematical sequences (like Fibonacci).  
-* add a new module aks, poly.array for AKS algolythm by keisuke banchi. 
-* add new curves N3 for factor.ecm by naoko nakamura.
+* add a new module poly.array for AKS algolythm.
+* add a new method aks in prime by keisuke banchi. 
+* add new curves N3 in factor.ecm by naoko nakamura.
 * improve factor.mpqs for deciding k such as k*n has many factor base by misuzu kawahara.
 * improve combinatorial.permutation_generator.
 * fix prime.apr (precisely, Zeta.__mod__) for user request #3418110.
