@@ -22,7 +22,7 @@ experiences.
 2.1.1. Installation of Python
 -----------------------------
 
-NZMATH requires Python version 2.5 or 2.6.  If you do not have
+NZMATH requires Python version 2.5 or later.  If you do not have
 Python installed on your computer, please install it.
 
 The Python language is a very high level language.  It is downloadable
@@ -59,8 +59,8 @@ The places to download are:
 
 To install NZMATH you should have privilege which lets you install
 some files under the standard python script path,
-/usr/lib/python2.3/site-packages or
-/usr/local/lib/python2.3/site-packages depending on the Python
+/usr/lib/python2.5/site-packages or
+/usr/local/lib/python2.5/site-packages depending on the Python
 installation path.
 
 We denote the privileged user's prompt # and ordinary user's %.

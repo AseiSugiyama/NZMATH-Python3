@@ -1,3 +1,13 @@
+version 1.1.0 to 1.2.0
+------------------------
+* add a new module sequence for mathematical sequences (like Fibonacci).  
+* add a new module aks, poly.array for AKS algolythm by keisuke banchi. 
+* add new curves N3 for factor.ecm by naoko nakamura.
+* improve factor.mpqs for deciding k such as k*n has many factor base by misuzu kawahara.
+* improve combinatorial.permutation_generator.
+* fix prime.apr (precisely, Zeta.__mod__) for user request #3418110.
+* fix a few bugs in prime_decomp.
+
 version 1.0.1 to 1.1.0
 ------------------------
 * add a new module algorithm, module, prime_decomp, poly.groebner.

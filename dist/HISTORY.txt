@@ -1,3 +1,7 @@
+2012-11-26
+----------
+The version 1.2.0 is released.
+
 2011-05-31
 ----------
 The version 1.1.0 is released.
