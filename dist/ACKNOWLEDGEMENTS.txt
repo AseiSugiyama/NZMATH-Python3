@@ -74,6 +74,9 @@ Involved in the development of the NZMATH manual localization, factor/ecm.
 Kawahara Misuzu, [2011-2012]:
 Involved in the development of factor/mpqs.
 
+Banchi Keisuke, [2011-2012]:
+Contributed to the implementation of AKS.
+
 Other Contributors
 ------------------
 
