@@ -1214,7 +1214,7 @@ class ImplementLimit (Exception):
 # AKS
 def aks(n):
     """
-    AKS ( Cyclotomic Conguence Test ) primality test for a nutural number.
+    AKS ( Cyclotomic Congruence Test ) primality test for a natural number.
     
     Input: a natural number n ( n > 1 ).
     Output: n is prime => return True
