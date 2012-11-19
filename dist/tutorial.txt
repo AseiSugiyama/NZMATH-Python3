@@ -128,10 +128,10 @@ specialized for mathematical computation.  Please be patient about it.
 Start your Python interpreter
 
     % python
-    Python 2.6.2 (r262:71600, Sep  3 2009, 19:37:04) 
+    Python 2.6.2 (r262:71600, Sep  3 2009, 19:37:04)
     [GCC 4.2.1 (Apple Inc. build 5574)] on darwin
     Type "help", "copyright", "credits" or "license" for more information.
-    >>> 
+    >>>
 
 (we use '%' for a command prompt.  If you are on Windows, it may be
 'C:\>' or something.)
@@ -148,7 +148,7 @@ The whole NZMATH stuff is imported.
     >>> r = rational.Rational(113, 355)
     >>> print r
     113/355
-    >>> 
+    >>>
     ....
 
 The session continues until you will stop.
@@ -279,7 +279,7 @@ Python has float data type for it.  The mpmath also provides it.
 There are several polynomial classes.  New users should use poly
 sub-package.
 
-    >>> poly.uniutil.polynomial({0:-1,100:1}, rational.theIntegerRing)  
+    >>> poly.uniutil.polynomial({0:-1,100:1}, rational.theIntegerRing)
     IntegerPolynomial([(0, -1L), (100, 1L)], IntegerRing())
 
 poly.uniutil.polynomial is the factory function for univariate
@@ -380,4 +380,4 @@ in the distribution tar ball for detail.
 .. _LICENSE.txt: LICENSE.txt
 
 
-Copyright (c) 2004-2011, NZMATH development group, all right reserved.
+Copyright (c) 2004-2012, NZMATH development group, all right reserved.

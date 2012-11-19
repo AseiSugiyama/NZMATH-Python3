@@ -2,8 +2,8 @@ TMPDIR = /tmp/nzmath-build
 PYTHON = python2.6
 WIN_PYTHON = /cygdrive/c/Python27/python
 HTMLPY = $(PYTHON) rst2html.py
-OLD_VER = 1.0.1
-NEW_VER = 1.1.0
+OLD_VER = 1.1.0
+NEW_VER = 1.2.0
 
 all: html sdist zip wininst
 unix: rpm
