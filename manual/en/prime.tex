@@ -151,6 +151,20 @@
    \quad Assuming \param{n} has no prime factors less than $32$.
     Assuming \param{n} is spsp (strong pseudo-prime) for several bases.
 %
+ \subsection{aks -- Cyclotomic Congruence test}\linkedone{prime}{aks}
+   \func{aks}
+   {\hiki{n}{integer}}{\out{True/False}}\\
+   \spacing
+   % document of basic document
+   \quad AKS (Agrawal-Kayal-Saxena) primality test or the cyclotomic congruence test.\\
+   \spacing
+   % added document
+   \quad Return True iff \param{n} is prime.\\
+   The algorithm determines whether a number \param{n} is prime or composite within polynomial time. For large number \{n}, you can use apr and any other test in practical use.
+   %\spacing
+   % input, output document
+   %\quad 
+%
  \subsection{primeq -- primality test automatically}\linkedone{prime}{primeq}
    \func{primeq}
    {\hiki{n}{integer}}{\out{True/False}}\\
