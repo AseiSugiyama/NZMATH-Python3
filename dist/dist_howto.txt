@@ -30,7 +30,7 @@ Steps
 
    Update nzmath_doc.tex (version num).
 
-   Run dist/compile_nzmath_doc.tex.rb
+   Run dist/compile_manual.rb
 
    # Delete the contents of the following 4 files.
    #   header_basic_util.tex
@@ -102,7 +102,7 @@ Steps
 
    The distribution files have to be made public.
    It includes:
-   NZMATH-x.y.z.tar.gz, NZMATH-x.y.z.zip, NZMATH-x.y.z.win32Install.exe, 
+   NZMATH-x.y.z.tar.gz, NZMATH-x.y.z.zip, NZMATH-x.y.z.win32Install.exe,
    NZMATH-x.y.z.win64Install.exe, NZMATH-x.y.z.noarch.rpm, and
    NZMATH-test-x.y.z.tar.gz.
 
@@ -131,7 +131,7 @@ Steps
 
    Very few people will notice the update until you announce it.  The
    places to announce are currently the MLs and the
-   sourceforgef.net project news. 
+   sourceforgef.net project news.
    The MLs include:
    nzmath-user, jant, rsnt, tnt.
    Also, consider posting to NMBRTHRY, or ANTML.
