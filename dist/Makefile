@@ -36,8 +36,7 @@ build_win64: files setup.py
 	(cd $(TMPDIR); $(WIN_PYTHON) setup.py build --plat-name=win-amd64 bdist_wininst --user-access-control=auto; mv build build_wininst64)
 	for i in $(TMPDIR)/dist_wininst/*; do\
 		chmod 755 $$i; \
-		mv $$i `echo $$i | sed 's/.exe/Install.exe/'`; \
-		mv $$i `echo $$i | sed 's/win-amd64/win64/'`; \
+		mv $$i `echo $$i | sed 's/-amd64.exe/64Install.exe/'`; \
 	done
 
 setup.py: files
@@ -51,13 +50,10 @@ html: files
 
 files: clean
 	mkdir -p $(TMPDIR)/manual/
-	mkdir -p $(TMPDIR)/manual/ja
-	mkdir -p $(TMPDIR)/manual/en
 	cp *.txt MANIFEST.in makesetuppy.awk rst2html.py \
 		logo.bmp setup.cfg nzmathconf.py.example $(TMPDIR)
 	cp -a data $(TMPDIR)
-	cp -p ../manual/ja/*.pdf $(TMPDIR)/manual/ja
-	cp -p ../manual/en/*.pdf $(TMPDIR)/manual/en
+	cp -p ../manual/en/*.pdf $(TMPDIR)/manual/
 	cp -a ../nzmath $(TMPDIR)
 
 clean:
