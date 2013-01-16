@@ -542,7 +542,7 @@ class PartitionDriver(object):
 
 class LimitedMaximumPartitionDriver(PartitionDriver):
     """
-    Only limit the muximum of parts.
+    Only limit the maximum of parts.
     """
     def __init__(self):
         PartitionDriver.__init__(self)
