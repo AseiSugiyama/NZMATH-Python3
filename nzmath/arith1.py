@@ -159,7 +159,7 @@ def modsqrt(n, p, e=1):
             D = pow(d, t, p)
             m = 0
             for i in range(1, s):
-                if pow(A*(D**m), 1 << (s-1-i), p) == (p-1):
+                if pow(A * pow(D, m, p), 1 << (s-1-i), p) == p - 1:
                     m += 1 << i
             x = (pow(n, (t+1) >> 1, p) * pow(D, m >> 1, p)) % p
         return x
