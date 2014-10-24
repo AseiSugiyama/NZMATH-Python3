@@ -6,20 +6,13 @@ import nzmath.gcd as gcd
 import nzmath.prime as prime
 import nzmath.factor.find as find
 
-# TODO: add psyco to config entry
-##         try:
-##             import psyco
-##             psyco.full()
-##         except ImportError:
-##             pass
-
 _log = logging.getLogger('nzmath.factor.mpqs')
 
 class QS(object):
     def __init__(self, n, sieverange, factorbase):
         self.number = n
         self.sqrt_n = int(math.sqrt(n))
-        for i in [2,3,5,7,11,17,19]:
+        for i in [2,3,5,7,11,13,17,19]:
             if n % i == 0:
                 raise ValueError("This number is divided by %d" % i)
 
