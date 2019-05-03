@@ -96,7 +96,7 @@ class FinitePrimeFieldTest(unittest.TestCase):
 
     def testNonZero(self):
         self.assertTrue(self.F17)
-        self.assertTrue(FinitePrimeField(17L))
+        self.assertTrue(FinitePrimeField(17))
 
     def testConst(self):
         self.assertEqual(FinitePrimeFieldElement(1, 17), self.F17.one)
