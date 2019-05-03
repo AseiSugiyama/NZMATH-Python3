@@ -130,7 +130,7 @@ class Permute:
             self.key = range(len(data))
         elif key:
             if len(key) != len(self.key):
-                raise TypeError, "The length of `key` should be equal to that of self.key."
+                raise TypeError("The length of `key` should be equal to that of self.key.")
             else:
                 if key[0] in self.key: # key transformation
                     data = list(self.data)
@@ -269,7 +269,7 @@ class Permute:
         Warning: The method do not check the compatibility of `lists` and self.key (except dict type).
         """
         if len(lists) != len(self.data):
-            raise TypeError, "The length of `lists` should be equal to that of self.key."
+            raise TypeError("The length of `lists` should be equal to that of self.key.")
         if isinstance(lists, dict):
             sol = {}
             key = self.key
@@ -409,7 +409,7 @@ class ExPermute:
             self.key = range(self.dim)
         elif key:
             if len(key) != self.dim:
-                raise TypeError, "The lenght of `key` should be equal to that of self.key."
+                raise TypeError("The lenght of `key` should be equal to that of self.key.")
             else:
                 if key[0] in self.key: # key transformation
                     data = list(self.data)
@@ -513,7 +513,7 @@ class ExPermute:
         Warning: The method do not check the compatibility of `lists` and self.key (except dict type).
         """
         if len(lists) != self.dim:
-            raise TypeError, "The length of `lists` should be equal to self.dim."
+            raise TypeError("The length of `lists` should be equal to self.dim.")
         if isinstance(lists, dict):
             sol = dict(lists)
             key = self.key
@@ -570,7 +570,7 @@ class PermGroup:
         elif isinstance(key, dict):
             self.key = dict.keys()
         else:
-            raise TypeError, "cannot convert PermGroup. `key` should be an integer or a list/tuple/dict."
+            raise TypeError("cannot convert PermGroup. `key` should be an integer or a list/tuple/dict.")
 
     def __repr__(self):
         return repr(self.key)
@@ -602,7 +602,7 @@ class PermGroup:
             if set(self.key) == set(dict.keys()):
                 return Permute(seed)
             else:
-                raise TypeError, "`seed`.key should be equal to self.key."
+                raise TypeError("`seed`.key should be equal to self.key.")
         elif isinstance(seed, tuple):
             return Permute(list(seed). self.key)
         elif isinstance(seed, list):
@@ -610,7 +610,7 @@ class PermGroup:
                 return Permute(seed, self.key)
             elif isinstance(seed[0], tuple):
                 return ExPermute(len(self.key), seed, self.key)
-        raise TypeError, "`seed` should be a dict/tuple/list."
+        raise TypeError("`seed` should be a dict/tuple/list.")
 
     def identity(self):
         return Permute(self.key, self.key)

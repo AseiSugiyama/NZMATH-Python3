@@ -114,4 +114,6 @@ legacy.bak/
 # mypy
 .mypy_cache/
 
+# future
 
+*.py.bak

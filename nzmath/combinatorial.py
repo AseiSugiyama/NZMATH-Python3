@@ -1,6 +1,7 @@
 """
 Combinatorial functions
 """
+from __future__ import print_function
 
 import bisect
 import itertools
@@ -353,7 +354,7 @@ def dyck_word_generator(n, alphabet=(0, 1)):
 
     For example,
     >>> for word in dyck_word_generator(3, alphabet=("(", ")")):
-    ...     print "".join(word)
+    ...     print ("".join(word))
     ... 
     ()()()
     ()(())
@@ -495,8 +496,8 @@ class PartitionDriver(object):
             else:
                 self.rest = 0
         except Exception:
-            print self.partition
-            print self.rest
+            print(self.partition)
+            print(self.rest)
 
     def push(self):
         """

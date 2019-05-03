@@ -11,6 +11,7 @@ import nzmath.matrix as matrix
 import nzmath.rational as rational
 import nzmath.ring as ring
 import nzmath.prime as prime
+from functools import reduce
 
 
 class Submodule(matrix.RingMatrix):
@@ -476,7 +477,7 @@ class Module(object):
         self ** other (based on ideal multiplication)
         """
         if other <= 0:
-            raise ValueError, "only support non-negative powering" 
+            raise ValueError("only support non-negative powering") 
         mul_part = self.copy()
         index = other
         while True:
@@ -828,7 +829,7 @@ class Ideal_with_generator(object):
         self ** other (based on ideal multiplication)
         """
         if other <= 0:
-            raise ValueError, "only support non-negative powering" 
+            raise ValueError("only support non-negative powering") 
         mul_part = self.copy()
         index = other
         while True:
@@ -904,7 +905,7 @@ class Ideal_with_generator(object):
         norm_I = int_I.norm()
         l_I = int_I.smallest_rational()
         if l_I.denominator > 1:
-            raise ValueError, "input an integral ideal"
+            raise ValueError("input an integral ideal")
         else:
             l_I = l_I.numerator
         while True:

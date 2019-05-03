@@ -2,6 +2,7 @@ from __future__ import division
 
 import nzmath.ring as ring
 import nzmath.vector as vector
+from functools import reduce
 
 
 class Matrix(object):

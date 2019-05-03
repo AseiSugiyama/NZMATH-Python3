@@ -1163,7 +1163,7 @@ def apr(n):
     rb = arith1.floorsqrt(n) + 1
     el = TestPrime()
     while el.et <= rb:
-        el = el.next()
+        el = next(el)
 
     plist = el.t.factors.keys()
     plist.remove(2)

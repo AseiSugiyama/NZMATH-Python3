@@ -47,15 +47,15 @@ class IntegerResidueClass(ring.CommutativeRingElement):
                 raise ValueError("incompatible modulus: %d and %d" % (self.m, other.m))
         try:
             return self.mul_module_action(other)
-        except TypeError, e:
+        except TypeError as e:
             #trial may fail with TypeError.
             #_log.debug("no action for %s * %s" % (str(self), str(other)))
             pass
-        except AttributeError, e:
+        except AttributeError as e:
             #trial may fail with AttributeError because other may lack ring.
             #_log.debug("no action for %s * %s" % (str(self), str(other)))
             pass
-        except RuntimeError, e:
+        except RuntimeError as e:
             # maximum recursion depth may exceed
             #_log.debug("recursion limit for %s * %s" % (str(self), str(other)))
             pass
@@ -64,15 +64,15 @@ class IntegerResidueClass(ring.CommutativeRingElement):
     def __rmul__(self, other):
         try:
             return self.mul_module_action(other)
-        except TypeError, e:
+        except TypeError as e:
             #trial may fail with TypeError.
             #_log.debug("no action for %s * %s" % (str(other), str(self)))
             pass
-        except AttributeError, e:
+        except AttributeError as e:
             #trial may fail with AttributeError because other may lack ring.
             #_log.debug("no action for %s * %s" % (str(other), str(self)))
             pass
-        except RuntimeError, e:
+        except RuntimeError as e:
             # maximum recursion depth may exceed
             #_log.debug("recursion limit for %s * %s" % (str(other), str(self)))
             pass

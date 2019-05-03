@@ -91,7 +91,7 @@ def pairwise_coprime(int_list):
     >>>
     """
     int_iter = iter(int_list)
-    product = int_iter.next()
+    product = next(int_iter)
     for n in int_iter:
         if not coprime(product, n):
             return False

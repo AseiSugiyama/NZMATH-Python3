@@ -376,7 +376,7 @@ def product(iterable, init=None):
     iterator = iter(iterable)
     if init is None:
         try:
-            result = iterator.next()
+            result = next(iterator)
         except StopIteration:
             return 1 # empty product
     else:

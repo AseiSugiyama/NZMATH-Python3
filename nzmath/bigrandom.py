@@ -13,9 +13,9 @@ def randrange(start, stop=None, step=1):
     see random.randrange
     """
     if stop is None:
-        if abs(start) < sys.maxint:
+        if abs(start) < sys.maxsize:
             return _random.randrange(start)
-    elif abs(stop - start) < sys.maxint:
+    elif abs(stop - start) < sys.maxsize:
         return _random.randrange(start, stop, step)
 
     negative_step = False

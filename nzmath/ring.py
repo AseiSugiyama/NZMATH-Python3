@@ -312,7 +312,7 @@ class CommutativeRingElement (RingElement):
             other_ring = getRing(other)
             if self_ring.hasaction(other_ring):
                 return self_ring.getaction(other_ring)(other, self)
-        except RuntimeError, e:
+        except RuntimeError as e:
             #print "mul_module_action", e
             raise
         raise TypeError("no module action with %s" % str(other_ring))
