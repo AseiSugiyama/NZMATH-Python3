@@ -2,6 +2,7 @@
 Multiplicative number theoretic functions.
 """
 
+from builtins import range
 import nzmath.factor.misc as factor_misc
 import nzmath.prime as prime
 

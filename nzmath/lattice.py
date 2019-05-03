@@ -1,4 +1,6 @@
 from __future__ import division
+from builtins import range
+from builtins import object
 from math import floor
 from nzmath.matrix import Matrix
 from nzmath.matrix import VectorsNotIndependent
@@ -7,7 +9,7 @@ from nzmath.arith1 import *
 from nzmath.gcd import *
 #import nzmath.matrix as matrix
 
-class Lattice:
+class Lattice(object):
     """
     A class of lattice.
     """

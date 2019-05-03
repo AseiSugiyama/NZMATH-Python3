@@ -2,6 +2,10 @@
 Miscellaneous arithmetic functions
 """
 
+from builtins import str
+from builtins import next
+from builtins import range
+from builtins import object
 import itertools
 import random
 import bisect
@@ -278,7 +282,7 @@ def vp(n, p, k=0):
 
     return (k, n // (q // p))
 
-class _Issquare:
+class _Issquare(object):
     """
     A class for testing whether a number is square or not.
     The function issquare is an instance of the class, indeed.

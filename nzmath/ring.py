@@ -5,6 +5,9 @@ base classes for rings.
 from __future__ import division
 
 
+from builtins import str
+from builtins import range
+from builtins import object
 class Ring (object):
     """
     Ring is an abstract class which expresses that
@@ -795,7 +798,7 @@ def getRingInstance(obj):
     """
     if isinstance(obj, RingElement):
         return obj
-    elif isinstance(obj, (int, long)):
+    elif isinstance(obj, (int, int)):
         import nzmath.rational as rational
         return rational.Integer(obj)
     elif isinstance(obj, float):
@@ -816,7 +819,7 @@ def getRing(obj):
         # if obj has its getRing method, use it.
         return obj.getRing()
     except AttributeError:
-        if isinstance(obj, (int, long)):
+        if isinstance(obj, (int, int)):
             import nzmath.rational as rational
             return rational.theIntegerRing
         if isinstance(obj, float):
@@ -837,7 +840,7 @@ def inverse(obj):
     if hasattr(obj, "inverse"):
         return obj.inverse()
     # special cases
-    if isinstance(obj, (int, long)):
+    if isinstance(obj, (int, int)):
         import nzmath.rational as rational
         return rational.Rational(1, obj)
     elif isinstance(obj, (float, complex)):

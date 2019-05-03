@@ -3,6 +3,9 @@ module, ideal etc. for number field
 """
 from __future__ import division
 
+from builtins import str
+from builtins import range
+from builtins import object
 from nzmath.algfield import BasicAlgNumber, MatAlgNumber
 import nzmath.arith1 as arith1
 import nzmath.gcd as gcd
@@ -355,7 +358,7 @@ class Module(object):
         return self * other (as ideal computation)
         """
         if isinstance(other, 
-            (int, long, rational.Integer, rational.Rational)):
+            (int, int, rational.Integer, rational.Rational)):
             return self._rational_mul(other)
         #try:
         #     use __contains__ function?

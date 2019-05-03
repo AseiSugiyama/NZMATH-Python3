@@ -1,5 +1,9 @@
 from __future__ import division
 
+from builtins import str
+from builtins import zip
+from builtins import range
+from builtins import object
 class Vector (object):
     """
     Class Vector is an elemental class of vector.

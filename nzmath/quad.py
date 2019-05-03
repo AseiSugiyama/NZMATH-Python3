@@ -1,4 +1,6 @@
 from __future__ import division
+from builtins import range
+from builtins import object
 import math
 import copy
 import warnings
@@ -32,7 +34,7 @@ class ReducedQuadraticForm(object):
         return self.__class__(composition, self.unit)
 
     def __pow__(self, exp):
-        if not isinstance(exp, (int, long)):
+        if not isinstance(exp, (int, int)):
             raise TypeError("powering index must be an integer.")
         powered_form = powPDF(self.element, exp, self.unit)
         return self.__class__(powered_form, self.unit)
@@ -399,7 +401,7 @@ def class_group_bsgs(disc, classnum, qin):
 # following functions are sub functions for above functions. #
 ##############################################################
 
-class RetNext:
+class RetNext(object):
     """
     Next element producer.
     """
@@ -409,7 +411,7 @@ class RetNext:
         self._unit = ReducedQuadraticForm(self.utroot, self.utroot)
         self.cnt = 1
         self.previous = []
-        self.elhash = range(int(math.sqrt(abs(disc) // 3)) + 2)
+        self.elhash = list(range(int(math.sqrt(abs(disc) // 3)) + 2))
 
     def unit(self):
         """
@@ -445,7 +447,7 @@ class RetNext:
         Add a form to hash
         """
         key = form.element[0]
-        if isinstance(self.elhash[key], (int, long)):
+        if isinstance(self.elhash[key], (int, int)):
             self.elhash[key] = [form]
         else:
             self.elhash[key].append(form)
@@ -455,7 +457,7 @@ class RetNext:
         check hash
         """
         key = form.element[0]
-        if isinstance(self.elhash[key], (int, long)):
+        if isinstance(self.elhash[key], (int, int)):
             return False
         return form in self.elhash[key]
 
@@ -468,7 +470,7 @@ def disc(f):
     if len(f) != 3:
         raise TypeError("form must be composed of 3 integers")
     for i in f:
-        if not isinstance(i, (int, long)):
+        if not isinstance(i, (int, int)):
             raise TypeError("all components must be integers")
     return (f[1]*f[1] - 4*f[0]*f[2])
 
@@ -803,7 +805,7 @@ def euclid_exd(a, b):
     Return a tuple (u, v, d); they are the greatest common divisor d
     of two integers a and b and u, v such that d = a * u + b * v.
     """
-    if not isinstance(a, (int, long)) or not isinstance(b, (int, long)):
+    if not isinstance(a, (int, int)) or not isinstance(b, (int, int)):
         raise TypeError
     u = 1
     d = a

@@ -1,7 +1,10 @@
 """
 binary-like gcd algorithms for rational, gauss, and eisenstein integer
 """
+from __future__ import division
 
+from builtins import range
+from past.utils import old_div
 import math
 
 
@@ -127,15 +130,15 @@ def arygcd_w(a1, a2, b1, b2):
        return a1, a2
     ap, bp = 0, 0
     while (a1 + a2) % 3 == 0:
-        a1, a2 = (a1 + a1 - a2) / 3, (a1 + a2) / 3
+        a1, a2 = old_div((a1 + a1 - a2), 3), old_div((a1 + a2), 3)
         ap += 1
     while (b1 + b2) % 3 == 0:
-        b1, b2 = (b1 + b1 - b2) / 3, (b1 + b2) / 3
+        b1, b2 = old_div((b1 + b1 - b2), 3), old_div((b1 + b2), 3)
         bp += 1
     k = min(ap, bp)
     while a1 != 0 or a2 != 0:
         while (a1 + a2) % 3 == 0:
-            a1, a2 = (a1 + a1 - a2) / 3, (a1 + a2) / 3
+            a1, a2 = old_div((a1 + a1 - a2), 3), old_div((a1 + a2), 3)
         nrm_a, nrm_b = _ap_norm_w(a1, a2, b1, b2)
         if nrm_a < nrm_b:
             a1, a2, b1, b2 = b1, b2, a1, a2

@@ -2,6 +2,7 @@
 Abstract (higher order) functions
 """
 
+from builtins import range
 import functools
 
 def digital_method(coefficients, val, add, mul, act, power, zero, one):
@@ -86,7 +87,7 @@ def lr_binary_powering(element, index, mul, square=None, one=None):
     square = _set_square(mul, square)
     if not index:
         return one
-    spot = 1 << long(math.log(index, 2))
+    spot = 1 << int(math.log(index, 2))
     sol = one
     while True:
         if spot & index:
@@ -109,7 +110,7 @@ def window_powering(element, index, mul, square=None, one=None):
     square = _set_square(mul, square)
     if not index:
         return one
-    log_n = long(math.log(index, 2))
+    log_n = int(math.log(index, 2))
     # Find the proper window size
     size = 2
     pow_size = 2

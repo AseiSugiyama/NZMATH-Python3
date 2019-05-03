@@ -1,7 +1,10 @@
 """
 prime ideal decomposition over an (absolute) number field
 """
+from __future__ import division
 
+from builtins import range
+from past.utils import old_div
 import nzmath.arith1 as arith1
 import nzmath.rational as rational
 import nzmath.matrix as matrix
@@ -158,7 +161,7 @@ def _div_mod_pO(self, other, base_multiply, p):
     other_self.toFieldMatrix()
 
     gamma_part = other_self.subMatrix(
-        range(1, n + 1), range(r + 1, m + 1))
+        list(range(1, n + 1)), list(range(r + 1, m + 1)))
     omega_gamma = other_self.inverseImage(_matrix_mul_by_base_mul(
         matrix.unitMatrix(n, F_p), gamma_part, base_multiply))
     vect_list = []
@@ -194,11 +197,11 @@ def _separable_algebra(p, H, base_multiply):
     full_base.toFieldMatrix()
     # step 9
     A = full_base.subMatrix(
-        range(1, n + 1), range(r + 1, n + 1))
+        list(range(1, n + 1)), list(range(r + 1, n + 1)))
     gamma_mul = full_base.inverseImage(
         _matrix_mul_by_base_mul(A, A, base_multiply))
     gamma_mul = gamma_mul.subMatrix(
-        range(r + 1, n + 1), range(1, gamma_mul.column + 1))
+        list(range(r + 1, n + 1)), list(range(1, gamma_mul.column + 1)))
     return A, gamma_mul
 
 def _check_H(p, H, field, gamma_mul):
@@ -245,7 +248,7 @@ def _two_element_repr_prime_ideal(p, hnf, field, f):
     n = field.degree
     Z = rational.theIntegerRing
     beta = (p * matrix.unitMatrix(n, Z).subMatrix(
-        range(1, n + 1), range(2, n + 1))).copy()
+        list(range(1, n + 1)), list(range(2, n + 1)))).copy()
     beta.extendColumn(hnf)
     m = beta.column
     # step 2
@@ -260,7 +263,7 @@ def _two_element_repr_prime_ideal(p, hnf, field, f):
             for j in range(1, m):
                 alpha += lmd[j] * beta[j + 1]
             alpha = _vector_to_algnumber(int_basis * alpha, field)
-            n = alpha.norm() / P_norm
+            n = old_div(alpha.norm(), P_norm)
             r = divmod(int(n), p)[1]
             if r:
                 return alpha

@@ -13,6 +13,8 @@ plugins.PRECISION_CHANGEABLE is true.
 """
 
 from __future__ import division
+from builtins import zip
+from builtins import range
 import logging
 
 import nzmath.arith1 as arith1
@@ -241,7 +243,7 @@ def _upper_bound_of_roots(g):
     """
     Return an upper bound of roots.
     """
-    weight = len(filter(None, g))
+    weight = len([_f for _f in g if _f])
     assert g[-1]
     return max([pow(weight*abs(c/g[-1]), 1/len(g)) for c in g])
 
@@ -253,7 +255,7 @@ def root_Fp(g, p, flag=True):
     """
     if isinstance(g, list):
         if not isinstance(g[0], tuple):
-            g = zip(range(len(g)), g)
+            g = list(zip(list(range(len(g))), g))
     Fp = finitefield.FinitePrimeField(p)
     g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
     h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)
@@ -300,7 +302,7 @@ def allroots_Fp(g, p):
     """
     if isinstance(g, list):
         if not isinstance(g[0], tuple):
-            g = zip(range(len(g)), g)
+            g = list(zip(list(range(len(g))), g))
     Fp = finitefield.FinitePrimeField(p)
     g = uniutil.FinitePrimeFieldPolynomial(g, Fp)
     h = uniutil.FinitePrimeFieldPolynomial({1:-1, p:1}, Fp)

@@ -12,6 +12,7 @@ Examples:
   - 6, 10, 14, 15, 21 are squarefree composites.
 """
 
+from builtins import range
 import math
 import nzmath.arith1 as arith1
 import nzmath.bigrange as bigrange

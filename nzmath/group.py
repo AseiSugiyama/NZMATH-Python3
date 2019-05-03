@@ -1,6 +1,11 @@
 """
 Group Theorical module
 """
+from __future__ import division
+from builtins import str
+from builtins import range
+from past.utils import old_div
+from builtins import object
 import math
 import nzmath.rational as rational
 import nzmath.factor.misc as factor_misc
@@ -9,7 +14,7 @@ import nzmath.matrix as matrix
 import nzmath.compatibility
 
 
-class Group:
+class Group(object):
     """
     This is a class for finite group.
     """
@@ -94,7 +99,7 @@ class Group:
         return order
 
 
-class GroupElement:
+class GroupElement(object):
     """
     This is a class for finite group element.
     """
@@ -372,9 +377,9 @@ class AbelianGenerate(GenerateGroup):
                                     H2.append((H2_1, v + x * e_vec[m - 1]))
                             pro_I2 *= b[m, m]
                         m = j
-                    s = int(math.ceil(pro_diag_root / pro_I1))
+                    s = int(math.ceil(old_div(pro_diag_root, pro_I1)))
                     if len(H2) > 1:
-                        t = int(math.ceil(pro_diag_root / pro_I2))
+                        t = int(math.ceil(old_div(pro_diag_root, pro_I2)))
                     else:
                         t = 1
                     a_baby_s, giant_s = list(H1), list(H2)

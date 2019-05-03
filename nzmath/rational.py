@@ -1,7 +1,13 @@
 """
 rational module provides Rational, Integer, RationalField, and IntegerRing.
 """
+from __future__ import division
 
+from past.builtins import cmp
+from builtins import map
+from builtins import str
+from builtins import range
+from past.utils import old_div
 import nzmath.gcd as gcd
 import nzmath.ring as ring
 from nzmath.plugins import MATHMODULE as math, FLOATTYPE as Float
@@ -24,7 +30,7 @@ class Rational (ring.QuotientFieldElement):
         if not denominator:
             raise ZeroDivisionError
         # numerator
-        integer = (int, long)
+        integer = (int, int)
         initDispatcher = {
             (Rational, Rational): Rational._init_by_Rational_Rational,
             (float, Rational): Rational._init_by_float_Rational,
@@ -36,12 +42,12 @@ class Rational (ring.QuotientFieldElement):
             (float, integer): Rational._init_by_float_int,
             (integer, integer): Rational._init_by_int_int,
             }
-        if not isinstance(numerator, (Rational, float, int, long)):
+        if not isinstance(numerator, (Rational, float, int, int)):
             if hasattr(numerator, "toRational"):
                 numerator = numerator.toRational()
             elif hasattr(numerator, "__pos__"):
                 numerator = +numerator
-        if not isinstance(denominator, (Rational, float, int, long)):
+        if not isinstance(denominator, (Rational, float, int, int)):
             if hasattr(denominator, "toRational"):
                 denominator = denominator.toRational()
             elif hasattr(numerator, "__pos__"):
@@ -52,7 +58,7 @@ class Rational (ring.QuotientFieldElement):
                 break
         else:
             try:
-                cfe = continued_fraction_expansion(numerator / denominator, 50)
+                cfe = continued_fraction_expansion(old_div(numerator, denominator), 50)
                 approx0 = Rational(cfe[0])
                 approx1 = Rational(cfe[1] * cfe[0] + 1, cfe[1])
                 for q in cfe[2:]:
@@ -159,7 +165,7 @@ class Rational (ring.QuotientFieldElement):
             denominator = self.denominator*other
             return +Rational(numerator, denominator)
         elif isinstance(other, Float):
-            return self.toFloat() / other
+            return old_div(self.toFloat(), other)
         elif isinstance(other, float):
             return float(self) / other
         else:
@@ -241,7 +247,7 @@ class Rational (ring.QuotientFieldElement):
             denominator = self.numerator
             return +Rational(numerator, denominator)
         elif isinstance(other, Float):
-            return other / self.toFloat()
+            return old_div(other, self.toFloat())
         elif isinstance(other, float):
             return other / float(self)
         else:
@@ -313,7 +319,7 @@ class Rational (ring.QuotientFieldElement):
     def __repr__(self):
         return "%s(%d, %d)" % (self.__class__.__name__, self.numerator, self.denominator)
 
-    def __nonzero__(self):
+    def __bool__(self):
         if self.numerator:
             return True
         else:
@@ -418,7 +424,7 @@ class Rational (ring.QuotientFieldElement):
         return float(self.decimalString(17))
 
     def toFloat(self):
-        return Float(self.numerator) / Float(self.denominator)
+        return old_div(Float(self.numerator), Float(self.denominator))
 
     def decimalString(self, N):
         """
@@ -636,7 +642,7 @@ class RationalField (ring.QuotientField):
     zero = property(_getZero, None, None, "additive unit.")
 
 
-class Integer(long, ring.CommutativeRingElement):
+class Integer(int, ring.CommutativeRingElement):
     """
     Integer is a class of integer.  Since 'int' and 'long' do not
     return rational for division, it is needed to create a new class.
@@ -661,31 +667,31 @@ class Integer(long, ring.CommutativeRingElement):
     __rtruediv__ = __rdiv__
 
     def __floordiv__(self, other):
-        return Integer(long(self)//other)
+        return Integer(int(self)//other)
 
     def __rfloordiv__(self, other):
         try:
-            return Integer(other//long(self))
+            return Integer(other//int(self))
         except:
             return NotImplemented
 
     def __mod__(self, other):
-        if isinstance(other, (int, long)):
-            return Integer(long(self)%long(other))
+        if isinstance(other, (int, int)):
+            return Integer(int(self)%int(other))
         return NotImplemented
 
     def __rmod__(self, other):
-        return Integer(other%long(self))
+        return Integer(other%int(self))
 
     def __divmod__(self, other):
-        return tuple([Integer(x) for x in divmod(long(self), other)])
+        return tuple([Integer(x) for x in divmod(int(self), other)])
 
     def __rdivmod__(self, other):
-        return tuple([Integer(x) for x in divmod(other, long(self))])
+        return tuple([Integer(x) for x in divmod(other, int(self))])
 
     def __add__(self, other):
         if isIntegerObject(other):
-            return Integer(long(self)+other)
+            return Integer(int(self)+other)
         else:
             return NotImplemented
 
@@ -693,16 +699,16 @@ class Integer(long, ring.CommutativeRingElement):
 
     def __sub__(self, other):
         if isIntegerObject(other):
-            return Integer(long(self)-other)
+            return Integer(int(self)-other)
         else:
             return NotImplemented
 
     def __rsub__(self, other):
-        return Integer(other-long(self))
+        return Integer(other-int(self))
 
     def __mul__(self, other):
-        if isinstance(other, (int, long)):
-            return self.__class__(long(self) * other)
+        if isinstance(other, (int, int)):
+            return self.__class__(int(self) * other)
         try:
             retval = other.__rmul__(self)
             if retval is not NotImplemented:
@@ -712,10 +718,10 @@ class Integer(long, ring.CommutativeRingElement):
         return self.actAdditive(other)
 
     def __rmul__(self, other):
-        if isinstance(other, (int, long)):
-            return self.__class__(other * long(self))
-        elif other.__class__ in __builtins__.values():
-            return other.__mul__(long(self))
+        if isinstance(other, (int, int)):
+            return self.__class__(other * int(self))
+        elif other.__class__ in list(__builtins__.values()):
+            return other.__mul__(int(self))
         return self.actAdditive(other)
 
     def __pow__(self, index, modulo=None):
@@ -723,23 +729,23 @@ class Integer(long, ring.CommutativeRingElement):
         If index is negative, result may be a rational number.
         """
         if modulo is None and index < 0:
-            return Rational(1, long(self) ** (-index))
-        return Integer(pow(long(self), index, modulo))
+            return Rational(1, int(self) ** (-index))
+        return Integer(pow(int(self), index, modulo))
 
     def __pos__(self):
         return Integer(self)
 
     def __neg__(self):
-        return Integer(-long(self))
+        return Integer(-int(self))
 
     def __abs__(self):
-        return Integer(abs(long(self)))
+        return Integer(abs(int(self)))
 
     def __eq__(self, other):
-        return long(self) == long(other)
+        return int(self) == int(other)
 
     def __hash__(self):
-        return hash(long(self))
+        return hash(int(self))
 
     def getRing(self):
         return theIntegerRing
@@ -933,7 +939,7 @@ def isIntegerObject(anObject):
     True if the given object is instance of int or long,
     False otherwise.
     """
-    return isinstance(anObject, (int, long))
+    return isinstance(anObject, (int, int))
 
 def IntegerIfIntOrLong(anObject):
     """
@@ -941,7 +947,7 @@ def IntegerIfIntOrLong(anObject):
     The objects in list or tuple can be casted also.
     """
     objectClass = anObject.__class__
-    if objectClass == int or objectClass == long:
+    if objectClass == int or objectClass == int:
         return Integer(anObject)
     elif isinstance(anObject, (list,tuple)):
         return objectClass([IntegerIfIntOrLong(i) for i in anObject])
@@ -965,7 +971,7 @@ def continued_fraction_expansion(target, terms):
 
     # expansion
     for i in range(terms):
-        reverse = 1 / target
+        reverse = old_div(1, target)
         term = math.floor(reverse)
         target = reverse - term
         result.append(int(term))

@@ -2,6 +2,8 @@
 funtions related to the greatest common divisor of integers.
 """
 
+from builtins import next
+from builtins import range
 import nzmath.arygcd as arygcd
 
 def gcd(a, b):

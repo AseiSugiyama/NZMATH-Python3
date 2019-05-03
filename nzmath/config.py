@@ -3,6 +3,8 @@ config --- NZMATH configurations
 """
 from __future__ import print_function
 
+from future import standard_library
+standard_library.install_aliases()
 import os
 import sys
 import warnings
@@ -249,14 +251,14 @@ def check_net():
     """
     Check the net connection by http call.
     """
-    import urllib2
+    import urllib.request, urllib.error, urllib.parse
     try:
-        urllib2.urlopen('http://sourceforge.net/projects/nzmath/')
+        urllib.request.urlopen('http://sourceforge.net/projects/nzmath/')
         return True
-    except urllib2.HTTPError:
+    except urllib.error.HTTPError:
         # the problem is on server side, thus connected anyway
         return True
-    except urllib2.URLError:
+    except urllib.error.URLError:
         # no dns, thus no connection
         return False
     except Exception:

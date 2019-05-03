@@ -2,7 +2,12 @@
 Combinatorial functions
 """
 from __future__ import print_function
+from __future__ import division
 
+from builtins import zip
+from builtins import range
+from builtins import object
+from past.utils import old_div
 import bisect
 import itertools
 from nzmath.rational import Integer, Rational
@@ -19,9 +24,9 @@ def binomial(n, m):
 
     In other cases, it raises an exception.
     """
-    if not isinstance(n, (int, long)):
+    if not isinstance(n, (int, int)):
         raise TypeError("integer is expected, %s detected." % n.__class__)
-    if not isinstance(m, (int, long)):
+    if not isinstance(m, (int, int)):
         raise TypeError("integer is expected, %s detected." % m.__class__)
     if n == m >= 0 or m == 0 and n > 0:
         return 1
@@ -43,22 +48,22 @@ def factorial(n):
     """
     Return n! for non negative integer n.
     """
-    if not isinstance(n, (int, long)):
+    if not isinstance(n, (int, int)):
         raise TypeError("integer is expected, %s detected." % n.__class__)
     elif n < 0:
         raise ValueError("argument must not be a negative integer.")
     elif n < 1500:
         # naive loop is best for small n.
         result = 1
-        for i in xrange(2, n + 1):
+        for i in range(2, n + 1):
             result *= i
         return Integer(result)
     # The following algorithm keeps temporary results rather small as
     # possible in order to make the function run faster than the naive
     # loop.
-    l = range(1, n + 1)
+    l = list(range(1, n + 1))
     while len(l) > 1:
-        for i in xrange(len(l) >> 1):
+        for i in range(len(l) >> 1):
             l[i] *= l.pop()
     return Integer(l.pop())
 
@@ -74,7 +79,7 @@ def bernoulli(n):
         a = B[0] + (i + 1) * B[1]
         for j in range(2, i, 2):
             a += binomial(i + 1, j) * B[j]
-        B[i] = -a / (i + 1)
+        B[i] = old_div(-a, (i + 1))
     return B[n]
 
 def catalan(n):
@@ -129,7 +134,7 @@ def multinomial(n, parts):
     if n != sum(parts):
         raise ValueError("sum of parts must be equal to n.")
     for part in parts:
-        if not isinstance(part, (int, long)) or part < 0:
+        if not isinstance(part, (int, int)) or part < 0:
             raise ValueError("parts must be a sequence of natural numbers.")
     # binomial case
     if len(parts) == 2:
@@ -283,7 +288,7 @@ def combination_index_generator(n, m):
         [2, 3, 4]
     """
     assert n >= m > 0
-    idx = range(m)
+    idx = list(range(m))
     while True:
         yield list(idx)
         for i in range(1, m+1):
@@ -312,7 +317,7 @@ def permutation_generator(n):
         [2, 1, 0]
     """
     # traverse tree by depth first
-    perm = range(n)
+    perm = list(range(n))
     unused = []
     while True:
         # leaf is reached, thus yield the value.
@@ -653,7 +658,7 @@ def partition_numbers_upto(n):
     """
     Return the partition numbers for 0 to '''n''' (inclusive).
     """
-    penta = list(itertools.izip(
+    penta = list(zip(
         itertools.takewhile(lambda k: k <= n, _pentagonal()),
         itertools.cycle((1, 1, -1, -1))))
     p = [1]

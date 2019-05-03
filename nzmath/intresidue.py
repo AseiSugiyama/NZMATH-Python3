@@ -21,7 +21,7 @@ class IntegerResidueClass(ring.CommutativeRingElement):
             modulus = -modulus
         self.m = modulus
 
-        if isinstance(representative, (int, long)):
+        if isinstance(representative, (int, int)):
             self.n = representative % self.m
         elif all(hasattr(representative, attr) for attr in ("m", "n")):
             assert representative.m == modulus
@@ -158,7 +158,7 @@ class IntegerResidueClass(ring.CommutativeRingElement):
     def __pos__(self):
         return self.__class__(+self.n, self.m)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self.n)
 
     def __eq__(self, other):

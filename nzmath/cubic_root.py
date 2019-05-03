@@ -1,3 +1,5 @@
+from __future__ import division
+from past.utils import old_div
 import random
 import nzmath.arith1 as arith1
 import nzmath.arygcd as arygcd
@@ -87,8 +89,8 @@ def c_symbol(a1, a2, b1, b2):
     r1, r2, j1 = _divides(a1, a2)
     r1, r2, i1 = _FormAdj_w(r1, r2)
     d1, d2, i2 = _FormAdj_w(b1, b2)
-    m = (d1 - 1) / 3
-    n = d2 / 3
+    m = old_div((d1 - 1), 3)
+    n = old_div(d2, 3)
     t = ((m * j1) + (-(m + n) * i1)) % 3
     a1, a2 = r1, r2
     b1, b2 = d1, d2
@@ -97,8 +99,8 @@ def c_symbol(a1, a2, b1, b2):
         tmpre, tmpim = a1, a2
         a1, a2 = b1, b2
         b1, b2 = tmpre, tmpim
-        m = (b1 - 1) / 3
-        n = b2 / 3
+        m = old_div((b1 - 1), 3)
+        n = old_div(b2, 3)
     while not((a1 == b1) and (a2 == b2)):
         sub_re_ab, sub_im_ab = a1 - b1, a2 - b2
         tmp_sub_re_ab, tmp_sub_im_ab, j = _divides(sub_re_ab, sub_im_ab)
@@ -110,8 +112,8 @@ def c_symbol(a1, a2, b1, b2):
             tmpre, tmpim = a1, a2
             a1, a2 = b1, b2
             b1, b2 = tmpre, tmpim
-            m = (b1 - 1) / 3
-            n = b2 / 3
+            m = old_div((b1 - 1), 3)
+            n = old_div(b2, 3)
     if not ((a1 == 1) and (a2 == 0)) :
         return 0
     elif t  == 0:
@@ -151,8 +153,8 @@ def _divides(a1, a2):
     j = 0
     while (a1 + a2) % 3 == 0:
         tmpa1 = a1
-        a1 = ((a1 + a1) - a2) / 3
-        a2 = (tmpa1 + a2) / 3
+        a1 = old_div(((a1 + a1) - a2), 3)
+        a2 = old_div((tmpa1 + a2), 3)
         j += 1
     return a1, a2, j
 
@@ -180,7 +182,7 @@ def cornacchia(d, p):
     if k == -1:
         raise ValueError("no solution")
     x0 = arith1.modsqrt(-d, p)
-    if x0 < (p / 2):
+    if x0 < (old_div(p, 2)):
         x0 = p - x0
     a = p
     b = x0
