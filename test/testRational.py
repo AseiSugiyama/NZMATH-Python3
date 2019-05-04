@@ -352,7 +352,7 @@ class IntegerIfIntOrLongTest (unittest.TestCase):
             self.assertTrue(isinstance(i, Integer))
 
     def testList(self):
-        s = IntegerIfIntOrLong([1,1L])
+        s = IntegerIfIntOrLong([1,1])
         self.assertTrue(isinstance(s, list))
         for i in s:
             self.assertTrue(isinstance(i, Integer))
