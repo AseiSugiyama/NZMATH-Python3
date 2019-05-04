@@ -337,7 +337,7 @@ class IntegerIfIntOrLongTest (unittest.TestCase):
         self.assertTrue(isinstance(b, Integer))
 
     def testLong(self):
-        b = IntegerIfIntOrLong(1L)
+        b = IntegerIfIntOrLong(1)
         self.assertTrue(isinstance(b, Integer))
 
     def testRational(self):
