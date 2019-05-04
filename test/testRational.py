@@ -131,7 +131,7 @@ class RationalTest (unittest.TestCase):
         self.assertFalse(Rational(5,7) > Rational(3,4))
         self.assertFalse(Rational(3,4) > Rational(3,4))
         self.assertTrue(Rational(13,12) > 1)
-        self.assertTrue(Rational(-11,12) > -1L)
+        self.assertTrue(Rational(-11,12) > -1)
         self.assertTrue(1 < Rational(134,133))
 
     def testGe(self):
