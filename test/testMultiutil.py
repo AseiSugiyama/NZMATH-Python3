@@ -181,7 +181,7 @@ class PrepareIndeterminateTest(unittest.TestCase):
         multiutil.prepare_indeterminates("S T X Y", ctx)
         self.assertTrue("X" in ctx)
         for var in ctx:
-            exec "self.%s = ctx['%s']" % (var, var)
+            exec ("self.%s = ctx['%s']" % (var, var))
         self.assertTrue(self.S)
         self.assertTrue(self.T)
         Z = rational.theIntegerRing
