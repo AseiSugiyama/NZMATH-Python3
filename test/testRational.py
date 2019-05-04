@@ -292,7 +292,7 @@ class IntegerRingTest(unittest.TestCase):
 class RationalFieldTest(unittest.TestCase):
     def testContains(self):
         self.assertTrue(1 in theRationalField)
-        self.assertTrue(1L in theRationalField)
+        self.assertTrue(1 in theRationalField)
         self.assertTrue(Integer(1) in theRationalField)
         self.assertTrue(Rational(1,2) in theRationalField)
         self.assertTrue(3.14 not in theRationalField)
