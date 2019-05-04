@@ -230,7 +230,7 @@ class IntegerTest(unittest.TestCase):
 class IntegerRingTest(unittest.TestCase):
     def testContains(self):
         self.assertTrue(1 in theIntegerRing)
-        self.assertTrue(1L in theIntegerRing)
+        self.assertTrue(1 in theIntegerRing)
         self.assertTrue(Integer(1) in theIntegerRing)
         self.assertTrue(Rational(1,2) not in theIntegerRing)
         self.assertTrue((1,) not in theIntegerRing)
