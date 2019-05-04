@@ -173,9 +173,9 @@ class SubresultantGcdProviderTest (unittest.TestCase):
         self.assertEqual(-self.v, self.u.subresultant_gcd(self.v))
         #
         Z = rational.theIntegerRing
-        f = uniutil.polynomial([(0, 1L), (2, -1L), (4, 1L)], Z)
-        gx = uniutil.polynomial([(1, -2L), (3, 4L)], Z)
-        g = uniutil.polynomial([(0, -2L), (2, 4L)], Z)
+        f = uniutil.polynomial([(0, 1), (2, -1), (4, 1)], Z)
+        gx = uniutil.polynomial([(1, -2), (3, 4)], Z)
+        g = uniutil.polynomial([(0, -2), (2, 4)], Z)
         self.assertEqual(f.subresultant_gcd(gx), f.subresultant_gcd(g))
 
     def testResultant(self):
