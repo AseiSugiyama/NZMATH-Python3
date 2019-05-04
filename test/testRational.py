@@ -358,7 +358,7 @@ class IntegerIfIntOrLongTest (unittest.TestCase):
             self.assertTrue(isinstance(i, Integer))
 
     def testListOfTuple(self):
-        ss = IntegerIfIntOrLong([(1,1L),(2L,2)])
+        ss = IntegerIfIntOrLong([(1,1),(2,2)])
         self.assertTrue(isinstance(ss, list))
         for s in ss:
             self.assertTrue(isinstance(s, tuple))
