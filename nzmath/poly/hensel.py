@@ -335,7 +335,7 @@ class HenselLiftSimultaneously(object):
             self.dis.append(rest.scalar_exact_division(q))
 
     @classmethod
-    def from_factors(cls, target, factors, p, ubound=sys.maxint):
+    def from_factors(cls, target, factors, p, ubound=sys.maxsize):
         """
         Create and return an instance of HenselLiftSimultaneously,
         whose factors are lifted by HenselLiftMulti upto ubound (if it
@@ -348,7 +348,7 @@ class HenselLiftSimultaneously(object):
         with a prime number p and ai's in factors.
         """
         lifter = HenselLiftMulti.from_factors(target, factors, p)
-        interbound = min(ubound, sys.maxint)
+        interbound = min(ubound, sys.maxsize)
         while lifter.p < interbound:
             lifter.lift_factors()
             lifter.lift_ladder()
