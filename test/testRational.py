@@ -346,7 +346,7 @@ class IntegerIfIntOrLongTest (unittest.TestCase):
         self.assertTrue(isinstance(b, Rational))
 
     def testTuple(self):
-        s = IntegerIfIntOrLong((1,1L))
+        s = IntegerIfIntOrLong((1,1))
         self.assertTrue(isinstance(s, tuple))
         for i in s:
             self.assertTrue(isinstance(i, Integer))
