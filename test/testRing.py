@@ -107,7 +107,7 @@ class GetRingTest (unittest.TestCase):
     def testInt(self):
         Z = rational.theIntegerRing
         self.assertEqual(Z, ring.getRing(1))
-        self.assertEqual(Z, ring.getRing(1L))
+        self.assertEqual(Z, ring.getRing(1))
         self.assertEqual(rational.Integer(1).getRing(), ring.getRing(rational.Integer(1)))
 
     def testFloat(self):
