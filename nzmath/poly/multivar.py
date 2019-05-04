@@ -236,7 +236,7 @@ class BasicPolynomial(PolynomialInterface):
                     mul_coeff[indices] += cs*co
                 else:
                     mul_coeff[indices] = cs*co
-        return self.construct_with_default([(d, c) for (d, c) in mul_coeff.iteritems() if c])
+        return self.construct_with_default([(d, c) for (d, c) in mul_coeff.items() if c])
 
     def scalar_mul(self, scale):
         """

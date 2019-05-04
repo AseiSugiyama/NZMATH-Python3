@@ -61,7 +61,7 @@ class PolynomialInterface(formalsum.FormalSumContainerInterface):
                     mul_coeff[term_degree] += cs*co
                 else:
                     mul_coeff[term_degree] = cs*co
-        return self.construct_with_default(sorted([(d, c) for (d, c) in mul_coeff.iteritems() if c]))
+        return self.construct_with_default(sorted([(d, c) for (d, c) in mul_coeff.items() if c]))
 
     def scalar_mul(self, scale):
         """
