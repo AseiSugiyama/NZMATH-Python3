@@ -290,7 +290,7 @@ class RingPolynomial (OrderProvider,
         """
         if "number_of_variables" not in kwds:
             coefficients = dict(coefficients)
-            for i in coefficients.iterkeys():
+            for i in coefficients.keys():
                 kwds["number_of_variables"] = len(i)
                 break
         multivar.BasicPolynomial.__init__(self, coefficients, **kwds)
