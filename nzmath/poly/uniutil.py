@@ -1376,7 +1376,7 @@ class IntegerPolynomial(UniqueFactorizationDomainPolynomial):
     """
     def __init__(self, coefficients, coeffring=None, _sorted=False, **kwds):
         dc = dict(coefficients)
-        coefficients = [(d, rational.IntegerIfIntOrLong(c)) for (d, c) in dc.iteritems()]
+        coefficients = [(d, rational.IntegerIfIntOrLong(c)) for (d, c) in dc.items()]
         UniqueFactorizationDomainPolynomial.__init__(self, coefficients, coeffring, _sorted, **kwds)
 
     def normalize(self):
