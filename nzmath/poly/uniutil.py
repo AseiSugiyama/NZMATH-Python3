@@ -1196,8 +1196,16 @@ class RingPolynomial(OrderProvider,
         if coeffring is None:
             raise TypeError("argument `coeffring' is required")
         coefficients = dict(coefficients)
-        if coefficients and coefficients.itervalues().next() not in coeffring:
-            coefficients = [(d, coeffring.createElement(c)) for (d, c) in coefficients.iteritems()]
+
+        def _should_replace_cofficients(cofficients, coeffring):
+            for value in coefficients.values():
+                if value not in coeffring:
+                    return True
+
+            return False
+
+        if _should_replace_cofficients(coeffring,coeffring):
+            coefficients = [(d, coeffring.createElement(c)) for (d, c) in coefficients.items()]
             _sorted = False
         kwds["coeffring"] = coeffring
         univar.SortedPolynomial.__init__(self, coefficients, _sorted, **kwds)
