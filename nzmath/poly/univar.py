@@ -373,7 +373,7 @@ class SortedPolynomial (PolynomialInterface):
         PolynomialInterface.__init__(self, coefficients, **kwds)
         self.sorted = []
         if not _sorted or isinstance(coefficients, dict):
-            for t in dict(coefficients).iteritems():
+            for t in dict(coefficients).items():
                 self._insort(t)
         else:
             self.sorted = list(coefficients)
