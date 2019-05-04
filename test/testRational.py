@@ -8,7 +8,7 @@ from nzmath.plugins import FLOATTYPE as Float
 class RationalTest (unittest.TestCase):
     def testInit(self):
         self.assertEqual("2/1", str(Rational(2)))
-        self.assertEqual("2/1", str(Rational(2L)))
+        self.assertEqual("2/1", str(Rational(2)))
         self.assertEqual("1/2", str(Rational(1,2)))
         self.assertEqual("1/2", str(Rational(Rational(1,2))))
         self.assertEqual("21/26", str(Rational(Rational(7,13),Rational(2,3))))
@@ -102,7 +102,7 @@ class RationalTest (unittest.TestCase):
         self.assertFalse(Rational(3,4) < Rational(5,7))
         self.assertFalse(Rational(3,4) < Rational(3,4))
         self.assertTrue(Rational(132,133) < 1)
-        self.assertTrue(Rational(-13,12) < -1L)
+        self.assertTrue(Rational(-13,12) < -1)
         self.assertTrue(1 > Rational(132,133))
         self.assertTrue(Rational(132,133) < 1.000001)
 
@@ -111,14 +111,14 @@ class RationalTest (unittest.TestCase):
         self.assertFalse(Rational(3,4) <= Rational(5,7))
         self.assertTrue(Rational(3,4) <= Rational(3,4))
         self.assertTrue(Rational(132,133) <= 1)
-        self.assertTrue(Rational(-13,12) <= -1L)
+        self.assertTrue(Rational(-13,12) <= -1)
         self.assertTrue(1 >= Rational(132,133))
 
     def testEq(self):
         self.assertTrue(Rational(1,2) == Rational(1,2))
         self.assertTrue(Rational(-1,2) == Rational(-1,2))
         self.assertTrue(Rational(4,2) == 2)
-        self.assertTrue(2L == Rational(14,7))
+        self.assertTrue(2 == Rational(14,7))
         self.assertFalse(Rational(3,5) == Rational(27,46))
 
     def testNe(self):
