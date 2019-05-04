@@ -188,7 +188,7 @@ class BasicPolynomial(PolynomialInterface):
         coefficients can be any dict initial values.
         """
         PolynomialInterface.__init__(self)
-        self._coefficients = dict([(TermIndices(i), c) for (i, c) in dict(coefficients).iteritems()])
+        self._coefficients = dict([(TermIndices(i), c) for (i, c) in dict(coefficients).items()])
         if "number_of_variables" in kwds:
             self.number_of_variables = kwds.pop("number_of_variables")
         else:
