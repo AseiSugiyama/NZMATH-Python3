@@ -347,7 +347,7 @@ class BasicPolynomial(PolynomialInterface):
         scalar.
         """
         result = {}
-        if isinstance(target, (int, long)):
+        if isinstance(target, (int, int)):
             for i, c in self:
                 deg, index = i[target], i[:target] + (0,) + i[target + 1:]
                 if index in result:
