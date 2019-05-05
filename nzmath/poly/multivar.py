@@ -380,19 +380,19 @@ class BasicPolynomial(PolynomialInterface):
         """
         iterator for (degree, coefficient) pairs.
         """
-        return self._coefficients.iteritems()
+        return iter(self._coefficients.items())
 
     def itercoefficients(self):
         """
         iterator for coefficients.
         """
-        return self._coefficients.itervalues()
+        return iter(self._coefficients.values())
 
     def iterbases(self):
         """
         iterator for degrees.
         """
-        return self._coefficients.iterkeys()
+        return iter(self._coefficients.keys())
 
     def partial_differentiate(self, target):
         """
