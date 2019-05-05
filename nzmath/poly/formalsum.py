@@ -128,7 +128,7 @@ class FormalSumContainerInterface (object):
                 sum_coeff[base] += coeff
             else:
                 sum_coeff[base] = coeff
-        return self.construct_with_default([(b, c) for (b, c) in sum_coeff.iteritems() if c])
+        return self.construct_with_default([(b, c) for (b, c) in sum_coeff.items() if c])
 
     def __sub__(self, other):
         """
@@ -140,7 +140,7 @@ class FormalSumContainerInterface (object):
                 sub_coeff[base] -= coeff
             else:
                 sub_coeff[base] = -coeff
-        return self.construct_with_default([(b, c) for (b, c) in sub_coeff.iteritems() if c])
+        return self.construct_with_default([(b, c) for (b, c) in sub_coeff.items() if c])
 
     def __neg__(self):
         """
