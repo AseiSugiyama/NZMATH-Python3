@@ -361,7 +361,7 @@ class BasicPolynomial(PolynomialInterface):
             return substituted
         else:
             raise TypeError("argument lengths mismatsch")
-        return self.__class__([(i, c) for (i, c) in result.iteritems() if c], **self._init_kwds)
+        return self.__class__([(i, c) for (i, c) in result.items() if c], **self._init_kwds)
 
     def __len__(self):
         """
@@ -406,7 +406,7 @@ class BasicPolynomial(PolynomialInterface):
             index_diffed[target] -= 1
             index_diffed = tuple(i)
             partial[index_diffed] = target_degree * c
-        return self.construct_with_default([(i, c) for (i, c) in partial.iteritems() if c])
+        return self.construct_with_default([(i, c) for (i, c) in partial.items() if c])
 
     def erase_variable(self, target=0):
         """
@@ -425,7 +425,7 @@ class BasicPolynomial(PolynomialInterface):
             else:
                 result[term] = coeff
 
-        return self.__class__([(d, c) for (d, c) in result.iteritems() if c],
+        return self.__class__([(d, c) for (d, c) in result.items() if c],
                               number_of_variables=(self.number_of_variables - 1),
                               **self._init_kwds)
 
@@ -440,7 +440,7 @@ class BasicPolynomial(PolynomialInterface):
         result = {}
         for i, c in self:
             result[i[target]] = result.get(i[target], zero) + self.__class__([(i, c)], **self._init_kwds)
-        for i, c in result.iteritems():
+        for i, c in result.items():
             result[i] = c.erase_variable(target)
         return result.items()
 
