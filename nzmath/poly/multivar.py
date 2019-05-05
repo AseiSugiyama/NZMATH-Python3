@@ -251,7 +251,8 @@ class BasicPolynomial(PolynomialInterface):
         or as a Polynomial instance.
         """
         if isinstance(term, PolynomialInterface):
-            degrees, coeff = iter(term).next()
+            # FIXME: next(iter(term)) should equivalent to term[0]
+            degrees, coeff = next(iter(term))
         else:
             degrees, coeff = term
         return self.construct_with_default([(d + degrees, c * coeff) for (d, c) in self])
