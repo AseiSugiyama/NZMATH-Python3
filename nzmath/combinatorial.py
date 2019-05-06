@@ -401,7 +401,7 @@ def partition_generator(n, maxi=None):
     """
     if not n:
         yield ()
-        raise StopIteration
+        return
     if maxi is None or maxi > n:
         maxi = n
     partition = [maxi]
@@ -421,7 +421,7 @@ def partition_generator(n, maxi=None):
             first_one = partition.index(1)
             if not first_one:
                 # partition was [1]*n means all partitions have been generated.
-                raise StopIteration
+                return
             rest = len(partition) - first_one
             del partition[first_one:]
         except ValueError:
