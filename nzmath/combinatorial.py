@@ -298,7 +298,7 @@ def combination_index_generator(n, m):
                     idx[-j] = idx[-j-1] + 1
                 break
         else:
-            raise StopIteration
+            return
 
 
 def permutation_generator(n):
