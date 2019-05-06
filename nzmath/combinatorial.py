@@ -370,7 +370,7 @@ def dyck_word_generator(n, alphabet=(0, 1)):
     """
     if n == 0:
         yield ()
-        raise StopIteration()
+        return
     else:
         # memo[i] is a list of Dyck words of length 2*i
         memo = [[()]]
