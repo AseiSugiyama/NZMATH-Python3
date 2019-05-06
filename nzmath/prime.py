@@ -278,7 +278,7 @@ def generator_eratosthenes(n):
     Generate primes up to n (inclusive) using Eratosthenes sieve.
     """
     if n < 2:
-        raise StopIteration
+        return
 
     yield 2
     if n <= 2:
