@@ -91,7 +91,7 @@ class Arith1Test (unittest.TestCase):
 
     def testProduct(self):
         self.assertEqual(1, arith1.product([]))
-        self.assertEqual(120, arith1.product(xrange(1, 6)))
+        self.assertEqual(120, arith1.product(range(1, 6)))
         self.assertEqual(14400, arith1.product(i**2 for i in range(1, 6)))
     
     def testPowerDetection(self):
