@@ -21,9 +21,9 @@ class BigrandomTest(unittest.TestCase):
         for i in range(trial_times):
             rnd = bigrandom.randrange(-1, 255)
             dist[rnd] = dist.get(rnd, 0) + 1
-        distkeys = dist.keys()
+        distkeys = list(dist.keys())
         distkeys.sort()
-        self.assertEqual(distkeys, range(-1, 255))
+        self.assertEqual(distkeys, list(range(-1, 255)))
 
     def testRange(self):
         for i in range(10000):
