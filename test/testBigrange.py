@@ -31,25 +31,25 @@ class ProgressionTest (unittest.TestCase):
 class MultirangeTest (unittest.TestCase):
     def testBasic(self):
         it = bigrange.multirange([(1, 10, 3), (1, 10, 4)])
-        self.assertEqual((1, 1), it.next())
-        self.assertEqual((1, 5), it.next())
-        self.assertEqual((1, 9), it.next())
-        self.assertEqual((4, 1), it.next())
-        self.assertEqual((4, 5), it.next())
-        self.assertEqual((4, 9), it.next())
-        self.assertEqual((7, 1), it.next())
-        self.assertEqual((7, 5), it.next())
-        self.assertEqual((7, 9), it.next())
+        self.assertEqual((1, 1), next(it))
+        self.assertEqual((1, 5), next(it))
+        self.assertEqual((1, 9), next(it))
+        self.assertEqual((4, 1), next(it))
+        self.assertEqual((4, 5), next(it))
+        self.assertEqual((4, 9), next(it))
+        self.assertEqual((7, 1), next(it))
+        self.assertEqual((7, 5), next(it))
+        self.assertEqual((7, 9), next(it))
 
 class MultirangeRestrictionsTest (unittest.TestCase):
     def testBasic(self):
         it = bigrange.multirange_restrictions([(1, 10, 3), (1, 10, 4)], ascending=(1,))
-        self.assertEqual((1, 1), it.next())
-        self.assertEqual((1, 5), it.next())
-        self.assertEqual((1, 9), it.next())
-        self.assertEqual((4, 5), it.next())
-        self.assertEqual((4, 9), it.next())
-        self.assertEqual((7, 9), it.next())
+        self.assertEqual((1, 1), next(it))
+        self.assertEqual((1, 5), next(it))
+        self.assertEqual((1, 9), next(it))
+        self.assertEqual((4, 5), next(it))
+        self.assertEqual((4, 9), next(it))
+        self.assertEqual((7, 9), next(it))
 
 
 def suite(suffix="Test"):
