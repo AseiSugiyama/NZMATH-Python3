@@ -6,7 +6,7 @@ import nzmath.bigrange as bigrange
 
 class CountTest (unittest.TestCase):
     def testCount(self):
-        maxint = sys.maxint
+        maxint = sys.maxsize
         from_maxint = [maxint, maxint+1, maxint+2]
         self.assertEqual(from_maxint,
                          [i for i in itertools.islice(bigrange.count(maxint), 3)])
@@ -18,7 +18,7 @@ class CountTest (unittest.TestCase):
 
 class ProgressionTest (unittest.TestCase):
     def testArithmeticProgression(self):
-        maxint = sys.maxint
+        maxint = sys.maxsize
         from_maxint = [maxint, maxint+1, maxint+2]
         self.assertEqual(from_maxint,
                          [i for i in itertools.islice(bigrange.arithmetic_progression(maxint, 1), 3)])
